@@ -12,6 +12,18 @@ import SwiftUI
 import UIKit
 import WebKit
 
+protocol WebViewControllerProtocol: AnyObject {
+    var server: Server { get }
+    var overlayAppController: UIViewController? { get set }
+
+    func presentOverlayController(controller: UIViewController)
+    func presentController(_ controller: UIViewController, animated: Bool)
+    func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
+    func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
+    func dismissControllerAboveOverlayController()
+    func updateSettingsButton(state: String)
+}
+
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
 
@@ -22,13 +34,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private let refreshControl = UIRefreshControl()
     private let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
+    let webViewExternalMessageHandler = WebViewExternalMessageHandler()
 
     private var initialURL: URL?
 
     /// A view controller presented by a request from the webview
-    private var overlayAppController: UIViewController?
+    var overlayAppController: UIViewController?
 
-    private let settingsButton: UIButton = {
+    let settingsButton: UIButton = {
         let button = UIButton()
         button.setImage(
             MaterialDesignIcons.cogIcon.image(ofSize: CGSize(width: 36, height: 36), color: .white),
@@ -68,6 +81,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        webViewExternalMessageHandler.webViewController = self
 
         becomeFirstResponder()
 
@@ -667,7 +681,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     @objc private func showSidebar(_ gesture: UIScreenEdgePanGestureRecognizer) {
         switch gesture.state {
         case .began:
-            sendExternalBus(message: .init(command: "sidebar/show"))
+            webViewExternalMessageHandler.sendExternalBus(message: .init(command: "sidebar/show"))
         default:
             break
         }
@@ -832,7 +846,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             repeats: true,
             block: { [weak self] timer in
                 if let self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
-                    sendExternalBus(message: .init(command: "restart"))
+                    webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
                 }
 
                 if UIApplication.shared.applicationState == .active {
@@ -847,7 +861,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             showActionAutomationEditorNotAvailable()
             return
         }
-        sendExternalBus(message: .init(
+        webViewExternalMessageHandler.sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
             payload: [
                 "config": [
@@ -902,7 +916,7 @@ extension WebViewController: WKScriptMessageHandler {
 
         switch message.name {
         case "externalBus":
-            handleExternalMessage(messageBody)
+            webViewExternalMessageHandler.handleExternalMessage(messageBody)
         case "updateThemeColors":
             handleThemeUpdate(messageBody)
         case "getExternalAuth":
@@ -968,247 +982,6 @@ extension WebViewController: WKScriptMessageHandler {
         ThemeColors.updateCache(with: messageBody, for: traitCollection)
         styleUI()
     }
-
-    func handleHaptic(_ hapticType: String) {
-        Current.Log.verbose("Handle haptic type \(hapticType)")
-        switch hapticType {
-        case "success":
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-        case "error", "failure":
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-        case "warning":
-            UINotificationFeedbackGenerator().notificationOccurred(.warning)
-        case "light":
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        case "medium":
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        case "heavy":
-            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-        case "selection":
-            UISelectionFeedbackGenerator().selectionChanged()
-        default:
-            Current.Log.verbose("Unknown haptic type \(hapticType)")
-        }
-    }
-
-    func handleExternalMessage(_ dictionary: [String: Any]) {
-        guard let incomingMessage = WebSocketMessage(dictionary) else {
-            Current.Log.error("Received invalid external message \(dictionary)")
-            return
-        }
-
-        var response: Guarantee<WebSocketMessage>?
-
-        if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
-            switch externalBusMessage {
-            case .configGet:
-                response = Guarantee { seal in
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        seal(WebSocketMessage(
-                            id: incomingMessage.ID!,
-                            type: "result",
-                            result: [
-                                "hasSettingsScreen": !Current.isCatalyst,
-                                "canWriteTag": Current.tags.isNFCAvailable,
-                                "canCommissionMatter": Current.matter.isAvailable,
-                                "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
-                                "hasBarCodeScanner": true,
-                                "canTransferThreadCredentialsToKeychain": Current.matter
-                                    .threadCredentialsStoreInKeychainEnabled,
-                                "hasAssist": true,
-                            ]
-                        ))
-                    }
-                }
-            case .configScreenShow:
-                showSettingsViewController()
-            case .haptic:
-                guard let hapticType = incomingMessage.Payload?["hapticType"] as? String else {
-                    Current.Log.error("Received haptic via bus but hapticType was not string! \(incomingMessage)")
-                    return
-                }
-                handleHaptic(hapticType)
-            case .connectionStatus:
-                guard let connEvt = incomingMessage.Payload?["event"] as? String else {
-                    Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
-                    return
-                }
-                // Possible values: connected, disconnected, auth-invalid
-                UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
-                    self.settingsButton.alpha = connEvt == "connected" ? 0.0 : 1.0
-                }, completion: nil)
-            case .tagRead:
-                response = Current.tags.readNFC().map { tag in
-                    WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
-                }.recover { _ in
-                    .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": false]))
-                }
-            case .tagWrite:
-                let (promise, seal) = Guarantee<Bool>.pending()
-                response = promise.map { success in
-                    WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": success])
-                }
-
-                firstly { () throws -> Promise<(tag: String, name: String?)> in
-                    if let tag = incomingMessage.Payload?["tag"] as? String, tag.isEmpty == false {
-                        return .value((tag: tag, name: incomingMessage.Payload?["name"] as? String))
-                    } else {
-                        throw HomeAssistantAPI.APIError.invalidResponse
-                    }
-                }.then { tagInfo in
-                    Current.tags.writeNFC(value: tagInfo.tag)
-                }.done { _ in
-                    Current.Log.info("wrote tag via external bus")
-                    seal(true)
-                }.catch { error in
-                    Current.Log.error("couldn't write tag via external bus: \(error)")
-                    seal(false)
-                }
-            case .themeUpdate:
-                webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
-            case .matterCommission:
-                Current.matter.commission(server).done {
-                    Current.Log.info("commission call completed")
-                }.catch { error in
-                    // we don't show a user-visible error because even a successful operation will return 'cancelled'
-                    // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
-                    Current.Log.error(error)
-                }
-            case .threadImportCredentials:
-                transferKeychainThreadCredentialsToHARequested()
-            case .barCodeScanner:
-                guard let title = incomingMessage.Payload?["title"] as? String,
-                      let description = incomingMessage.Payload?["description"] as? String,
-                      let incomingMessageId = incomingMessage.ID else { return }
-                barcodeScannerRequested(
-                    title: title,
-                    description: description,
-                    alternativeOptionLabel: incomingMessage.Payload?["alternative_option_label"] as? String,
-                    incomingMessageId: incomingMessageId
-                )
-            case .barCodeScannerClose:
-                if let barCodeController = overlayAppController as? BarcodeScannerHostingController {
-                    barCodeController.dismissAllViewControllersAbove()
-                    barCodeController.dismiss(animated: true)
-                }
-            case .barCodeScannerNotify:
-                guard let message = incomingMessage.Payload?["message"] as? String else { return }
-                let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-                alert.addAction(.init(title: L10n.okLabel, style: .default))
-                let controller = overlayAppController ?? self
-                controller.present(alert, animated: false, completion: nil)
-            case .threadStoreCredentialInAppleKeychain:
-                guard let macExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
-                      let activeOperationalDataset = incomingMessage.Payload?["active_operational_dataset"] as? String else { return }
-                transferHAThreadCredentialsToKeychain(
-                    macExtendedAddress: macExtendedAddress,
-                    activeOperationalDataset: activeOperationalDataset
-                )
-            case .assistShow:
-                showAssist(server: server, pipeline: "")
-            }
-        } else {
-            Current.Log.error("unknown: \(incomingMessage.MessageType)")
-        }
-
-        response?.then { [self] outgoing in
-            sendExternalBus(message: outgoing)
-        }.cauterize()
-    }
-
-    @discardableResult
-    public func sendExternalBus(message: WebSocketMessage) -> Promise<Void> {
-        Promise<Void> { seal in
-            DispatchQueue.main.async { [self] in
-                do {
-                    let encodedMsg = try JSONEncoder().encode(message)
-                    let jsonString = String(decoding: encodedMsg, as: UTF8.self)
-                    let script = "window.externalBus(\(jsonString))"
-                    Current.Log.verbose("sending \(jsonString)")
-                    webView.evaluateJavaScript(script, completionHandler: { _, error in
-                        if let error {
-                            Current.Log.error("failed to fire message to externalBus: \(error)")
-                        }
-                        seal.resolve(error)
-                    })
-                } catch {
-                    Current.Log.error("failed to send \(message): \(error)")
-                    seal.reject(error)
-                }
-            }
-        }
-    }
-
-    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
-        if AssistSession.shared.inProgress {
-            AssistSession.shared.requestNewSession(.init(
-                server: server,
-                pipelineId: pipeline,
-                autoStartRecording: autoStartRecording
-            ))
-            return
-        }
-        let assistView = UIHostingController(rootView: AssistView.build(
-            server: server,
-            preferredPipelineId: pipeline,
-            autoStartRecording: autoStartRecording
-        ))
-
-        presentOverlayController(controller: assistView)
-    }
-
-    private func transferKeychainThreadCredentialsToHARequested() {
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
-                        .buildTransferToHomeAssistant(server: server)
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            present(threadManagementView, animated: true)
-        }
-    }
-
-    private func transferHAThreadCredentialsToKeychain(macExtendedAddress: String, activeOperationalDataset: String) {
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
-                        .buildTransferToAppleKeychain(
-                            macExtendedAddress: macExtendedAddress,
-                            activeOperationalDataset: activeOperationalDataset
-                        )
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            present(threadManagementView, animated: true)
-        }
-    }
-
-    private func barcodeScannerRequested(
-        title: String,
-        description: String,
-        alternativeOptionLabel: String?,
-        incomingMessageId: Int
-    ) {
-        let barcodeController = BarcodeScannerHostingController(rootView: BarcodeScannerView(
-            title: title,
-            description: description,
-            alternativeOptionLabel: alternativeOptionLabel,
-            incomingMessageId: incomingMessageId
-        ))
-        barcodeController.modalPresentationStyle = .fullScreen
-        presentOverlayController(controller: barcodeController)
-    }
-
-    private func presentOverlayController(controller: UIViewController) {
-        overlayAppController?.dismiss(animated: false, completion: nil)
-        overlayAppController = controller
-        present(controller, animated: true, completion: nil)
-    }
 }
 
 extension WebViewController: UIScrollViewDelegate {
@@ -1264,5 +1037,41 @@ extension ConnectionInfo {
         } else {
             return nil
         }
+    }
+}
+
+extension WebViewController: WebViewControllerProtocol {
+    func presentOverlayController(controller: UIViewController) {
+        overlayAppController?.dismiss(animated: false, completion: nil)
+        overlayAppController = controller
+        present(controller, animated: true, completion: nil)
+    }
+
+    func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {
+        webView.evaluateJavaScript(script, completionHandler: completion)
+    }
+
+    func presentController(_ controller: UIViewController, animated: Bool) {
+        let mainController = overlayAppController ?? self
+        mainController.present(controller, animated: animated)
+    }
+
+    func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
+        if let overlayAppController {
+            overlayAppController.dismiss(animated: animated, completion: completion)
+        } else {
+            completion?()
+        }
+    }
+
+    func dismissControllerAboveOverlayController() {
+        overlayAppController?.dismissAllViewControllersAbove()
+    }
+
+    func updateSettingsButton(state: String) {
+        // Possible values: connected, disconnected, auth-invalid
+        UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
+            self.settingsButton.alpha = state == "connected" ? 0.0 : 1.0
+        }, completion: nil)
     }
 }

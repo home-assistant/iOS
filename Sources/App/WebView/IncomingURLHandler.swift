@@ -100,7 +100,7 @@ class IncomingURLHandler {
             windowController.webViewControllerPromise.pipe { result in
                 switch result {
                 case let .fulfilled(webView):
-                    webView.showAssist(
+                    webView.webViewExternalMessageHandler.showAssist(
                         server: server,
                         pipeline: pipeline?.identifier ?? "",
                         autoStartRecording: autoStartRecording
