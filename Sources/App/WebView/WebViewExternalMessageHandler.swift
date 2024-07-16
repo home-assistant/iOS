@@ -280,9 +280,12 @@ final class WebViewExternalMessageHandler {
         webViewController?.updateImprovEntryView(show: false)
 
         improvController =
-        UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(improvManager: improvManager, redirectRequest: { [weak self] redirectUrlPath in
-            self?.webViewController?.navigateToPath(path: redirectUrlPath)
-        }))
+            UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(
+                improvManager: improvManager,
+                redirectRequest: { [weak self] redirectUrlPath in
+                    self?.webViewController?.navigateToPath(path: redirectUrlPath)
+                }
+            ))
 
         guard let improvController else { return }
         improvController.modalTransitionStyle = .crossDissolve
@@ -322,7 +325,7 @@ extension WebViewExternalMessageHandler: ImprovManagerDelegate {
     func didReceiveResult(_ result: [String]?) {
         /* no-op */
     }
-    
+
     func didReset() {
         /* no-op */
     }

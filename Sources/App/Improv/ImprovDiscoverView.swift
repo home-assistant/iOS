@@ -220,7 +220,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     @ViewBuilder
     private var nextButton: some View {
         Button {
-
             let improvResultDomain = URL(string: improvManager.lastResult?.first ?? "")?.queryItems?["domain"] ?? ""
             let redirectPath = "/config/integrations/dashboard/add?domain=" + improvResultDomain
             redirectRequest(redirectPath)
@@ -254,7 +253,10 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
 
     private func authenticate() {
         state = .loading(L10n.Improv.State.connecting)
-        improvManager.sendWifi(ssid: ssid, password: password)
+        if let error = improvManager.sendWifi(ssid: ssid, password: password) {
+            Current.Log.error("Failed to send wifi credentials to Improv device, error: \(error)")
+            state = .list
+        }
     }
 
     @ViewBuilder

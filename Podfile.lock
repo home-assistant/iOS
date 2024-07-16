@@ -238,7 +238,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.2
   Improv-iOS:
-    :commit: 6c357472f0c3ecd500ee57c16ae70aa916528b9c
+    :commit: 5cdb183d66e0b13573e211da8231c4fefccc5f09
     :git: https://github.com/improv-wifi/sdk-iOS.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
