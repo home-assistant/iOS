@@ -595,6 +595,67 @@ public enum L10n {
     }
   }
 
+  public enum Improv {
+    public enum Button {
+      /// Add to Home Assistant
+      public static var addToHomeAssistant: String { return L10n.tr("Localizable", "improv.button.add_to_home_assistant") }
+      /// Continue
+      public static var `continue`: String { return L10n.tr("Localizable", "improv.button.continue") }
+    }
+    public enum ConnectionState {
+      /// Authorized
+      public static var authorized: String { return L10n.tr("Localizable", "improv.connection_state.authorized") }
+      /// Authorization pending...
+      public static var autorizationRequired: String { return L10n.tr("Localizable", "improv.connection_state.autorization_required") }
+      /// Provisioning...
+      public static var provisioning: String { return L10n.tr("Localizable", "improv.connection_state.provisioning") }
+    }
+    public enum ErrorState {
+      /// Invalid RPC Packet
+      public static var invalidRpcPacket: String { return L10n.tr("Localizable", "improv.error_state.invalid_rpc_packet") }
+      /// Not authorized
+      public static var notAuthorized: String { return L10n.tr("Localizable", "improv.error_state.not_authorized") }
+      /// Unable to connect
+      public static var unableToConnect: String { return L10n.tr("Localizable", "improv.error_state.unable_to_connect") }
+      /// Unknown error, please try again.
+      public static var unknown: String { return L10n.tr("Localizable", "improv.error_state.unknown") }
+      /// Unknown command
+      public static var unknownCommand: String { return L10n.tr("Localizable", "improv.error_state.unknown_command") }
+    }
+    public enum List {
+      /// Devices
+      public static var title: String { return L10n.tr("Localizable", "improv.list.title") }
+    }
+    public enum Onboard {
+      /// Setup Improv devices
+      public static var title: String { return L10n.tr("Localizable", "improv.onboard.title") }
+    }
+    public enum State {
+      /// Connected
+      public static var connected: String { return L10n.tr("Localizable", "improv.state.connected") }
+      /// Connecting...
+      public static var connecting: String { return L10n.tr("Localizable", "improv.state.connecting") }
+      /// Connected successfully
+      public static var success: String { return L10n.tr("Localizable", "improv.state.success") }
+    }
+    public enum Wifi {
+      public enum Alert {
+        /// Cancel
+        public static var cancelButton: String { return L10n.tr("Localizable", "improv.wifi.alert.cancel_button") }
+        /// Connect
+        public static var connectButton: String { return L10n.tr("Localizable", "improv.wifi.alert.connect_button") }
+        /// Please enter your SSID and password.
+        public static var description: String { return L10n.tr("Localizable", "improv.wifi.alert.description") }
+        /// Password
+        public static var passwordPlaceholder: String { return L10n.tr("Localizable", "improv.wifi.alert.password_placeholder") }
+        /// SSID
+        public static var ssidPlaceholder: String { return L10n.tr("Localizable", "improv.wifi.alert.ssid_placeholder") }
+        /// Connect to WiFi
+        public static var title: String { return L10n.tr("Localizable", "improv.wifi.alert.title") }
+      }
+    }
+  }
+
   public enum Intents {
     /// Select a server before picking this value.
     public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }

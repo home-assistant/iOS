@@ -1,13 +1,15 @@
+import CoreBluetooth
 import Foundation
+import Improv_iOS
 import PromiseKit
 import Shared
 import SwiftUI
-import Improv_iOS
 
 final class WebViewExternalMessageHandler {
-    
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
+
+    private var improvController: UIViewController?
 
     init(improvManager: any ImprovManagerProtocol) {
         self.improvManager = improvManager
@@ -268,11 +270,52 @@ final class WebViewExternalMessageHandler {
     }
 
     func scanImprov() {
-//        improvManager.scan()
-        let hostingController = UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(improvManager: ImprovManager.shared))
-        hostingController.modalTransitionStyle = .crossDissolve
-        hostingController.modalPresentationStyle = .overFullScreen
-        hostingController.view.backgroundColor = .clear
-        webViewController?.presentOverlayController(controller: hostingController)
+        improvManager.delegate = self
+        improvManager.scan()
+    }
+
+    func presentImprov() {
+        improvController =
+            UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(improvManager: improvManager))
+
+        guard let improvController else { return }
+        improvController.modalTransitionStyle = .crossDissolve
+        improvController.modalPresentationStyle = .overFullScreen
+        improvController.view.backgroundColor = .clear
+        webViewController?.presentOverlayController(controller: improvController)
+    }
+}
+
+extension WebViewExternalMessageHandler: ImprovManagerDelegate {
+    func didUpdateBluetoohState(_ state: CBManagerState) {
+        if state == .poweredOn {
+            improvManager.scan()
+        }
+    }
+
+    func didUpdateFoundDevices(devices: [String: CBPeripheral]) {
+        improvManager.stopScan()
+        guard devices.count > 0 else { return }
+        webViewController?.updateImprovEntryView(show: true)
+    }
+
+    func didConnect(peripheral: CBPeripheral) {
+        /* no-op */
+    }
+
+    func didDisconnect(peripheral: CBPeripheral) {
+        /* no-op */
+    }
+
+    func didUpdateDeviceState(_ state: Improv_iOS.DeviceState?) {
+        /* no-op */
+    }
+
+    func didUpdateErrorState(_ state: Improv_iOS.ErrorState?) {
+        /* no-op */
+    }
+
+    func didReceiveResult(_ result: [String]?) {
+        /* no-op */
     }
 }

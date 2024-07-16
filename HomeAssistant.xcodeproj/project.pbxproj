@@ -620,6 +620,7 @@
 		42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
 		42B94BED2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
 		42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */; };
+		42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42C373B22BC5382900898990 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B12BC5382900898990 /* HostingController.swift */; };
@@ -1832,6 +1833,7 @@
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
 		42B94BE72B9607D100DEE060 /* AssistModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AssistModel.swift; path = Sources/Shared/Intents/AssistInApp/AssistModel.swift; sourceTree = SOURCE_ROOT; };
 		42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeScriptMessageHandler.swift; sourceTree = "<group>"; };
+		42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAccessoryViews.swift; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WatchApp-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -2871,6 +2873,7 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				42BE698B2C4691E000745ECA /* Views */,
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
@@ -3604,6 +3607,14 @@
 				42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */,
 			);
 			path = AssistInApp;
+			sourceTree = "<group>";
+		};
+		42BE698B2C4691E000745ECA /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		42C373B62BC55C3A00898990 /* Home */ = {
@@ -6329,6 +6340,7 @@
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
+				42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,

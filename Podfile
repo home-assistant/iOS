@@ -26,7 +26,7 @@ pod 'Communicator', git: 'https://github.com/zacwest/Communicator.git', branch: 
 pod 'KeychainAccess'
 pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git', branch: 'master'
 pod 'PromiseKit'
-pod 'Improv-iOS', '~> 0.0.1'
+pod 'Improv-iOS', '~> 0.0.2'
 
 pod 'RealmSwift'
 pod 'UIColor_Hex_Swift'

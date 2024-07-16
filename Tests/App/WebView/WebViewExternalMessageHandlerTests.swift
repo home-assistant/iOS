@@ -1,7 +1,7 @@
 @testable import HomeAssistant
+import Improv_iOS
 import SwiftUI
 import XCTest
-import Improv_iOS
 
 final class WebViewExternalMessageHandlerTests: XCTestCase {
     private var sut: WebViewExternalMessageHandler!
