@@ -17,9 +17,9 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
         title: .init("widgets.actions.parameters.action", defaultValue: "Action"),
         size: [
             .systemSmall: 1,
-            .systemMedium: 8,
-            .systemLarge: 16,
-            .systemExtraLarge: 32,
+            .systemMedium: 4,
+            .systemLarge: 10,
+            .systemExtraLarge: 28,
             .accessoryInline: 1,
             .accessoryCorner: 1,
             .accessoryCircular: 1,

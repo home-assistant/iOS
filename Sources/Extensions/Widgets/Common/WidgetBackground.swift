@@ -2,11 +2,9 @@ import Foundation
 import SwiftUI
 
 extension View {
-    func widgetBackground(_ backgroundView: some View) -> some View {
+    func widgetBackground(_ backgroundView: some ShapeStyle) -> some View {
         if #available(iOS 17.0, *) {
-            return containerBackground(for: .widget) {
-                backgroundView
-            }
+            return containerBackground(backgroundView, for: .widget)
         } else {
             return background(backgroundView)
         }

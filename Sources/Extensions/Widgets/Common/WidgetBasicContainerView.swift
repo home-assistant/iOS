@@ -5,7 +5,6 @@ import WidgetKit
 
 struct WidgetBasicContainerView: View {
     @Environment(\.widgetFamily) var family: WidgetFamily
-    @Environment(\.pixelLength) var pixelLength: CGFloat
 
     let emptyViewGenerator: () -> AnyView
     let contents: [WidgetBasicViewModel]
@@ -23,26 +22,25 @@ struct WidgetBasicContainerView: View {
             default: multiView(for: contents)
             }
         }
-        .widgetBackground(Color.clear)
+        #if DEBUG
+        .widgetBackground(Color.blue)
+        #else
+        // Whenever Apple allow apps to use material backgrounds we should update this
+        .widgetBackground(Color(uiColor: .secondarySystemBackground))
+        #endif
     }
 
-    func singleView(for model: WidgetBasicViewModel) -> some View {
-        ZStack {
-            // Check if the widget should be transparent (on the lock screen)
-            if !Self.transparentFamilies.contains(family) {
-                model.backgroundColor
-                    .opacity(0.8)
-            }
-            if case let .widgetURL(url) = model.interactionType {
-                WidgetBasicView(model: model, sizeStyle: .single)
-                    .widgetURL(url.withWidgetAuthenticity())
-            } else {
-                if #available(iOS 17.0, *), let intent = intent(for: model) {
-                    Button(intent: intent) {
-                        WidgetBasicView(model: model, sizeStyle: .single)
-                    }
-                    .buttonStyle(.plain)
+    @ViewBuilder
+    private func singleView(for model: WidgetBasicViewModel) -> some View {
+        if case let .widgetURL(url) = model.interactionType {
+            WidgetBasicView(model: model, sizeStyle: .single)
+                .widgetURL(url.withWidgetAuthenticity())
+        } else {
+            if #available(iOS 17.0, *), let intent = intent(for: model) {
+                Button(intent: intent) {
+                    WidgetBasicView(model: model, sizeStyle: .single)
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -83,35 +81,27 @@ struct WidgetBasicContainerView: View {
             }
         }()
 
-        VStack(alignment: .leading, spacing: pixelLength) {
+        VStack(alignment: .leading, spacing: Spaces.one) {
             ForEach(rows, id: \.self) { column in
-                HStack(spacing: pixelLength) {
+                HStack(spacing: Spaces.one) {
                     ForEach(column) { model in
-                        ZStack {
-                            // Check if the widget should be transparent (on the lock screen)
-                            if !Self.transparentFamilies.contains(family) {
-                                // stacking the color under makes the Link's highlight state nicer
-                                model.backgroundColor
-                                    .opacity(0.8)
+                        if case let .widgetURL(url) = model.interactionType {
+                            Link(destination: url.withWidgetAuthenticity()) {
+                                WidgetBasicView(model: model, sizeStyle: sizeStyle)
                             }
-                            if case let .widgetURL(url) = model.interactionType {
-                                Link(destination: url.withWidgetAuthenticity()) {
+                        } else {
+                            if #available(iOS 17.0, *), let intent = intent(for: model) {
+                                Button(intent: intent) {
                                     WidgetBasicView(model: model, sizeStyle: sizeStyle)
                                 }
-                            } else {
-                                if #available(iOS 17.0, *), let intent = intent(for: model) {
-                                    Button(intent: intent) {
-                                        WidgetBasicView(model: model, sizeStyle: sizeStyle)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
                 }
             }
         }
-        .background(Color.black)
+        .padding(Spaces.one)
     }
 
     private func columnify(count: Int, models: [WidgetBasicViewModel]) -> AnyIterator<[WidgetBasicViewModel]> {
@@ -170,10 +160,10 @@ struct WidgetBasicContainerView: View {
         case .accessoryCircular, .accessoryInline, .accessoryRectangular: return 1
         #endif
         case .systemSmall: return 1
-        case .systemMedium: return 8
-        case .systemLarge: return 16
-        case .systemExtraLarge: return 32
-        @unknown default: return 8
+        case .systemMedium: return 4
+        case .systemLarge: return 8
+        case .systemExtraLarge: return 28
+        @unknown default: return 4
         }
     }
 
