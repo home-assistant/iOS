@@ -62,8 +62,8 @@
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tryck för att";
-"assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
-"assist.watch.volume.title" = "Volume control";
+"assist.watch.not_reachable.title" = "Assistenten kräver iPhone-anslutning. Din iPhone är för närvarande inte nåbar.";
+"assist.watch.volume.title" = "Volymkontroll";
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Tryck för att fortsätta på din iPhone";
 "carPlay.action.intro.item.title" = "Skapa din första åtgärd";
@@ -853,7 +853,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.actions.title" = "Åtgärder";
 "widgets.assist.action_title" = "Fråga Assist";
 "widgets.assist.description" = "Öppna Assist i appen";
-"widgets.assist.title" = "Assist";
+"widgets.assist.title" = "Assistent";
 "widgets.assist.unknown_configuration" = "Konfigurera";
 "widgets.button.reload_timeline" = "Ladda om alla widgets";
 "widgets.details.description" = "Visa tillstånd med hjälp av Home Assistant i text";
