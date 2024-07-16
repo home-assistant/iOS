@@ -23,6 +23,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func dismissControllerAboveOverlayController()
     func updateSettingsButton(state: String)
     func updateImprovEntryView(show: Bool)
+    func navigateToPath(path: String)
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -231,8 +232,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
         }
-
-        webViewExternalMessageHandler.scanImprov()
         #endif
     }
 
@@ -1080,5 +1079,11 @@ extension WebViewController: WebViewControllerProtocol {
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
             WebViewAccessoryViews.improEntryFlowView.alpha = show ? 1.0 : 0.0
         }, completion: nil)
+    }
+
+    func navigateToPath(path: String) {
+        if let url = URL(string: server.info.connection.activeURL().absoluteString + path) {
+            webView.load(URLRequest(url: url))
+        }
     }
 }

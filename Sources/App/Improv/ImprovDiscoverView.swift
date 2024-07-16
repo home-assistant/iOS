@@ -5,7 +5,6 @@ import SwiftUI
 
 struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     enum ViewState: Equatable {
-        case initial
         case list
         case loading(_ message: String)
         case success
@@ -15,9 +14,8 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var improvManager: Manager
 
-    @State private var state: ViewState = .initial
-    @State private var animationHappened = false
-    @State private var shadowRadius: CGFloat = 10
+    @State private var state: ViewState = .list
+    @State private var displayBottomSheet = false
 
     @State private var ssid = ""
     @State private var password = ""
@@ -26,10 +24,12 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     @State private var selectedPeripheral: CBPeripheral?
 
     private let bottomSheetMinHeight: CGFloat = 400
+    private let redirectRequest: (_ urlPath: String) -> Void
 
     // swiftlint: disable force_cast
-    init(improvManager: any ImprovManagerProtocol) {
+    init(improvManager: any ImprovManagerProtocol, redirectRequest: @escaping (_ urlPath: String) -> Void) {
         self._improvManager = .init(wrappedValue: improvManager as! Manager)
+        self.redirectRequest = redirectRequest
     }
 
     var body: some View {
@@ -41,8 +41,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     switch state {
                     case .list:
                         devicesList
-                    case .initial:
-                        bottomSheetContent
                     case let .loading(message):
                         loadingView(message)
                     case .success:
@@ -56,16 +54,16 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             }
             .padding(.horizontal)
             .frame(minHeight: bottomSheetMinHeight)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: maxWidth, alignment: .center)
             .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 50))
+            .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
             .shadow(color: .black.opacity(0.2), radius: 20)
             .padding(Spaces.one)
             .fixedSize(horizontal: false, vertical: true)
-            .offset(y: animationHappened ? 0 : bottomSheetMinHeight)
+            .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
             .onAppear {
                 withAnimation(.bouncy) {
-                    animationHappened = true
+                    displayBottomSheet = true
                 }
             }
         }
@@ -127,7 +125,9 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             }
         }
         .onChange(of: improvManager.connectedDevice) { newValue in
-            if newValue?.identifier == selectedPeripheral?.identifier {
+            if newValue == nil || selectedPeripheral == nil {
+                state = .list
+            } else if newValue?.identifier == selectedPeripheral?.identifier {
                 state = .loading(L10n.Improv.State.connected)
             }
         }
@@ -137,59 +137,38 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             SecureField(L10n.Improv.Wifi.Alert.passwordPlaceholder, text: $password)
             Button(L10n.Improv.Wifi.Alert.connectButton, action: authenticate)
             Button(L10n.Improv.Wifi.Alert.cancelButton, role: .cancel) {
-                selectedPeripheral = nil
-                state = .list
+                cancelWifiInput()
             }
         } message: {
             Text(L10n.Improv.Wifi.Alert.description)
         }
     }
 
-    @ViewBuilder
-    private var bottomSheetContent: some View {
-        bottomSheetHeader
-        Spacer()
-        deviceIcon
-        Spacer()
-        continueButton
+    private var maxWidth: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            .infinity
+        } else {
+            600
+        }
     }
 
-    private var deviceIcon: some View {
-        ZStack(alignment: .bottomTrailing) {
-            HStack {
-                Image(systemName: "cpu.fill")
-                    .foregroundStyle(.regularMaterial)
-                    .font(.system(size: 80))
-                    .shadow(color: .blue, radius: shadowRadius)
-                    .onAppear {
-                        withAnimation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                            shadowRadius = 40
-                        }
-                    }
-            }
-            .frame(width: 100, height: 100)
-            VStack {
-                Text("\(improvManager.foundDevices.count)")
-                    .padding(Spaces.one)
-                    .fixedSize()
-                    .foregroundStyle(Color(uiColor: .secondaryLabel))
-                    .animation(nil)
-            }
-            .background(Color(uiColor: .systemBackground))
-            .clipShape(Circle())
+    private var perfectCornerRadius: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            UIScreen.main.displayCornerRadius - Spaces.one
+        } else {
+            50
         }
     }
 
     @ViewBuilder
     private var devicesList: some View {
         Text(L10n.Improv.List.title)
-            .font(.title2.bold())
+            .font(.title.bold())
         List {
             ForEach(improvManager.foundDevices.keys.sorted(), id: \.self) { peripheralKey in
                 if let peripheral = improvManager.foundDevices[peripheralKey] {
                     Button {
                         selectedPeripheral = peripheral
-
                         if improvManager.connectedDevice?.identifier == peripheral.identifier {
                             showWifiAlert = true
                         } else {
@@ -197,13 +176,21 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                             state = .loading(L10n.Improv.State.connecting)
                         }
                     } label: {
-                        Text(peripheral.name ?? peripheral.identifier.uuidString)
+                        HStack {
+                            Text(peripheral.name ?? peripheral.identifier.uuidString)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "chevron.right.circle")
+                        }
+                        .foregroundStyle(Color(uiColor: Asset.Colors.haPrimary.color))
                     }
                 }
             }
-            ProgressView()
-                .progressViewStyle(.circular)
-                .frame(maxWidth: .infinity, alignment: .center)
+            Section {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .listRowBackground(Color.clear)
+            }
         }
         .modify {
             if #available(iOS 16, *) {
@@ -231,15 +218,28 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     }
 
     @ViewBuilder
-    private var bottomSheetHeader: some View {
-        Text(L10n.Improv.Onboard.title)
-            .font(.title.bold())
-    }
-
-    @ViewBuilder
-    private var continueButton: some View {
+    private var nextButton: some View {
         Button {
-            state = .list
+
+            let improvResultDomain = URL(string: improvManager.lastResult?.first ?? "")?.queryItems?["domain"] ?? ""
+            let redirectPath = "/config/integrations/dashboard/add?domain=" + improvResultDomain
+            redirectRequest(redirectPath)
+
+            if #available(iOS 17.0, *) {
+                withAnimation(.bouncy) {
+                    displayBottomSheet = false
+                } completion: {
+                    dismiss()
+                }
+            } else {
+                withAnimation(.bouncy) {
+                    displayBottomSheet = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        dismiss()
+                    }
+                }
+            }
+
         } label: {
             Text(L10n.Improv.Button.continue)
                 .foregroundStyle(Color(uiColor: .label))
@@ -250,7 +250,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .padding(.horizontal)
         .padding(.bottom, 32)
-        .animation(nil)
     }
 
     private func authenticate() {
@@ -263,9 +262,8 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         VStack(spacing: Spaces.three) {
             ProgressView()
                 .progressViewStyle(.circular)
-                .scaleEffect(.init(floatLiteral: 1.5))
+                .scaleEffect(.init(floatLiteral: 1.8))
             Text(message)
-                .font(.caption)
                 .foregroundStyle(Color(uiColor: .secondaryLabel))
         }
     }
@@ -282,16 +280,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 .foregroundStyle(Color(uiColor: .secondaryLabel))
         }
         Spacer()
-        Button {} label: {
-            Text(L10n.Improv.Button.addToHomeAssistant)
-                .padding()
-                .foregroundColor(.white)
-        }
-        .frame(maxWidth: .infinity)
-        .background(Color(uiColor: Asset.Colors.haPrimary.color))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .padding()
-        .padding(.bottom, Spaces.three)
+        nextButton
     }
 
     @ViewBuilder
@@ -308,8 +297,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         }
         Spacer()
         Button {
-            improvManager.stopScan()
-            improvManager.scan()
             state = .list
         } label: {
             Text(L10n.Improv.Button.continue)
@@ -322,6 +309,14 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         .padding()
         .padding(.bottom, Spaces.three)
     }
+
+    private func cancelWifiInput() {
+        if let selectedPeripheral {
+            improvManager.disconnectFromDevice(selectedPeripheral)
+            self.selectedPeripheral = nil
+        }
+        state = .list
+    }
 }
 
 #Preview {
@@ -329,7 +324,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         VStack {}
             .background(.blue)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        ImprovDiscoverView<ImprovManager>(improvManager: ImprovManager.shared)
+        ImprovDiscoverView<ImprovManager>(improvManager: ImprovManager.shared, redirectRequest: { _ in })
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

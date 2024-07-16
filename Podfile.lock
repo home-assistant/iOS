@@ -60,7 +60,7 @@ PODS:
   - HAKit/PromiseKit (0.4.2):
     - HAKit/Core
     - PromiseKit (~> 6.13)
-  - Improv-iOS (0.0.2)
+  - Improv-iOS (0.0.4)
   - KeychainAccess (4.2.2)
   - lottie-ios (4.1.2)
   - MBProgressHUD (1.2.0)
@@ -132,7 +132,7 @@ DEPENDENCIES:
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
-  - Improv-iOS (~> 0.0.2)
+  - Improv-iOS (from `https://github.com/improv-wifi/sdk-iOS.git`, branch `main`)
   - KeychainAccess
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
@@ -163,7 +163,6 @@ SPEC REPOS:
     - FirebaseMessaging
     - GoogleDataTransport
     - GoogleUtilities
-    - Improv-iOS
     - KeychainAccess
     - lottie-ios
     - MBProgressHUD
@@ -203,6 +202,9 @@ EXTERNAL SOURCES:
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.2
+  Improv-iOS:
+    :branch: main
+    :git: https://github.com/improv-wifi/sdk-iOS.git
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -235,6 +237,9 @@ CHECKOUT OPTIONS:
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.2
+  Improv-iOS:
+    :commit: 6c357472f0c3ecd500ee57c16ae70aa916528b9c
+    :git: https://github.com/improv-wifi/sdk-iOS.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -263,7 +268,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   HAKit: 92e9bd30717270df15025184b608b7902a773286
-  Improv-iOS: 164d40e9f8280c8573ade51790eb36fedb4f1a50
+  Improv-iOS: 2326ea013c899d6aeb6af92825a9323f0174d0ae
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   lottie-ios: b3846a9fa8ca1a1a3bebfa256ebe8b6fd4aaaaad
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -288,6 +293,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 419fe675f18888535a440f2943e51e86c2a15bdf
+PODFILE CHECKSUM: 2f6933b04aeb2e79567bafe304eeeb03d5495e0c
 
 COCOAPODS: 1.15.2

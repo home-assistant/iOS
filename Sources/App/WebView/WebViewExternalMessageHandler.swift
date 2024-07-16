@@ -275,8 +275,14 @@ final class WebViewExternalMessageHandler {
     }
 
     func presentImprov() {
+        improvManager.stopScan()
+        improvManager.delegate = nil
+        webViewController?.updateImprovEntryView(show: false)
+
         improvController =
-            UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(improvManager: improvManager))
+        UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(improvManager: improvManager, redirectRequest: { [weak self] redirectUrlPath in
+            self?.webViewController?.navigateToPath(path: redirectUrlPath)
+        }))
 
         guard let improvController else { return }
         improvController.modalTransitionStyle = .crossDissolve
@@ -294,9 +300,7 @@ extension WebViewExternalMessageHandler: ImprovManagerDelegate {
     }
 
     func didUpdateFoundDevices(devices: [String: CBPeripheral]) {
-        improvManager.stopScan()
-        guard devices.count > 0 else { return }
-        webViewController?.updateImprovEntryView(show: true)
+        webViewController?.updateImprovEntryView(show: !devices.isEmpty)
     }
 
     func didConnect(peripheral: CBPeripheral) {
@@ -316,6 +320,10 @@ extension WebViewExternalMessageHandler: ImprovManagerDelegate {
     }
 
     func didReceiveResult(_ result: [String]?) {
+        /* no-op */
+    }
+    
+    func didReset() {
         /* no-op */
     }
 }
