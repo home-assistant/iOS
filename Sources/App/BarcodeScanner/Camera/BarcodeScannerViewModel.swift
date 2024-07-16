@@ -17,7 +17,7 @@ final class BarcodeScannerViewModel: ObservableObject {
         Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
             .done { [weak self] controller in
                 guard let incomingMessageId = self?.incomingMessageId else { return }
-                controller
+                controller.webViewExternalMessageHandler
                     .sendExternalBus(message: .init(
                         id: incomingMessageId,
                         command: WebViewExternalBusOutgoingMessage.barCodeScanResult.rawValue,
@@ -33,7 +33,7 @@ final class BarcodeScannerViewModel: ObservableObject {
         Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
             .done { [weak self] controller in
                 guard let incomingMessageId = self?.incomingMessageId else { return }
-                controller.sendExternalBus(message: .init(
+                controller.webViewExternalMessageHandler.sendExternalBus(message: .init(
                     id: incomingMessageId,
                     command: WebViewExternalBusOutgoingMessage.barCodeScanAborted.rawValue,
                     payload: [
