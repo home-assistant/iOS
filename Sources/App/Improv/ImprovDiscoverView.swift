@@ -15,15 +15,26 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     @StateObject private var improvManager: Manager
 
     @State private var state: ViewState = .list
+
+    /// Used for appear and disappear bottom sheet animation
     @State private var displayBottomSheet = false
 
     @State private var ssid = ""
     @State private var password = ""
     @State private var showWifiAlert = false
 
+    /// Device which is currently selected for connection and wifi operations
     @State private var selectedPeripheral: CBPeripheral?
 
+    /*
+     If device is disconnected when user attempts to send wifi credentials
+     we ask the device to reconnect and as soon as it is authorized we retry with the same credentials
+     */
+    @State private var shouldRetryWifiSetup = false
+
     private let bottomSheetMinHeight: CGFloat = 400
+
+    /// Redirect user to integrations page based on urlPath received from Improv
     private let redirectRequest: (_ urlPath: String) -> Void
 
     // swiftlint: disable force_cast
@@ -46,7 +57,9 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     case .success:
                         successView
                     case let .failure(message):
-                        failureView(message)
+                        ImprovFailureView(message: message) {
+                            state = .list
+                        }
                     }
                 }
                 .padding(.top, Spaces.six)
@@ -97,7 +110,12 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 state = .loading(L10n.Improv.ConnectionState.autorizationRequired)
             case .authorized:
                 state = .loading(L10n.Improv.ConnectionState.authorized)
-                showWifiAlert = true
+                if shouldRetryWifiSetup {
+                    shouldRetryWifiSetup = false
+                    authenticate()
+                } else {
+                    showWifiAlert = true
+                }
             case .provisioned:
                 state = .success
             case .provisioning:
@@ -162,35 +180,37 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
 
     @ViewBuilder
     private var devicesList: some View {
-        Text(L10n.Improv.List.title)
-            .font(.title.bold())
         List {
-            ForEach(improvManager.foundDevices.keys.sorted(), id: \.self) { peripheralKey in
-                if let peripheral = improvManager.foundDevices[peripheralKey] {
-                    Button {
-                        selectedPeripheral = peripheral
-                        if improvManager.connectedDevice?.identifier == peripheral.identifier {
-                            showWifiAlert = true
-                        } else {
+            Section(content: {
+                if improvManager.foundDevices.isEmpty {
+                    VStack {}
+                }
+                ForEach(improvManager.foundDevices.keys.sorted(), id: \.self) { peripheralKey in
+                    if let peripheral = improvManager.foundDevices[peripheralKey] {
+                        Button {
+                            selectedPeripheral = peripheral
                             improvManager.connectToDevice(peripheral)
                             state = .loading(L10n.Improv.State.connecting)
-                        }
-                    } label: {
-                        HStack {
+                        } label: {
                             Text(peripheral.name ?? peripheral.identifier.uuidString)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            Image(systemName: "chevron.right.circle")
+                                .foregroundStyle(Color(uiColor: .label))
                         }
-                        .foregroundStyle(Color(uiColor: Asset.Colors.haPrimary.color))
                     }
                 }
-            }
-            Section {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .listRowBackground(Color.clear)
-            }
+            }, header: {
+                HStack(spacing: Spaces.two) {
+                    Text(L10n.Improv.List.title)
+                        .textCase(.uppercase)
+                        .font(.footnote)
+                        .foregroundStyle(Color(uiColor: .secondaryLabel))
+                        .multilineTextAlignment(.center)
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .listRowBackground(Color.clear)
+                    Spacer()
+                }
+            })
         }
         .modify {
             if #available(iOS 16, *) {
@@ -210,16 +230,38 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             }, label: {
                 Image(systemName: "xmark.circle.fill")
                     .font(.system(size: 20))
-                    .foregroundStyle(.gray, .white)
+                    .foregroundStyle(.gray, Color(uiColor: .tertiarySystemBackground))
             })
         }
         .padding(.top, Spaces.three)
         .padding([.trailing, .bottom], Spaces.one)
     }
 
+    private func authenticate() {
+        state = .loading(L10n.Improv.State.connecting)
+        if let error = improvManager.sendWifi(ssid: ssid, password: password) {
+            Current.Log.error("Failed to send wifi credentials to Improv device, error: \(error)")
+            state = .list
+            guard let selectedPeripheral else { return }
+            shouldRetryWifiSetup = true
+            improvManager.connectToDevice(selectedPeripheral)
+        }
+    }
+
     @ViewBuilder
-    private var nextButton: some View {
-        Button {
+    private func loadingView(_ message: String) -> some View {
+        VStack(spacing: Spaces.three) {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .scaleEffect(.init(floatLiteral: 1.8))
+            Text(message)
+                .foregroundStyle(Color(uiColor: .secondaryLabel))
+        }
+    }
+
+    @ViewBuilder
+    private var successView: some View {
+        ImprovSuccessView {
             let improvResultDomain = URL(string: improvManager.lastResult?.first ?? "")?.queryItems?["domain"] ?? ""
             let redirectPath = "/config/integrations/dashboard/add?domain=" + improvResultDomain
             redirectRequest(redirectPath)
@@ -238,78 +280,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     }
                 }
             }
-
-        } label: {
-            Text(L10n.Improv.Button.continue)
-                .foregroundStyle(Color(uiColor: .label))
-                .padding()
         }
-        .frame(maxWidth: .infinity)
-        .background(Color(uiColor: .tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .padding(.horizontal)
-        .padding(.bottom, 32)
-    }
-
-    private func authenticate() {
-        state = .loading(L10n.Improv.State.connecting)
-        if let error = improvManager.sendWifi(ssid: ssid, password: password) {
-            Current.Log.error("Failed to send wifi credentials to Improv device, error: \(error)")
-            state = .list
-        }
-    }
-
-    @ViewBuilder
-    private func loadingView(_ message: String) -> some View {
-        VStack(spacing: Spaces.three) {
-            ProgressView()
-                .progressViewStyle(.circular)
-                .scaleEffect(.init(floatLiteral: 1.8))
-            Text(message)
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
-        }
-    }
-
-    @ViewBuilder
-    private var successView: some View {
-        Spacer()
-        VStack(spacing: Spaces.two) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 100))
-                .foregroundStyle(.white, .green)
-            Text(L10n.Improv.State.success)
-                .font(.title3.bold())
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
-        }
-        Spacer()
-        nextButton
-    }
-
-    @ViewBuilder
-    private func failureView(_ message: String) -> some View {
-        Spacer()
-        VStack(spacing: Spaces.two) {
-            Image(systemName: "xmark.circle.fill")
-                .font(.system(size: 100))
-                .foregroundStyle(.white, .red)
-            Text(message)
-                .multilineTextAlignment(.center)
-                .font(.title3.bold())
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
-        }
-        Spacer()
-        Button {
-            state = .list
-        } label: {
-            Text(L10n.Improv.Button.continue)
-                .padding()
-                .foregroundColor(Color(uiColor: .secondaryLabel))
-        }
-        .frame(maxWidth: .infinity)
-        .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .padding()
-        .padding(.bottom, Spaces.three)
     }
 
     private func cancelWifiInput() {

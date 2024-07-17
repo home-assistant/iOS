@@ -36,7 +36,7 @@ enum WebViewAccessoryViews {
         let improvIcon = UIImageView(image: Asset.SharedAssets.improvLogo.image)
         improvIcon.contentMode = .scaleAspectFit
         let title = UILabel()
-        title.text = "There are Improv-BLE devices available to setup."
+        title.text = L10n.Improv.Toast.title
         title.numberOfLines = 0
 
         let chevron = UIImage(systemName: "chevron.right")?.withTintColor(.tertiaryLabel)

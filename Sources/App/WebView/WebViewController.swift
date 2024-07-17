@@ -1071,13 +1071,13 @@ extension WebViewController: WebViewControllerProtocol {
     func updateSettingsButton(state: String) {
         // Possible values: connected, disconnected, auth-invalid
         UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
-            WebViewAccessoryViews.settingsButton.alpha = state == "connected" ? 0.0 : 1.0
+            WebViewAccessoryViews.settingsButton.alpha = state == "connected" ? 0 : 1
         }, completion: nil)
     }
 
     func updateImprovEntryView(show: Bool) {
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-            WebViewAccessoryViews.improEntryFlowView.alpha = show ? 1.0 : 0.0
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
+            WebViewAccessoryViews.improEntryFlowView.alpha = show ? 1 : 0
         }, completion: nil)
     }
 

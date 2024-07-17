@@ -597,17 +597,15 @@ public enum L10n {
 
   public enum Improv {
     public enum Button {
-      /// Add to Home Assistant
-      public static var addToHomeAssistant: String { return L10n.tr("Localizable", "improv.button.add_to_home_assistant") }
       /// Continue
       public static var `continue`: String { return L10n.tr("Localizable", "improv.button.continue") }
     }
     public enum ConnectionState {
-      /// Authorized
+      /// Setting up Wi-Fi
       public static var authorized: String { return L10n.tr("Localizable", "improv.connection_state.authorized") }
-      /// Authorization pending...
+      /// Please authorize your device to continue
       public static var autorizationRequired: String { return L10n.tr("Localizable", "improv.connection_state.autorization_required") }
-      /// Provisioning...
+      /// Connecting to Wi-Fi
       public static var provisioning: String { return L10n.tr("Localizable", "improv.connection_state.provisioning") }
     }
     public enum ErrorState {
@@ -623,20 +621,20 @@ public enum L10n {
       public static var unknownCommand: String { return L10n.tr("Localizable", "improv.error_state.unknown_command") }
     }
     public enum List {
-      /// Devices
+      /// Devices ready to set up
       public static var title: String { return L10n.tr("Localizable", "improv.list.title") }
-    }
-    public enum Onboard {
-      /// Setup Improv devices
-      public static var title: String { return L10n.tr("Localizable", "improv.onboard.title") }
     }
     public enum State {
       /// Connected
       public static var connected: String { return L10n.tr("Localizable", "improv.state.connected") }
       /// Connecting...
       public static var connecting: String { return L10n.tr("Localizable", "improv.state.connecting") }
-      /// Connected successfully
+      /// Wi-Fi connected successfully
       public static var success: String { return L10n.tr("Localizable", "improv.state.success") }
+    }
+    public enum Toast {
+      /// There are devices available to setup.
+      public static var title: String { return L10n.tr("Localizable", "improv.toast.title") }
     }
     public enum Wifi {
       public enum Alert {
@@ -648,7 +646,7 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "improv.wifi.alert.description") }
         /// Password
         public static var passwordPlaceholder: String { return L10n.tr("Localizable", "improv.wifi.alert.password_placeholder") }
-        /// SSID
+        /// Network Name
         public static var ssidPlaceholder: String { return L10n.tr("Localizable", "improv.wifi.alert.ssid_placeholder") }
         /// Connect to WiFi
         public static var title: String { return L10n.tr("Localizable", "improv.wifi.alert.title") }
