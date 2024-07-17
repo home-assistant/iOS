@@ -19,7 +19,7 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
             .systemSmall: 1,
             .systemMedium: 4,
             .systemLarge: 10,
-            .systemExtraLarge: 28,
+            .systemExtraLarge: 20,
             .accessoryInline: 1,
             .accessoryCorner: 1,
             .accessoryCircular: 1,

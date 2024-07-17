@@ -78,29 +78,14 @@ enum WidgetBasicSizeStyle {
 
         switch self {
         case .single, .expanded:
-            size = 38
+            size = 32
         case .regular:
-            size = 28
+            size = 20
         case .condensed:
-            size = 18
+            size = 14
         }
 
         return .custom(MaterialDesignIcons.familyName, size: size)
-    }
-
-    var chevronFont: Font {
-        let size: CGFloat
-
-        switch self {
-        case .single, .expanded:
-            size = 18
-        case .regular:
-            size = 14
-        case .condensed:
-            size = 9
-        }
-
-        return .system(size: size, weight: .bold)
     }
 }
 
@@ -113,7 +98,6 @@ struct WidgetBasicView: View {
     init(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) {
         self.model = model
         self.sizeStyle = sizeStyle
-        MaterialDesignIcons.register()
     }
 
     var body: some View {
@@ -153,36 +137,34 @@ struct WidgetBasicView: View {
     }
 
     private var icon: some View {
-        HStack(alignment: .top, spacing: -1) {
-//            Text(verbatim: model.icon.unicode)
-//                .font(sizeStyle.iconFont)
-//                .minimumScaleFactor(0.2)
-//                .foregroundColor(model.iconColor)
-//                .fixedSize(horizontal: false, vertical: false)
-
-            if model.showsChevron {
-                // this sfsymbols is a little more legible at smaller size than mdi:open-in-new
-                Image(systemName: "arrow.up.forward.app")
-                    .font(sizeStyle.chevronFont)
-                    .foregroundColor(model.iconColor)
-            }
+        VStack {
+            Text(verbatim: model.icon.unicode)
+                .font(sizeStyle.iconFont)
+                .minimumScaleFactor(0.2)
+                .foregroundColor(model.backgroundColor)
+                .fixedSize(horizontal: false, vertical: false)
+                .padding(Spaces.one)
         }
+        .background(model.backgroundColor.opacity(0.3))
+        .clipShape(Circle())
+        .overlay(
+            Circle().stroke(model.backgroundColor, lineWidth: 2)
+        )
     }
 
     private var tileView: some View {
         VStack(alignment: .leading) {
             switch sizeStyle {
             case .regular, .condensed:
-                HStack(alignment: .center, spacing: 6.0) {
+                HStack(alignment: .center, spacing: Spaces.two) {
                     icon
                     VStack(alignment: .leading, spacing: -2) {
                         text
                         subtext
                     }
-                    Spacer()
-                }.padding(
-                    .leading, 12
-                )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding([.leading, .trailing], Spaces.two)
             case .single, .expanded:
                 VStack(alignment: .leading, spacing: 0) {
                     icon
@@ -190,12 +172,9 @@ struct WidgetBasicView: View {
                     text
                     subtext
                 }
-                .padding(
-                    [.leading, .trailing]
-                ).padding(
-                    [.top, .bottom],
-                    sizeStyle == .regular ? 10 : /* use default */ nil
-                )
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
+                .padding(.vertical, sizeStyle == .regular ? 10 : /* use default */ nil)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

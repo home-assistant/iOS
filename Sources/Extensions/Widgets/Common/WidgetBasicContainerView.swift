@@ -22,12 +22,8 @@ struct WidgetBasicContainerView: View {
             default: multiView(for: contents)
             }
         }
-        #if DEBUG
-        .widgetBackground(Color.blue)
-        #else
         // Whenever Apple allow apps to use material backgrounds we should update this
-        .widgetBackground(Color(uiColor: .secondarySystemBackground))
-        #endif
+        .widgetBackground(Color(uiColor: .tertiarySystemGroupedBackground))
     }
 
     @ViewBuilder
@@ -148,8 +144,8 @@ struct WidgetBasicContainerView: View {
         #endif
         case .systemSmall: return 1
         case .systemMedium: return 4
-        case .systemLarge: return 8
-        case .systemExtraLarge: return 16
+        case .systemLarge: return 10
+        case .systemExtraLarge: return 20
         @unknown default: return 8
         }
     }
@@ -161,8 +157,8 @@ struct WidgetBasicContainerView: View {
         #endif
         case .systemSmall: return 1
         case .systemMedium: return 4
-        case .systemLarge: return 8
-        case .systemExtraLarge: return 28
+        case .systemLarge: return 10
+        case .systemExtraLarge: return 20
         @unknown default: return 4
         }
     }
