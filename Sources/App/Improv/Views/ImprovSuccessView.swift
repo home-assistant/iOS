@@ -38,8 +38,6 @@ struct ImprovSuccessView: View {
         .frame(maxWidth: .infinity)
         .background(Color(uiColor: .tertiarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .padding(.horizontal)
-        .padding(.bottom, 32)
     }
 }
 

@@ -11,13 +11,9 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         case failure(_ message: String)
     }
 
-    @Environment(\.dismiss) private var dismiss
     @StateObject private var improvManager: Manager
 
     @State private var state: ViewState = .list
-
-    /// Used for appear and disappear bottom sheet animation
-    @State private var displayBottomSheet = false
 
     @State private var ssid = ""
     @State private var password = ""
@@ -26,13 +22,13 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     /// Device which is currently selected for connection and wifi operations
     @State private var selectedPeripheral: CBPeripheral?
 
+    @State private var bottomSheetState: AppleLikeBottomSheetViewState?
+
     /*
      If device is disconnected when user attempts to send wifi credentials
      we ask the device to reconnect and as soon as it is authorized we retry with the same credentials
      */
     @State private var shouldRetryWifiSetup = false
-
-    private let bottomSheetMinHeight: CGFloat = 400
 
     /// Redirect user to integrations page based on urlPath received from Improv
     private let redirectRequest: (_ urlPath: String) -> Void
@@ -44,53 +40,14 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     }
 
     var body: some View {
-        VStack {
-            Spacer()
-            ZStack(alignment: .top) {
-                closeButton
-                VStack {
-                    switch state {
-                    case .list:
-                        devicesList
-                    case let .loading(message):
-                        loadingView(message)
-                    case .success:
-                        successView
-                    case let .failure(message):
-                        ImprovFailureView(message: message) {
-                            state = .list
-                        }
-                    }
-                }
-                .padding(.top, Spaces.six)
-                .frame(maxHeight: .infinity)
-            }
-            .padding(.horizontal)
-            .frame(minHeight: bottomSheetMinHeight)
-            .frame(maxWidth: maxWidth, alignment: .center)
-            .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
-            .shadow(color: .black.opacity(0.2), radius: 20)
-            .padding(Spaces.one)
-            .fixedSize(horizontal: false, vertical: true)
-            .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
-            .onAppear {
-                withAnimation(.bouncy) {
-                    displayBottomSheet = true
-                }
-            }
-        }
-        .ignoresSafeArea()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black.opacity(0.3))
+        AppleLikeBottomSheet(
+            content: {
+                content
+            },
+            showCloseButton: true,
+            state: $bottomSheetState
+        )
         .animation(.default, value: state)
-        .modify {
-            if #available(iOS 16, *) {
-                $0.persistentSystemOverlays(.hidden)
-            } else {
-                $0
-            }
-        }
         .onAppear {
             if improvManager.bluetoothState == .poweredOn {
                 improvManager.scan()
@@ -162,6 +119,23 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         }
     }
 
+    private var content: some View {
+        VStack {
+            switch state {
+            case .list:
+                devicesList
+            case let .loading(message):
+                loadingView(message)
+            case .success:
+                successView
+            case let .failure(message):
+                ImprovFailureView(message: message) {
+                    state = .list
+                }
+            }
+        }
+    }
+
     private var maxWidth: CGFloat {
         if UIDevice.current.userInterfaceIdiom == .phone {
             .infinity
@@ -221,22 +195,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         }
     }
 
-    @ViewBuilder
-    private var closeButton: some View {
-        HStack {
-            Spacer()
-            Button(action: {
-                dismiss()
-            }, label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.gray, Color(uiColor: .tertiarySystemBackground))
-            })
-        }
-        .padding(.top, Spaces.three)
-        .padding([.trailing, .bottom], Spaces.one)
-    }
-
     private func authenticate() {
         state = .loading(L10n.Improv.State.connecting)
         if let error = improvManager.sendWifi(ssid: ssid, password: password) {
@@ -251,11 +209,13 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     @ViewBuilder
     private func loadingView(_ message: String) -> some View {
         VStack(spacing: Spaces.three) {
+            Spacer()
             ProgressView()
                 .progressViewStyle(.circular)
                 .scaleEffect(.init(floatLiteral: 1.8))
             Text(message)
                 .foregroundStyle(Color(uiColor: .secondaryLabel))
+            Spacer()
         }
     }
 
@@ -265,21 +225,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             let improvResultDomain = URL(string: improvManager.lastResult?.first ?? "")?.queryItems?["domain"] ?? ""
             let redirectPath = "/config/integrations/dashboard/add?domain=" + improvResultDomain
             redirectRequest(redirectPath)
-
-            if #available(iOS 17.0, *) {
-                withAnimation(.bouncy) {
-                    displayBottomSheet = false
-                } completion: {
-                    dismiss()
-                }
-            } else {
-                withAnimation(.bouncy) {
-                    displayBottomSheet = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        dismiss()
-                    }
-                }
-            }
+            bottomSheetState = .dismiss
         }
     }
 
