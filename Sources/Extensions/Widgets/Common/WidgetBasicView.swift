@@ -117,12 +117,12 @@ struct WidgetBasicView: View {
 
     private var text: some View {
         Text(verbatim: model.title)
-           .font(sizeStyle.textFont)
-           .fontWeight(.semibold)
-           .multilineTextAlignment(.leading)
-           .foregroundStyle(Color(uiColor: .label))
-           .lineLimit(2)
-           .minimumScaleFactor(0.5)
+            .font(sizeStyle.textFont)
+            .fontWeight(.semibold)
+            .multilineTextAlignment(.leading)
+            .foregroundStyle(Color(uiColor: .label))
+            .lineLimit(2)
+            .minimumScaleFactor(0.5)
     }
 
     @ViewBuilder

@@ -147,20 +147,6 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
-        if action.canConfigure(\Action.TextColor) {
-            visuals <<< InlineColorPickerRow("text_color") {
-                $0.title = L10n.ActionsConfigurator.Rows.TextColor.title
-                $0.isCircular = true
-                $0.showsPaletteNames = true
-                $0.value = UIColor(hex: self.action.TextColor)
-            }.onChange { row in
-                if let value = row.value {
-                    self.action.TextColor = value.hexString()
-                    self.updatePreviews()
-                }
-            }
-        }
-
         if action.canConfigure(\Action.BackgroundColor) {
             visuals <<< InlineColorPickerRow("background_color") {
                 $0.title = L10n.ActionsConfigurator.Rows.BackgroundColor.title
@@ -208,21 +194,6 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                     self.action.IconName = value.name
                     self.updatePreviews()
                 }
-            }
-        }
-
-        if action.canConfigure(\Action.IconColor) {
-            visuals <<< InlineColorPickerRow("icon_color") {
-                $0.title = L10n.ActionsConfigurator.Rows.IconColor.title
-                $0.isCircular = true
-                $0.showsPaletteNames = true
-                $0.value = UIColor(hex: self.action.IconColor)
-            }.onChange { picker in
-                Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
-
-                self.action.IconColor = picker.value!.hexString()
-
-                self.updatePreviews()
             }
         }
 
