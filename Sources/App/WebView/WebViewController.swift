@@ -888,6 +888,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         alert.addAction(.init(title: L10n.okLabel, style: .default))
         present(alert, animated: true)
     }
+
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        webViewExternalMessageHandler.stopImprovScanIfNeeded()
+    }
 }
 
 extension String {

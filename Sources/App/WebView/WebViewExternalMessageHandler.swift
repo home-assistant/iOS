@@ -293,6 +293,12 @@ final class WebViewExternalMessageHandler {
         improvController.view.backgroundColor = .clear
         webViewController?.presentOverlayController(controller: improvController)
     }
+
+    func stopImprovScanIfNeeded() {
+        if improvManager.scanInProgress {
+            improvManager.stopScan()
+        }
+    }
 }
 
 extension WebViewExternalMessageHandler: ImprovManagerDelegate {
