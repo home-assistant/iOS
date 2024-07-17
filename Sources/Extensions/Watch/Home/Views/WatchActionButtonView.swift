@@ -42,17 +42,18 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
                 resetState()
             }
         } label: {
-            HStack(spacing: Spaces.one) {
+            HStack(spacing: Spaces.two) {
                 iconToDisplay
+                    .frame(width: 30, height: 30)
                     .animation(.easeInOut, value: state)
                 Text(action.name)
-                    .foregroundStyle(Color(uiColor: .init(hex: action.textColor)))
+                    .foregroundStyle(.black)
             }
         }
         .disabled(state != .idle)
         .listRowBackground(
-            Color(uiColor: .init(hex: action.backgroundColor))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+            Color.white
+                .clipShape(RoundedRectangle(cornerRadius: 14))
         )
     }
 
@@ -66,10 +67,19 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
         VStack {
             switch state {
             case .idle:
-                Image(uiImage: MaterialDesignIcons(named: action.iconName).image(
-                    ofSize: .init(width: 24, height: 24),
-                    color: .init(hex: action.iconColor)
-                ))
+                VStack {
+                    Image(uiImage: MaterialDesignIcons(named: action.iconName).image(
+                        ofSize: .init(width: 24, height: 24),
+                        color: .init(hex: action.backgroundColor)
+                    ))
+                    .foregroundColor(Color(uiColor: .init(hex: action.backgroundColor)))
+                    .padding(Spaces.one)
+                }
+                .background(Color(uiColor: .init(hex: action.backgroundColor)).opacity(0.3))
+                .clipShape(Circle())
+                .overlay(
+                    Circle().stroke(Color(uiColor: .init(hex: action.backgroundColor)), lineWidth: 2)
+                )
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -77,17 +87,16 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
                     .tint(.black)
                     .shadow(color: .white, radius: 10)
             case .success:
-                makeActionImage(iconName: MaterialDesignIcons.checkIcon.name)
+                makeActionImage(systemName: "checkmark.circle.fill")
             case .failure:
-                makeActionImage(iconName: MaterialDesignIcons.closeThickIcon.name)
+                makeActionImage(systemName: "xmark.circle")
             }
         }
     }
 
-    private func makeActionImage(iconName: String) -> some View {
-        Image(uiImage: MaterialDesignIcons(named: iconName).image(
-            ofSize: .init(width: 24, height: 24),
-            color: .init(hex: action.iconColor)
-        ))
+    private func makeActionImage(systemName: String) -> some View {
+        Image(systemName: systemName)
+            .font(.system(size: 24))
+            .foregroundStyle(.black)
     }
 }
