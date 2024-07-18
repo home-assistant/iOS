@@ -1,8 +1,13 @@
+import Shared
 import SwiftUI
 import WidgetKit
 
 @main
 struct Widgets: WidgetBundle {
+    init() {
+        MaterialDesignIcons.register()
+    }
+
     var body: some Widget {
         WidgetAssist()
         actionsWidget()

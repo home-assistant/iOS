@@ -98,7 +98,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"
-            value = "WidgetAssist"
+            value = "WidgetOpenPage"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
@@ -108,7 +108,7 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "_XCWidgetFamily"
-            value = "systemSmall"
+            value = "systemLarge"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

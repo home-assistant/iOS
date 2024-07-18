@@ -17,8 +17,6 @@ struct WidgetAssistView: View {
 
     init(entry: WidgetAssistEntry) {
         self.entry = entry
-
-        MaterialDesignIcons.register()
     }
 
     var body: some View {
