@@ -1,10 +1,19 @@
+import CoreBluetooth
 import Foundation
+import Improv_iOS
 import PromiseKit
 import Shared
 import SwiftUI
 
 final class WebViewExternalMessageHandler {
     weak var webViewController: WebViewControllerProtocol?
+    private let improvManager: any ImprovManagerProtocol
+
+    private var improvController: UIViewController?
+
+    init(improvManager: any ImprovManagerProtocol) {
+        self.improvManager = improvManager
+    }
 
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
@@ -122,6 +131,8 @@ final class WebViewExternalMessageHandler {
                 )
             case .assistShow:
                 showAssist(server: webViewController.server, pipeline: "")
+            case .scanForImprov:
+                scanImprov()
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -256,5 +267,72 @@ final class WebViewExternalMessageHandler {
         ))
 
         webViewController?.presentOverlayController(controller: assistView)
+    }
+
+    func scanImprov() {
+        improvManager.delegate = self
+        improvManager.scan()
+    }
+
+    func presentImprov() {
+        improvManager.stopScan()
+        improvManager.delegate = nil
+        webViewController?.updateImprovEntryView(show: false)
+
+        improvController =
+            UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(
+                improvManager: improvManager,
+                redirectRequest: { [weak self] redirectUrlPath in
+                    self?.webViewController?.navigateToPath(path: redirectUrlPath)
+                }
+            ))
+
+        guard let improvController else { return }
+        improvController.modalTransitionStyle = .crossDissolve
+        improvController.modalPresentationStyle = .overFullScreen
+        improvController.view.backgroundColor = .clear
+        webViewController?.presentOverlayController(controller: improvController)
+    }
+
+    func stopImprovScanIfNeeded() {
+        if improvManager.scanInProgress {
+            improvManager.stopScan()
+        }
+    }
+}
+
+extension WebViewExternalMessageHandler: ImprovManagerDelegate {
+    func didUpdateBluetoohState(_ state: CBManagerState) {
+        if state == .poweredOn {
+            improvManager.scan()
+        }
+    }
+
+    func didUpdateFoundDevices(devices: [String: CBPeripheral]) {
+        webViewController?.updateImprovEntryView(show: !devices.isEmpty)
+    }
+
+    func didConnect(peripheral: CBPeripheral) {
+        /* no-op */
+    }
+
+    func didDisconnect(peripheral: CBPeripheral) {
+        /* no-op */
+    }
+
+    func didUpdateDeviceState(_ state: Improv_iOS.DeviceState?) {
+        /* no-op */
+    }
+
+    func didUpdateErrorState(_ state: Improv_iOS.ErrorState?) {
+        /* no-op */
+    }
+
+    func didReceiveResult(_ result: [String]?) {
+        /* no-op */
+    }
+
+    func didReset() {
+        /* no-op */
     }
 }

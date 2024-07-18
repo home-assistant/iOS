@@ -22,6 +22,8 @@ protocol WebViewControllerProtocol: AnyObject {
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
     func updateSettingsButton(state: String)
+    func updateImprovEntryView(show: Bool)
+    func navigateToPath(path: String)
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -34,37 +36,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private let refreshControl = UIRefreshControl()
     private let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
-    let webViewExternalMessageHandler = WebViewExternalMessageHandler()
+    let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
 
     private var initialURL: URL?
 
     /// A view controller presented by a request from the webview
     var overlayAppController: UIViewController?
-
-    let settingsButton: UIButton = {
-        let button = UIButton()
-        button.setImage(
-            MaterialDesignIcons.cogIcon.image(ofSize: CGSize(width: 36, height: 36), color: .white),
-            for: .normal
-        )
-        button.accessibilityLabel = L10n.Settings.NavigationBar.title
-        button.contentEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        button.setBackgroundImage(
-            UIImage(size: CGSize(width: 1, height: 1), color: UIColor(red: 1.00, green: 0.60, blue: 0.00, alpha: 1.0)),
-            for: .normal
-        )
-
-        // size isn't affected by any trait changes, so we can grab the height once and not worry about it changing
-        let desiredSize = button.systemLayoutSizeFitting(.zero)
-        button.layer.cornerRadius = ceil(desiredSize.height / 2.0)
-        button.layer.masksToBounds = true
-
-        button.translatesAutoresizingMaskIntoConstraints = false
-        if Current.appConfiguration == .fastlaneSnapshot {
-            button.alpha = 0
-        }
-        return button
-    }()
 
     enum RestorableStateKey: String {
         case lastURL
@@ -214,12 +191,31 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             webView.scrollView.bounces = true
         }
 
-        settingsButton.addTarget(self, action: #selector(openSettingsView(_:)), for: .touchDown)
+        WebViewAccessoryViews.settingsButton.addTarget(self, action: #selector(openSettingsView(_:)), for: .touchDown)
+        WebViewAccessoryViews.improEntryFlowView.addGestureRecognizer(UITapGestureRecognizer(
+            target: self,
+            action: #selector(openImprovOnboard(_:))
+        ))
 
-        view.addSubview(settingsButton)
+        view.addSubview(WebViewAccessoryViews.improEntryFlowView)
+        view.addSubview(WebViewAccessoryViews.settingsButton)
 
-        view.bottomAnchor.constraint(equalTo: settingsButton.bottomAnchor, constant: 16.0).isActive = true
-        view.rightAnchor.constraint(equalTo: settingsButton.rightAnchor, constant: 16.0).isActive = true
+        NSLayoutConstraint.activate([
+            view.bottomAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.bottomAnchor, constant: 16.0),
+            view.rightAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.rightAnchor, constant: 16.0),
+            view.bottomAnchor.constraint(
+                equalTo: WebViewAccessoryViews.improEntryFlowView.bottomAnchor,
+                constant: Spaces.four
+            ),
+            view.rightAnchor.constraint(
+                equalTo: WebViewAccessoryViews.improEntryFlowView.rightAnchor,
+                constant: Spaces.two
+            ),
+            view.leftAnchor.constraint(
+                equalTo: WebViewAccessoryViews.improEntryFlowView.leftAnchor,
+                constant: -Spaces.two
+            ),
+        ])
 
         NotificationCenter.default.addObserver(
             self,
@@ -781,6 +777,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         showSettingsViewController()
     }
 
+    @objc func openImprovOnboard(_ sender: UIButton) {
+        webViewExternalMessageHandler.presentImprov()
+    }
+
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
     override var preferredStatusBarStyle: UIStatusBarStyle {
         underlyingPreferredStatusBarStyle
@@ -887,6 +887,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         )
         alert.addAction(.init(title: L10n.okLabel, style: .default))
         present(alert, animated: true)
+    }
+
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
 }
 
@@ -1071,7 +1075,19 @@ extension WebViewController: WebViewControllerProtocol {
     func updateSettingsButton(state: String) {
         // Possible values: connected, disconnected, auth-invalid
         UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
-            self.settingsButton.alpha = state == "connected" ? 0.0 : 1.0
+            WebViewAccessoryViews.settingsButton.alpha = state == "connected" ? 0 : 1
         }, completion: nil)
+    }
+
+    func updateImprovEntryView(show: Bool) {
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
+            WebViewAccessoryViews.improEntryFlowView.alpha = show ? 1 : 0
+        }, completion: nil)
+    }
+
+    func navigateToPath(path: String) {
+        if let url = URL(string: server.info.connection.activeURL().absoluteString + path) {
+            webView.load(URLRequest(url: url))
+        }
     }
 }

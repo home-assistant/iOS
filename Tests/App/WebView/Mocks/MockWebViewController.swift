@@ -24,6 +24,12 @@ final class MockWebViewController: WebViewControllerProtocol {
     var updateSettingsButtonCalled = false
     var lastSettingButtonState: String?
 
+    var navigateToPathCalled = false
+    var lastNavigateToPathPath: String?
+
+    var updateImprovEntryViewCalled = false
+    var lastUpdateImprovEntryViewState = false
+
     func presentOverlayController(controller: UIViewController) {
         presentOverlayControllerCalled = true
         overlayAppController = controller
@@ -54,5 +60,15 @@ final class MockWebViewController: WebViewControllerProtocol {
     func updateSettingsButton(state: String) {
         updateSettingsButtonCalled = true
         lastSettingButtonState = state
+    }
+
+    func updateImprovEntryView(show: Bool) {
+        updateImprovEntryViewCalled = true
+        lastUpdateImprovEntryViewState = show
+    }
+
+    func navigateToPath(path: String) {
+        navigateToPathCalled = true
+        lastNavigateToPathPath = path
     }
 }

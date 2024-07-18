@@ -6,4 +6,6 @@ public enum Spaces {
     public static var two: CGFloat = 16
     public static var three: CGFloat = 24
     public static var four: CGFloat = 32
+    public static var five: CGFloat = 40
+    public static var six: CGFloat = 48
 }
