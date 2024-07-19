@@ -23,7 +23,7 @@ struct WidgetBasicContainerView: View {
             }
         }
         // Whenever Apple allow apps to use material backgrounds we should update this
-        .widgetBackground(Color(uiColor: .tertiarySystemGroupedBackground))
+        .widgetBackground(Color.asset(Asset.Colors.primaryBackground))
     }
 
     @ViewBuilder
