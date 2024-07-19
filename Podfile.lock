@@ -60,7 +60,7 @@ PODS:
   - HAKit/PromiseKit (0.4.2):
     - HAKit/Core
     - PromiseKit (~> 6.13)
-  - Improv-iOS (0.0.5)
+  - Improv-iOS (0.0.6)
   - KeychainAccess (4.2.2)
   - lottie-ios (4.1.2)
   - MBProgressHUD (1.2.0)
@@ -132,7 +132,7 @@ DEPENDENCIES:
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
-  - Improv-iOS (~> 0.0.5)
+  - Improv-iOS (~> 0.0.6)
   - KeychainAccess
   - lottie-ios
   - MBProgressHUD (~> 1.2.0)
@@ -263,7 +263,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   HAKit: 92e9bd30717270df15025184b608b7902a773286
-  Improv-iOS: 376060db8a4a64fbd3b719c341c23dd2cd157f2a
+  Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   lottie-ios: b3846a9fa8ca1a1a3bebfa256ebe8b6fd4aaaaad
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -288,6 +288,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 28cba5c20c9a9044750251d3dbbc1288fa3c2f2b
+PODFILE CHECKSUM: b70a7042582f12573aadb93812e4e740e3ed07ba
 
 COCOAPODS: 1.15.2
