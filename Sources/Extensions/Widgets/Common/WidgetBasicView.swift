@@ -61,9 +61,6 @@ struct WidgetBasicView: View {
         }
         .background(model.backgroundColor.opacity(0.3))
         .clipShape(Circle())
-        .overlay(
-            Circle().stroke(model.backgroundColor, lineWidth: 2)
-        )
     }
 
     private var tileView: some View {
@@ -72,7 +69,7 @@ struct WidgetBasicView: View {
             case .regular, .condensed:
                 HStack(alignment: .center, spacing: Spaces.two) {
                     icon
-                    VStack(alignment: .leading, spacing: -2) {
+                    VStack(alignment: .leading, spacing: Spaces.half) {
                         text
                         subtext
                     }
@@ -92,7 +89,11 @@ struct WidgetBasicView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: .systemBackground))
+        .background(Color.asset(Asset.Colors.tileBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color.asset(Asset.Colors.tileBorder), lineWidth: 1)
+        }
     }
 }
