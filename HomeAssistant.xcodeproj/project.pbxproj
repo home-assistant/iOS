@@ -536,6 +536,8 @@
 		420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */; };
 		420E2AE82C47471B004921D8 /* WidgetBasicSizeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */; };
 		420E2AE92C474729004921D8 /* WidgetCircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */; };
+		420F53E32C4E61C1003C8415 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
+		420F53E52C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E42C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift */; };
 		420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */; };
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
@@ -1710,6 +1712,8 @@
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewModel.swift; sourceTree = "<group>"; };
 		420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSizeStyle.swift; sourceTree = "<group>"; };
+		420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationDispatcher.swift; sourceTree = "<group>"; };
+		420F53E42C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocalNotificationDispatcher.swift; sourceTree = "<group>"; };
 		420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayActionsViewModel.swift; sourceTree = "<group>"; };
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
@@ -3592,6 +3596,7 @@
 			isa = PBXGroup;
 			children = (
 				42A47A892C452DB500C9B43D /* MockWebViewController.swift */,
+				420F53E42C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -4255,6 +4260,7 @@
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 				11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */,
+				420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -6390,6 +6396,7 @@
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
+				420F53E32C4E61C1003C8415 /* LocalNotificationDispatcher.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */,
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
@@ -6472,6 +6479,7 @@
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
+				420F53E52C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift in Sources */,
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */,
