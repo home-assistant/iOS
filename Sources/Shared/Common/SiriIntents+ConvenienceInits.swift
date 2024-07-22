@@ -112,10 +112,6 @@ public extension IntentAction {
     }
 }
 
-public extension WidgetActionsIntent {
-    static let widgetKind = "WidgetActions"
-}
-
 public extension IntentPanel {
     convenience init(panel: HAPanel, server: Server) {
         let image: INImage?
@@ -173,10 +169,6 @@ public extension IntentPanel {
     }
 }
 
-public extension WidgetOpenPageIntent {
-    static let widgetKind = "WidgetOpenPage"
-}
-
 public extension IntentServer {
     convenience init(server: Server) {
         self.init(identifier: server.identifier.rawValue, display: server.info.name)
@@ -185,8 +177,4 @@ public extension IntentServer {
     static var all: [IntentServer] {
         Current.servers.all.map { IntentServer(server: $0) }
     }
-}
-
-public extension AssistInAppIntent {
-    static let widgetKind = "WidgetAssist"
 }

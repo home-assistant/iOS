@@ -8,7 +8,7 @@ import WidgetKit
 struct WidgetActions: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
-            kind: WidgetActionsIntent.widgetKind,
+            kind: WidgetsKind.actions.rawValue,
             provider: WidgetActionsAppIntentTimelineProvider()
         ) { timelineEntry in
             WidgetBasicContainerView(
@@ -39,7 +39,7 @@ struct WidgetActions: Widget {
 struct LegacyWidgetActions: Widget {
     var body: some WidgetConfiguration {
         IntentConfiguration(
-            kind: WidgetActionsIntent.widgetKind,
+            kind: WidgetsKind.actions.rawValue,
             intent: WidgetActionsIntent.self,
             provider: WidgetActionsProvider(),
             content: {

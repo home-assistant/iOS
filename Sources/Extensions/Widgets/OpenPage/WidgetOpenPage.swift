@@ -6,7 +6,7 @@ import WidgetKit
 struct WidgetOpenPage: Widget {
     var body: some WidgetConfiguration {
         IntentConfiguration(
-            kind: WidgetOpenPageIntent.widgetKind,
+            kind: WidgetsKind.openPage.rawValue,
             intent: WidgetOpenPageIntent.self,
             provider: WidgetOpenPageProvider(),
             content: { entry in

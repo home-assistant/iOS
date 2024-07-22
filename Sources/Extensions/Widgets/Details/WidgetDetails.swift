@@ -7,7 +7,7 @@ import WidgetKit
 struct WidgetDetails: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
-            kind: AppIntentWidgetKinds.details,
+            kind: WidgetsKind.details.rawValue,
             intent: WidgetDetailsAppIntent.self,
             provider: WidgetDetailsAppIntentTimelineProvider()
         ) { timelineEntry in

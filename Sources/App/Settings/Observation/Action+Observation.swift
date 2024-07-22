@@ -36,7 +36,7 @@ extension Action {
             }
 
             let updateWidgetKitWidgets = Promise<Void> { seal in
-                WidgetCenter.shared.reloadTimelines(ofKind: WidgetActionsIntent.widgetKind)
+                WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.actions.rawValue)
 
                 seal.fulfill(())
             }
