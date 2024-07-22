@@ -539,6 +539,7 @@
 		420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */; };
 		420F53EB2C4E9D55003C8415 /* WidgetsKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */; };
 		420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53ED2C4EA025003C8415 /* WidgetsKindTests.swift */; };
+		420F53F12C4EA314003C8415 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
 		420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */; };
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
@@ -1716,6 +1717,7 @@
 		420F53E42C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocalNotificationDispatcher.swift; sourceTree = "<group>"; };
 		420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsKind.swift; sourceTree = "<group>"; };
 		420F53ED2C4EA025003C8415 /* WidgetsKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsKindTests.swift; sourceTree = "<group>"; };
+		420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReloadWidgetsAppIntent.swift; sourceTree = "<group>"; };
 		420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayActionsViewModel.swift; sourceTree = "<group>"; };
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
@@ -3602,6 +3604,7 @@
 		4296C3722B91F06D0051B63C /* Widget */ = {
 			isa = PBXGroup;
 			children = (
+				420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */,
 				4296C3732B91F0730051B63C /* Actions */,
 				403AE90A2C2E28A200D48147 /* Gauge */,
 				4080D5C02C319AF400099C88 /* Details */,
@@ -6553,6 +6556,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
+				420F53F12C4EA314003C8415 /* ReloadWidgetsAppIntent.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
