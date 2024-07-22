@@ -140,7 +140,10 @@ struct WidgetBasicContainerView: View {
     static func compactSizeBreakpoint(for family: WidgetFamily) -> Int {
         switch family {
         #if !targetEnvironment(macCatalyst) // no ventura SDK yet
-        case .accessoryCircular, .accessoryInline, .accessoryRectangular: return 1
+        case .accessoryCircular,
+             .accessoryInline,
+             .accessoryRectangular:
+            return 1
         #endif
         case .systemSmall: return 1
         case .systemMedium: return 4
@@ -153,9 +156,12 @@ struct WidgetBasicContainerView: View {
     static func maximumCount(family: WidgetFamily) -> Int {
         switch family {
         #if !targetEnvironment(macCatalyst) // no ventura SDK yet
-        case .accessoryCircular, .accessoryInline, .accessoryRectangular: return 1
+        case .accessoryCircular,
+             .accessoryInline,
+             .accessoryRectangular:
+            return 1
         #endif
-        case .systemSmall: return 1
+        case .systemSmall: return 2
         case .systemMedium: return 4
         case .systemLarge: return 10
         case .systemExtraLarge: return 20
