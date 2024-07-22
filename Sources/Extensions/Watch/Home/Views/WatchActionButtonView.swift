@@ -77,9 +77,6 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
                 }
                 .background(Color(uiColor: .init(hex: action.backgroundColor)).opacity(0.3))
                 .clipShape(Circle())
-                .overlay(
-                    Circle().stroke(Color(uiColor: .init(hex: action.backgroundColor)), lineWidth: 2)
-                )
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)

@@ -93,7 +93,7 @@ struct WidgetBasicView: View {
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay {
             RoundedRectangle(cornerRadius: 14)
-                .stroke(Color.asset(Asset.Colors.tileBorder), lineWidth: 1)
+                .stroke(Color.asset(Asset.Colors.tileBorder), lineWidth: sizeStyle == .single ? 0 : 1)
         }
     }
 }
