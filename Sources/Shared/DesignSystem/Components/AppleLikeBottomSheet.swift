@@ -92,7 +92,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         if UIDevice.current.userInterfaceIdiom == .phone {
             .infinity
         } else {
-            600
+            400
         }
     }
 

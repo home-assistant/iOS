@@ -22,7 +22,6 @@ protocol WebViewControllerProtocol: AnyObject {
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
     func updateSettingsButton(state: String)
-    func updateImprovEntryView(show: Bool)
     func navigateToPath(path: String)
 }
 
@@ -192,29 +191,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         WebViewAccessoryViews.settingsButton.addTarget(self, action: #selector(openSettingsView(_:)), for: .touchDown)
-        WebViewAccessoryViews.improEntryFlowView.addGestureRecognizer(UITapGestureRecognizer(
-            target: self,
-            action: #selector(openImprovOnboard(_:))
-        ))
-
-        view.addSubview(WebViewAccessoryViews.improEntryFlowView)
         view.addSubview(WebViewAccessoryViews.settingsButton)
 
         NSLayoutConstraint.activate([
             view.bottomAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.bottomAnchor, constant: 16.0),
             view.rightAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.rightAnchor, constant: 16.0),
-            view.bottomAnchor.constraint(
-                equalTo: WebViewAccessoryViews.improEntryFlowView.bottomAnchor,
-                constant: Spaces.four
-            ),
-            view.rightAnchor.constraint(
-                equalTo: WebViewAccessoryViews.improEntryFlowView.rightAnchor,
-                constant: Spaces.two
-            ),
-            view.leftAnchor.constraint(
-                equalTo: WebViewAccessoryViews.improEntryFlowView.leftAnchor,
-                constant: -Spaces.two
-            ),
         ])
 
         NotificationCenter.default.addObserver(
@@ -1076,12 +1057,6 @@ extension WebViewController: WebViewControllerProtocol {
         // Possible values: connected, disconnected, auth-invalid
         UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
             WebViewAccessoryViews.settingsButton.alpha = state == "connected" ? 0 : 1
-        }, completion: nil)
-    }
-
-    func updateImprovEntryView(show: Bool) {
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
-            WebViewAccessoryViews.improEntryFlowView.alpha = show ? 1 : 0
         }, completion: nil)
     }
 

@@ -8,11 +8,16 @@ import SwiftUI
 final class WebViewExternalMessageHandler {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
+    private let localNotificationDispatcher: LocalNotificationDispatcherProtocol
 
     private var improvController: UIViewController?
 
-    init(improvManager: any ImprovManagerProtocol) {
+    init(
+        improvManager: any ImprovManagerProtocol,
+        localNotificationDispatcher: LocalNotificationDispatcherProtocol
+    ) {
         self.improvManager = improvManager
+        self.localNotificationDispatcher = localNotificationDispatcher
     }
 
     func handleExternalMessage(_ dictionary: [String: Any]) {
@@ -277,7 +282,6 @@ final class WebViewExternalMessageHandler {
     func presentImprov() {
         improvManager.stopScan()
         improvManager.delegate = nil
-        webViewController?.updateImprovEntryView(show: false)
 
         improvController =
             UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(
@@ -309,30 +313,11 @@ extension WebViewExternalMessageHandler: ImprovManagerDelegate {
     }
 
     func didUpdateFoundDevices(devices: [String: CBPeripheral]) {
-        webViewController?.updateImprovEntryView(show: !devices.isEmpty)
-    }
-
-    func didConnect(peripheral: CBPeripheral) {
-        /* no-op */
-    }
-
-    func didDisconnect(peripheral: CBPeripheral) {
-        /* no-op */
-    }
-
-    func didUpdateDeviceState(_ state: Improv_iOS.DeviceState?) {
-        /* no-op */
-    }
-
-    func didUpdateErrorState(_ state: Improv_iOS.ErrorState?) {
-        /* no-op */
-    }
-
-    func didReceiveResult(_ result: [String]?) {
-        /* no-op */
-    }
-
-    func didReset() {
-        /* no-op */
+        if !devices.isEmpty {
+            localNotificationDispatcher.send(.init(
+                id: .improvSetup,
+                title: L10n.Improv.Toast.title
+            ))
+        }
     }
 }

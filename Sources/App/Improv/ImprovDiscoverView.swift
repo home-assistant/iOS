@@ -136,22 +136,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         }
     }
 
-    private var maxWidth: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            .infinity
-        } else {
-            600
-        }
-    }
-
-    private var perfectCornerRadius: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            UIScreen.main.displayCornerRadius - Spaces.one
-        } else {
-            50
-        }
-    }
-
     @ViewBuilder
     private var devicesList: some View {
         List {
