@@ -5,8 +5,14 @@ import WidgetKit
 
 @available(iOS 17, *)
 struct ReloadWidgetsAppIntent: AppIntent {
-    static var title: LocalizedStringResource = .init(stringLiteral: "widgets.reload_widgets.app_intent.title")
-    static var description = IntentDescription(.init(stringLiteral: "widgets.reload_widgets.app_intent.description"))
+    static var title: LocalizedStringResource = .init(
+        "widgets.reload_widgets.app_intent.title",
+        defaultValue: "Reload widgets"
+    )
+    static var description = IntentDescription(.init(
+        "widgets.reload_widgets.app_intent.description",
+        defaultValue: "Reload all widgets timelines"
+    ))
     static var openAppWhenRun: Bool = false
 
     func perform() async throws -> some IntentResult {
