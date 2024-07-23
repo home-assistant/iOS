@@ -697,10 +697,8 @@
 		5FFBC80F835393915C4748CF /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A370326321B07E5ACE0BCB65 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
 		81A0C1BBDEFF4F8C5FC314BE /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F356D0219C7F8A24234511B /* Pods_iOS_Extensions_NotificationContent.framework */; };
-		83206D4876AF7F77D76DCCB7 /* Pods-iOS-Extensions-Today-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = D72C761F65606EF882E2A7B1 /* Pods-iOS-Extensions-Today-metadata.plist */; };
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
-		99FADB7D51EDA255CD841D90 /* Pods_iOS_Extensions_Today.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A6E8DF7DED57BAD4EF47D11 /* Pods_iOS_Extensions_Today.framework */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
 		B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022212226DAC9D00E8DBFE /* ScaledFont.swift */; };
 		B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */; };
@@ -877,9 +875,6 @@
 		B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
-		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
-		B66F9F2E216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
 		B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
 		B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */; };
@@ -949,7 +944,6 @@
 		B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */; };
 		B6B74CBD228399AB00D58A68 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B6B74CBE228399AC00D58A68 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
-		B6BDBBC72177FFB10044E0B9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6C091232151F90300A326DC /* LocationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911E2151F90300A326DC /* LocationHistory.swift */; };
 		B6C09153215206BB00A326DC /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6CC5D862159D10D00833E5D /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D842159D10D00833E5D /* Interface.storyboard */; };
@@ -1022,13 +1016,6 @@
 
 /* Begin PBXContainerItemProxy section */
 		1112EA8E271B77510038BBFC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D03D891620E0A85200D4F28D;
-			remoteInfo = "Shared-iOS";
-		};
-		1112EA90271B77A50038BBFC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
 			proxyType = 1;
@@ -1154,13 +1141,6 @@
 			remoteGlobalIDString = B66C58A4215086F0004AB261;
 			remoteInfo = Intents;
 		};
-		B66F9F2C216B1E61000CAA0F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B66F9F21216B1E61000CAA0F;
-			remoteInfo = TodayWidget;
-		};
 		B67CE82922200D420034C1D0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -1273,7 +1253,6 @@
 				B627CB151D83C87B0057173E /* HomeAssistant-Extensions-NotificationContent.appex in Embed App Extensions */,
 				1171507624DFCDEE0065E874 /* HomeAssistant-Extensions-Widgets.appex in Embed App Extensions */,
 				11B6B5822948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex in Embed App Extensions */,
-				B66F9F2E216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex in Embed App Extensions */,
 				B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -2198,10 +2177,7 @@
 		B66C58B22150892A004AB261 /* FireEventIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireEventIntentHandler.swift; sourceTree = "<group>"; };
 		B66C58B42150898A004AB261 /* SendLocationIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendLocationIntentHandler.swift; sourceTree = "<group>"; };
 		B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHelpers.swift; sourceTree = "<group>"; };
-		B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Today.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
-		B66F9F26216B1E61000CAA0F /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
-		B66F9F2B216B1E61000CAA0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B672333D225DB68B0031D629 /* WebSocketMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketMessage.swift; sourceTree = "<group>"; };
 		B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+JSON.swift"; sourceTree = "<group>"; };
 		B6723343225DBACF0031D629 /* AuthRequestMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRequestMessage.swift; sourceTree = "<group>"; };
@@ -2458,16 +2434,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B66F9F1F216B1E61000CAA0F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B6BDBBC72177FFB10044E0B9 /* Shared.framework in Frameworks */,
-				B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */,
-				99FADB7D51EDA255CD841D90 /* Pods_iOS_Extensions_Today.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B67CE82122200D420034C1D0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2564,7 +2530,6 @@
 				B6AAD7A21D827DD40090B220 /* NotificationService */,
 				11B92968266F15A800786588 /* PushProvider */,
 				1155DD07250F4100003405C0 /* Share */,
-				B66F9F25216B1E61000CAA0F /* Today */,
 				B6CC5D922159D10E00833E5D /* Watch */,
 				1171506E24DFCDE60065E874 /* Widgets */,
 			);
@@ -2969,14 +2934,6 @@
 			isa = PBXGroup;
 			children = (
 				B6AAD7A51D827DD40090B220 /* Info.plist */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		11AD2E7F2528FF9A00FBC437 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B66F9F2B216B1E61000CAA0F /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -4131,7 +4088,6 @@
 				B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */,
 				B6CC5D822159D10D00833E5D /* HomeAssistant-WatchApp.app */,
 				B6CC5D8E2159D10E00833E5D /* HomeAssistant-WatchExtension-Watch.appex */,
-				B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */,
 				B67CE82422200D420034C1D0 /* Shared.framework */,
 				1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */,
 				1155DD06250F4100003405C0 /* HomeAssistant-Extensions-Share.appex */,
@@ -4238,15 +4194,6 @@
 				B66C58A7215086F0004AB261 /* IntentHandler.swift */,
 			);
 			path = Intents;
-			sourceTree = "<group>";
-		};
-		B66F9F25216B1E61000CAA0F /* Today */ = {
-			isa = PBXGroup;
-			children = (
-				B66F9F26216B1E61000CAA0F /* TodayViewController.swift */,
-				11AD2E7F2528FF9A00FBC437 /* Resources */,
-			);
-			path = Today;
 			sourceTree = "<group>";
 		};
 		B672333A225DB66A0031D629 /* WebSocket */ = {
@@ -4880,7 +4827,6 @@
 				B627CB141D83C87B0057173E /* PBXTargetDependency */,
 				B6AAD7A71D827DD40090B220 /* PBXTargetDependency */,
 				1155DD0F250F4101003405C0 /* PBXTargetDependency */,
-				B66F9F2D216B1E61000CAA0F /* PBXTargetDependency */,
 				1171507524DFCDEE0065E874 /* PBXTargetDependency */,
 				B6CC5D9D2159D10F00833E5D /* PBXTargetDependency */,
 				11DE9F9825B6173D0081C0ED /* PBXTargetDependency */,
@@ -4947,25 +4893,6 @@
 			name = "Extensions-Intents";
 			productName = Intents;
 			productReference = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		B66F9F21216B1E61000CAA0F /* Extensions-Today */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "Extensions-Today" */;
-			buildPhases = (
-				B8028AFF323FD2C0483872EB /* [CP] Check Pods Manifest.lock */,
-				B66F9F1E216B1E61000CAA0F /* Sources */,
-				B66F9F1F216B1E61000CAA0F /* Frameworks */,
-				B66F9F20216B1E61000CAA0F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1112EA91271B77A50038BBFC /* PBXTargetDependency */,
-			);
-			name = "Extensions-Today";
-			productName = TodayWidget;
-			productReference = B66F9F22216B1E61000CAA0F /* HomeAssistant-Extensions-Today.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B67CE82322200D420034C1D0 /* Shared-watchOS */ = {
@@ -5209,23 +5136,6 @@
 							};
 						};
 					};
-					B66F9F21216B1E61000CAA0F = {
-						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = QMQYCKL255;
-						LastSwiftMigration = 1020;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.AccessWiFi = {
-								enabled = 1;
-							};
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-							com.apple.Keychain = {
-								enabled = 1;
-							};
-						};
-					};
 					B67CE82322200D420034C1D0 = {
 						CreatedOnToolsVersion = 10.1;
 						DevelopmentTeam = QMQYCKL255;
@@ -5353,7 +5263,6 @@
 				B627CB061D83C87B0057173E /* Extensions-NotificationContent */,
 				11B92908266F145000786588 /* Extensions-PushProvider */,
 				1155DD05250F4100003405C0 /* Extensions-Share */,
-				B66F9F21216B1E61000CAA0F /* Extensions-Today */,
 				1171506824DFCDE60065E874 /* Extensions-Widgets */,
 				B6CC5D8D2159D10E00833E5D /* WatchExtension-Watch */,
 			);
@@ -5595,14 +5504,6 @@
 				B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */,
 				CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */,
 				427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B66F9F20216B1E61000CAA0F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				83206D4876AF7F77D76DCCB7 /* Pods-iOS-Extensions-Today-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6087,28 +5988,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B8028AFF323FD2C0483872EB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-iOS-Extensions-Today-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		E8A710038DD9BF8F77365B02 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -6558,14 +6437,6 @@
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
 				420F53F12C4EA314003C8415 /* ReloadWidgetsAppIntent.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B66F9F1E216B1E61000CAA0F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7069,11 +6940,6 @@
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = 1112EA8E271B77510038BBFC /* PBXContainerItemProxy */;
 		};
-		1112EA91271B77A50038BBFC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
-			targetProxy = 1112EA90271B77A50038BBFC /* PBXContainerItemProxy */;
-		};
 		111711F925B29B1E003C149E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 111711E425B29ACB003C149E /* Codegen */;
@@ -7162,12 +7028,6 @@
 			isa = PBXTargetDependency;
 			target = B66C58A4215086F0004AB261 /* Extensions-Intents */;
 			targetProxy = B66C58AA215086F0004AB261 /* PBXContainerItemProxy */;
-		};
-		B66F9F2D216B1E61000CAA0F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			platformFilter = ios;
-			target = B66F9F21216B1E61000CAA0F /* Extensions-Today */;
-			targetProxy = B66F9F2C216B1E61000CAA0F /* PBXContainerItemProxy */;
 		};
 		B67CE82A22200D420034C1D0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -8229,63 +8089,6 @@
 			};
 			name = Release;
 		};
-		B66F9F2F216B1E61000CAA0F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1A736E7381A523E7A888D24E /* Pods-iOS-Extensions-Today.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PROVISIONING_SUFFIX = .TodayWidget;
-				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		B66F9F30216B1E61000CAA0F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 05E6CF2BD91E8443547F3026 /* Pods-iOS-Extensions-Today.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PROVISIONING_SUFFIX = .TodayWidget;
-				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		B66F9F31216B1E61000CAA0F /* Beta */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A0CE1C12B4ACF0A6876B6F7F /* Pods-iOS-Extensions-Today.beta.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Configuration/Entitlements/Extension-ios.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Configuration/Entitlements/Extension-catalyst.entitlements";
-				INFOPLIST_FILE = Sources/Extensions/Today/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PROVISIONING_SUFFIX = .TodayWidget;
-				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Beta;
-		};
 		B67CE82E22200D420034C1D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEE6D44D86AC3F2F3E43950D /* Pods-watchOS-Shared-watchOS.debug.xcconfig */;
@@ -8680,16 +8483,6 @@
 				B66C58AE215086F0004AB261 /* Debug */,
 				B66C58AF215086F0004AB261 /* Release */,
 				B637243721697585006B102A /* Beta */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "Extensions-Today" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B66F9F2F216B1E61000CAA0F /* Debug */,
-				B66F9F30216B1E61000CAA0F /* Release */,
-				B66F9F31216B1E61000CAA0F /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
