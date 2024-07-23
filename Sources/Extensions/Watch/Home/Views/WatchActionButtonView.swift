@@ -70,12 +70,12 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
                 VStack {
                     Image(uiImage: MaterialDesignIcons(named: action.iconName).image(
                         ofSize: .init(width: 24, height: 24),
-                        color: .init(hex: action.backgroundColor)
+                        color: .init(hex: action.iconColor)
                     ))
-                    .foregroundColor(Color(uiColor: .init(hex: action.backgroundColor)))
+                    .foregroundColor(Color(uiColor: .init(hex: action.iconColor)))
                     .padding(Spaces.one)
                 }
-                .background(Color(uiColor: .init(hex: action.backgroundColor)).opacity(0.3))
+                .background(Color(uiColor: .init(hex: action.iconColor)).opacity(0.3))
                 .clipShape(Circle())
             case .loading:
                 ProgressView()

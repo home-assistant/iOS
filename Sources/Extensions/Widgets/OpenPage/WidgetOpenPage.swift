@@ -24,10 +24,7 @@ struct WidgetOpenPage: Widget {
                                 subtitle: showSubtitle ? Current.servers.server(for: panel)?.info.name : nil,
                                 interactionType: .widgetURL(panel.widgetURL),
                                 icon: panel.materialDesignIcon,
-                                showsChevron: true,
-                                textColor: .white,
-                                iconColor: .white,
-                                backgroundColor: Color(Constants.darkerTintColor)
+                                iconColor: Color(Constants.darkerTintColor)
                             )
                         }
                     }()

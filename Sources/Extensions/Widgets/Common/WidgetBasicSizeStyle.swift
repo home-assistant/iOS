@@ -9,35 +9,14 @@ enum WidgetBasicSizeStyle {
     case regular
 
     var textFont: Font {
-        switch self {
-        case .single, .expanded:
-            return .subheadline
-        case .condensed, .regular:
-            return .footnote
-        }
+        .system(size: 12)
     }
 
     var subtextFont: Font {
-        switch self {
-        case .single, .expanded:
-            return .footnote
-        case .regular, .condensed:
-            return .system(size: 12)
-        }
+        .system(size: 12)
     }
 
     var iconFont: Font {
-        let size: CGFloat
-
-        switch self {
-        case .single, .expanded:
-            size = 32
-        case .regular:
-            size = 20
-        case .condensed:
-            size = 14
-        }
-
-        return .custom(MaterialDesignIcons.familyName, size: size)
+        .custom(MaterialDesignIcons.familyName, size: 20)
     }
 }

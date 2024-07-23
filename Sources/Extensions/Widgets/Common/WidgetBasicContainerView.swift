@@ -16,29 +16,14 @@ struct WidgetBasicContainerView: View {
 
     var body: some View {
         Group {
-            switch contents.count {
-            case 0: emptyViewGenerator()
-            case 1: singleView(for: contents.first!)
-            default: multiView(for: contents)
+            if contents.isEmpty {
+                emptyViewGenerator()
+            } else {
+                content(for: contents)
             }
         }
         // Whenever Apple allow apps to use material backgrounds we should update this
         .widgetBackground(Color.asset(Asset.Colors.primaryBackground))
-    }
-
-    @ViewBuilder
-    private func singleView(for model: WidgetBasicViewModel) -> some View {
-        if case let .widgetURL(url) = model.interactionType {
-            WidgetBasicView(model: model, sizeStyle: .single)
-                .widgetURL(url.withWidgetAuthenticity())
-        } else {
-            if #available(iOS 17.0, *), let intent = intent(for: model) {
-                Button(intent: intent) {
-                    WidgetBasicView(model: model, sizeStyle: .single)
-                }
-                .buttonStyle(.plain)
-            }
-        }
     }
 
     @available(iOS 17.0, *)
@@ -57,7 +42,7 @@ struct WidgetBasicContainerView: View {
     }
 
     @ViewBuilder
-    func multiView(for models: [WidgetBasicViewModel]) -> some View {
+    func content(for models: [WidgetBasicViewModel]) -> some View {
         let actionCount = models.count
         let columnCount = Self.columnCount(family: family, modelCount: actionCount)
         let rows = Array(columnify(count: columnCount, models: models))
@@ -97,7 +82,7 @@ struct WidgetBasicContainerView: View {
                 }
             }
         }
-        .padding(Spaces.one)
+        .padding(models.count == 1 ? 0 : Spaces.one)
     }
 
     private func columnify(count: Int, models: [WidgetBasicViewModel]) -> AnyIterator<[WidgetBasicViewModel]> {
@@ -136,7 +121,7 @@ struct WidgetBasicContainerView: View {
         }
     }
 
-    /// more than this number: show compact (icon left, text right) version
+    /// More than this number: show compact (icon left, text right) version
     static func compactSizeBreakpoint(for family: WidgetFamily) -> Int {
         switch family {
         #if !targetEnvironment(macCatalyst) // no ventura SDK yet
@@ -145,7 +130,7 @@ struct WidgetBasicContainerView: View {
              .accessoryRectangular:
             return 1
         #endif
-        case .systemSmall: return 1
+        case .systemSmall: return 2
         case .systemMedium: return 4
         case .systemLarge: return 10
         case .systemExtraLarge: return 20

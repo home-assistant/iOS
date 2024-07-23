@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>23D60</string>
+	<string>23F79</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>15E204a</string>
+	<string>15F31d</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>15.3</string>
+	<string>15.4</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -1419,25 +1419,25 @@
 					<array>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>1</integer>
+							<integer>2</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Small</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>8</integer>
+							<integer>4</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Medium</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>16</integer>
+							<integer>10</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Large</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>32</integer>
+							<integer>20</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>ExtraLarge</string>
 						</dict>
@@ -1730,25 +1730,25 @@
 					<array>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>1</integer>
+							<integer>2</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Small</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>8</integer>
+							<integer>4</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Medium</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>16</integer>
+							<integer>10</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>Large</string>
 						</dict>
 						<dict>
 							<key>INIntentParameterArraySizeSize</key>
-							<integer>32</integer>
+							<integer>20</integer>
 							<key>INIntentParameterArraySizeSizeClass</key>
 							<string>ExtraLarge</string>
 						</dict>

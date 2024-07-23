@@ -36,7 +36,6 @@ struct WidgetBasicView: View {
             .multilineTextAlignment(.leading)
             .foregroundStyle(Color(uiColor: .label))
             .lineLimit(2)
-            .minimumScaleFactor(0.5)
     }
 
     @ViewBuilder
@@ -54,12 +53,11 @@ struct WidgetBasicView: View {
         VStack {
             Text(verbatim: model.icon.unicode)
                 .font(sizeStyle.iconFont)
-                .minimumScaleFactor(0.2)
-                .foregroundColor(model.backgroundColor)
+                .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
-                .padding(Spaces.one)
         }
-        .background(model.backgroundColor.opacity(0.3))
+        .frame(width: 38, height: 38)
+        .background(model.iconColor.opacity(0.3))
         .clipShape(Circle())
     }
 
@@ -67,7 +65,7 @@ struct WidgetBasicView: View {
         VStack(alignment: .leading) {
             switch sizeStyle {
             case .regular, .condensed:
-                HStack(alignment: .center, spacing: Spaces.two) {
+                HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
                     icon
                     VStack(alignment: .leading, spacing: Spaces.half) {
                         text
@@ -75,7 +73,7 @@ struct WidgetBasicView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding([.leading, .trailing], Spaces.two)
+                .padding([.leading, .trailing], Spaces.one)
             case .single, .expanded:
                 VStack(alignment: .leading, spacing: 0) {
                     icon

@@ -9,20 +9,14 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         subtitle: String?,
         interactionType: InteractionType,
         icon: MaterialDesignIcons,
-        showsChevron: Bool = false,
-        textColor: Color = Color.black,
-        iconColor: Color = Color.black,
-        backgroundColor: Color = Color.white
+        iconColor: Color = Color.black
     ) {
         self.id = id
         self.title = title
         self.subtitle = subtitle
         self.interactionType = interactionType
-        self.textColor = textColor
         self.icon = icon
-        self.showsChevron = showsChevron
         self.iconColor = iconColor
-        self.backgroundColor = backgroundColor
     }
 
     var id: String
@@ -32,10 +26,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var interactionType: InteractionType
 
     var icon: MaterialDesignIcons
-    var showsChevron: Bool
 
-    var backgroundColor: Color
-    var textColor: Color
     var iconColor: Color
 
     enum InteractionType: Hashable, Encodable {
