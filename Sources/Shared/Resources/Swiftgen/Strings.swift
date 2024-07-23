@@ -3001,6 +3001,14 @@ public enum L10n {
       /// Open Page
       public static var title: String { return L10n.tr("Localizable", "widgets.open_page.title") }
     }
+    public enum ReloadWidgets {
+      public enum AppIntent {
+        /// Reload all widgets timelines.
+        public static var description: String { return L10n.tr("Localizable", "widgets.reload_widgets.app_intent.description") }
+        /// Reload widgets
+        public static var title: String { return L10n.tr("Localizable", "widgets.reload_widgets.app_intent.title") }
+      }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

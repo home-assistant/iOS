@@ -6,7 +6,7 @@ import WidgetKit
 struct WidgetAssist: Widget {
     var body: some WidgetConfiguration {
         IntentConfiguration(
-            kind: AssistInAppIntent.widgetKind,
+            kind: WidgetsKind.assist.rawValue,
             intent: AssistInAppIntent.self,
             provider: WidgetAssistProvider(),
             content: { entry in

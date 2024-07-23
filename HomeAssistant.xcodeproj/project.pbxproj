@@ -511,8 +511,6 @@
 		403AE9272C2F333A00D48147 /* WidgetGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */; };
 		403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
 		403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */; };
-		404C79762C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */; };
-		404C79772C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */; };
 		404C797F2C3491390010EB81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		404C79802C3491390010EB81 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */; };
@@ -538,6 +536,10 @@
 		420E2AE92C474729004921D8 /* WidgetCircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */; };
 		420F53E32C4E61C1003C8415 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
 		420F53E52C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E42C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift */; };
+		420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */; };
+		420F53EB2C4E9D55003C8415 /* WidgetsKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */; };
+		420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53ED2C4EA025003C8415 /* WidgetsKindTests.swift */; };
+		420F53F12C4EA314003C8415 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
 		420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */; };
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
@@ -1700,7 +1702,6 @@
 		403AE9112C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGaugeAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		403AE9262C2F333A00D48147 /* WidgetGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGaugeView.swift; sourceTree = "<group>"; };
 		403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentServerAppEntitiy.swift; sourceTree = "<group>"; };
-		404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentWidgetKinds.swift; sourceTree = "<group>"; };
 		4080D5BC2C319AA000099C88 /* WidgetDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetails.swift; sourceTree = "<group>"; };
 		4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsView.swift; sourceTree = "<group>"; };
 		4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetDetailsAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Details/WidgetDetailsAppIntent.swift; sourceTree = SOURCE_ROOT; };
@@ -1714,6 +1715,9 @@
 		420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSizeStyle.swift; sourceTree = "<group>"; };
 		420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationDispatcher.swift; sourceTree = "<group>"; };
 		420F53E42C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocalNotificationDispatcher.swift; sourceTree = "<group>"; };
+		420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsKind.swift; sourceTree = "<group>"; };
+		420F53ED2C4EA025003C8415 /* WidgetsKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsKindTests.swift; sourceTree = "<group>"; };
+		420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReloadWidgetsAppIntent.swift; sourceTree = "<group>"; };
 		420FE8482B556A0200878E06 /* CarPlayActionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayActionsViewModel.swift; sourceTree = "<group>"; };
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
@@ -3369,6 +3373,31 @@
 			path = Details;
 			sourceTree = "<group>";
 		};
+		420F53E62C4E9AA9003C8415 /* Action */ = {
+			isa = PBXGroup;
+			children = (
+				4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */,
+				4296C36C2B90DB630051B63C /* PerformAction.swift */,
+			);
+			path = Action;
+			sourceTree = "<group>";
+		};
+		420F53E92C4E9D43003C8415 /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+				420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */,
+			);
+			path = Widget;
+			sourceTree = "<group>";
+		};
+		420F53EC2C4E9FF1003C8415 /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				420F53ED2C4EA025003C8415 /* WidgetsKindTests.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
 		420FE8472B5569ED00878E06 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -3565,10 +3594,9 @@
 		4296C36A2B90DB630051B63C /* AppIntents */ = {
 			isa = PBXGroup;
 			children = (
+				420F53E62C4E9AA9003C8415 /* Action */,
 				4296C3722B91F06D0051B63C /* Widget */,
-				4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */,
 				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
-				4296C36C2B90DB630051B63C /* PerformAction.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -3576,6 +3604,7 @@
 		4296C3722B91F06D0051B63C /* Widget */ = {
 			isa = PBXGroup;
 			children = (
+				420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */,
 				4296C3732B91F0730051B63C /* Actions */,
 				403AE90A2C2E28A200D48147 /* Gauge */,
 				4080D5C02C319AF400099C88 /* Details */,
@@ -4148,6 +4177,7 @@
 				11EFD3C1272642FC000AF78B /* Additions */,
 				116D3A3B2724D81C00EF5D21 /* Auth */,
 				11AD2EA7252900AA00FBC437 /* Resources */,
+				420F53EC2C4E9FF1003C8415 /* Widgets */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
 				117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */,
 				119C786625CF845800D41734 /* LocalizedStrings.test.swift */,
@@ -4430,6 +4460,7 @@
 				D0C884782122A64500CCB501 /* Settings */,
 				42CA28B22B101DA70093B31A /* Utilities */,
 				426266432C11B0070081A818 /* Watch */,
+				420F53E92C4E9D43003C8415 /* Widget */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
 			);
 			path = Shared;
@@ -4632,7 +4663,6 @@
 		D0FF79D020D87CF60034574D /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				404C79752C3482790010EB81 /* AppIntentWidgetKinds.swift */,
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
 				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
@@ -6503,6 +6533,7 @@
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
+				420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */,
 				11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */,
 				11ED439C2726600000B5FD45 /* OnboardingAuthStepSensors.test.swift in Sources */,
 				42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */,
@@ -6525,6 +6556,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
+				420F53F12C4EA314003C8415 /* ReloadWidgetsAppIntent.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6596,6 +6628,7 @@
 				119A7E0E2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
 				11B63B0B2979A07000D908ED /* AssistIntentHandler.swift in Sources */,
+				420F53EB2C4E9D55003C8415 /* WidgetsKind.swift in Sources */,
 				1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */,
 				1133F59D25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
@@ -6626,7 +6659,6 @@
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */,
-				404C79762C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */,
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
 				1128FF3D297F49D900BAAFD9 /* Locale+IntentLanguage.swift in Sources */,
@@ -6821,6 +6853,7 @@
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
+				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
 				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
@@ -6932,7 +6965,6 @@
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,
-				404C79772C3482860010EB81 /* AppIntentWidgetKinds.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
 				426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
 				42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */,
