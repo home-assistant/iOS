@@ -48,6 +48,10 @@ struct WidgetBasicContainerView: View {
         let rows = Array(columnify(count: columnCount, models: models))
 
         let sizeStyle: WidgetBasicSizeStyle = {
+            if models.count == 1 {
+                return .single
+            }
+            
             let compactBp = Self.compactSizeBreakpoint(for: family)
 
             let condensed = compactBp < actionCount
