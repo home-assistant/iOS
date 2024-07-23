@@ -29,6 +29,14 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
                 showAssist = true
             }
+            .onChange(of: scenePhase) { newScenePhase in
+                switch newScenePhase {
+                case .active:
+                    viewModel.fetchNetworkInfo(completion: nil)
+                default:
+                    break
+                }
+            }
     }
 
     @ViewBuilder
