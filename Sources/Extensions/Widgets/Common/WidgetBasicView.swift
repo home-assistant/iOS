@@ -56,7 +56,7 @@ struct WidgetBasicView: View {
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
         }
-        .frame(width: 38, height: 38)
+        .frame(width: sizeStyle.iconCircleSize.width, height: sizeStyle.iconCircleSize.height)
         .background(model.iconColor.opacity(0.3))
         .clipShape(Circle())
     }
@@ -73,7 +73,7 @@ struct WidgetBasicView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding([.leading, .trailing], Spaces.one)
+                .padding([.leading, .trailing], Spaces.oneAndHalf)
             case .single, .expanded:
                 VStack(alignment: .leading, spacing: 0) {
                     icon
