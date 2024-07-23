@@ -51,7 +51,7 @@ struct WidgetBasicContainerView: View {
             if models.count == 1 {
                 return .single
             }
-            
+
             let compactBp = Self.compactSizeBreakpoint(for: family)
 
             let condensed = compactBp < actionCount
