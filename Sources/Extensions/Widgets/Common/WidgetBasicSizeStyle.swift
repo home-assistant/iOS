@@ -30,8 +30,10 @@ enum WidgetBasicSizeStyle {
         let size: CGFloat
 
         switch self {
-        case .single, .expanded:
+        case .single:
             size = 32
+        case .expanded:
+            size = 28
         case .regular:
             size = 20
         case .condensed:
@@ -39,5 +41,17 @@ enum WidgetBasicSizeStyle {
         }
 
         return .custom(MaterialDesignIcons.familyName, size: size)
+    }
+
+    /// Icon circle background size
+    var iconCircleSize: CGSize {
+        switch self {
+        case .single:
+            return .init(width: 48, height: 48)
+        case .expanded:
+            return .init(width: 42, height: 42)
+        case .regular, .condensed:
+            return .init(width: 38, height: 38)
+        }
     }
 }

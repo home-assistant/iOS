@@ -22,9 +22,7 @@ struct WidgetActions: Widget {
                         subtitle: nil,
                         interactionType: .appIntent(.action(id: action.ID, name: action.Name)),
                         icon: MaterialDesignIcons(serversideValueNamed: action.IconName),
-                        textColor: .init(hex: action.TextColor),
-                        iconColor: .init(hex: action.IconColor),
-                        backgroundColor: .init(hex: action.BackgroundColor)
+                        iconColor: .init(hex: action.IconColor)
                     )
                 }
             )
@@ -54,9 +52,7 @@ struct LegacyWidgetActions: Widget {
                             subtitle: nil,
                             interactionType: .widgetURL(action.widgetLinkURL),
                             icon: MaterialDesignIcons(serversideValueNamed: action.IconName),
-                            textColor: .init(hex: action.TextColor),
-                            iconColor: .init(hex: action.IconColor),
-                            backgroundColor: .init(hex: action.BackgroundColor)
+                            iconColor: .init(hex: action.IconColor)
                         )
                     }
                 )

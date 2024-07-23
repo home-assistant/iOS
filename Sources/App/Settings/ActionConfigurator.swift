@@ -147,19 +147,18 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                 }
             }
         }
-
-        if action.canConfigure(\Action.BackgroundColor) {
-            visuals <<< InlineColorPickerRow("background_color") {
-                $0.title = L10n.ActionsConfigurator.Rows.BackgroundColor.title
+        if action.canConfigure(\Action.IconColor) {
+            visuals <<< InlineColorPickerRow("icon_color") {
+                $0.title = L10n.ActionsConfigurator.Rows.IconColor.title
                 $0.isCircular = true
                 $0.showsPaletteNames = true
-                $0.value = UIColor(hex: self.action.BackgroundColor)
+                $0.value = UIColor(hex: self.action.IconColor)
+            }.onChange { picker in
+                Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
 
-            }.onChange { row in
-                if let value = row.value {
-                    self.action.BackgroundColor = value.hexString()
-                    self.updatePreviews()
-                }
+                self.action.IconColor = picker.value!.hexString()
+
+                self.updatePreviews()
             }
         }
 
@@ -350,7 +349,7 @@ struct WidgetPreviewView: View {
                     subtitle: nil,
                     interactionType: .widgetURL(URL(string: "https://google.com")!),
                     icon: MaterialDesignIcons(named: action.IconName),
-                    backgroundColor: Color(uiColor: .init(hex: action.BackgroundColor))
+                    iconColor: Color(uiColor: .init(hex: action.IconColor))
                 ),
                 sizeStyle: .condensed
             )
