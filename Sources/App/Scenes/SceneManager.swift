@@ -120,12 +120,19 @@ final class SceneManager {
     ) -> Guarantee<DelegateType> {
         if let active = existingScenes(for: query.activity).first,
            let delegate = active.delegate as? DelegateType {
-            UIApplication.shared.requestSceneSessionActivation(
-                active.session,
-                userActivity: nil,
-                options: nil,
-                errorHandler: nil
-            )
+            let options = UIScene.ActivationRequestOptions()
+            options.requestingScene = active
+
+            if #available(iOS 17.0, *) {
+                UIApplication.shared.activateSceneSession(for: .init(session: active.session, options: options))
+            } else {
+                UIApplication.shared.requestSceneSessionActivation(
+                    active.session,
+                    userActivity: nil,
+                    options: options,
+                    errorHandler: nil
+                )
+            }
             return .value(delegate)
         }
 
