@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit
 
 struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtocol {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel: ViewModel
     @State private var showAssist = false
 
@@ -28,6 +29,14 @@ struct WatchHomeView<ViewModel>: View where ViewModel: WatchHomeViewModelProtoco
             })
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
                 showAssist = true
+            }
+            .onChange(of: scenePhase) { newScenePhase in
+                switch newScenePhase {
+                case .active:
+                    viewModel.fetchNetworkInfo(completion: nil)
+                default:
+                    break
+                }
             }
     }
 
