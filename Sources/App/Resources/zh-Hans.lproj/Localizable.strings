@@ -898,4 +898,6 @@
 "widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";
+"widgets.reload_widgets.app_intent.description" = "重新加载所有小组件时间线。";
+"widgets.reload_widgets.app_intent.title" = "重新加载小组件";
 "yes_label" = "是";

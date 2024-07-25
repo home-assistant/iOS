@@ -898,4 +898,6 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "widgets.open_page.description" = "Åpne en frontend -side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgjengelig";
 "widgets.open_page.title" = "Åpne side";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Ja";

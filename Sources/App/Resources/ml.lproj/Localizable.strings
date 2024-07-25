@@ -898,4 +898,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.open_page.description" = "ഹോം അസിസ്റ്റന്റിൽ ഒരു മുൻ പേജ് തുറക്കുക.";
 "widgets.open_page.not_configured" = "പേജുകളൊന്നും ലഭ്യമല്ല";
 "widgets.open_page.title" = "പേജ് തുറക്കുക";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Yes";

@@ -898,4 +898,6 @@
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
 "widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
 "widgets.open_page.title" = "Άνοιγμα σελίδας";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Ναι";

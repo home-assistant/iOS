@@ -898,4 +898,6 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.open_page.description" = "Home Assistant에서 프론트엔드 페이지를 엽니다.";
 "widgets.open_page.not_configured" = "해당 페이지가 없습니다";
 "widgets.open_page.title" = "페이지 열기";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "네";

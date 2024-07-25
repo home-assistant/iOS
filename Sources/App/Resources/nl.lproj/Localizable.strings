@@ -898,4 +898,6 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.open_page.description" = "Open een frontend-pagina in Home Assistant";
 "widgets.open_page.not_configured" = "Geen pagina's beschikbaar";
 "widgets.open_page.title" = "Open pagina";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Ja";
