@@ -1,51 +1,75 @@
 import Intents
 import PromiseKit
 
-class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageIntentHandling {
-    private func panels() -> [IntentPanel] {
+public class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageIntentHandling {
+    public static func cacheKey(serverIdentifier: String) -> String {
+        "last-invalidated-widget-panels-\(serverIdentifier)"
+    }
+
+    public static func panels(completion: @escaping ([IntentPanel]) -> Void) {
         var intentPanels: [IntentPanel] = []
+        var finishedPipesCount = 0
         Current.servers.all.forEach { server in
-            if let panels = (Current.diskCache.value(for: "last-invalidated-widget-panels-\(server.identifier)") as Promise<HAPanels>).value {
-                intentPanels.append(contentsOf: panels.allPanels.map { haPanel in
-                    IntentPanel(panel: haPanel, server: server)
-                })
+            (Current.diskCache.value(for: OpenPageIntentHandler.cacheKey(serverIdentifier: server.identifier.rawValue)) as Promise<HAPanels>).pipe { result in
+                switch result {
+                case .fulfilled(let panels):
+                    intentPanels.append(contentsOf: panels.allPanels.map { haPanel in
+                        IntentPanel(panel: haPanel, server: server)
+                    })
+                case .rejected(let error):
+                    Current.Log.error("Failed to retrieve HAPanels, error: \(error.localizedDescription)")
+                }
+                finishedPipesCount += 1
+
+                if finishedPipesCount == Current.servers.all.count {
+                    completion(intentPanels)
+                }
             }
         }
-        return intentPanels
     }
 
-    private func panelsIntentCollection() -> INObjectCollection<IntentPanel> {
-        let sections: [INObjectSection<IntentPanel>] = Current.servers.all.map { server in
-                .init(title: server.info.name, items: panels().filter({ $0.serverIdentifier == server.identifier.rawValue }))
+    private func panelsIntentCollection(completion: @escaping (INObjectCollection<IntentPanel>) -> Void) {
+        Self.panels { panels in
+            let sections: [INObjectSection<IntentPanel>] = Current.servers.all.map { server in
+                    .init(title: server.info.name, items: panels.filter({ $0.serverIdentifier == server.identifier.rawValue }))
+            }
+            completion(INObjectCollection<IntentPanel>.init(sections: sections))
         }
-        return INObjectCollection<IntentPanel>.init(sections: sections)
     }
 
-    func providePagesOptionsCollection(
+    public func providePagesOptionsCollection(
         for intent: WidgetOpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void
     ) {
-        completion(panelsIntentCollection(), nil)
+        panelsIntentCollection { collection in
+            completion(collection, nil)
+        }
     }
 
-    func providePageOptionsCollection(
+    public func providePageOptionsCollection(
         for intent: OpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void
     ) {
-        completion(panelsIntentCollection(), nil)
+        panelsIntentCollection { collection in
+            completion(collection, nil)
+        }
     }
 
-    func providePagesOptions(
+    public func providePagesOptions(
         for intent: WidgetOpenPageIntent,
         with completion: @escaping ([IntentPanel]?, Error?) -> Void
     ) {
-        completion(panels(), nil)
+        Self.panels { panels in
+            completion(panels, nil)
+        }
     }
 
-    func providePageOptions(
+    public func providePageOptions(
         for intent: OpenPageIntent,
         with completion: @escaping ([IntentPanel]?, Error?) -> Swift.Void
     ) {
-        completion(panels(), nil)
+        Self.panels { panels in
+            completion(panels, nil)
+        }
     }
 }

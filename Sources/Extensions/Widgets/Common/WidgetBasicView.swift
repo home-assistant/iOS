@@ -67,7 +67,7 @@ struct WidgetBasicView: View {
             case .regular, .condensed:
                 HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
                     icon
-                    VStack(alignment: .leading, spacing: Spaces.half) {
+                    VStack(alignment: .leading, spacing: .zero) {
                         text
                         subtext
                     }
