@@ -898,4 +898,6 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "widgets.open_page.description" = "Avaa käyttöliittymäsivu Home Assistantissa.";
 "widgets.open_page.not_configured" = "Sivuja ei saatavilla";
 "widgets.open_page.title" = "Avaa sivu";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Kyllä";

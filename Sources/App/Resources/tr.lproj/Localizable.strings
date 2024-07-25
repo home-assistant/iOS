@@ -898,4 +898,6 @@
 "widgets.open_page.description" = "Home Assistant'ta bir ön sayfası açın.";
 "widgets.open_page.not_configured" = "Kullanılabilir Sayfa Yok";
 "widgets.open_page.title" = "Sayfayı Aç";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Evet";

@@ -900,4 +900,6 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.open_page.description" = "Öffnen Sie eine Frontend-Seite in Home Assistant.";
 "widgets.open_page.not_configured" = "Keine Seiten verfügbar";
 "widgets.open_page.title" = "Seite öffnen";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Ja";

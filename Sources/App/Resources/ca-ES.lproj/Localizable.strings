@@ -898,4 +898,6 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "widgets.open_page.description" = "Obrir una pàgina del Home Assistant";
 "widgets.open_page.not_configured" = "No hi ha pàgines disponibles";
 "widgets.open_page.title" = "Obre la pàgina";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Si";

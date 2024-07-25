@@ -898,4 +898,6 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.open_page.description" = "Ouvrez une page frontale dans Home Assistant.";
 "widgets.open_page.not_configured" = "Aucune page disponible";
 "widgets.open_page.title" = "Ouvrir la page";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Oui";

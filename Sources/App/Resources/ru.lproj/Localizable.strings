@@ -898,4 +898,6 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.open_page.description" = "Открыть страницу интерфейса в Home Assistant.";
 "widgets.open_page.not_configured" = "Нет доступных страниц";
 "widgets.open_page.title" = "Открыть страницу";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Да";

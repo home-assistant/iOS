@@ -898,4 +898,6 @@ Home Assistant е безплатен и с отворен код софтуер 
 "widgets.open_page.description" = "Отворете предна страница в Home Assistant.";
 "widgets.open_page.not_configured" = "Няма налични страници";
 "widgets.open_page.title" = "Отворена страница";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Yes";

@@ -898,4 +898,6 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.open_page.description" = "Otevřete frontendovou stránku v Home Assistantovi.";
 "widgets.open_page.not_configured" = "Nejsou k dispozici žádné stránky";
 "widgets.open_page.title" = "Otevřít stránku";
+"widgets.reload_widgets.app_intent.description" = "Znovu načíst časové řady všech widgetů";
+"widgets.reload_widgets.app_intent.title" = "Znovu načíst widgety";
 "yes_label" = "Ano";

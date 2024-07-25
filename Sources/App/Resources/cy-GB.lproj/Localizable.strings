@@ -898,4 +898,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.description" = "Open a frontend page in Home Assistant.";
 "widgets.open_page.not_configured" = "No Pages Available";
 "widgets.open_page.title" = "Open Page";
+"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "yes_label" = "Ie";
