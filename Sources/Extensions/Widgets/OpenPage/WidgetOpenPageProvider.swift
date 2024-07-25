@@ -63,6 +63,5 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
         panels(for: context, updating: configuration.pages ?? []) { panels in
             completion(timeline(for: panels))
         }
-
     }
 }

@@ -9,14 +9,20 @@ public class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpen
     public static func panels(completion: @escaping ([IntentPanel]) -> Void) {
         var intentPanels: [IntentPanel] = []
         var finishedPipesCount = 0
-        Current.servers.all.forEach { server in
-            (Current.diskCache.value(for: OpenPageIntentHandler.cacheKey(serverIdentifier: server.identifier.rawValue)) as Promise<HAPanels>).pipe { result in
+        for server in Current.servers.all {
+            (
+                Current.diskCache
+                    .value(
+                        for: OpenPageIntentHandler
+                            .cacheKey(serverIdentifier: server.identifier.rawValue)
+                    ) as Promise<HAPanels>
+            ).pipe { result in
                 switch result {
-                case .fulfilled(let panels):
+                case let .fulfilled(panels):
                     intentPanels.append(contentsOf: panels.allPanels.map { haPanel in
                         IntentPanel(panel: haPanel, server: server)
                     })
-                case .rejected(let error):
+                case let .rejected(error):
                     Current.Log.error("Failed to retrieve HAPanels, error: \(error.localizedDescription)")
                 }
                 finishedPipesCount += 1
@@ -31,7 +37,10 @@ public class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpen
     private func panelsIntentCollection(completion: @escaping (INObjectCollection<IntentPanel>) -> Void) {
         Self.panels { panels in
             let sections: [INObjectSection<IntentPanel>] = Current.servers.all.map { server in
-                    .init(title: server.info.name, items: panels.filter({ $0.serverIdentifier == server.identifier.rawValue }))
+                .init(
+                    title: server.info.name,
+                    items: panels.filter({ $0.serverIdentifier == server.identifier.rawValue })
+                )
             }
             completion(INObjectCollection<IntentPanel>.init(sections: sections))
         }
