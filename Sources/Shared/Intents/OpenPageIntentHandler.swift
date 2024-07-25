@@ -2,58 +2,50 @@ import Intents
 import PromiseKit
 
 class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpenPageIntentHandling {
-    private func panelsByServer() -> Promise<[(Server, [IntentPanel])]> {
-        when(resolved: Current.apis.map { api in
-            api.connection.send(.panels()).promise.map { (api.server, $0) }
-        }).compactMapValues { result in
-            switch result {
-            case let .fulfilled((server, panels)):
-                return (server, panels.allPanels.map { IntentPanel(panel: $0, server: server) })
-            case .rejected:
-                return nil
+    private func panels() -> [IntentPanel] {
+        var intentPanels: [IntentPanel] = []
+        Current.servers.all.forEach { server in
+            if let panels = (Current.diskCache.value(for: "last-invalidated-widget-panels-\(server.identifier)") as Promise<HAPanels>).value {
+                intentPanels.append(contentsOf: panels.allPanels.map { haPanel in
+                    IntentPanel(panel: haPanel, server: server)
+                })
             }
         }
+        return intentPanels
     }
 
-    private func panelsIntentCollection() -> Promise<INObjectCollection<IntentPanel>> {
-        panelsByServer().map { panelsByServer in
-            .init(sections: panelsByServer.map { server, panels in
-                INObjectSection(title: server.info.name, items: panels)
-            })
+    private func panelsIntentCollection() -> INObjectCollection<IntentPanel> {
+        let sections: [INObjectSection<IntentPanel>] = Current.servers.all.map { server in
+                .init(title: server.info.name, items: panels().filter({ $0.serverIdentifier == server.identifier.rawValue }))
         }
-    }
-
-    private func panelsArray() -> Promise<[IntentPanel]> {
-        panelsByServer().map { panelsByServer in
-            panelsByServer.flatMap(\.1)
-        }
+        return INObjectCollection<IntentPanel>.init(sections: sections)
     }
 
     func providePagesOptionsCollection(
         for intent: WidgetOpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void
     ) {
-        panelsIntentCollection().done { completion($0, nil) }.catch { completion(nil, $0) }
+        completion(panelsIntentCollection(), nil)
     }
 
     func providePageOptionsCollection(
         for intent: OpenPageIntent,
         with completion: @escaping (INObjectCollection<IntentPanel>?, Error?) -> Void
     ) {
-        panelsIntentCollection().done { completion($0, nil) }.catch { completion(nil, $0) }
+        completion(panelsIntentCollection(), nil)
     }
 
     func providePagesOptions(
         for intent: WidgetOpenPageIntent,
         with completion: @escaping ([IntentPanel]?, Error?) -> Void
     ) {
-        panelsArray().done { completion($0, nil) }.catch { completion(nil, $0) }
+        completion(panels(), nil)
     }
 
     func providePageOptions(
         for intent: OpenPageIntent,
         with completion: @escaping ([IntentPanel]?, Error?) -> Swift.Void
     ) {
-        panelsArray().done { completion($0, nil) }.catch { completion(nil, $0) }
+        completion(panels(), nil)
     }
 }
