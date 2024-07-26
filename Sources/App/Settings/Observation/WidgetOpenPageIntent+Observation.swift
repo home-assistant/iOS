@@ -22,7 +22,7 @@ extension WidgetOpenPageIntent {
         }
 
         private static func handle(panels: HAPanels, server: Server) {
-            let key = "last-invalidated-widget-panels-\(server.identifier)"
+            let key = OpenPageIntentHandler.cacheKey(serverIdentifier: server.identifier.rawValue)
 
             firstly {
                 Current.diskCache.value(for: key) as Promise<HAPanels>
