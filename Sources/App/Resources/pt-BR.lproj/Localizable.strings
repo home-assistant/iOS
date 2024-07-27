@@ -898,6 +898,6 @@
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";
-"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
-"widgets.reload_widgets.app_intent.title" = "Reload widgets";
+"widgets.reload_widgets.app_intent.description" = "Recarregue todos os cronogramas dos widgets.";
+"widgets.reload_widgets.app_intent.title" = "Recarregar widgets";
 "yes_label" = "Sim";
