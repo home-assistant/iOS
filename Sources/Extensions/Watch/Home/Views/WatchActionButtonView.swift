@@ -90,7 +90,6 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
                 ProgressView()
                     .progressViewStyle(.circular)
                     .frame(width: 24, height: 24)
-                    .tint(.black)
                     .shadow(color: .white, radius: 10)
             case .success:
                 makeActionImage(systemName: "checkmark.circle.fill")
@@ -103,6 +102,6 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
     private func makeActionImage(systemName: String) -> some View {
         Image(systemName: systemName)
             .font(.system(size: 24))
-            .foregroundStyle(.black)
+            .foregroundStyle(.white)
     }
 }
