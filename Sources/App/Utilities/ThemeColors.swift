@@ -20,7 +20,12 @@ public struct ThemeColors: Codable {
         if let value = values[color.rawValue] {
             return UIColor(rgbString: value) ?? UIColor(hex: value)
         } else {
-            return color.default
+            // Fallback for older HA sever versions which don't provide "appThemeColor" all the time.
+            if color == .appThemeColor, let value = values[ThemeColors.Color.appHeaderBackgroundColor.rawValue] {
+                return UIColor(rgbString: value) ?? UIColor(hex: value)
+            } else {
+                return color.default
+            }
         }
     }
 
