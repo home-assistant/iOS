@@ -9,14 +9,20 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         subtitle: String?,
         interactionType: InteractionType,
         icon: MaterialDesignIcons,
-        iconColor: Color = Color.black
+        textColor: Color = Color(uiColor: .label),
+        iconColor: Color = Color.asset(Asset.Colors.haPrimary),
+        backgroundColor: Color = Color.asset(Asset.Colors.tileBackground),
+        useCustomColors: Bool = false
     ) {
         self.id = id
         self.title = title
         self.subtitle = subtitle
         self.interactionType = interactionType
+        self.textColor = textColor
         self.icon = icon
         self.iconColor = iconColor
+        self.backgroundColor = backgroundColor
+        self.useCustomColors = useCustomColors
     }
 
     var id: String
@@ -27,7 +33,10 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
 
     var icon: MaterialDesignIcons
 
+    var backgroundColor: Color
+    var textColor: Color
     var iconColor: Color
+    var useCustomColors: Bool
 
     enum InteractionType: Hashable, Encodable {
         case widgetURL(URL)

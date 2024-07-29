@@ -47,14 +47,23 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
                     .frame(width: 30, height: 30)
                     .animation(.easeInOut, value: state)
                 Text(action.name)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(action.useCustomColors ? Color(uiColor: .init(hex: action.textColor)) : .white)
             }
         }
         .disabled(state != .idle)
-        .listRowBackground(
-            Color.white
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-        )
+        .modify { view in
+            if action.useCustomColors {
+                view.listRowBackground(
+                    action.useCustomColors ?
+                        Color(uiColor: .init(hex: action.backgroundColor))
+                        .clipShape(RoundedRectangle(cornerRadius: 14)) :
+                        Color.white
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                )
+            } else {
+                view
+            }
+        }
     }
 
     private func resetState() {

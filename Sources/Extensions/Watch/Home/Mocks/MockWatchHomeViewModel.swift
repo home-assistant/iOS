@@ -14,7 +14,10 @@ final class MockWatchHomeViewModel: WatchHomeViewModelProtocol {
                 id: "1",
                 name: "Hello",
                 iconName: "ab_testing",
-                iconColor: "#4479b3"
+                iconColor: "#4479b3",
+                backgroundColor: "#4479b3",
+                textColor: "#4479b3",
+                useCustomColors: true
             ),
         ]
     }
