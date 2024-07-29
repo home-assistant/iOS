@@ -33,12 +33,15 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
     ) {
         OpenPageIntentHandler.panels { panels in
             var intentsToDisplay = panels
+
             if !existing.isEmpty {
-                intentsToDisplay = panels.filter { intentPanel in
-                    existing.contains(intentPanel)
+                intentsToDisplay = existing.compactMap { existingValue in
+                    intentsToDisplay.first {
+                        $0.identifier == existingValue.identifier &&
+                            $0.server == existingValue.server
+                    }
                 }
             }
-
             completion(Array(intentsToDisplay.prefix(WidgetBasicContainerView.maximumCount(family: context.family))))
         }
     }
