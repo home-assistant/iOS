@@ -1583,6 +1583,10 @@ public enum L10n {
           public static var zoneOnly: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.zone_only") }
         }
       }
+      public enum NoBaseUrl {
+        /// No URL
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
+      }
       public enum RemoteUiUrl {
         /// Remote UI URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.remote_ui_url.title") }

@@ -18,13 +18,6 @@ class ConnectionInfoTests: XCTestCase {
             securityExceptions: .init()
         )
 
-        Current.connectivity.currentWiFiSSID = { nil }
-
-        XCTAssertEqual(info.activeURL(), nil)
-        XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
-
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
@@ -32,6 +25,29 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.activeURLType, .internal)
         XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
         XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+    }
+
+    func testInternalURLWithUndefinedSSID() {
+        let url = URL(string: "http://example.com:8123")
+        var info = ConnectionInfo(
+            externalURL: nil,
+            internalURL: url,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
+        )
+
+        Current.connectivity.currentWiFiSSID = { nil }
+
+        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(info.activeURLType, .none)
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
     }
 
     func testRemoteOnlyURL() {
@@ -49,17 +65,33 @@ class ConnectionInfoTests: XCTestCase {
             securityExceptions: .init()
         )
 
-        info.useCloud = false
-        XCTAssertEqual(info.activeURL(), nil)
-        XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
-
         info.useCloud = true
         XCTAssertEqual(info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .remoteUI)
         XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
         XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+    }
+
+    func testRemoteOnlyURLWithUseCloudOffAndNoSSIDNeitherInternalURL() {
+        let url = URL(string: "http://example.com:8123")
+        var info = ConnectionInfo(
+            externalURL: nil,
+            internalURL: nil,
+            cloudhookURL: nil,
+            remoteUIURL: url,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
+        )
+
+        info.useCloud = false
+        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(info.activeURLType, .none)
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
     }
 
     func testExternalOnlyURL() {
@@ -184,11 +216,6 @@ class ConnectionInfoTests: XCTestCase {
             securityExceptions: .init()
         )
 
-        XCTAssertEqual(info.activeURL(), nil)
-        XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
-
         info.useCloud = true
 
         XCTAssertEqual(info.activeURL(), remoteURL)
@@ -212,6 +239,28 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.activeURLType, .internal)
         XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
         XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+    }
+
+    func testInternalRemoteURLWithoutSSIDDefined() {
+        let internalURL = URL(string: "http://internal.example.com:8123")
+        let remoteURL = URL(string: "http://remote.example.com:8123")
+        var info = ConnectionInfo(
+            externalURL: nil,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: remoteURL,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init()
+        )
+
+        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(info.activeURLType, .none)
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
     }
 
     func testInternalExternalRemoteURL() {
@@ -309,15 +358,25 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
         XCTAssertEqual(info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
 
+        // No SSID defined for internal URL
         info.set(address: nil, for: .external)
         info.overrideActiveURLType = .external
+        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(info.activeURLType, .none)
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
+
+        // With SSID defined for internal URL
+        info.internalSSIDs = ["unit_tests"]
+        Current.connectivity.currentWiFiSSID = { "unit_tests" }
+
         XCTAssertEqual(info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
         XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
         XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
     }
 
-    func testFallbackURL() {
+    func testNoFallbackURL() {
         var info = ConnectionInfo(
             externalURL: nil,
             internalURL: nil,
@@ -331,9 +390,9 @@ class ConnectionInfoTests: XCTestCase {
             securityExceptions: .init()
         )
 
-        XCTAssertEqual(info.activeURL(), URL(string: "http://homeassistant.local:8123"))
-        XCTAssertEqual(info.webhookURL(), URL(string: "http://homeassistant.local:8123/api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), URL(string: "http://homeassistant.local:8123/api"))
+        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
     }
 
     func testWebhookURL() {

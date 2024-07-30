@@ -415,6 +415,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.errors.cannot_remove_last_url" = "You cannot remove only available URL.";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.external_base_url.title" = "External URL";
+"settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.header" = "Connection";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "e.g. http://homeassistant.local:8123/";

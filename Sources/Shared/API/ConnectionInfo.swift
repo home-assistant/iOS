@@ -30,7 +30,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     public var overrideActiveURLType: URLType?
-    public private(set) var activeURLType: URLType = .internal
+    public private(set) var activeURLType: URLType = .external
 
     public var isLocalPushEnabled = true {
         didSet {
@@ -92,6 +92,7 @@ public struct ConnectionInfo: Codable, Equatable {
         case `internal`
         case remoteUI
         case external
+        case none
 
         public var debugDescription: String {
             switch self {
@@ -101,6 +102,8 @@ public struct ConnectionInfo: Codable, Equatable {
                 return "Remote UI"
             case .external:
                 return "External URL"
+            case .none:
+                return "No URL (Active URL nil)"
             }
         }
 
@@ -112,27 +115,29 @@ public struct ConnectionInfo: Codable, Equatable {
                 return L10n.Settings.ConnectionSection.RemoteUiUrl.title
             case .external:
                 return L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+            case .none:
+                return L10n.Settings.ConnectionSection.NoBaseUrl.title
             }
         }
 
         public var isAffectedBySSID: Bool {
             switch self {
             case .internal: return true
-            case .remoteUI, .external: return false
+            case .remoteUI, .external, .none: return false
             }
         }
 
         public var isAffectedByCloud: Bool {
             switch self {
             case .internal: return false
-            case .remoteUI, .external: return true
+            case .remoteUI, .external, .none: return true
             }
         }
 
         public var isAffectedByHardwareAddress: Bool {
             switch self {
             case .internal: return Current.isCatalyst
-            case .remoteUI, .external: return false
+            case .remoteUI, .external, .none: return false
             }
         }
 
@@ -163,6 +168,9 @@ public struct ConnectionInfo: Codable, Equatable {
             case .external:
                 activeURLType = .external
                 overrideURL = externalURL
+            case .none:
+                activeURLType = .none
+                overrideURL = nil
             }
 
             if let overrideURL {
@@ -182,6 +190,7 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .external
             url = externalURL
         } else {
+            activeURLType = .none
             url = nil
             /*
              No URL that can be used in this context is available
@@ -223,6 +232,7 @@ public struct ConnectionInfo: Codable, Equatable {
         case .internal: return internalURL
         case .external: return externalURL
         case .remoteUI: return remoteUIURL
+        case .none: return nil
         }
     }
 
@@ -234,6 +244,8 @@ public struct ConnectionInfo: Codable, Equatable {
             externalURL = address
         case .remoteUI:
             remoteUIURL = address
+        case .none:
+            break
         }
     }
 
