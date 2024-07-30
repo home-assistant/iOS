@@ -75,6 +75,8 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
             return Scene == nil
         case \Action.showInWatch:
             return Scene == nil
+        case \Action.useCustomColors:
+            return Scene == nil
         default:
             return true
         }
