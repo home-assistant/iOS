@@ -1086,7 +1086,7 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func navigateToPath(path: String) {
-        if let url = URL(string: server.info.connection.activeURL().absoluteString + path) {
+        if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
             webView.load(URLRequest(url: url))
         }
     }

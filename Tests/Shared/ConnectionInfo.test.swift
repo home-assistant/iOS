@@ -20,10 +20,10 @@ class ConnectionInfoTests: XCTestCase {
 
         Current.connectivity.currentWiFiSSID = { nil }
 
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
 
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
@@ -50,10 +50,10 @@ class ConnectionInfoTests: XCTestCase {
         )
 
         info.useCloud = false
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
 
         info.useCloud = true
         XCTAssertEqual(info.activeURL(), url)
@@ -184,10 +184,10 @@ class ConnectionInfoTests: XCTestCase {
             securityExceptions: .init()
         )
 
-        XCTAssertEqual(info.activeURL(), remoteURL)
+        XCTAssertEqual(info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
+        XCTAssertEqual(info.webhookURL(), nil)
+        XCTAssertEqual(info.activeAPIURL(), nil)
 
         info.useCloud = true
 
