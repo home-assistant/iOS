@@ -51,16 +51,16 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
             }
         }
         .disabled(state != .idle)
-//        .modify { view in
-//            if action.useCustomColors {
-//                view.listRowBackground(
-//                    Color(uiColor: .init(hex: action.backgroundColor))
-//                        .clipShape(RoundedRectangle(cornerRadius: 14))
-//                )
-//            } else {
-//                view
-//            }
-//        }
+        .modify { view in
+            if action.useCustomColors {
+                view.listRowBackground(
+                    Color(uiColor: .init(hex: action.backgroundColor))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                )
+            } else {
+                view
+            }
+        }
     }
 
     private func resetState() {
