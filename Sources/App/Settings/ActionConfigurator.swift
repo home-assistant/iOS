@@ -24,6 +24,8 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
     private(set) var shouldOpenAutomationEditor: Bool = false
     private var preview = ActionPreview(frame: CGRect(x: 0, y: 0, width: 169, height: 55))
 
+    private let useCustomColorsTag = "useCustomColors"
+
     convenience init(action: Action?) {
         self.init()
 
@@ -147,20 +149,6 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                 }
             }
         }
-        if action.canConfigure(\Action.IconColor) {
-            visuals <<< InlineColorPickerRow("icon_color") {
-                $0.title = L10n.ActionsConfigurator.Rows.IconColor.title
-                $0.isCircular = true
-                $0.showsPaletteNames = true
-                $0.value = UIColor(hex: self.action.IconColor)
-            }.onChange { picker in
-                Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
-
-                self.action.IconColor = picker.value!.hexString()
-
-                self.updatePreviews()
-            }
-        }
 
         if action.canConfigure(\Action.IconName) {
             visuals <<< SearchPushRow<MaterialDesignIcons> {
@@ -196,6 +184,20 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
                 }
             }
         }
+        if action.canConfigure(\Action.IconColor) {
+            visuals <<< InlineColorPickerRow("icon_color") {
+                $0.title = L10n.ActionsConfigurator.Rows.IconColor.title
+                $0.isCircular = true
+                $0.showsPaletteNames = true
+                $0.value = UIColor(hex: self.action.IconColor)
+            }.onChange { picker in
+                Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
+
+                self.action.IconColor = picker.value!.hexString()
+
+                self.updatePreviews()
+            }
+        }
 
         if visuals.isEmpty {
             form +++ InfoLabelRow {
@@ -229,32 +231,59 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             form.append(visuals)
         }
 
+        let customSection = Section()
+        form +++ customSection
+        customSection <<< SwitchRow(useCustomColorsTag) {
+            $0.title = L10n.SettingsDetails.Actions.UseCustomColors.title
+            $0.value = action.useCustomColors
+            $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.useCustomColors))
+        }.onChange { row in
+            if let value = row.value {
+                self.action.useCustomColors = value
+                self.updatePreviews()
+            }
+        }
+
+        if action.canConfigure(\Action.TextColor) {
+            customSection <<< InlineColorPickerRow("text_color") {
+                $0.title = L10n.ActionsConfigurator.Rows.TextColor.title
+                $0.isCircular = true
+                $0.showsPaletteNames = true
+                $0.value = UIColor(hex: self.action.TextColor)
+                $0.hidden = .function([useCustomColorsTag], { _ in
+                    !self.action.useCustomColors
+                })
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.TextColor = value.hexString()
+                    self.updatePreviews()
+                }
+            }
+        }
+
+        if action.canConfigure(\Action.BackgroundColor) {
+            customSection <<< InlineColorPickerRow("background_color") {
+                $0.title = L10n.ActionsConfigurator.Rows.BackgroundColor.title
+                $0.isCircular = true
+                $0.showsPaletteNames = true
+                $0.value = UIColor(hex: self.action.BackgroundColor)
+                $0.hidden = .function([useCustomColorsTag], { _ in
+                    !self.action.useCustomColors
+                })
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.BackgroundColor = value.hexString()
+                    self.updatePreviews()
+                }
+            }
+        }
+
         form +++ Section(header: L10n.ActionsConfigurator.Action.title, footer: L10n.ActionsConfigurator.Action.footer)
             <<< ButtonRow {
                 $0.title = L10n.ActionsConfigurator.Action.createAutomation
             }.onCellSelection({ [weak self] _, _ in
                 self?.saveAndAutomate()
             })
-
-        form +++ VoiceShortcutRow {
-            $0.buttonStyle = .automaticOutline
-            $0.value = .intent(PerformActionIntent(action: action))
-        }
-
-        form +++ YamlSection(
-            tag: "exampleTrigger",
-            header: L10n.ActionsConfigurator.TriggerExample.title,
-            yamlGetter: { [action] in
-                if let server = Current.servers.server(forServerIdentifier: action.serverIdentifier) {
-                    return action.exampleTrigger(api: Current.api(for: server))
-                } else if let first = Current.apis.first {
-                    return action.exampleTrigger(api: first)
-                } else {
-                    return ""
-                }
-            },
-            present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
-        )
     }
 
     @objc
@@ -349,7 +378,10 @@ struct WidgetPreviewView: View {
                     subtitle: nil,
                     interactionType: .widgetURL(URL(string: "https://google.com")!),
                     icon: MaterialDesignIcons(named: action.IconName),
-                    iconColor: Color(uiColor: .init(hex: action.IconColor))
+                    textColor: Color(uiColor: .init(hex: action.TextColor)),
+                    iconColor: Color(uiColor: .init(hex: action.IconColor)),
+                    backgroundColor: Color(uiColor: .init(hex: action.BackgroundColor)),
+                    useCustomColors: action.useCustomColors
                 ),
                 sizeStyle: .condensed
             )

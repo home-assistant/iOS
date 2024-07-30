@@ -34,7 +34,7 @@ struct WidgetBasicView: View {
             .font(sizeStyle.textFont)
             .fontWeight(.semibold)
             .multilineTextAlignment(.leading)
-            .foregroundStyle(Color(uiColor: .label))
+            .foregroundStyle(model.useCustomColors ? model.textColor : Color(uiColor: .label))
             .lineLimit(2)
     }
 
@@ -87,7 +87,7 @@ struct WidgetBasicView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.asset(Asset.Colors.tileBackground))
+        .background(model.useCustomColors ? model.backgroundColor : Color.asset(Asset.Colors.tileBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay {
             RoundedRectangle(cornerRadius: 14)

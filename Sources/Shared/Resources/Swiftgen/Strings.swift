@@ -1544,6 +1544,10 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings_details.actions.server_controlled.update.title") }
         }
       }
+      public enum UseCustomColors {
+        /// Use custom colors
+        public static var title: String { return L10n.tr("Localizable", "settings_details.actions.use_custom_colors.title") }
+      }
       public enum Watch {
         public enum Available {
           /// Show in Watch

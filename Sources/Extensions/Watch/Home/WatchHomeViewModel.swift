@@ -10,6 +10,9 @@ struct WatchActionItem: Equatable {
     let name: String
     let iconName: String
     let iconColor: String
+    let backgroundColor: String
+    let textColor: String
+    let useCustomColors: Bool
 }
 
 protocol WatchHomeViewModelProtocol: ObservableObject {
@@ -139,7 +142,10 @@ private extension Action {
             id: ID,
             name: Text,
             iconName: IconName,
-            iconColor: IconColor
+            iconColor: IconColor,
+            backgroundColor: BackgroundColor,
+            textColor: TextColor,
+            useCustomColors: useCustomColors
         )
     }
 }
