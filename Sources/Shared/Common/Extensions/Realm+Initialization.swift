@@ -87,8 +87,8 @@ public extension Realm {
         // 20…25 - 2022-08-13 v2022.x undoing realm automatic migration
         // 26 - 2022-08-13 v2022.x bumping mdi version
         // 27 - 2024-01-18 v2024.x adding CarPlay toggle to Actions
-        // 28 - 2024-07-29 v2024.x Add option to use custom colors
-        let schemaVersion: UInt64 = 28
+        // 28…29 - 2024-07-29 v2024.x Add option to use custom colors
+        let schemaVersion: UInt64 = 29
 
         let config = Realm.Configuration(
             fileURL: storeURL,
@@ -198,7 +198,7 @@ public extension Realm {
                     }
                 }
 
-                if oldVersion < 28 {
+                if oldVersion < 29 {
                     migration.enumerateObjects(ofType: Action.className()) { _, newObject in
                         newObject?["useCustomColors"] = false
                     }
