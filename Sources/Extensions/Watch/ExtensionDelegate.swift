@@ -1,7 +1,6 @@
 import ClockKit
 import Communicator
 import PromiseKit
-import RealmSwift
 import Shared
 import UserNotifications
 import WatchKit
