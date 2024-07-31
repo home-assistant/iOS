@@ -443,6 +443,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.actions.scenes.title" = "Действия в сцене";
 "settings_details.actions.server_controlled.update.title" = "Обновить действия с сервером";
 "settings_details.actions.title" = "Действия";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Показывать в часах";
 "settings_details.general.app_icon.enum.beta" = "Бета";
 "settings_details.general.app_icon.enum.black" = "Чёрный";

@@ -443,6 +443,7 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "settings_details.actions.scenes.title" = "Scene Actions";
 "settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Dejanja";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Črna";

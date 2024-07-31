@@ -443,6 +443,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.actions.scenes.title" = "Scenehandlinger";
 "settings_details.actions.server_controlled.update.title" = "Opdatér serverhandlinger";
 "settings_details.actions.title" = "Handlinger";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Vis på Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Sort";

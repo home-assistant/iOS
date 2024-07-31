@@ -443,6 +443,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.actions.scenes.title" = "장면 동작";
 "settings_details.actions.server_controlled.update.title" = "업데이트 서버 동작";
 "settings_details.actions.title" = "동작";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "시계에 표시";
 "settings_details.general.app_icon.enum.beta" = "베타";
 "settings_details.general.app_icon.enum.black" = "검정색";
