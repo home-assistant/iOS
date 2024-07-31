@@ -97,11 +97,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromisesObjC (2.1.1)
   - ReachabilitySwift (5.0.0)
-  - Realm (10.35.0):
-    - Realm/Headers (= 10.35.0)
-  - Realm/Headers (10.35.0)
-  - RealmSwift (10.35.0):
-    - Realm (= 10.35.0)
+  - Realm (10.52.2):
+    - Realm/Headers (= 10.52.2)
+  - Realm/Headers (10.52.2)
+  - RealmSwift (10.52.2):
+    - Realm (= 10.52.2)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
   - SwiftFormat/CLI (0.53.1)
@@ -140,7 +140,7 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
-  - RealmSwift
+  - RealmSwift (~> 10.52.2)
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/bgoncal/starscream`, branch `ha-URLSession-fix`)
   - SwiftFormat/CLI (= 0.53.1)
@@ -274,8 +274,8 @@ SPEC CHECKSUMS:
   PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
-  RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
+  Realm: e44eb7d20fe469fe1179894fd356727b8fbe61c2
+  RealmSwift: 7aacbd3101158f7d54c930bcfcfaafadbd376ffc
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
@@ -288,6 +288,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: d4e63a811638e66d38429364525f992a6cbdf5ee
+PODFILE CHECKSUM: 38e88bf20a38a7f2f045c597cbe74968fb71c655
 
 COCOAPODS: 1.15.2

@@ -28,7 +28,7 @@ pod 'ObjectMapper', git: 'https://github.com/tristanhimmelman/ObjectMapper.git',
 pod 'PromiseKit'
 pod 'Improv-iOS', '~> 0.0.6'
 
-pod 'RealmSwift'
+pod 'RealmSwift', '~> 10.52.2'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
