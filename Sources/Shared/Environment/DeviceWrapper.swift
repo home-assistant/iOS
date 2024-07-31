@@ -78,6 +78,9 @@ public class DeviceWrapper {
     public lazy var deviceName: () -> String = {
         #if targetEnvironment(macCatalyst)
         return Current.macBridge.deviceName
+        #elseif os(visionOS)
+        // Since after iOS 16 device name is same as model
+        return "Apple Vision Pro"
         #elseif os(iOS)
         return UIDevice.current.name
         #elseif os(watchOS)
@@ -89,6 +92,8 @@ public class DeviceWrapper {
         #if targetEnvironment(macCatalyst)
         // UIDevice returns 'iOS' on Mac, so we hard-code it
         return "macOS"
+        #elseif os(visionOS)
+        return "visionOS"
         #elseif os(iOS)
         // iOS
         return UIDevice.current.systemName
