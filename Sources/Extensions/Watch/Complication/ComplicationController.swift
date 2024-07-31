@@ -15,7 +15,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         if complication.identifier != CLKDefaultComplicationIdentifier {
             // existing complications that were configured pre-7 have no identifier set
             // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
-            model = Current.realm(objectTypes: [WatchComplication.self]).object(
+            model = Current.realm().object(
                 ofType: WatchComplication.self,
                 forPrimaryKey: complication.identifier
             )
@@ -23,7 +23,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
             // with the family as the identifier, so we can rely on this code path for older OS and older complications
             let matchedFamily = ComplicationGroupMember(family: complication.family)
-            model = Current.realm(objectTypes: [WatchComplication.self]).object(
+            model = Current.realm().object(
                 ofType: WatchComplication.self,
                 forPrimaryKey: matchedFamily.rawValue
             )
@@ -94,7 +94,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // MARK: - Complication Descriptors
 
     func getComplicationDescriptors(handler: @escaping ([CLKComplicationDescriptor]) -> Void) {
-        let configured = Current.realm(objectTypes: [WatchComplication.self]).objects(WatchComplication.self)
+        let configured = Current.realm().objects(WatchComplication.self)
             .map(\.complicationDescriptor)
 
         let placeholders = ComplicationGroupMember.allCases

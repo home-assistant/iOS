@@ -88,7 +88,15 @@ public extension Realm {
         // 26 - 2022-08-13 v2022.x bumping mdi version
         // 27 - 2024-01-18 v2024.x adding CarPlay toggle to Actions
         // 28 - 2024-07-29 v2024.x Add option to use custom colors
+
+        // Current schema version from database
+        if let currentSchemaVersion = try? schemaVersionAtURL(storeURL) {
+            Current.Log.verbose("Current schema version \(currentSchemaVersion)")
+        }
+
+        // New schema version
         let schemaVersion: UInt64 = 28
+        Current.Log.verbose("Schema version defined: \(schemaVersion)")
 
         let config = Realm.Configuration(
             fileURL: storeURL,

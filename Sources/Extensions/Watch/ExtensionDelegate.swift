@@ -1,7 +1,6 @@
 import ClockKit
 import Communicator
 import PromiseKit
-import RealmSwift
 import Shared
 import UserNotifications
 import WatchKit
@@ -112,14 +111,14 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
            identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm(objectTypes: [WatchComplication.self]).object(
+            complication = Current.realm().object(
                 ofType: WatchComplication.self,
                 forPrimaryKey: identifier
             )
         } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
                   let clkFamily = date.complicationFamilyFromEncodedDate {
             let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm(objectTypes: [WatchComplication.self]).object(
+            complication = Current.realm().object(
                 ofType: WatchComplication.self,
                 forPrimaryKey: family.rawValue
             )

@@ -54,10 +54,7 @@ struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewMode
         .modify { view in
             if action.useCustomColors {
                 view.listRowBackground(
-                    action.useCustomColors ?
-                        Color(uiColor: .init(hex: action.backgroundColor))
-                        .clipShape(RoundedRectangle(cornerRadius: 14)) :
-                        Color.white
+                    Color(uiColor: .init(hex: action.backgroundColor))
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 )
             } else {
