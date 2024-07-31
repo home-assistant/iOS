@@ -57,7 +57,7 @@
 "RCQAlr" = "Bild von ${cameraID} abrufen";
 "RMQY3r" = "Standort an Home Assistant senden";
 "RsOw3P" = "Vorlage erfolgreich gerendert";
-"T06Fka" = "Öffnen Sie eine Seite im Frontend";
+"T06Fka" = "Öffnen einer Seite im Frontend";
 "U4u9Xz" = "Es gibt ${count} Optionen, die mit ‘${server}’ übereinstimmen.";
 "ULka1b" = "Aktionen";
 "VP2XpM" = "Event Daten";
@@ -68,7 +68,7 @@
 "YNQXwq" = "Fehler";
 "YxAau3" = "Es gibt ${count} Optionen, die mit ‘${server}’ übereinstimmen.";
 "ZApPxB" = "Servicename";
-"ZRPVYO" = "Öffnen Sie eine Seite im Frontend";
+"ZRPVYO" = "Öffnen einer Seite im Frontend";
 "ZT9Mld" = "Event Name";
 "ZmUm9Q" = "Welche Vorlage möchtest du rendern?";
 "Zoqsph" = "Seite";

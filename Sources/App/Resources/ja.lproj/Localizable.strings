@@ -443,6 +443,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.actions.scenes.title" = "シーンアクション";
 "settings_details.actions.server_controlled.update.title" = "サーバーアクションの更新";
 "settings_details.actions.title" = "アクション";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Watchで表示";
 "settings_details.general.app_icon.enum.beta" = "ベータ";
 "settings_details.general.app_icon.enum.black" = "黒";

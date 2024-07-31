@@ -443,6 +443,7 @@
 "settings_details.actions.scenes.title" = "Ações de cena";
 "settings_details.actions.server_controlled.update.title" = "Atualizar ações do servidor";
 "settings_details.actions.title" = "Ações";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Mostrar no relógio";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Preto";

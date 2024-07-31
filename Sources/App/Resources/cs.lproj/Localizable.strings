@@ -60,7 +60,7 @@
 "app_intents.perform_action.response_success" = "Hotovo";
 "app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
-"assist.pipelines_picker.title" = "Potrubí Assist";
+"assist.pipelines_picker.title" = "Pipeline Assist";
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
 "assist.watch.volume.title" = "Ovládání hlasitosti";
@@ -443,6 +443,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.actions.scenes.title" = "Akce scény";
 "settings_details.actions.server_controlled.update.title" = "Aktualizovat akce serveru";
 "settings_details.actions.title" = "Akce";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Zobrazit v hodinkách";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Černá";

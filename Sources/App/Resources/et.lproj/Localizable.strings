@@ -443,6 +443,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.actions.scenes.title" = "Stseeni toimingud";
 "settings_details.actions.server_controlled.update.title" = "Värskenda serveri toiminguid";
 "settings_details.actions.title" = "Toimingud";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Kuva nutikellal";
 "settings_details.general.app_icon.enum.beta" = "Beetaversioon";
 "settings_details.general.app_icon.enum.black" = "Must";

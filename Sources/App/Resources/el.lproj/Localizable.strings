@@ -443,6 +443,7 @@
 "settings_details.actions.scenes.title" = "Ενέργειες σκηνής";
 "settings_details.actions.server_controlled.update.title" = "Ενημέρωση ενεργειών διακομιστή";
 "settings_details.actions.title" = "Ενέργειες";
+"settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Εμφάνιση στο Ρολόι";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Μαύρο";
