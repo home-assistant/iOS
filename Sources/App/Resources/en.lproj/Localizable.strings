@@ -172,7 +172,7 @@
 "improv.wifi.alert.description" = "Please enter your SSID and password.";
 "improv.wifi.alert.password_placeholder" = "Password";
 "improv.wifi.alert.ssid_placeholder" = "Network Name";
-"improv.wifi.alert.title" = "Connect to WiFi";
+"improv.wifi.alert.title" = "Connect to Wi-Fi";
 "intents.server_required_for_value" = "Select a server before picking this value.";
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
