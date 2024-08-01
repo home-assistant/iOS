@@ -147,6 +147,7 @@ public class AppEnvironment {
         $0.register(provider: FrontmostAppSensor.self)
         $0.register(provider: FocusSensor.self)
         $0.register(provider: LastUpdateSensor.self)
+        $0.register(provider: AppVersionSensor.self)
     }
 
     public var localized = LocalizedManager()
