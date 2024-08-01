@@ -1,15 +1,7 @@
-//
-//  WatchContextTests.swift
-//  Tests-App
-//
-//  Created by Bruno Pantaleão on 01/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import XCTest
 @testable import Shared
-final class WatchContextTests: XCTestCase {
+import XCTest
 
+final class WatchContextTests: XCTestCase {
     func testWatchContextCases() {
         XCTAssertEqual(WatchContext.allCases.count, 8)
         XCTAssertEqual(WatchContext.servers.rawValue, "servers")
