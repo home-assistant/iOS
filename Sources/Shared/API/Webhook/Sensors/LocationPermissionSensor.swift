@@ -9,12 +9,10 @@ public class LocationPermissionSensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        Promise<[WebhookSensor]> { seal in
-            let sensor = WebhookSensor(name: "Location permission", uniqueID: "location-permission")
-            sensor.State = CLLocationManager().authorizationStatus.description
-            sensor.Icon = MaterialDesignIcons.mapMarkerMultipleOutlineIcon.name
-            seal.fulfill([sensor])
-        }
+        let sensor = WebhookSensor(name: "Location permission", uniqueID: "location-permission")
+        sensor.State = CLLocationManager().authorizationStatus.description
+        sensor.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
+        return .value([sensor])
     }
 }
 
