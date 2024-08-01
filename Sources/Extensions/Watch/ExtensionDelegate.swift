@@ -48,6 +48,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // If the application was previously in the background, optionally refresh the user interface.
 
         Current.Log.verbose("didBecomeActive")
+        _ = HomeAssistantAPI.SyncWatchContext()
     }
 
     func applicationWillResignActive() {
@@ -56,10 +57,13 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
         Current.Log.verbose("willResignActive")
+        _ = HomeAssistantAPI.SyncWatchContext()
         Current.backgroundRefreshScheduler.schedule().cauterize()
     }
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
+        _ = HomeAssistantAPI.SyncWatchContext()
+
         // Sent when the system needs to launch the application in the background to process tasks.
         // Tasks arrive in a set, so loop through and process each one.
         for task in backgroundTasks {

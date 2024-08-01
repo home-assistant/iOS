@@ -734,6 +734,10 @@ public enum L10n {
       /// Location updated via Visit
       public static var body: String { return L10n.tr("Localizable", "location_change_notification.visit.body") }
     }
+    public enum WatchContext {
+      /// Location updated via watch context sync
+      public static var body: String { return L10n.tr("Localizable", "location_change_notification.watch_context.body") }
+    }
     public enum XCallbackUrl {
       /// Location updated via X-Callback-URL
       public static var body: String { return L10n.tr("Localizable", "location_change_notification.x_callback_url.body") }

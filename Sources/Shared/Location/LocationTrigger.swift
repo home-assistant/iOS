@@ -28,6 +28,7 @@ public enum LocationUpdateTrigger: String, CaseIterable {
     case Periodic = "Periodic"
     case Signaled = "Signaled"
     case Unknown = "Unknown"
+    case watchContext = "Watch Context"
 
     public func oneShotTimeout(maximum: TimeInterval?) -> TimeInterval {
         if let maximum {
@@ -39,7 +40,7 @@ public enum LocationUpdateTrigger: String, CaseIterable {
         case .RegionEnter, .RegionExit, .GPSRegionEnter, .GPSRegionExit, .BeaconRegionEnter, .BeaconRegionExit, .Visit:
             // location events, we've probably got a bit more freedom
             return 20.0
-        case .SignificantLocationUpdate, .BackgroundFetch, .PushNotification:
+        case .SignificantLocationUpdate, .BackgroundFetch, .PushNotification, .watchContext:
             // background events we know are usually time sensitive
             return 10.0
         case .Manual, .URLScheme, .XCallbackURL, .AppShortcut, .Siri, .Launch, .Periodic, .Signaled:
@@ -69,6 +70,7 @@ public enum LocationUpdateTrigger: String, CaseIterable {
         case .Launch: return nil
         case .Periodic: return nil
         case .Signaled: return nil
+        case .watchContext: return nil
         }
     }
 
@@ -122,6 +124,8 @@ public enum LocationUpdateTrigger: String, CaseIterable {
             body = L10n.LocationChangeNotification.Periodic.body
         case .Signaled:
             body = L10n.LocationChangeNotification.Signaled.body
+        case .watchContext:
+            body = L10n.LocationChangeNotification.WatchContext.body
         }
 
         return NotificationOptions(shouldNotify: shouldNotify, identifier: identifier, title: title, body: body)

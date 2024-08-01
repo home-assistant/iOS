@@ -31,16 +31,7 @@ public class BatterySensor: SensorProvider {
     }
 
     private static func sensors(battery: DeviceBattery) -> [WebhookSensor] {
-        let icon: String = {
-            switch battery.state {
-            case .charging:
-                return Self.chargingIcon(level: battery.level)
-            case .unplugged:
-                return Self.unpluggedIcon(level: battery.level)
-            case .full:
-                return "mdi:battery"
-            }
-        }()
+        let icon: String = BatteryIcon.forBatteryLevel(battery.level, state: battery.state)
         let isLowPowerMode = Current.device.isLowPowerMode()
         let sensorNamePrefix = battery.name ?? "Battery"
         let sensorIDPrefix = battery.uniqueID ?? "battery"
@@ -68,6 +59,19 @@ public class BatterySensor: SensorProvider {
         }
 
         return [levelSensor, stateSensor]
+    }
+}
+
+enum BatteryIcon {
+    static func forBatteryLevel(_ batteryLevel: Int, state: DeviceBattery.State) -> String {
+        switch state {
+        case .charging:
+            return chargingIcon(level: batteryLevel)
+        case .unplugged:
+            return unpluggedIcon(level: batteryLevel)
+        case .full:
+            return "mdi:battery"
+        }
     }
 
     static func chargingIcon(level: Int) -> String {

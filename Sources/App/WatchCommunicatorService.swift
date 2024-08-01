@@ -44,8 +44,13 @@ final class WatchCommunicatorService {
         Context.observations.store[.init(queue: .main)] = { context in
             Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
 
-            if let modelIdentifier = context.content["watchModel"] as? String {
+            if let modelIdentifier = context.content[WatchContext.watchModel.rawValue] as? String {
                 Current.crashReporter.setUserProperty(value: modelIdentifier, name: "PairedAppleWatch")
+            }
+
+            if let batteryLevel = context.content[WatchContext.watchBattery.rawValue] as? Float {
+                Current.Log.verbose("Received watch bettery level in watch context sync, update sensors.")
+                Current.apis.forEach({ $0.UpdateSensors(trigger: .watchContext).cauterize() })
             }
         }
 
