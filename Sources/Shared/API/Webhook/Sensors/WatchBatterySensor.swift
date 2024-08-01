@@ -18,7 +18,7 @@ final class WatchBatterySensor: SensorProvider {
             var battery = batteryDecimal > -1 ? Int(batteryDecimal * 100) : -1
             let icon: String = BatteryIcon.forBatteryLevel(battery, state: .unplugged)
             sensors.append(WebhookSensor(
-                name: "Watch battery",
+                name: "Watch Battery",
                 uniqueID: "watch-battery",
                 icon: icon,
                 deviceClass: .battery,
