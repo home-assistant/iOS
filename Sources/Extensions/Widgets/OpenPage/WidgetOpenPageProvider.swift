@@ -12,8 +12,6 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
     typealias Intent = WidgetOpenPageIntent
     typealias Entry = WidgetOpenPageEntry
 
-    @Environment(\.diskCache) var diskCache: DiskCache
-
     func placeholder(in context: Context) -> WidgetOpenPageEntry {
         let count = WidgetBasicContainerView.maximumCount(family: context.family)
         let pages = stride(from: 0, to: count, by: 1).map { idx in
