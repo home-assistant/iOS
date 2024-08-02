@@ -441,7 +441,7 @@
 "settings_details.actions.scenes.title" = "场景动作";
 "settings_details.actions.server_controlled.update.title" = "更新服务器动作";
 "settings_details.actions.title" = "动作";
-"settings_details.actions.use_custom_colors.title" = "Use custom colors";
+"settings_details.actions.use_custom_colors.title" = "使用自定义颜色";
 "settings_details.actions.watch.available.title" = "在手表中显示";
 "settings_details.general.app_icon.enum.beta" = "Beta版";
 "settings_details.general.app_icon.enum.black" = "黑色";
