@@ -5,7 +5,19 @@ import PromiseKit
 import RealmSwift
 #if os(watchOS)
 import ClockKit
+import WatchKit
 #endif
+
+public enum WatchContext: String, CaseIterable {
+    case servers
+    case actions
+    case complications
+    case ssid = "SSID"
+    case activeFamilies
+    case watchModel
+    case watchVersion
+    case watchBattery
+}
 
 public extension HomeAssistantAPI {
     // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
@@ -13,16 +25,16 @@ public extension HomeAssistantAPI {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
         #if os(iOS)
-        content["servers"] = Current.servers.restorableState()
+        content[WatchContext.servers.rawValue] = Current.servers.restorableState()
 
-        content["actions"] = Array(Current.realm().objects(Action.self)).toJSON()
+        content[WatchContext.actions.rawValue] = Array(Current.realm().objects(Action.self)).toJSON()
 
-        content["complications"] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
+        content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
 
         #if targetEnvironment(simulator)
-        content["SSID"] = "SimulatorWiFi"
+        content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
         #else
-        content["SSID"] = Current.connectivity.currentWiFiSSID()
+        content[WatchContext.ssid.rawValue] = Current.connectivity.currentWiFiSSID()
         #endif
 
         #elseif os(watchOS)
@@ -31,9 +43,11 @@ public extension HomeAssistantAPI {
             ComplicationGroupMember(family: $0.family).rawValue
         }
 
-        content["activeFamilies"] = activeFamilies
-        content["watchModel"] = Current.device.systemModel()
-        content["watchVersion"] = Current.device.systemVersion()
+        content[WatchContext.activeFamilies.rawValue] = activeFamilies
+        content[WatchContext.watchModel.rawValue] = Current.device.systemModel()
+        content[WatchContext.watchVersion.rawValue] = Current.device.systemVersion()
+        WKInterfaceDevice.current().isBatteryMonitoringEnabled = true
+        content[WatchContext.watchBattery.rawValue] = WKInterfaceDevice.current().batteryLevel
 
         #endif
 

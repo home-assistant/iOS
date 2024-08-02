@@ -25,5 +25,6 @@ final class MockWatchHomeViewModel: WatchHomeViewModelProtocol {
     func onDisappear() {}
 
     func fetchNetworkInfo(completion: (() -> Void)? = nil) {}
+    func syncContext() {}
 }
 #endif

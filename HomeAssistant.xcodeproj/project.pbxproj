@@ -654,6 +654,9 @@
 		42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
 		42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
 		42CE8FBB2B46DB6200C707F9 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42D3E49C2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
+		42D3E49D2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
+		42D3E4A12C5BCD1100444BE6 /* WatchContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A02C5BCD1100444BE6 /* WatchContextTests.swift */; };
 		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
@@ -1858,6 +1861,8 @@
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
 		42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreStrings+Values.swift"; sourceTree = "<group>"; };
 		42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrontendStrings+Values.swift"; sourceTree = "<group>"; };
+		42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBatterySensor.swift; sourceTree = "<group>"; };
+		42D3E4A02C5BCD1100444BE6 /* WatchContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContextTests.swift; sourceTree = "<group>"; };
 		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
 		42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
 		42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
@@ -3016,6 +3021,7 @@
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				110ED56225A563D600489AF7 /* DisplaySensor.swift */,
 				118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */,
+				42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */,
 				42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */,
 				420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */,
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
@@ -3696,6 +3702,14 @@
 			path = Domain;
 			sourceTree = "<group>";
 		};
+		42D3E49F2C5BCCF600444BE6 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				42D3E4A02C5BCD1100444BE6 /* WatchContextTests.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
 		42F1DA6E2B4EE2CE002729BC /* Responses */ = {
 			isa = PBXGroup;
 			children = (
@@ -4143,6 +4157,7 @@
 				11EFD3C1272642FC000AF78B /* Additions */,
 				116D3A3B2724D81C00EF5D21 /* Auth */,
 				11AD2EA7252900AA00FBC437 /* Resources */,
+				42D3E49F2C5BCCF600444BE6 /* Watch */,
 				420F53EC2C4E9FF1003C8415 /* Widgets */,
 				11A71C7424A5023200D9565F /* ZoneManager */,
 				117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */,
@@ -6407,6 +6422,7 @@
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				42FCD0032B9B1CB70057783F /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				42FCD0042B9B1CB70057783F /* ThreadCredentialsSharing.test.swift in Sources */,
+				42D3E4A12C5BCD1100444BE6 /* WatchContextTests.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
@@ -6545,6 +6561,7 @@
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
 				1128FF3D297F49D900BAAFD9 /* Locale+IntentLanguage.swift in Sources */,
+				42D3E49D2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */,
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
@@ -6745,6 +6762,7 @@
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
 				B613936924F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
+				42D3E49C2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */,
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */,
