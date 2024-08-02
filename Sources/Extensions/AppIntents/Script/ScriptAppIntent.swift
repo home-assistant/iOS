@@ -66,14 +66,16 @@ struct IntentScriptEntity: AppEntity {
     var id: String
     var serverId: String
     var displayString: String
+    var iconName: String
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(title: "\(displayString)")
     }
 
-    init(id: String, serverId: String, displayString: String) {
+    init(id: String, serverId: String, displayString: String, iconName: String) {
         self.id = id
         self.serverId = serverId
         self.displayString = displayString
+        self.iconName = iconName
     }
 }
 
@@ -122,7 +124,8 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                             IntentScriptEntity(
                                 id: script.id,
                                 serverId: server.identifier.rawValue,
-                                displayString: script.name ?? "Unknown"
+                                displayString: script.name ?? "Unknown",
+                                iconName: script.iconName ?? ""
                             )
                         }
                     case let .rejected(error):

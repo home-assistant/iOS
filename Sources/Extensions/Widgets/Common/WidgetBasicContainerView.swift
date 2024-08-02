@@ -42,7 +42,8 @@ struct WidgetBasicContainerView: View {
                 intent.scripts = [IntentScriptEntity(
                     id: script.id,
                     serverId: script.serverId,
-                    displayString: script.name ?? "Unknown"
+                    displayString: script.name ?? "Unknown",
+                    iconName: ""
                 )]
                 return intent
             }

@@ -7,9 +7,11 @@ public struct HAScript: Codable, Equatable {
 
     public var id: String
     public var name: String?
+    public var iconName: String?
 
-    public init(id: String, name: String?) {
+    public init(id: String, name: String?, iconName: String?) {
         self.id = id
         self.name = name
+        self.iconName = iconName
     }
 }

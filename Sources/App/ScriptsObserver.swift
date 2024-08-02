@@ -34,7 +34,7 @@ enum ScriptsObserver {
         private func handle(scripts: Set<HAEntity>, server: Server) {
             let key = HAScript.cacheKey(serverId: server.identifier.rawValue)
             let scripts = scripts.map { entity in
-                HAScript(id: entity.entityId, name: entity.attributes.friendlyName)
+                HAScript(id: entity.entityId, name: entity.attributes.friendlyName, iconName: entity.attributes.icon)
             }
             firstly {
                 Current.diskCache.value(for: key) as Promise<[HAScript]>
