@@ -3041,6 +3041,14 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "widgets.reload_widgets.app_intent.title") }
       }
     }
+    public enum Scripts {
+      /// Run Scripts
+      public static var description: String { return L10n.tr("Localizable", "widgets.scripts.description") }
+      /// No Scripts Configured
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.scripts.not_configured") }
+      /// Scripts
+      public static var title: String { return L10n.tr("Localizable", "widgets.scripts.title") }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

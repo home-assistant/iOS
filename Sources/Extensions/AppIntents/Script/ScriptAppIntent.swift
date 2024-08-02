@@ -103,17 +103,17 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         await withCheckedContinuation { continuation in
             var entities: [Server: [IntentScriptEntity]] = [:]
             var serverCheckedCount = 0
-            for server in Current.servers.all {
+            for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 (
                     Current.diskCache
                         .value(
-                            for: ScriptsObserver
+                            for: HAScript
                                 .cacheKey(serverId: server.identifier.rawValue)
                         ) as? Promise<[HAScript]>
                 )?.pipe(to: { result in
                     switch result {
                     case let .fulfilled(scripts):
-                        var scripts = scripts
+                        var scripts = scripts.sorted(by: { $0.name ?? "" < $1.name ?? "" })
                         if let string {
                             scripts = scripts.filter { $0.name?.contains(string) ?? false }
                         }
@@ -127,7 +127,9 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                         }
                     case let .rejected(error):
                         Current.Log
-                            .error("Failed to get scripts cache for server identifier: \(server.identifier.rawValue)")
+                            .error(
+                                "Failed to get scripts cache for server identifier: \(server.identifier.rawValue), error: \(error.localizedDescription)"
+                            )
                     }
                     serverCheckedCount += 1
                     if serverCheckedCount == Current.servers.all.count {

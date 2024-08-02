@@ -45,5 +45,6 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
 
     enum WidgetIntentType: Hashable, Encodable {
         case action(id: String, name: String)
+        case script(id: String, serverId: String, name: String)
     }
 }

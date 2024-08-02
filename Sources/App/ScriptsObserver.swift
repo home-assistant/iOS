@@ -5,10 +5,6 @@ import Shared
 import WidgetKit
 
 enum ScriptsObserver {
-    static func cacheKey(serverId: String) -> String {
-        "scripts-cache-\(serverId)"
-    }
-
     static var observer: Observer?
 
     static func setupObserver() {
@@ -36,7 +32,7 @@ enum ScriptsObserver {
         }
 
         private func handle(scripts: Set<HAEntity>, server: Server) {
-            let key = ScriptsObserver.cacheKey(serverId: server.identifier.rawValue)
+            let key = HAScript.cacheKey(serverId: server.identifier.rawValue)
             let scripts = scripts.map { entity in
                 HAScript(id: entity.entityId, name: entity.attributes.friendlyName)
             }
@@ -49,7 +45,7 @@ enum ScriptsObserver {
                     return .init(error: HandleScriptsError.unchanged)
                 }
 
-                WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.scripts.rawValue)
+//                WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.scripts.rawValue)
                 return .value(())
             }.then {
                 Current.diskCache.set(scripts, for: key)
