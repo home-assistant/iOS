@@ -1,10 +1,10 @@
 import Foundation
-import Shared
 import HAKit
 import PromiseKit
+import Shared
 import WidgetKit
 
-final class ScriptsObserver {
+enum ScriptsObserver {
     static func cacheKey(serverId: String) -> String {
         "scripts-cache-\(serverId)"
     }
@@ -22,12 +22,12 @@ final class ScriptsObserver {
         var cachedScripts: [HAScript]?
         func start() {
             container = .init { server in
-                    .init(
-                        Current.api(for: server).connection.caches.states.subscribe({ [weak self] _, states in
-                            let scripts = states.all.filter({ $0.domain == Domain.script.rawValue })
-                            self?.handle(scripts: scripts, server: server)
-                        })
-                    )
+                .init(
+                    Current.api(for: server).connection.caches.states.subscribe({ [weak self] _, states in
+                        let scripts = states.all.filter({ $0.domain == Domain.script.rawValue })
+                        self?.handle(scripts: scripts, server: server)
+                    })
+                )
             }
         }
 
@@ -43,7 +43,7 @@ final class ScriptsObserver {
             firstly {
                 Current.diskCache.value(for: key) as Promise<[HAScript]>
             }.recover { _ in
-                    .value([])
+                .value([])
             }.then { current -> Promise<Void> in
                 guard scripts != current else {
                     return .init(error: HandleScriptsError.unchanged)

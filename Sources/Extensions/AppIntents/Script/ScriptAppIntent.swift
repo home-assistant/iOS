@@ -1,17 +1,27 @@
-import Foundation
 import AppIntents
-import Shared
+import Foundation
 import PromiseKit
+import Shared
 import SwiftUI
 
 @available(iOS 17, *)
 final class ScriptAppIntent: AppIntent {
     static let title: LocalizedStringResource = .init("widgets.script.description.title", defaultValue: "Run Script")
 
-    @Parameter(title: "Script")
+    @Parameter(title: LocalizedStringResource("app_intents.scripts.script.title", defaultValue: "Run Script"))
     var script: IntentScriptEntity
 
-    @Parameter(title: "Confirmation notification", description: "Shows confirmation dialog after executed", default: true)
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.scripts.show_confirmation_dialog.title",
+            defaultValue: "Confirmation notification"
+        ),
+        description: LocalizedStringResource(
+            "app_intents.scripts.show_confirmation_dialog.description",
+            defaultValue: "Shows confirmation notification after executed"
+        ),
+        default: true
+    )
     var showConfirmationDialog: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
@@ -22,20 +32,25 @@ final class ScriptAppIntent: AppIntent {
             }
             let domain = Domain.script.rawValue
             let service = script.id.replacingOccurrences(of: "\(domain).", with: "")
-            Current.api(for: server).CallService(domain: domain, service: service, serviceData: [:]).pipe { [weak self] result in
-                switch result {
-                case .fulfilled:
-                    continuation.resume(returning: true)
-                case .rejected(let error):
-                    Current.Log.error("Failed to execute script from ScriptAppIntent, name: \(String(describing: self?.script.displayString)), error: \(error.localizedDescription)")
-                    continuation.resume(returning: false)
+            Current.api(for: server).CallService(domain: domain, service: service, serviceData: [:])
+                .pipe { [weak self] result in
+                    switch result {
+                    case .fulfilled:
+                        continuation.resume(returning: true)
+                    case let .rejected(error):
+                        Current.Log
+                            .error(
+                                "Failed to execute script from ScriptAppIntent, name: \(String(describing: self?.script.displayString)), error: \(error.localizedDescription)"
+                            )
+                        continuation.resume(returning: false)
+                    }
                 }
-            }
         }
         if showConfirmationDialog {
             LocalNotificationDispatcher().send(.init(
                 id: .debug,
-                title: success ? "Script \"\(script.displayString)\" executed" : "Script \"\(script.displayString)\" failed to execute, please check your logs."
+                title: success ? L10n.AppIntents.Scripts.SuccessMessage.content(script.displayString) : L10n.AppIntents
+                    .Scripts.FailureMessage.content(script.displayString)
             ))
         }
         return .result(value: success)
@@ -64,7 +79,6 @@ struct IntentScriptEntity: AppEntity {
 
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
 struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
-
     func entities(for identifiers: [String]) async throws -> [IntentScriptEntity] {
         await getScriptEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
     }
@@ -89,10 +103,16 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         await withCheckedContinuation { continuation in
             var entities: [Server: [IntentScriptEntity]] = [:]
             var serverCheckedCount = 0
-            Current.servers.all.forEach { server in
-                (Current.diskCache.value(for: ScriptsObserver.cacheKey(serverId: server.identifier.rawValue)) as? Promise<[HAScript]>)?.pipe(to: { result in
+            for server in Current.servers.all {
+                (
+                    Current.diskCache
+                        .value(
+                            for: ScriptsObserver
+                                .cacheKey(serverId: server.identifier.rawValue)
+                        ) as? Promise<[HAScript]>
+                )?.pipe(to: { result in
                     switch result {
-                    case .fulfilled(let scripts):
+                    case let .fulfilled(scripts):
                         var scripts = scripts
                         if let string {
                             scripts = scripts.filter { $0.name?.contains(string) ?? false }
@@ -105,8 +125,9 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                                 displayString: script.name ?? "Unknown"
                             )
                         }
-                    case .rejected(let error):
-                        Current.Log.error("Failed to get scripts cache for server identifier: \(server.identifier.rawValue)")
+                    case let .rejected(error):
+                        Current.Log
+                            .error("Failed to get scripts cache for server identifier: \(server.identifier.rawValue)")
                     }
                     serverCheckedCount += 1
                     if serverCheckedCount == Current.servers.all.count {
