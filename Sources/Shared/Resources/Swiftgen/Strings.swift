@@ -3017,6 +3017,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "widgets.reload_widgets.app_intent.title") }
       }
     }
+    public enum Script {
+      public enum Description {
+        /// Run Script
+        public static var title: String { return L10n.tr("Localizable", "widgets.script.description.title") }
+      }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
