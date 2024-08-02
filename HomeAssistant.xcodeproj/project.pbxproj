@@ -528,6 +528,8 @@
 		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
+		420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
+		420D5AE42C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
 		420E2AE32C4746BB004921D8 /* WidgetBasicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */; };
 		420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */; };
 		420E2AE62C474710004921D8 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicView.swift */; };
@@ -1691,6 +1693,7 @@
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		420B10082B1D129B00D383D8 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionSensor.swift; sourceTree = "<group>"; };
 		420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewModel.swift; sourceTree = "<group>"; };
 		420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSizeStyle.swift; sourceTree = "<group>"; };
 		420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationDispatcher.swift; sourceTree = "<group>"; };
@@ -3010,6 +3013,7 @@
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				110ED56225A563D600489AF7 /* DisplaySensor.swift */,
 				118BDA8725A6DBBA00731016 /* FrontmostAppSensor.swift */,
+				420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */,
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
 				118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */,
 				115BC8272676F44E00452430 /* FocusSensor.swift */,
@@ -6549,6 +6553,7 @@
 				428338452BA1BB4F004798C2 /* Spaces.swift in Sources */,
 				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				11B38EEF275C54A300205C7B /* OpenPageIntentHandler.swift in Sources */,
+				420D5AE42C5A860900624A08 /* LocationPermissionSensor.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				11ADF941267D34B20040A7E3 /* NotificationsCommandManager.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
@@ -6805,6 +6810,7 @@
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
 				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,
+				420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */,
 				42FCCFDB2B9B19F70057783F /* ThreadCredential.swift in Sources */,
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
