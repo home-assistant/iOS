@@ -443,7 +443,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.actions.scenes.title" = "Scen-åtgärder";
 "settings_details.actions.server_controlled.update.title" = "Update server Actions";
 "settings_details.actions.title" = "Åtgärder";
-"settings_details.actions.use_custom_colors.title" = "Use custom colors";
+"settings_details.actions.use_custom_colors.title" = "Använd anpassade färger";
 "settings_details.actions.watch.available.title" = "Visa i klocka";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Svart";
@@ -901,5 +901,5 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.open_page.not_configured" = "Inga sidor tillgängliga";
 "widgets.open_page.title" = "Öppna sida";
 "widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
-"widgets.reload_widgets.app_intent.title" = "Reload widgets";
+"widgets.reload_widgets.app_intent.title" = "Ladda om widgetar";
 "yes_label" = "Ja";

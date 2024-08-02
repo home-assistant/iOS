@@ -443,7 +443,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.actions.scenes.title" = "景場動作";
 "settings_details.actions.server_controlled.update.title" = "更新伺服器動作";
 "settings_details.actions.title" = "動作";
-"settings_details.actions.use_custom_colors.title" = "Use custom colors";
+"settings_details.actions.use_custom_colors.title" = "使用自訂顏色";
 "settings_details.actions.watch.available.title" = "顯示於 Watch";
 "settings_details.general.app_icon.enum.beta" = "測試版";
 "settings_details.general.app_icon.enum.black" = "黑色";

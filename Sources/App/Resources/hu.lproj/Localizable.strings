@@ -443,7 +443,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.actions.scenes.title" = "Jelenet műveletek";
 "settings_details.actions.server_controlled.update.title" = "Kiszolgálói műveletek frissítése";
 "settings_details.actions.title" = "Műveletek";
-"settings_details.actions.use_custom_colors.title" = "Use custom colors";
+"settings_details.actions.use_custom_colors.title" = "Egyéni színek használata";
 "settings_details.actions.watch.available.title" = "Megjelenítés a Watch-ban";
 "settings_details.general.app_icon.enum.beta" = "Béta";
 "settings_details.general.app_icon.enum.black" = "Fekete";
