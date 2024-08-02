@@ -27,6 +27,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
+    public var entityCategory: String?
 
     public var Settings: [WebhookSensorSetting] = []
 
@@ -49,19 +50,41 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.UniqueID = uniqueID
     }
 
-    convenience init(name: String, uniqueID: String, state: Any, unit: String? = nil) {
+    convenience init(name: String, uniqueID: String, state: Any, unit: String? = nil, entityCategory: String? = nil) {
         self.init(name: name, uniqueID: uniqueID)
         self.State = state
         self.UnitOfMeasurement = unit
+        self.entityCategory = entityCategory
     }
 
-    convenience init(name: String, uniqueID: String, icon: String?, state: Any, unit: String? = nil) {
-        self.init(name: name, uniqueID: uniqueID, state: state, unit: unit)
+    convenience init(
+        name: String,
+        uniqueID: String,
+        icon: String?,
+        state: Any,
+        unit: String? = nil,
+        entityCategory: String? = nil
+    ) {
+        self.init(name: name, uniqueID: uniqueID, state: state, unit: unit, entityCategory: entityCategory)
         self.Icon = icon
     }
 
-    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, state: Any, unit: String? = nil) {
-        self.init(name: name, uniqueID: uniqueID, icon: "mdi:\(icon.name)", state: state, unit: unit)
+    convenience init(
+        name: String,
+        uniqueID: String,
+        icon: MaterialDesignIcons,
+        state: Any,
+        unit: String? = nil,
+        entityCategory: String? = nil
+    ) {
+        self.init(
+            name: name,
+            uniqueID: uniqueID,
+            icon: "mdi:\(icon.name)",
+            state: state,
+            unit: unit,
+            entityCategory: entityCategory
+        )
     }
 
     convenience init(
@@ -70,9 +93,10 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         icon: String,
         deviceClass: DeviceClass,
         state: Any,
-        unit: String? = nil
+        unit: String? = nil,
+        entityCategory: String? = nil
     ) {
-        self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit)
+        self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit, entityCategory: entityCategory)
         self.DeviceClass = deviceClass
     }
 
@@ -88,6 +112,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
 
         if !isUpdate {
             DeviceClass <- map["device_class"]
+            entityCategory <- map["entity_category"]
             Name <- map["name"]
             UnitOfMeasurement <- map["unit_of_measurement"]
         }
