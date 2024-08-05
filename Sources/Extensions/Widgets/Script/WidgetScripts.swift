@@ -19,7 +19,7 @@ struct WidgetScripts: Widget {
                     WidgetBasicViewModel(
                         id: script.script.id,
                         title: script.script.name ?? "Unknown",
-                        subtitle: nil,
+                        subtitle: timelineEntry.showServerName ? script.serverName : nil,
                         interactionType: .appIntent(.script(
                             id: script.script.id,
                             serverId: script.serverId,

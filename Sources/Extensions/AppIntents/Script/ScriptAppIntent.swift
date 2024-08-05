@@ -82,6 +82,7 @@ struct IntentScriptEntity: AppEntity {
 
     var id: String
     var serverId: String
+    var serverName: String
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
@@ -91,11 +92,13 @@ struct IntentScriptEntity: AppEntity {
     init(
         id: String,
         serverId: String,
+        serverName: String,
         displayString: String,
         iconName: String
     ) {
         self.id = id
         self.serverId = serverId
+        self.serverName = serverName
         self.displayString = displayString
         self.iconName = iconName
     }
@@ -146,6 +149,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                             IntentScriptEntity(
                                 id: script.id,
                                 serverId: server.identifier.rawValue,
+                                serverName: server.info.name,
                                 displayString: script.name ?? "Unknown",
                                 iconName: script.iconName ?? ""
                             )

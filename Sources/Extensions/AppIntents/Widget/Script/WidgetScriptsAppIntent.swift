@@ -9,7 +9,16 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
 
     @Parameter(
         title: "Scripts",
-        size: WidgetSize.size
+        size: [
+            .systemSmall: 2,
+            .systemMedium: 4,
+            .systemLarge: 10,
+            .systemExtraLarge: 20,
+            .accessoryInline: 1,
+            .accessoryCorner: 1,
+            .accessoryCircular: 1,
+            .accessoryRectangular: 2,
+        ]
     )
     var scripts: [IntentScriptEntity]?
 
