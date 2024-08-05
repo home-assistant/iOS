@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Poloha aktualizována neznámou metodou";
 "location_change_notification.url_scheme.body" = "Poloha aktualizována pomocí schéma URL";
 "location_change_notification.visit.body" = "Poloha aktualizována prostřednictvím návštěvy";
+"location_change_notification.watch_context.body" = "Poloha aktualizována pomocí kontextové synchronizace hodinek";
 "location_change_notification.x_callback_url.body" = "Poloha aktualizována prostřednictvím X-Callback-URL";
 "menu.actions.configure" = "Nastavení...";
 "menu.actions.title" = "Akce";

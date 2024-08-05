@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Asukohta värskendati tundmatu meetodiga";
 "location_change_notification.url_scheme.body" = "Asukohta värskendati URL-i skeemi kaudu";
 "location_change_notification.visit.body" = "Asukohta värskendati Visiti kaudu";
+"location_change_notification.watch_context.body" = "Asukohta värskendati kella konteksti sünkroonimise kaudu";
 "location_change_notification.x_callback_url.body" = "Asukohta värskendati X-Callback-URL-i kaudu";
 "menu.actions.configure" = "Seadista…";
 "menu.actions.title" = "Tegevused";

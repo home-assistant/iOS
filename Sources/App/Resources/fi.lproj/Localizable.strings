@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Sijainti päivitetty tuntemattomalla menetelmällä";
 "location_change_notification.url_scheme.body" = "Sijainti päivitetty URL-mallin kautta";
 "location_change_notification.visit.body" = "Sijainti päivitetty vierailun kautta";
+"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Sijainti päivitetty X-Callback-URL-osoitteen kautta";
 "menu.actions.configure" = "Määritä…";
 "menu.actions.title" = "Toiminnot";

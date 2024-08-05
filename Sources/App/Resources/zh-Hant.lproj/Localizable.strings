@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "已透過未知方式更新座標";
 "location_change_notification.url_scheme.body" = "已透過 URL 方式更新座標";
 "location_change_notification.visit.body" = "已透過拜訪更新座標";
+"location_change_notification.watch_context.body" = "透過手錶環境同步更新座標";
 "location_change_notification.x_callback_url.body" = "已透過 X-Callback-URL 更新座標";
 "menu.actions.configure" = "設定…";
 "menu.actions.title" = "動作";
