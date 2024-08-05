@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Lieu mis à jour via une méthode inconnue";
 "location_change_notification.url_scheme.body" = "Emplacement mis à jour via l'URL";
 "location_change_notification.visit.body" = "Emplacement mis à jour par une visite";
+"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Emplacement mis à jour via X-Callback-URL";
 "menu.actions.configure" = "Configurer…";
 "menu.actions.title" = "Actions";

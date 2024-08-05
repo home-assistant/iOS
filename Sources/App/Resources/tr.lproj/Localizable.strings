@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Konum bilinmeyen yöntemle güncellendi";
 "location_change_notification.url_scheme.body" = "Konum, URL Şeması aracılığıyla güncellendi";
 "location_change_notification.visit.body" = "Ziyaret yoluyla güncellenen konum";
+"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Konum X-Callback-URL ile güncellendi";
 "menu.actions.configure" = "Yapılandır…";
 "menu.actions.title" = "Aksiyonlar";

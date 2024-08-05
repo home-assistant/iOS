@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "알 수 없는 방법으로 위치 업데이트됨";
 "location_change_notification.url_scheme.body" = "URL 스킴을 통해 업데이트된 위치";
 "location_change_notification.visit.body" = "Visit을 통해 업데이트된 위치";
+"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "X-Callback-URL을 통해 업데이트된 위치";
 "menu.actions.configure" = "구성…";
 "menu.actions.title" = "동작";

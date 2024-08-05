@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Геопозиция обновлена неизвестным способом";
 "location_change_notification.url_scheme.body" = "Геопозиция обновлена запросом URL";
 "location_change_notification.visit.body" = "Геопозиция обновлена посещением";
+"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Местоположение обновлено с помощью X-Callback-URL";
 "menu.actions.configure" = "Конфигурация…";
 "menu.actions.title" = "Действия";
