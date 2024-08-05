@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Η τοποθεσία ενημερώθηκε μέσω άγνωστης μεθόδου";
 "location_change_notification.url_scheme.body" = "Η τοποθεσία ενημερώθηκε μέσω σχήματος URL";
 "location_change_notification.visit.body" = "Η τοποθεσία ενημερώθηκε μέσω επίσκεψης";
+"location_change_notification.watch_context.body" = "Η τοποθεσία ενημερώθηκε μέσω συγχρονισμού περιβάλλοντος ρολογιού";
 "location_change_notification.x_callback_url.body" = "Η τοποθεσία ενημερώθηκε μέσω X-Callback-URL";
 "menu.actions.configure" = "Διαμορφώστε…";
 "menu.actions.title" = "Ενέργειες";
@@ -259,7 +260,7 @@
 "notifications_configurator.category.rows.category_summary.footer" = "Ένα πεδίο διαμόρφωσης για την περιγραφή σύνοψης που χρησιμοποιείται όταν το σύστημα ομαδοποιεί τις ειδοποιήσεις της κατηγορίας. Μπορείτε προαιρετικά να χρησιμοποιήσετε το '%%u' για να εμφανίσετε τον αριθμό των ειδοποιήσεων στην ομάδα και '%%@' για να εμφανίσετε το όρισμα σύνοψης που παρέχεται μέσα στο πακέτο push.";
 "notifications_configurator.category.rows.category_summary.header" = "Περίληψη κατηγορίας";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u ειδοποιήσεις";
-"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Αυτό το κείμενο εμφανίζεται μόνο εάν έχετε αποκρύψει τις προεπισκοπήσεις ειδοποιήσεων. Χρησιμοποιήστε το '%%u ' για τον αριθμό των μηνυμάτων με το ίδιο αναγνωριστικό νήματος.";
+"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Αυτό το κείμενο εμφανίζεται μόνο εάν έχετε αποκρύψει τις προεπισκοπήσεις ειδοποιήσεων. Χρησιμοποιήστε το '%%u' για τον αριθμό των μηνυμάτων με το ίδιο αναγνωριστικό νήματος.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Κρυφό σύμβολο κράτησης θέσης προεπισκόπησης";
 "notifications_configurator.category.rows.name.title" = "Όνομα";
 "notifications_configurator.identifier" = "Αναγνωριστικό";
@@ -633,7 +634,7 @@
 "thread.credentials.share_credentials.no_credentials_message" = "Βεβαιωθείτε ότι έχετε συνδεθεί με το λογαριασμό σας στο iCloud, ο οποίος είναι ιδιοκτήτης ενός Σπιτιού στο Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Δεν έχετε διαπιστευτήρια για κοινή χρήση";
 "thread.credentials.share_credentials_button_title" = "Μοιραστείτε τα διαπιστευτήρια με το Home Assistant";
-"thread.extended_pan_id.title" = "Εκτεταμένο αναγνωριστικό PAN";
+"thread.extended_pan_id.title" = "Εκτεταμένο PAN ID";
 "thread.management.title" = "Διαπιστευτήρια νήματος";
 "thread.network_key.title" = "Κλειδί δικτύου";
 "thread.store_in_keychain.error.generic.body" = "Απέτυχε η αποθήκευση του διαπιστευτηρίου νήματος στην κλειδοθήκη, ελέγξτε τα αρχεία καταγραφής για περισσότερες πληροφορίες.";

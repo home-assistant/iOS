@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Beliggenhet oppdatert via ukjent metode";
 "location_change_notification.url_scheme.body" = "Plasseringen oppdatert via URL-scheme";
 "location_change_notification.visit.body" = "Plasseringen oppdatert via besøk";
+"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Plasseringen oppdatert via X-Callback-URL";
 "menu.actions.configure" = "Konfigurere…";
 "menu.actions.title" = "Handlinger";

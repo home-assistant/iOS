@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Lokasi diperbarui melalui metode yang tidak diketahui";
 "location_change_notification.url_scheme.body" = "Lokasi diperbarui melalui Skema URL";
 "location_change_notification.visit.body" = "Lokasi diperbarui melalui Kunjungan";
+"location_change_notification.watch_context.body" = "Lokasi diperbarui melalui sinkronisasi konteks jam tangan";
 "location_change_notification.x_callback_url.body" = "Lokasi diperbarui melalui X-Callback-URL";
 "menu.actions.configure" = "Konfigurasi";
 "menu.actions.title" = "Aksi";

@@ -185,13 +185,13 @@
 "location_change_notification.region_enter.body" = "%@ entered";
 "location_change_notification.region_exit.body" = "%@ exited";
 "location_change_notification.signaled.body" = "Location updated via update signal";
-"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.significant_location_update.body" = "Significant location change detected";
 "location_change_notification.siri.body" = "Location update triggered by Siri";
 "location_change_notification.title" = "Location change";
 "location_change_notification.unknown.body" = "Location updated via unknown method";
 "location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
 "location_change_notification.visit.body" = "Location updated via Visit";
+"location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Location updated via X-Callback-URL";
 "menu.actions.configure" = "Configure…";
 "menu.actions.title" = "Actions";
