@@ -22,6 +22,19 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
     )
     var scripts: [IntentScriptEntity]?
 
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.scripts.show_confirmation_dialog.title",
+            defaultValue: "Confirmation notification"
+        ),
+        description: LocalizedStringResource(
+            "app_intents.scripts.show_confirmation_dialog.description",
+            defaultValue: "Shows confirmation notification after executed"
+        ),
+        default: true
+    )
+    var showConfirmationDialog: Bool
+
     static var parameterSummary: some ParameterSummary {
         Summary()
     }
@@ -30,6 +43,7 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
         if let firstScript = scripts?.first {
             let intent = ScriptAppIntent()
             intent.script = firstScript
+            intent.showConfirmationDialog = showConfirmationDialog
             return try await intent.perform()
         } else {
             fatalError("No script available to run in Script widget")

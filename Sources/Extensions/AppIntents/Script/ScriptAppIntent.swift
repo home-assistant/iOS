@@ -92,7 +92,8 @@ struct IntentScriptEntity: AppEntity {
         id: String,
         serverId: String,
         displayString: String,
-        iconName: String) {
+        iconName: String
+    ) {
         self.id = id
         self.serverId = serverId
         self.displayString = displayString
