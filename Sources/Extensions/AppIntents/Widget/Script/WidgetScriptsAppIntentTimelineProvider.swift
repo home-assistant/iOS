@@ -41,7 +41,8 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
         let entry: Entry = await {
-            if let configurationScripts = configuration.scripts {
+            if let configurationScripts = configuration.scripts?
+                .prefix(WidgetBasicContainerView.maximumCount(family: context.family)) {
                 return Entry(date: Date(), scripts: configurationScripts.compactMap({ intentScriptEntry in
                     .init(
                         script: .init(
