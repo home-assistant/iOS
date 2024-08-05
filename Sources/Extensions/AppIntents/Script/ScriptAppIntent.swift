@@ -4,12 +4,25 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-@available(iOS 17, *)
+@available(iOS 16.4, *)
 final class ScriptAppIntent: AppIntent {
     static let title: LocalizedStringResource = .init("widgets.script.description.title", defaultValue: "Run Script")
 
     @Parameter(title: LocalizedStringResource("app_intents.scripts.script.title", defaultValue: "Run Script"))
     var script: IntentScriptEntity
+
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.scripts.requires_confirmation_before_run.title",
+            defaultValue: "Confirm before run"
+        ),
+        description: LocalizedStringResource(
+            "app_intents.scripts.requires_confirmation_before_run.description",
+            defaultValue: "Requires manual confirmation before running the script."
+        ),
+        default: true
+    )
+    var requiresConfirmationBeforeRun: Bool
 
     @Parameter(
         title: LocalizedStringResource(
@@ -25,6 +38,10 @@ final class ScriptAppIntent: AppIntent {
     var showConfirmationDialog: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
+        if requiresConfirmationBeforeRun {
+            try await requestConfirmation()
+        }
+
         let success: Bool = try await withCheckedThrowingContinuation { continuation in
             guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == script.serverId }) else {
                 continuation.resume(returning: false)
@@ -71,7 +88,11 @@ struct IntentScriptEntity: AppEntity {
         DisplayRepresentation(title: "\(displayString)")
     }
 
-    init(id: String, serverId: String, displayString: String, iconName: String) {
+    init(
+        id: String,
+        serverId: String,
+        displayString: String,
+        iconName: String) {
         self.id = id
         self.serverId = serverId
         self.displayString = displayString

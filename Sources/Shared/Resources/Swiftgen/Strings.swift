@@ -278,10 +278,16 @@ public enum L10n {
     }
     public enum Scripts {
       public enum FailureMessage {
-        /// Script %@ failed to execute, please check your logs.
+        /// Script "%@" failed to execute, please check your logs.
         public static func content(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.scripts.failure_message.content", String(describing: p1))
         }
+      }
+      public enum RequiresConfirmationBeforeRun {
+        /// Requires manual confirmation before running the script.
+        public static var description: String { return L10n.tr("Localizable", "app_intents.scripts.requires_confirmation_before_run.description") }
+        /// Confirm before run
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.requires_confirmation_before_run.title") }
       }
       public enum Script {
         /// Run Script
@@ -294,7 +300,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.show_confirmation_dialog.title") }
       }
       public enum SuccessMessage {
-        /// Script %@ executed.
+        /// Script "%@" executed.
         public static func content(_ p1: Any) -> String {
           return L10n.tr("Localizable", "app_intents.scripts.success_message.content", String(describing: p1))
         }
