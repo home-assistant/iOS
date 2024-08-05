@@ -15,16 +15,7 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
 
     @Parameter(
         title: .init("widgets.actions.parameters.action", defaultValue: "Action"),
-        size: [
-            .systemSmall: 2,
-            .systemMedium: 4,
-            .systemLarge: 10,
-            .systemExtraLarge: 20,
-            .accessoryInline: 1,
-            .accessoryCorner: 1,
-            .accessoryCircular: 1,
-            .accessoryRectangular: 2,
-        ]
+        size: WidgetSize.size
     )
     var actions: [IntentActionAppEntity]?
 

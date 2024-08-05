@@ -669,6 +669,8 @@
 		42D3E4BE2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
 		42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
 		42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
+		42D3E4CC2C61054700444BE6 /* WidgetSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4CB2C61054700444BE6 /* WidgetSize.swift */; };
+		42D3E4CD2C61054700444BE6 /* WidgetSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4CB2C61054700444BE6 /* WidgetSize.swift */; };
 		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
@@ -1881,6 +1883,7 @@
 		42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScripts.swift; sourceTree = "<group>"; };
 		42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntent.swift; sourceTree = "<group>"; };
+		42D3E4CB2C61054700444BE6 /* WidgetSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSize.swift; sourceTree = "<group>"; };
 		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
 		42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
 		42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
@@ -3590,6 +3593,7 @@
 				42D3E4A62C5D009A00444BE6 /* Script */,
 				4296C3722B91F06D0051B63C /* Widget */,
 				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
+				42D3E4CB2C61054700444BE6 /* WidgetSize.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -6195,6 +6199,7 @@
 				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,
 				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
+				42D3E4CD2C61054700444BE6 /* WidgetSize.swift in Sources */,
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
 				403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
@@ -6393,6 +6398,7 @@
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
+				42D3E4CC2C61054700444BE6 /* WidgetSize.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */,
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
