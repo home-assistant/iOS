@@ -25,7 +25,10 @@ struct WidgetScripts: Widget {
                             serverId: script.serverId,
                             name: script.script.name ?? "Unknown"
                         )),
-                        icon: MaterialDesignIcons(serversideValueNamed: script.script.iconName ?? "", fallback: .scriptTextIcon),
+                        icon: MaterialDesignIcons(
+                            serversideValueNamed: script.script.iconName ?? "",
+                            fallback: .scriptTextIcon
+                        ),
                         useCustomColors: false
                     )
                 }

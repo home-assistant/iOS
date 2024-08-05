@@ -37,12 +37,12 @@ struct WidgetBasicContainerView: View {
                 let intent = WidgetActionsAppIntent()
                 intent.actions = [IntentActionAppEntity(id: model.id, displayString: model.title)]
                 return intent
-            case let .script(script):
+            case let .script(id, serverId, name):
                 let intent = WidgetScriptsAppIntent()
                 intent.scripts = [IntentScriptEntity(
-                    id: script.id,
-                    serverId: script.serverId,
-                    displayString: script.name ?? "Unknown",
+                    id: id,
+                    serverId: serverId,
+                    displayString: name,
                     iconName: ""
                 )]
                 return intent

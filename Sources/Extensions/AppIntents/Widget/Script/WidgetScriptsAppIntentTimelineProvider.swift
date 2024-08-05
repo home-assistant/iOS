@@ -26,7 +26,11 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
     func snapshot(for configuration: WidgetScriptsAppIntent, in context: Context) async -> Entry {
         .init(date: Date(), scripts: configuration.scripts?.compactMap({ intentScriptEntity in
             .init(
-                script: .init(id: intentScriptEntity.id, name: intentScriptEntity.displayString, iconName: intentScriptEntity.iconName),
+                script: .init(
+                    id: intentScriptEntity.id,
+                    name: intentScriptEntity.displayString,
+                    iconName: intentScriptEntity.iconName
+                ),
                 serverId: intentScriptEntity.serverId
             )
         }) ?? [])
@@ -34,10 +38,14 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
         let entry = Entry(date: Date(), scripts: configuration.scripts?.compactMap({ intentScriptEntry in
-                .init(
-                    script: .init(id: intentScriptEntry.id, name: intentScriptEntry.displayString, iconName: intentScriptEntry.iconName),
-                    serverId: intentScriptEntry.serverId
-                )
+            .init(
+                script: .init(
+                    id: intentScriptEntry.id,
+                    name: intentScriptEntry.displayString,
+                    iconName: intentScriptEntry.iconName
+                ),
+                serverId: intentScriptEntry.serverId
+            )
         }) ?? [])
         return .init(
             entries: [entry],
