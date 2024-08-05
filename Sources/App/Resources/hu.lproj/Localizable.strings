@@ -191,6 +191,7 @@
 "location_change_notification.unknown.body" = "Ismeretlen módszerrel történt helyfrissítés";
 "location_change_notification.url_scheme.body" = "URL-sémán keresztül történt helyfrissítés";
 "location_change_notification.visit.body" = "Helymegatározás frissítve a Visit segítségével";
+"location_change_notification.watch_context.body" = "A helszín frissítve lett az óra kontextus szinkronizálása által";
 "location_change_notification.x_callback_url.body" = "Helymegatározás frissítve az X-Callback-URL segítségével";
 "menu.actions.configure" = "Beállítás…";
 "menu.actions.title" = "Műveletek";
