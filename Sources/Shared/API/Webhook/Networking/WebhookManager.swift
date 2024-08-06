@@ -246,7 +246,6 @@ public class WebhookManager: NSObject {
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
                 statusCode: (response as? HTTPURLResponse)?.statusCode,
-                requestURL: response.url,
                 secretGetter: { server.info.connection.webhookSecretBytes(version: server.info.version) }
             )
         }.map { possible in
@@ -447,7 +446,6 @@ public class WebhookManager: NSObject {
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
                 statusCode: (response as? HTTPURLResponse)?.statusCode,
-                requestURL: response.url,
                 secretGetter: { server.info.connection.webhookSecretBytes(version: server.info.version) }
             )
         }.asVoid()
@@ -614,7 +612,6 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
             }.webhookJson(
                 on: DispatchQueue.global(qos: .utility),
                 statusCode: statusCode,
-                requestURL: task.response?.url,
                 secretGetter: { server.info.connection.webhookSecretBytes(version: server.info.version) }
             )
 
