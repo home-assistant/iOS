@@ -34,8 +34,12 @@ enum ScriptsObserver {
         private func handle(scripts: Set<HAEntity>, server: Server) {
             let key = HAScript.cacheKey(serverId: server.identifier.rawValue)
             let scripts = scripts.map { entity in
-                HAScript(id: entity.entityId, name: entity.attributes.friendlyName, iconName: entity.attributes.icon)
-            }
+                HAScript(
+                    id: entity.entityId,
+                    name: entity.attributes.friendlyName,
+                    iconName: entity.attributes.icon
+                )
+            }.sorted(by: { $0.id < $1.id })
             firstly {
                 Current.diskCache.value(for: key) as Promise<[HAScript]>
             }.recover { _ in
@@ -45,7 +49,7 @@ enum ScriptsObserver {
                     return .init(error: HandleScriptsError.unchanged)
                 }
 
-//                WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.scripts.rawValue)
+                WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.scripts.rawValue)
                 return .value(())
             }.then {
                 Current.diskCache.set(scripts, for: key)
