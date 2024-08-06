@@ -204,7 +204,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     public mutating func webhookURL() -> URL {
-        if let cloudhookURL, !isOnInternalNetwork {
+        if let cloudhookURL, !isOnInternalNetwork, canUseCloud, useCloud {
             return cloudhookURL
         }
 
