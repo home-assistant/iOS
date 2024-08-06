@@ -54,6 +54,7 @@
 		<string>AssistInAppIntent</string>
 		<string>AssistIntent</string>
 		<string>ReloadWidgetsAppIntent</string>
+		<string>ScriptAppIntent</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
@@ -144,6 +145,7 @@
 		<string>WidgetActionsIntent</string>
 		<string>WidgetOpenPageIntent</string>
 		<string>ReloadWidgetsAppIntent</string>
+		<string>ScriptAppIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

@@ -1,20 +1,19 @@
 import Foundation
-import Shared
 import UserNotifications
 
-protocol LocalNotificationDispatcherProtocol {
+public protocol LocalNotificationDispatcherProtocol {
     func send(_ notification: LocalNotificationDispatcher.Notification)
 }
 
 /// Sends local notifications
-final class LocalNotificationDispatcher: LocalNotificationDispatcherProtocol {
-    struct Notification {
-        let id: NotificationIdentifier
-        let title: String
-        let body: String?
-        let sound: UNNotificationSound?
+public final class LocalNotificationDispatcher: LocalNotificationDispatcherProtocol {
+    public struct Notification {
+        public let id: NotificationIdentifier
+        public let title: String
+        public let body: String?
+        public let sound: UNNotificationSound?
 
-        init(
+        public init(
             id: NotificationIdentifier,
             title: String,
             body: String? = nil,
@@ -27,7 +26,9 @@ final class LocalNotificationDispatcher: LocalNotificationDispatcherProtocol {
         }
     }
 
-    func send(_ notification: Notification) {
+    public init() {}
+
+    public func send(_ notification: Notification) {
         let content = UNMutableNotificationContent()
         content.title = notification.title
         if let body = notification.body {

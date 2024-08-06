@@ -27,7 +27,7 @@ struct IntentActionAppEntity: AppEntity {
 
     static let defaultQuery = IntentActionAppEntityQuery()
 
-    var id: String // if your identifier is not a String, conform the entity to EntityIdentifierConvertible.
+    var id: String
     var displayString: String
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(title: "\(displayString)")

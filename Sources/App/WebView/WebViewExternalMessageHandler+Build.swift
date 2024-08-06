@@ -1,5 +1,6 @@
 import Foundation
 import Improv_iOS
+import Shared
 
 extension WebViewExternalMessageHandler {
     static func build() -> WebViewExternalMessageHandler {

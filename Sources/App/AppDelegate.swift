@@ -391,6 +391,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Action.setupObserver()
         NotificationCategory.setupObserver()
         WidgetOpenPageIntent.setupObserver()
+        ScriptsObserver.setupObserver()
     }
 
     private func setupMenus() {

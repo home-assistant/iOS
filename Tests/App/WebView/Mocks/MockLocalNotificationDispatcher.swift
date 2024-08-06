@@ -1,5 +1,5 @@
 import Foundation
-@testable import HomeAssistant
+@testable import Shared
 
 final class MockLocalNotificationDispatcher: LocalNotificationDispatcherProtocol {
     private var lastNotificationSent: LocalNotificationDispatcher.Notification?

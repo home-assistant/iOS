@@ -276,6 +276,36 @@ public enum L10n {
       /// Done
       public static var responseSuccess: String { return L10n.tr("Localizable", "app_intents.perform_action.response_success") }
     }
+    public enum Scripts {
+      public enum FailureMessage {
+        /// Script "%@" failed to execute, please check your logs.
+        public static func content(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.scripts.failure_message.content", String(describing: p1))
+        }
+      }
+      public enum RequiresConfirmationBeforeRun {
+        /// Requires manual confirmation before running the script.
+        public static var description: String { return L10n.tr("Localizable", "app_intents.scripts.requires_confirmation_before_run.description") }
+        /// Confirm before run
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.requires_confirmation_before_run.title") }
+      }
+      public enum Script {
+        /// Run Script
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.script.title") }
+      }
+      public enum ShowConfirmationDialog {
+        /// Shows confirmation notification after executed
+        public static var description: String { return L10n.tr("Localizable", "app_intents.scripts.show_confirmation_dialog.description") }
+        /// Confirmation notification
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.show_confirmation_dialog.title") }
+      }
+      public enum SuccessMessage {
+        /// Script "%@" executed.
+        public static func content(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.scripts.success_message.content", String(describing: p1))
+        }
+      }
+    }
     public enum WidgetAction {
       /// Which actions?
       public static var actionsParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.widget_action.actions_parameter_configuration") }
@@ -3016,6 +3046,14 @@ public enum L10n {
         /// Reload widgets
         public static var title: String { return L10n.tr("Localizable", "widgets.reload_widgets.app_intent.title") }
       }
+    }
+    public enum Scripts {
+      /// Run Scripts
+      public static var description: String { return L10n.tr("Localizable", "widgets.scripts.description") }
+      /// No Scripts Configured
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.scripts.not_configured") }
+      /// Scripts
+      public static var title: String { return L10n.tr("Localizable", "widgets.scripts.title") }
     }
   }
 }

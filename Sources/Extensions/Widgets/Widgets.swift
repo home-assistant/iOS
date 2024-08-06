@@ -10,6 +10,10 @@ struct Widgets: WidgetBundle {
 
     var body: some Widget {
         WidgetAssist()
+        // Intentionally placing scripts before actions
+        if #available(iOS 17, *) {
+            WidgetScripts()
+        }
         actionsWidget()
         WidgetOpenPage()
         if #available(iOS 17, *) {
