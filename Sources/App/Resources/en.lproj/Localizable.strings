@@ -876,6 +876,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "watch.labels.no_action" = "No actions configured. Configure actions on your phone to dismiss this message.";
 "watch.placeholder_complication_name" = "Placeholder";
+"watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.parameters.action" = "Action";
@@ -910,7 +911,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.title" = "Open Page";
 "widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
-"widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
+"widgets.scripts.description" = "Run Scripts";
 "yes_label" = "Yes";

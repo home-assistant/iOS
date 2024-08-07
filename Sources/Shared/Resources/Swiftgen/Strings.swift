@@ -2956,6 +2956,14 @@ public enum L10n {
         }
       }
     }
+    public enum Settings {
+      public enum NoItems {
+        public enum Phone {
+          /// No items configured, please choose items below.
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
+        }
+      }
+    }
   }
 
   public enum Widgets {

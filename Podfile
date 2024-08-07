@@ -78,6 +78,7 @@ abstract_target 'iOS' do
     pod 'lottie-ios'
     pod 'SwiftMessages'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
+    pod 'GRDB.swift', git: 'https://github.com/groue/GRDB.swift.git', tag: 'v6.29.1'
 
     support_modules
 

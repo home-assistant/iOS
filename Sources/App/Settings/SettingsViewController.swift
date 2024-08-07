@@ -112,6 +112,7 @@ class SettingsViewController: HAFormViewController {
             form +++ Section()
                 <<< SettingsRootDataSource.Row.actions.row
                 <<< SettingsRootDataSource.Row.sensors.row
+                <<< SettingsRootDataSource.Row.watch.row
                 <<< SettingsRootDataSource.Row.complications.row
                 <<< SettingsRootDataSource.Row.nfc.row
                 <<< SettingsRootDataSource.Row.widgets.row

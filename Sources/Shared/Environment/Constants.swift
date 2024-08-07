@@ -71,6 +71,20 @@ public enum Constants {
         return groupDir
     }
 
+    public static var grdbFile: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("database", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create GRDB file")
+            }
+        }
+        let databaseURL = directoryURL.appendingPathComponent("grdb.sqlite")
+        return databaseURL
+    }
+
     public static var LogsDirectory: URL {
         let fileManager = FileManager.default
         let directoryURL = AppGroupContainer.appendingPathComponent("logs", isDirectory: true)
