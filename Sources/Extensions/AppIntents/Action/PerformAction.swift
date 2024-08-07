@@ -1,4 +1,5 @@
 import AppIntents
+import AudioToolbox
 import Foundation
 import PromiseKit
 import Shared
@@ -26,12 +27,21 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
         }
     }
 
+    /// Only used when calling the intent from widget
+    var hapticConfirmation = false
+
     func perform() async throws -> some IntentResult {
         guard let intentAction = $action.wrappedValue,
               let action = Current.realm().object(ofType: Action.self, forPrimaryKey: intentAction.id),
               let server = Current.servers.server(for: action) else {
             Current.Log.warning("ActionID either does not exist or is not a string in the payload")
             return .result()
+        }
+
+        if hapticConfirmation {
+            // Unfortunately this is the only 'haptics' that work with widgets
+            // ideally in the future this should use CoreHaptics for a better experience
+            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
         }
 
         try await withCheckedThrowingContinuation { continuation in

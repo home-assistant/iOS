@@ -23,7 +23,8 @@ struct WidgetScripts: Widget {
                         interactionType: .appIntent(.script(
                             id: script.script.id,
                             serverId: script.serverId,
-                            name: script.script.name ?? "Unknown"
+                            name: script.script.name ?? "Unknown",
+                            showConfirmationNotification: timelineEntry.showConfirmationDialog
                         )),
                         icon: MaterialDesignIcons(
                             serversideValueNamed: script.script.iconName ?? "",

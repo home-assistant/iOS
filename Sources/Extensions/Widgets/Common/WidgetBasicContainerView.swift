@@ -34,18 +34,21 @@ struct WidgetBasicContainerView: View {
         case let .appIntent(widgetIntentType):
             switch widgetIntentType {
             case .action:
-                let intent = WidgetActionsAppIntent()
-                intent.actions = [IntentActionAppEntity(id: model.id, displayString: model.title)]
+                var intent = PerformAction()
+                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
+                intent.hapticConfirmation = true
                 return intent
-            case let .script(id, serverId, name):
-                let intent = WidgetScriptsAppIntent()
-                intent.scripts = [IntentScriptEntity(
+            case let .script(id, serverId, name, showConfirmationNotification):
+                let intent = ScriptAppIntent()
+                intent.script = .init(
                     id: id,
                     serverId: serverId,
-                    serverName: "", // Not important to run the script
+                    serverName: "", // not used in this context
                     displayString: name,
-                    iconName: ""
-                )]
+                    iconName: "" // not used in this context
+                )
+                intent.hapticConfirmation = true
+                intent.showConfirmationNotification = showConfirmationNotification
                 return intent
             }
         }

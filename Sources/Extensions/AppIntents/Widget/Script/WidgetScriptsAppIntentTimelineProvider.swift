@@ -8,6 +8,7 @@ struct WidgetScriptsEntry: TimelineEntry {
     let date: Date
     let scripts: [ScriptServer]
     let showServerName: Bool
+    let showConfirmationDialog: Bool
 
     struct ScriptServer {
         let script: HAScript
@@ -36,7 +37,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                 serverId: intentScriptEntity.serverId,
                 serverName: intentScriptEntity.serverName
             )
-        }) ?? [], showServerName: showServerName())
+        }) ?? [], showServerName: showServerName(), showConfirmationDialog: configuration.showConfirmationDialog)
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
@@ -53,7 +54,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                         serverId: intentScriptEntry.serverId,
                         serverName: intentScriptEntry.serverName
                     )
-                }), showServerName: Current.servers.all.count > 1)
+                }), showServerName: showServerName(), showConfirmationDialog: configuration.showConfirmationDialog)
             } else {
                 let entries = await suggestions().flatMap { server, scripts in
                     scripts.map { script in
@@ -64,7 +65,12 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                         )
                     }
                 }.prefix(WidgetBasicContainerView.maximumCount(family: context.family))
-                return Entry(date: Date(), scripts: Array(entries), showServerName: showServerName())
+                return Entry(
+                    date: Date(),
+                    scripts: Array(entries),
+                    showServerName: showServerName(),
+                    showConfirmationDialog: configuration.showConfirmationDialog
+                )
             }
         }()
         return .init(
@@ -84,7 +90,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                 serverId: "1",
                 serverName: "Home"
             )],
-            showServerName: true
+            showServerName: true, showConfirmationDialog: true
         )
     }
 
