@@ -5,7 +5,7 @@ import Shared
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = "Scripts"
+    static let title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Scripts")
 
     @Parameter(
         title: "Scripts",
