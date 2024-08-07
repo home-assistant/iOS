@@ -1,4 +1,5 @@
 import AppIntents
+import AudioToolbox
 import Foundation
 import PromiseKit
 import Shared
@@ -35,11 +36,20 @@ final class ScriptAppIntent: AppIntent {
         ),
         default: true
     )
-    var showConfirmationDialog: Bool
+    var showConfirmationNotification: Bool
+
+    /// Only used when calling the intent from widget
+    var hapticConfirmation = false
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
         if requiresConfirmationBeforeRun {
             try await requestConfirmation()
+        }
+
+        if hapticConfirmation {
+            // Unfortunately this is the only 'haptics' that work with widgets
+            // ideally in the future this should use CoreHaptics for a better experience
+            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
         }
 
         let success: Bool = try await withCheckedThrowingContinuation { continuation in
@@ -63,7 +73,7 @@ final class ScriptAppIntent: AppIntent {
                     }
                 }
         }
-        if showConfirmationDialog {
+        if showConfirmationNotification {
             LocalNotificationDispatcher().send(.init(
                 id: .scriptAppIntentRun,
                 title: success ? L10n.AppIntents.Scripts.SuccessMessage.content(script.displayString) : L10n.AppIntents

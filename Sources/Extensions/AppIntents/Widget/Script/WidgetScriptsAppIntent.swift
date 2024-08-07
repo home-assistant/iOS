@@ -40,14 +40,20 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        if let firstScript = scripts?.first {
+        guard let scripts else { return .result(value: false) }
+        for script in scripts {
             let intent = ScriptAppIntent()
-            intent.script = firstScript
-            intent.showConfirmationDialog = showConfirmationDialog
-            return try await intent.perform()
-        } else {
-            fatalError("No script available to run in Script widget")
+            intent.script = .init(
+                id: script.id,
+                serverId: script.serverId,
+                serverName: script.serverName,
+                displayString: script.displayString,
+                iconName: script.iconName
+            )
+            _ = try await intent.perform()
         }
+
+        return .result(value: true)
     }
 }
 
