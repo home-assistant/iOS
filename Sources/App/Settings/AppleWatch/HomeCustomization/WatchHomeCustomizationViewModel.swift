@@ -1,17 +1,10 @@
-//
-//  WatchHomeCustomizationViewModel.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 07/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
 import Foundation
-import Shared
 import GRDB
+import Shared
 
 final class WatchHomeCustomizationViewModel: ObservableObject {
-    @Published var watchConfig: WatchConfig = WatchConfig(showAssist: true, items: [])
+    @Published var watchConfig: WatchConfig = .init(showAssist: true, items: [])
+    @Published var showAddItem = false
     private var dbQueue: DatabaseQueue?
 
     @MainActor
@@ -30,7 +23,7 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
                 }
                 return nil
             }) {
-                self.watchConfig = config
+                watchConfig = config
                 print(config)
             } else {
                 Current.Log.error("No watch config found")
@@ -38,6 +31,34 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
             }
         } catch {
             Current.Log.error("Failed to acces database (GRDB)")
+        }
+    }
+
+    func addItem(_ item: MagicItem) {
+        watchConfig.items.append(item)
+    }
+
+    func deleteItem(at offsets: IndexSet) {
+        watchConfig.items.remove(atOffsets: offsets)
+    }
+
+    func moveItem(from source: IndexSet, to destination: Int) {
+        watchConfig.items.move(fromOffsets: source, toOffset: destination)
+    }
+
+    func save(completion: (Bool) -> Void) {
+        guard let dbQueue else {
+            completion(false)
+            return
+        }
+        do {
+            try dbQueue.write { db in
+                try watchConfig.update(db)
+                completion(true)
+            }
+        } catch {
+            Current.Log.error("Failed to save new Watch config, error: \(error.localizedDescription)")
+            completion(false)
         }
     }
 
@@ -67,14 +88,24 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
                 try dbQueue.write { db in
                     try newWatchConfig.insert(db)
                 }
-            } catch let error {
+            } catch {
                 Current.Log.error("Failed to save initial watch config, error: \(error)")
                 fatalError()
             }
         } else {
-            let newWatchActionItems = actionResults.sorted(by: { $0.Position < $1.Position }).filter({ $0.showInWatch }).map { action in
-                WatchItem(id: action.ID, type: .action(.init(id: action.ID, name: action.Text, iconName: action.IconName, backgroundColor: action.BackgroundColor, textColor: action.TextColor, iconColor: action.IconColor)))
-            }
+            let newWatchActionItems = actionResults.sorted(by: { $0.Position < $1.Position }).filter(\.showInWatch)
+                .map { action in
+                    MagicItem(
+                        id: action.ID, type: .action(
+                            .init(id: action.ID, title: action.Text, subtitle: nil, iconName: action.IconName),
+                            .init(
+                                iconColor: action.IconColor,
+                                textColor: action.TextColor,
+                                backgroundColor: action.BackgroundColor
+                            )
+                        )
+                    )
+                }
 
             var newWatchConfig = WatchConfig()
             newWatchConfig.items = newWatchActionItems
@@ -83,7 +114,7 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
                     try newWatchConfig.insert(db)
                 }
                 loadWatchConfig()
-            } catch let error {
+            } catch {
                 Current.Log.error("Failed to migrate actions to watch config, error: \(error)")
                 fatalError()
             }

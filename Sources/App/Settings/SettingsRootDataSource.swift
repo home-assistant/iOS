@@ -155,7 +155,7 @@ enum SettingsRootDataSource {
 
     private static func complications() -> SettingsButtonRow {
         SettingsButtonRow {
-            $0.title = "Complications"//L10n.Settings.DetailsSection.WatchRow.title
+            $0.title = "Complications" // L10n.Settings.DetailsSection.WatchRow.title
             $0.icon = .watchVariantIcon
             $0.hidden = .isCatalyst
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {

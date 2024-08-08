@@ -1,15 +1,8 @@
-//
-//  WatchHomeCustomization.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 07/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct WatchHomeCustomization: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = WatchHomeCustomizationViewModel()
 
     var body: some View {
@@ -29,14 +22,37 @@ struct WatchHomeCustomization: View {
                 ForEach(viewModel.watchConfig.items, id: \.id) { item in
                     makeListItem(item: item)
                 }
+                .onMove { indices, newOffset in
+                    viewModel.moveItem(from: indices, to: newOffset)
+                }
+                .onDelete { indexSet in
+                    viewModel.deleteItem(at: indexSet)
+                }
                 Button {
-                    //
+                    viewModel.showAddItem = true
                 } label: {
                     Label("Add item", systemImage: "plus")
                 }
             }
         }
         .preferredColorScheme(.dark)
+        .toolbar(content: {
+            Button(action: {
+                viewModel.save { success in
+                    if success {
+                        dismiss()
+                    }
+                }
+            }, label: {
+                Text("Save")
+            })
+        })
+        .sheet(isPresented: $viewModel.showAddItem, content: {
+            WatchAddItemView { itemToAdd in
+                guard let itemToAdd else { return }
+                viewModel.addItem(itemToAdd)
+            }
+        })
     }
 
     private var watchPreview: some View {
@@ -62,22 +78,23 @@ struct WatchHomeCustomization: View {
                     noItemsWatchView
                 }
             }
+            .animation(.default, value: viewModel.watchConfig.items)
             .listStyle(.plain)
             .frame(width: 195, height: 235)
             watchStatusBar
         }
     }
 
-    private func makeListItem(item: WatchItem) -> some View {
-        var name: String = ""
-        var iconName: String = ""
+    private func makeListItem(item: MagicItem) -> some View {
+        var name = ""
+        var iconName = ""
         switch item.type {
-        case .action(let action):
-            name = action.name
+        case let .action(action, _):
+            name = action.title
             iconName = action.iconName
-        case .script(let script):
-            name = script.name ?? "Unknown Script"
-            iconName = script.iconName ?? ""
+        case let .script(script, _):
+            name = script.title
+            iconName = script.iconName
         }
 
         return makeListItemRow(iconName: iconName, name: name)
@@ -87,22 +104,24 @@ struct WatchHomeCustomization: View {
         Text(name)
     }
 
-    private func makeWatchItem(item: WatchItem) -> some View {
-        var name: String = ""
-        var iconName: String = ""
+    private func makeWatchItem(item: MagicItem) -> some View {
+        var name = ""
+        var iconName = ""
         var iconColor: String? = "#ffffff"
         switch item.type {
-        case .action(let action):
-            name = action.name
+        case let .action(action, customization):
+            name = action.title
             iconName = action.iconName
-        case .script(let script):
-            name = script.name ?? "Unknown Script"
-            iconName = script.iconName ?? ""
+            iconColor = customization.iconColor
+        case let .script(script, customization):
+            name = script.title
+            iconName = script.iconName
+            iconColor = customization.iconColor
         }
 
         return HStack(spacing: Spaces.one) {
             VStack {
-                Image(uiImage: MaterialDesignIcons.headIcon.image(
+                Image(uiImage: MaterialDesignIcons(named: iconName).image(
                     ofSize: .init(width: 24, height: 24),
                     color: .init(hex: iconColor)
                 ))
@@ -128,12 +147,15 @@ struct WatchHomeCustomization: View {
                 .font(.system(size: 14).bold())
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top)
-            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(ofSize: .init(width: 18, height: 18), color: Asset.Colors.haPrimary.color))
-                .padding(Spaces.one)
-                .background(.regularMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 25.0))
-                .offset(x: -22)
-                .padding(.top)
+            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
+                ofSize: .init(width: 18, height: 18),
+                color: Asset.Colors.haPrimary.color
+            ))
+            .padding(Spaces.one)
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 25.0))
+            .offset(x: -22)
+            .padding(.top)
         }
         .frame(width: 210, height: 50)
         .background(LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom))
@@ -147,7 +169,6 @@ struct WatchHomeCustomization: View {
             .background(.gray.opacity(0.3))
             .clipShape(RoundedRectangle(cornerRadius: 8))
     }
-
 }
 
 #Preview {
