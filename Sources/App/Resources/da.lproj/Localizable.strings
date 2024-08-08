@@ -58,6 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Der er %@ muligheder, der matcher '%@'.";
 "app_intents.perform_action.response_failure" = "Mislykkedes: %@";
 "app_intents.perform_action.response_success" = "Færdig";
+"app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
+"app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
+"app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
+"app_intents.scripts.script.title" = "Run Script";
+"app_intents.scripts.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
+"app_intents.scripts.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.scripts.success_message.content" = "Script \"%@\" executed.";
 "app_intents.widget_action.actions_parameter_configuration" = "Hvilke handlinger?";
 "assist.error.pipelines_response" = "Kunne ikke hente Assist-pipelines. Tjek venligst din pipelines-konfiguration.";
 "assist.pipelines_picker.title" = "Assist-pipelines";
@@ -902,4 +909,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.open_page.title" = "Åbn side";
 "widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
+"widgets.scripts.description" = "Run Scripts";
+"widgets.scripts.not_configured" = "No Scripts Configured";
+"widgets.scripts.title" = "Scripts";
 "yes_label" = "Ja";

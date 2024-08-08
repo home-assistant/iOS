@@ -58,6 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "有 %@ 个选项匹配“%@” 。";
 "app_intents.perform_action.response_failure" = "失败：%@";
 "app_intents.perform_action.response_success" = "完成";
+"app_intents.scripts.failure_message.content" = "脚本“%@”执行失败，请查看您的日志。";
+"app_intents.scripts.requires_confirmation_before_run.description" = "运行脚本之前需要手动确认。";
+"app_intents.scripts.requires_confirmation_before_run.title" = "运行前确认";
+"app_intents.scripts.script.title" = "运行脚本";
+"app_intents.scripts.show_confirmation_dialog.description" = "执行后显示确认通知";
+"app_intents.scripts.show_confirmation_dialog.title" = "确认通知";
+"app_intents.scripts.success_message.content" = "脚本“%@”已执行。";
 "app_intents.widget_action.actions_parameter_configuration" = "哪些动作 ？";
 "assist.error.pipelines_response" = "无法获取语音助手管道，请检查您的管道配置。";
 "assist.pipelines_picker.title" = "语音助手管道";
@@ -902,4 +909,7 @@
 "widgets.open_page.title" = "打开页面";
 "widgets.reload_widgets.app_intent.description" = "重新加载所有小组件时间线。";
 "widgets.reload_widgets.app_intent.title" = "重新加载小组件";
+"widgets.scripts.description" = "运行脚本";
+"widgets.scripts.not_configured" = "未配置脚本";
+"widgets.scripts.title" = "脚本";
 "yes_label" = "是";

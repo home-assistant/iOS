@@ -58,6 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "On %@ valikut mis vastavad '%@'.";
 "app_intents.perform_action.response_failure" = "Nurjus: %@";
 "app_intents.perform_action.response_success" = "Valmis";
+"app_intents.scripts.failure_message.content" = "Skripti \" %@ \" käivitamine nurjus, kontrolli logisid.";
+"app_intents.scripts.requires_confirmation_before_run.description" = "Enne skripti käivitamist on vaja käsitsi kinnitust.";
+"app_intents.scripts.requires_confirmation_before_run.title" = "Kinnita enne käivitamist";
+"app_intents.scripts.script.title" = "Käivita skript";
+"app_intents.scripts.show_confirmation_dialog.description" = "Pärast täitmist kuvab kinnitusteatise";
+"app_intents.scripts.show_confirmation_dialog.title" = "Kinnituse teatis";
+"app_intents.scripts.success_message.content" = "Skript \" %@ \" on käivitatud.";
 "app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
 "assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";
 "assist.pipelines_picker.title" = "Abilise kanalid";
@@ -902,4 +909,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.open_page.title" = "Ava lehekülg";
 "widgets.reload_widgets.app_intent.description" = "Taaslae kõik vidinad.";
 "widgets.reload_widgets.app_intent.title" = "Taaslae vidinad";
+"widgets.scripts.description" = "Skriptide käivitamine";
+"widgets.scripts.not_configured" = "Skripte pole seadistatud";
+"widgets.scripts.title" = "Skriptid";
 "yes_label" = "Jah";
