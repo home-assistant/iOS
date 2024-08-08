@@ -6,6 +6,7 @@ import PromiseKit
 import RealmSwift
 import Version
 import XCGLogger
+import GRDB
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
     case fastlaneSnapshot
@@ -97,6 +98,8 @@ public class AppEnvironment {
     public func realm(objectTypes: [ObjectBase.Type]) -> Realm {
         Realm.getRealm(objectTypes: objectTypes)
     }
+
+    public var grdb: () -> DatabaseQueue = DatabaseQueue.database
 
     #if os(iOS)
     public var realmFatalPresentation: ((UIViewController) -> Void)?

@@ -5,17 +5,11 @@ import Shared
 final class WatchHomeCustomizationViewModel: ObservableObject {
     @Published var watchConfig: WatchConfig = .init(showAssist: true, items: [])
     @Published var showAddItem = false
-    private var dbQueue: DatabaseQueue?
 
     @MainActor
     func loadWatchConfig() {
         do {
-            dbQueue = try DatabaseQueue(path: Constants.grdbFile.path)
-            guard let dbQueue else { return }
-
-            createTableIfNeeded()
-
-            if let config: WatchConfig = try dbQueue.read({ db in
+            if let config: WatchConfig = try Current.grdb().read({ db in
                 do {
                     return try WatchConfig.fetchOne(db)
                 } catch {
@@ -47,12 +41,8 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
     }
 
     func save(completion: (Bool) -> Void) {
-        guard let dbQueue else {
-            completion(false)
-            return
-        }
         do {
-            try dbQueue.write { db in
+            try Current.grdb().write { db in
                 try watchConfig.update(db)
                 completion(true)
             }
@@ -62,30 +52,13 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
         }
     }
 
-    private func createTableIfNeeded() {
-        guard let dbQueue else { return }
-        do {
-            try dbQueue.write { db in
-                try db.create(table: "watchConfig") { t in
-                    t.primaryKey("id", .text).notNull()
-                    t.column("showAssist", .boolean).notNull()
-                    t.column("items", .jsonText).notNull()
-                }
-            }
-        } catch {
-            Current.Log.error(error.localizedDescription)
-        }
-    }
-
     @MainActor
     private func convertLegacyActionsToWatchConfig() {
-        guard let dbQueue else { return }
-
         let actionResults = Current.realm().objects(Action.self)
         if actionResults.isEmpty {
             let newWatchConfig = WatchConfig()
             do {
-                try dbQueue.write { db in
+                try Current.grdb().write { db in
                     try newWatchConfig.insert(db)
                 }
             } catch {
@@ -110,7 +83,7 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
             var newWatchConfig = WatchConfig()
             newWatchConfig.items = newWatchActionItems
             do {
-                try dbQueue.write { db in
+                try Current.grdb().write { db in
                     try newWatchConfig.insert(db)
                 }
                 loadWatchConfig()

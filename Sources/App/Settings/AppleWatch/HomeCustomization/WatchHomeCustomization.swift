@@ -147,16 +147,19 @@ struct WatchHomeCustomization: View {
                 .font(.system(size: 14).bold())
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top)
-            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                ofSize: .init(width: 18, height: 18),
-                color: Asset.Colors.haPrimary.color
-            ))
-            .padding(Spaces.one)
-            .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 25.0))
-            .offset(x: -22)
-            .padding(.top)
+            if viewModel.watchConfig.showAssist {
+                Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
+                    ofSize: .init(width: 18, height: 18),
+                    color: Asset.Colors.haPrimary.color
+                ))
+                .padding(Spaces.one)
+                .background(.regularMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 25.0))
+                .offset(x: -22)
+                .padding(.top)
+            }
         }
+        .animation(.bouncy, value: viewModel.watchConfig.showAssist)
         .frame(width: 210, height: 50)
         .background(LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom))
     }
