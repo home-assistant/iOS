@@ -58,6 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "%@に一致するオプションは%@あります。";
 "app_intents.perform_action.response_failure" = "失敗しました: %@";
 "app_intents.perform_action.response_success" = "完了";
+"app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
+"app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
+"app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
+"app_intents.scripts.script.title" = "Run Script";
+"app_intents.scripts.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
+"app_intents.scripts.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.scripts.success_message.content" = "Script \"%@\" executed.";
 "app_intents.widget_action.actions_parameter_configuration" = "どのアクション？";
 "assist.error.pipelines_response" = "アシスト パイプラインを取得できませんでした。パイプラインの構成を確認してください。";
 "assist.pipelines_picker.title" = "アシストパイプライン";
@@ -902,4 +909,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.open_page.title" = "ページを開く";
 "widgets.reload_widgets.app_intent.description" = "すべてのウィジェットのタイムラインを再読み込みします。";
 "widgets.reload_widgets.app_intent.title" = "ウィジェットのリロード";
+"widgets.scripts.description" = "Run Scripts";
+"widgets.scripts.not_configured" = "No Scripts Configured";
+"widgets.scripts.title" = "Scripts";
 "yes_label" = "はい";

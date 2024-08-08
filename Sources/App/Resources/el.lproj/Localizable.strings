@@ -58,6 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Υπάρχουν %@ επιλογές που ταιριάζουν με το ‘%@‘.";
 "app_intents.perform_action.response_failure" = "Απέτυχαν: %@";
 "app_intents.perform_action.response_success" = "Εγινε";
+"app_intents.scripts.failure_message.content" = "Το σενάριο \"%@\" απέτυχε να εκτελεστεί, παρακαλώ ελέγξτε τα αρχεία καταγραφής σας.";
+"app_intents.scripts.requires_confirmation_before_run.description" = "Απαιτείται χειροκίνητη επιβεβαίωση πριν από την εκτέλεση του σεναρίου.";
+"app_intents.scripts.requires_confirmation_before_run.title" = "Επιβεβαίωση πριν την εκτέλεση";
+"app_intents.scripts.script.title" = "Εκτέλεση σεναρίου";
+"app_intents.scripts.show_confirmation_dialog.description" = "Εμφανίζει ειδοποίηση επιβεβαίωσης μετά την εκτέλεση";
+"app_intents.scripts.show_confirmation_dialog.title" = "Ειδοποίηση επιβεβαίωσης";
+"app_intents.scripts.success_message.content" = "Το σενάριο \"%@\" εκτελέστηκε.";
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
 "assist.error.pipelines_response" = "Απέτυχε η λήψη των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -879,9 +886,9 @@
 "widgets.button.reload_timeline" = "Επαναφόρτωση όλων των γραφικών στοιχείων";
 "widgets.details.description" = "Εμφάνιση καταστάσεων με χρήση από το Home Assistant σε κείμενο";
 "widgets.details.parameters.action" = "Ενέργεια";
-"widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
+"widgets.details.parameters.details_template" = "Πρότυπο κειμένου λεπτομερειών (μόνο σε ορθογώνια)";
 "widgets.details.parameters.lower_template" = "Πρότυπο κάτω κειμένου";
-"widgets.details.parameters.run_action" = "Run Action (only in rectangular family)";
+"widgets.details.parameters.run_action" = "Εκτέλεση ενέργειας (μόνο σε ορθογώνια)";
 "widgets.details.parameters.server" = "Διακομιστής";
 "widgets.details.parameters.upper_template" = "Πρότυπο πάνω κειμένου";
 "widgets.details.title" = "Λεπτομέρειες";
@@ -902,4 +909,7 @@
 "widgets.open_page.title" = "Άνοιγμα σελίδας";
 "widgets.reload_widgets.app_intent.description" = "Επαναφόρτωση όλων των χρονοδιαγραμμάτων των γραφικών στοιχείων.";
 "widgets.reload_widgets.app_intent.title" = "Επαναφόρτωση γραφικών στοιχείων";
+"widgets.scripts.description" = "Εκτέλεση σεναρίων";
+"widgets.scripts.not_configured" = "Δεν έχουν διαμορφωθεί σενάρια";
+"widgets.scripts.title" = "Σενάρια";
 "yes_label" = "Ναι";

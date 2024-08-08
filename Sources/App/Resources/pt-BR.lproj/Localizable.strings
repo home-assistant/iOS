@@ -58,6 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Existem %@ opções correspondentes a ‘%@’.";
 "app_intents.perform_action.response_failure" = "Falhou: %@";
 "app_intents.perform_action.response_success" = "Feito";
+"app_intents.scripts.failure_message.content" = "O script \" %@ \" não foi executado. Verifique seus logs.";
+"app_intents.scripts.requires_confirmation_before_run.description" = "Requer confirmação manual antes de executar o script.";
+"app_intents.scripts.requires_confirmation_before_run.title" = "Confirme antes de executar";
+"app_intents.scripts.script.title" = "Executar script";
+"app_intents.scripts.show_confirmation_dialog.description" = "Mostra notificação de confirmação após executado";
+"app_intents.scripts.show_confirmation_dialog.title" = "Notificação de confirmação";
+"app_intents.scripts.success_message.content" = "Script \" %@ \" executado.";
 "app_intents.widget_action.actions_parameter_configuration" = "Quais ações?";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -191,7 +198,7 @@
 "location_change_notification.unknown.body" = "Localização atualizada por método desconhecido";
 "location_change_notification.url_scheme.body" = "Localização atualizada por meio do esquema de URL";
 "location_change_notification.visit.body" = "Localização atualizada via Visit";
-"location_change_notification.watch_context.body" = "Location updated via watch context sync";
+"location_change_notification.watch_context.body" = "Localização atualizada por meio da sincronização do contexto do relógio";
 "location_change_notification.x_callback_url.body" = "Localização atualizada via X-Callback-URL";
 "menu.actions.configure" = "Configurar…";
 "menu.actions.title" = "Ações";
@@ -444,7 +451,7 @@
 "settings_details.actions.scenes.title" = "Ações de cena";
 "settings_details.actions.server_controlled.update.title" = "Atualizar ações do servidor";
 "settings_details.actions.title" = "Ações";
-"settings_details.actions.use_custom_colors.title" = "Use custom colors";
+"settings_details.actions.use_custom_colors.title" = "Use cores personalizadas";
 "settings_details.actions.watch.available.title" = "Mostrar no relógio";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Preto";
@@ -902,4 +909,7 @@
 "widgets.open_page.title" = "Abrir página";
 "widgets.reload_widgets.app_intent.description" = "Recarregue todos os cronogramas dos widgets.";
 "widgets.reload_widgets.app_intent.title" = "Recarregar widgets";
+"widgets.scripts.description" = "Executar scripts";
+"widgets.scripts.not_configured" = "Nenhum script configurado";
+"widgets.scripts.title" = "Scripts";
 "yes_label" = "Sim";

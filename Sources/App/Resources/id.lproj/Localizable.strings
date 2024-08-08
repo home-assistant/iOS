@@ -58,6 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Ada %@ opsi yang cocok dengan '%@'.";
 "app_intents.perform_action.response_failure" = "Gagal: %@";
 "app_intents.perform_action.response_success" = "Selesai";
+"app_intents.scripts.failure_message.content" = "Skrip \"%@\" gagal dieksekusi, periksa log Anda.";
+"app_intents.scripts.requires_confirmation_before_run.description" = "Memerlukan konfirmasi manual sebelum menjalankan skrip.";
+"app_intents.scripts.requires_confirmation_before_run.title" = "Konfirmasikan sebelum dijalankan";
+"app_intents.scripts.script.title" = "Jalankan Skrip";
+"app_intents.scripts.show_confirmation_dialog.description" = "Menampilkan notifikasi konfirmasi setelah dieksekusi";
+"app_intents.scripts.show_confirmation_dialog.title" = "Notifikasi konfirmasi";
+"app_intents.scripts.success_message.content" = "Skrip \"%@\" dieksekusi.";
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
 "assist.pipelines_picker.title" = "Saluran Assist";
@@ -902,4 +909,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.open_page.title" = "Buka Halaman";
 "widgets.reload_widgets.app_intent.description" = "Muat ulang semua widget linimasa.";
 "widgets.reload_widgets.app_intent.title" = "Muat ulang widget";
+"widgets.scripts.description" = "Jalankan Skrip";
+"widgets.scripts.not_configured" = "Tidak Ada Skrip yang Dikonfigurasi";
+"widgets.scripts.title" = "Skrip";
 "yes_label" = "Ya";
