@@ -18,9 +18,11 @@ public extension DatabaseQueue {
         }
     }
 
-    static private func createTables(database: DatabaseQueue) {
+    private static func createTables(database: DatabaseQueue) {
         do {
-            try database.read { db in
+            try database.write { db in
+
+                // WatchConfig - Apple Watch configuration
                 if try !db.tableExists(GRDBDatabaseTable.watchConfig.rawValue) {
                     try db.create(table: GRDBDatabaseTable.watchConfig.rawValue) { t in
                         t.primaryKey("id", .text).notNull()

@@ -27,11 +27,19 @@ struct MagicItem: Codable, Equatable {
         let iconColor: String?
         let textColor: String?
         let backgroundColor: String?
+        /// If true, execution will request confirmation before running
+        let requiresConfirmation: Bool
 
-        init(iconColor: String? = nil, textColor: String? = nil, backgroundColor: String? = nil) {
+        init(
+            iconColor: String? = nil,
+            textColor: String? = nil,
+            backgroundColor: String? = nil,
+            requiresConfirmation: Bool = false
+        ) {
             self.iconColor = iconColor
             self.textColor = textColor
             self.backgroundColor = backgroundColor
+            self.requiresConfirmation = requiresConfirmation
         }
     }
 }

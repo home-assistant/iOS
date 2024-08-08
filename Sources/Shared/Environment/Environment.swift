@@ -1,12 +1,12 @@
 import CoreLocation
 import CoreMotion
 import Foundation
+import GRDB
 import HAKit
 import PromiseKit
 import RealmSwift
 import Version
 import XCGLogger
-import GRDB
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
     case fastlaneSnapshot

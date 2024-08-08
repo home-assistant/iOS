@@ -18,7 +18,7 @@ struct WatchHomeCustomization: View {
                     Text("Show Assist")
                 })
             }
-            Section {
+            Section("Items") {
                 ForEach(viewModel.watchConfig.items, id: \.id) { item in
                     makeListItem(item: item)
                 }
@@ -101,7 +101,16 @@ struct WatchHomeCustomization: View {
     }
 
     private func makeListItemRow(iconName: String?, name: String) -> some View {
-        Text(name)
+        HStack {
+            if let iconName {
+                Image(uiImage: MaterialDesignIcons(named: iconName).image(
+                    ofSize: .init(width: 18, height: 18),
+                    color: .white
+                ))
+            }
+            Text(name)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 
     private func makeWatchItem(item: MagicItem) -> some View {
@@ -139,6 +148,7 @@ struct WatchHomeCustomization: View {
         .background(.gray.opacity(0.3))
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .padding(.vertical, -Spaces.one)
+        .listRowSeparator(.hidden)
     }
 
     private var watchStatusBar: some View {
