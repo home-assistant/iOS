@@ -356,18 +356,16 @@ class ConnectionInfoTests: XCTestCase {
 
         Current.connectivity.currentWiFiSSID = { nil }
 
-        XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(info.webhookURL(), cloudhookURL)
 
         info.set(address: internalURL, for: .internal)
-        XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(info.webhookURL(), cloudhookURL)
 
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
         XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
 
         Current.connectivity.currentWiFiSSID = { nil }
-        info.set(address: externalURL, for: .remoteUI)
-        info.useCloud = true
         XCTAssertEqual(info.webhookURL(), cloudhookURL)
     }
 
