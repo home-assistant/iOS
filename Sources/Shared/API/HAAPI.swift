@@ -635,7 +635,7 @@ public class HomeAssistantAPI {
     public func tagEvent(
         tagPath: String
     ) -> (eventType: String, eventData: [String: String]) {
-        var eventData = [String: String]()
+        var eventData: [String: String] = sharedEventDeviceInfo
         eventData["tag_id"] = tagPath
         if server.info.version < .tagWebhookAvailable {
             eventData["device_id"] = Current.settingsStore.integrationDeviceID
