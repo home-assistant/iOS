@@ -208,6 +208,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         styleUI()
         updateWebViewForServerValues()
+        getLatestConfig()
 
         #if DEBUG
         if #available(iOS 16.4, *) {
@@ -217,6 +218,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     public func showSettingsViewController() {
+        getLatestConfig()
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
@@ -858,6 +860,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 ],
             ]
         ))
+    }
+
+    private func getLatestConfig() {
+        _ = Current.api(for: server).getConfig()
     }
 
     private func showActionAutomationEditorNotAvailable() {
