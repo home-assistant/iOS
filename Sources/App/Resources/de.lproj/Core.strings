@@ -37,7 +37,7 @@
 "component::binary_sensor::entity_component::presence::state::on" = "Zu Hause";
 "component::binary_sensor::entity_component::window::state::off" = "Geschlossen";
 "component::binary_sensor::entity_component::window::state::on" = "Offen";
-"component::button::title" = "Taste";
+"component::button::title" = "Button";
 "component::calendar::entity_component::_::state::off" = "Aus";
 "component::calendar::entity_component::_::state::on" = "An";
 "component::calendar::entity_component::_::state_attributes::all_day::state::false" = "Nein";

@@ -58,13 +58,13 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Готово";
-"app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
+"app_intents.scripts.failure_message.content" = "Скрипт \"%@\" не удалось выполнить, пожалуйста, проверьте свои логи.";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
-"app_intents.scripts.script.title" = "Run Script";
+"app_intents.scripts.script.title" = "Запустить скрипт";
 "app_intents.scripts.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.scripts.show_confirmation_dialog.title" = "Confirmation notification";
-"app_intents.scripts.success_message.content" = "Script \"%@\" executed.";
+"app_intents.scripts.success_message.content" = "Скрипт \"%@\" выполнен.";
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -911,5 +911,5 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";
-"widgets.scripts.title" = "Scripts";
+"widgets.scripts.title" = "Скрипты";
 "yes_label" = "Да";
