@@ -32,6 +32,7 @@ final class ThreadTransferCredentialToHAViewModel: ThreadCredentialsSharingViewM
                 processImport()
             }
         } catch {
+            Current.Log.error("Failed to retrieve all thread credentials, error: \(error.localizedDescription)")
             showAlert(type: .error(title: L10n.errorLabel, message: error.localizedDescription))
         }
     }
