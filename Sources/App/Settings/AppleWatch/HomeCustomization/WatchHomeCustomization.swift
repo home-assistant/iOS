@@ -86,18 +86,8 @@ struct WatchHomeCustomization: View {
     }
 
     private func makeListItem(item: MagicItem) -> some View {
-        var name = ""
-        var iconName = ""
-        switch item.type {
-        case let .action(action, _):
-            name = action.title
-            iconName = action.iconName
-        case let .script(script, _):
-            name = script.title
-            iconName = script.iconName
-        }
-
-        return makeListItemRow(iconName: iconName, name: name)
+        let itemInfo = viewModel.magicItemInfo(for: item)
+        return makeListItemRow(iconName: itemInfo.iconName, name: itemInfo.name)
     }
 
     private func makeListItemRow(iconName: String?, name: String) -> some View {
@@ -114,32 +104,20 @@ struct WatchHomeCustomization: View {
     }
 
     private func makeWatchItem(item: MagicItem) -> some View {
-        var name = ""
-        var iconName = ""
-        var iconColor: String? = "#ffffff"
-        switch item.type {
-        case let .action(action, customization):
-            name = action.title
-            iconName = action.iconName
-            iconColor = customization.iconColor
-        case let .script(script, customization):
-            name = script.title
-            iconName = script.iconName
-            iconColor = customization.iconColor
-        }
+        let itemInfo = viewModel.magicItemInfo(for: item)
 
         return HStack(spacing: Spaces.one) {
             VStack {
-                Image(uiImage: MaterialDesignIcons(named: iconName).image(
+                Image(uiImage: MaterialDesignIcons(named: itemInfo.iconName).image(
                     ofSize: .init(width: 24, height: 24),
-                    color: .init(hex: iconColor)
+                    color: .init(hex: itemInfo.customization?.iconColor)
                 ))
-                .foregroundColor(Color(uiColor: .init(hex: iconColor)))
+                .foregroundColor(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
                 .padding(Spaces.one)
             }
-            .background(Color(uiColor: .init(hex: iconColor)).opacity(0.3))
+            .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
             .clipShape(Circle())
-            Text(name)
+            Text(itemInfo.name)
                 .font(.system(size: 16))
                 .frame(maxWidth: .infinity, alignment: .leading)
         }

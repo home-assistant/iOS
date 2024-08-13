@@ -8,19 +8,22 @@ struct MagicItem: Codable, Equatable {
         lhs.id == rhs.id
     }
 
+    /// Id match it's type Id
     let id: String
+    let serverId: String?
     let type: WatchItemType
+    let customization: Customization?
 
-    enum WatchItemType: Codable {
-        case action(GenericItem, Customization)
-        case script(GenericItem, Customization)
+    init(id: String, serverId: String? = nil, type: WatchItemType, customization: Customization? = nil) {
+        self.id = id
+        self.serverId = serverId
+        self.type = type
+        self.customization = customization
     }
 
-    struct GenericItem: Codable {
-        let id: String
-        let title: String
-        let subtitle: String?
-        let iconName: String
+    enum WatchItemType: Codable {
+        case action
+        case script
     }
 
     struct Customization: Codable {
@@ -40,6 +43,20 @@ struct MagicItem: Codable, Equatable {
             self.textColor = textColor
             self.backgroundColor = backgroundColor
             self.requiresConfirmation = requiresConfirmation
+        }
+    }
+
+    struct Info {
+        let id: String
+        let name: String
+        let iconName: String
+        let customization: Customization?
+
+        init(id: String, name: String, iconName: String, customization: Customization? = nil) {
+            self.id = id
+            self.name = name
+            self.iconName = iconName
+            self.customization = customization
         }
     }
 }

@@ -1,3 +1,4 @@
+import Shared
 import SwiftUI
 
 struct WatchAddItemView: View {
@@ -22,7 +23,7 @@ struct WatchAddItemView: View {
                     case .actions:
                         actionsList
                     case .scripts:
-                        scriptsList
+                        scriptsPerServerList
                     }
                 }
                 .searchable(text: $viewModel.searchText)
@@ -43,50 +44,37 @@ struct WatchAddItemView: View {
     }
 
     private var actionsList: some View {
-        makeList(items: viewModel.actions)
+        ForEach(viewModel.actions, id: \.ID) { action in
+            if visibleForSearch(title: action.Text) {
+                Button(action: {
+                    itemToAdd(.init(id: action.ID, type: .action))
+                    dismiss()
+                }, label: {
+                    makeItemRow(title: action.Text)
+                })
+                .tint(.white)
+            }
+        }
     }
 
     @ViewBuilder
-    private var scriptsList: some View {
+    private var scriptsPerServerList: some View {
         ForEach(Array(viewModel.scripts.keys), id: \.identifier) { server in
             Section(server.info.name) {
-                makeList(items: viewModel.scripts[server] ?? [])
+                scriptsList(scripts: viewModel.scripts[server] ?? [])
             }
         }
     }
 
     @ViewBuilder
-    private func makeList(items: [MagicItem]) -> some View {
-        ForEach(items, id: \.id) { item in
-            switch item.type {
-            case let .action(action, _):
-                actionRowItem(action, magicItem: item)
-            case let .script(script, _):
-                scriptRowItem(script)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func actionRowItem(_ action: MagicItem.GenericItem, magicItem: MagicItem) -> some View {
-        if visibleForSearch(title: action.title) {
-            Button(action: {
-                itemToAdd(magicItem)
-                dismiss()
-            }, label: {
-                makeItemRow(title: action.title)
-            })
-            .tint(.white)
-        }
-    }
-
-    @ViewBuilder
-    private func scriptRowItem(_ script: MagicItem.GenericItem) -> some View {
-        if visibleForSearch(title: script.title) {
-            NavigationLink {
-                Text(script.title)
-            } label: {
-                makeItemRow(title: script.title, imageSystemName: nil)
+    private func scriptsList(scripts: [HAScript]) -> some View {
+        ForEach(scripts, id: \.id) { script in
+            if visibleForSearch(title: script.name ?? "") {
+                NavigationLink {
+                    Text(script.name ?? "Unknown")
+                } label: {
+                    makeItemRow(title: script.name ?? "Unknown", imageSystemName: nil)
+                }
             }
         }
     }

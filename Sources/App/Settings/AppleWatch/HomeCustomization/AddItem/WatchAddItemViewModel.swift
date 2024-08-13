@@ -9,8 +9,8 @@ enum WatchAddItemType {
 
 final class WatchAddItemViewModel: ObservableObject {
     @Published var selectedItemType = WatchAddItemType.scripts
-    @Published var scripts: [Server: [MagicItem]] = [:]
-    @Published var actions: [MagicItem] = []
+    @Published var scripts: [Server: [HAScript]] = [:]
+    @Published var actions: [Action] = []
     @Published var searchText: String = ""
     @MainActor
     func loadContent() {
@@ -25,15 +25,7 @@ final class WatchAddItemViewModel: ObservableObject {
             (Current.diskCache.value(for: key) as Promise<[HAScript]>).pipe { result in
                 switch result {
                 case let .fulfilled(scripts):
-                    let magicItemScripts = scripts.map { haScript in
-                        MagicItem(id: haScript.id, type: .script(.init(
-                            id: haScript.id,
-                            title: haScript.name ?? "Unknown Script",
-                            subtitle: server.info.name,
-                            iconName: haScript.iconName ?? ""
-                        ), .init()))
-                    }
-                    self?.scripts[server] = magicItemScripts
+                    self?.scripts[server] = scripts
                 case let .rejected(error):
                     Current.Log
                         .error(
@@ -46,15 +38,6 @@ final class WatchAddItemViewModel: ObservableObject {
 
     @MainActor
     private func loadActions() {
-        let actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
-        self.actions = actions.map { action in
-            MagicItem(id: action.ID, type: .action(.init(
-                id: action.ID, title: action.Text, subtitle: nil, iconName: action.IconName
-            ), .init(
-                iconColor: action.IconColor,
-                textColor: action.TextColor,
-                backgroundColor: action.BackgroundColor
-            )))
-        }
+        actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
     }
 }
