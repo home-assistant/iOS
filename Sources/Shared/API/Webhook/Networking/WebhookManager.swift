@@ -273,10 +273,17 @@ public class WebhookManager: NSObject {
                  instad of cloud hook */
                 if let self, let error = error as? WebhookError, error == WebhookError.unacceptableStatusCode(503),
                    overrideURL == nil {
+                    let activeURL = server.info.connection.activeURL()
+
+                    let event = ClientEvent(
+                        text: "Retrying with active URL - \(activeURL.absoluteString)",
+                        type: .networkRequest
+                    )
+                    Current.clientEventStore.addEvent(event).cauterize()
                     let promise: Promise<Any> = sendEphemeral(
                         server: server,
                         request: request,
-                        overrideURL: server.info.connection.activeURL()
+                        overrideURL: activeURL
                     )
                     promise.cauterize()
                 }
