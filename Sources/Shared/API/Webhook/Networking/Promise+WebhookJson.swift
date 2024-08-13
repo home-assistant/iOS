@@ -13,6 +13,7 @@ extension Promise where T == Data? {
     func webhookJson(
         on queue: DispatchQueue? = nil,
         statusCode: Int? = nil,
+        requestURL: URL?,
         sodium: Sodium = Sodium(),
         secretGetter: @escaping () -> [UInt8]?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
@@ -22,6 +23,7 @@ extension Promise where T == Data? {
                 return Promise<Data>.value(data).definitelyWebhookJson(
                     on: queue,
                     statusCode: statusCode,
+                    requestURL: requestURL,
                     sodium: sodium,
                     secretGetter: secretGetter,
                     options: options
@@ -37,6 +39,7 @@ extension Promise where T == Data {
     func webhookJson(
         on queue: DispatchQueue? = nil,
         statusCode: Int? = nil,
+        requestURL: URL?,
         sodium: Sodium = Sodium(),
         secretGetter: @escaping () -> [UInt8]?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
@@ -44,6 +47,7 @@ extension Promise where T == Data {
         definitelyWebhookJson(
             on: queue,
             statusCode: statusCode,
+            requestURL: requestURL,
             sodium: sodium,
             secretGetter: secretGetter,
             options: options
@@ -54,6 +58,7 @@ extension Promise where T == Data {
     fileprivate func definitelyWebhookJson(
         on queue: DispatchQueue?,
         statusCode: Int?,
+        requestURL: URL?,
         sodium: Sodium,
         secretGetter: @escaping () -> [UInt8]?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
@@ -64,8 +69,15 @@ extension Promise where T == Data {
                 return .value(())
             case 400...:
                 // some other error occurred that we don't want to parse as success
+                let text: String = {
+                    if let requestURL {
+                        return "Webhook failed with status code \(statusCode) - URL: \(URLComponents(url: requestURL, resolvingAgainstBaseURL: false)?.host ?? "Unknown")"
+                    } else {
+                        return "Webhook failed with status code \(statusCode) - Unknown URL)"
+                    }
+                }()
                 Current.clientEventStore.addEvent(ClientEvent(
-                    text: "Webhook failed with status code \(statusCode)",
+                    text: text,
                     type: .networkRequest,
                     payload: nil
                 )).cauterize()
