@@ -1,11 +1,3 @@
-//
-//  WatchConfig.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 14/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import GRDB
 

@@ -2,13 +2,13 @@ import Foundation
 import PromiseKit
 import Shared
 
-enum WatchAddItemType {
+enum MagicItemAddType {
     case scripts
     case actions
 }
 
-final class WatchAddItemViewModel: ObservableObject {
-    @Published var selectedItemType = WatchAddItemType.scripts
+final class MagicItemAddViewModel: ObservableObject {
+    @Published var selectedItemType = MagicItemAddType.scripts
     @Published var scripts: [Server: [HAScript]] = [:]
     @Published var actions: [Action] = []
     @Published var searchText: String = ""

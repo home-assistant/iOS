@@ -1,14 +1,6 @@
-//
-//  MagicItemEditViewModel.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 13/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
 import Foundation
-import Shared
 import PromiseKit
+import Shared
 
 final class MagicItemEditViewModel: ObservableObject {
     @Published var item: MagicItem
@@ -22,7 +14,7 @@ final class MagicItemEditViewModel: ObservableObject {
         let itemProvider = Current.magicItemProvider()
         itemProvider.loadInformation { [weak self] in
             guard let self else { return }
-            self.info = itemProvider.getInfo(for: self.item)
+            info = itemProvider.getInfo(for: item)
         }
     }
 }

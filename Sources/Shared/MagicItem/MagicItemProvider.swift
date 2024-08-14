@@ -1,11 +1,3 @@
-//
-//  MagicItemProvider.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 14/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import PromiseKit
 
@@ -15,7 +7,6 @@ public protocol MagicItemProviderProtocol {
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
-    
     private var actions: [Action] = []
     private var scriptsPerServer: [String: [HAScript]] = [:]
 
@@ -74,7 +65,6 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                         "Failed to get magic item Script info for item id: \(item.id), server id: \(String(describing: item.serverId))"
                     )
                 return .init(id: UUID().uuidString, name: "Unknown Script", iconName: "")
-
             }
 
             return .init(

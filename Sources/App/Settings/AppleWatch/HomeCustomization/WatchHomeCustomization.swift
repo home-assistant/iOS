@@ -13,12 +13,7 @@ struct WatchHomeCustomization: View {
                 .onAppear {
                     viewModel.loadWatchConfig()
                 }
-            Section {
-                Toggle(isOn: $viewModel.watchConfig.showAssist, label: {
-                    Text("Show Assist")
-                })
-            }
-            Section("Items") {
+            Section(L10n.Watch.Configuration.Items.title) {
                 ForEach(viewModel.watchConfig.items, id: \.id) { item in
                     makeListItem(item: item)
                 }
@@ -31,8 +26,13 @@ struct WatchHomeCustomization: View {
                 Button {
                     viewModel.showAddItem = true
                 } label: {
-                    Label("Add item", systemImage: "plus")
+                    Label(L10n.Watch.Configuration.AddItem.title, systemImage: "plus")
                 }
+            }
+            Section {
+                Toggle(isOn: $viewModel.watchConfig.showAssist, label: {
+                    Text(L10n.Watch.Configuration.ShowAssist.title)
+                })
             }
         }
         .preferredColorScheme(.dark)
@@ -44,11 +44,11 @@ struct WatchHomeCustomization: View {
                     }
                 }
             }, label: {
-                Text("Save")
+                Text(L10n.Watch.Configuration.Save.title)
             })
         })
         .sheet(isPresented: $viewModel.showAddItem, content: {
-            WatchAddItemView { itemToAdd in
+            MagicItemAddView { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
@@ -87,19 +87,16 @@ struct WatchHomeCustomization: View {
 
     private func makeListItem(item: MagicItem) -> some View {
         let itemInfo = viewModel.magicItemInfo(for: item)
-        return makeListItemRow(iconName: itemInfo.iconName, name: itemInfo.name)
+        return makeListItemRow(item: item, info: itemInfo)
     }
 
-    private func makeListItemRow(iconName: String?, name: String) -> some View {
+    private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
-            if let iconName {
-                Image(uiImage: MaterialDesignIcons(named: iconName).image(
-                    ofSize: .init(width: 18, height: 18),
-                    color: .white
-                ))
-            }
-            Text(name)
+            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
+            Text(info.name)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "line.3.horizontal")
+                .foregroundStyle(.gray)
         }
     }
 
@@ -108,12 +105,9 @@ struct WatchHomeCustomization: View {
 
         return HStack(spacing: Spaces.one) {
             VStack {
-                Image(uiImage: MaterialDesignIcons(named: itemInfo.iconName).image(
-                    ofSize: .init(width: 24, height: 24),
-                    color: .init(hex: itemInfo.customization?.iconColor)
-                ))
-                .foregroundColor(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
-                .padding(Spaces.one)
+                Image(uiImage: image(for: item, itemInfo: itemInfo, watchPreview: true))
+                    .foregroundColor(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
+                    .padding(Spaces.one)
             }
             .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
             .clipShape(Circle())
@@ -123,10 +117,38 @@ struct WatchHomeCustomization: View {
         }
         .padding(Spaces.one)
         .frame(width: 190, height: 55)
-        .background(.gray.opacity(0.3))
+        .background(backgroundForWatchItem(itemInfo: itemInfo))
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .padding(.vertical, -Spaces.one)
         .listRowSeparator(.hidden)
+    }
+
+    private func backgroundForWatchItem(itemInfo: MagicItem.Info) -> Color {
+        if let backgroundColor = itemInfo.customization?.backgroundColor {
+            Color(uiColor: .init(hex: backgroundColor))
+        } else {
+            Color.gray.opacity(0.3)
+        }
+    }
+
+    private func image(
+        for item: MagicItem,
+        itemInfo: MagicItem.Info,
+        watchPreview: Bool,
+        color: UIColor? = nil
+    ) -> UIImage {
+        var icon: MaterialDesignIcons = .abTestingIcon
+        switch item.type {
+        case .action:
+            icon = MaterialDesignIcons(named: itemInfo.iconName)
+        case .script:
+            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
+        }
+
+        return icon.image(
+            ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
+            color: color ?? .init(hex: itemInfo.customization?.iconColor)
+        )
     }
 
     private var watchStatusBar: some View {

@@ -1,10 +1,10 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct MagicItemEditView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: MagicItemEditViewModel
-    
+
     @State private var iconColor: Color = .init(uiColor: Asset.Colors.haPrimary.color)
 
     let addItem: (MagicItem) -> Void
@@ -30,7 +30,9 @@ struct MagicItemEditView: View {
                     }
                 } footer: {
                     if viewModel.item.type == .script {
-                        Text("Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.")
+                        Text(
+                            "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'."
+                        )
                     }
                 }
 
@@ -48,7 +50,6 @@ struct MagicItemEditView: View {
             } label: {
                 Text("Add")
             }
-
         }
         .onAppear {
             viewModel.loadMagicInfo()
@@ -58,6 +59,5 @@ struct MagicItemEditView: View {
 
 #Preview {
     MagicItemEditView(item: .init(id: "script.unlock_door", type: .script)) { _ in
-
     }
 }

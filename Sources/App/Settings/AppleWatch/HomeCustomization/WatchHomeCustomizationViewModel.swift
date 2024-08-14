@@ -95,7 +95,8 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
         if actions.isEmpty {
             createNewConfig()
         } else {
-            let newWatchActionItems = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position }).filter(\.showInWatch)
+            let newWatchActionItems = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
+                .filter(\.showInWatch)
                 .map { action in
                     MagicItem(id: action.ID, type: .action)
                 }

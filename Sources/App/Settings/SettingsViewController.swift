@@ -1,7 +1,7 @@
+import Communicator
 import Eureka
 import PromiseKit
 import Shared
-import Communicator
 
 class SettingsViewController: HAFormViewController {
     struct ContentSection: OptionSet, ExpressibleByIntegerLiteral {
@@ -118,14 +118,12 @@ class SettingsViewController: HAFormViewController {
                 <<< SettingsRootDataSource.Row.widgets.row
         }
 
-
-
         // Display Apple Watch section only for devices that make sense
         // iPhones with paired watch
         let isWatchPaired = {
             if Current.isDebug {
                 return true
-            } else if case .paired(_) = Communicator.shared.currentWatchState {
+            } else if case .paired = Communicator.shared.currentWatchState {
                 return true
             }
             return false

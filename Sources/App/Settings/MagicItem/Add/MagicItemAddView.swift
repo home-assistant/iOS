@@ -1,9 +1,9 @@
 import Shared
 import SwiftUI
 
-struct WatchAddItemView: View {
+struct MagicItemAddView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = WatchAddItemViewModel()
+    @StateObject private var viewModel = MagicItemAddViewModel()
 
     let itemToAdd: (MagicItem?) -> Void
 
@@ -12,9 +12,9 @@ struct WatchAddItemView: View {
             VStack {
                 Picker("Item type", selection: $viewModel.selectedItemType) {
                     Text("Scripts")
-                        .tag(WatchAddItemType.scripts)
+                        .tag(MagicItemAddType.scripts)
                     Text("Actions (Legacy)")
-                        .tag(WatchAddItemType.actions)
+                        .tag(MagicItemAddType.actions)
                 }
                 .pickerStyle(.segmented)
                 .padding()
@@ -104,6 +104,6 @@ struct WatchAddItemView: View {
 }
 
 #Preview {
-    WatchAddItemView { _ in
+    MagicItemAddView { _ in
     }
 }

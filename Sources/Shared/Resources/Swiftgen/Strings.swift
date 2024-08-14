@@ -2338,6 +2338,24 @@ public enum L10n {
   public enum Watch {
     /// Placeholder
     public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }
+    public enum Configuration {
+      public enum AddItem {
+        /// Add item
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.add_item.title") }
+      }
+      public enum Items {
+        /// Items
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.items.title") }
+      }
+      public enum Save {
+        /// Save
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.save.title") }
+      }
+      public enum ShowAssist {
+        /// Show Assist
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.show_assist.title") }
+      }
+    }
     public enum Configurator {
       public enum Delete {
         /// Delete Complication
