@@ -143,7 +143,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.DetailsSection.WatchRowConfiguration.title
             $0.icon = .watchVariantIcon
             $0.hidden = .isCatalyst
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+            $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                 let controller = UIHostingController(rootView: WatchHomeCustomization())
                 controller.overrideUserInterfaceStyle = .dark
                 return controller

@@ -6,6 +6,41 @@ struct WatchHomeCustomization: View {
     @StateObject private var viewModel = WatchHomeCustomizationViewModel()
 
     var body: some View {
+        NavigationView {
+            content
+                .navigationTitle("Apple Watch")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar(content: {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: {
+                            dismiss()
+                        }, label: {
+                            Text(L10n.cancelLabel)
+                        })
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            viewModel.save { success in
+                                if success {
+                                    dismiss()
+                                }
+                            }
+                        }, label: {
+                            Text(L10n.Watch.Configuration.Save.title)
+                        })
+                    }
+                })
+        }
+        .preferredColorScheme(.dark)
+        .sheet(isPresented: $viewModel.showAddItem, content: {
+            MagicItemAddView { itemToAdd in
+                guard let itemToAdd else { return }
+                viewModel.addItem(itemToAdd)
+            }
+        })
+    }
+
+    private var content: some View {
         List {
             watchPreview
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -35,24 +70,6 @@ struct WatchHomeCustomization: View {
                 })
             }
         }
-        .preferredColorScheme(.dark)
-        .toolbar(content: {
-            Button(action: {
-                viewModel.save { success in
-                    if success {
-                        dismiss()
-                    }
-                }
-            }, label: {
-                Text(L10n.Watch.Configuration.Save.title)
-            })
-        })
-        .sheet(isPresented: $viewModel.showAddItem, content: {
-            MagicItemAddView { itemToAdd in
-                guard let itemToAdd else { return }
-                viewModel.addItem(itemToAdd)
-            }
-        })
     }
 
     private var watchPreview: some View {
