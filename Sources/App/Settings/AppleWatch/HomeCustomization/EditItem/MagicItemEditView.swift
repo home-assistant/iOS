@@ -51,7 +51,7 @@ struct MagicItemEditView: View {
 
         }
         .onAppear {
-            viewModel.loadActionsAndScripts()
+            viewModel.loadMagicInfo()
         }
     }
 }

@@ -25,7 +25,9 @@ final class WatchAddItemViewModel: ObservableObject {
             (Current.diskCache.value(for: key) as Promise<[HAScript]>).pipe { result in
                 switch result {
                 case let .fulfilled(scripts):
-                    self?.scripts[server] = scripts
+                    self?.dispatchInMain {
+                        self?.scripts[server] = scripts
+                    }
                 case let .rejected(error):
                     Current.Log
                         .error(
@@ -39,5 +41,11 @@ final class WatchAddItemViewModel: ObservableObject {
     @MainActor
     private func loadActions() {
         actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
+    }
+
+    private func dispatchInMain(completion: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            completion()
+        }
     }
 }

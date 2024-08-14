@@ -100,6 +100,9 @@ public class AppEnvironment {
     }
 
     public var grdb: () -> DatabaseQueue = DatabaseQueue.database
+    public var magicItemProvider: () -> MagicItemProviderProtocol = {
+        MagicItemProvider()
+    }
 
     #if os(iOS)
     public var realmFatalPresentation: ((UIViewController) -> Void)?
