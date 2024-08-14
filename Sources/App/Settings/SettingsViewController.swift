@@ -122,8 +122,17 @@ class SettingsViewController: HAFormViewController {
 
         // Display Apple Watch section only for devices that make sense
         // iPhones with paired watch
-        if case .paired(_) = Communicator.shared.currentWatchState,
-           contentSections.contains(.watch) && UIDevice.current.userInterfaceIdiom == .phone {
+        let isWatchPaired = {
+            if Current.isDebug {
+                return true
+            } else if case .paired(_) = Communicator.shared.currentWatchState {
+                return true
+            }
+            return false
+        }()
+        if isWatchPaired,
+           contentSections.contains(.watch),
+           UIDevice.current.userInterfaceIdiom == .phone {
             form +++ Section(header: "Apple Watch", footer: nil)
                 <<< SettingsRootDataSource.Row.watch.row
                 <<< SettingsRootDataSource.Row.complications.row
