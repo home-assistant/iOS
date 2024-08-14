@@ -1,6 +1,7 @@
 import Eureka
 import PromiseKit
 import Shared
+import Communicator
 
 class SettingsViewController: HAFormViewController {
     struct ContentSection: OptionSet, ExpressibleByIntegerLiteral {
@@ -10,8 +11,9 @@ class SettingsViewController: HAFormViewController {
 
         static let servers: ContentSection = 0b1
         static let general: ContentSection = 0b10
-        static let integrations: ContentSection = 0b100
-        static let help: ContentSection = 0b1000
+        static let integrations: ContentSection = 0b11
+        static let watch: ContentSection = 0b100
+        static let help: ContentSection = 0b101
         static let all = ContentSection(rawValue: ~0b0)
     }
 
@@ -112,10 +114,19 @@ class SettingsViewController: HAFormViewController {
             form +++ Section()
                 <<< SettingsRootDataSource.Row.actions.row
                 <<< SettingsRootDataSource.Row.sensors.row
-                <<< SettingsRootDataSource.Row.watch.row
-                <<< SettingsRootDataSource.Row.complications.row
                 <<< SettingsRootDataSource.Row.nfc.row
                 <<< SettingsRootDataSource.Row.widgets.row
+        }
+
+
+
+        // Display Apple Watch section only for devices that make sense
+        // iPhones with paired watch
+        if case .paired(_) = Communicator.shared.currentWatchState,
+           contentSections.contains(.watch) && UIDevice.current.userInterfaceIdiom == .phone {
+            form +++ Section(header: "Apple Watch", footer: nil)
+                <<< SettingsRootDataSource.Row.watch.row
+                <<< SettingsRootDataSource.Row.complications.row
         }
 
         if contentSections.contains(.help) {

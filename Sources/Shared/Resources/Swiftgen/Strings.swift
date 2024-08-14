@@ -1373,9 +1373,13 @@ public enum L10n {
         /// Notifications
         public static var title: String { return L10n.tr("Localizable", "settings.details_section.notification_settings_row.title") }
       }
-      public enum WatchRow {
-        /// Apple Watch
-        public static var title: String { return L10n.tr("Localizable", "settings.details_section.watch_row.title") }
+      public enum WatchRowComplications {
+        /// Complications
+        public static var title: String { return L10n.tr("Localizable", "settings.details_section.watch_row_complications.title") }
+      }
+      public enum WatchRowConfiguration {
+        /// Configuration
+        public static var title: String { return L10n.tr("Localizable", "settings.details_section.watch_row_configuration.title") }
       }
     }
     public enum Developer {

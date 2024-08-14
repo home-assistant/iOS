@@ -394,7 +394,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.debugging.title" = "Debugging";
 "settings.details_section.location_settings_row.title" = "Location";
 "settings.details_section.notification_settings_row.title" = "Notifications";
-"settings.details_section.watch_row.title" = "Apple Watch";
+"settings.details_section.watch_row_configuration.title" = "Configuration";
+"settings.details_section.watch_row_complications.title" = "Complications";
 "settings.developer.annoying_background_notifications.title" = "Annoying Background Info";
 "settings.developer.camera_notification.notification.body" = "Expand this to show the camera content extension";
 "settings.developer.camera_notification.title" = "Show camera notification content extension";
