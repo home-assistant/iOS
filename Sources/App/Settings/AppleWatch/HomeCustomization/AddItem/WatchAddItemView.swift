@@ -61,17 +61,20 @@ struct WatchAddItemView: View {
     private var scriptsPerServerList: some View {
         ForEach(Array(viewModel.scripts.keys), id: \.identifier) { server in
             Section(server.info.name) {
-                scriptsList(scripts: viewModel.scripts[server] ?? [])
+                scriptsList(scripts: viewModel.scripts[server] ?? [], serverId: server.identifier.rawValue)
             }
         }
     }
 
     @ViewBuilder
-    private func scriptsList(scripts: [HAScript]) -> some View {
+    private func scriptsList(scripts: [HAScript], serverId: String) -> some View {
         ForEach(scripts, id: \.id) { script in
             if visibleForSearch(title: script.name ?? "") {
                 NavigationLink {
-                    Text(script.name ?? "Unknown")
+                    MagicItemEditView(item: .init(id: script.id, serverId: serverId, type: .script)) { itemToAdd in
+                        self.itemToAdd(itemToAdd)
+                        dismiss()
+                    }
                 } label: {
                     makeItemRow(title: script.name ?? "Unknown", imageSystemName: nil)
                 }

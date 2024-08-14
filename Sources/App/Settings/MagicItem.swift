@@ -12,7 +12,7 @@ struct MagicItem: Codable, Equatable {
     let id: String
     let serverId: String?
     let type: WatchItemType
-    let customization: Customization?
+    var customization: Customization?
 
     init(id: String, serverId: String? = nil, type: WatchItemType, customization: Customization? = nil) {
         self.id = id
