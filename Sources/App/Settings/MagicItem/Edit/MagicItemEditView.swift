@@ -58,6 +58,6 @@ struct MagicItemEditView: View {
 }
 
 #Preview {
-    MagicItemEditView(item: .init(id: "script.unlock_door", type: .script)) { _ in
+    MagicItemEditView(item: .init(id: "script.unlock_door", serverId: "1", type: .script)) { _ in
     }
 }

@@ -44,6 +44,8 @@ public enum L10n {
   public static var openLabel: String { return L10n.tr("Localizable", "open_label") }
   /// Preview Output
   public static var previewOutput: String { return L10n.tr("Localizable", "preview_output") }
+  /// Reload
+  public static var reloadLabel: String { return L10n.tr("Localizable", "reload_label") }
   /// Requires %@ or later.
   public static func requiresVersion(_ p1: Any) -> String {
     return L10n.tr("Localizable", "requires_version", String(describing: p1))
@@ -2509,6 +2511,16 @@ public enum L10n {
           public static var footer: String { return L10n.tr("Localizable", "watch.configurator.sections.ring.footer") }
           /// Ring
           public static var header: String { return L10n.tr("Localizable", "watch.configurator.sections.ring.header") }
+        }
+      }
+    }
+    public enum Home {
+      public enum Run {
+        public enum Confirmation {
+          /// Are you sure you want to run "%@"?
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "watch.home.run.confirmation.title", String(describing: p1))
+          }
         }
       }
     }

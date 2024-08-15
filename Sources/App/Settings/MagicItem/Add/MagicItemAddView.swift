@@ -47,7 +47,7 @@ struct MagicItemAddView: View {
         ForEach(viewModel.actions, id: \.ID) { action in
             if visibleForSearch(title: action.Text) {
                 Button(action: {
-                    itemToAdd(.init(id: action.ID, type: .action))
+                    itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
                     dismiss()
                 }, label: {
                     makeItemRow(title: action.Text)

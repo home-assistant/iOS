@@ -74,6 +74,7 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
             try Current.grdb().write { db in
                 try newWatchConfig.insert(db)
             }
+            watchConfig = newWatchConfig
         } catch {
             Current.Log.error("Failed to save initial watch config, error: \(error)")
             fatalError()
@@ -98,7 +99,7 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
             let newWatchActionItems = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
                 .filter(\.showInWatch)
                 .map { action in
-                    MagicItem(id: action.ID, type: .action)
+                    MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
                 }
 
             var newWatchConfig = WatchConfig()

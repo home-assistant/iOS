@@ -1,13 +1,5 @@
-//
-//  WatchHomeCoordinatorView.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 15/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct WatchHomeCoordinatorView: View {
     @StateObject private var viewModel = WatchHomeCoordinatorViewModel()
@@ -46,7 +38,9 @@ struct WatchHomeCoordinatorView: View {
         case .legacy:
             LegacyWatchHomeView(viewModel: LegacyWatchHomeViewModel())
         case let .config(watchConfig, magicItemsInfo):
-            WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo)
+            WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo) {
+                viewModel.requestConfig()
+            }
         }
     }
 }

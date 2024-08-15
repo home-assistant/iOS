@@ -340,6 +340,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "preview_output" = "Preview Output";
 "requires_version" = "Requires %@ or later.";
 "retry_label" = "Retry";
+"reload_label" = "Reload";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "settings.connection_section.activate_server" = "Activate";
@@ -882,6 +883,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.configuration.add_item.title" = "Add item";
 "watch.configuration.save.title" = "Save";
 "watch.configuration.items.title" = "Items";
+"watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.parameters.action" = "Action";

@@ -761,6 +761,24 @@ public class HomeAssistantAPI {
         }
     }
 
+    public func handleScript(scriptId: String, source: ActionSource, completion: @escaping (Bool) -> Void) {
+        let domain = Domain.script.rawValue
+        let service = scriptId.replacingOccurrences(of: "\(domain).", with: "")
+        Current.api(for: server).CallService(domain: domain, service: service, serviceData: [:])
+            .pipe { result in
+                switch result {
+                case .fulfilled:
+                    completion(true)
+                case let .rejected(error):
+                    Current.Log
+                        .error(
+                            "Failed to execute script, error: \(error.localizedDescription)"
+                        )
+                    completion(false)
+                }
+            }
+    }
+
     public func registerSensors() -> Promise<Void> {
         firstly {
             Current.sensors.sensors(reason: .registration, server: server).map(\.sensors)

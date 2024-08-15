@@ -21,7 +21,7 @@ public protocol WatchCodable: Codable {
 public extension WatchCodable {
     func encodeForWatch() -> Data {
         do {
-            return try PropertyListEncoder.init().encode(self)
+            return try PropertyListEncoder().encode(self)
         } catch {
             fatalError("Faield to encode watch config for watch transfer, error: \(error.localizedDescription)")
         }
@@ -29,7 +29,7 @@ public extension WatchCodable {
 
     static func decodeForWatch(_ data: Data) -> Self {
         do {
-            return try PropertyListDecoder.init().decode(Self.self, from: data)
+            return try PropertyListDecoder().decode(Self.self, from: data)
         } catch {
             fatalError("Faield to decode watch config for watch, error: \(error.localizedDescription)")
         }

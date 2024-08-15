@@ -34,6 +34,7 @@ enum WatchSendError: Error {
     case notImmediate
     case phoneFailed
     case wrongAudioURLData
+    case watchScriptCallFailed
 }
 
 final class LegacyWatchHomeViewModel: LegacyWatchHomeViewModelProtocol {

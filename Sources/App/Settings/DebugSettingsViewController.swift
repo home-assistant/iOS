@@ -186,6 +186,20 @@ class DebugSettingsViewController: HAFormViewController {
 
         section <<< SettingsButtonRow {
             $0.isDestructive = true
+            $0.title = "Delete watch configuration"
+            $0.onCellSelection { _, _ in
+                do {
+                    _ = try Current.grdb().write { db in
+                        try WatchConfig.deleteAll(db)
+                    }
+                } catch {
+                    Current.Log.error("Failed to delete watch configuration, error: \(error)")
+                }
+            }
+        }
+
+        section <<< SettingsButtonRow {
+            $0.isDestructive = true
             $0.title = L10n.Settings.ResetSection.ResetWebCache.title
             $0.onCellSelection { [weak self] _, _ in
                 guard let self else { return }

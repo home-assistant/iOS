@@ -1,16 +1,7 @@
-//
-//  WatchHomeRowView.swift
-//  WatchExtension-Watch
-//
-//  Created by Bruno Pantaleão on 15/08/2024.
-//  Copyright © 2024 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct WatchHomeRowView: View {
-
     enum RowState {
         case idle
         case loading
@@ -20,28 +11,47 @@ struct WatchHomeRowView: View {
 
     let item: MagicItem
     let itemInfo: MagicItem.Info
-    let action: (MagicItem, @escaping (Bool) -> Void) -> ()
+    let action: (MagicItem, @escaping (Bool) -> Void) -> Void
 
     @State private var state: RowState = .idle
+    @State private var showConfirmationDialog = false
 
     var body: some View {
         Button {
             guard state != .loading else { return }
-            state = .loading
-            action(item) { success in
-                state = success ? .success : .failure
-                resetState()
+            if item.customization?.requiresConfirmation ?? false {
+                showConfirmationDialog = true
+            } else {
+                executeMainAction()
             }
         } label: {
             HStack(spacing: Spaces.one) {
                 iconToDisplay
+                    .animation(.bouncy, value: state)
                 Text(itemInfo.name)
                     .font(.footnote.bold())
+                    .foregroundStyle(textColor)
                     .lineLimit(3)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.trailing)
             }
         }
+        .listRowBackground(backgroundForWatchItem.cornerRadius(14))
+        .confirmationDialog(
+            L10n.Watch.Home.Run.Confirmation.title(itemInfo.name),
+            isPresented: $showConfirmationDialog,
+            actions: {
+                Button(action: {
+                    executeMainAction()
+                }, label: {
+                    Text(L10n.yesLabel)
+                })
+                Button(action: {}, label: {
+                    Text(L10n.cancelLabel)
+                })
+                .tint(.red)
+            }
+        )
         .modify { view in
             if let backgroundColor = item.customization?.backgroundColor {
                 view.listRowBackground(
@@ -68,6 +78,14 @@ struct WatchHomeRowView: View {
         }
     }
 
+    private func executeMainAction() {
+        state = .loading
+        action(item) { success in
+            state = success ? .success : .failure
+            resetState()
+        }
+    }
+
     private var iconToDisplay: some View {
         VStack {
             switch state {
@@ -87,6 +105,7 @@ struct WatchHomeRowView: View {
                 makeStateImage(systemName: "xmark.circle")
             }
         }
+        .frame(width: 38, height: 38)
         .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
         .clipShape(Circle())
         .padding([.vertical, .trailing], Spaces.half)
@@ -105,7 +124,15 @@ struct WatchHomeRowView: View {
         }
     }
 
-    private func backgroundForWatchItem(itemInfo: MagicItem.Info) -> Color? {
+    private var textColor: Color {
+        if let textColor = item.customization?.textColor {
+            .init(uiColor: .init(hex: textColor))
+        } else {
+            .white
+        }
+    }
+
+    private var backgroundForWatchItem: Color {
         if let backgroundColor = itemInfo.customization?.backgroundColor {
             Color(uiColor: .init(hex: backgroundColor))
         } else {
@@ -132,8 +159,19 @@ struct WatchHomeRowView: View {
 #Preview {
     MaterialDesignIcons.register()
     return List {
-        WatchHomeRowView(item: .init(id: "1", type: .script), itemInfo: .init(id: "1", name: "New script", iconName: "mdi:door-closed-lock", customization: .init(backgroundColor: "#ff00ff"))) { _,_  in}
-        WatchHomeRowView(item: .init(id: "1", type: .action), itemInfo: .init(id: "1", name: "New Action", iconName: "earth")) { _,_ in}
+        WatchHomeRowView(
+            item: .init(id: "1", serverId: "1", type: .script),
+            itemInfo: .init(
+                id: "1",
+                name: "New script",
+                iconName: "mdi:door-closed-lock",
+                customization: .init(backgroundColor: "#ff00ff")
+            )
+        ) { _, _ in }
+        WatchHomeRowView(
+            item: .init(id: "1", serverId: "1", type: .action),
+            itemInfo: .init(id: "1", name: "New Action", iconName: "earth")
+        ) { _, _ in }
     }
     .background(Color.red)
 }

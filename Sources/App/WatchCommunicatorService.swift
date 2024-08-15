@@ -81,6 +81,8 @@ final class WatchCommunicatorService {
             case .assistAudioData:
                 // This will be handled by Blob observation due to amount of data
                 break
+            case .magicItemPressed:
+                magicItemPressed(message: message)
             }
         }
     }
@@ -110,7 +112,7 @@ final class WatchCommunicatorService {
             }
             message.reply(.init(identifier: responseIdentifier, content: [
                 "config": watchConfig.encodeForWatch(),
-                "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() })
+                "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() }),
             ]))
         }
     }
@@ -118,6 +120,35 @@ final class WatchCommunicatorService {
     private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
         message.reply(.init(identifier: responseIdentifier))
+    }
+
+    private func magicItemPressed(message: InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
+        guard let itemType = message.content["itemType"] as? String,
+              let itemId = message.content["itemId"] as? String,
+              let serverId = message.content["serverId"] as? String,
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
+              let type = MagicItem.WatchItemType(rawValue: itemType) else {
+            Current.Log.warning("Magic item press did not provide item type or item id")
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            return
+        }
+
+        switch type {
+        case .action:
+            firstly {
+                Current.api(for: server).HandleAction(actionID: itemId, source: .Watch)
+            }.done {
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
+            }.catch { err in
+                Current.Log.error("Error during action event fire: \(err)")
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            }
+        case .script:
+            Current.api(for: server).handleScript(scriptId: itemId, source: .Watch) { success in
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": success]))
+            }
+        }
     }
 
     private func actionRowPressed(message: InteractiveImmediateMessage) {
