@@ -205,7 +205,7 @@
 "component::starlink::entity::binary_sensor::power_save_idle::name" = "Sleep";
 "component::switch::entity_component::_::state::off" = "Vypnuto";
 "component::switch::entity_component::_::state::on" = "Zapnuto";
-"component::switch::title" = "Vypínač";
+"component::switch::title" = "Spínač";
 "component::tessie::entity::select::climate_state_seat_heater_left::state::off" = "Vypnuto";
 "component::tessie::entity::select::climate_state_seat_heater_rear_center::state::off" = "Vypnuto";
 "component::tessie::entity::select::climate_state_seat_heater_rear_left::state::off" = "Vypnuto";
