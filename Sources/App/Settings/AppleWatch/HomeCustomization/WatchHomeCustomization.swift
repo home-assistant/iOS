@@ -43,7 +43,6 @@ struct WatchHomeCustomization: View {
     private var content: some View {
         List {
             watchPreview
-                .frame(maxWidth: .infinity, alignment: .center)
                 .listRowBackground(Color.clear)
                 .onAppear {
                     viewModel.loadWatchConfig()
@@ -76,12 +75,13 @@ struct WatchHomeCustomization: View {
         ZStack {
             watchItemsList
                 .offset(x: -10)
-            Image(systemName: "applewatch.case.inset.filled")
+            Image("watch-frame")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 260)
                 .foregroundStyle(.clear, Color(hue: 0, saturation: 0, brightness: 0.2))
         }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var watchItemsList: some View {
@@ -97,9 +97,12 @@ struct WatchHomeCustomization: View {
             }
             .animation(.default, value: viewModel.watchConfig.items)
             .listStyle(.plain)
-            .frame(width: 195, height: 235)
+            .frame(width: 200, height: 265)
+            .offset(x: 5, y: 10)
             watchStatusBar
+                .offset(y: 10)
         }
+        .clipShape(RoundedRectangle(cornerRadius: 62))
     }
 
     private func makeListItem(item: MagicItem) -> some View {
@@ -202,7 +205,10 @@ struct WatchHomeCustomization: View {
 }
 
 #Preview {
-    NavigationView {
-        WatchHomeCustomization()
+    VStack {
+        Text("Abc")
+            .sheet(isPresented: .constant(true), content: {
+                WatchHomeCustomization()
+            })
     }
 }
