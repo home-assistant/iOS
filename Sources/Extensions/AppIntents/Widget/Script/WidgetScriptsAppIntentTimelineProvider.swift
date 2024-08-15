@@ -27,17 +27,32 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: WidgetScriptsAppIntent, in context: Context) async -> Entry {
-        .init(date: Date(), scripts: configuration.scripts?.compactMap({ intentScriptEntity in
-            .init(
-                script: .init(
-                    id: intentScriptEntity.id,
-                    name: intentScriptEntity.displayString,
-                    iconName: intentScriptEntity.iconName
-                ),
-                serverId: intentScriptEntity.serverId,
-                serverName: intentScriptEntity.serverName
-            )
-        }) ?? [], showServerName: showServerName(), showConfirmationDialog: configuration.showConfirmationDialog)
+        let suggestions = await suggestions()
+        let placeholder: [WidgetScriptsEntry.ScriptServer] = Array(suggestions.flatMap { serverCollection in
+            serverCollection.value.map { script in
+                WidgetScriptsEntry.ScriptServer(
+                    script: script,
+                    serverId: serverCollection.key.identifier.rawValue,
+                    serverName: serverCollection.key.info.name
+                )
+            }
+        }.prefix(WidgetBasicContainerView.maximumCount(family: context.family)))
+        return .init(
+            date: Date(),
+            scripts: configuration.scripts?.compactMap({ intentScriptEntity in
+                .init(
+                    script: .init(
+                        id: intentScriptEntity.id,
+                        name: intentScriptEntity.displayString,
+                        iconName: intentScriptEntity.iconName
+                    ),
+                    serverId: intentScriptEntity.serverId,
+                    serverName: intentScriptEntity.serverName
+                )
+            }) ?? placeholder,
+            showServerName: showServerName(),
+            showConfirmationDialog: configuration.showConfirmationDialog
+        )
     }
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
