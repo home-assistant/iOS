@@ -99,13 +99,20 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let upperText = String(params[0])
         let lowerText = String(params[1])
         let detailsText = String(params[2])
+
+        let action = await withCheckedContinuation { continuation in
+            configuration.action?.asAction { action in
+                continuation.resume(returning: action)
+            }
+        }
+
         return .init(
             upperText: upperText != "?" ? upperText : nil,
             lowerText: lowerText != "?" ? lowerText : nil,
             detailsText: detailsText != "?" ? detailsText : nil,
 
             runAction: configuration.runAction,
-            action: configuration.action?.asAction()
+            action: action
         )
     }
 }
