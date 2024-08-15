@@ -136,6 +136,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         config.userContentController = userContentController
         config.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
+        config.defaultWebpagePreferences.preferredContentMode = Current.isCatalyst ? .desktop : .mobile
 
         webView = WKWebView(frame: view!.frame, configuration: config)
         webView.isOpaque = false
