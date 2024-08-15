@@ -43,6 +43,7 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
         guard let scripts else { return .result(value: false) }
         for script in scripts {
             let intent = ScriptAppIntent()
+            intent.requiresConfirmationBeforeRun = false
             intent.script = .init(
                 id: script.id,
                 serverId: script.serverId,
