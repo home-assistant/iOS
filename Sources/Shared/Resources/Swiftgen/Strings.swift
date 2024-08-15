@@ -780,6 +780,43 @@ public enum L10n {
     }
   }
 
+  public enum MagicItem {
+    /// Add
+    public static var add: String { return L10n.tr("Localizable", "magic_item.add") }
+    public enum BackgroundColor {
+      /// Background color
+      public static var title: String { return L10n.tr("Localizable", "magic_item.background_color.title") }
+    }
+    public enum IconColor {
+      /// Icon color
+      public static var title: String { return L10n.tr("Localizable", "magic_item.icon_color.title") }
+    }
+    public enum IconName {
+      /// Icon name
+      public static var title: String { return L10n.tr("Localizable", "magic_item.icon_name.title") }
+    }
+    public enum Name {
+      /// Name
+      public static var title: String { return L10n.tr("Localizable", "magic_item.name.title") }
+    }
+    public enum NameAndIcon {
+      /// Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.
+      public static var footer: String { return L10n.tr("Localizable", "magic_item.name_and_icon.footer") }
+    }
+    public enum RequireConfirmation {
+      /// Require confirmation
+      public static var title: String { return L10n.tr("Localizable", "magic_item.require_confirmation.title") }
+    }
+    public enum TextColor {
+      /// Text color
+      public static var title: String { return L10n.tr("Localizable", "magic_item.text_color.title") }
+    }
+    public enum UseCustomColors {
+      /// Use custom colors
+      public static var title: String { return L10n.tr("Localizable", "magic_item.use_custom_colors.title") }
+    }
+  }
+
   public enum Menu {
     public enum Actions {
       /// Configure…

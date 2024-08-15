@@ -922,3 +922,12 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.title" = "Scripts";
 "widgets.scripts.description" = "Run Scripts";
 "yes_label" = "Yes";
+"magic_item.name_and_icon.footer"= "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.";
+"magic_item.name.title"= "Name";
+"magic_item.icon_name.title"= "Icon name";
+"magic_item.icon_color.title"= "Icon color";
+"magic_item.background_color.title"= "Background color";
+"magic_item.text_color.title"= "Text color";
+"magic_item.add"= "Add";
+"magic_item.require_confirmation.title"= "Require confirmation";
+"magic_item.use_custom_colors.title"= "Use custom colors";

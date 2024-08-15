@@ -6,6 +6,10 @@ struct MagicItemEditView: View {
     @StateObject private var viewModel: MagicItemEditViewModel
 
     @State private var iconColor: Color = .init(uiColor: Asset.Colors.haPrimary.color)
+    @State private var textColor: Color = .white
+    @State private var backgroundColor: Color = .black
+    @State private var requiresConfirmation = false
+    @State private var useCustomColors = false
 
     let addItem: (MagicItem) -> Void
 
@@ -19,36 +23,47 @@ struct MagicItemEditView: View {
             if let info = viewModel.info {
                 Section {
                     HStack {
-                        Text("Name")
+                        Text(L10n.MagicItem.Name.title)
                         Text(info.name)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                     HStack {
-                        Text("Icon name")
+                        Text(L10n.MagicItem.IconName.title)
                         Text(info.iconName)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                 } footer: {
                     if viewModel.item.type == .script {
-                        Text(
-                            "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'."
-                        )
+                        Text(L10n.MagicItem.NameAndIcon.footer)
                     }
                 }
 
-                HStack {
-                    ColorPicker("Icon Color", selection: $iconColor)
-                        .frame(maxWidth: .infinity)
+                Section {
+                    ColorPicker(L10n.MagicItem.IconColor.title, selection: $iconColor)
+                    Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
+                    if useCustomColors {
+                        ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: $backgroundColor)
+                        ColorPicker(L10n.MagicItem.TextColor.title, selection: $textColor)
+                    }
+                }
+
+                Section {
+                    Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: $requiresConfirmation)
                 }
             }
         }
         .toolbar {
             Button {
-                viewModel.item.customization = .init(iconColor: UIColor(iconColor).hexString())
+                viewModel.item.customization = .init(
+                    iconColor: UIColor(iconColor).hexString(),
+                    textColor: useCustomColors ? UIColor(textColor).hexString() : nil,
+                    backgroundColor: useCustomColors ? UIColor(backgroundColor).hexString() : nil,
+                    requiresConfirmation: requiresConfirmation
+                )
                 addItem(viewModel.item)
                 dismiss()
             } label: {
-                Text("Add")
+                Text(L10n.MagicItem.add)
             }
         }
         .onAppear {
