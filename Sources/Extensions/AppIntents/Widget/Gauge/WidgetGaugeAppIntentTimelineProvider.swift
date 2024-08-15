@@ -9,15 +9,21 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetGaugeEntry
     typealias Intent = WidgetGaugeAppIntent
 
+    @MainActor
     func snapshot(for configuration: WidgetGaugeAppIntent, in context: Context) async -> WidgetGaugeEntry {
-        do {
-            return try await entry(for: configuration, in: context)
-        } catch {
-            Current.Log.debug("Using placeholder for gauge widget snapshot")
+        if configuration.valueTemplate.isEmpty, configuration.valueLabelTemplate.isEmpty {
             return placeholder(in: context)
+        } else {
+            do {
+                return try await entry(for: configuration, in: context)
+            } catch {
+                Current.Log.debug("Using placeholder for gauge widget snapshot")
+                return placeholder(in: context)
+            }
         }
     }
 
+    @MainActor
     func timeline(for configuration: WidgetGaugeAppIntent, in context: Context) async -> Timeline<Entry> {
         do {
             let snapshot = try await entry(for: configuration, in: context)
@@ -40,6 +46,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    @MainActor
     func placeholder(in context: Context) -> WidgetGaugeEntry {
         .init(
             gaugeType: .normal,
@@ -49,6 +56,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
+    @MainActor
     private func entry(for configuration: WidgetGaugeAppIntent, in context: Context) async throws -> Entry {
         guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
             Current.Log.error("Failed to fetch data for gauge widget: No servers exist")

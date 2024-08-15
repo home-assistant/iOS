@@ -8,10 +8,12 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Entry = WidgetActionsEntry
     typealias Intent = WidgetActionsAppIntent
 
+    @MainActor
     func snapshot(for configuration: WidgetActionsAppIntent, in context: Context) async -> WidgetActionsEntry {
         Self.entry(for: configuration, in: context)
     }
 
+    @MainActor
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
         .init(
             entries: [Self.entry(for: configuration, in: context)],
@@ -22,6 +24,7 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
+    @MainActor
     func placeholder(in context: Context) -> WidgetActionsEntry {
         let count = WidgetBasicContainerView.maximumCount(family: context.family)
         let actions = stride(from: 0, to: count, by: 1).map { _ in
@@ -34,6 +37,7 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
         return WidgetActionsEntry(actions: actions)
     }
 
+    @MainActor
     private static func entry(for configuration: Intent, in context: Context) -> Entry {
         if let existing = configuration.actions?.compactMap({ $0.asAction() }), !existing.isEmpty {
             return .init(actions: existing)
@@ -42,6 +46,7 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
+    @MainActor
     private static func defaultActions(in context: Context) -> [Action] {
         let allActions = WidgetActionsDataSource.actions
         let maxCount = WidgetBasicContainerView.maximumCount(family: context.family)
