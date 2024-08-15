@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-struct WatchActionButtonView<ViewModel>: View where ViewModel: WatchHomeViewModelProtocol {
+struct WatchActionButtonView<ViewModel>: View where ViewModel: LegacyWatchHomeViewModelProtocol {
     enum ActionState {
         case idle
         case loading

@@ -45,7 +45,7 @@ public struct MagicItem: Codable, Equatable {
         }
     }
 
-    public struct Info {
+    public struct Info: WatchCodable {
         public let id: String
         public let name: String
         public let iconName: String

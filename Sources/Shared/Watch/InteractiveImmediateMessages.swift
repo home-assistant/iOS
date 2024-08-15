@@ -5,6 +5,7 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case pushAction = "PushAction"
     case assistPipelinesFetch
     case assistAudioData
+    case watchConfig
 }
 
 public enum InteractiveImmediateResponses: String, CaseIterable {
@@ -16,4 +17,6 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case assistIntentEndResponse
     case assistTTSResponse
     case assistError
+    case watchConfigResponse
+    case emptyWatchConfigResponse
 }

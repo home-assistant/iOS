@@ -1,7 +1,7 @@
 #if DEBUG
 import Foundation
 
-final class MockWatchHomeViewModel: WatchHomeViewModelProtocol {
+final class MockWatchHomeViewModel: LegacyWatchHomeViewModelProtocol {
     @Published var assistService: WatchAssistService = .init()
     @Published private(set) var actions: [WatchActionItem] = []
     @Published var state: WatchHomeViewState = .idle

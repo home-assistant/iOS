@@ -70,6 +70,8 @@ final class WatchCommunicatorService {
             }
 
             switch messageId {
+            case .watchConfig:
+                watchConfig(message: message)
             case .actionRowPressed:
                 actionRowPressed(message: message)
             case .pushAction:
@@ -81,6 +83,41 @@ final class WatchCommunicatorService {
                 break
             }
         }
+    }
+
+    private func watchConfig(message: InteractiveImmediateMessage) {
+        do {
+            if let config: WatchConfig = try Current.grdb().read({ db in
+                try WatchConfig.fetchOne(db)
+            }) {
+                Current.Log.info("Watch configuration exists, moving forward providing it to watch")
+                notifyWatchConfig(message: message, watchConfig: config)
+            } else {
+                Current.Log.error("No watch config found, notify watch of empty config")
+                notifyEmptyWatchConfig(message: message)
+            }
+        } catch {
+            Current.Log.error("Failed to acces database (GRDB) for watch config error: \(error.localizedDescription)")
+        }
+    }
+
+    private func notifyWatchConfig(message: InteractiveImmediateMessage, watchConfig: WatchConfig) {
+        let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
+        let magicItemProvider = Current.magicItemProvider()
+        magicItemProvider.loadInformation {
+            let magicItemsInfo: [MagicItem.Info] = watchConfig.items.map { magicItem in
+                magicItemProvider.getInfo(for: magicItem)
+            }
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "config": watchConfig.encodeForWatch(),
+                "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() })
+            ]))
+        }
+    }
+
+    private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
+        message.reply(.init(identifier: responseIdentifier))
     }
 
     private func actionRowPressed(message: InteractiveImmediateMessage) {
