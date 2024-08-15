@@ -23,7 +23,7 @@ struct WidgetActionsProvider: IntentTimelineProvider {
     }
 
     private static func defaultActions(in context: Context) -> [Action] {
-        let allActions = WidgetActionsDataSource.actions
+        let allActions = WidgetActionsDataSource.getActions()
         let maxCount = WidgetBasicContainerView.maximumCount(family: context.family)
 
         switch allActions.count {

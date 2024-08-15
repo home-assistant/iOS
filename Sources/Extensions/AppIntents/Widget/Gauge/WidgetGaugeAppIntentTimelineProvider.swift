@@ -105,6 +105,13 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         let valueText = String(params[1])
         let maxText = String(params[2])
         let minText = String(params[3])
+
+        let action = await withCheckedContinuation { continuation in
+            configuration.action?.asAction { action in
+                continuation.resume(returning: action)
+            }
+        }
+
         return .init(
             gaugeType: configuration.gaugeType,
 
@@ -115,7 +122,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             max: maxText != "?" ? maxText : nil,
 
             runAction: configuration.runAction,
-            action: configuration.action?.asAction()
+            action: action
         )
     }
 }
