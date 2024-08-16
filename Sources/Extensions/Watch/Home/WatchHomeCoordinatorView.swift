@@ -35,13 +35,27 @@ struct WatchHomeCoordinatorView: View {
             ProgressView()
                 .progressViewStyle(.circular)
                 .scaleEffect(2)
-        case .legacy:
-            LegacyWatchHomeView(viewModel: LegacyWatchHomeViewModel())
+        case .empty:
+            List {
+                Text(L10n.Watch.Labels.noConfig)
+                reloadButton
+            }
         case let .config(watchConfig, magicItemsInfo):
             WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo) {
                 viewModel.requestConfig()
             }
         }
+    }
+
+    private var reloadButton: some View {
+        Button {
+            viewModel.requestConfig()
+        } label: {
+            Label(L10n.reloadLabel, systemImage: "arrow.circlepath")
+                .frame(maxWidth: .infinity, alignment: .center)
+                .font(.footnote)
+        }
+        .listRowBackground(Color.clear)
     }
 }
 

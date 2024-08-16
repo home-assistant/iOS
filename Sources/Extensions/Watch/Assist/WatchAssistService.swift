@@ -3,6 +3,13 @@ import Foundation
 import PromiseKit
 import Shared
 
+enum WatchSendError: Error {
+    case notImmediate
+    case phoneFailed
+    case wrongAudioURLData
+    case watchScriptCallFailed
+}
+
 final class WatchAssistService: ObservableObject {
     @Published var servers: [Server] = []
     @Published var selectedServer: String = "" {
