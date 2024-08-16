@@ -49,6 +49,7 @@ public class MatterWrapper {
         set { Current.settingsStore.prefs.set(newValue?.rawValue, forKey: "lastCommissionServerID") }
     }
 
+    #if os(iOS)
     public lazy var commission: (_ server: Server) -> Promise<Void> = { [self] server in
         #if canImport(MatterSupport)
         guard #available(iOS 16.1, *) else {
