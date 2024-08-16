@@ -146,6 +146,7 @@ public extension Version {
     static let conversationWebhook: Version = .init(major: 2023, minor: 2, prerelease: "any0")
     static let externalBusCommandSidebar: Version = .init(major: 2023, minor: 4, prerelease: "b3")
     static let externalBusCommandAutomationEditor: Version = .init(major: 2024, minor: 2, prerelease: "any0")
+    static let canUseAppThemeForStatusBar: Version = .init(major: 2024, minor: 7)
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))
