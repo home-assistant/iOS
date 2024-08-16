@@ -340,7 +340,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView?.scrollView.backgroundColor = cachedColors[.primaryBackgroundColor]
 
         if let statusBarView = view.viewWithTag(111) {
-            statusBarView.backgroundColor = cachedColors[.appThemeColor]
+            if server.info.version < .canUseAppThemeForStatusBar {
+                statusBarView.backgroundColor = cachedColors[.appHeaderBackgroundColor]
+            } else {
+                statusBarView.backgroundColor = cachedColors[.appThemeColor]
+            }
         }
 
         refreshControl.tintColor = cachedColors[.primaryColor]
