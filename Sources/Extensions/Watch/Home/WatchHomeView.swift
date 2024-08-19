@@ -4,7 +4,6 @@ import SwiftUI
 struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel: WatchHomeViewModel
-    @State private var showAssist = false
 
     let reloadAction: () -> Void
 
@@ -15,12 +14,6 @@ struct WatchHomeView: View {
 
     var body: some View {
         content
-            .fullScreenCover(isPresented: $showAssist, content: {
-                WatchAssistView.build()
-            })
-            .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
-                showAssist = true
-            }
             .onChange(of: scenePhase) { newScenePhase in
                 switch newScenePhase {
                 case .active:
@@ -46,24 +39,6 @@ struct WatchHomeView: View {
             reloadButton
         }
         .navigationTitle("")
-        .modify {
-            if #available(watchOS 10, *), viewModel.watchConfig.showAssist {
-                $0.toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            showAssist = true
-                        }, label: {
-                            Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
-                                ofSize: .init(width: 24, height: 24),
-                                color: Asset.Colors.haPrimary.color
-                            ))
-                        })
-                    }
-                }
-            } else {
-                $0
-            }
-        }
     }
 
     private var reloadButton: some View {

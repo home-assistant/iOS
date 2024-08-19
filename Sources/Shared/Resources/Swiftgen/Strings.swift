@@ -2552,6 +2552,10 @@ public enum L10n {
       }
     }
     public enum Home {
+      public enum CancelAndUseCache {
+        /// Cancel and use cache
+        public static var title: String { return L10n.tr("Localizable", "watch.home.cancel_and_use_cache.title") }
+      }
       public enum Run {
         public enum Confirmation {
           /// Are you sure you want to run "%@"?
