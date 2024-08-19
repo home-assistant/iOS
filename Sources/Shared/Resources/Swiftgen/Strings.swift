@@ -795,6 +795,36 @@ public enum L10n {
       /// Icon name
       public static var title: String { return L10n.tr("Localizable", "magic_item.icon_name.title") }
     }
+    public enum ItemType {
+      public enum Action {
+        public enum List {
+          /// iOS Actions
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.action.list.title") }
+          public enum Warning {
+            /// We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.
+            public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.action.list.warning.title") }
+          }
+        }
+      }
+      public enum Scene {
+        public enum List {
+          /// Scenes
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.scene.list.title") }
+        }
+      }
+      public enum Script {
+        public enum List {
+          /// Scripts
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.script.list.title") }
+        }
+      }
+      public enum Selection {
+        public enum List {
+          /// Item type
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.selection.list.title") }
+        }
+      }
+    }
     public enum Name {
       /// Name
       public static var title: String { return L10n.tr("Localizable", "magic_item.name.title") }

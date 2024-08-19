@@ -26,7 +26,7 @@ public struct MagicItem: Codable, Equatable {
         case scene
     }
 
-    public struct Customization: Codable {
+    public struct Customization: Codable, Equatable {
         public let iconColor: String?
         public let textColor: String?
         public let backgroundColor: String?
@@ -46,7 +46,7 @@ public struct MagicItem: Codable, Equatable {
         }
     }
 
-    public struct Info: WatchCodable {
+    public struct Info: WatchCodable, Equatable {
         public let id: String
         public let name: String
         public let iconName: String

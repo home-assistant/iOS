@@ -63,7 +63,9 @@ final class MagicItemAddViewModel: ObservableObject {
 
     @MainActor
     private func loadActions() {
-        actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
+        actions = Current.realm().objects(Action.self)
+            .filter({ $0.Scene == nil })
+            .sorted(by: { $0.Position < $1.Position })
     }
 
     private func dispatchInMain(completion: @escaping () -> Void) {

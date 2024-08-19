@@ -52,6 +52,20 @@ struct MagicItemEditView: View {
                 }
             }
         }
+        .onChange(of: viewModel.info) { newValue in
+            guard let newValue else { return }
+            if let iconColor = newValue.customization?.iconColor {
+                self.iconColor = Color(uiColor: .init(hex: iconColor))
+            }
+            if let backgroundColor = newValue.customization?.backgroundColor {
+                self.backgroundColor = Color(uiColor: .init(hex: backgroundColor))
+            }
+            if let textColor = newValue.customization?.textColor {
+                self.textColor = Color(uiColor: .init(hex: textColor))
+            }
+            useCustomColors = newValue.customization?.backgroundColor != nil || newValue.customization?.textColor != nil
+            requiresConfirmation = newValue.customization?.requiresConfirmation ?? false
+        }
         .toolbar {
             Button {
                 viewModel.item.customization = .init(

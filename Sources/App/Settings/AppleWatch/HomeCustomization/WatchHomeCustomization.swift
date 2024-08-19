@@ -5,6 +5,8 @@ struct WatchHomeCustomization: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = WatchHomeCustomizationViewModel()
 
+    @State private var isLoaded = false
+
     var body: some View {
         NavigationView {
             content
@@ -31,6 +33,7 @@ struct WatchHomeCustomization: View {
                     }
                 })
         }
+        .interactiveDismissDisabled(true)
         .preferredColorScheme(.dark)
         .sheet(isPresented: $viewModel.showAddItem, content: {
             MagicItemAddView { itemToAdd in
@@ -45,7 +48,10 @@ struct WatchHomeCustomization: View {
             watchPreview
                 .listRowBackground(Color.clear)
                 .onAppear {
+                    // Prevent trigger when popping nav controller
+                    guard !isLoaded else { return }
                     viewModel.loadWatchConfig()
+                    isLoaded = true
                 }
             Section(L10n.Watch.Configuration.Items.title) {
                 ForEach(viewModel.watchConfig.items, id: \.id) { item in
@@ -111,12 +117,18 @@ struct WatchHomeCustomization: View {
     }
 
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        HStack {
-            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
-            Text(info.name)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemName: "line.3.horizontal")
-                .foregroundStyle(.gray)
+        NavigationLink {
+            MagicItemEditView(item: item) { updatedMagicItem in
+                viewModel.updateItem(updatedMagicItem)
+            }
+        } label: {
+            HStack {
+                Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
+                Text(info.name)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "line.3.horizontal")
+                    .foregroundStyle(.gray)
+            }
         }
     }
 
@@ -134,6 +146,7 @@ struct WatchHomeCustomization: View {
             Text(itemInfo.name)
                 .font(.system(size: 16))
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
         }
         .padding(Spaces.one)
         .frame(width: 190, height: 55)
@@ -148,6 +161,14 @@ struct WatchHomeCustomization: View {
             Color(uiColor: .init(hex: backgroundColor))
         } else {
             Color.gray.opacity(0.3)
+        }
+    }
+
+    private func textColorForWatchItem(itemInfo: MagicItem.Info) -> Color {
+        if let textColor = itemInfo.customization?.textColor {
+            Color(uiColor: .init(hex: textColor))
+        } else {
+            Color.white
         }
     }
 

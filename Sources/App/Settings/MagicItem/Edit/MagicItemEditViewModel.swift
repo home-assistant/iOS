@@ -6,15 +6,22 @@ final class MagicItemEditViewModel: ObservableObject {
     @Published var item: MagicItem
     @Published var info: MagicItem.Info?
 
+    private let itemProvider = Current.magicItemProvider()
+
     init(item: MagicItem) {
         self.item = item
     }
 
+    @MainActor
     func loadMagicInfo() {
-        let itemProvider = Current.magicItemProvider()
         itemProvider.loadInformation { [weak self] in
             guard let self else { return }
-            info = itemProvider.getInfo(for: item)
+            loadInfo()
         }
+    }
+
+    @MainActor
+    private func loadInfo() {
+        info = itemProvider.getInfo(for: item)
     }
 }

@@ -48,6 +48,14 @@ final class WatchHomeCustomizationViewModel: ObservableObject {
         watchConfig.items.append(item)
     }
 
+    func updateItem(_ item: MagicItem) {
+        if let indexToUpdate = watchConfig.items
+            .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
+            watchConfig.items.remove(at: indexToUpdate)
+            watchConfig.items.insert(item, at: indexToUpdate)
+        }
+    }
+
     func deleteItem(at offsets: IndexSet) {
         watchConfig.items.remove(atOffsets: offsets)
     }

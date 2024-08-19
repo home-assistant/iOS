@@ -10,12 +10,12 @@ struct MagicItemAddView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Picker("Item type", selection: $viewModel.selectedItemType) {
-                    Text("Scripts")
+                Picker(L10n.MagicItem.ItemType.Selection.List.title, selection: $viewModel.selectedItemType) {
+                    Text(L10n.MagicItem.ItemType.Script.List.title)
                         .tag(MagicItemAddType.scripts)
-                    Text("Scenes")
+                    Text(L10n.MagicItem.ItemType.Scene.List.title)
                         .tag(MagicItemAddType.scenes)
-                    Text("Actions (Legacy)")
+                    Text(L10n.MagicItem.ItemType.Action.List.title)
                         .tag(MagicItemAddType.actions)
                 }
                 .pickerStyle(.segmented)
@@ -47,7 +47,9 @@ struct MagicItemAddView: View {
         .preferredColorScheme(.dark)
     }
 
+    @ViewBuilder
     private var actionsList: some View {
+        actionsDeprecationDisclaimer
         ForEach(viewModel.actions, id: \.ID) { action in
             if visibleForSearch(title: action.Text) {
                 Button(action: {
@@ -58,6 +60,19 @@ struct MagicItemAddView: View {
                 })
                 .tint(.white)
             }
+        }
+    }
+
+    private var actionsDeprecationDisclaimer: some View {
+        Section {
+            Button {
+                viewModel.selectedItemType = .scripts
+            } label: {
+                Text(L10n.MagicItem.ItemType.Action.List.Warning.title)
+            }
+            .buttonStyle(.bordered)
+            .tint(.red)
+            .listRowBackground(Color.clear)
         }
     }
 
