@@ -13,6 +13,8 @@ struct MagicItemAddView: View {
                 Picker("Item type", selection: $viewModel.selectedItemType) {
                     Text("Scripts")
                         .tag(MagicItemAddType.scripts)
+                    Text("Scenes")
+                        .tag(MagicItemAddType.scenes)
                     Text("Actions (Legacy)")
                         .tag(MagicItemAddType.actions)
                 }
@@ -24,6 +26,8 @@ struct MagicItemAddView: View {
                         actionsList
                     case .scripts:
                         scriptsPerServerList
+                    case .scenes:
+                        scenesPerServerList
                     }
                 }
                 .searchable(text: $viewModel.searchText)
@@ -77,6 +81,31 @@ struct MagicItemAddView: View {
                     }
                 } label: {
                     makeItemRow(title: script.name ?? "Unknown", imageSystemName: nil)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var scenesPerServerList: some View {
+        ForEach(Array(viewModel.scenes.keys), id: \.identifier) { server in
+            Section(server.info.name) {
+                scenesList(scenes: viewModel.scenes[server] ?? [], serverId: server.identifier.rawValue)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func scenesList(scenes: [HAScene], serverId: String) -> some View {
+        ForEach(scenes, id: \.id) { scene in
+            if visibleForSearch(title: scene.name ?? "") {
+                NavigationLink {
+                    MagicItemEditView(item: .init(id: scene.id, serverId: serverId, type: .scene)) { itemToAdd in
+                        self.itemToAdd(itemToAdd)
+                        dismiss()
+                    }
+                } label: {
+                    makeItemRow(title: scene.name ?? "Unknown", imageSystemName: nil)
                 }
             }
         }

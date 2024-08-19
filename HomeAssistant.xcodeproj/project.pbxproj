@@ -596,6 +596,9 @@
 		426490752C0F20FF002155CC /* WatchAssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490742C0F20FF002155CC /* WatchAssistView+Build.swift */; };
 		426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490762C0F2403002155CC /* WatchAudioRecorder.swift */; };
 		4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
+		4265347B2C73896D004D7189 /* ScenesObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4265347A2C73896D004D7189 /* ScenesObserver.swift */; };
+		4265347D2C7389D5004D7189 /* HAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4265347C2C7389D5004D7189 /* HAScene.swift */; };
+		4265347E2C7389D5004D7189 /* HAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4265347C2C7389D5004D7189 /* HAScene.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
 		427692E32B98B82500F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E22B98B82500F24321 /* SharedPush */; };
 		427692E52B98B83200F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E42B98B83200F24321 /* SharedPush */; };
@@ -666,8 +669,8 @@
 		42D3E4B12C5D2B3C00444BE6 /* ScriptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */; };
 		42D3E4B52C5D2BC200444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */; };
 		42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */; };
-		42D3E4B82C5D305E00444BE6 /* HAScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A42C5CFC1400444BE6 /* HAScripts.swift */; };
-		42D3E4B92C5D305F00444BE6 /* HAScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A42C5CFC1400444BE6 /* HAScripts.swift */; };
+		42D3E4B82C5D305E00444BE6 /* HAScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A42C5CFC1400444BE6 /* HAScript.swift */; };
+		42D3E4B92C5D305F00444BE6 /* HAScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A42C5CFC1400444BE6 /* HAScript.swift */; };
 		42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */; };
 		42D3E4BB2C5D313000444BE6 /* ScriptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */; };
 		42D3E4BD2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
@@ -1803,6 +1806,8 @@
 		4264906D2C0F1B8B002155CC /* WatchAssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistViewModel.swift; sourceTree = "<group>"; };
 		426490742C0F20FF002155CC /* WatchAssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+Build.swift"; sourceTree = "<group>"; };
 		426490762C0F2403002155CC /* WatchAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAudioRecorder.swift; sourceTree = "<group>"; };
+		4265347A2C73896D004D7189 /* ScenesObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenesObserver.swift; sourceTree = "<group>"; };
+		4265347C2C7389D5004D7189 /* HAScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAScene.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
 		427756CA2C3ED5F700E11D0B /* VolumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
@@ -1892,7 +1897,7 @@
 		42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBatterySensor.swift; sourceTree = "<group>"; };
 		42D3E4A02C5BCD1100444BE6 /* WatchContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContextTests.swift; sourceTree = "<group>"; };
 		42D3E4A22C5CF92700444BE6 /* ScriptsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptsObserver.swift; sourceTree = "<group>"; };
-		42D3E4A42C5CFC1400444BE6 /* HAScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAScripts.swift; sourceTree = "<group>"; };
+		42D3E4A42C5CFC1400444BE6 /* HAScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAScript.swift; sourceTree = "<group>"; };
 		42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptAppIntent.swift; sourceTree = "<group>"; };
 		42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScripts.swift; sourceTree = "<group>"; };
 		42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
@@ -4240,6 +4245,7 @@
 				42FCCFDD2B9B1AB00057783F /* BarcodeScanner */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				42D3E4A22C5CF92700444BE6 /* ScriptsObserver.swift */,
+				4265347A2C73896D004D7189 /* ScenesObserver.swift */,
 				42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				42A47A8E2C4548BC00C9B43D /* Improv */,
@@ -4341,7 +4347,8 @@
 				B672334C225DE1490031D629 /* SubscribeEvents.swift */,
 				B6723349225DDF410031D629 /* Event.swift */,
 				115560E727011E3300A8F818 /* HAPanel.swift */,
-				42D3E4A42C5CFC1400444BE6 /* HAScripts.swift */,
+				42D3E4A42C5CFC1400444BE6 /* HAScript.swift */,
+				4265347C2C7389D5004D7189 /* HAScene.swift */,
 			);
 			path = WebSocket;
 			sourceTree = "<group>";
@@ -5383,7 +5390,7 @@
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
-				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "SharedPush" */,
+				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -6335,6 +6342,7 @@
 				1185DFB4271FF53800ED7D9A /* OnboardingAuthStepModels.swift in Sources */,
 				11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */,
 				42FCD0002B9B1C310057783F /* ThreadCredentialsSharingViewModelProtocol.swift in Sources */,
+				4265347B2C73896D004D7189 /* ScenesObserver.swift in Sources */,
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,
 				42FCCFFE2B9B1C310057783F /* ThreadCredentialsSharing+build.swift in Sources */,
 				425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */,
@@ -6727,6 +6735,7 @@
 				1182620524F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,
 				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
+				4265347E2C7389D5004D7189 /* HAScene.swift in Sources */,
 				1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */,
 				11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
@@ -6769,7 +6778,7 @@
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
-				42D3E4B92C5D305F00444BE6 /* HAScripts.swift in Sources */,
+				42D3E4B92C5D305F00444BE6 /* HAScript.swift in Sources */,
 				3997926B2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */,
@@ -6993,6 +7002,7 @@
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
+				4265347D2C7389D5004D7189 /* HAScene.swift in Sources */,
 				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
@@ -7019,7 +7029,7 @@
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */,
-				42D3E4B82C5D305E00444BE6 /* HAScripts.swift in Sources */,
+				42D3E4B82C5D305E00444BE6 /* HAScript.swift in Sources */,
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				42070EEB2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */,
 				11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */,
@@ -8726,7 +8736,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "SharedPush" */ = {
+		427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/PushServer/SharedPush;
 		};

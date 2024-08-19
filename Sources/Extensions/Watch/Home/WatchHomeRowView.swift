@@ -143,7 +143,7 @@ struct WatchHomeRowView: View {
     private var image: UIImage {
         var icon: MaterialDesignIcons
         switch item.type {
-        case .action:
+        case .action, .scene:
             icon = MaterialDesignIcons(named: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
         case .script:
             icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)

@@ -128,7 +128,7 @@ final class WatchCommunicatorService {
               let itemId = message.content["itemId"] as? String,
               let serverId = message.content["serverId"] as? String,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
-              let type = MagicItem.WatchItemType(rawValue: itemType) else {
+              let type = MagicItem.ItemType(rawValue: itemType) else {
             Current.Log.warning("Magic item press did not provide item type or item id")
             message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             return
@@ -145,8 +145,49 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             }
         case .script:
-            Current.api(for: server).handleScript(scriptId: itemId, source: .Watch) { success in
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": success]))
+            callService(
+                server: server,
+                message: message,
+                magicItemId: itemId,
+                domain: .script,
+                responseIdentifier: responseIdentifier
+            )
+        case .scene:
+            callService(
+                server: server,
+                message: message,
+                magicItemId: itemId,
+                domain: .scene,
+                serviceName: "turn_on",
+                serviceData: ["entity_id": itemId],
+                responseIdentifier: responseIdentifier
+            )
+        }
+    }
+
+    private func callService(
+        server: Server,
+        message: InteractiveImmediateMessage,
+        magicItemId: String,
+        domain: Domain,
+        serviceName: String? = nil,
+        serviceData: [String: String] = [:],
+        responseIdentifier: String
+    ) {
+        let domain = domain.rawValue
+        let serviceName = serviceName ?? magicItemId.replacingOccurrences(of: "\(domain).", with: "")
+        Current.api(for: server).CallService(
+            domain: domain,
+            service: serviceName,
+            serviceData: serviceData,
+            shouldLog: true
+        ).pipe { result in
+            switch result {
+            case .fulfilled:
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
+            case let .rejected(error):
+                Current.Log.error("Failed to run \(domain), error: \(error.localizedDescription)")
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             }
         }
     }

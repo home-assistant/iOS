@@ -8,6 +8,7 @@ enum WatchSendError: Error {
     case phoneFailed
     case wrongAudioURLData
     case watchScriptCallFailed
+    case watchSceneCallFailed
 }
 
 final class WatchAssistService: ObservableObject {

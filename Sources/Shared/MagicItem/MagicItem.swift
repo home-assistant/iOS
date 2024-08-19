@@ -10,19 +10,20 @@ public struct MagicItem: Codable, Equatable {
     /// Id match it's type Id
     public let id: String
     public let serverId: String
-    public let type: WatchItemType
+    public let type: ItemType
     public var customization: Customization?
 
-    public init(id: String, serverId: String, type: WatchItemType, customization: Customization? = nil) {
+    public init(id: String, serverId: String, type: ItemType, customization: Customization? = nil) {
         self.id = id
         self.serverId = serverId
         self.type = type
         self.customization = customization
     }
 
-    public enum WatchItemType: String, Codable {
+    public enum ItemType: String, Codable {
         case action
         case script
+        case scene
     }
 
     public struct Customization: Codable {

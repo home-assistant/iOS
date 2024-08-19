@@ -74,18 +74,24 @@ final class WatchHomeViewModel: ObservableObject {
 
                 switch magicItem.type {
                 case .script:
-                    return Promise<Void> { seal in
-                        Current.api(for: server).handleScript(scriptId: magicItem.id, source: .Watch) { success in
-                            Current.Log.info("Running script directly from watch result: \(success)")
-                            if success {
-                                seal.fulfill(())
-                            } else {
-                                seal.reject(WatchSendError.watchScriptCallFailed)
-                            }
-                        }
-                    }
+                    let domain = Domain.script.rawValue
+                    let service = magicItem.id.replacingOccurrences(of: "\(domain).", with: "")
+                    return Current.api(for: server).CallService(
+                        domain: domain,
+                        service: service,
+                        serviceData: [:],
+                        shouldLog: true
+                    )
                 case .action:
                     return Current.api(for: server).HandleAction(actionID: magicItem.id, source: .Watch)
+                case .scene:
+                    let domain = Domain.scene.rawValue
+                    return Current.api(for: server).CallService(
+                        domain: domain,
+                        service: "turn_on",
+                        serviceData: ["entity_id": magicItem.id],
+                        shouldLog: true
+                    )
                 }
             }.done {
                 completion(true)

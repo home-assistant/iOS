@@ -159,7 +159,7 @@ struct WatchHomeCustomization: View {
     ) -> UIImage {
         var icon: MaterialDesignIcons = .abTestingIcon
         switch item.type {
-        case .action:
+        case .action, .scene:
             icon = MaterialDesignIcons(named: itemInfo.iconName)
         case .script:
             icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
