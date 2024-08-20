@@ -43,7 +43,6 @@ public class MatterWrapper {
 
     #if os(iOS)
     public var threadClientService: ThreadClientProtocol = ThreadClientService()
-    #endif
 
     public var lastCommissionServerIdentifier: Identifier<Server>? {
         get { Current.settingsStore.prefs.string(forKey: "lastCommissionServerID").flatMap { .init(rawValue: $0) } }
@@ -75,4 +74,5 @@ public class MatterWrapper {
         return .value(())
         #endif
     }
+    #endif
 }
