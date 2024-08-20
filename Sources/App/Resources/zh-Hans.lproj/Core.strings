@@ -98,7 +98,7 @@
 "component::input_boolean::entity_component::_::state::on" = "开启";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "否";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::true" = "是";
-"component::input_boolean::title" = "二元选择器";
+"component::input_boolean::title" = "输入布尔值";
 "component::input_button::entity_component::_::state_attributes::editable::state::false" = "否";
 "component::input_button::entity_component::_::state_attributes::editable::state::true" = "是";
 "component::input_button::title" = "输入按钮";
