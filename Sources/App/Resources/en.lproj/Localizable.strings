@@ -64,6 +64,7 @@
 "app_intents.scripts.script.title" = "Run Script";
 "app_intents.scripts.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.scripts.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.success_message.content" = "Script \"%@\" executed.";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
