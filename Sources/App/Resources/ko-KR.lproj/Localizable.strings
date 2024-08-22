@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "실패: %@";
 "app_intents.perform_action.response_success" = "완료";
 "app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
+"app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.requires_confirmation_before_run.description" = "스크립트를 실행하기 전에 직접 확인해야 합니다.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "동작 전 확인하세요";
 "app_intents.scripts.script.title" = "스크립트 실행";

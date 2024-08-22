@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
+"app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
 "app_intents.scripts.script.title" = "Run Script";

@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Nurjus: %@";
 "app_intents.perform_action.response_success" = "Valmis";
 "app_intents.scripts.failure_message.content" = "Skripti \" %@ \" käivitamine nurjus, kontrolli logisid.";
+"app_intents.scripts.haptic_confirmation.title" = "Tunnetatav kinnitus";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Enne skripti käivitamist on vaja käsitsi kinnitust.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Kinnita enne käivitamist";
 "app_intents.scripts.script.title" = "Käivita skript";

@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "失敗：%@";
 "app_intents.perform_action.response_success" = "完成";
 "app_intents.scripts.failure_message.content" = "腳本 \"%@\" 執行失敗，請參閱日誌。";
+"app_intents.scripts.haptic_confirmation.title" = "觸覺回饋確認";
 "app_intents.scripts.requires_confirmation_before_run.description" = "於執行腳本前需要手動確認。";
 "app_intents.scripts.requires_confirmation_before_run.title" = "於執行前確認";
 "app_intents.scripts.script.title" = "執行腳本";
