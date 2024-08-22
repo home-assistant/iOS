@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Απέτυχαν: %@";
 "app_intents.perform_action.response_success" = "Εγινε";
 "app_intents.scripts.failure_message.content" = "Το σενάριο \"%@\" απέτυχε να εκτελεστεί, παρακαλώ ελέγξτε τα αρχεία καταγραφής σας.";
+"app_intents.scripts.haptic_confirmation.title" = "Απτική επιβεβαίωση";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Απαιτείται χειροκίνητη επιβεβαίωση πριν από την εκτέλεση του σεναρίου.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Επιβεβαίωση πριν την εκτέλεση";
 "app_intents.scripts.script.title" = "Εκτέλεση σεναρίου";

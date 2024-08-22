@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Selhalo: %@";
 "app_intents.perform_action.response_success" = "Hotovo";
 "app_intents.scripts.failure_message.content" = "Skript \"%@\" se nepodařilo spustit, zkontrolujte protokoly.";
+"app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Vyžaduje ruční potvrzení před spuštěním skriptu.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Potvrdit před spuštěním";
 "app_intents.scripts.script.title" = "Spustit skript";

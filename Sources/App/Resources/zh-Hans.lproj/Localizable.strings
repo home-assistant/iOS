@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "失败：%@";
 "app_intents.perform_action.response_success" = "完成";
 "app_intents.scripts.failure_message.content" = "脚本“%@”执行失败，请查看您的日志。";
+"app_intents.scripts.haptic_confirmation.title" = "触觉确认";
 "app_intents.scripts.requires_confirmation_before_run.description" = "运行脚本之前需要手动确认。";
 "app_intents.scripts.requires_confirmation_before_run.title" = "运行前确认";
 "app_intents.scripts.script.title" = "运行脚本";
