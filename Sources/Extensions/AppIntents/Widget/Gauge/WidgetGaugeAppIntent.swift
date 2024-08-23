@@ -43,6 +43,19 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     var valueLabelTemplate: String
 
     @Parameter(
+        title: .init("widgets.gauge.parameters.label_template", defaultValue: "Label Template"),
+        default: "",
+        inputOptions: .init(
+            capitalizationType: .none,
+            multiline: true,
+            autocorrect: false,
+            smartQuotes: false,
+            smartDashes: false
+        )
+    )
+    var labelTemplate: String
+
+    @Parameter(
         title: .init("widgets.gauge.parameters.min_label_template", defaultValue: "Min Label Template"),
         default: "",
         inputOptions: .init(
@@ -76,57 +89,90 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
     static var parameterSummary: some ParameterSummary {
         When(\WidgetGaugeAppIntent.$runAction, .equalTo, true) {
-            When(\.$gaugeType, .equalTo, .normal) {
-                Summary {
-                    \.$gaugeType
+            Switch(\.$gaugeType) {
+                Case(.normal) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
-                    \.$minTemplate
-                    \.$maxTemplate
+                        \.$valueLabelTemplate
+                        \.$minTemplate
+                        \.$maxTemplate
 
-                    \.$runAction
-                    \.$action
+                        \.$runAction
+                        \.$action
+                    }
                 }
-            } otherwise: {
-                Summary {
-                    \.$gaugeType
+                Case(.withoutMinMax) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
+                        \.$valueLabelTemplate
+                        \.$labelTemplate
 
-                    \.$runAction
-                    \.$action
+                        \.$runAction
+                        \.$action
+                    }
+                }
+                DefaultCase {
+                    Summary {
+                        \.$gaugeType
+
+                        \.$server
+                        \.$valueTemplate
+
+                        \.$valueLabelTemplate
+
+                        \.$runAction
+                        \.$action
+                    }
                 }
             }
         } otherwise: {
-            When(\.$gaugeType, .equalTo, .normal) {
-                Summary {
-                    \.$gaugeType
+            Switch(\.$gaugeType) {
+                Case(.normal) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
-                    \.$minTemplate
-                    \.$maxTemplate
-
-                    \.$runAction
+                        \.$valueLabelTemplate
+                        \.$minTemplate
+                        \.$maxTemplate
+    
+                        \.$runAction
+                    }
                 }
-            } otherwise: {
-                Summary {
-                    \.$gaugeType
+                Case(.withoutMinMax) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
+                        \.$valueLabelTemplate
+                        \.$labelTemplate
 
-                    \.$runAction
+                        \.$runAction
+                    }
+                }
+                DefaultCase {
+                    Summary {
+                        \.$gaugeType
+
+                        \.$server
+                        \.$valueTemplate
+
+                        \.$valueLabelTemplate
+
+                        \.$runAction
+                    }
                 }
             }
         }
@@ -136,6 +182,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
     case normal
+    case withoutMinMax
     case capacity
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(
@@ -145,6 +192,10 @@ enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
         .normal: DisplayRepresentation(title: .init(
             "widgets.gauge.parameters.gauge_type.normal",
             defaultValue: "Normal"
+        )),
+        .withoutMinMax: DisplayRepresentation(title: .init(
+            "widgets.gauge.parameters.gauge_type.withoutMinMax",
+            defaultValue: "Normal (single label)"
         )),
         .capacity: DisplayRepresentation(title: .init(
             "widgets.gauge.parameters.gauge_type.capacity",

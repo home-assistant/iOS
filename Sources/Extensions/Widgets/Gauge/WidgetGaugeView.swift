@@ -38,6 +38,23 @@ struct WidgetGaugeView: View {
                 }
             }
             .gaugeStyle(.accessoryCircular)
+        case .withoutMinMax:
+            Gauge(value: entry.value) {
+                if entry.label != nil {
+                    Text(entry.label!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
+            } currentValueLabel: {
+                if entry.valueLabel != nil {
+                    Text(entry.valueLabel!)
+                } else {
+                    Text("00")
+                        .redacted(reason: .placeholder)
+                }
+            }
+            .gaugeStyle(.accessoryCircular)
         case .capacity:
             Gauge(value: entry.value) {
                 if entry.valueLabel != nil {
