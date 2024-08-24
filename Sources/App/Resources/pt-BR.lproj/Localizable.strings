@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Falhou: %@";
 "app_intents.perform_action.response_success" = "Feito";
 "app_intents.scripts.failure_message.content" = "O script \" %@ \" não foi executado. Verifique seus logs.";
+"app_intents.scripts.haptic_confirmation.title" = "Confirmação tátil";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Requer confirmação manual antes de executar o script.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Confirme antes de executar";
 "app_intents.scripts.script.title" = "Executar script";

@@ -59,6 +59,7 @@
 "app_intents.perform_action.response_failure" = "Misslyckades: %@";
 "app_intents.perform_action.response_success" = "Färdig";
 "app_intents.scripts.failure_message.content" = "Skriptet \" %@ \" kunde inte köras, kontrollera dina loggar.";
+"app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Kräver manuell bekräftelse innan skriptet körs.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Bekräfta före körning";
 "app_intents.scripts.script.title" = "Kör skript";

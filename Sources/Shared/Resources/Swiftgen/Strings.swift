@@ -283,6 +283,10 @@ public enum L10n {
           return L10n.tr("Localizable", "app_intents.scripts.failure_message.content", String(describing: p1))
         }
       }
+      public enum HapticConfirmation {
+        /// Haptic confirmation
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.haptic_confirmation.title") }
+      }
       public enum RequiresConfirmationBeforeRun {
         /// Requires manual confirmation before running the script.
         public static var description: String { return L10n.tr("Localizable", "app_intents.scripts.requires_confirmation_before_run.description") }

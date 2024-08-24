@@ -38,8 +38,14 @@ final class ScriptAppIntent: AppIntent {
     )
     var showConfirmationNotification: Bool
 
-    /// Only used when calling the intent from widget
-    var hapticConfirmation = false
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.scripts.haptic_confirmation.title",
+            defaultValue: "Haptic confirmation"
+        ),
+        default: false
+    )
+    var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
         if requiresConfirmationBeforeRun {
