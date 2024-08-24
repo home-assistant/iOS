@@ -145,7 +145,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                         \.$valueLabelTemplate
                         \.$minTemplate
                         \.$maxTemplate
-    
+
                         \.$runAction
                     }
                 }

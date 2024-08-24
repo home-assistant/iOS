@@ -110,13 +110,13 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
 
         let action = await withCheckedContinuation { continuation in
             var hasResumed = false
-            
+
             configuration.action?.asAction { action in
                 guard !hasResumed else { return }
                 hasResumed = true
                 continuation.resume(returning: action)
             }
-            
+
             // Fallback: Ensure continuation is resumed in case `asAction` doesn't call the closure in time
             if !hasResumed {
                 hasResumed = true
