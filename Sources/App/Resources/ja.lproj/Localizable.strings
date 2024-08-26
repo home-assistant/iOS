@@ -59,7 +59,7 @@
 "app_intents.perform_action.response_failure" = "失敗しました: %@";
 "app_intents.perform_action.response_success" = "完了";
 "app_intents.scripts.failure_message.content" = "スクリプト「 %@ 」の実行に失敗しました。ログを確認してください。";
-"app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
+"app_intents.scripts.haptic_confirmation.title" = "触覚による確認";
 "app_intents.scripts.requires_confirmation_before_run.description" = "スクリプトを実行する前に手動で確認する必要があります。";
 "app_intents.scripts.requires_confirmation_before_run.title" = "実行前に確認";
 "app_intents.scripts.script.title" = "スクリプトを実行";
