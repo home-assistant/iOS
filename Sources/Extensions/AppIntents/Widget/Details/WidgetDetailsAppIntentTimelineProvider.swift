@@ -101,8 +101,12 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let detailsText = String(params[2])
 
         let action = await withCheckedContinuation { continuation in
-            configuration.action?.asAction { action in
-                continuation.resume(returning: action)
+            if let action = configuration.action {
+                action.asAction { action in
+                    continuation.resume(returning: action)
+                }
+            } else {
+                continuation.resume(returning: nil)
             }
         }
 
