@@ -17,7 +17,8 @@ public extension Realm {
 
     static var storeDirectoryURL: URL {
         let fileManager = FileManager.default
-        let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)?
+        let storeDirectoryURL = fileManager
+            .containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)?
             .appendingPathComponent("dataStore", isDirectory: true)
 
         if storeDirectoryURL == nil {

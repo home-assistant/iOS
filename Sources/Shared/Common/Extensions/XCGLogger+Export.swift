@@ -1,9 +1,9 @@
 #if os(iOS)
+import GRDB
 import RealmSwift
 import UIKit
 import XCGLogger
 import ZIPFoundation
-import GRDB
 
 public extension XCGLogger {
     var exportTitle: String {
@@ -50,9 +50,9 @@ public extension XCGLogger {
                     fileURL: AppConstants.watchGRDBFile
                 )
             } catch {
-                Current.Log.info("No watch config database file added to export logs, error: \(error.localizedDescription)")
+                Current.Log
+                    .info("No watch config database file added to export logs, error: \(error.localizedDescription)")
             }
-
 
             for logFile in try fileManager.contentsOfDirectory(
                 at: Shared.AppConstants.LogsDirectory,
