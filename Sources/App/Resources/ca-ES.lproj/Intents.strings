@@ -2,6 +2,7 @@
 "2KWKqM" = "Ha Fallat: Home Assistant no és accessible";
 "2LIxe4" = "Ha fallat: ${error}";
 "2b0Uo4" = "Servei";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Actualitzat";
 "4tpAXn" = "Només per confirmar, volieu \"${server}\"?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Fet!";
 "8skKro" = "Quines accions?";
 "A1pokw" = "Sol·licita assistència";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Assist";
 "B4bXyc" = "Fet!";
 "BafuI1" = "Idioma";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Quin servidor?";
 "CmlkE4" = "esdeveniment_drecera";
 "DFWJB8" = "Obre ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Accions";
 "J3qct4" = "Servidor";
 "JBMp1T" = "Només per confirmar, volieu \"${server}\"?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Error";
 "KHH48D" = "Ha Fallat: Home Assistant no està accessible actualment";
 "KJS2jk" = "Ha fallat: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Quin idioma?";
 "QVD2lM" = "Dades del servei";
 "QmGpOH" = "Error";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Obtenir la imatge de ${cameraID}";
 "RMQY3r" = "Envia la ubicació a Home Assistant";
 "RsOw3P" = "Plantilla renderitzada correctament";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Error";
 "YxAau3" = "Hi ha ${count} opcions que coincideixen amb ´${server}´.";
 "ZApPxB" = "Nom del servei";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Obriu una pàgina a la interfície";
 "ZT9Mld" = "Nom de l'esdeveniment";
 "ZmUm9Q" = "Quina plantilla t'agradaria renderitzar?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "S'ha realitzat ${action}";
 "eObn2i" = "Pàgina";
 "f1KX0Q" = "Veure i executar accions";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "Hi ha ${count} opcions que coincideixen amb `${action}`.";
 "flUgtx" = "Quina acció?";
 "fnz838" = "Sensors actualitzats";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Hi ha ${count} opcions que coincideixen amb ´${server}´.";
 "jtqxOg" = "Només per confirmar, volies ´${action}´?";
 "kGB23u" = "Realitza l'acció";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Quin servidor?";
 "lGqSSG" = "No s'han pogut actualitzar els sensors.";
 "lNmaCR" = "Plantilla";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Fet!";
 "rOlW1x" = "Ha quina ubicació o vols enviar?";
 "rU3vhT" = "Identificador del servidor";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Quina càmera?";
 "sQJAJS" = "Error";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Plantilla renderitzada";
 "txfcnn" = "Text";
 "tycImk" = "Realitza una acció definida a l'aplicació";

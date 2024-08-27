@@ -2,6 +2,7 @@
 "2KWKqM" = "Falha: o Home Assistant não está acessível";
 "2LIxe4" = "Falha: ${error}";
 "2b0Uo4" = "Serviço";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ agora() }}";
 "4fFx9y" = "Atualizado";
 "4tpAXn" = "Só para confirmar, você queria ' ${server} '?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Feito";
 "8skKro" = "Quais ações?";
 "A1pokw" = "Peça ajuda";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Ajudar";
 "B4bXyc" = "Feito";
 "BafuI1" = "Idioma";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Qual servidor?";
 "CmlkE4" = "atalho_event";
 "DFWJB8" = "Abra ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Ações";
 "J3qct4" = "Servidor";
 "JBMp1T" = "Só para confirmar, você queria ' ${server} '?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Erro";
 "KHH48D" = "Falha: o Home Assistant não está acessível no momento";
 "KJS2jk" = "Falha: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Qual idioma?";
 "QVD2lM" = "Dados de serviço";
 "QmGpOH" = "Erro";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Obter imagem de ${cameraID}";
 "RMQY3r" = "Enviar localização para Home Assistant";
 "RsOw3P" = "Modelo renderizado com sucesso";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Erro";
 "YxAau3" = "Existem ${count} opções correspondentes a ' ${server} '.";
 "ZApPxB" = "Nome do Serviço";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Abra uma página no frontend";
 "ZT9Mld" = "Nome do evento";
 "ZmUm9Q" = "Qual modelo você gostaria de renderizar?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "Realizou ${action}";
 "eObn2i" = "Página";
 "f1KX0Q" = "Visualizar e executar ações";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "Existem ${count} opções correspondentes a ' ${action} '.";
 "flUgtx" = "Qual ação?";
 "fnz838" = "Sensores atualizados";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Existem ${count} opções correspondentes a ' ${server} '.";
 "jtqxOg" = "Só para confirmar, você queria ' ${action} '?";
 "kGB23u" = "Executar a ação";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Qual servidor?";
 "lGqSSG" = "Falha ao atualizar os sensores.";
 "lNmaCR" = "Modelo";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Feito";
 "rOlW1x" = "Qual local você deseja enviar?";
 "rU3vhT" = "Identificador do servidor";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Qual Camera?";
 "sQJAJS" = "Erro";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Modelo renderizado";
 "txfcnn" = "Texto";
 "tycImk" = "Executa uma ação definida no aplicativo";

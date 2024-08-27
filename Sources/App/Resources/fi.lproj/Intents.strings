@@ -2,6 +2,7 @@
 "2KWKqM" = "Epäonnistui: Home Assistant ei ole saavutettavissa";
 "2LIxe4" = "Epäonnistui: ${error}";
 "2b0Uo4" = "Palvelu";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Päivitetty";
 "4tpAXn" = "Vahvistukseksi, halusitko '${server}'?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Tehty";
 "8skKro" = "Which actions?";
 "A1pokw" = "Pyydä avustusta";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Avustaja";
 "B4bXyc" = "Tehty";
 "BafuI1" = "Kieli";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Mikä palvelin?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Avaa ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Toiminnot";
 "J3qct4" = "Palvelin";
 "JBMp1T" = "Vahvistukseksi, halusitko '${server}'?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Virhe";
 "KHH48D" = "Failed: Home Assistant is not currently reachable";
 "KJS2jk" = "Epäonnistui: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Mikä kieli?";
 "QVD2lM" = "Service Data";
 "QmGpOH" = "Virhe";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Get image of ${cameraID}";
 "RMQY3r" = "Lähetä sijainti Home Assistantille";
 "RsOw3P" = "Successfully rendered template";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Virhe";
 "YxAau3" = "On ${count} vaihtoehtoa, jotka vastaavat '${server}'.";
 "ZApPxB" = "Service Name";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Avaa sivu käyttöliittymässä";
 "ZT9Mld" = "Event Name";
 "ZmUm9Q" = "What template would you like to render?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "Performed ${action}";
 "eObn2i" = "Sivu";
 "f1KX0Q" = "Tarkastele ja suorita toimintoja";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "There are ${count} options matching ‘${action}’.";
 "flUgtx" = "Mikä toiminto?";
 "fnz838" = "Anturit päivitetty";
@@ -103,6 +110,7 @@
 "jWGtvO" = "On ${count} vaihtoehtoa, jotka vastaavat '${server}'.";
 "jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
 "kGB23u" = "Suorita toiminto";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Mikä palvelin?";
 "lGqSSG" = "Antureiden päivitys epäonnistui.";
 "lNmaCR" = "Malli";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Tehty";
 "rOlW1x" = "Minkä sijainnin haluat lähettää?";
 "rU3vhT" = "Palvelimen tunniste";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Mikä kamera?";
 "sQJAJS" = "Virhe";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Rendered Template";
 "txfcnn" = "Teksti";
 "tycImk" = "Performs an action defined in the app";
