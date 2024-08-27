@@ -105,7 +105,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                         \.$action
                     }
                 }
-                Case(.withoutMinMax) {
+                Case(.singleLabel) {
                     Summary {
                         \.$gaugeType
 
@@ -149,7 +149,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                         \.$runAction
                     }
                 }
-                Case(.withoutMinMax) {
+                Case(.singleLabel) {
                     Summary {
                         \.$gaugeType
 
@@ -182,7 +182,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
     case normal
-    case withoutMinMax
+    case singleLabel
     case capacity
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(
@@ -193,8 +193,8 @@ enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
             "widgets.gauge.parameters.gauge_type.normal",
             defaultValue: "Normal"
         )),
-        .withoutMinMax: DisplayRepresentation(title: .init(
-            "widgets.gauge.parameters.gauge_type.withoutMinMax",
+        .singleLabel: DisplayRepresentation(title: .init(
+            "widgets.gauge.parameters.gauge_type.singleLabel",
             defaultValue: "Normal (single label)"
         )),
         .capacity: DisplayRepresentation(title: .init(

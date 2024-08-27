@@ -38,7 +38,7 @@ struct WidgetGaugeView: View {
                 }
             }
             .gaugeStyle(.accessoryCircular)
-        case .withoutMinMax:
+        case .singleLabel:
             Gauge(value: entry.value) {
                 if entry.label != nil {
                     Text(entry.label!)
