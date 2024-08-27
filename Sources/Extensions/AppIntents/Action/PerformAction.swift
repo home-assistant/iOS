@@ -21,14 +21,20 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
     static var predictionConfiguration: some IntentPredictionConfiguration {
         IntentPrediction(parameters: \.$action) { action in
             DisplayRepresentation(
-                title: "\(action!)",
+                title: "\(action ?? .init(id: "-1", displayString: "Uknown action"))",
                 subtitle: "Perform the action"
             )
         }
     }
 
-    /// Only used when calling the intent from widget
-    var hapticConfirmation = false
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.scripts.haptic_confirmation.title",
+            defaultValue: "Haptic confirmation"
+        ),
+        default: false
+    )
+    var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult {
         guard let intentAction = $action.wrappedValue,
@@ -39,7 +45,7 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
         }
 
         if hapticConfirmation {
-            // Unfortunately this is the only 'haptics' that work with widgets
+            // Unfortunately this is the only 'haptics' that works with widgets
             // ideally in the future this should use CoreHaptics for a better experience
             AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
         }

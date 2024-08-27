@@ -9,6 +9,6 @@
 "panel::media_browser" = "媒体";
 "panel::profile" = "用户资料";
 "panel::shopping_list" = "购物清单";
-"panel::states" = "概览";
+"panel::states" = "概况";
 "state::default::unavailable" = "不可用";
 "state::default::unknown" = "未知";

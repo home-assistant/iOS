@@ -109,17 +109,11 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         let labelText = String(params[4])
 
         let action = await withCheckedContinuation { continuation in
-            var hasResumed = false
-
-            configuration.action?.asAction { action in
-                guard !hasResumed else { return }
-                hasResumed = true
-                continuation.resume(returning: action)
-            }
-
-            // Fallback: Ensure continuation is resumed in case `asAction` doesn't call the closure in time
-            if !hasResumed {
-                hasResumed = true
+            if let action = configuration.action {
+                action.asAction { action in
+                    continuation.resume(returning: action)
+                }
+            } else {
                 continuation.resume(returning: nil)
             }
         }

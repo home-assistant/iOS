@@ -202,7 +202,7 @@
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Отключено";
 "component::siren::entity_component::_::state::off" = "Выключено";
 "component::siren::entity_component::_::state::on" = "Включено";
-"component::starlink::entity::binary_sensor::power_save_idle::name" = "Sleep";
+"component::starlink::entity::binary_sensor::power_save_idle::name" = "Сон";
 "component::switch::entity_component::_::state::off" = "Выключено";
 "component::switch::entity_component::_::state::on" = "Включено";
 "component::switch::title" = "Выключатель";
