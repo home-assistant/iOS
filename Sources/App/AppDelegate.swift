@@ -14,9 +14,9 @@ import Shared
 import UIKit
 import XCGLogger
 
-let keychain = Constants.Keychain
+let keychain = AppConstants.Keychain
 
-let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
+let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
 private extension UIApplication {
     var typedDelegate: AppDelegate {

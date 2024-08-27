@@ -189,7 +189,7 @@ public class AppEnvironment {
 
     public lazy var activeState: ActiveStateManager = .init()
 
-    public lazy var clientVersion: () -> Version = { Constants.clientVersion }
+    public lazy var clientVersion: () -> Version = { AppConstants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()
 
@@ -200,7 +200,7 @@ public class AppEnvironment {
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
     #if os(iOS)
-    public var isAppExtension = Constants.BundleID != Bundle.main.bundleIdentifier
+    public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
     #elseif os(watchOS)
     public var isAppExtension = false
     #endif
@@ -227,7 +227,7 @@ public class AppEnvironment {
         #endif
     }()
 
-    private let isFastlaneSnapshot = UserDefaults(suiteName: Constants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
+    private let isFastlaneSnapshot = UserDefaults(suiteName: AppConstants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
 
     // This can be used to add debug statements.
     public var isDebug: Bool {
@@ -292,7 +292,7 @@ public class AppEnvironment {
         })
         #endif
 
-        let logPath = Constants.LogsDirectory.appendingPathComponent(
+        let logPath = AppConstants.LogsDirectory.appendingPathComponent(
             ProcessInfo.processInfo.processName + ".txt",
             isDirectory: false
         )

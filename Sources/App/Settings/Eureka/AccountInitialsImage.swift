@@ -28,7 +28,7 @@ enum AccountInitialsImage {
 
         let rect = CGRect(origin: .zero, size: size)
         let image = UIGraphicsImageRenderer(size: size).image { context in
-            Constants.tintColor.setFill()
+            AppConstants.tintColor.setFill()
             context.fill(rect)
 
             let fontSize = size.height / (initials.count >= 3 ? 3 : 2)

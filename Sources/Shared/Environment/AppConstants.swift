@@ -4,7 +4,7 @@ import UIKit
 import Version
 
 /// Contains shared constants
-public enum Constants {
+public enum AppConstants {
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
@@ -62,7 +62,7 @@ public enum Constants {
     public static var AppGroupContainer: URL {
         let fileManager = FileManager.default
 
-        let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)
+        let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)
 
         guard let groupDir else {
             fatalError("Unable to get groupDir.")
@@ -73,7 +73,7 @@ public enum Constants {
 
     public static var watchGRDBFile: URL {
         let fileManager = FileManager.default
-        let directoryURL = Self.AppGroupContainer.appendingPathComponent("database", isDirectory: true)
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
         if !fileManager.fileExists(atPath: directoryURL.path) {
             do {
                 try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
@@ -81,7 +81,7 @@ public enum Constants {
                 Current.Log.error("Failed to create GRDB file")
             }
         }
-        let databaseURL = directoryURL.appendingPathComponent("grdb.sqlite")
+        let databaseURL = directoryURL.appendingPathComponent("WatchConfig.sqlite")
         return databaseURL
     }
 
@@ -108,7 +108,7 @@ public enum Constants {
     /// A permanent ID stored in UserDefaults and Keychain.
     public static var PermanentID: String {
         let storageKey = "deviceUID"
-        let defaultsStore = UserDefaults(suiteName: Constants.AppGroupID)
+        let defaultsStore = UserDefaults(suiteName: AppConstants.AppGroupID)
         let keychain = KeychainAccess.Keychain(service: storageKey)
 
         if let keychainUID = keychain[storageKey] {

@@ -100,7 +100,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             ),
         ]
 
-        let infoBarButtonItem = Constants.helpBarButtonItem
+        let infoBarButtonItem = AppConstants.helpBarButtonItem
 
         infoBarButtonItem.action = #selector(getInfoAction)
         infoBarButtonItem.target = self

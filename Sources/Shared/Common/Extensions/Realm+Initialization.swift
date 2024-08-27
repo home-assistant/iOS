@@ -17,11 +17,11 @@ public extension Realm {
 
     static var storeDirectoryURL: URL {
         let fileManager = FileManager.default
-        let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
+        let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID)?
             .appendingPathComponent("dataStore", isDirectory: true)
 
         if storeDirectoryURL == nil {
-            Current.Log.error("Unable to get directory URL! AppGroupID: \(Constants.AppGroupID)")
+            Current.Log.error("Unable to get directory URL! AppGroupID: \(AppConstants.AppGroupID)")
         }
 
         return storeDirectoryURL ?? URL(fileURLWithPath: NSTemporaryDirectory())

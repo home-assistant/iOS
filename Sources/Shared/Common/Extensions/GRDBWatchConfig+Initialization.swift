@@ -8,7 +8,7 @@ enum GRDBWatchDatabaseTable: String {
 public extension DatabaseQueue {
     static let watchDatabase: () -> DatabaseQueue = {
         do {
-            let database = try DatabaseQueue(path: Constants.watchGRDBFile.path)
+            let database = try DatabaseQueue(path: AppConstants.watchGRDBFile.path)
             createWatchConfigTables(database: database)
             return database
         } catch {

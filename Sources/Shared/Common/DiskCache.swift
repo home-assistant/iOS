@@ -78,7 +78,7 @@ public final class DiskCacheImpl: DiskCache {
 
     private class func URL(containerName: String) -> URL {
         let fileManager = FileManager.default
-        let url = Constants.AppGroupContainer
+        let url = AppConstants.AppGroupContainer
             .appendingPathComponent("DiskCache", isDirectory: true)
             .appendingPathComponent(containerName, isDirectory: false)
 

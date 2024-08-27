@@ -201,7 +201,7 @@ class DebugSettingsViewController: HAFormViewController {
                     style: .destructive,
                     handler: { _ in
                         do {
-                            try FileManager.default.removeItem(at: Constants.watchGRDBFile)
+                            try FileManager.default.removeItem(at: AppConstants.watchGRDBFile)
                             Current.Log.info("Watch database deleted successfully.")
                         } catch {
                             Current.Log.error("Watch database failed to delete: \(error.localizedDescription)")

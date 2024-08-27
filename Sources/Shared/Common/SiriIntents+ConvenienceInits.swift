@@ -122,7 +122,7 @@ public extension IntentPanel {
         image = icon.flatMap { icon in
             INImage(
                 icon: Self.materialDesignIcon(for: icon),
-                foreground: Constants.tintColor.resolvedColor(with: .init(userInterfaceStyle: .light)),
+                foreground: AppConstants.tintColor.resolvedColor(with: .init(userInterfaceStyle: .light)),
                 background: .white
             )
         }

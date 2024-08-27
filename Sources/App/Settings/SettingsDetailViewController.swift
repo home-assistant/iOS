@@ -658,7 +658,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 cell.separatorInset = .zero
                 cell.textLabel?.textAlignment = .natural
                 cell.imageView?.image = UIImage(size: MaterialDesignIcons.settingsIconSize, color: .clear)
-                cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .tertiaryLabel
+                cell.textLabel?.textColor = row.isDisabled == false ? AppConstants.tintColor : .tertiaryLabel
             }
 
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {

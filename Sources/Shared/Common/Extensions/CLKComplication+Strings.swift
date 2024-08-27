@@ -380,7 +380,7 @@ public enum ComplicationGroupMember: String, Comparable {
     public func fallbackTemplate(for identifier: String?) -> CLKComplicationTemplate {
         let logoImage = UIImage(named: "RoundLogo")!
         let templateImage = UIImage(named: "TemplateLogo")!
-        let hassColor = Constants.tintColor
+        let hassColor = AppConstants.tintColor
         let isPlaceholder = identifier?.starts(with: "placeholder") == true
 
         switch self {

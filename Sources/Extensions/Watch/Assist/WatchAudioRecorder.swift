@@ -76,7 +76,7 @@ final class WatchAudioRecorder: NSObject, WatchAudioRecorderProtocol {
     }
 
     private func getAudioFileURL() -> URL {
-        let sharedGroupContainerDirectory = Constants.AppGroupContainer
+        let sharedGroupContainerDirectory = AppConstants.AppGroupContainer
         return sharedGroupContainerDirectory.appendingPathComponent("assist.wav")
     }
 

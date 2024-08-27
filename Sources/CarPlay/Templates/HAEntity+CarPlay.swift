@@ -102,7 +102,7 @@ extension HAEntity {
 
         if let state = Domain.State(rawValue: state) {
             if [.on, .open, .opening, .unlocked, .unlocking].contains(state) {
-                tint = Constants.lighterTintColor
+                tint = AppConstants.lighterTintColor
             } else if [.unavailable, .unknown].contains(state) {
                 tint = .gray
             } else {

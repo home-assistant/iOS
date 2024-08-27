@@ -12,7 +12,7 @@ final class AppVersionSensor: SensorProvider {
             name: "App Version",
             uniqueID: "app-version",
             icon: nil,
-            state: Constants.version,
+            state: AppConstants.version,
             entityCategory: "diagnostic"
         )
 
