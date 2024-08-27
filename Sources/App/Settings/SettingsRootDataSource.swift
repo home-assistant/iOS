@@ -144,7 +144,7 @@ enum SettingsRootDataSource {
             $0.icon = .watchVariantIcon
             $0.hidden = .isCatalyst
             $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                let controller = UIHostingController(rootView: WatchHomeCustomization())
+                let controller = UIHostingController(rootView: WatchConfigurationView())
                 controller.overrideUserInterfaceStyle = .dark
                 return controller
             }, onDismiss: { _ in

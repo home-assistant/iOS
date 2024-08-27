@@ -2407,6 +2407,26 @@ public enum L10n {
   public enum Watch {
     /// Placeholder
     public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }
+    public enum Config {
+      public enum MigrationError {
+        /// Failed to access database (GRDB), error: %@
+        public static func failedAccessGrdb(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_access_grdb", String(describing: p1))
+        }
+        /// Failed to save initial watch config, error: %@
+        public static func failedCreateNewConfig(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_create_new_config", String(describing: p1))
+        }
+        /// Failed to migrate actions to watch config, error: %@
+        public static func failedMigrateActions(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_migrate_actions", String(describing: p1))
+        }
+        /// Failed to save new Watch config, error: %@
+        public static func failedToSave(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_to_save", String(describing: p1))
+        }
+      }
+    }
     public enum Configuration {
       public enum AddItem {
         /// Add item

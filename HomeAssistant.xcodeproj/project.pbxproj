@@ -677,8 +677,8 @@
 		42D3E4BE2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
 		42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
 		42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
-		42D5ACCC2C636F1F00D9C4E2 /* WatchHomeCustomization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCB2C636F1F00D9C4E2 /* WatchHomeCustomization.swift */; };
-		42D5ACCE2C636F2B00D9C4E2 /* WatchHomeCustomizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCD2C636F2B00D9C4E2 /* WatchHomeCustomizationViewModel.swift */; };
+		42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */; };
+		42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */; };
 		42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */; };
 		42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */; };
 		42D5ACE02C64EADD00D9C4E2 /* GRDB+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACDF2C64EADD00D9C4E2 /* GRDB+Initialization.swift */; };
@@ -1902,8 +1902,8 @@
 		42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScripts.swift; sourceTree = "<group>"; };
 		42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntent.swift; sourceTree = "<group>"; };
-		42D5ACCB2C636F1F00D9C4E2 /* WatchHomeCustomization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeCustomization.swift; sourceTree = "<group>"; };
-		42D5ACCD2C636F2B00D9C4E2 /* WatchHomeCustomizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeCustomizationViewModel.swift; sourceTree = "<group>"; };
+		42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationView.swift; sourceTree = "<group>"; };
+		42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationViewModel.swift; sourceTree = "<group>"; };
 		42D5ACCF2C639AB700D9C4E2 /* MagicItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItem.swift; sourceTree = "<group>"; };
 		42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddView.swift; sourceTree = "<group>"; };
 		42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddViewModel.swift; sourceTree = "<group>"; };
@@ -3810,8 +3810,8 @@
 		42D5ACCA2C636F0300D9C4E2 /* HomeCustomization */ = {
 			isa = PBXGroup;
 			children = (
-				42D5ACCB2C636F1F00D9C4E2 /* WatchHomeCustomization.swift */,
-				42D5ACCD2C636F2B00D9C4E2 /* WatchHomeCustomizationViewModel.swift */,
+				42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */,
+				42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */,
 			);
 			path = HomeCustomization;
 			sourceTree = "<group>";
@@ -6356,7 +6356,7 @@
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				425573E72B5838BB00145217 /* HATypedRequest+CarPlay.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
-				42D5ACCE2C636F2B00D9C4E2 /* WatchHomeCustomizationViewModel.swift in Sources */,
+				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
@@ -6402,7 +6402,7 @@
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
-				42D5ACCC2C636F1F00D9C4E2 /* WatchHomeCustomization.swift in Sources */,
+				42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,

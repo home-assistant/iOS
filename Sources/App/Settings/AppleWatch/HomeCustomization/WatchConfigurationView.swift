@@ -1,9 +1,9 @@
 import Shared
 import SwiftUI
 
-struct WatchHomeCustomization: View {
+struct WatchConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = WatchHomeCustomizationViewModel()
+    @StateObject private var viewModel = WatchConfigurationViewModel()
 
     @State private var isLoaded = false
 
@@ -41,6 +41,11 @@ struct WatchHomeCustomization: View {
                 viewModel.addItem(itemToAdd)
             }
         })
+        .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
+            Button(action: {}, label: {
+                Text(L10n.okLabel)
+            })
+        }
     }
 
     private var content: some View {
@@ -229,7 +234,7 @@ struct WatchHomeCustomization: View {
     VStack {
         Text("Abc")
             .sheet(isPresented: .constant(true), content: {
-                WatchHomeCustomization()
+                WatchConfigurationView()
             })
     }
 }

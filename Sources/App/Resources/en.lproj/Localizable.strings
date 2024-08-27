@@ -886,6 +886,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.configuration.items.title" = "Items";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.config.migration_error.failed_to_save" = "Failed to save new Watch config, error: %@";
+"watch.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"watch.config.migration_error.failed_create_new_config" = "Failed to save initial watch config, error: %@";
+"watch.config.migration_error.failed_migrate_actions" = "Failed to migrate actions to watch config, error: %@";
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.parameters.action" = "Action";
