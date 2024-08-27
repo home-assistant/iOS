@@ -4,15 +4,19 @@ import PromiseKit
 import Shared
 
 final class WatchConfigurationViewModel: ObservableObject {
-    @Published var watchConfig: WatchConfig = .init(showAssist: true, items: [])
+    @Published var watchConfig = WatchConfig()
     @Published var showAddItem = false
     @Published var showError = false
     @Published private(set) var errorMessage: String?
+
+    @Published var assistPipelines: [Pipeline] = []
+    @Published var servers: [Server] = []
 
     private let magicItemProvider = Current.magicItemProvider()
 
     @MainActor
     func loadWatchConfig() {
+        servers = Current.servers.all
         magicItemProvider.loadInformation { [weak self] in
             guard let self else { return }
             loadDatabase()
@@ -46,7 +50,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     @MainActor
     func save(completion: (Bool) -> Void) {
         do {
-            try Current.grdb().write { db in
+            try Current.watchGRDB().write { db in
                 try watchConfig.update(db)
                 completion(true)
             }
@@ -57,10 +61,21 @@ final class WatchConfigurationViewModel: ObservableObject {
         }
     }
 
+    func loadPipelines(for serverId: String) {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { return }
+        AssistService(server: server).fetchPipelines { [weak self] pipelinesResponse in
+            guard let self else { return }
+            assistPipelines = pipelinesResponse?.pipelines ?? []
+            if watchConfig.assist.pipelineId.isEmpty {
+                watchConfig.assist.pipelineId = pipelinesResponse?.preferredPipeline ?? ""
+            }
+        }
+    }
+
     @MainActor
     private func loadDatabase() {
         do {
-            if let config: WatchConfig = try Current.grdb().read({ db in
+            if let config: WatchConfig = try Current.watchGRDB().read({ db in
                 do {
                     return try WatchConfig.fetchOne(db)
                 } catch {
@@ -83,8 +98,12 @@ final class WatchConfigurationViewModel: ObservableObject {
     private func setConfig(_ config: WatchConfig) {
         DispatchQueue.main.async { [weak self] in
             self?.watchConfig = config
+            if config.assist.serverId.isEmpty {
+                self?.watchConfig.assist.serverId = Current.servers.all.first?.identifier.rawValue ?? ""
+            }
         }
     }
+
     private func updateItems(_ newItems: [MagicItem]) {
         DispatchQueue.main.async { [weak self] in
             self?.watchConfig.items = newItems
@@ -95,7 +114,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     private func createNewConfig() {
         let newWatchConfig = WatchConfig()
         do {
-            try Current.grdb().write { db in
+            try Current.watchGRDB().write { db in
                 try newWatchConfig.insert(db)
             }
             setConfig(newWatchConfig)
@@ -120,7 +139,7 @@ final class WatchConfigurationViewModel: ObservableObject {
 
         updateItems(newWatchActionItems)
         do {
-            try Current.grdb().write { db in
+            try Current.watchGRDB().write { db in
                 try watchConfig.save(db)
             }
         } catch {

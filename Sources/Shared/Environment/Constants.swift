@@ -71,7 +71,7 @@ public enum Constants {
         return groupDir
     }
 
-    public static var grdbFile: URL {
+    public static var watchGRDBFile: URL {
         let fileManager = FileManager.default
         let directoryURL = Self.AppGroupContainer.appendingPathComponent("database", isDirectory: true)
         if !fileManager.fileExists(atPath: directoryURL.path) {

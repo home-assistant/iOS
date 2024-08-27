@@ -2407,7 +2407,19 @@ public enum L10n {
   public enum Watch {
     /// Placeholder
     public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }
+    public enum Assist {
+      public enum LackConfig {
+        public enum Error {
+          /// Please configure Assist using iOS companion App
+          public static var title: String { return L10n.tr("Localizable", "watch.assist.lack_config.error.title") }
+        }
+      }
+    }
     public enum Config {
+      public enum Assist {
+        /// Server
+        public static var selectServer: String { return L10n.tr("Localizable", "watch.config.assist.select_server") }
+      }
       public enum MigrationError {
         /// Failed to access database (GRDB), error: %@
         public static func failedAccessGrdb(_ p1: Any) -> String {
@@ -2598,6 +2610,16 @@ public enum L10n {
           public static var footer: String { return L10n.tr("Localizable", "watch.configurator.sections.ring.footer") }
           /// Ring
           public static var header: String { return L10n.tr("Localizable", "watch.configurator.sections.ring.header") }
+        }
+      }
+    }
+    public enum Debug {
+      public enum DeleteDb {
+        /// Delete watch configuration
+        public static var title: String { return L10n.tr("Localizable", "watch.debug.delete_db.title") }
+        public enum Alert {
+          /// Are you sure you want to delete watch configuration? This can't be reverted
+          public static var title: String { return L10n.tr("Localizable", "watch.debug.delete_db.alert.title") }
         }
       }
     }

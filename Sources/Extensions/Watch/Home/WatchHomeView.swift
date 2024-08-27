@@ -74,7 +74,7 @@ struct WatchHomeView: View {
 extension WatchConfig {
     static var fixture: WatchConfig = {
         var config = WatchConfig()
-        config.showAssist = true
+        config.assist = .init(showAssist: true)
         config.items = [
             .init(id: "1", serverId: "1", type: .script),
             .init(

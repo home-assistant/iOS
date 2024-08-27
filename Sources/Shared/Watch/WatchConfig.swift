@@ -3,19 +3,35 @@ import GRDB
 
 public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
     public var id = UUID().uuidString
-    public var showAssist: Bool = true
+    public var assist: Assist = .init(showAssist: true)
     public var items: [MagicItem] = []
 
-    public init(id: String = UUID().uuidString, showAssist: Bool = true, items: [MagicItem] = []) {
+    public init(
+        id: String = UUID().uuidString,
+        assist: Assist = Assist(showAssist: true),
+        items: [MagicItem] = []
+    ) {
         self.id = id
-        self.showAssist = showAssist
+        self.assist = assist
         self.items = items
+    }
+
+    public struct Assist: Codable {
+        public var showAssist: Bool
+        public var serverId: String
+        public var pipelineId: String
+
+        public init(showAssist: Bool, serverId: String = "", pipelineId: String = "") {
+            self.showAssist = showAssist
+            self.serverId = serverId
+            self.pipelineId = pipelineId
+        }
     }
 }
 
 public protocol WatchCodable: Codable {
     func encodeForWatch() -> Data
-    static func decodeForWatch(_ data: Data) -> Self
+    static func decodeForWatch(_ data: Data) -> Self?
 }
 
 public extension WatchCodable {
@@ -27,11 +43,12 @@ public extension WatchCodable {
         }
     }
 
-    static func decodeForWatch(_ data: Data) -> Self {
+    static func decodeForWatch(_ data: Data) -> Self? {
         do {
             return try PropertyListDecoder().decode(Self.self, from: data)
         } catch {
-            fatalError("Faield to decode watch config for watch, error: \(error.localizedDescription)")
+            Current.Log.error("Failed to decode watch config for watch, error: \(error.localizedDescription)")
+            return nil
         }
     }
 }

@@ -18,7 +18,14 @@ struct WatchHomeCoordinatorView: View {
                 loadingState
             })
             .fullScreenCover(isPresented: $showAssist, content: {
-                WatchAssistView.build()
+                if let config = viewModel.config {
+                    WatchAssistView.build(
+                        serverId: config.assist.serverId,
+                        pipelineId: config.assist.pipelineId
+                    )
+                } else {
+                    Text(L10n.Watch.Assist.LackConfig.Error.title)
+                }
             })
             .onAppear {
                 viewModel.initialRoutine()
@@ -31,7 +38,10 @@ struct WatchHomeCoordinatorView: View {
             NavigationStack {
                 content
                     .toolbar {
-                        if let config = viewModel.config, config.showAssist {
+                        if let config = viewModel.config,
+                           config.assist.showAssist,
+                           !config.assist.serverId.isEmpty,
+                           !config.assist.pipelineId.isEmpty {
                             ToolbarItem(placement: .topBarTrailing) {
                                 assistButton
                             }
@@ -42,7 +52,7 @@ struct WatchHomeCoordinatorView: View {
             NavigationView {
                 content
                     .toolbar {
-                        if #available(watchOS 9.0, *), let config = viewModel.config, config.showAssist {
+                        if #available(watchOS 9.0, *), let config = viewModel.config, config.assist.showAssist {
                             assistButton
                         }
                     }

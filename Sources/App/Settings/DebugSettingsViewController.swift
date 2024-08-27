@@ -186,15 +186,35 @@ class DebugSettingsViewController: HAFormViewController {
 
         section <<< SettingsButtonRow {
             $0.isDestructive = true
-            $0.title = "Delete watch configuration"
-            $0.onCellSelection { _, _ in
-                do {
-                    _ = try Current.grdb().write { db in
-                        try WatchConfig.deleteAll(db)
+            $0.title = L10n.Watch.Debug.DeleteDb.title
+            $0.onCellSelection { [weak self] cell, _ in
+                let alert = UIAlertController(
+                    title: L10n.Watch.Debug.DeleteDb.Alert.title,
+                    message: "",
+                    preferredStyle: .actionSheet
+                )
+
+                alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+
+                alert.addAction(UIAlertAction(
+                    title: L10n.yesLabel,
+                    style: .destructive,
+                    handler: { _ in
+                        do {
+                            try FileManager.default.removeItem(at: Constants.watchGRDBFile)
+                            Current.Log.info("Watch database deleted successfully.")
+                        } catch {
+                            Current.Log.error("Watch database failed to delete: \(error.localizedDescription)")
+                        }
                     }
-                } catch {
-                    Current.Log.error("Failed to delete watch configuration, error: \(error)")
+                ))
+
+                with(alert.popoverPresentationController) {
+                    $0?.sourceView = cell
+                    $0?.sourceRect = cell.bounds
                 }
+
+                self?.present(alert, animated: true, completion: nil)
             }
         }
 

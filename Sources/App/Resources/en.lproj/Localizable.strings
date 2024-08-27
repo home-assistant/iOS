@@ -890,6 +890,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "watch.config.migration_error.failed_create_new_config" = "Failed to save initial watch config, error: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Failed to migrate actions to watch config, error: %@";
+"watch.config.assist.select_server" = "Server";
+"watch.debug.delete_db.title" = "Delete watch configuration";
+"watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
+"watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "widgets.actions.description" = "Perform Home Assistant actions.";
 "widgets.actions.not_configured" = "No Actions Configured";
 "widgets.actions.parameters.action" = "Action";

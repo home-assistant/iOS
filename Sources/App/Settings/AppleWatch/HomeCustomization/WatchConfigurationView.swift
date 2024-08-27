@@ -35,6 +35,9 @@ struct WatchConfigurationView: View {
         }
         .interactiveDismissDisabled(true)
         .preferredColorScheme(.dark)
+        .onChange(of: viewModel.watchConfig.assist.serverId) { newValue in
+            viewModel.loadPipelines(for: newValue)
+        }
         .sheet(isPresented: $viewModel.showAddItem, content: {
             MagicItemAddView { itemToAdd in
                 guard let itemToAdd else { return }
@@ -58,26 +61,48 @@ struct WatchConfigurationView: View {
                     viewModel.loadWatchConfig()
                     isLoaded = true
                 }
-            Section(L10n.Watch.Configuration.Items.title) {
-                ForEach(viewModel.watchConfig.items, id: \.id) { item in
-                    makeListItem(item: item)
-                }
-                .onMove { indices, newOffset in
-                    viewModel.moveItem(from: indices, to: newOffset)
-                }
-                .onDelete { indexSet in
-                    viewModel.deleteItem(at: indexSet)
-                }
-                Button {
-                    viewModel.showAddItem = true
-                } label: {
-                    Label(L10n.Watch.Configuration.AddItem.title, systemImage: "plus")
-                }
+            itemsSection
+            assistSection
+        }
+    }
+
+    private var itemsSection: some View {
+        Section(L10n.Watch.Configuration.Items.title) {
+            ForEach(viewModel.watchConfig.items, id: \.id) { item in
+                makeListItem(item: item)
             }
-            Section {
-                Toggle(isOn: $viewModel.watchConfig.showAssist, label: {
-                    Text(L10n.Watch.Configuration.ShowAssist.title)
-                })
+            .onMove { indices, newOffset in
+                viewModel.moveItem(from: indices, to: newOffset)
+            }
+            .onDelete { indexSet in
+                viewModel.deleteItem(at: indexSet)
+            }
+            Button {
+                viewModel.showAddItem = true
+            } label: {
+                Label(L10n.Watch.Configuration.AddItem.title, systemImage: "plus")
+            }
+        }
+    }
+
+    private var assistSection: some View {
+        Section("Assist") {
+            Toggle(isOn: $viewModel.watchConfig.assist.showAssist, label: {
+                Text(L10n.Watch.Configuration.ShowAssist.title)
+            })
+            if viewModel.watchConfig.assist.showAssist {
+                Picker(L10n.Watch.Config.Assist.selectServer, selection: $viewModel.watchConfig.assist.serverId) {
+                    ForEach(viewModel.servers, id: \.identifier.rawValue) { server in
+                        Text(server.info.name)
+                            .tag(server.identifier.rawValue)
+                    }
+                }
+                Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.watchConfig.assist.pipelineId) {
+                    ForEach(viewModel.assistPipelines, id: \.id) { pipeline in
+                        Text(pipeline.name)
+                            .tag(pipeline.id)
+                    }
+                }
             }
         }
     }
@@ -203,7 +228,7 @@ struct WatchConfigurationView: View {
                 .font(.system(size: 14).bold())
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top)
-            if viewModel.watchConfig.showAssist {
+            if viewModel.watchConfig.assist.showAssist {
                 Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
                     ofSize: .init(width: 18, height: 18),
                     color: Asset.Colors.haPrimary.color
@@ -215,7 +240,7 @@ struct WatchConfigurationView: View {
                 .padding(.top)
             }
         }
-        .animation(.bouncy, value: viewModel.watchConfig.showAssist)
+        .animation(.bouncy, value: viewModel.watchConfig.assist.showAssist)
         .frame(width: 210, height: 50)
         .background(LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom))
     }

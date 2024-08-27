@@ -99,7 +99,7 @@ public class AppEnvironment {
         Realm.getRealm(objectTypes: objectTypes)
     }
 
-    public var grdb: () -> DatabaseQueue = DatabaseQueue.database
+    public var watchGRDB: () -> DatabaseQueue = DatabaseQueue.watchDatabase
     public var magicItemProvider: () -> MagicItemProviderProtocol = {
         MagicItemProvider()
     }

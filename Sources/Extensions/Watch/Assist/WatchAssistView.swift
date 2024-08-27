@@ -26,19 +26,6 @@ struct WatchAssistView: View {
         .onTapGesture {
             viewModel.assist()
         }
-        .modify {
-            if #available(watchOS 10, *) {
-                $0.toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        pipelineSelector
-                    }
-                }
-            } else {
-                $0.toolbar {
-                    pipelineSelector
-                }
-            }
-        }
         .onAppear {
             viewModel.initialRoutine()
         }
@@ -54,14 +41,6 @@ struct WatchAssistView: View {
             default:
                 break
             }
-        }
-        .onChange(of: viewModel.showSettings) { newValue in
-            if newValue {
-                viewModel.stopRecording()
-            }
-        }
-        .fullScreenCover(isPresented: $viewModel.showSettings) {
-            WatchAssistSettings(assistService: viewModel.assistService)
         }
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
             viewModel.initialRoutine()
@@ -85,15 +64,6 @@ struct WatchAssistView: View {
                 }
             }
             .opacity(viewModel.state == .loading ? 1 : 0)
-    }
-
-    @ViewBuilder
-    private var pipelineSelector: some View {
-        Button {
-            viewModel.showSettings = true
-        } label: {
-            Image(systemName: "gear")
-        }
     }
 
     @ViewBuilder
