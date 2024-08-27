@@ -17,6 +17,7 @@ public enum WatchContext: String, CaseIterable {
     case watchModel
     case watchVersion
     case watchBattery
+    case watchBatteryState
 }
 
 public extension HomeAssistantAPI {
@@ -48,6 +49,7 @@ public extension HomeAssistantAPI {
         content[WatchContext.watchVersion.rawValue] = Current.device.systemVersion()
         WKInterfaceDevice.current().isBatteryMonitoringEnabled = true
         content[WatchContext.watchBattery.rawValue] = WKInterfaceDevice.current().batteryLevel
+        content[WatchContext.watchBatteryState.rawValue] = WKInterfaceDevice.current().batteryState
 
         #endif
 
