@@ -2,6 +2,7 @@
 "2KWKqM" = "失败：Home Assistant 不可达";
 "2LIxe4" = "失败：${error}";
 "2b0Uo4" = "服务";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "已更新";
 "4tpAXn" = "确认一下，你希望是“${server}” ？";
@@ -14,9 +15,11 @@
 "8BMgur" = "完成";
 "8skKro" = "哪些动作 ？";
 "A1pokw" = "寻求帮助";
+"Asg4pN" = "With Voice";
 "B28HAk" = "语音助手";
 "B4bXyc" = "完成";
 "BafuI1" = "语言";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "哪个服务器 ？";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "打开 ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "动作";
 "J3qct4" = "服务器";
 "JBMp1T" = "确认一下，你希望是“${server}” ？";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "错误";
 "KHH48D" = "失败：Home Assistant 当前不可达";
 "KJS2jk" = "失败: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "哪种语言 ？";
 "QVD2lM" = "调用服务时所需要的数据";
 "QmGpOH" = "错误";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "获取图像 ${cameraID}";
 "RMQY3r" = "发送指定的位置到Home Assistant。";
 "RsOw3P" = "模板渲染成功";
@@ -68,6 +73,7 @@
 "YNQXwq" = "错误";
 "YxAau3" = "有 ${count} 个选项匹配“${server}”。";
 "ZApPxB" = "服务名称";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "打开Home Assistant应用程序并跳转到指定页面。";
 "ZT9Mld" = "事件名称";
 "ZmUm9Q" = "您想渲染什么模板 ？";
@@ -81,6 +87,7 @@
 "dFHPYK" = "已执行”${action}“";
 "eObn2i" = "页";
 "f1KX0Q" = "查看和运行动作";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "有 ${count} 个选项与”${action}“匹配。";
 "flUgtx" = "哪个动作 ？";
 "fnz838" = "传感器已更新";
@@ -103,6 +110,7 @@
 "jWGtvO" = "有 ${count} 个选项匹配“${server}”。";
 "jtqxOg" = "只是确认一下，你想“${action}“ ？";
 "kGB23u" = "执行动作";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "哪个服务器 ？";
 "lGqSSG" = "更新传感器失败";
 "lNmaCR" = "模板";
@@ -127,8 +135,10 @@
 "rFSNpu" = "完成";
 "rOlW1x" = "您想发送哪个位置 ？";
 "rU3vhT" = "服务器标识符";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "哪个摄像头 ？";
 "sQJAJS" = "错误";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "渲染模板";
 "txfcnn" = "文本";
 "tycImk" = "执行应用程序中定义的某个动作。";

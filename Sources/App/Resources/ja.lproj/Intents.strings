@@ -2,6 +2,7 @@
 "2KWKqM" = "失敗しました: Home Assistantにアクセスできません";
 "2LIxe4" = "失敗: ${error}";
 "2b0Uo4" = "サービス";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "更新しました";
 "4tpAXn" = "確認のために、 ‘${server}’ が必要ですか？";
@@ -14,9 +15,11 @@
 "8BMgur" = "完了";
 "8skKro" = "どのアクション？";
 "A1pokw" = "サポートを依頼する";
+"Asg4pN" = "With Voice";
 "B28HAk" = "アシスト";
 "B4bXyc" = "完了";
 "BafuI1" = "言語";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "どのサーバーですか？";
 "CmlkE4" = "ショートカットイベント";
 "DFWJB8" = "開く ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "アクション";
 "J3qct4" = "サーバー";
 "JBMp1T" = "確認のために、 ‘${server}’ が必要ですか？";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "エラー";
 "KHH48D" = "失敗しました: Home Assistantにアクセスできません";
 "KJS2jk" = "失敗: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "どの言語ですか？";
 "QVD2lM" = "サービスデータ";
 "QmGpOH" = "エラー";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "${cameraID} の画像を取得";
 "RMQY3r" = "Home Assistantに位置情報を送信する";
 "RsOw3P" = "テンプレートのレンダリングに成功";
@@ -68,6 +73,7 @@
 "YNQXwq" = "エラー";
 "YxAau3" = "‘${server}’ に一致する ${count} オプションがあります。";
 "ZApPxB" = "サービス名";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "フロントエンドでページを開く";
 "ZT9Mld" = "イベント名";
 "ZmUm9Q" = "どのテンプレートをレンダリングしますか？";
@@ -81,6 +87,7 @@
 "dFHPYK" = "${action} を実行しました";
 "eObn2i" = "ページ";
 "f1KX0Q" = "アクションの表示と実行";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "${count} にマッチするオプションが、‘${action}’ 個あります。";
 "flUgtx" = "どのアクション？";
 "fnz838" = "センサーが更新されました";
@@ -103,6 +110,7 @@
 "jWGtvO" = "‘${server}’ に一致する ${count} オプションがあります。";
 "jtqxOg" = "確認のため、 ‘${action}’ が必要でしたか？";
 "kGB23u" = "アクションの実行";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "どのサーバーですか？";
 "lGqSSG" = "センサーの更新に失敗しました。";
 "lNmaCR" = "テンプレート";
@@ -127,8 +135,10 @@
 "rFSNpu" = "完了";
 "rOlW1x" = "どの場所に送信しますか？";
 "rU3vhT" = "サーバー識別子";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "どのカメラ？";
 "sQJAJS" = "エラー";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "レンダリングされたテンプレート";
 "txfcnn" = "テキスト";
 "tycImk" = "アプリで定義されたアクションを実行します";

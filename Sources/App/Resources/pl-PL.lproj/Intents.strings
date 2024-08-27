@@ -2,6 +2,7 @@
 "2KWKqM" = "Nie udało się, Home Assistant jest obecnie niedostępny";
 "2LIxe4" = "Nie udało się: ${error}";
 "2b0Uo4" = "Usługa";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Zaktualizowano";
 "4tpAXn" = "Dla potwierdzenia, czy chciałeś '${server}'?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Gotowe";
 "8skKro" = "Które akcje?";
 "A1pokw" = "Poproś o asystę";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Asysta";
 "B4bXyc" = "Gotowe";
 "BafuI1" = "Język";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Który serwer?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Otwórz ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Akcje";
 "J3qct4" = "Serwer";
 "JBMp1T" = "Dla potwierdzenia, czy chciałeś '${server}'?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Błąd";
 "KHH48D" = "Nie udało się, Home Assistant jest obecnie niedostępny";
 "KJS2jk" = "Nie udało się: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Jaki język?";
 "QVD2lM" = "Dane usługi";
 "QmGpOH" = "Błąd";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Pobierz obraz ${cameraID}";
 "RMQY3r" = "Wyślij lokalizację do Home Assistant";
 "RsOw3P" = "Pomyślnie wyrenderowano szablon";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Błąd";
 "YxAau3" = "Istnieją ${count} opcje pasujące do '${server}'.";
 "ZApPxB" = "Nazwa usługi";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Open a page in the frontend";
 "ZT9Mld" = "Nazwa zdarzenia";
 "ZmUm9Q" = "Jaki szablon chciałbyś renderować?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "Wykonano ${action}";
 "eObn2i" = "Page";
 "f1KX0Q" = "Wyświetl i uruchom akcje";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "Istnieje ${count} opcji pasujących do ‘${action}’.";
 "flUgtx" = "Która akcja?";
 "fnz838" = "Zaktualizowano sensory.";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Istnieją ${count} opcje pasujące do '${server}'.";
 "jtqxOg" = "Tylko dla potwierdzenia, chciałaś/eś ‘${action}’?";
 "kGB23u" = "Wykonaj akcję";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Który serwer?";
 "lGqSSG" = "Nie udało się zaktualizować sensorów.";
 "lNmaCR" = "Szablon";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Gotowe";
 "rOlW1x" = "Jaką lokalizację chcesz wysłać?";
 "rU3vhT" = "Identyfikator serwera";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Która kamera?";
 "sQJAJS" = "Błąd";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Wyrenderowany szablon";
 "txfcnn" = "Tekst";
 "tycImk" = "Wykonuje akcję zdefiniowaną w aplikacji";

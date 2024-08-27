@@ -2,6 +2,7 @@
 "2KWKqM" = "Kunne ikke utføre hendelsen, men Home Assistant kan ikke nås for øyeblikket";
 "2LIxe4" = "Mislyktes: ${error}";
 "2b0Uo4" = "Tjeneste";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Oppdatert";
 "4tpAXn" = "Bare for å bekrefte, ville du ha '${server}'?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Ferdig";
 "8skKro" = "Hvilke handlinger?";
 "A1pokw" = "Be om hjelp";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Assist";
 "B4bXyc" = "Ferdig";
 "BafuI1" = "Språk";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Hvilken server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Åpne ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Handlinger";
 "J3qct4" = "Server";
 "JBMp1T" = "Bare for å bekrefte, ville du ha '${server} '?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Feil";
 "KHH48D" = "Mislyktes: Home Assistant er ikke tilgjengelig nå";
 "KJS2jk" = "Mislyktes: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Hvilket språk?";
 "QVD2lM" = "Tjenestedata";
 "QmGpOH" = "Feil";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Få bilde av ${cameraID}";
 "RMQY3r" = "Send plassering til Home Assistant";
 "RsOw3P" = "Malen ble gjengitt";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Feil";
 "YxAau3" = "Det finnes alternativer for ${count} som samsvarer med ${server}.";
 "ZApPxB" = "Tjenestenavn";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Åpne en side i frontend";
 "ZT9Mld" = "Navn på hendelse";
 "ZmUm9Q" = "Hvilken mal vil du gjengi?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "Utførte ${action}";
 "eObn2i" = "Side";
 "f1KX0Q" = "Vise og kjøre handlinger";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "Det finnes alternativer for ${count} som samsvarer med ${action}.";
 "flUgtx" = "Hvilken handling?";
 "fnz838" = "Sensorer oppdatert";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Det finnes alternativer for ${count} som samsvarer med ${server}.";
 "jtqxOg" = "Bare for å bekrefte, ønsket du '${action} '?";
 "kGB23u" = "Utfør handling";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Hvilken server?";
 "lGqSSG" = "Kunne ikke oppdatere sensorer.";
 "lNmaCR" = "Mal";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Ferdig";
 "rOlW1x" = "Hvilken plassering ønsker du å sende?";
 "rU3vhT" = "Serveridentifikator";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Hvilket kamera?";
 "sQJAJS" = "Feil";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Gjengitt mal";
 "txfcnn" = "Tekst";
 "tycImk" = "Utfører en handling som er definert i appen";

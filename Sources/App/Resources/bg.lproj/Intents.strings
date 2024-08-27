@@ -2,6 +2,7 @@
 "2KWKqM" = "Неуспешно: Home Assistant не е достъпен";
 "2LIxe4" = "Неуспешно: ${error}";
 "2b0Uo4" = "Услуга";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Актуализиран";
 "4tpAXn" = "Само за потвърждение, искахте „${server}“?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Готово";
 "8skKro" = "Кои действия?";
 "A1pokw" = "Поискайте съдействие";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Assist";
 "B4bXyc" = "Готово";
 "BafuI1" = "Език";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Кой сървър?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Отворете ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Действия";
 "J3qct4" = "Сървър";
 "JBMp1T" = "Само за потвърждение, искахте „${server}“?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Грешка";
 "KHH48D" = "Неуспешно: Home Assistant в момента не е достъпен";
 "KJS2jk" = "Неуспешно: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Кой език?";
 "QVD2lM" = "Данни за услугата";
 "QmGpOH" = "Грешка";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Получаване на изображение на ${cameraID}";
 "RMQY3r" = "Изпращане на местоположение до Home Assistant";
 "RsOw3P" = "Успешно визуализиран шаблон";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Грешка";
 "YxAau3" = "Има ${count} опции, съответстващи на '${server}'.";
 "ZApPxB" = "Име на услугата";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Отваряне на страница в интерфейса";
 "ZT9Mld" = "Име на събитието";
 "ZmUm9Q" = "Какъв шаблон искате да изобразите?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "Извършено ${action}";
 "eObn2i" = "Страница";
 "f1KX0Q" = "Преглед и изпълнение на действия";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "Има ${count} опции, съответстващи на '${action}'.";
 "flUgtx" = "Кое действие?";
 "fnz838" = "Сензорите са актуализирани";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Има ${count} опции, съответстващи на '${server}'.";
 "jtqxOg" = "Само за потвърждение, искахте „${action}“?";
 "kGB23u" = "Изпълнение на действие";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Кой сървър?";
 "lGqSSG" = "Неуспешно актуализиране на сензорите.";
 "lNmaCR" = "Шаблон";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Готово";
 "rOlW1x" = "Какво местоположение искате да изпратите?";
 "rU3vhT" = "Идентификатор на сървъра";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Коя камера?";
 "sQJAJS" = "Грешка";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Представен шаблон";
 "txfcnn" = "Текст";
 "tycImk" = "Извършва действие, дефинирано в приложението";
