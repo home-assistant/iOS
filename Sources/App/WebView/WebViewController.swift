@@ -995,7 +995,7 @@ extension ConnectionInfo {
             return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
         }
         guard let activeURL = activeURL() else {
-            Current.Log.error("No activeURL available whie webviewURLComponents was called")
+            Current.Log.error("No activeURL available while webviewURLComponents was called")
             return nil
         }
 
