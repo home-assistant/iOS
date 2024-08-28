@@ -29,7 +29,7 @@ final class WatchBatterySensor: SensorProvider {
             ))
             sensors.append(WebhookSensor(
                 name: "Watch Battery State",
-                uniqueID: "watch-battery_state",
+                uniqueID: "watch-battery-state",
                 icon: icon,
                 state: batteryState.description
             ))
