@@ -19,6 +19,7 @@ final class WatchAssistViewModel: ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
     @Published var showChatLoader = false
+    private var timer: Timer?
 
     private let audioRecorder: any WatchAudioRecorderProtocol
     private let audioPlayer: any AudioPlayerProtocol
@@ -52,6 +53,7 @@ final class WatchAssistViewModel: ObservableObject {
     func endRoutine() {
         stopRecording()
         assistService.endRoutine()
+        timer?.invalidate()
         immediateCommunicatorService.removeObserver(self)
     }
 
@@ -68,6 +70,23 @@ final class WatchAssistViewModel: ObservableObject {
 
     func stopRecording() {
         audioRecorder.stopRecording()
+    }
+
+    func startPingPong() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.timerAction()
+        }
+    }
+
+    func stopPingPong() {
+        timer?.invalidate()
+    }
+
+    private func timerAction() {
+        Current.Log.verbose("Ping iPhone")
+        Communicator.shared.send(.init(identifier: InteractiveImmediateMessages.ping.rawValue, reply: { _ in
+            Current.Log.verbose("Pong from iPhone")
+        }))
     }
 
     private func showUnreacheableMessage() {
@@ -119,7 +138,7 @@ final class WatchAssistViewModel: ObservableObject {
     }
 }
 
-extension WatchAssistViewModel: WatchAudioRecorderDelegate {
+extension WatchAssistViewModel: @preconcurrency WatchAudioRecorderDelegate {
     @MainActor
     func didStartRecording() {
         runInMainThread { [weak self] in
