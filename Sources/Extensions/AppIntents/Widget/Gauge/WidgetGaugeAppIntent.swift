@@ -29,6 +29,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     )
     var valueTemplate: String
 
+    /// Label used to populate the `currentValueLabel` closure passed to a Gauge.
     @Parameter(
         title: .init("widgets.gauge.parameters.value_label_template", defaultValue: "Value Label Template"),
         default: "",
@@ -42,6 +43,22 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     )
     var valueLabelTemplate: String
 
+    /// Label used to populate the default closure passed to a Gauge. This is shown below the value label template
+    /// for the `singleLabel` gauge type.
+    @Parameter(
+        title: .init("widgets.gauge.parameters.label_template", defaultValue: "Label Template"),
+        default: "",
+        inputOptions: .init(
+            capitalizationType: .none,
+            multiline: true,
+            autocorrect: false,
+            smartQuotes: false,
+            smartDashes: false
+        )
+    )
+    var labelTemplate: String
+
+    /// Label used to populate the `minimumValueLabel` closure passed to a Gauge.
     @Parameter(
         title: .init("widgets.gauge.parameters.min_label_template", defaultValue: "Min Label Template"),
         default: "",
@@ -55,6 +72,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     )
     var minTemplate: String
 
+    /// Label used to populate the `maximumValueLabel` closure passed to a Gauge.
     @Parameter(
         title: .init("widgets.gauge.parameters.max_label_template", defaultValue: "Max Label Template"),
         default: "",
@@ -76,57 +94,90 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
     static var parameterSummary: some ParameterSummary {
         When(\WidgetGaugeAppIntent.$runAction, .equalTo, true) {
-            When(\.$gaugeType, .equalTo, .normal) {
-                Summary {
-                    \.$gaugeType
+            Switch(\.$gaugeType) {
+                Case(.normal) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
-                    \.$minTemplate
-                    \.$maxTemplate
+                        \.$valueLabelTemplate
+                        \.$minTemplate
+                        \.$maxTemplate
 
-                    \.$runAction
-                    \.$action
+                        \.$runAction
+                        \.$action
+                    }
                 }
-            } otherwise: {
-                Summary {
-                    \.$gaugeType
+                Case(.singleLabel) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
+                        \.$valueLabelTemplate
+                        \.$labelTemplate
 
-                    \.$runAction
-                    \.$action
+                        \.$runAction
+                        \.$action
+                    }
+                }
+                DefaultCase {
+                    Summary {
+                        \.$gaugeType
+
+                        \.$server
+                        \.$valueTemplate
+
+                        \.$valueLabelTemplate
+
+                        \.$runAction
+                        \.$action
+                    }
                 }
             }
         } otherwise: {
-            When(\.$gaugeType, .equalTo, .normal) {
-                Summary {
-                    \.$gaugeType
+            Switch(\.$gaugeType) {
+                Case(.normal) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
-                    \.$minTemplate
-                    \.$maxTemplate
+                        \.$valueLabelTemplate
+                        \.$minTemplate
+                        \.$maxTemplate
 
-                    \.$runAction
+                        \.$runAction
+                    }
                 }
-            } otherwise: {
-                Summary {
-                    \.$gaugeType
+                Case(.singleLabel) {
+                    Summary {
+                        \.$gaugeType
 
-                    \.$server
-                    \.$valueTemplate
+                        \.$server
+                        \.$valueTemplate
 
-                    \.$valueLabelTemplate
+                        \.$valueLabelTemplate
+                        \.$labelTemplate
 
-                    \.$runAction
+                        \.$runAction
+                    }
+                }
+                DefaultCase {
+                    Summary {
+                        \.$gaugeType
+
+                        \.$server
+                        \.$valueTemplate
+
+                        \.$valueLabelTemplate
+
+                        \.$runAction
+                    }
                 }
             }
         }
@@ -135,7 +186,13 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
+    /// Represents a `Gauge` with style `accessoryCircular` and min/max labels.
     case normal
+
+    /// Represents a `Gauge` with style `accessoryCircular` that has no min / max labels set.
+    case singleLabel
+
+    /// Represents a `Gauge` with style `accessoryCircularCapacity`.
     case capacity
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(
@@ -145,6 +202,10 @@ enum GaugeTypeAppEnum: String, Codable, Sendable, AppEnum {
         .normal: DisplayRepresentation(title: .init(
             "widgets.gauge.parameters.gauge_type.normal",
             defaultValue: "Normal"
+        )),
+        .singleLabel: DisplayRepresentation(title: .init(
+            "widgets.gauge.parameters.gauge_type.singleLabel",
+            defaultValue: "Normal (single label)"
         )),
         .capacity: DisplayRepresentation(title: .init(
             "widgets.gauge.parameters.gauge_type.capacity",
