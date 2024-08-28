@@ -2,6 +2,7 @@
 "2KWKqM" = "Başarısız: Home Assistant'a ulaşılamıyor";
 "2LIxe4" = "Başarısız: ${error}";
 "2b0Uo4" = "Servis";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ şimdi() }}";
 "4fFx9y" = "Güncellenmiş";
 "4tpAXn" = "Sadece onaylamak için ' ${server} ' mı istediniz?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Bitti";
 "8skKro" = "Hangi eylemler?";
 "A1pokw" = "Yardım İste";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Asistan";
 "B4bXyc" = "Bitti";
 "BafuI1" = "Dil";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Hangi sunucu?";
 "CmlkE4" = "kısayol_olay";
 "DFWJB8" = "Aç ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Aksiyonlar";
 "J3qct4" = "Sunucu";
 "JBMp1T" = "Sadece onaylamak için ' ${server} ' mı istediniz?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Hata";
 "KHH48D" = "Başarısız: Ev Asistanı'na şu anda ulaşılamıyor";
 "KJS2jk" = "Başarısız: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Hangi dil?";
 "QVD2lM" = "Servis Verisi";
 "QmGpOH" = "Hata";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "${cameraID} Kamera Görüntüsünü al";
 "RMQY3r" = "Konumu Home Assistant'a gönder";
 "RsOw3P" = "Başarıyla oluşturulmuş şablon";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Hata";
 "YxAau3" = "' ${server} ' ile eşleşen ${count}";
 "ZApPxB" = "Servis İsmi";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Ön uçta bir sayfa açın";
 "ZT9Mld" = "Etkinlik Adı";
 "ZmUm9Q" = "Hangi taslağı oluşturmak istersiniz?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "Gerçekleştirilen ${action}";
 "eObn2i" = "Sayfa";
 "f1KX0Q" = "Eylemleri görüntüleyin ve çalıştırın";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "${count} seçenekleri '${action}' ile eşleşiyor.";
 "flUgtx" = "Hangi eylem?";
 "fnz838" = "Sensörler güncellendi.";
@@ -103,6 +110,7 @@
 "jWGtvO" = "' ${server} ' ile eşleşen ${count} seçenek mevcut";
 "jtqxOg" = "Sadece onaylamak için '${action} ' mı istediniz?";
 "kGB23u" = "Eylemi Gerçekleştir";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Hangi sunucu?";
 "lGqSSG" = "Sensörleri güncelleştiremedi.";
 "lNmaCR" = "Taslak";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Bitti";
 "rOlW1x" = "Hangi konumu göndermek istiyorsun?";
 "rU3vhT" = "Sunucu Tanımlayıcısı";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Hangi kamera?";
 "sQJAJS" = "Hata";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Oluşturulan Taslak";
 "txfcnn" = "Metin";
 "tycImk" = "Uygulamada tanımlanan bir eylemi gerçekleştirir";

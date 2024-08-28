@@ -2,6 +2,7 @@
 "2KWKqM" = "실패: Home Assistant에 연결할 수 없습니다.";
 "2LIxe4" = "실패: ${error}";
 "2b0Uo4" = "서비스";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "업데이트됨";
 "4tpAXn" = "확인을 위해 '${server}'를 원하십니까?";
@@ -14,9 +15,11 @@
 "8BMgur" = "완료";
 "8skKro" = "어떤 동작을 원하시나요?";
 "A1pokw" = "도움 요청";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Assist";
 "B4bXyc" = "완료";
 "BafuI1" = "언어";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "어떤 서버?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "${page} 열기";
@@ -35,6 +38,7 @@
 "HoH8wg" = "동작";
 "J3qct4" = "서버";
 "JBMp1T" = "확인을 위해 ' ${server} '을(를) 원하셨습니까?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "오류";
 "KHH48D" = "실패: 현재 Home Assistant에 연결할 수 없습니다.";
 "KJS2jk" = "실패: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "어떤 언어인가요?";
 "QVD2lM" = "서비스 데이터";
 "QmGpOH" = "오류";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "${cameraID}의 이미지 가져오기";
 "RMQY3r" = "Home Assistant로 위치 보내기";
 "RsOw3P" = "성공적으로 렌더링된 템플릿";
@@ -68,6 +73,7 @@
 "YNQXwq" = "오류";
 "YxAau3" = "'${server} '와(과) 일치하는 ${count} 옵션이 있습니다.";
 "ZApPxB" = "서비스 이름";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "프론트엔드에서 페이지 열기";
 "ZT9Mld" = "이벤트 이름";
 "ZmUm9Q" = "어떤 템플릿을 렌더링하시겠습니까?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "${action} 수행됨";
 "eObn2i" = "페이지";
 "f1KX0Q" = "동작 보기 및 실행";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "'${action}'과 일치하는 ${count}개의 옵션이 있습니다.";
 "flUgtx" = "어떤 동작을 원하시나요?";
 "fnz838" = "센서 업데이트 완료";
@@ -103,6 +110,7 @@
 "jWGtvO" = "'${server} '와(과) 일치하는 ${count} 옵션이 있습니다.";
 "jtqxOg" = "확인을 위해 '${action}'을 원하셨습니까?";
 "kGB23u" = "동작 수행";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "어떤 서버?";
 "lGqSSG" = "센서 업데이트 실패";
 "lNmaCR" = "템플릿";
@@ -127,8 +135,10 @@
 "rFSNpu" = "완료";
 "rOlW1x" = "어떤 위치를 보내시겠습니까?";
 "rU3vhT" = "서버 식별자";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "어떤 카메라를 사용하시나요?";
 "sQJAJS" = "오류";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "렌더링된 템플릿";
 "txfcnn" = "텍스트";
 "tycImk" = "앱에 정의된 동작을 수행합니다.";

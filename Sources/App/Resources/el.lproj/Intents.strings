@@ -2,6 +2,7 @@
 "2KWKqM" = "Αποτυχία: Το Home Assistant δεν είναι προσβάσιμο";
 "2LIxe4" = "Αποτυχία: ${error}";
 "2b0Uo4" = "Υπηρεσία";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Ενημερώθηκε";
 "4tpAXn" = "Απλά για επιβεβαίωση, θέλατε το '${server}';";
@@ -14,9 +15,11 @@
 "8BMgur" = "Έγινε";
 "8skKro" = "Ποιες ενέργειες;";
 "A1pokw" = "Ζητήστε βοήθεια";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Βοηθός";
 "B4bXyc" = "Έγινε";
 "BafuI1" = "Γλώσσα";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Ποιος διακομιστής;";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Άνοιγμα ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Ενέργειες";
 "J3qct4" = "Διακομιστής";
 "JBMp1T" = "Απλά για επιβεβαίωση, θέλατε το '${server}';";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Σφάλμα";
 "KHH48D" = "Αποτυχία:Το Home Assistant δεν είναι προς το παρόν προσβάσιμο";
 "KJS2jk" = "Αποτυχία: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Ποια γλώσσα;";
 "QVD2lM" = "Δεδομένα υπηρεσίας";
 "QmGpOH" = "Σφάλμα";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Λήψη εικόνας από ${cameraID}";
 "RMQY3r" = "Αποστολή τοποθεσίας στο Home Assistant";
 "RsOw3P" = "Το πρότυπο αποδόθηκε με επιτυχία";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Σφάλμα";
 "YxAau3" = "Υπάρχουν ${count} επιλογές που ταιριάζουν με το '${server}'.";
 "ZApPxB" = "Όνομα υπηρεσίας";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Άνοιγμα σελίδας στο προσκήνιο";
 "ZT9Mld" = "Όνομα συμβάντος";
 "ZmUm9Q" = "Ποιο πρότυπο θα θέλατε να αποδώσετε;";
@@ -81,6 +87,7 @@
 "dFHPYK" = "Εκτελέστηκε ${action}";
 "eObn2i" = "Σελίδα";
 "f1KX0Q" = "Προβολή και εκτέλεση ενεργειών";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "Υπάρχουν ${count} επιλογές που αντιστοιχούν στο ’${action}’.";
 "flUgtx" = "Ποια ενέργεια;";
 "fnz838" = "Οι αισθητήρες ενημερώθηκαν";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Υπάρχουν ${count} επιλογές που ταιριάζουν με το '${server}'.";
 "jtqxOg" = "Απλώς για επιβεβαίωση, θέλατε το ’${action}’;";
 "kGB23u" = "Εκτέλεση ενέργειας";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Ποιος διακομιστής;";
 "lGqSSG" = "Αποτυχία ενημέρωσης αισθητήρων.";
 "lNmaCR" = "Πρότυπο";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Εγινε";
 "rOlW1x" = "Ποια τοποθεσία θέλετε να στείλετε;";
 "rU3vhT" = "Αναγνωριστικό διακομιστή";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Ποια κάμερα;";
 "sQJAJS" = "Σφάλμα";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Πρότυπο που αποδόθηκε";
 "txfcnn" = "Κείμενο";
 "tycImk" = "Εκτελεί μια ενέργεια που ορίζεται στην εφαρμογή";

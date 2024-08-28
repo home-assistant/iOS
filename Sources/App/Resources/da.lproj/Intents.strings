@@ -2,6 +2,7 @@
 "2KWKqM" = "Mislykkedes: Home Assistant er ikke tilgængelig";
 "2LIxe4" = "Mislykkedes: ${error}";
 "2b0Uo4" = "Tjeneste";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ nu() }}";
 "4fFx9y" = "Opdateret";
 "4tpAXn" = "Bekræft venligt valg af '${server}'?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Udført";
 "8skKro" = "Hvilke handlinger?";
 "A1pokw" = "Spørg om assistance";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Assist";
 "B4bXyc" = "Udført";
 "BafuI1" = "Sprog";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Hvilken server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Åbn ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Handlinger";
 "J3qct4" = "Server";
 "JBMp1T" = "Bekræft venligt valg af '${server}'?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Fejl";
 "KHH48D" = "Mislykkedes: Home Assistant er ikke tilgængelig i øjeblikket";
 "KJS2jk" = "Mislykkedes: ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Hvilket sprog?";
 "QVD2lM" = "Servicedata";
 "QmGpOH" = "Fejl";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Hent billede fra ${cameraID}";
 "RMQY3r" = "Send lokalitet til Home Assistant";
 "RsOw3P" = "Skabelonen blev gengivet korrekt";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Fejl";
 "YxAau3" = "Der er ${count} valgmuligheder, der matcher ‘${server}’.";
 "ZApPxB" = "Servicenavn";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Åbn en side i brugerfladen";
 "ZT9Mld" = "Hændelsesnavn";
 "ZmUm9Q" = "Hvilken skabelon vil du gengive?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "${action} udført.";
 "eObn2i" = "Side";
 "f1KX0Q" = "Se og kør handlinger";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "Der er ${count} valgmuligheder, der matcher ‘${action}’.";
 "flUgtx" = "Hvilken handling?";
 "fnz838" = "Sensorer er opdateret.";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Der er ${count} valgmuligheder, der matcher ‘${server}’.";
 "jtqxOg" = "Bekræft venligst dit valg af handlingen ‘${action}’?";
 "kGB23u" = "Udfør handling";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Hvilken server?";
 "lGqSSG" = "Opdatering af sensorer mislykkedes.";
 "lNmaCR" = "Skabelon";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Færdig";
 "rOlW1x" = "Hvilken lokalitet vil du sende?";
 "rU3vhT" = "Server-id";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Hvilket kamera?";
 "sQJAJS" = "Fejl";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Gengivet skabelon";
 "txfcnn" = "Tekst";
 "tycImk" = "Udfører en handling defineret i appen";

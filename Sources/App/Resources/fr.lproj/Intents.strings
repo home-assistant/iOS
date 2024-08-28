@@ -2,6 +2,7 @@
 "2KWKqM" = "Échec: Home Assistant n'est pas accessible pour le moment.";
 "2LIxe4" = "Échec : ${error}";
 "2b0Uo4" = "Service";
+"2yevCF" = "Which pipeline do you want to use?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Mis à jour";
 "4tpAXn" = "Juste pour confirmer, vous vouliez « ${server} » ?";
@@ -14,9 +15,11 @@
 "8BMgur" = "Fait";
 "8skKro" = "Quelles actions ?";
 "A1pokw" = "Demander de l'aide";
+"Asg4pN" = "With Voice";
 "B28HAk" = "Assister";
 "B4bXyc" = "Fait";
 "BafuI1" = "Langue";
+"Bw6Ucn" = "Which pipeline?";
 "BwZv3u" = "Quel serveur ?";
 "CmlkE4" = "événement_raccourci";
 "DFWJB8" = "Ouvrir ${page}";
@@ -35,6 +38,7 @@
 "HoH8wg" = "Actions";
 "J3qct4" = "Serveur";
 "JBMp1T" = "Juste pour confirmer, vous vouliez « ${server} » ?";
+"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
 "K4xrvF" = "Erreur";
 "KHH48D" = "Échec: Home Assistant n'est pas accessible pour le moment.";
 "KJS2jk" = "Échec : ${error}";
@@ -54,6 +58,7 @@
 "QCGKRz" = "Quelle langue ?";
 "QVD2lM" = "Données du service";
 "QmGpOH" = "Erreur";
+"R2PmrD" = "Do you want assistance using voice?";
 "RCQAlr" = "Obtenir l’image depuis la caméra ${cameraID}";
 "RMQY3r" = "Envoyer l'emplacement à Home Assistant";
 "RsOw3P" = "Modèle rendu avec succès";
@@ -68,6 +73,7 @@
 "YNQXwq" = "Erreur";
 "YxAau3" = "Il y a ${count} options correspondant à ' ${server} '.";
 "ZApPxB" = "Nom du service";
+"ZG5nuL" = "Assist In App";
 "ZRPVYO" = "Ouvrir une page dans le frontend";
 "ZT9Mld" = "Nom de l'événement";
 "ZmUm9Q" = "Quel modèle aimeriez-vous rendre?";
@@ -81,6 +87,7 @@
 "dFHPYK" = "${action} effectuée";
 "eObn2i" = "Page";
 "f1KX0Q" = "Afficher et exécuter des actions";
+"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
 "fkQXDn" = "${count} options correspondent à ‘${action}‘.";
 "flUgtx" = "Quelle action ?";
 "fnz838" = "Capteurs mis à jour";
@@ -103,6 +110,7 @@
 "jWGtvO" = "Il y a ${count} options correspondant à ' ${server} '.";
 "jtqxOg" = "Juste pour confirmer, vous vouliez '${action}' ?";
 "kGB23u" = "Effectuer l'action";
+"kPqT8T" = "Pipeline";
 "l2coEc" = "Quel serveur ?";
 "lGqSSG" = "Échec de la mise à jour des capteurs.";
 "lNmaCR" = "Modèle";
@@ -127,8 +135,10 @@
 "rFSNpu" = "Fait";
 "rOlW1x" = "Quel emplacement voulez-vous envoyer ?";
 "rU3vhT" = "Identifiant du serveur";
+"s9Gk3c" = "Assist In App";
 "sNFoWe" = "Quelle caméra ?";
 "sQJAJS" = "Erreur";
+"sbjA6e" = "Ask for Assistance in App";
 "sfDGvk" = "Modèle rendu";
 "txfcnn" = "Texte";
 "tycImk" = "Effectue une action définie dans l'application";
