@@ -299,7 +299,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         super.init(nibName: nil, bundle: nil)
 
-        userActivity = with(NSUserActivity(activityType: "\(Constants.BundleID).frontend")) {
+        userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
             $0.isEligibleForHandoff = true
         }
 

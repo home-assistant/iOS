@@ -34,14 +34,14 @@ public class HomeAssistantAPI {
     public internal(set) var connection: HAConnection
 
     public static var clientVersionDescription: String {
-        "\(Constants.version) (\(Constants.build))"
+        "\(AppConstants.version) (\(AppConstants.build))"
     }
 
     public static var userAgent: String {
         // This matches Alamofire's generated string, for consistency with the past
-        let bundle = Constants.BundleID
-        let appVersion = Constants.version
-        let appBuild = Constants.build
+        let bundle = AppConstants.BundleID
+        let appVersion = AppConstants.version
+        let appBuild = AppConstants.build
 
         let osNameVersion: String = {
             let version = ProcessInfo.processInfo.operatingSystemVersion
@@ -259,7 +259,7 @@ public class HomeAssistantAPI {
         let fileManager = FileManager.default
 
         if let downloadDataDir = fileManager.containerURL(
-            forSecurityApplicationGroupIdentifier: Constants.AppGroupID
+            forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID
         )?.appendingPathComponent("downloadedData", isDirectory: true) {
             try? fileManager.removeItem(at: downloadDataDir)
         }
@@ -457,7 +457,7 @@ public class HomeAssistantAPI {
                 ]
             }
 
-            $0.AppIdentifier = Constants.BundleID
+            $0.AppIdentifier = AppConstants.BundleID
             $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
             $0.AppVersion = HomeAssistantAPI.clientVersionDescription
             $0.DeviceID = Current.settingsStore.integrationDeviceID
@@ -551,7 +551,7 @@ public class HomeAssistantAPI {
     }
 
     public var sharedEventDeviceInfo: [String: String] { [
-        "sourceDevicePermanentID": Constants.PermanentID,
+        "sourceDevicePermanentID": AppConstants.PermanentID,
         "sourceDeviceName": server.info.setting(for: .overrideDeviceName) ?? Current.device.deviceName(),
         "sourceDeviceID": Current.settingsStore.deviceID,
     ] }

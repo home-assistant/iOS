@@ -29,7 +29,7 @@ extension Action {
                 #if !targetEnvironment(macCatalyst)
                 NCWidgetController().setHasContent(
                     !collection.isEmpty,
-                    forWidgetWithBundleIdentifier: Constants.BundleID.appending(".TodayWidget")
+                    forWidgetWithBundleIdentifier: AppConstants.BundleID.appending(".TodayWidget")
                 )
                 #endif
                 seal.fulfill(())

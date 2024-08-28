@@ -97,7 +97,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private func displayActionResultIcon(on item: CPListItem, success: Bool) {
         let itemOriginalIcon = item.image
         if success {
-            item.setImage(MaterialDesignIcons.checkIcon.carPlayIcon(color: Constants.tintColor))
+            item.setImage(MaterialDesignIcons.checkIcon.carPlayIcon(color: AppConstants.tintColor))
         } else {
             item.setImage(MaterialDesignIcons.closeIcon.carPlayIcon(color: .red))
         }

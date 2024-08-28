@@ -6,8 +6,8 @@ import UIKit
 import Version
 
 public class SettingsStore {
-    let keychain = Constants.Keychain
-    let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
+    let keychain = AppConstants.Keychain
+    let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
     /// These will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")

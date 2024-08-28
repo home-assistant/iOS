@@ -44,6 +44,8 @@ public enum L10n {
   public static var openLabel: String { return L10n.tr("Localizable", "open_label") }
   /// Preview Output
   public static var previewOutput: String { return L10n.tr("Localizable", "preview_output") }
+  /// Reload
+  public static var reloadLabel: String { return L10n.tr("Localizable", "reload_label") }
   /// Requires %@ or later.
   public static func requiresVersion(_ p1: Any) -> String {
     return L10n.tr("Localizable", "requires_version", String(describing: p1))
@@ -778,6 +780,73 @@ public enum L10n {
     }
   }
 
+  public enum MagicItem {
+    /// Add
+    public static var add: String { return L10n.tr("Localizable", "magic_item.add") }
+    public enum BackgroundColor {
+      /// Background color
+      public static var title: String { return L10n.tr("Localizable", "magic_item.background_color.title") }
+    }
+    public enum IconColor {
+      /// Icon color
+      public static var title: String { return L10n.tr("Localizable", "magic_item.icon_color.title") }
+    }
+    public enum IconName {
+      /// Icon name
+      public static var title: String { return L10n.tr("Localizable", "magic_item.icon_name.title") }
+    }
+    public enum ItemType {
+      public enum Action {
+        public enum List {
+          /// iOS Actions
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.action.list.title") }
+          public enum Warning {
+            /// We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.
+            public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.action.list.warning.title") }
+          }
+        }
+      }
+      public enum Scene {
+        public enum List {
+          /// Scenes
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.scene.list.title") }
+        }
+      }
+      public enum Script {
+        public enum List {
+          /// Scripts
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.script.list.title") }
+        }
+      }
+      public enum Selection {
+        public enum List {
+          /// Item type
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.selection.list.title") }
+        }
+      }
+    }
+    public enum Name {
+      /// Name
+      public static var title: String { return L10n.tr("Localizable", "magic_item.name.title") }
+    }
+    public enum NameAndIcon {
+      /// Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.
+      public static var footer: String { return L10n.tr("Localizable", "magic_item.name_and_icon.footer") }
+    }
+    public enum RequireConfirmation {
+      /// Require confirmation
+      public static var title: String { return L10n.tr("Localizable", "magic_item.require_confirmation.title") }
+    }
+    public enum TextColor {
+      /// Text color
+      public static var title: String { return L10n.tr("Localizable", "magic_item.text_color.title") }
+    }
+    public enum UseCustomColors {
+      /// Use custom colors
+      public static var title: String { return L10n.tr("Localizable", "magic_item.use_custom_colors.title") }
+    }
+  }
+
   public enum Menu {
     public enum Actions {
       /// Configure…
@@ -1373,9 +1442,13 @@ public enum L10n {
         /// Notifications
         public static var title: String { return L10n.tr("Localizable", "settings.details_section.notification_settings_row.title") }
       }
-      public enum WatchRow {
-        /// Apple Watch
-        public static var title: String { return L10n.tr("Localizable", "settings.details_section.watch_row.title") }
+      public enum WatchRowComplications {
+        /// Complications
+        public static var title: String { return L10n.tr("Localizable", "settings.details_section.watch_row_complications.title") }
+      }
+      public enum WatchRowConfiguration {
+        /// Configuration
+        public static var title: String { return L10n.tr("Localizable", "settings.details_section.watch_row_configuration.title") }
       }
     }
     public enum Developer {
@@ -2334,6 +2407,56 @@ public enum L10n {
   public enum Watch {
     /// Placeholder
     public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }
+    public enum Assist {
+      public enum LackConfig {
+        public enum Error {
+          /// Please configure Assist using iOS companion App
+          public static var title: String { return L10n.tr("Localizable", "watch.assist.lack_config.error.title") }
+        }
+      }
+    }
+    public enum Config {
+      public enum Assist {
+        /// Server
+        public static var selectServer: String { return L10n.tr("Localizable", "watch.config.assist.select_server") }
+      }
+      public enum MigrationError {
+        /// Failed to access database (GRDB), error: %@
+        public static func failedAccessGrdb(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_access_grdb", String(describing: p1))
+        }
+        /// Failed to save initial watch config, error: %@
+        public static func failedCreateNewConfig(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_create_new_config", String(describing: p1))
+        }
+        /// Failed to migrate actions to watch config, error: %@
+        public static func failedMigrateActions(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_migrate_actions", String(describing: p1))
+        }
+        /// Failed to save new Watch config, error: %@
+        public static func failedToSave(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_to_save", String(describing: p1))
+        }
+      }
+    }
+    public enum Configuration {
+      public enum AddItem {
+        /// Add item
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.add_item.title") }
+      }
+      public enum Items {
+        /// Items
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.items.title") }
+      }
+      public enum Save {
+        /// Save
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.save.title") }
+      }
+      public enum ShowAssist {
+        /// Show Assist
+        public static var title: String { return L10n.tr("Localizable", "watch.configuration.show_assist.title") }
+      }
+    }
     public enum Configurator {
       public enum Delete {
         /// Delete Complication
@@ -2490,9 +2613,35 @@ public enum L10n {
         }
       }
     }
+    public enum Debug {
+      public enum DeleteDb {
+        /// Delete watch configuration
+        public static var title: String { return L10n.tr("Localizable", "watch.debug.delete_db.title") }
+        public enum Alert {
+          /// Are you sure you want to delete watch configuration? This can't be reverted
+          public static var title: String { return L10n.tr("Localizable", "watch.debug.delete_db.alert.title") }
+        }
+      }
+    }
+    public enum Home {
+      public enum CancelAndUseCache {
+        /// Cancel and use cache
+        public static var title: String { return L10n.tr("Localizable", "watch.home.cancel_and_use_cache.title") }
+      }
+      public enum Run {
+        public enum Confirmation {
+          /// Are you sure you want to run "%@"?
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "watch.home.run.confirmation.title", String(describing: p1))
+          }
+        }
+      }
+    }
     public enum Labels {
       /// No actions configured. Configure actions on your phone to dismiss this message.
       public static var noAction: String { return L10n.tr("Localizable", "watch.labels.no_action") }
+      /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
+      public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
       public enum ComplicationGroup {
         public enum CircularSmall {
           /// Use circular small complications to display content in the corners of the Color watch face.
@@ -2953,6 +3102,14 @@ public enum L10n {
           public static var description: String { return L10n.tr("Localizable", "watch.labels.complication_text_areas.trailing.description") }
           /// Trailing
           public static var label: String { return L10n.tr("Localizable", "watch.labels.complication_text_areas.trailing.label") }
+        }
+      }
+    }
+    public enum Settings {
+      public enum NoItems {
+        public enum Phone {
+          /// No items configured, please choose items below.
+          public static var title: String { return L10n.tr("Localizable", "watch.settings.no_items.phone.title") }
         }
       }
     }

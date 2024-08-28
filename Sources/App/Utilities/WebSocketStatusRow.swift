@@ -137,7 +137,7 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
         case .disconnected(reason: _):
             let icon = MaterialDesignIcons.informationOutlineIcon.image(
                 ofSize: CGSize(width: 24, height: 24),
-                color: Constants.tintColor
+                color: AppConstants.tintColor
             )
             cell.accessoryView = UIImageView(image: icon)
         default:
