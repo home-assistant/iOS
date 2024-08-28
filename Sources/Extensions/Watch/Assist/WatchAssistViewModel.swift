@@ -19,7 +19,6 @@ final class WatchAssistViewModel: ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
     @Published var state: State = .idle
     @Published var showChatLoader = false
-    @Published var showSettings = false
 
     private let audioRecorder: any WatchAudioRecorderProtocol
     private let audioPlayer: any AudioPlayerProtocol
@@ -28,13 +27,14 @@ final class WatchAssistViewModel: ObservableObject {
     @Published var assistService: WatchAssistService
 
     init(
+        assistService: WatchAssistService,
         audioRecorder: any WatchAudioRecorderProtocol,
         audioPlayer: any AudioPlayerProtocol,
         immediateCommunicatorService: ImmediateCommunicatorService
     ) {
         self.audioRecorder = audioRecorder
         self.immediateCommunicatorService = immediateCommunicatorService
-        self.assistService = WatchAssistService()
+        self.assistService = assistService
         self.audioPlayer = audioPlayer
         audioRecorder.delegate = self
         immediateCommunicatorService.addObserver(.init(delegate: self))
@@ -46,25 +46,7 @@ final class WatchAssistViewModel: ObservableObject {
 
     func initialRoutine() {
         appendChatItem(.init(content: "BETA", itemType: .info))
-        state = .loading
-        guard !assistService.selectedServer.isEmpty else {
-            fatalError("Server can't be nil")
-        }
-        if assistService.pipelines.isEmpty || assistService.preferredPipeline.isEmpty {
-            Current.Log.info("Watch Assist: pipelines list is empty, trying to fetch pipelines")
-            assistService.fetchPipelines { [weak self] success in
-                Current.Log
-                    .info("Watch Assist: Pipelines fetch done, result: \(success), moving on with assist command")
-                if success {
-                    self?.assist()
-                } else {
-                    self?.state = .idle
-                }
-            }
-        } else {
-            Current.Log.info("Watch Assist: pipelines list exist, moving on with assist command")
-            assist()
-        }
+        assist()
     }
 
     func endRoutine() {
@@ -74,11 +56,6 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func assist() {
-        guard !showSettings else {
-            state = .idle
-            stopRecording()
-            return
-        }
         if assistService.deviceReachable {
             // Extra message just to wake up iPhone from the background
             Communicator.shared.send(ImmediateMessage(identifier: "wakeup"))

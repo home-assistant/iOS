@@ -58,11 +58,12 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
 
         let valueTemplate = !configuration.valueTemplate.isEmpty ? configuration.valueTemplate : "0.0"
         let valueLabelTemplate = !configuration.valueLabelTemplate.isEmpty ? configuration.valueLabelTemplate : "?"
+        let labelTemplate = !configuration.labelTemplate.isEmpty ? configuration.labelTemplate : "?"
         let maxTemplate = configuration.gaugeType == .normal && !configuration.maxTemplate.isEmpty ? configuration
             .maxTemplate : "?"
         let minTemplate = configuration.gaugeType == .normal && !configuration.minTemplate.isEmpty ? configuration
             .minTemplate : "?"
-        let template = "\(valueTemplate)|\(valueLabelTemplate)|\(maxTemplate)|\(minTemplate)"
+        let template = "\(valueTemplate)|\(valueLabelTemplate)|\(maxTemplate)|\(minTemplate)|\(labelTemplate)"
 
         let result = await withCheckedContinuation { continuation in
             api.connection.send(.init(
@@ -97,7 +98,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
 
         let params = renderedTemplate?.split(separator: "|") ?? []
-        guard params.count == 4 else {
+        guard params.count == 5 else {
             Current.Log.error("Failed to render template for gauge widget: Wrong length response")
             throw WidgetGaugeDataError.badResponse
         }
@@ -105,6 +106,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         let valueText = String(params[1])
         let maxText = String(params[2])
         let minText = String(params[3])
+        let labelText = String(params[4])
 
         let action = await withCheckedContinuation { continuation in
             if let action = configuration.action {
@@ -122,6 +124,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             value: Double(params[0]) ?? 0.0,
 
             valueLabel: valueText != "?" ? valueText : nil,
+            label: labelText != "?" ? labelText : nil,
             min: minText != "?" ? minText : nil,
             max: maxText != "?" ? maxText : nil,
 
@@ -146,6 +149,7 @@ struct WidgetGaugeEntry: TimelineEntry {
     var value: Double
 
     var valueLabel: String?
+    var label: String?
     var min: String?
     var max: String?
 

@@ -114,7 +114,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     $0.title = L10n.SettingsDetails.General.LaunchOnLogin.title
 
                     #if targetEnvironment(macCatalyst)
-                    let launcherIdentifier = Constants.BundleID.appending(".Launcher")
+                    let launcherIdentifier = AppConstants.BundleID.appending(".Launcher")
                     $0.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
                     $0.onChange { row in
                         let success = Current.macBridge.setLoginItem(
@@ -658,7 +658,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 cell.separatorInset = .zero
                 cell.textLabel?.textAlignment = .natural
                 cell.imageView?.image = UIImage(size: MaterialDesignIcons.settingsIconSize, color: .clear)
-                cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .tertiaryLabel
+                cell.textLabel?.textColor = row.isDisabled == false ? AppConstants.tintColor : .tertiaryLabel
             }
 
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {

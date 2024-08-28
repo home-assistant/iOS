@@ -3,31 +3,25 @@ import Foundation
 import PromiseKit
 import Shared
 
+enum WatchSendError: Error {
+    case notImmediate
+    case phoneFailed
+    case wrongAudioURLData
+    case watchScriptCallFailed
+    case watchSceneCallFailed
+}
+
 final class WatchAssistService: ObservableObject {
-    @Published var servers: [Server] = []
-    @Published var selectedServer: String = "" {
-        didSet {
-            pipelines = []
-            preferredPipeline = ""
-
-            // Fetch new pipelines in case server changes manually
-            if !oldValue.isEmpty {
-                fetchPipelines(completion: { _ in })
-            }
-        }
-    }
-
-    @Published var pipelines: [WatchPipeline] = []
-    @Published var preferredPipeline: String = ""
     @Published var deviceReachable = false
-    @Published var isFetchingPipeline = false
 
-    private let watchPreferredServerUserDefaultsKey = "watch-preferred-server-id"
+    private let serverId: String
+    private let pipelineId: String
     private var reachabilityObservation: Observation?
     private var cancellable: Cancellable?
 
-    init() {
-        setupServers()
+    init(serverId: String, pipelineId: String) {
+        self.serverId = serverId
+        self.pipelineId = pipelineId
         setupReachability()
     }
 
@@ -40,43 +34,6 @@ final class WatchAssistService: ObservableObject {
             Reachability.unobserve(reachabilityObservation)
             self.reachabilityObservation = nil
         }
-    }
-
-    func fetchPipelines(completion: @escaping (Bool) -> Void) {
-        guard deviceReachable, !selectedServer.isEmpty else {
-            completion(false)
-            return
-        }
-        isFetchingPipeline = true
-        Current.Log.verbose("Signaling fetch Assist pipelines via phone")
-        let actionMessage = InteractiveImmediateMessage(
-            identifier: InteractiveImmediateMessages.assistPipelinesFetch.rawValue,
-            content: ["serverId": selectedServer],
-            reply: { [weak self] message in
-                Current.Log.verbose("Received reply dictionary \(message)")
-                if let pipelines = message.content["pipelines"] as? [[String: String]] {
-                    self?.updatePipelines(
-                        pipelines,
-                        preferredPipeline: message.content["preferredPipeline"] as? String
-                    )
-                    completion(true)
-                } else {
-                    completion(false)
-                }
-                self?.runInMainThread {
-                    self?.isFetchingPipeline = false
-                }
-            }
-        )
-
-        Current.Log
-            .verbose(
-                "Sending \(InteractiveImmediateMessages.assistPipelinesFetch.rawValue) message \(actionMessage)"
-            )
-        Communicator.shared.send(actionMessage, errorHandler: { error in
-            Current.Log.error("Received error when sending immediate message \(error)")
-            completion(false)
-        })
     }
 
     func assist(audioURL: URL, sampleRate: Double, completion: @escaping (Error?) -> Void) {
@@ -92,17 +49,11 @@ final class WatchAssistService: ObservableObject {
 
             Current.Log.verbose("Signaling Assist audio data")
 
-            var metadata: [String: Any] = [
+            let metadata: [String: Any] = [
                 "sampleRate": sampleRate,
+                "pipelineId": pipelineId,
+                "serverId": serverId,
             ]
-
-            if !preferredPipeline.isEmpty {
-                metadata["pipelineId"] = preferredPipeline
-            }
-
-            if !selectedServer.isEmpty {
-                metadata["serverId"] = selectedServer
-            }
 
             let blob = Blob(
                 identifier: InteractiveImmediateMessages.assistAudioData.rawValue,
@@ -127,37 +78,6 @@ final class WatchAssistService: ObservableObject {
         }
     }
 
-    private func updatePipelines(_ pipelines: [[String: String]], preferredPipeline: String?) {
-        runInMainThread { [weak self] in
-            guard let self else { return }
-            self.pipelines = pipelines.compactMap({ pipelineRawValue in
-                guard let id = pipelineRawValue["id"], let name = pipelineRawValue["name"] else {
-                    return nil
-                }
-                return WatchPipeline(
-                    id: id,
-                    name: name
-                )
-            })
-            self.preferredPipeline = preferredPipeline ?? ""
-        }
-    }
-
-    private func setupServers() {
-        servers = Current.servers.all
-        if let preferredServer = UserDefaults().string(forKey: watchPreferredServerUserDefaultsKey),
-           servers.first(where: { $0.identifier.rawValue == preferredServer }) != nil {
-            selectedServer = preferredServer
-        } else {
-            if let server = Current.servers.all.first?.identifier.rawValue {
-                selectedServer = server
-            } else {
-                selectedServer = ""
-                Current.Log.error("Watch Assist: No server available, this can't happen")
-            }
-        }
-    }
-
     private func setupReachability() {
         reachabilityObservation = Reachability.observe { [weak self] _ in
             DispatchQueue.main.async {
@@ -165,11 +85,5 @@ final class WatchAssistService: ObservableObject {
             }
         }
         deviceReachable = Communicator.shared.currentReachability == .immediatelyReachable
-    }
-
-    private func runInMainThread(completion: @escaping () -> Void) {
-        DispatchQueue.main.async {
-            completion()
-        }
     }
 }

@@ -243,7 +243,7 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
                 action: #selector(center(_:))
             ),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            with(Constants.helpBarButtonItem) {
+            with(AppConstants.helpBarButtonItem) {
                 $0.target = self
                 $0.action = #selector(help(_:))
             },
@@ -296,7 +296,7 @@ extension LocationHistoryDetailViewController: MKMapViewDelegate {
 
             switch overlay {
             case is ZoneCircle:
-                renderer.fillColor = Constants.tintColor.withAlphaComponent(0.75)
+                renderer.fillColor = AppConstants.tintColor.withAlphaComponent(0.75)
             case is RegionCircle:
                 renderer.fillColor = UIColor.orange.withAlphaComponent(0.25)
             case is GPSCircle:

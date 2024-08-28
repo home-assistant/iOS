@@ -51,6 +51,9 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.11.0):
     - GoogleUtilities/Logger
+  - GRDB.swift (6.29.1):
+    - GRDB.swift/standard (= 6.29.1)
+  - GRDB.swift/standard (6.29.1)
   - HAKit (0.4.2):
     - HAKit/Core (= 0.4.2)
   - HAKit/Core (0.4.2):
@@ -129,6 +132,7 @@ DEPENDENCIES:
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
+  - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v6.29.1`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
@@ -200,6 +204,9 @@ EXTERNAL SOURCES:
   Eureka:
     :branch: master
     :git: https://github.com/xmartlabs/Eureka
+  GRDB.swift:
+    :git: https://github.com/groue/GRDB.swift.git
+    :tag: v6.29.1
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.2
@@ -232,6 +239,9 @@ CHECKOUT OPTIONS:
   Eureka:
     :commit: ba4ebbcc4e368e901de666870fc2a4524474a4c7
     :git: https://github.com/xmartlabs/Eureka
+  GRDB.swift:
+    :git: https://github.com/groue/GRDB.swift.git
+    :tag: v6.29.1
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.2
@@ -262,6 +272,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 35ecbbc68ff547fca80f9326c9622e79288c7149
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
+  GRDB.swift: 13abc1c59f003601b613cce3983b6084489e75d1
   HAKit: 92e9bd30717270df15025184b608b7902a773286
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
@@ -288,6 +299,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: d4e63a811638e66d38429364525f992a6cbdf5ee
+PODFILE CHECKSUM: 855540d92c92c4753b5df8de953790a72871b739
 
 COCOAPODS: 1.15.2

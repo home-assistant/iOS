@@ -118,7 +118,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
         let eventName = "ios.shortcut_run"
         let deviceDict: [String: String] = [
-            "sourceDevicePermanentID": Constants.PermanentID, "sourceDeviceName": UIDevice.current.name,
+            "sourceDevicePermanentID": AppConstants.PermanentID, "sourceDeviceName": UIDevice.current.name,
             "sourceDeviceID": Current.settingsStore.deviceID,
         ]
         var eventData: [String: Any] = ["name": shortcutName, "input": shortcutDict, "device": deviceDict]

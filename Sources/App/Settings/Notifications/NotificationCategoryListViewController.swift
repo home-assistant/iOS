@@ -9,7 +9,7 @@ class NotificationCategoryListViewController: HAFormViewController {
         title = L10n.SettingsDetails.Notifications.Categories.header
 
         navigationItem.rightBarButtonItems = [
-            with(Constants.helpBarButtonItem) {
+            with(AppConstants.helpBarButtonItem) {
                 $0.action = #selector(help)
                 $0.target = self
             },

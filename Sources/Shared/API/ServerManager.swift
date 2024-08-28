@@ -170,7 +170,7 @@ final class ServerManagerImpl: ServerManager {
 
     init(
         keychain: ServerManagerKeychain = Keychain(service: ServerManagerImpl.service),
-        historicKeychain: ServerManagerKeychain = Keychain(service: Constants.BundleID)
+        historicKeychain: ServerManagerKeychain = Keychain(service: AppConstants.BundleID)
     ) {
         self.keychain = keychain
         self.historicKeychain = historicKeychain

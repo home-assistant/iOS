@@ -3,7 +3,7 @@ import UIKit
 
 public struct Style {
     #if os(iOS)
-    public var onboardingBackground: UIColor = Constants.darkerTintColor
+    public var onboardingBackground: UIColor = AppConstants.darkerTintColor
     public var onboardingTintColor: UIColor = .white
     public var onboardingLabel: UIColor = .white
     public var onboardingLabelSecondary: UIColor = .white.withAlphaComponent(0.85)
@@ -50,7 +50,7 @@ public struct Style {
     public var onboardingButtonPrimary: (_ button: UIButton) -> Void = { button in
         Self.onboardingButton(button)
 
-        button.setTitleColor(Constants.darkerTintColor, for: .normal)
+        button.setTitleColor(AppConstants.darkerTintColor, for: .normal)
         button.setBackgroundImage(
             UIImage(size: CGSize(width: 1, height: 1), color: .white),
             for: .normal
@@ -70,7 +70,7 @@ public struct Style {
 
         button.setTitleColor(UIColor.white, for: .normal)
         button.setBackgroundImage(
-            UIImage(size: CGSize(width: 1, height: 1), color: Constants.lighterTintColor),
+            UIImage(size: CGSize(width: 1, height: 1), color: AppConstants.lighterTintColor),
             for: .normal
         )
         button.setBackgroundImage(

@@ -10,7 +10,6 @@ import WatchKit
 
 public enum WatchContext: String, CaseIterable {
     case servers
-    case actions
     case complications
     case ssid = "SSID"
     case activeFamilies
@@ -27,9 +26,6 @@ public extension HomeAssistantAPI {
 
         #if os(iOS)
         content[WatchContext.servers.rawValue] = Current.servers.restorableState()
-
-        content[WatchContext.actions.rawValue] = Array(Current.realm().objects(Action.self)).toJSON()
-
         content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
 
         #if targetEnvironment(simulator)

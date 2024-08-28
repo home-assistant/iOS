@@ -1,4 +1,5 @@
 #if os(iOS)
+import GRDB
 import RealmSwift
 import UIKit
 import XCGLogger
@@ -14,11 +15,11 @@ public extension XCGLogger {
     }
 
     func export(from source: UIViewController, sender: UIView, openURLHandler: (URL) -> Void) {
-        Current.Log.verbose("Logs directory is: \(Shared.Constants.LogsDirectory)")
+        Current.Log.verbose("Logs directory is: \(Shared.AppConstants.LogsDirectory)")
 
         guard !Current.isCatalyst else {
             // on Catalyst we can just open the directory to get to Finder
-            openURLHandler(Shared.Constants.LogsDirectory)
+            openURLHandler(Shared.AppConstants.LogsDirectory)
             return
         }
 
@@ -42,8 +43,19 @@ public extension XCGLogger {
                 )
             }
 
+            // In case watch config does not exist it can safely fail
+            do {
+                try archive.addEntry(
+                    with: AppConstants.watchGRDBFile.lastPathComponent,
+                    fileURL: AppConstants.watchGRDBFile
+                )
+            } catch {
+                Current.Log
+                    .info("No watch config database file added to export logs, error: \(error.localizedDescription)")
+            }
+
             for logFile in try fileManager.contentsOfDirectory(
-                at: Shared.Constants.LogsDirectory,
+                at: Shared.AppConstants.LogsDirectory,
                 includingPropertiesForKeys: nil
             ) {
                 try archive.addEntry(

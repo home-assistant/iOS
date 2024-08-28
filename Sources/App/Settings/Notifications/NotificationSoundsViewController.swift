@@ -19,7 +19,7 @@ class NotificationSoundsViewController: HAFormViewController, UIDocumentPickerDe
         title = L10n.SettingsDetails.Notifications.Sounds.title
 
         navigationItem.rightBarButtonItems = [
-            with(Constants.helpBarButtonItem) {
+            with(AppConstants.helpBarButtonItem) {
                 $0.action = #selector(help)
                 $0.target = self
             },

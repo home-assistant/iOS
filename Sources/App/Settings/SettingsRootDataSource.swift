@@ -26,6 +26,7 @@ enum SettingsRootDataSource {
         case thread
         case actions
         case sensors
+        case watch
         case complications
         case nfc
         case widgets
@@ -44,6 +45,7 @@ enum SettingsRootDataSource {
                 case .thread: return SettingsRootDataSource.thread()
                 case .actions: return SettingsRootDataSource.actions()
                 case .sensors: return SettingsRootDataSource.sensors()
+                case .watch: return SettingsRootDataSource.watch()
                 case .complications: return SettingsRootDataSource.complications()
                 case .nfc: return SettingsRootDataSource.nfc()
                 case .widgets: return SettingsRootDataSource.widgets()
@@ -136,10 +138,25 @@ enum SettingsRootDataSource {
         }
     }
 
+    private static func watch() -> SettingsButtonRow {
+        SettingsButtonRow {
+            $0.title = L10n.Settings.DetailsSection.WatchRowConfiguration.title
+            $0.icon = .watchVariantIcon
+            $0.hidden = .isCatalyst
+            $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                let controller = UIHostingController(rootView: WatchConfigurationView())
+                controller.overrideUserInterfaceStyle = .dark
+                return controller
+            }, onDismiss: { _ in
+
+            })
+        }
+    }
+
     private static func complications() -> SettingsButtonRow {
         SettingsButtonRow {
-            $0.title = L10n.Settings.DetailsSection.WatchRow.title
-            $0.icon = .watchVariantIcon
+            $0.title = L10n.Settings.DetailsSection.WatchRowComplications.title
+            $0.icon = .chartDonutIcon
             $0.hidden = .isCatalyst
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 ComplicationListViewController()

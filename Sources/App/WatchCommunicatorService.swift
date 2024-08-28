@@ -70,6 +70,8 @@ final class WatchCommunicatorService {
             }
 
             switch messageId {
+            case .watchConfig:
+                watchConfig(message: message)
             case .actionRowPressed:
                 actionRowPressed(message: message)
             case .pushAction:
@@ -79,6 +81,113 @@ final class WatchCommunicatorService {
             case .assistAudioData:
                 // This will be handled by Blob observation due to amount of data
                 break
+            case .magicItemPressed:
+                magicItemPressed(message: message)
+            }
+        }
+    }
+
+    private func watchConfig(message: InteractiveImmediateMessage) {
+        do {
+            if let config: WatchConfig = try Current.watchGRDB().read({ db in
+                try WatchConfig.fetchOne(db)
+            }) {
+                Current.Log.info("Watch configuration exists, moving forward providing it to watch")
+                notifyWatchConfig(message: message, watchConfig: config)
+            } else {
+                Current.Log.error("No watch config found, notify watch of empty config")
+                notifyEmptyWatchConfig(message: message)
+            }
+        } catch {
+            Current.Log.error("Failed to acces database (GRDB) for watch config error: \(error.localizedDescription)")
+        }
+    }
+
+    private func notifyWatchConfig(message: InteractiveImmediateMessage, watchConfig: WatchConfig) {
+        let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
+        let magicItemProvider = Current.magicItemProvider()
+        magicItemProvider.loadInformation {
+            let magicItemsInfo: [MagicItem.Info] = watchConfig.items.map { magicItem in
+                magicItemProvider.getInfo(for: magicItem)
+            }
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "config": watchConfig.encodeForWatch(),
+                "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() }),
+            ]))
+        }
+    }
+
+    private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
+        message.reply(.init(identifier: responseIdentifier))
+    }
+
+    private func magicItemPressed(message: InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
+        guard let itemType = message.content["itemType"] as? String,
+              let itemId = message.content["itemId"] as? String,
+              let serverId = message.content["serverId"] as? String,
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
+              let type = MagicItem.ItemType(rawValue: itemType) else {
+            Current.Log.warning("Magic item press did not provide item type or item id")
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            return
+        }
+
+        switch type {
+        case .action:
+            firstly {
+                Current.api(for: server).HandleAction(actionID: itemId, source: .Watch)
+            }.done {
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
+            }.catch { err in
+                Current.Log.error("Error during action event fire: \(err)")
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            }
+        case .script:
+            callService(
+                server: server,
+                message: message,
+                magicItemId: itemId,
+                domain: .script,
+                responseIdentifier: responseIdentifier
+            )
+        case .scene:
+            callService(
+                server: server,
+                message: message,
+                magicItemId: itemId,
+                domain: .scene,
+                serviceName: "turn_on",
+                serviceData: ["entity_id": itemId],
+                responseIdentifier: responseIdentifier
+            )
+        }
+    }
+
+    private func callService(
+        server: Server,
+        message: InteractiveImmediateMessage,
+        magicItemId: String,
+        domain: Domain,
+        serviceName: String? = nil,
+        serviceData: [String: String] = [:],
+        responseIdentifier: String
+    ) {
+        let domain = domain.rawValue
+        let serviceName = serviceName ?? magicItemId.replacingOccurrences(of: "\(domain).", with: "")
+        Current.api(for: server).CallService(
+            domain: domain,
+            service: serviceName,
+            serviceData: serviceData,
+            shouldLog: true
+        ).pipe { result in
+            switch result {
+            case .fulfilled:
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
+            case let .rejected(error):
+                Current.Log.error("Failed to run \(domain), error: \(error.localizedDescription)")
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             }
         }
     }
