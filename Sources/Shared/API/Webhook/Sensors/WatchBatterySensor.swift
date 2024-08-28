@@ -21,7 +21,7 @@ final class WatchBatterySensor: SensorProvider {
             let icon: String = BatteryIcon.forBatteryLevel(battery, state: batteryState)
             sensors.append(WebhookSensor(
                 name: "Watch Battery Level",
-                uniqueID: "watch-battery_level",
+                uniqueID: "watch-battery",
                 icon: icon,
                 deviceClass: .battery,
                 state: battery,
