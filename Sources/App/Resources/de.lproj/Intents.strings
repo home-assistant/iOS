@@ -2,7 +2,7 @@
 "2KWKqM" = "Fehler: Home Assistant ist nicht verfügbar.";
 "2LIxe4" = "Fehlgeschlagen: ${error}";
 "2b0Uo4" = "Dienst";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Welche Pipeline möchtest du verwenden?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Aktualisiert";
 "4tpAXn" = "Nur zur Bestätigung, du wolltest '${server}'?";
@@ -15,11 +15,11 @@
 "8BMgur" = "Fertig";
 "8skKro" = "Welche Aktionen?";
 "A1pokw" = "Um Unterstützung bitten";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Mit Stimme";
 "B28HAk" = "Assist";
 "B4bXyc" = "Fertig";
 "BafuI1" = "Sprache";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Welche Pipeline?";
 "BwZv3u" = "Welcher Server?";
 "CmlkE4" = "Kurzbefehl Event";
 "DFWJB8" = "Öffne ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Aktionen";
 "J3qct4" = "Server";
 "JBMp1T" = "Nur zur Bestätigung, du wolltest '${server}'?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Nur zur Bestätigung, du wolltest '${pipeline}'?";
 "K4xrvF" = "Fehler";
 "KHH48D" = "Fehler: Home Assistant ist zurzeit nicht verfügbar.";
 "KJS2jk" = "Fehlgeschlagen: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Welche Sprache?";
 "QVD2lM" = "Servicedaten";
 "QmGpOH" = "Fehler";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Möchtest du Unterstützung per Sprache?";
 "RCQAlr" = "Bild von ${cameraID} abrufen";
 "RMQY3r" = "Standort an Home Assistant senden";
 "RsOw3P" = "Vorlage erfolgreich gerendert";
@@ -87,7 +87,7 @@
 "dFHPYK" = "'${action}' ausgeführt";
 "eObn2i" = "Seite";
 "f1KX0Q" = "Anzeigen und Ausführen von Aktionen";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Es gibt ${count} zu '${pipeline}' passende Optionen.";
 "fkQXDn" = "Es gibt ${count} zu '${action}' passende Optionen.";
 "flUgtx" = "Welche Aktion?";
 "fnz838" = "Sensoren aktualisiert";
@@ -138,7 +138,7 @@
 "s9Gk3c" = "Assist In App";
 "sNFoWe" = "Welche Kamera?";
 "sQJAJS" = "Fehler";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "In der App um Unterstützung bitten";
 "sfDGvk" = "Vorlage gerendert";
 "txfcnn" = "Text";
 "tycImk" = "Führt eine in der App definierte Aktion aus";

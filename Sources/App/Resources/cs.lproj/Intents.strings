@@ -2,7 +2,7 @@
 "2KWKqM" = "Selhání: Home Assistant není dostupný";
 "2LIxe4" = "Selhání: ${error}";
 "2b0Uo4" = "Služba";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Které pipeline chcete použít?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Aktualizováno";
 "4tpAXn" = "Jen pro potvrzení, chtěli jste \"${server}\"?";
@@ -15,11 +15,11 @@
 "8BMgur" = "Hotovo";
 "8skKro" = "Jaké akce?";
 "A1pokw" = "Požádat o asistenci";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "S hlasem";
 "B28HAk" = "Asistovat";
 "B4bXyc" = "Hotovo";
 "BafuI1" = "Jazyk";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Které pipeline?";
 "BwZv3u" = "Který server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Otevřít ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Akce";
 "J3qct4" = "Server";
 "JBMp1T" = "Jen pro potvrzení, chtěli jste \"${server}\"?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Jen pro potvrzení, chtěli jste \"${pipeline}\"?";
 "K4xrvF" = "Chyba";
 "KHH48D" = "Selhání: Home Assistant není aktuálně dostupný";
 "KJS2jk" = "Selhání: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Jaký jazyk?";
 "QVD2lM" = "Data služby";
 "QmGpOH" = "Chyba";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Chcete asistenci pomocí hlasu?";
 "RCQAlr" = "Získat obrázek z ${cameraID}";
 "RMQY3r" = "Odeslat polohu do Home Assistanta";
 "RsOw3P" = "Šablona byla úspěšně vykreslena";
@@ -73,7 +73,7 @@
 "YNQXwq" = "Chyba";
 "YxAau3" = "${count} voleb odpovídá \"${server}\".";
 "ZApPxB" = "Název služby";
-"ZG5nuL" = "Assist In App";
+"ZG5nuL" = "Assist v aplikaci";
 "ZRPVYO" = "Otevřít stránku ve frontendu";
 "ZT9Mld" = "Název události";
 "ZmUm9Q" = "Jakou šablonu chcete vykreslit?";
@@ -87,7 +87,7 @@
 "dFHPYK" = "Provedeno ${action}";
 "eObn2i" = "Strana";
 "f1KX0Q" = "Zobrazit a spustit akce";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Existuje ${count} voleb odpovídajících \"${pipeline}\"";
 "fkQXDn" = "${count} voleb odpovídá \"${action}\".";
 "flUgtx" = "Která akce?";
 "fnz838" = "Senzory byly aktualizovány";
@@ -135,10 +135,10 @@
 "rFSNpu" = "Hotovo";
 "rOlW1x" = "Jakou polohu chcete odeslat?";
 "rU3vhT" = "Identifikátor serveru";
-"s9Gk3c" = "Assist In App";
+"s9Gk3c" = "Assist v aplikaci";
 "sNFoWe" = "Která kamera?";
 "sQJAJS" = "Chyba";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Požádejte o pomoc v aplikaci";
 "sfDGvk" = "Vykreslená šablona";
 "txfcnn" = "Text";
 "tycImk" = "Provede akci definovanou v aplikaci";

@@ -2,7 +2,7 @@
 "2KWKqM" = "Falha: o Home Assistant não está acessível";
 "2LIxe4" = "Falha: ${error}";
 "2b0Uo4" = "Serviço";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Qual pipeline você quer usar?";
 "3jKamg" = "{{ agora() }}";
 "4fFx9y" = "Atualizado";
 "4tpAXn" = "Só para confirmar, você queria ' ${server} '?";
@@ -15,11 +15,11 @@
 "8BMgur" = "Feito";
 "8skKro" = "Quais ações?";
 "A1pokw" = "Peça ajuda";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Com voz";
 "B28HAk" = "Ajudar";
 "B4bXyc" = "Feito";
 "BafuI1" = "Idioma";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Qual pipeline?";
 "BwZv3u" = "Qual servidor?";
 "CmlkE4" = "atalho_event";
 "DFWJB8" = "Abra ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Ações";
 "J3qct4" = "Servidor";
 "JBMp1T" = "Só para confirmar, você queria ' ${server} '?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Só para confirmar, você queria '${pipeline}'?";
 "K4xrvF" = "Erro";
 "KHH48D" = "Falha: o Home Assistant não está acessível no momento";
 "KJS2jk" = "Falha: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Qual idioma?";
 "QVD2lM" = "Dados de serviço";
 "QmGpOH" = "Erro";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Você precisa de ajuda para usar a voz?";
 "RCQAlr" = "Obter imagem de ${cameraID}";
 "RMQY3r" = "Enviar localização para Home Assistant";
 "RsOw3P" = "Modelo renderizado com sucesso";
@@ -73,7 +73,7 @@
 "YNQXwq" = "Erro";
 "YxAau3" = "Existem ${count} opções correspondentes a ' ${server} '.";
 "ZApPxB" = "Nome do Serviço";
-"ZG5nuL" = "Assist In App";
+"ZG5nuL" = "Assistência no aplicativo";
 "ZRPVYO" = "Abra uma página no frontend";
 "ZT9Mld" = "Nome do evento";
 "ZmUm9Q" = "Qual modelo você gostaria de renderizar?";
@@ -87,7 +87,7 @@
 "dFHPYK" = "Realizou ${action}";
 "eObn2i" = "Página";
 "f1KX0Q" = "Visualizar e executar ações";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Existem ${count} opções correspondentes a '${pipeline}'";
 "fkQXDn" = "Existem ${count} opções correspondentes a ' ${action} '.";
 "flUgtx" = "Qual ação?";
 "fnz838" = "Sensores atualizados";
@@ -135,10 +135,10 @@
 "rFSNpu" = "Feito";
 "rOlW1x" = "Qual local você deseja enviar?";
 "rU3vhT" = "Identificador do servidor";
-"s9Gk3c" = "Assist In App";
+"s9Gk3c" = "Assistência no aplicativo";
 "sNFoWe" = "Qual Camera?";
 "sQJAJS" = "Erro";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Peça assistência no aplicativo";
 "sfDGvk" = "Modelo renderizado";
 "txfcnn" = "Texto";
 "tycImk" = "Executa uma ação definida no aplicativo";

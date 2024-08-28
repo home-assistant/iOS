@@ -2,7 +2,7 @@
 "2KWKqM" = "Nurjus: Home Assistant pole kättesaadav";
 "2LIxe4" = "Nurjus: ${error}";
 "2b0Uo4" = "Teenus";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Millist voogu soovid kasutada?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Uuendatud";
 "4tpAXn" = "Kinnitus, kas soovid '${server}'?";
@@ -15,11 +15,11 @@
 "8BMgur" = "Valmis";
 "8skKro" = "Millised toimingud?";
 "A1pokw" = "Küsi abi";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Häälega";
 "B28HAk" = "Abiline";
 "B4bXyc" = "Valmis";
 "BafuI1" = "Keel";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Milline voog?";
 "BwZv3u" = "Milline server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Ava ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Toimingud";
 "J3qct4" = "Server";
 "JBMp1T" = "Kinnitus, kas soovid '${server}'?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Lihtsalt kinnitan, et tahtsid '${pipeline}'?";
 "K4xrvF" = "Viga";
 "KHH48D" = "Nurjus: Home Assistant pole praegu kättesaadav";
 "KJS2jk" = "Nurjus: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Mis keeles?";
 "QVD2lM" = "Teenuse andmed";
 "QmGpOH" = "Viga";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Kas soovid abi häälkäskudega?";
 "RCQAlr" = "Hangi ${cameraID} pilt";
 "RMQY3r" = "Saada asukoht Home Assistantile";
 "RsOw3P" = "Mall on edukalt renderdatud";
@@ -73,7 +73,7 @@
 "YNQXwq" = "Viga";
 "YxAau3" = "Siin on ${count} valikut, mis vastavad '${server}'le.";
 "ZApPxB" = "Teenuse nimi";
-"ZG5nuL" = "Assist In App";
+"ZG5nuL" = "Assist rakenduses";
 "ZRPVYO" = "Ava leht kasutajaliideses";
 "ZT9Mld" = "Sündmuse nimi";
 "ZmUm9Q" = "Millist malli soovid renderdada?";
@@ -87,7 +87,7 @@
 "dFHPYK" = "Teostatud ${action}";
 "eObn2i" = "Lehekülg";
 "f1KX0Q" = "Vaata ja käivita toiminguid";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Siin on ${count} valikut mis vastavad '${pipeline}'le";
 "fkQXDn" = "Siin on ${count} valikut mis vastavad valikule \"${action} \".";
 "flUgtx" = "Milline toiming?";
 "fnz838" = "Andurid on uuendatud";
@@ -110,7 +110,7 @@
 "jWGtvO" = "Siin on ${count} valikut, mis vastavad '${server}'le.";
 "jtqxOg" = "Lihtsalt kinnituseks, et tahtsite '${action}'?";
 "kGB23u" = "Soorita toiming";
-"kPqT8T" = "Pipeline";
+"kPqT8T" = "Voog";
 "l2coEc" = "Milline server?";
 "lGqSSG" = "Andurite värskendamine nurjus.";
 "lNmaCR" = "Mall";
@@ -135,10 +135,10 @@
 "rFSNpu" = "Valmis";
 "rOlW1x" = "Mis asukohta soovid saata?";
 "rU3vhT" = "Serveri tunnus";
-"s9Gk3c" = "Assist In App";
+"s9Gk3c" = "Assist rakenduses";
 "sNFoWe" = "Milline kaamera?";
 "sQJAJS" = "Viga";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Küsi abi rakenduse kaudu";
 "sfDGvk" = "Renderdatud mall";
 "txfcnn" = "Tekst";
 "tycImk" = "Sooritab rakenduses määratletud toimingu";

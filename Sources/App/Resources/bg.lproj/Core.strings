@@ -262,6 +262,6 @@
 "component::yamaha::services::enable_output::fields::enabled::name" = "Активирано";
 "component::yamaha_musiccast::entity::select::zone_sleep::state::off" = "Изключен";
 "component::yeelight::selector::action::options::off" = "Изключен";
-"component::yolink::entity::sensor::power_failure_alarm::state::off" = "Изключено";
-"component::yolink::entity::sensor::power_failure_alarm_beep::state::disabled" = "Дезактивиран";
-"component::yolink::entity::sensor::power_failure_alarm_beep::state::enabled" = "Активиран";
+"component::yolink::entity::sensor::power_failure_alarm::state::off" = "Изключен";
+"component::yolink::entity::sensor::power_failure_alarm_beep::state::disabled" = "Деактивирано";
+"component::yolink::entity::sensor::power_failure_alarm_beep::state::enabled" = "Активирано";
