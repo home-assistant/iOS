@@ -8,25 +8,39 @@ struct Widgets: WidgetBundle {
         MaterialDesignIcons.register()
     }
 
+    @WidgetBundleBuilder
     var body: some Widget {
-        WidgetAssist()
-        // Intentionally placing scripts before actions
+        widgets
+    }
+
+    // Workaround for variable WidgetBundle: https://www.avanderlee.com/swiftui/variable-widgetbundle-configuration/
+    private var widgets: some Widget {
         if #available(iOS 17, *) {
-            WidgetScripts()
-        }
-        actionsWidget()
-        WidgetOpenPage()
-        if #available(iOS 17, *) {
-            WidgetGauge()
-            WidgetDetails()
+            return WidgetBundleBuilder.buildBlock(
+                iOS17Widgets
+            )
+        } else {
+            return WidgetBundleBuilder.buildBlock(
+                legacyWidgets
+            )
         }
     }
 
-    private func actionsWidget() -> some Widget {
-        if #available(iOS 17, *) {
-            return WidgetActions()
-        } else {
-            return LegacyWidgetActions()
-        }
+    @available(iOS 17, *)
+    @WidgetBundleBuilder
+    private var iOS17Widgets: some Widget {
+        WidgetAssist()
+        WidgetScripts()
+        WidgetGauge()
+        WidgetDetails()
+        WidgetActions()
+        WidgetOpenPage()
+    }
+
+    @WidgetBundleBuilder
+    private var legacyWidgets: some Widget {
+        WidgetAssist()
+        LegacyWidgetActions()
+        WidgetOpenPage()
     }
 }
