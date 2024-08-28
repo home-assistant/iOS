@@ -2,7 +2,7 @@
 "2KWKqM" = "Gagal: Home Assistant tidak dapat dijangkau";
 "2LIxe4" = "Gagal: ${error}";
 "2b0Uo4" = "Layanan";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Saluran mana yang ingin Anda gunakan?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Diperbarui";
 "4tpAXn" = "Sekadar konfirmasi, benar Anda menginginkan ‘${server}’?";
@@ -15,11 +15,11 @@
 "8BMgur" = "Selesai";
 "8skKro" = "Aksi yang mana?";
 "A1pokw" = "Minta Bantuan";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Dengan Ucapan";
 "B28HAk" = "Bantu";
 "B4bXyc" = "Selesai";
 "BafuI1" = "Bahasa";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Saluran yang mana?";
 "BwZv3u" = "Server yang mana?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Buka ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Aksi";
 "J3qct4" = "Server";
 "JBMp1T" = "Sekadar konfirmasi, benar Anda menginginkan ‘${server}’?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Sekadar mengonfirmasi, Anda menginginkan '${pipeline}'?";
 "K4xrvF" = "Kesalahan";
 "KHH48D" = "Gagal: Home Assistant tidak dapat dijangkau saat ini";
 "KJS2jk" = "Gagal: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Bahasa apa?";
 "QVD2lM" = "Data Layanan";
 "QmGpOH" = "Kesalahan";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Ingin menggunakan Assist dengan ucapan?";
 "RCQAlr" = "Dapatkan gambar dari ${cameraID}";
 "RMQY3r" = "Kirim lokasi ke Home Assistant";
 "RsOw3P" = "Templat berhasil dirender";
@@ -73,7 +73,7 @@
 "YNQXwq" = "Kesalahan";
 "YxAau3" = "Ada ${count} opsi yang cocok dengan ‘${server}’.";
 "ZApPxB" = "Nama Layanan";
-"ZG5nuL" = "Assist In App";
+"ZG5nuL" = "Assist Dalam Aplikasi";
 "ZRPVYO" = "Buka halaman di antarmuka";
 "ZT9Mld" = "Nama Event";
 "ZmUm9Q" = "Templat mana yang ingin Anda render?";
@@ -87,7 +87,7 @@
 "dFHPYK" = "Aksi ${action} dijalankan";
 "eObn2i" = "Halaman";
 "f1KX0Q" = "Lihat dan jalankan aksi";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Ada ${count} opsi yang cocok dengan '${pipeline}’";
 "fkQXDn" = "Ada ${count} opsi yang cocok dengan ‘${action}’.";
 "flUgtx" = "Aksi yang mana?";
 "fnz838" = "Sensor diperbarui";
@@ -110,7 +110,7 @@
 "jWGtvO" = "Ada ${count} opsi yang cocok dengan ‘${server}’.";
 "jtqxOg" = "Sekadar konfirmasi, benar Anda menginginkan ‘${action}’?";
 "kGB23u" = "Jalankan Aksi";
-"kPqT8T" = "Pipeline";
+"kPqT8T" = "Saluran";
 "l2coEc" = "Server yang mana?";
 "lGqSSG" = "Gagal memperbarui sensor.";
 "lNmaCR" = "Templat";
@@ -135,10 +135,10 @@
 "rFSNpu" = "Selesai";
 "rOlW1x" = "Lokasi mana yang ingin Anda kirim?";
 "rU3vhT" = "Pengidentifikasi Server";
-"s9Gk3c" = "Assist In App";
+"s9Gk3c" = "Assist Dalam Aplikasi";
 "sNFoWe" = "Kamera yang mana?";
 "sQJAJS" = "Kesalahan";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Gunakan Assist dalam App";
 "sfDGvk" = "Templat yang Dirender";
 "txfcnn" = "Teks";
 "tycImk" = "Jalankan aksi yang didefinisikan dalam aplikasi";

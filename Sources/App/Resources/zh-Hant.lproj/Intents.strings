@@ -2,7 +2,7 @@
 "2KWKqM" = "失敗：無法連線至 Home Assistant";
 "2LIxe4" = "失敗：${error}";
 "2b0Uo4" = "服務";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "所要使用的助理設定？";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "已更新";
 "4tpAXn" = "確認要 ‘${server}’？";
@@ -15,11 +15,11 @@
 "8BMgur" = "完成";
 "8skKro" = "哪個動作？";
 "A1pokw" = "尋求協助";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "使用語音";
 "B28HAk" = "助理";
 "B4bXyc" = "完成";
 "BafuI1" = "語言";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "哪一組助理設定？";
 "BwZv3u" = "選擇伺服器";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "開啟 ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "動作";
 "J3qct4" = "伺服器";
 "JBMp1T" = "確認要 ‘${server}’？";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "確認要 ‘${pipeline}’？";
 "K4xrvF" = "錯誤";
 "KHH48D" = "失敗：目前無法連線至 Home Assistant";
 "KJS2jk" = "失敗：${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "使用語言？";
 "QVD2lM" = "服務資料";
 "QmGpOH" = "錯誤";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "是否要讓助理使用語音？";
 "RCQAlr" = "由 ${cameraID} 取得圖像";
 "RMQY3r" = "傳送座標至 Home Assistant";
 "RsOw3P" = "成功產生模板";
@@ -73,7 +73,7 @@
 "YNQXwq" = "錯誤";
 "YxAau3" = "共有 ${count} 個選項符合 ‘${server}’。";
 "ZApPxB" = "服務名稱";
-"ZG5nuL" = "Assist In App";
+"ZG5nuL" = "App 中的助理";
 "ZRPVYO" = "於前端開啟頁面";
 "ZT9Mld" = "事件名稱";
 "ZmUm9Q" = "選擇所要產生的模板？";
@@ -87,7 +87,7 @@
 "dFHPYK" = "${action} 已執行";
 "eObn2i" = "頁面";
 "f1KX0Q" = "檢視並執行動作";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "共有 ${count} 個選項符合 ‘${pipeline}’";
 "fkQXDn" = "共有 ${count} 個選項符合 ‘${action}’。";
 "flUgtx" = "哪個動作？";
 "fnz838" = "感測器已更新";
@@ -110,7 +110,7 @@
 "jWGtvO" = "共有 ${count} 個選項符合 ‘${server}’。";
 "jtqxOg" = "確認要  ‘${action}’？";
 "kGB23u" = "執行觸發";
-"kPqT8T" = "Pipeline";
+"kPqT8T" = "助理設定";
 "l2coEc" = "選擇伺服器";
 "lGqSSG" = "更新感測器失敗。";
 "lNmaCR" = "模板";
@@ -135,10 +135,10 @@
 "rFSNpu" = "完成";
 "rOlW1x" = "所要發送的位置？";
 "rU3vhT" = "伺服器識別";
-"s9Gk3c" = "Assist In App";
+"s9Gk3c" = "App 中的助理";
 "sNFoWe" = "哪個攝影機？";
 "sQJAJS" = "錯誤";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "於 App 中詢問助理";
 "sfDGvk" = "已產生模板";
 "txfcnn" = "文字";
 "tycImk" = "執行 app 中定義觸發";
