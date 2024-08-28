@@ -3,7 +3,7 @@ import XCTest
 
 final class WatchContextTests: XCTestCase {
     func testWatchContextCases() {
-        XCTAssertEqual(WatchContext.allCases.count, 7)
+        XCTAssertEqual(WatchContext.allCases.count, 8)
         XCTAssertEqual(WatchContext.servers.rawValue, "servers")
         XCTAssertEqual(WatchContext.complications.rawValue, "complications")
         XCTAssertEqual(WatchContext.ssid.rawValue, "SSID")
@@ -11,5 +11,6 @@ final class WatchContextTests: XCTestCase {
         XCTAssertEqual(WatchContext.watchModel.rawValue, "watchModel")
         XCTAssertEqual(WatchContext.watchVersion.rawValue, "watchVersion")
         XCTAssertEqual(WatchContext.watchBattery.rawValue, "watchBattery")
+        XCTAssertEqual(WatchContext.watchBatteryState.rawValue, "watchBatteryState")
     }
 }
