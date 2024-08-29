@@ -13,11 +13,28 @@ struct WatchAssistView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            micButton
-            chatList
-            stateView
-            inlineLoading
+        NavigationView {
+            ZStack(alignment: .bottom) {
+                micButton
+                chatList
+                stateView
+                inlineLoading
+            }
+            .modify({ view in
+                if #available(watchOS 10, *) {
+                    view.toolbar(content: {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            volumeButton
+                        }
+                    })
+                } else {
+                    view.toolbar(content: {
+                        ToolbarItem {
+                            volumeButton
+                        }
+                    })
+                }
+            })
         }
         .animation(.easeInOut, value: viewModel.state)
         /* Double tap for watchOS 11
@@ -49,6 +66,12 @@ struct WatchAssistView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
             viewModel.initialRoutine()
+        }
+    }
+
+    private var volumeButton: some View {
+        NavigationLink(destination: VolumeView()) {
+            Image(systemName: "speaker.wave.2.fill")
         }
     }
 
