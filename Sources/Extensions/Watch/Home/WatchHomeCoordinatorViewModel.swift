@@ -47,7 +47,7 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
     private func handleMessageResponse(_ message: ImmediateMessage) {
         switch message.identifier {
         case InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue:
-            loadCache()
+            clearCacheAndLoad()
         case InteractiveImmediateResponses.watchConfigResponse.rawValue:
             setupConfig(message)
         default:
@@ -68,6 +68,15 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
     }
 
     @MainActor
+    private func clearCacheAndLoad() {
+        let emptyConfig: WatchConfig? = nil
+        let emptyMagicItems: [MagicItem]? = nil
+        _ = Current.diskCache.set(emptyConfig, for: watchConfigCacheKey)
+        _ = Current.diskCache.set(emptyMagicItems, for: magicItemsInfoCacheKey)
+        updateHomeType(type: .empty)
+    }
+
+    @MainActor
     private func handleCacheResponse(_ result: Result<WatchConfig>) {
         let magicItemsPromise: Promise<[MagicItem.Info]> = Current.diskCache.value(for: magicItemsInfoCacheKey)
 
@@ -78,7 +87,7 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
             }
         case let .rejected(error):
             Current.Log.error("Failed to retrieve watch config cache, error: \(error.localizedDescription)")
-            updateHomeType(type: .error(message: "Failed to load watch config, error: \(error.localizedDescription)"))
+            updateHomeType(type: .empty)
         }
 
         updateLoading(isLoading: false)

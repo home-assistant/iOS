@@ -70,6 +70,8 @@ final class WatchCommunicatorService {
             }
 
             switch messageId {
+            case .ping:
+                message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
             case .watchConfig:
                 watchConfig(message: message)
             case .actionRowPressed:
@@ -99,7 +101,7 @@ final class WatchCommunicatorService {
                 notifyEmptyWatchConfig(message: message)
             }
         } catch {
-            Current.Log.error("Failed to acces database (GRDB) for watch config error: \(error.localizedDescription)")
+            Current.Log.error("Failed to access database (GRDB) for watch config error: \(error.localizedDescription)")
         }
     }
 
