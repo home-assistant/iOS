@@ -3447,13 +3447,6 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
-		421326A92C0FCF2600C7D059 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
 		421B1C142BD65238001ED18C /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -3571,7 +3564,6 @@
 			children = (
 				423F44EC2C17232600766A99 /* Views */,
 				42B1A7422C11E65100904548 /* WatchAssistService.swift */,
-				421326A92C0FCF2600C7D059 /* Settings */,
 				426490672C0F1A41002155CC /* WatchAssistView.swift */,
 				4264906D2C0F1B8B002155CC /* WatchAssistViewModel.swift */,
 				426490762C0F2403002155CC /* WatchAudioRecorder.swift */,

@@ -36,8 +36,13 @@ struct WatchAssistView: View {
             // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
             let currentDevice = WKInterfaceDevice.current()
             switch newValue {
-            case .recording, .waitingForPipelineResponse:
+            case .recording:
                 currentDevice.play(.start)
+            case .waitingForPipelineResponse:
+                currentDevice.play(.start)
+                viewModel.startPingPong()
+            case .idle:
+                viewModel.stopPingPong()
             default:
                 break
             }
