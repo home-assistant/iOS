@@ -38,6 +38,9 @@ struct WatchHomeCoordinatorView: View {
             NavigationStack {
                 content
                     .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            navReloadButton
+                        }
                         if let config = viewModel.config,
                            config.assist.showAssist,
                            !config.assist.serverId.isEmpty,
@@ -84,35 +87,51 @@ struct WatchHomeCoordinatorView: View {
 
     @ViewBuilder
     private var content: some View {
-        switch viewModel.homeType {
-        case .undefined:
-            reloadButton
-        case .empty:
-            List {
-                Text(L10n.Watch.Labels.noConfig)
+        Group {
+            switch viewModel.homeType {
+            case .undefined:
                 reloadButton
-            }
-        case let .config(watchConfig, magicItemsInfo):
-            WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo) {
-                viewModel.requestConfig()
-            }
-        case let .error(errorMessage):
-            List {
-                Text(errorMessage)
-                reloadButton
+            case .empty:
+                List {
+                    Text(L10n.Watch.Labels.noConfig)
+                        .font(.footnote)
+                    reloadButton
+                }
+            case let .config(watchConfig, magicItemsInfo):
+                WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo) {
+                    viewModel.requestConfig()
+                }
+            case let .error(errorMessage):
+                List {
+                    Text(errorMessage)
+                    reloadButton
+                }
             }
         }
+        .navigationTitle("")
     }
 
-    private var reloadButton: some View {
+    private var navReloadButton: some View {
         Button {
             viewModel.requestConfig()
         } label: {
-            Label(L10n.reloadLabel, systemImage: "arrow.circlepath")
-                .frame(maxWidth: .infinity, alignment: .center)
-                .font(.footnote)
+            Image(systemName: "arrow.circlepath")
         }
-        .listRowBackground(Color.clear)
+    }
+
+    @ViewBuilder
+    private var reloadButton: some View {
+        // When watchOS 10 is available, reload is on toolbar
+        if #unavailable(watchOS 10.0) {
+            Button {
+                viewModel.requestConfig()
+            } label: {
+                Label(L10n.reloadLabel, systemImage: "arrow.circlepath")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .font(.footnote)
+            }
+            .listRowBackground(Color.clear)
+        }
     }
 }
 

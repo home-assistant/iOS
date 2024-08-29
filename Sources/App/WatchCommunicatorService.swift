@@ -99,7 +99,7 @@ final class WatchCommunicatorService {
                 notifyEmptyWatchConfig(message: message)
             }
         } catch {
-            Current.Log.error("Failed to acces database (GRDB) for watch config error: \(error.localizedDescription)")
+            Current.Log.error("Failed to access database (GRDB) for watch config error: \(error.localizedDescription)")
         }
     }
 

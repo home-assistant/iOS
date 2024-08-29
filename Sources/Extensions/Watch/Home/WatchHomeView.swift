@@ -41,15 +41,19 @@ struct WatchHomeView: View {
         .navigationTitle("")
     }
 
+    @ViewBuilder
     private var reloadButton: some View {
-        Button {
-            reloadAction()
-        } label: {
-            Label(L10n.reloadLabel, systemImage: "arrow.circlepath")
-                .frame(maxWidth: .infinity, alignment: .center)
-                .font(.footnote)
+        // When watchOS 10 is available, reload is on toolbar
+        if #unavailable(watchOS 10.0) {
+            Button {
+                reloadAction()
+            } label: {
+                Label(L10n.reloadLabel, systemImage: "arrow.circlepath")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .font(.footnote)
+            }
+            .listRowBackground(Color.clear)
         }
-        .listRowBackground(Color.clear)
     }
 }
 
