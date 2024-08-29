@@ -3146,6 +3146,12 @@ public enum L10n {
       /// Reload all widgets
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
+    public enum Controls {
+      public enum Scripts {
+        /// Choose script
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scripts.placeholder_title") }
+      }
+    }
     public enum Details {
       /// Display states using from Home Assistant in text
       public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }
