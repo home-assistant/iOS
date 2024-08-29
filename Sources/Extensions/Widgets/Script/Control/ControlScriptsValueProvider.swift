@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import Shared
 import WidgetKit
 
 @available(iOSApplicationExtension 18, *)
@@ -12,41 +13,37 @@ struct ControlScriptItem {
 struct ControlScriptsValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlScriptsConfiguration) async throws -> ControlScriptItem {
         .init(
-            intentScriptEntity: configuration.script ?? .init(
-                id: "1",
-                serverId: "1",
-                serverName: "Unknown",
-                displayString: "Unknown",
-                iconName: ""
-            ),
-            icon: configuration.icon ?? .init(id: "")
+            intentScriptEntity: configuration.script ?? placeholder(),
+            icon: configuration.icon ?? placeholderIcon()
         )
     }
 
     func placeholder(for configuration: ControlScriptsConfiguration) -> ControlScriptItem {
         .init(
-            intentScriptEntity: configuration.script ?? .init(
-                id: "1",
-                serverId: "1",
-                serverName: "Unknown",
-                displayString: "Unknown",
-                iconName: ""
-            ),
-            icon: configuration.icon ?? .init(id: "")
+            intentScriptEntity: configuration.script ?? placeholder(),
+            icon: configuration.icon ?? placeholderIcon()
         )
     }
 
     func previewValue(configuration: ControlScriptsConfiguration) -> ControlScriptItem {
         .init(
-            intentScriptEntity: configuration.script ?? .init(
-                id: "1",
-                serverId: "1",
-                serverName: "Unknown",
-                displayString: "Unknown",
-                iconName: ""
-            ),
-            icon: configuration.icon ?? .init(id: "")
+            intentScriptEntity: configuration.script ?? placeholder(),
+            icon: configuration.icon ?? placeholderIcon()
         )
+    }
+
+    private func placeholder() -> IntentScriptEntity {
+        .init(
+            id: UUID().uuidString,
+            serverId: "",
+            serverName: "",
+            displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
+            iconName: ""
+        )
+    }
+
+    private func placeholderIcon() -> SFSymbolEntity {
+        .init(id: "applescript.fill")
     }
 }
 
