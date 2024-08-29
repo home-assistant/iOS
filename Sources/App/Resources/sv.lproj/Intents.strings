@@ -15,7 +15,7 @@
 "8BMgur" = "Klart";
 "8skKro" = "Vilka åtgärder?";
 "A1pokw" = "Be om hjälp";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Med rösten";
 "B28HAk" = "Assistera";
 "B4bXyc" = "Klart";
 "BafuI1" = "Språk";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Åtgärder";
 "J3qct4" = "Server";
 "JBMp1T" = "För att bekräfta, du väljer ‘${server}’?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Bara för att bekräfta, ville du ha '${pipeline}'?";
 "K4xrvF" = "Fel";
 "KHH48D" = "Misslyckades: Home Assistant är för närvarande inte tillgänglig";
 "KJS2jk" = "Misslyckades: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Välj ett språk";
 "QVD2lM" = "Tjänstdata";
 "QmGpOH" = "Fel";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Vill du ha hjälp med att använda rösten?";
 "RCQAlr" = "Ta emot bild från ${cameraID}";
 "RMQY3r" = "Skicka plats till Home Assistant";
 "RsOw3P" = "Lyckades skapa mall";
@@ -87,7 +87,7 @@
 "dFHPYK" = "Utförde ${action}";
 "eObn2i" = "Sida";
 "f1KX0Q" = "Visa och kör åtgärder";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Det finns ${count} alternativ som matchar '${pipeline}'";
 "fkQXDn" = "Det finns ${count} möjliga matchningar till ’${action}’.";
 "flUgtx" = "Vilken åtgärd?";
 "fnz838" = "Sensorer uppdaterade";
@@ -138,7 +138,7 @@
 "s9Gk3c" = "Assist In App";
 "sNFoWe" = "Vilken kamera?";
 "sQJAJS" = "Fel";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Be om hjälp i appen";
 "sfDGvk" = "Skapade mall";
 "txfcnn" = "Text";
 "tycImk" = "Utför en åtgärd definierad i appen";
