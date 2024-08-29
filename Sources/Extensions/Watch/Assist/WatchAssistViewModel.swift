@@ -16,7 +16,7 @@ final class WatchAssistViewModel: ObservableObject {
         case waitingForPipelineResponse
     }
 
-    @Published var chatItems: [AssistChatItem] = []
+    @Published var chatItems: [AssistChatItem] = [.init(content: "BETA", itemType: .info)]
     @Published var state: State = .idle
     @Published var showChatLoader = false
     private var timer: Timer?
@@ -46,7 +46,6 @@ final class WatchAssistViewModel: ObservableObject {
     }
 
     func initialRoutine() {
-        appendChatItem(.init(content: "BETA", itemType: .info))
         assist()
     }
 
