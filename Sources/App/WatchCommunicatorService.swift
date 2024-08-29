@@ -70,6 +70,8 @@ final class WatchCommunicatorService {
             }
 
             switch messageId {
+            case .ping:
+                message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
             case .watchConfig:
                 watchConfig(message: message)
             case .actionRowPressed:
