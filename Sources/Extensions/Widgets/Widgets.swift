@@ -3,32 +3,37 @@ import SwiftUI
 import WidgetKit
 
 @main
-struct Widgets: WidgetBundle {
+enum WidgetLauncher {
+    static func main() {
+        if #available(iOSApplicationExtension 18.0, *) {
+            WidgetsBundle18.main()
+        } else if #available(iOSApplicationExtension 17.0, *) {
+            WidgetsBundle17.main()
+        } else {
+            WidgetsBundleLegacy.main()
+        }
+    }
+}
+
+struct WidgetsBundleLegacy: WidgetBundle {
     init() {
         MaterialDesignIcons.register()
     }
 
-    @WidgetBundleBuilder
     var body: some Widget {
-        widgets
+        WidgetAssist()
+        LegacyWidgetActions()
+        WidgetOpenPage()
+    }
+}
+
+@available(iOSApplicationExtension 17.0, *)
+struct WidgetsBundle17: WidgetBundle {
+    init() {
+        MaterialDesignIcons.register()
     }
 
-    // Workaround for variable WidgetBundle: https://www.avanderlee.com/swiftui/variable-widgetbundle-configuration/
-    private var widgets: some Widget {
-        if #available(iOS 17, *) {
-            return WidgetBundleBuilder.buildBlock(
-                iOS17Widgets
-            )
-        } else {
-            return WidgetBundleBuilder.buildBlock(
-                legacyWidgets
-            )
-        }
-    }
-
-    @available(iOS 17, *)
-    @WidgetBundleBuilder
-    private var iOS17Widgets: some Widget {
+    var body: some Widget {
         WidgetAssist()
         WidgetScripts()
         WidgetGauge()
@@ -36,11 +41,21 @@ struct Widgets: WidgetBundle {
         WidgetActions()
         WidgetOpenPage()
     }
+}
 
-    @WidgetBundleBuilder
-    private var legacyWidgets: some Widget {
+@available(iOSApplicationExtension 18.0, *)
+struct WidgetsBundle18: WidgetBundle {
+    init() {
+        MaterialDesignIcons.register()
+    }
+
+    var body: some Widget {
+        ControlScript()
         WidgetAssist()
-        LegacyWidgetActions()
+        WidgetScripts()
+        WidgetGauge()
+        WidgetDetails()
+        WidgetActions()
         WidgetOpenPage()
     }
 }
