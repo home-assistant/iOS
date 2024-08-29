@@ -9,6 +9,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.gauge.rawValue, "WidgetGauge")
         XCTAssertEqual(WidgetsKind.details.rawValue, "WidgetDetails")
         XCTAssertEqual(WidgetsKind.scripts.rawValue, "WidgetScripts")
-        XCTAssertEqual(WidgetsKind.allCases.count, 6)
+        XCTAssertEqual(WidgetsKind.controlScript.rawValue, "ControlScript")
+        XCTAssertEqual(WidgetsKind.allCases.count, 7)
     }
 }

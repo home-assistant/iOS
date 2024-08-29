@@ -7,7 +7,7 @@ import WidgetKit
 struct ControlScript: ControlWidget {
     var body: some ControlWidgetConfiguration {
         AppIntentControlConfiguration(
-            kind: WidgetsKind.controlScripts.rawValue,
+            kind: WidgetsKind.controlScript.rawValue,
             provider: ControlScriptsValueProvider()
         ) { template in
             ControlWidgetButton(action: {
