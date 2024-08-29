@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -628,6 +628,8 @@
 		4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
+		42A2AB7C2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
+		42A2AB7D2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
 		42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
 		42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
 		42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */; };
@@ -1479,7 +1481,6 @@
 		116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuth.test.swift; sourceTree = "<group>"; };
 		116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthTokenExchange.swift; sourceTree = "<group>"; };
 		116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConfig.test.swift; sourceTree = "<group>"; };
-		116E2AAB27765CF300B330F2 /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SharedPush; path = Sources/PushServer/SharedPush; sourceTree = "<group>"; };
 		1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Widgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1171506A24DFCDE60065E874 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1171506C24DFCDE60065E874 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -1865,6 +1866,7 @@
 		4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WidgetActionsAppIntent.swift; path = Sources/Extensions/AppIntents/WidgetActionsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		42A2AB7B2C806D5D00C5608D /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedPush; sourceTree = "<group>"; };
 		42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Codable.swift"; sourceTree = "<group>"; };
 		42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Encodable.swift"; sourceTree = "<group>"; };
 		42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalMessageHandler.swift; sourceTree = "<group>"; };
@@ -2580,6 +2582,7 @@
 				111501A72528412C00DCFA94 /* Extensions */,
 				11DE9D8425B6103C0081C0ED /* Launcher */,
 				1167402325198F9A00F51626 /* MacBridge */,
+				42A2AB7B2C806D5D00C5608D /* SharedPush */,
 				D03D891820E0A85300D4F28D /* Shared */,
 				B6CC5D832159D10D00833E5D /* WatchApp */,
 			);
@@ -2640,14 +2643,6 @@
 				114CBAE72839E49E00A9BAFF /* CustomServerTrustManager.swift */,
 			);
 			path = Networking;
-			sourceTree = "<group>";
-		};
-		115327BC2773BF290082ED72 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				116E2AAB27765CF300B330F2 /* SharedPush */,
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 		115560DF27010D6700A8F818 /* Common */ = {
@@ -4211,7 +4206,6 @@
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
-				115327BC2773BF290082ED72 /* Packages */,
 				9C4E5E20229D97FA0044C8EC /* Configuration */,
 				1115018C2528411200DCFA94 /* Sources */,
 				111501A82528414000DCFA94 /* Tests */,
@@ -5397,7 +5391,6 @@
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
-				427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -5669,6 +5662,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */,
+				42A2AB7C2C806D5D00C5608D /* SharedPush in Resources */,
 				1165705B2702A3BA003906A7 /* Frontend.strings in Resources */,
 				11F855D724DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */,
 				426490712C0F1E62002155CC /* Colors.xcassets in Resources */,
@@ -5712,6 +5706,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1165705A2702A3BA003906A7 /* Frontend.strings in Resources */,
+				42A2AB7D2C806D5D00C5608D /* SharedPush in Resources */,
 				B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */,
 				11F855D624DF6C7A0018013E /* MaterialDesignIcons.ttf in Resources */,
 				420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */,
@@ -8744,13 +8739,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		427692E12B98B82500F24321 /* XCLocalSwiftPackageReference "Sources/PushServer/SharedPush" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Sources/PushServer/SharedPush;
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		427692E22B98B82500F24321 /* SharedPush */ = {
