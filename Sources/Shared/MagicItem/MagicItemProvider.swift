@@ -97,8 +97,8 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
             return .init(
                 id: scriptItem.id,
-                name: scriptItem.name ?? "Unknown",
-                iconName: scriptItem.iconName ?? "",
+                name: scriptItem.name ?? scriptItem.id,
+                iconName: scriptItem.iconName ?? MaterialDesignIcons.scriptIcon.name,
                 customization: item.customization
             )
         case .scene:
@@ -113,7 +113,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
             return .init(
                 id: sceneItem.id,
-                name: sceneItem.name ?? "Unknown",
+                name: sceneItem.name ?? sceneItem.id,
                 iconName: MaterialDesignIcons.paletteIcon.name,
                 customization: item.customization
             )

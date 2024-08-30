@@ -6,6 +6,7 @@ struct WatchConfigurationView: View {
     @StateObject private var viewModel = WatchConfigurationViewModel()
 
     @State private var isLoaded = false
+    @State private var showResetConfirmation = false
 
     var body: some View {
         NavigationView {
@@ -63,6 +64,27 @@ struct WatchConfigurationView: View {
                 }
             itemsSection
             assistSection
+            resetView
+        }
+    }
+
+    private var resetView: some View {
+        Button(L10n.Watch.Debug.DeleteDb.Reset.title, role: .destructive) {
+            showResetConfirmation = true
+        }
+        .confirmationDialog(
+            L10n.Watch.Debug.DeleteDb.Alert.title,
+            isPresented: $showResetConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.yesLabel, role: .destructive) {
+                viewModel.deleteConfiguration { success in
+                    if success {
+                        dismiss()
+                    }
+                }
+            }
+            Button(L10n.noLabel, role: .cancel) {}
         }
     }
 
@@ -97,7 +119,7 @@ struct WatchConfigurationView: View {
                             .tag(server.identifier.rawValue)
                     }
                 }
-                Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.watchConfig.assist.pipelineId) {
+                Picker(L10n.Watch.Labels.SelectedPipeline.title, selection: $viewModel.watchConfig.assist.pipelineId) {
                     ForEach(viewModel.assistPipelines, id: \.id) { pipeline in
                         Text(pipeline.name)
                             .tag(pipeline.id)
@@ -146,19 +168,28 @@ struct WatchConfigurationView: View {
         return makeListItemRow(item: item, info: itemInfo)
     }
 
+    @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        NavigationLink {
-            MagicItemEditView(item: item) { updatedMagicItem in
-                viewModel.updateItem(updatedMagicItem)
+        if item.type == .action {
+            itemRow(item: item, info: info)
+        } else {
+            NavigationLink {
+                MagicItemCustomizationView(mode: .edit, item: item) { updatedMagicItem in
+                    viewModel.updateItem(updatedMagicItem)
+                }
+            } label: {
+                itemRow(item: item, info: info)
             }
-        } label: {
-            HStack {
-                Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
-                Text(info.name)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Image(systemName: "line.3.horizontal")
-                    .foregroundStyle(.gray)
-            }
+        }
+    }
+
+    private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
+        HStack {
+            Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
+            Text(info.name)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "line.3.horizontal")
+                .foregroundStyle(.gray)
         }
     }
 

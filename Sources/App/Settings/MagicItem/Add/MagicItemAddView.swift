@@ -90,7 +90,10 @@ struct MagicItemAddView: View {
         ForEach(scripts, id: \.id) { script in
             if visibleForSearch(title: script.name ?? "") {
                 NavigationLink {
-                    MagicItemEditView(item: .init(id: script.id, serverId: serverId, type: .script)) { itemToAdd in
+                    MagicItemCustomizationView(
+                        mode: .add,
+                        item: .init(id: script.id, serverId: serverId, type: .script)
+                    ) { itemToAdd in
                         self.itemToAdd(itemToAdd)
                         dismiss()
                     }
@@ -115,7 +118,11 @@ struct MagicItemAddView: View {
         ForEach(scenes, id: \.id) { scene in
             if visibleForSearch(title: scene.name ?? "") {
                 NavigationLink {
-                    MagicItemEditView(item: .init(id: scene.id, serverId: serverId, type: .scene)) { itemToAdd in
+                    MagicItemCustomizationView(mode: .add, item: .init(
+                        id: scene.id,
+                        serverId: serverId,
+                        type: .scene
+                    )) { itemToAdd in
                         self.itemToAdd(itemToAdd)
                         dismiss()
                     }
