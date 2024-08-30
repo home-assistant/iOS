@@ -47,11 +47,35 @@ final class WatchConfigurationViewModel: ObservableObject {
         watchConfig.items.move(fromOffsets: source, toOffset: destination)
     }
 
+    func deleteConfiguration(completion: (Bool) -> Void) {
+        do {
+            try Current.watchGRDB().write { db in
+                try WatchConfig.deleteAll(db)
+                completion(true)
+            }
+        } catch {
+            showError(message: L10n.Watch.Debug.DeleteDb.Alert.Failed.message(error.localizedDescription))
+        }
+    }
+
     @MainActor
     func save(completion: (Bool) -> Void) {
         do {
             try Current.watchGRDB().write { db in
-                try watchConfig.update(db)
+                let configsCount = try WatchConfig.all().fetchCount(db)
+                if configsCount > 1 {
+                    Current.Log.error("More than one watch config detected, deleting all and saving new one.")
+                    // Making sure only one config exists
+                    try WatchConfig.deleteAll(db)
+                    // Save new config
+                    try watchConfig.save(db)
+                } else if configsCount == 0 {
+                    Current.Log.info("Saving new watch config and leaving config screen")
+                    try watchConfig.save(db)
+                } else {
+                    Current.Log.info("Updating watch config")
+                    try watchConfig.update(db)
+                }
                 completion(true)
             }
         } catch {
@@ -104,30 +128,9 @@ final class WatchConfigurationViewModel: ObservableObject {
         }
     }
 
-    private func updateItems(_ newItems: [MagicItem]) {
-        DispatchQueue.main.async { [weak self] in
-            self?.watchConfig.items = newItems
-        }
-    }
-
-    @MainActor
-    private func createNewConfig() {
-        let newWatchConfig = WatchConfig()
-        do {
-            try Current.watchGRDB().write { db in
-                try newWatchConfig.insert(db)
-            }
-            setConfig(newWatchConfig)
-        } catch {
-            Current.Log.error("Failed to save initial watch config, error: \(error.localizedDescription)")
-            showError(message: L10n.Watch.Config.MigrationError.failedCreateNewConfig(error.localizedDescription))
-        }
-    }
-
     @MainActor
     private func convertLegacyActionsToWatchConfig() {
-        createNewConfig()
-
+        var newWatchConfig = WatchConfig()
         let actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
             .filter(\.showInWatch)
 
@@ -136,15 +139,15 @@ final class WatchConfigurationViewModel: ObservableObject {
         let newWatchActionItems = actions.map { action in
             MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
         }
-
-        updateItems(newWatchActionItems)
-        do {
-            try Current.watchGRDB().write { db in
-                try watchConfig.save(db)
+        newWatchConfig.items = newWatchActionItems
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            watchConfig = newWatchConfig
+            save { success in
+                if !success {
+                    Current.Log.error("Failed to migrate actions to watch config, failed to save config.")
+                }
             }
-        } catch {
-            Current.Log.error("Failed to migrate actions to watch config, error: \(error.localizedDescription)")
-            showError(message: L10n.Watch.Config.MigrationError.failedMigrateActions(error.localizedDescription))
         }
     }
 

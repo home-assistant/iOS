@@ -6,6 +6,7 @@ struct WatchConfigurationView: View {
     @StateObject private var viewModel = WatchConfigurationViewModel()
 
     @State private var isLoaded = false
+    @State private var showResetConfirmation = false
 
     var body: some View {
         NavigationView {
@@ -63,6 +64,27 @@ struct WatchConfigurationView: View {
                 }
             itemsSection
             assistSection
+            resetView
+        }
+    }
+
+    private var resetView: some View {
+        Button(L10n.Watch.Debug.DeleteDb.Reset.title, role: .destructive) {
+            showResetConfirmation = true
+        }
+        .confirmationDialog(
+            L10n.Watch.Debug.DeleteDb.Alert.title,
+            isPresented: $showResetConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.yesLabel, role: .destructive) {
+                viewModel.deleteConfiguration { success in
+                    if success {
+                        dismiss()
+                    }
+                }
+            }
+            Button(L10n.noLabel, role: .cancel) {}
         }
     }
 

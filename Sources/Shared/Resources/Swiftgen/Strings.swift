@@ -2626,6 +2626,16 @@ public enum L10n {
         public enum Alert {
           /// Are you sure you want to delete watch configuration? This can't be reverted
           public static var title: String { return L10n.tr("Localizable", "watch.debug.delete_db.alert.title") }
+          public enum Failed {
+            /// Failed to delete configuration, error: %@
+            public static func message(_ p1: Any) -> String {
+              return L10n.tr("Localizable", "watch.debug.delete_db.alert.failed.message", String(describing: p1))
+            }
+          }
+        }
+        public enum Reset {
+          /// Reset configuration
+          public static var title: String { return L10n.tr("Localizable", "watch.debug.delete_db.reset.title") }
         }
       }
     }
