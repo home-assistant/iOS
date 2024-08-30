@@ -203,6 +203,7 @@
 "location_change_notification.x_callback_url.body" = "Helymegatározás frissítve az X-Callback-URL segítségével";
 "magic_item.add" = "Add";
 "magic_item.background_color.title" = "Background color";
+"magic_item.edit" = "Save";
 "magic_item.icon_color.title" = "Icon color";
 "magic_item.icon_name.title" = "Icon name";
 "magic_item.item_type.action.list.title" = "iOS Actions";
@@ -753,7 +754,9 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "A szöveget körülvevő, a haladást mutató gyűrű.";
 "watch.configurator.sections.ring.header" = "Gyűrű";
+"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
+"watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
@@ -907,6 +910,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "watch.labels.complication_text_areas.trailing.label" = "Záró";
 "watch.labels.no_action" = "Nincsenek konfigurálva műveletek. Konfigurálja a műveleteket a telefonján az üzenet elvetéséhez.";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
+"watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Helykitöltő";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "widgets.actions.description" = "Hajtsa végre a Home Assistant műveleteket.";
@@ -918,6 +922,9 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Beállítás";
 "widgets.button.reload_timeline" = "Minden widget újratöltése";
+"widgets.controls.script.description" = "Run script";
+"widgets.controls.script.display_name" = "Script";
+"widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.details.description" = "Az állapotok megjelenítése a Home Assistant segítségével szöveges formában";
 "widgets.details.parameters.action" = "Művelet";
 "widgets.details.parameters.details_template" = "Részletek szöveg sablon (csak a téglalap alakú családban)";
