@@ -561,7 +561,7 @@
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
-		4251AA992C6B9D4C004CCC9D /* MagicItemEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA982C6B9D4C004CCC9D /* MagicItemEditView.swift */; };
+		4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */; };
 		4251AA9B2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */; };
 		4251AABC2C6CE224004CCC9D /* MagicItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AABA2C6CE1D0004CCC9D /* MagicItemProvider.swift */; };
 		4251AABE2C6CE242004CCC9D /* MagicItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AABA2C6CE1D0004CCC9D /* MagicItemProvider.swift */; };
@@ -1790,7 +1790,7 @@
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayActionsTemplate.swift; sourceTree = "<group>"; };
-		4251AA982C6B9D4C004CCC9D /* MagicItemEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemEditView.swift; sourceTree = "<group>"; };
+		4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemCustomizationView.swift; sourceTree = "<group>"; };
 		4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemEditViewModel.swift; sourceTree = "<group>"; };
 		4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.swift; sourceTree = "<group>"; };
 		4251AABA2C6CE1D0004CCC9D /* MagicItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemProvider.swift; sourceTree = "<group>"; };
@@ -3491,7 +3491,7 @@
 		4251AA972C6B9D30004CCC9D /* Edit */ = {
 			isa = PBXGroup;
 			children = (
-				4251AA982C6B9D4C004CCC9D /* MagicItemEditView.swift */,
+				4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */,
 				4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */,
 			);
 			path = Edit;
@@ -6516,7 +6516,7 @@
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
-				4251AA992C6B9D4C004CCC9D /* MagicItemEditView.swift in Sources */,
+				4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,

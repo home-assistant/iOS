@@ -202,6 +202,7 @@
 "location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Location updated via X-Callback-URL";
 "magic_item.add" = "Add";
+"magic_item.edit" = "Save";
 "magic_item.background_color.title" = "Background color";
 "magic_item.icon_color.title" = "Icon color";
 "magic_item.icon_name.title" = "Icon name";
@@ -907,6 +908,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "watch.labels.no_action" = "No actions configured. Configure actions on your phone to dismiss this message.";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
+"watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "widgets.actions.description" = "Perform Home Assistant actions.";

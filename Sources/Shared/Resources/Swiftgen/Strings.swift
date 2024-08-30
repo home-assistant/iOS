@@ -783,6 +783,8 @@ public enum L10n {
   public enum MagicItem {
     /// Add
     public static var add: String { return L10n.tr("Localizable", "magic_item.add") }
+    /// Save
+    public static var edit: String { return L10n.tr("Localizable", "magic_item.edit") }
     public enum BackgroundColor {
       /// Background color
       public static var title: String { return L10n.tr("Localizable", "magic_item.background_color.title") }
@@ -3107,6 +3109,10 @@ public enum L10n {
           /// Trailing
           public static var label: String { return L10n.tr("Localizable", "watch.labels.complication_text_areas.trailing.label") }
         }
+      }
+      public enum SelectedPipeline {
+        /// Pipeline
+        public static var title: String { return L10n.tr("Localizable", "watch.labels.selected_pipeline.title") }
       }
     }
     public enum Settings {

@@ -1,7 +1,12 @@
 import Shared
 import SwiftUI
 
-struct MagicItemEditView: View {
+struct MagicItemCustomizationView: View {
+    enum Mode {
+        case add
+        case edit
+    }
+
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: MagicItemEditViewModel
 
@@ -11,9 +16,16 @@ struct MagicItemEditView: View {
     @State private var requiresConfirmation = false
     @State private var useCustomColors = false
 
+    /// Context in which the screen will be presented, editing existent Magic Item or adding new
+    let mode: Mode
     let addItem: (MagicItem) -> Void
 
-    init(item: MagicItem, addItem: @escaping (MagicItem) -> Void) {
+    init(
+        mode: Mode,
+        item: MagicItem,
+        addItem: @escaping (MagicItem) -> Void
+    ) {
+        self.mode = mode
         self._viewModel = .init(wrappedValue: .init(item: item))
         self.addItem = addItem
     }
@@ -64,7 +76,7 @@ struct MagicItemEditView: View {
                 self.textColor = Color(uiColor: .init(hex: textColor))
             }
             useCustomColors = newValue.customization?.backgroundColor != nil || newValue.customization?.textColor != nil
-            requiresConfirmation = newValue.customization?.requiresConfirmation ?? false
+            requiresConfirmation = newValue.customization?.requiresConfirmation ?? true
         }
         .toolbar {
             Button {
@@ -77,7 +89,7 @@ struct MagicItemEditView: View {
                 addItem(viewModel.item)
                 dismiss()
             } label: {
-                Text(L10n.MagicItem.add)
+                Text(mode == .add ? L10n.MagicItem.add : L10n.MagicItem.edit)
             }
         }
         .onAppear {
@@ -87,6 +99,6 @@ struct MagicItemEditView: View {
 }
 
 #Preview {
-    MagicItemEditView(item: .init(id: "script.unlock_door", serverId: "1", type: .script)) { _ in
+    MagicItemCustomizationView(mode: .add, item: .init(id: "script.unlock_door", serverId: "1", type: .script)) { _ in
     }
 }
