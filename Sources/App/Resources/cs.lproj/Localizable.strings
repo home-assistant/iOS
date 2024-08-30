@@ -203,6 +203,7 @@
 "location_change_notification.x_callback_url.body" = "Poloha aktualizována prostřednictvím X-Callback-URL";
 "magic_item.add" = "Přidat";
 "magic_item.background_color.title" = "Barva pozadí";
+"magic_item.edit" = "Save";
 "magic_item.icon_color.title" = "Barva ikony";
 "magic_item.icon_name.title" = "Název ikony";
 "magic_item.item_type.action.list.title" = "Akce iOS";
@@ -753,7 +754,9 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.configurator.sections.icon.header" = "Ikona";
 "watch.configurator.sections.ring.footer" = "Kroužek znázorňující průběh kolem textu.";
 "watch.configurator.sections.ring.header" = "Kroužek";
+"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Opravdu chcete smazat nastavení hodinek? Toto nelze vrátit zpět.";
+"watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Smazat nastavení hodinek";
 "watch.home.cancel_and_use_cache.title" = "Zrušit a použít mezipaměť";
 "watch.home.run.confirmation.title" = "Opravdu chcete spustit \"%@\"?";
@@ -907,6 +910,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.labels.complication_text_areas.trailing.label" = "Konec";
 "watch.labels.no_action" = "Nejsou nastaveny žádné akce. Aby se tato zpráva nezobrazovala, musíte nastavit v telefonu nějaké akce.";
 "watch.labels.no_config" = "Není k dispozici žádné nastavení hodinek. Otevřete aplikaci pro iOS a vytvořte nastavení v doprovodné aplikaci.";
+"watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Zástupný symbol";
 "watch.settings.no_items.phone.title" = "Nejsou nastaveny žádné položky, vyberte položky níže.";
 "widgets.actions.description" = "Provede akce v Home Assistantovi.";
@@ -918,6 +922,9 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Nastavit";
 "widgets.button.reload_timeline" = "Znovu načíst všechny widgety";
+"widgets.controls.script.description" = "Run script";
+"widgets.controls.script.display_name" = "Script";
+"widgets.controls.scripts.placeholder_title" = "Vybrat skript";
 "widgets.details.description" = "Zobrazí stavy pomocí aplikace Home Assistant v textu.";
 "widgets.details.parameters.action" = "Akce";
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";

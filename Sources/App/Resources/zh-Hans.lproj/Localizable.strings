@@ -203,6 +203,7 @@
 "location_change_notification.x_callback_url.body" = "通过 URL Scheme 更新位置";
 "magic_item.add" = "添加";
 "magic_item.background_color.title" = "背景颜色";
+"magic_item.edit" = "Save";
 "magic_item.icon_color.title" = "图标颜色";
 "magic_item.icon_name.title" = "图标名称";
 "magic_item.item_type.action.list.title" = "iOS 操作";
@@ -753,7 +754,9 @@
 "watch.configurator.sections.icon.header" = "图标";
 "watch.configurator.sections.ring.footer" = "显示围绕文本的进度环。";
 "watch.configurator.sections.ring.header" = "环";
+"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "您确定要删除手表配置吗 ？此操作无法恢复";
+"watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "删除手表配置";
 "watch.home.cancel_and_use_cache.title" = "取消并使用缓存";
 "watch.home.run.confirmation.title" = "您确定要运行“%@”吗 ？";
@@ -907,6 +910,7 @@
 "watch.labels.complication_text_areas.trailing.label" = "结尾";
 "watch.labels.no_action" = "未配置动作。请在手机上配置动作以消除此消息。";
 "watch.labels.no_config" = "没有可用的手表配置，请打开 iOS 应用并在配套应用中创建您的配置。";
+"watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "占位符";
 "watch.settings.no_items.phone.title" = "未配置任何项目，请选择下面的项目。";
 "widgets.actions.description" = "执行 Home Assistant 动作。";
@@ -918,6 +922,9 @@
 "widgets.assist.title" = "语音助手";
 "widgets.assist.unknown_configuration" = "配置";
 "widgets.button.reload_timeline" = "重新加载所有小组件";
+"widgets.controls.script.description" = "Run script";
+"widgets.controls.script.display_name" = "Script";
+"widgets.controls.scripts.placeholder_title" = "选择脚本";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";
 "widgets.details.parameters.action" = "动作";
 "widgets.details.parameters.details_template" = "详情文本模板（仅限矩形系列）";

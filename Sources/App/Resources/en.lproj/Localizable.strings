@@ -202,8 +202,8 @@
 "location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Location updated via X-Callback-URL";
 "magic_item.add" = "Add";
-"magic_item.edit" = "Save";
 "magic_item.background_color.title" = "Background color";
+"magic_item.edit" = "Save";
 "magic_item.icon_color.title" = "Icon color";
 "magic_item.icon_name.title" = "Icon name";
 "magic_item.item_type.action.list.title" = "iOS Actions";
@@ -754,9 +754,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.configurator.sections.icon.header" = "Icon";
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
-"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
@@ -922,6 +922,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
 "widgets.button.reload_timeline" = "Reload all widgets";
+"widgets.controls.script.description" = "Run script";
+"widgets.controls.script.display_name" = "Script";
+"widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
@@ -950,7 +953,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
-"widgets.controls.script.display_name" = "Script";
-"widgets.controls.script.description" = "Run script";
-"widgets.controls.scripts.placeholder_title" = "Choose script";
 "yes_label" = "Yes";
