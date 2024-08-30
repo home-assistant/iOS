@@ -3211,6 +3211,14 @@ public enum L10n {
         /// Script
         public static var displayName: String { return L10n.tr("Localizable", "widgets.controls.script.display_name") }
       }
+      public enum Assist {
+        /// Assist
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.assist.title") }
+        public enum Pipeline {
+          /// Choose a pipeline
+          public static var placeholder: String { return L10n.tr("Localizable", "widgets.controls.assist.pipeline.placeholder") }
+        }
+      }
       public enum Scripts {
         /// Choose script
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scripts.placeholder_title") }

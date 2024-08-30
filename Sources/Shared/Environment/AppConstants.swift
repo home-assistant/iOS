@@ -54,6 +54,17 @@ public enum AppConstants {
         return removeBundleSuffix
     }
 
+    public static var deeplinkURL: URL {
+        switch Current.appConfiguration {
+        case .debug:
+            return URL(string: "homeassistant-dev://")!
+        case .beta:
+            return URL(string: "homeassistant-beta://")!
+        default:
+            return URL(string: "homeassistant://")!
+        }
+    }
+
     /// The App Group ID used by the app and extensions for sharing data.
     public static var AppGroupID: String {
         "group." + BundleID.lowercased()
