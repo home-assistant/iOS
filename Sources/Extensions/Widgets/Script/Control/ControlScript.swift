@@ -25,5 +25,7 @@ struct ControlScript: ControlWidget {
                 Label(template.intentScriptEntity.displayString, systemImage: template.icon.id)
             }
         }
+        .displayName(.init(stringLiteral: L10n.Widgets.Controls.Script.displayName))
+        .description(.init(stringLiteral: L10n.Widgets.Controls.Script.description))
     }
 }
