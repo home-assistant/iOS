@@ -13,26 +13,47 @@ final class WatchBatterySensor: SensorProvider {
         #if !os(watchOS)
         switch Communicator.shared.currentWatchState {
         case .paired:
+
+            let batteryState: DeviceBattery.State? = {
+                if let rawValue = Communicator.shared.mostRecentlyReceievedContext
+                    .content[WatchContext.watchBatteryState.rawValue] as? Int,
+                    let deviceBatteryState = UIDevice.BatteryState(rawValue: rawValue) {
+                    return .init(state: deviceBatteryState)
+                } else {
+                    return nil
+                }
+            }()
+
             let batteryDecimal = Communicator.shared.mostRecentlyReceievedContext
-                .content[WatchContext.watchBattery.rawValue] as? Float ?? -1
-            let batteryState = Communicator.shared.mostRecentlyReceievedContext
-                .content[WatchContext.watchBatteryState.rawValue] as? DeviceBattery.State ?? .unplugged
-            var battery = batteryDecimal > -1 ? Int(batteryDecimal * 100) : -1
-            let icon: String = BatteryIcon.forBatteryLevel(battery, state: batteryState)
-            sensors.append(WebhookSensor(
-                name: "Watch Battery Level",
-                uniqueID: "watch-battery",
-                icon: icon,
-                deviceClass: .battery,
-                state: battery,
-                unit: "%"
-            ))
-            sensors.append(WebhookSensor(
-                name: "Watch Battery State",
-                uniqueID: "watch-battery-state",
-                icon: icon,
-                state: batteryState.description
-            ))
+                .content[WatchContext.watchBattery.rawValue] as? Float
+            let batteryLevel: Int? = {
+                if let batteryDecimal {
+                    return Int(batteryDecimal * 100)
+                } else {
+                    return nil
+                }
+            }()
+            let icon: String = BatteryIcon.forBatteryLevel(batteryLevel ?? 0, state: batteryState ?? .unplugged)
+
+            if let batteryLevel {
+                sensors.append(WebhookSensor(
+                    name: "Watch Battery Level",
+                    uniqueID: "watch-battery",
+                    icon: icon,
+                    deviceClass: .battery,
+                    state: batteryLevel,
+                    unit: "%"
+                ))
+            }
+
+            if let batteryState {
+                sensors.append(WebhookSensor(
+                    name: "Watch Battery State",
+                    uniqueID: "watch-battery-state",
+                    icon: icon,
+                    state: batteryState.description
+                ))
+            }
         case .notPaired:
             break
         }

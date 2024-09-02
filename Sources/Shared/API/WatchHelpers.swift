@@ -43,9 +43,10 @@ public extension HomeAssistantAPI {
         content[WatchContext.activeFamilies.rawValue] = activeFamilies
         content[WatchContext.watchModel.rawValue] = Current.device.systemModel()
         content[WatchContext.watchVersion.rawValue] = Current.device.systemVersion()
-        WKInterfaceDevice.current().isBatteryMonitoringEnabled = true
-        content[WatchContext.watchBattery.rawValue] = WKInterfaceDevice.current().batteryLevel
-        content[WatchContext.watchBatteryState.rawValue] = WKInterfaceDevice.current().batteryState
+        let currentWatchInterfaceDevice = WKInterfaceDevice.current()
+        currentWatchInterfaceDevice.isBatteryMonitoringEnabled = true
+        content[WatchContext.watchBattery.rawValue] = currentWatchInterfaceDevice.batteryLevel
+        content[WatchContext.watchBatteryState.rawValue] = currentWatchInterfaceDevice.batteryState.rawValue
 
         #endif
 

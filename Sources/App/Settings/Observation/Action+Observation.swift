@@ -25,29 +25,10 @@ extension Action {
                 seal.fulfill(())
             }
 
-            let updateTodayWidget = Promise<Void> { seal in
-                #if !targetEnvironment(macCatalyst)
-                NCWidgetController().setHasContent(
-                    !collection.isEmpty,
-                    forWidgetWithBundleIdentifier: AppConstants.BundleID.appending(".TodayWidget")
-                )
-                #endif
-                seal.fulfill(())
-            }
-
             let updateWidgetKitWidgets = Promise<Void> { seal in
                 WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.actions.rawValue)
 
                 seal.fulfill(())
-            }
-
-            let updateWatch = Promise<Void> { seal in
-                let error = HomeAssistantAPI.SyncWatchContext()
-                if let error {
-                    seal.reject(error)
-                } else {
-                    seal.fulfill(())
-                }
             }
 
             let updateSuggestions = Promise<Void> { seal in
@@ -60,9 +41,7 @@ extension Action {
             return when(resolved: [
                 invalidateMenu,
                 updateShortcuts,
-                updateTodayWidget,
                 updateWidgetKitWidgets,
-                updateWatch,
                 updateSuggestions,
             ]).asVoid()
         }

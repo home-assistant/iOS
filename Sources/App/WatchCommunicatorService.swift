@@ -48,10 +48,7 @@ final class WatchCommunicatorService {
                 Current.crashReporter.setUserProperty(value: modelIdentifier, name: "PairedAppleWatch")
             }
 
-            if let batteryLevel = context.content[WatchContext.watchBattery.rawValue] as? Float {
-                Current.Log.verbose("Received watch bettery level in watch context sync, update sensors.")
-                Current.apis.forEach({ $0.UpdateSensors(trigger: .watchContext).cauterize() })
-            }
+            Current.apis.forEach({ $0.UpdateSensors(trigger: .watchContext).cauterize() })
         }
 
         _ = Communicator.shared
