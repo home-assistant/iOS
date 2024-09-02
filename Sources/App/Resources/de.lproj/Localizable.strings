@@ -203,7 +203,7 @@
 "location_change_notification.x_callback_url.body" = "Standort via X-Callback-URL aktualisiert";
 "magic_item.add" = "Hinzufügen";
 "magic_item.background_color.title" = "Hintergrundfarbe";
-"magic_item.edit" = "Save";
+"magic_item.edit" = "Speichern";
 "magic_item.icon_color.title" = "Icon-Farbe";
 "magic_item.icon_name.title" = "Icon-Name";
 "magic_item.item_type.action.list.title" = "iOS-Aktionen";
@@ -756,9 +756,9 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "watch.configurator.sections.icon.header" = "Symbol";
 "watch.configurator.sections.ring.footer" = "Der Ring zeigt den Fortschritt rund um den Text an.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
+"watch.debug.delete_db.alert.failed.message" = "Löschen der Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.debug.delete_db.alert.title" = "Möchtest du die Watch-Konfiguration wirklich löschen? Dies kann nicht rückgängig gemacht werden.";
-"watch.debug.delete_db.reset.title" = "Reset configuration";
+"watch.debug.delete_db.reset.title" = "Konfiguration zurücksetzen";
 "watch.debug.delete_db.title" = "Watch-Konfiguration löschen";
 "watch.home.cancel_and_use_cache.title" = "Abbrechen und Cache verwenden";
 "watch.home.run.confirmation.title" = "Möchtest du \"%@\" wirklich ausführen?";
@@ -924,9 +924,9 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Konfigurieren";
 "widgets.button.reload_timeline" = "Alle Widgets neu laden";
-"widgets.controls.script.description" = "Run script";
-"widgets.controls.script.display_name" = "Script";
-"widgets.controls.scripts.placeholder_title" = "Choose script";
+"widgets.controls.script.description" = "Skript ausführen";
+"widgets.controls.script.display_name" = "Skript";
+"widgets.controls.scripts.placeholder_title" = "Skript auswählen";
 "widgets.details.description" = "Anzeigen von Zuständen mit Home Assistant in Textform";
 "widgets.details.parameters.action" = "Aktion";
 "widgets.details.parameters.details_template" = "Template Detail-Text (nur in rechteckiger Familie)";

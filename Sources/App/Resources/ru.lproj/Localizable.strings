@@ -923,7 +923,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.assist.unknown_configuration" = "Configure";
 "widgets.button.reload_timeline" = "Перезагрузить все виджеты";
 "widgets.controls.script.description" = "Run script";
-"widgets.controls.script.display_name" = "Script";
+"widgets.controls.script.display_name" = "Скрипт";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.details.description" = "Отображать состояния с помощью Home Assistant в текстовом виде";
 "widgets.details.parameters.action" = "Действие";

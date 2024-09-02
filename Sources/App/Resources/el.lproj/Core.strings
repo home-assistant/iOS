@@ -202,7 +202,7 @@
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Απενεργοποιημένο";
 "component::siren::entity_component::_::state::off" = "Ανενεργό";
 "component::siren::entity_component::_::state::on" = "Ενεργό";
-"component::starlink::entity::binary_sensor::power_save_idle::name" = "Sleep";
+"component::starlink::entity::binary_sensor::power_save_idle::name" = "Αναστολή λειτουργίας";
 "component::switch::entity_component::_::state::off" = "Ανενεργό";
 "component::switch::entity_component::_::state::on" = "Ενεργό";
 "component::switch::title" = "Διακόπτης";
