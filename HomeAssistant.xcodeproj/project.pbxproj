@@ -621,6 +621,8 @@
 		4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */; };
 		4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */; };
 		4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */; };
+		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
+		4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
@@ -6451,6 +6453,7 @@
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				1101D7F92621479200AAE617 /* SettingsButtonRow.swift in Sources */,
 				FD3BC66C29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift in Sources */,
+				4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */,
 				42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
@@ -6556,6 +6559,7 @@
 				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
+				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
 				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
