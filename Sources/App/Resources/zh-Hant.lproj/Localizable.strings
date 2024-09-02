@@ -203,7 +203,7 @@
 "location_change_notification.x_callback_url.body" = "已透過 X-Callback-URL 更新座標";
 "magic_item.add" = "新增";
 "magic_item.background_color.title" = "背景顏色";
-"magic_item.edit" = "Save";
+"magic_item.edit" = "儲存";
 "magic_item.icon_color.title" = "圖示顏色";
 "magic_item.icon_name.title" = "圖示名稱";
 "magic_item.item_type.action.list.title" = "iOS 動作";
@@ -754,9 +754,9 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "watch.configurator.sections.icon.header" = "圖示";
 "watch.configurator.sections.ring.footer" = "文字周圍的圓環顯示進度。";
 "watch.configurator.sections.ring.header" = "圓環";
-"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
+"watch.debug.delete_db.alert.failed.message" = "刪除設定失敗，錯誤： %@";
 "watch.debug.delete_db.alert.title" = "確定要刪除手錶設定？此操作無法復原";
-"watch.debug.delete_db.reset.title" = "Reset configuration";
+"watch.debug.delete_db.reset.title" = "重置設定";
 "watch.debug.delete_db.title" = "刪除手錶設定";
 "watch.home.cancel_and_use_cache.title" = "取消並使用快取";
 "watch.home.run.confirmation.title" = "確定要執行 \"%@\"？";
@@ -910,7 +910,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "watch.labels.complication_text_areas.trailing.label" = "靠右對齊";
 "watch.labels.no_action" = "尚未設定動作。於手機上設定動作以關閉此訊息。";
 "watch.labels.no_config" = "沒有可用手錶設定、請開啟 iOS App 並於 Companion App 設定內新增設定。";
-"watch.labels.selected_pipeline.title" = "Pipeline";
+"watch.labels.selected_pipeline.title" = "助理設定";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "未設定項目、請於下方選擇項目。";
 "widgets.actions.description" = "執行 Home Assistant 動作。";
@@ -922,8 +922,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.assist.title" = "助理";
 "widgets.assist.unknown_configuration" = "設定";
 "widgets.button.reload_timeline" = "重新載入所有小工具";
-"widgets.controls.script.description" = "Run script";
-"widgets.controls.script.display_name" = "Script";
+"widgets.controls.script.description" = "執行腳本";
+"widgets.controls.script.display_name" = "腳本";
 "widgets.controls.scripts.placeholder_title" = "選擇腳本";
 "widgets.details.description" = "在文字中使用 Home Assistant 顯示狀態";
 "widgets.details.parameters.action" = "觸發動作";
