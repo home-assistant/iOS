@@ -19,6 +19,7 @@ struct ControlScene: ControlWidget {
                     displayString: template.intentSceneEntity.displayString,
                     iconName: template.icon.id
                 )
+                intent.showConfirmationNotification = template.showConfirmationNotification
                 return intent
             }()) {
                 // ControlWidget can only display SF Symbol

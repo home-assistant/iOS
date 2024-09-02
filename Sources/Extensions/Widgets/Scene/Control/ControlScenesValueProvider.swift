@@ -7,6 +7,7 @@ import WidgetKit
 struct ControlSceneItem {
     let intentSceneEntity: IntentSceneEntity
     let icon: SFSymbolEntity
+    let showConfirmationNotification: Bool
 }
 
 @available(iOSApplicationExtension 18, *)
@@ -14,21 +15,24 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlSceneConfiguration) async throws -> ControlSceneItem {
         .init(
             intentSceneEntity: configuration.scene ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon()
+            icon: configuration.icon ?? placeholderIcon(),
+            showConfirmationNotification: configuration.showConfirmationDialog
         )
     }
 
     func placeholder(for configuration: ControlSceneConfiguration) -> ControlSceneItem {
         .init(
             intentSceneEntity: configuration.scene ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon()
+            icon: configuration.icon ?? placeholderIcon(),
+            showConfirmationNotification: configuration.showConfirmationDialog
         )
     }
 
     func previewValue(configuration: ControlSceneConfiguration) -> ControlSceneItem {
         .init(
             intentSceneEntity: configuration.scene ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon()
+            icon: configuration.icon ?? placeholderIcon(),
+            showConfirmationNotification: configuration.showConfirmationDialog
         )
     }
 

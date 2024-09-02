@@ -7,6 +7,7 @@ import WidgetKit
 struct ControlScriptItem {
     let intentScriptEntity: IntentScriptEntity
     let icon: SFSymbolEntity
+    let showConfirmationNotification: Bool
 }
 
 @available(iOSApplicationExtension 18, *)
@@ -14,21 +15,24 @@ struct ControlScriptsValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlScriptsConfiguration) async throws -> ControlScriptItem {
         .init(
             intentScriptEntity: configuration.script ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon()
+            icon: configuration.icon ?? placeholderIcon(),
+            showConfirmationNotification: configuration.showConfirmationDialog
         )
     }
 
     func placeholder(for configuration: ControlScriptsConfiguration) -> ControlScriptItem {
         .init(
             intentScriptEntity: configuration.script ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon()
+            icon: configuration.icon ?? placeholderIcon(),
+            showConfirmationNotification: configuration.showConfirmationDialog
         )
     }
 
     func previewValue(configuration: ControlScriptsConfiguration) -> ControlScriptItem {
         .init(
             intentScriptEntity: configuration.script ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon()
+            icon: configuration.icon ?? placeholderIcon(),
+            showConfirmationNotification: configuration.showConfirmationDialog
         )
     }
 
