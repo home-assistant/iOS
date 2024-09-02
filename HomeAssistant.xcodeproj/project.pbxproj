@@ -616,6 +616,10 @@
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift */; };
+		4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDAE2C85D5C4003591C2 /* ControlScene.swift */; };
+		4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */; };
+		4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */; };
+		4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */; };
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
@@ -1856,6 +1860,10 @@
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeCoordinatorView.swift; sourceTree = "<group>"; };
 		428830EC2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeCoordinatorViewModel.swift; sourceTree = "<group>"; };
+		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
+		4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScenesValueProvider.swift; sourceTree = "<group>"; };
+		4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSceneEntity.swift; sourceTree = "<group>"; };
+		4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAppIntent.swift; sourceTree = "<group>"; };
 		429106862BA9D22500D452F9 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
@@ -2781,6 +2789,7 @@
 				403AE9072C2E214D00D48147 /* Gauge */,
 				4080D5BB2C319A9100099C88 /* Details */,
 				1171508324DFCF960065E874 /* Resources */,
+				4289DDAC2C85D595003591C2 /* Scene */,
 				42D3E4A92C5D28F800444BE6 /* Script */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				110E694524E771AB004AA96D /* Color+Hex.swift */,
@@ -3615,6 +3624,25 @@
 				428338422BA1BAFB004798C2 /* Spaces.swift */,
 			);
 			path = Constants;
+			sourceTree = "<group>";
+		};
+		4289DDAC2C85D595003591C2 /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				4289DDAD2C85D5AE003591C2 /* Control */,
+				4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */,
+			);
+			path = Scene;
+			sourceTree = "<group>";
+		};
+		4289DDAD2C85D5AE003591C2 /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				4289DDAE2C85D5C4003591C2 /* ControlScene.swift */,
+				4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */,
+				4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */,
+			);
+			path = Control;
 			sourceTree = "<group>";
 		};
 		4291068A2BA9D77600D452F9 /* Audio */ = {
@@ -6260,6 +6288,7 @@
 				115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */,
 				42D3E4B52C5D2BC200444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
+				4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */,
 				422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */,
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
 				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,
@@ -6267,10 +6296,12 @@
 				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,
 				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
+				4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */,
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
 				403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
+				4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				42D3E4BB2C5D313000444BE6 /* ScriptAppIntent.swift in Sources */,
@@ -6281,6 +6312,7 @@
 				4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */,
 				403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */,
 				42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
+				4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */,
 				42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */,
 				403AE9122C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,

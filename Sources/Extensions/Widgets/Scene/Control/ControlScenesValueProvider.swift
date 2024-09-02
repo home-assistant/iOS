@@ -4,57 +4,57 @@ import Shared
 import WidgetKit
 
 @available(iOSApplicationExtension 18, *)
-struct ControlScriptItem {
-    let intentScriptEntity: IntentScriptEntity
+struct ControlSceneItem {
+    let intentSceneEntity: IntentSceneEntity
     let icon: SFSymbolEntity
 }
 
 @available(iOSApplicationExtension 18, *)
-struct ControlScriptsValueProvider: AppIntentControlValueProvider {
-    func currentValue(configuration: ControlScriptsConfiguration) async throws -> ControlScriptItem {
+struct ControlScenesValueProvider: AppIntentControlValueProvider {
+    func currentValue(configuration: ControlSceneConfiguration) async throws -> ControlSceneItem {
         .init(
-            intentScriptEntity: configuration.script ?? placeholder(),
+            intentSceneEntity: configuration.scene ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon()
         )
     }
 
-    func placeholder(for configuration: ControlScriptsConfiguration) -> ControlScriptItem {
+    func placeholder(for configuration: ControlSceneConfiguration) -> ControlSceneItem {
         .init(
-            intentScriptEntity: configuration.script ?? placeholder(),
+            intentSceneEntity: configuration.scene ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon()
         )
     }
 
-    func previewValue(configuration: ControlScriptsConfiguration) -> ControlScriptItem {
+    func previewValue(configuration: ControlSceneConfiguration) -> ControlSceneItem {
         .init(
-            intentScriptEntity: configuration.script ?? placeholder(),
+            intentSceneEntity: configuration.scene ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon()
         )
     }
 
-    private func placeholder() -> IntentScriptEntity {
+    private func placeholder() -> IntentSceneEntity {
         .init(
             id: UUID().uuidString,
             serverId: "",
             serverName: "",
-            displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Scenes.placeholderTitle,
             iconName: ""
         )
     }
 
     private func placeholderIcon() -> SFSymbolEntity {
-        .init(id: "applescript.fill")
+        .init(id: "moon.stars")
     }
 }
 
 @available(iOSApplicationExtension 18.0, *)
-struct ControlScriptsConfiguration: ControlConfigurationIntent {
-    static var title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Script")
+struct ControlSceneConfiguration: ControlConfigurationIntent {
+    static var title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Scene")
 
     @Parameter(
-        title: "Script"
+        title: "Scene"
     )
-    var script: IntentScriptEntity?
+    var scene: IntentSceneEntity?
     @Parameter(
         title: "Icon"
     )
