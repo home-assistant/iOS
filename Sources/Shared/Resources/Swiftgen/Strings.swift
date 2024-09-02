@@ -260,6 +260,10 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.preferred_pipeline.title") }
       }
     }
+    public enum HapticConfirmation {
+      /// Haptic confirmation
+      public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
+    }
     public enum PerformAction {
       /// Which action?
       public static var actionParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_configuration") }
@@ -277,6 +281,28 @@ public enum L10n {
       }
       /// Done
       public static var responseSuccess: String { return L10n.tr("Localizable", "app_intents.perform_action.response_success") }
+    }
+    public enum Scenes {
+      /// Run Scene
+      public static var title: String { return L10n.tr("Localizable", "app_intents.scenes.title") }
+      public enum FailureMessage {
+        /// Scene "%@" failed to execute, please check your logs.
+        public static func content(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.scenes.failure_message.content", String(describing: p1))
+        }
+      }
+      public enum RequiresConfirmationBeforeRun {
+        /// Requires manual confirmation before running the scene.
+        public static var description: String { return L10n.tr("Localizable", "app_intents.scenes.requires_confirmation_before_run.description") }
+        /// Confirm before run
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scenes.requires_confirmation_before_run.title") }
+      }
+      public enum SuccessMessage {
+        /// Scene "%@" executed.
+        public static func content(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.scenes.success_message.content", String(describing: p1))
+        }
+      }
     }
     public enum Scripts {
       public enum FailureMessage {
@@ -311,6 +337,12 @@ public enum L10n {
           return L10n.tr("Localizable", "app_intents.scripts.success_message.content", String(describing: p1))
         }
       }
+    }
+    public enum ShowConfirmationDialog {
+      /// Shows confirmation notification after executed
+      public static var description: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.description") }
+      /// Confirmation notification
+      public static var title: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.title") }
     }
     public enum WidgetAction {
       /// Which actions?
@@ -3163,6 +3195,16 @@ public enum L10n {
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
     public enum Controls {
+      public enum Scene {
+        /// Run scene
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.scene.description") }
+        /// Scene
+        public static var displayName: String { return L10n.tr("Localizable", "widgets.controls.scene.display_name") }
+      }
+      public enum Scenes {
+        /// Choose scene
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scenes.placeholder_title") }
+      }
       public enum Script {
         /// Run script
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.script.description") }
@@ -3238,6 +3280,12 @@ public enum L10n {
         public static var description: String { return L10n.tr("Localizable", "widgets.reload_widgets.app_intent.description") }
         /// Reload widgets
         public static var title: String { return L10n.tr("Localizable", "widgets.reload_widgets.app_intent.title") }
+      }
+    }
+    public enum Scene {
+      public enum Description {
+        /// Run Scene
+        public static var title: String { return L10n.tr("Localizable", "widgets.scene.description.title") }
       }
     }
     public enum Scripts {

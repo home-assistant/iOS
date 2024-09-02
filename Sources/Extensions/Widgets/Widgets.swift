@@ -51,6 +51,7 @@ struct WidgetsBundle18: WidgetBundle {
 
     var body: some Widget {
         ControlScript()
+        ControlScene()
         WidgetAssist()
         WidgetScripts()
         WidgetGauge()
