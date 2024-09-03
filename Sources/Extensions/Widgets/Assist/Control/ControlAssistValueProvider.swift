@@ -67,27 +67,41 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
 
     func entities(matching string: String) async throws -> IntentItemCollection<AssistPipelineEntity> {
         let pipelines = try await pipelines()
-        return .init(sections:  pipelines.map({ server, pipelines in
-            IntentItemSection<AssistPipelineEntity>(.init(stringLiteral: server.info.name), items: pipelines.filter { $0.name.contains(string) }.map({ pipeline in
-                    .init(AssistPipelineEntity(id: pipeline.id, serverId: server.identifier.rawValue, name: pipeline.name))
-            }))
+        return .init(sections: pipelines.map({ server, pipelines in
+            IntentItemSection<AssistPipelineEntity>(
+                .init(stringLiteral: server.info.name),
+                items: pipelines.filter { $0.name.contains(string) }.map({ pipeline in
+                    .init(AssistPipelineEntity(
+                        id: pipeline.id,
+                        serverId: server.identifier.rawValue,
+                        name: pipeline.name
+                    ))
+                })
+            )
         }))
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<AssistPipelineEntity> {
         let pipelines = try await pipelines()
-        return .init(sections:  pipelines.map({ server, pipelines in
-            IntentItemSection<AssistPipelineEntity>(.init(stringLiteral: server.info.name), items: pipelines.map({ pipeline in
-                    .init(AssistPipelineEntity(id: pipeline.id, serverId: server.identifier.rawValue, name: pipeline.name))
-            }))
+        return .init(sections: pipelines.map({ server, pipelines in
+            IntentItemSection<AssistPipelineEntity>(
+                .init(stringLiteral: server.info.name),
+                items: pipelines.map({ pipeline in
+                    .init(AssistPipelineEntity(
+                        id: pipeline.id,
+                        serverId: server.identifier.rawValue,
+                        name: pipeline.name
+                    ))
+                })
+            )
         }))
     }
 
     private func pipelines() async throws -> [Server: [Pipeline]] {
-        return await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             var pipelines: [Server: [Pipeline]] = [:]
             var fetchedServersCount = 0
-            Current.servers.all.forEach { server in
+            for server in Current.servers.all {
                 let assistService = AssistService(server: server)
                 assistService.fetchPipelines { response in
                     pipelines[server] = response?.pipelines ?? []

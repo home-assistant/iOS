@@ -1,5 +1,5 @@
-import Foundation
 import AppIntents
+import Foundation
 import Shared
 import SwiftUI
 import WidgetKit
@@ -13,7 +13,7 @@ struct ControlAssist: ControlWidget {
         ) { template in
             ControlWidgetButton(action: {
                 let intent = AssistAppIntent()
-                intent.target = template.pipeline
+                intent.pipeline = template.pipeline
                 return intent
             }()) {
                 // ControlWidget can only display SF Symbol (Custom Assist SFSymbol)

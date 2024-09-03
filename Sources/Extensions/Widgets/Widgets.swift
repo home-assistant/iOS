@@ -27,7 +27,7 @@ struct WidgetsBundleLegacy: WidgetBundle {
     }
 }
 
-@available(iOSApplicationExtension 17.0, *)
+@available(iOS 17.0, *)
 struct WidgetsBundle17: WidgetBundle {
     init() {
         MaterialDesignIcons.register()
@@ -43,7 +43,7 @@ struct WidgetsBundle17: WidgetBundle {
     }
 }
 
-@available(iOSApplicationExtension 18.0, *)
+@available(iOS 18.0, *)
 struct WidgetsBundle18: WidgetBundle {
     init() {
         MaterialDesignIcons.register()
