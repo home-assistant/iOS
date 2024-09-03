@@ -525,6 +525,7 @@
 		42070EEE2BAC523F0031E96F /* AssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068D2BA9D93500D452F9 /* AssistService.swift */; };
 		42070EEF2BAC52630031E96F /* AssistRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283383F2BA1B17C004798C2 /* AssistRequests.swift */; };
 		42070EF02BAC52630031E96F /* AssistRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283383F2BA1B17C004798C2 /* AssistRequests.swift */; };
+		4207EB762C8754BF00286A2D /* WatchMagicViewRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */; };
 		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
@@ -672,7 +673,7 @@
 		42CE8FBB2B46DB6200C707F9 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		42D3E49C2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
 		42D3E49D2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
-		42D3E4A12C5BCD1100444BE6 /* WatchContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A02C5BCD1100444BE6 /* WatchContextTests.swift */; };
+		42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */; };
 		42D3E4A32C5CF92700444BE6 /* ScriptsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A22C5CF92700444BE6 /* ScriptsObserver.swift */; };
 		42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */; };
 		42D3E4B12C5D2B3C00444BE6 /* ScriptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */; };
@@ -699,7 +700,7 @@
 		42DEDA9B2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42EB03062C6E42F900A184A6 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03052C6E42F900A184A6 /* WatchHomeView.swift */; };
 		42EB03082C6E430300A184A6 /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */; };
-		42EB030A2C6E4D0E00A184A6 /* WatchHomeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchHomeRowView.swift */; };
+		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
 		42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */; };
 		42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */; };
 		42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */; };
@@ -1732,6 +1733,7 @@
 		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42070EE72BAC43240031E96F /* AssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSession.swift; sourceTree = "<group>"; };
 		42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInAppIntentHandler.swift; sourceTree = "<group>"; };
+		4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRowViewModel.swift; sourceTree = "<group>"; };
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		420B10082B1D129B00D383D8 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -1910,7 +1912,7 @@
 		42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreStrings+Values.swift"; sourceTree = "<group>"; };
 		42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrontendStrings+Values.swift"; sourceTree = "<group>"; };
 		42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBatterySensor.swift; sourceTree = "<group>"; };
-		42D3E4A02C5BCD1100444BE6 /* WatchContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContextTests.swift; sourceTree = "<group>"; };
+		42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContext.test.swift; sourceTree = "<group>"; };
 		42D3E4A22C5CF92700444BE6 /* ScriptsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptsObserver.swift; sourceTree = "<group>"; };
 		42D3E4A42C5CFC1400444BE6 /* HAScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAScript.swift; sourceTree = "<group>"; };
 		42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptAppIntent.swift; sourceTree = "<group>"; };
@@ -1937,7 +1939,7 @@
 		42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionSensor.swift; sourceTree = "<group>"; };
 		42EB03052C6E42F900A184A6 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
-		42EB03092C6E4D0E00A184A6 /* WatchHomeRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeRowView.swift; sourceTree = "<group>"; };
+		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42F1DA572B46FDD8002729BC /* HATypedRequest+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+CarPlay.swift"; sourceTree = "<group>"; };
 		42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSizeObserver.swift; sourceTree = "<group>"; };
 		42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
@@ -3405,6 +3407,22 @@
 			path = Details;
 			sourceTree = "<group>";
 		};
+		4207EB742C87547000286A2D /* MagicItemRow */ = {
+			isa = PBXGroup;
+			children = (
+				42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */,
+				4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */,
+			);
+			path = MagicItemRow;
+			sourceTree = "<group>";
+		};
+		4207EB772C8757EB00286A2D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		420F53E62C4E9AA9003C8415 /* Action */ = {
 			isa = PBXGroup;
 			children = (
@@ -3749,11 +3767,11 @@
 		42C373B62BC55C3A00898990 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				4207EB742C87547000286A2D /* MagicItemRow */,
 				428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */,
 				428830EC2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift */,
 				42EB03052C6E42F900A184A6 /* WatchHomeView.swift */,
 				42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */,
-				42EB03092C6E4D0E00A184A6 /* WatchHomeRowView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -3799,7 +3817,8 @@
 		42D3E49F2C5BCCF600444BE6 /* Watch */ = {
 			isa = PBXGroup;
 			children = (
-				42D3E4A02C5BCD1100444BE6 /* WatchContextTests.swift */,
+				4207EB772C8757EB00286A2D /* Home */,
+				42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -6595,7 +6614,7 @@
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				42FCD0032B9B1CB70057783F /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				42FCD0042B9B1CB70057783F /* ThreadCredentialsSharing.test.swift in Sources */,
-				42D3E4A12C5BCD1100444BE6 /* WatchContextTests.swift in Sources */,
+				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
@@ -6862,7 +6881,7 @@
 				428830ED2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift in Sources */,
 				428830EB2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift in Sources */,
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
-				42EB030A2C6E4D0E00A184A6 /* WatchHomeRowView.swift in Sources */,
+				42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */,
 				11FA9321263FA7AC0015F1FC /* NotificationSubControllerMap.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				426490752C0F20FF002155CC /* WatchAssistView+Build.swift in Sources */,
@@ -6878,6 +6897,7 @@
 				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
 				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
 				42EB03082C6E430300A184A6 /* WatchHomeViewModel.swift in Sources */,
+				4207EB762C8754BF00286A2D /* WatchMagicViewRowViewModel.swift in Sources */,
 				427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
 				4264906E2C0F1B8B002155CC /* WatchAssistViewModel.swift in Sources */,
