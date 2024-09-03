@@ -3698,7 +3698,6 @@
 			isa = PBXGroup;
 			children = (
 				42A2AB7F2C80751E00C5608D /* ControlAssist.swift */,
-				425FF0552C8216B3000AA641 /* AssistAppIntent.swift */,
 				42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */,
 			);
 			path = Control;
@@ -3892,6 +3891,7 @@
 		42F958962BB4680100497981 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				425FF0552C8216B3000AA641 /* AssistAppIntent.swift */,
 				42A2AB7E2C80750A00C5608D /* Control */,
 				42F958972BB4681E00497981 /* WidgetAssist.swift */,
 				42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */,

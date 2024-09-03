@@ -32,7 +32,7 @@ struct ControlAssistConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = "Assist"
 
     @Parameter(
-        title: "Pipeline"
+        title: .init("app_intents.assist.pipeline.title", defaultValue: "Pipeline")
     )
     var pipeline: AssistPipelineEntity?
 }

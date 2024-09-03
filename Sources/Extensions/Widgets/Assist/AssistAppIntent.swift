@@ -10,7 +10,7 @@ struct AssistAppIntent: AppIntent {
 
     static var openAppWhenRun: Bool = true
 
-    @Parameter(title: "Pipeline")
+    @Parameter(title: .init("app_intents.assist.pipeline.title", defaultValue: "Pipeline"))
     var pipeline: AssistPipelineEntity
 
     func perform() async throws -> some IntentResult {
