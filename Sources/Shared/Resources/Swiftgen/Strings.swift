@@ -3195,6 +3195,14 @@ public enum L10n {
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
     }
     public enum Controls {
+      public enum Assist {
+        /// Assist
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.assist.title") }
+        public enum Pipeline {
+          /// Choose a pipeline
+          public static var placeholder: String { return L10n.tr("Localizable", "widgets.controls.assist.pipeline.placeholder") }
+        }
+      }
       public enum Scene {
         /// Run scene
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.scene.description") }

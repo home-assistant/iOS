@@ -75,6 +75,11 @@
 "app_intents.scenes.success_message.content" = "Scene \"%@\" executed.";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "app_intents.scenes.title" = "Run Scene";
+"app_intents.assist.pipeline.title" = "Pipeline";
+"app_intents.scripts.script.title" = "Script";
+"app_intents.scenes.scene.title" = "Scene";
+"app_intents.scenes.icon.title" = "Icon";
+"app_intents.scripts.icon.title" = "Icon";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tap to ";
@@ -965,4 +970,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
 "widgets.scene.description.title" = "Run Scene";
+"widgets.controls.scripts.placeholder_title" = "Choose script";
+"widgets.controls.assist.title" = "Assist";
+"widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "yes_label" = "Yes";
