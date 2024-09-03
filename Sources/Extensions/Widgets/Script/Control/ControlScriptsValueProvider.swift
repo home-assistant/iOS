@@ -42,7 +42,7 @@ struct ControlScriptsValueProvider: AppIntentControlValueProvider {
             serverId: "",
             serverName: "",
             displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
-            iconName: ""
+            iconName: "applescript.fill"
         )
     }
 
@@ -56,11 +56,11 @@ struct ControlScriptsConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Script")
 
     @Parameter(
-        title: "Script"
+        title: .init("app_intents.scripts.script.title", defaultValue: "Script")
     )
     var script: IntentScriptEntity?
     @Parameter(
-        title: "Icon"
+        title: .init("app_intents.scripts.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
 

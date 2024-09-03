@@ -56,11 +56,11 @@ struct ControlSceneConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Scene")
 
     @Parameter(
-        title: "Scene"
+        title: .init("app_intents.scenes.scene.title", defaultValue: "Scene")
     )
     var scene: IntentSceneEntity?
     @Parameter(
-        title: "Icon"
+        title: .init("app_intents.scenes.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
 
