@@ -169,8 +169,8 @@ public final class AssistService: AssistServiceProtocol {
         case .ttsStart:
             break
         case .ttsEnd:
-            guard let mediaUrlPath = data.data?.ttsOutput?.urlPath else { return }
-            let mediaUrl = server.info.connection.activeURL().appendingPathComponent(mediaUrlPath)
+            guard let mediaUrlPath = data.data?.ttsOutput?.urlPath,
+                  let mediaUrl = server.info.connection.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
             delegate?.didReceiveTtsMediaUrl(mediaUrl)
         case .error:
             sttBinaryHandlerId = nil

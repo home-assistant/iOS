@@ -31,7 +31,10 @@ class NotificationSubControllerMJPEG: NotificationSubController {
         self.streamer = streamer
 
         return Promise<Void> { seal in
-            let apiURL = api.server.info.connection.activeAPIURL()
+            guard let apiURL = api.server.info.connection.activeAPIURL() else {
+                seal.reject(ServerConnectionError.noActiveURL)
+                return
+            }
             let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
 
             streamer.streamImages(fromURL: queryUrl) { uiImage, error in

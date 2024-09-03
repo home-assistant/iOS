@@ -84,7 +84,9 @@ class ServerManagerTests: XCTestCase {
         expectingObserver {
             servers.add(identifier: "fake1", serverInfo: info1)
         }
+
         let server1 = try XCTUnwrap(servers.server(for: "fake1"))
+
         XCTAssertTrue(servers.server(forWebhookID: "webhook1") === server1)
         XCTAssertTrue(servers.server(forServerIdentifier: "fake1") === server1)
         XCTAssertTrue(servers.server(for: FakeServerIdentifierProviding(serverIdentifier: "fake1")) === server1)

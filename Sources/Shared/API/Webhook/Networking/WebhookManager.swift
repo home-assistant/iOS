@@ -534,7 +534,12 @@ public class WebhookManager: NSObject {
             if let baseURL {
                 webhookURL = baseURL.appendingPathComponent(server.info.connection.webhookPath, isDirectory: false)
             } else {
-                webhookURL = server.info.connection.webhookURL()
+                if let url = server.info.connection.webhookURL() {
+                    webhookURL = url
+                } else {
+                    seal.resolve(.rejected(ServerConnectionError.noActiveURL))
+                    return
+                }
             }
 
             var urlRequest = try URLRequest(url: webhookURL, method: .post)
