@@ -10,4 +10,5 @@ public enum WidgetsKind: String, CaseIterable {
     case controlScript = "ControlScript"
     case controlScene = "ControlScene"
     case controlAssist = "ControlAssist"
+    case controlOpenPage = "ControlOpenPage"
 }

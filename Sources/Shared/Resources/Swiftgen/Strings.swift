@@ -3219,6 +3219,18 @@ public enum L10n {
           public static var placeholder: String { return L10n.tr("Localizable", "widgets.controls.assist.pipeline.placeholder") }
         }
       }
+      public enum OpenPage {
+        public enum Configuration {
+          /// Open Page
+          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.title") }
+          public enum Parameter {
+            /// Choose page
+            public static var choosePage: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.parameter.choose_page") }
+            /// Page
+            public static var page: String { return L10n.tr("Localizable", "widgets.controls.open_page.configuration.parameter.page") }
+          }
+        }
+      }
       public enum Scene {
         /// Run scene
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.scene.description") }
