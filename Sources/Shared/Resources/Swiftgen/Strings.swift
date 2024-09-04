@@ -255,6 +255,10 @@ public enum L10n {
 
   public enum AppIntents {
     public enum Assist {
+      public enum Pipeline {
+        /// Pipeline
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipeline.title") }
+      }
       public enum PreferredPipeline {
         /// Preferred
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.preferred_pipeline.title") }
@@ -291,11 +295,19 @@ public enum L10n {
           return L10n.tr("Localizable", "app_intents.scenes.failure_message.content", String(describing: p1))
         }
       }
+      public enum Icon {
+        /// Icon
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scenes.icon.title") }
+      }
       public enum RequiresConfirmationBeforeRun {
         /// Requires manual confirmation before running the scene.
         public static var description: String { return L10n.tr("Localizable", "app_intents.scenes.requires_confirmation_before_run.description") }
         /// Confirm before run
         public static var title: String { return L10n.tr("Localizable", "app_intents.scenes.requires_confirmation_before_run.title") }
+      }
+      public enum Scene {
+        /// Scene
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scenes.scene.title") }
       }
       public enum SuccessMessage {
         /// Scene "%@" executed.
@@ -314,6 +326,10 @@ public enum L10n {
       public enum HapticConfirmation {
         /// Haptic confirmation
         public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.haptic_confirmation.title") }
+      }
+      public enum Icon {
+        /// Icon
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.icon.title") }
       }
       public enum RequiresConfirmationBeforeRun {
         /// Requires manual confirmation before running the script.
