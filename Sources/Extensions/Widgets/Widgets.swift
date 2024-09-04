@@ -53,6 +53,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlAssist()
         ControlScript()
         ControlScene()
+        ControlOpenPage()
         WidgetAssist()
         WidgetScripts()
         WidgetGauge()

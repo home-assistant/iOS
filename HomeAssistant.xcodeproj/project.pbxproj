@@ -603,6 +603,13 @@
 		4265347D2C7389D5004D7189 /* HAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4265347C2C7389D5004D7189 /* HAScene.swift */; };
 		4265347E2C7389D5004D7189 /* HAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4265347C2C7389D5004D7189 /* HAScene.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
+		4273C4872C8857B00065A5B4 /* ControlOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */; };
+		4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */; };
+		4273C48A2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */; };
+		4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */; };
+		4273C48D2C8859530065A5B4 /* PageAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C48C2C8859530065A5B4 /* PageAppEntity.swift */; };
+		4273C48E2C8859530065A5B4 /* PageAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C48C2C8859530065A5B4 /* PageAppEntity.swift */; };
+		4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
 		427692E32B98B82500F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E22B98B82500F24321 /* SharedPush */; };
 		427692E52B98B83200F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E42B98B83200F24321 /* SharedPush */; };
 		427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427756CA2C3ED5F700E11D0B /* VolumeView.swift */; };
@@ -660,6 +667,8 @@
 		42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
 		42B94BED2B96083C00DEE060 /* AssistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BE72B9607D100DEE060 /* AssistModel.swift */; };
 		42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */; };
+		42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
+		42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
 		42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
@@ -1825,6 +1834,9 @@
 		4265347A2C73896D004D7189 /* ScenesObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenesObserver.swift; sourceTree = "<group>"; };
 		4265347C2C7389D5004D7189 /* HAScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAScene.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
+		4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenPage.swift; sourceTree = "<group>"; };
+		4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenPageValueProvider.swift; sourceTree = "<group>"; };
+		4273C48C2C8859530065A5B4 /* PageAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageAppEntity.swift; sourceTree = "<group>"; };
 		427756CA2C3ED5F700E11D0B /* VolumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFB12B45C6680087C9D7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Core.strings"; sourceTree = "<group>"; };
@@ -1904,6 +1916,7 @@
 		42B94BDC2B9606CD00DEE060 /* AssistView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistView.swift; sourceTree = "<group>"; };
 		42B94BE72B9607D100DEE060 /* AssistModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AssistModel.swift; path = Sources/Shared/Intents/AppIntent/AssistInApp/AssistModel.swift; sourceTree = SOURCE_ROOT; };
 		42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeScriptMessageHandler.swift; sourceTree = "<group>"; };
+		42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageAppIntent.swift; sourceTree = "<group>"; };
 		42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAccessoryViews.swift; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
@@ -2681,8 +2694,11 @@
 		115560EA27012ED000A8F818 /* OpenPage */ = {
 			isa = PBXGroup;
 			children = (
+				4273C4852C88579E0065A5B4 /* Control */,
 				115560EB27012EE100A8F818 /* WidgetOpenPage.swift */,
 				115560EF27012F8100A8F818 /* WidgetOpenPageProvider.swift */,
+				4273C48C2C8859530065A5B4 /* PageAppEntity.swift */,
+				42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */,
 			);
 			path = OpenPage;
 			sourceTree = "<group>";
@@ -3632,6 +3648,15 @@
 				42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		4273C4852C88579E0065A5B4 /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */,
+				4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */,
+			);
+			path = Control;
 			sourceTree = "<group>";
 		};
 		42790C402C48069A00E31B38 /* Views */ = {
@@ -5456,8 +5481,6 @@
 				bg,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
-			packageReferences = (
-			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -6319,6 +6342,7 @@
 				42A935A22C7FEBA100FCF504 /* ControlScript.swift in Sources */,
 				4296C3762B91F0F50051B63C /* WidgetActionsAppIntentTimelineProvider.swift in Sources */,
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
+				42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */,
 				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
@@ -6326,6 +6350,7 @@
 				115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */,
 				42D3E4B52C5D2BC200444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
+				4273C48A2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
 				4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */,
 				422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */,
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
@@ -6335,6 +6360,7 @@
 				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
 				4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */,
+				4273C4872C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
 				42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */,
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
 				403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
@@ -6343,6 +6369,7 @@
 				4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
+				4273C48D2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
 				42D3E4BB2C5D313000444BE6 /* ScriptAppIntent.swift in Sources */,
 				425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */,
 				403AE9272C2F333A00D48147 /* WidgetGaugeView.swift in Sources */,
@@ -6532,6 +6559,7 @@
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				42D3E4A32C5CF92700444BE6 /* ScriptsObserver.swift in Sources */,
 				42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */,
+				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
@@ -6541,6 +6569,7 @@
 				11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */,
 				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,
 				420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */,
+				4273C48E2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
 				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
@@ -6581,6 +6610,7 @@
 				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
 				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
+				4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
@@ -6590,6 +6620,7 @@
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift in Sources */,
+				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
 				4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
@@ -6601,6 +6632,7 @@
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
+				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,

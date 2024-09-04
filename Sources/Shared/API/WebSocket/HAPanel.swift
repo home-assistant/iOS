@@ -37,6 +37,14 @@ public struct HAPanel: HADataDecodable, Codable, Equatable {
 
         self.title = Current.localized.frontend(possibleFrontendKey) ?? title
     }
+
+    public init(icon: String?, title: String, path: String, component: String, showInSidebar: Bool) {
+        self.icon = icon
+        self.title = title
+        self.path = path
+        self.component = component
+        self.showInSidebar = showInSidebar
+    }
 }
 
 public struct HAPanels: HADataDecodable, Codable, Equatable {

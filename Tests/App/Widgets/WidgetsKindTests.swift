@@ -12,6 +12,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlScript.rawValue, "ControlScript")
         XCTAssertEqual(WidgetsKind.controlScene.rawValue, "ControlScene")
         XCTAssertEqual(WidgetsKind.controlAssist.rawValue, "ControlAssist")
-        XCTAssertEqual(WidgetsKind.allCases.count, 9)
+        XCTAssertEqual(WidgetsKind.controlOpenPage.rawValue, "ControlOpenPage")
+        XCTAssertEqual(WidgetsKind.allCases.count, 10)
     }
 }
