@@ -1,34 +1,21 @@
 import Shared
 import SwiftUI
 
-struct WatchHomeRowView: View {
-    enum RowState {
-        case idle
-        case loading
-        case success
-        case failure
+struct WatchMagicViewRow: View {
+    @StateObject private var viewModel: WatchMagicViewRowViewModel
+
+    init(item: MagicItem, itemInfo: MagicItem.Info) {
+        self._viewModel = .init(wrappedValue: .init(item: item, itemInfo: itemInfo))
     }
-
-    let item: MagicItem
-    let itemInfo: MagicItem.Info
-    let action: (MagicItem, @escaping (Bool) -> Void) -> Void
-
-    @State private var state: RowState = .idle
-    @State private var showConfirmationDialog = false
 
     var body: some View {
         Button {
-            guard state != .loading else { return }
-            if item.customization?.requiresConfirmation ?? false {
-                showConfirmationDialog = true
-            } else {
-                executeMainAction()
-            }
+            viewModel.executeItem()
         } label: {
             HStack(spacing: Spaces.one) {
                 iconToDisplay
-                    .animation(.bouncy, value: state)
-                Text(itemInfo.name)
+                    .animation(.bouncy, value: viewModel.state)
+                Text(viewModel.itemInfo.name)
                     .font(.footnote.bold())
                     .foregroundStyle(textColor)
                     .lineLimit(3)
@@ -38,11 +25,11 @@ struct WatchHomeRowView: View {
         }
         .listRowBackground(backgroundForWatchItem.cornerRadius(14))
         .confirmationDialog(
-            L10n.Watch.Home.Run.Confirmation.title(itemInfo.name),
-            isPresented: $showConfirmationDialog,
+            L10n.Watch.Home.Run.Confirmation.title(viewModel.itemInfo.name),
+            isPresented: $viewModel.showConfirmationDialog,
             actions: {
                 Button(action: {
-                    executeMainAction()
+                    viewModel.confirmationAction()
                 }, label: {
                     Text(L10n.yesLabel)
                 })
@@ -53,7 +40,7 @@ struct WatchHomeRowView: View {
             }
         )
         .modify { view in
-            if let backgroundColor = item.customization?.backgroundColor {
+            if let backgroundColor = viewModel.item.customization?.backgroundColor {
                 view.listRowBackground(
                     Color(uiColor: .init(hex: backgroundColor))
                         .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -62,7 +49,7 @@ struct WatchHomeRowView: View {
                 view
             }
         }
-        .onChange(of: state) { newValue in
+        .onChange(of: viewModel.state) { newValue in
             // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
             let currentDevice = WKInterfaceDevice.current()
             switch newValue {
@@ -78,20 +65,12 @@ struct WatchHomeRowView: View {
         }
     }
 
-    private func executeMainAction() {
-        state = .loading
-        action(item) { success in
-            state = success ? .success : .failure
-            resetState()
-        }
-    }
-
     private var iconToDisplay: some View {
         VStack {
-            switch state {
+            switch viewModel.state {
             case .idle:
                 Image(uiImage: image)
-                    .foregroundStyle(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
+                    .foregroundStyle(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)))
                     .padding()
             case .loading:
                 ProgressView()
@@ -106,7 +85,7 @@ struct WatchHomeRowView: View {
             }
         }
         .frame(width: 38, height: 38)
-        .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
+        .background(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3))
         .clipShape(Circle())
         .padding([.vertical, .trailing], Spaces.half)
     }
@@ -118,14 +97,8 @@ struct WatchHomeRowView: View {
             .padding()
     }
 
-    private func resetState() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            state = .idle
-        }
-    }
-
     private var textColor: Color {
-        if let textColor = item.customization?.textColor {
+        if let textColor = viewModel.item.customization?.textColor {
             .init(uiColor: .init(hex: textColor))
         } else {
             .white
@@ -133,7 +106,7 @@ struct WatchHomeRowView: View {
     }
 
     private var backgroundForWatchItem: Color {
-        if let backgroundColor = itemInfo.customization?.backgroundColor {
+        if let backgroundColor = viewModel.itemInfo.customization?.backgroundColor {
             Color(uiColor: .init(hex: backgroundColor))
         } else {
             .gray.opacity(0.3)
@@ -142,16 +115,19 @@ struct WatchHomeRowView: View {
 
     private var image: UIImage {
         var icon: MaterialDesignIcons
-        switch item.type {
+        switch viewModel.item.type {
         case .action, .scene:
-            icon = MaterialDesignIcons(named: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
+            icon = MaterialDesignIcons(named: viewModel.itemInfo.iconName, fallback: .scriptTextOutlineIcon)
         case .script:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
+            icon = MaterialDesignIcons(
+                serversideValueNamed: viewModel.itemInfo.iconName,
+                fallback: .scriptTextOutlineIcon
+            )
         }
 
         return icon.image(
             ofSize: .init(width: 24, height: 24),
-            color: .init(hex: itemInfo.customization?.iconColor)
+            color: .init(hex: viewModel.itemInfo.customization?.iconColor)
         )
     }
 }
@@ -159,7 +135,7 @@ struct WatchHomeRowView: View {
 #Preview {
     MaterialDesignIcons.register()
     return List {
-        WatchHomeRowView(
+        WatchMagicViewRow(
             item: .init(id: "1", serverId: "1", type: .script),
             itemInfo: .init(
                 id: "1",
@@ -167,11 +143,11 @@ struct WatchHomeRowView: View {
                 iconName: "mdi:door-closed-lock",
                 customization: .init(backgroundColor: "#ff00ff")
             )
-        ) { _, _ in }
-        WatchHomeRowView(
+        )
+        WatchMagicViewRow(
             item: .init(id: "1", serverId: "1", type: .action),
             itemInfo: .init(id: "1", name: "New Action", iconName: "earth")
-        ) { _, _ in }
+        )
     }
     .background(Color.red)
 }

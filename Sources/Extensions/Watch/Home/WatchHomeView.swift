@@ -27,14 +27,10 @@ struct WatchHomeView: View {
     private var content: some View {
         List {
             ForEach(viewModel.watchConfig.items, id: \.id) { item in
-                WatchHomeRowView(
+                WatchMagicViewRow(
                     item: item,
                     itemInfo: viewModel.info(for: item)
-                ) { item, completion in
-                    viewModel.executeMagicItem(item) { success in
-                        completion(success)
-                    }
-                }
+                )
             }
             reloadButton
         }
