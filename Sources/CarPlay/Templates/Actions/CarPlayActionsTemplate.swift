@@ -8,7 +8,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayActionsViewModel
 
     private let paginatedList = CarPlayPaginatedListTemplate(
-        title: L10n.CarPlay.Navigation.Tab.actions,
+        title: L10n.CarPlay.Navigation.Tab.quickAccess,
         items: [],
         paginationStyle: .inline
     )
@@ -35,7 +35,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
         self.viewModel = viewModel
 
         self.template = paginatedList.template
-        template.tabTitle = L10n.CarPlay.Navigation.Tab.actions
+        template.tabTitle = L10n.CarPlay.Navigation.Tab.quickAccess
         template.tabImage = MaterialDesignIcons.lightningBoltIcon.carPlayIcon()
         template.tabSystemItem = .more
 

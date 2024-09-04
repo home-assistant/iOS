@@ -13,7 +13,8 @@ class SettingsViewController: HAFormViewController {
         static let general: ContentSection = 0b10
         static let integrations: ContentSection = 0b11
         static let watch: ContentSection = 0b100
-        static let help: ContentSection = 0b101
+        static let carPlay: ContentSection = 0b101
+        static let help: ContentSection = 0b110
         static let all = ContentSection(rawValue: ~0b0)
     }
 
@@ -134,6 +135,13 @@ class SettingsViewController: HAFormViewController {
             form +++ Section(header: "Apple Watch", footer: nil)
                 <<< SettingsRootDataSource.Row.watch.row
                 <<< SettingsRootDataSource.Row.complications.row
+        }
+
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            if contentSections.contains(.carPlay) {
+                form +++ Section()
+                    <<< SettingsRootDataSource.Row.carPlay.row
+            }
         }
 
         if contentSections.contains(.help) {
