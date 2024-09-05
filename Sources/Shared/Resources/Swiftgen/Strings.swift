@@ -264,6 +264,16 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.preferred_pipeline.title") }
       }
     }
+    public enum Controls {
+      public enum Assist {
+        /// Assist in app
+        public static var title: String { return L10n.tr("Localizable", "app_intents.controls.assist.title") }
+        public enum Parameter {
+          /// With voice
+          public static var withVoice: String { return L10n.tr("Localizable", "app_intents.controls.assist.parameter.with_voice") }
+        }
+      }
+    }
     public enum HapticConfirmation {
       /// Haptic confirmation
       public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
