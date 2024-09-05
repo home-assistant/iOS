@@ -6,7 +6,7 @@ import SwiftUI
 struct CarPlayConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = CarPlayConfigurationViewModel()
-
+    @State private var isLoaded = false
     var body: some View {
         NavigationView {
             content
@@ -32,12 +32,23 @@ struct CarPlayConfigurationView: View {
                         })
                     }
                 })
+                .onAppear {
+                    // Prevent trigger when popping nav controller
+                    guard !isLoaded else { return }
+                    viewModel.loadConfig()
+                    isLoaded = true
+                }
                 .sheet(isPresented: $viewModel.showAddItem, content: {
                     MagicItemAddView { itemToAdd in
                         guard let itemToAdd else { return }
                         viewModel.addItem(itemToAdd)
                     }
                 })
+                .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
+                    Button(action: {}, label: {
+                        Text(L10n.okLabel)
+                    })
+                }
         }
         .preferredColorScheme(.dark)
     }
@@ -54,7 +65,7 @@ struct CarPlayConfigurationView: View {
 
     private var itemsSection: some View {
         Section("Quick Actions") {
-            ForEach(viewModel.config.quickActions, id: \.id) { item in
+            ForEach(viewModel.config.quickAccess, id: \.id) { item in
                 makeListItem(item: item)
             }
             .onMove { indices, newOffset in

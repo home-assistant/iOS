@@ -440,6 +440,18 @@ public enum L10n {
         }
       }
     }
+    public enum Debug {
+      public enum DeleteDb {
+        public enum Alert {
+          /// Are you sure you want to delete CarPlay configuration? This can't be reverted
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.delete_db.alert.title") }
+        }
+        public enum Button {
+          /// Delete CarPlay configuration
+          public static var title: String { return L10n.tr("Localizable", "carPlay.debug.delete_db.button.title") }
+        }
+      }
+    }
     public enum Labels {
       /// Already added
       public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carPlay.labels.already_added_server") }

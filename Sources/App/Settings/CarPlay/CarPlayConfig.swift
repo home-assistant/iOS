@@ -5,7 +5,7 @@ import Shared
 public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord {
     public var id = UUID().uuidString
     public var tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
-    public var quickActions: [MagicItem] = []
+    public var quickAccess: [MagicItem] = []
 
     public init(
         id: String = UUID().uuidString,
@@ -14,11 +14,11 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord {
     ) {
         self.id = id
         self.tabs = tabs
-        self.quickActions = quickActions
+        self.quickAccess = quickActions
     }
 }
 
-public enum CarPlayTab: String, Codable, CaseIterable {
+public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible {
     case quickAccess
     case areas
     case domains

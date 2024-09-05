@@ -96,6 +96,20 @@ public enum AppConstants {
         return databaseURL
     }
 
+    public static var carPlayGRDBFile: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create GRDB file")
+            }
+        }
+        let databaseURL = directoryURL.appendingPathComponent("CarPlayConfig.sqlite")
+        return databaseURL
+    }
+
     public static var LogsDirectory: URL {
         let fileManager = FileManager.default
         let directoryURL = AppGroupContainer.appendingPathComponent("logs", isDirectory: true)
