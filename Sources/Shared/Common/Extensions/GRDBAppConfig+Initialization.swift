@@ -5,6 +5,15 @@ enum GRDBDatabaseTable: String {
     case HAAppEntity = "hAAppEntity"
 }
 
+public enum HAAppEntityTableColumn: String {
+    case id
+    case entityId
+    case serverId
+    case domain
+    case name
+    case icon
+}
+
 public extension DatabaseQueue {
     static let appDatabase: () -> DatabaseQueue = {
         do {
@@ -28,12 +37,12 @@ public extension DatabaseQueue {
                 // HAAppEntity - App used domain entities
                 if try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue) {
                     try db.create(table: GRDBDatabaseTable.HAAppEntity.rawValue) { t in
-                        t.primaryKey("id", .text).notNull()
-                        t.column("entityId", .text).notNull()
-                        t.column("serverId", .text).notNull()
-                        t.column("domain", .text).notNull()
-                        t.column("name", .text).notNull()
-                        t.column("icon", .text)
+                        t.primaryKey(HAAppEntityTableColumn.id.rawValue, .text).notNull()
+                        t.column(HAAppEntityTableColumn.entityId.rawValue, .text).notNull()
+                        t.column(HAAppEntityTableColumn.serverId.rawValue, .text).notNull()
+                        t.column(HAAppEntityTableColumn.domain.rawValue, .text).notNull()
+                        t.column(HAAppEntityTableColumn.name.rawValue, .text).notNull()
+                        t.column(HAAppEntityTableColumn.icon.rawValue, .text)
                     }
                 }
             }

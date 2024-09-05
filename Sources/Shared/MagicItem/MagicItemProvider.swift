@@ -22,8 +22,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         Current.servers.all.forEach { [weak self] server in
             do {
                 let scripts: [HAAppEntity] = try Current.appGRDB().read { db in
-                    try HAAppEntity.filter(Column("serverId") == server.identifier.rawValue)
-                        .filter(Column("domain") == Domain.script.rawValue).fetchAll(db)
+                    try HAAppEntity
+                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.script.rawValue).fetchAll(db)
                 }
                 self?.scriptsPerServer[server.identifier.rawValue] = scripts
 
@@ -33,8 +34,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
 
             do {
                 let scenes: [HAAppEntity] = try Current.appGRDB().read { db in
-                    try HAAppEntity.filter(Column("serverId") == server.identifier.rawValue)
-                        .filter(Column("domain") == Domain.scene.rawValue).fetchAll(db)
+                    try HAAppEntity
+                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.scene.rawValue).fetchAll(db)
                 }
                 self?.scenesPerServer[server.identifier.rawValue] = scenes
             } catch {

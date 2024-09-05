@@ -135,8 +135,10 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 do {
                     let scripts: [HAAppEntity] = try Current.appGRDB().read { db in
-                        try HAAppEntity.filter(Column("serverId") == server.identifier.rawValue)
-                            .filter(Column("domain") == Domain.script.rawValue).fetchAll(db)
+                        try HAAppEntity
+                            .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.script.rawValue)
+                            .fetchAll(db)
                     }
                     entities[server] = scripts
                 } catch {

@@ -46,7 +46,9 @@ enum AppEntitiesObserver {
 
             do {
                 let cachedEntities: [HAAppEntity] = try Current.appGRDB().read { db in
-                    try HAAppEntity.filter(Column("serverId") == server.identifier.rawValue).orderByPrimaryKey()
+                    try HAAppEntity
+                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
+                        .orderByPrimaryKey()
                         .fetchAll(db)
                 }
                 if appEntities != cachedEntities {

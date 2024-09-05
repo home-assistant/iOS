@@ -5,6 +5,12 @@ enum GRDBWatchDatabaseTable: String {
     case watchConfig
 }
 
+enum WatchConfigTableColumn: String {
+    case id
+    case assist
+    case items
+}
+
 public extension DatabaseQueue {
     static let watchDatabase: () -> DatabaseQueue = {
         do {
@@ -28,9 +34,9 @@ public extension DatabaseQueue {
                 // WatchConfig - Apple Watch configuration
                 if try !db.tableExists(GRDBWatchDatabaseTable.watchConfig.rawValue) {
                     try db.create(table: GRDBWatchDatabaseTable.watchConfig.rawValue) { t in
-                        t.primaryKey("id", .text).notNull()
-                        t.column("assist", .jsonText).notNull()
-                        t.column("items", .jsonText).notNull()
+                        t.primaryKey(WatchConfigTableColumn.id.rawValue, .text).notNull()
+                        t.column(WatchConfigTableColumn.assist.rawValue, .jsonText).notNull()
+                        t.column(WatchConfigTableColumn.items.rawValue, .jsonText).notNull()
                     }
                 }
             }

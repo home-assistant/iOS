@@ -26,7 +26,8 @@ final class MagicItemAddViewModel: ObservableObject {
         Current.servers.all.forEach { [weak self] server in
             do {
                 let scripts: [HAAppEntity] = try Current.appGRDB().read { db in
-                    try HAAppEntity.filter(Column("serverId") == server.identifier.rawValue)
+                    try HAAppEntity
+                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
                         .filter(Column("domain") == Domain.script.rawValue).fetchAll(db)
                 }
                 self?.dispatchInMain {
@@ -38,7 +39,8 @@ final class MagicItemAddViewModel: ObservableObject {
 
             do {
                 let scenes: [HAAppEntity] = try Current.appGRDB().read { db in
-                    try HAAppEntity.filter(Column("serverId") == server.identifier.rawValue)
+                    try HAAppEntity
+                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
                         .filter(Column("domain") == Domain.scene.rawValue).fetchAll(db)
                 }
                 self?.dispatchInMain {

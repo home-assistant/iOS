@@ -63,8 +63,10 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 do {
                     var scenes: [HAAppEntity] = try Current.appGRDB().read { db in
-                        try HAAppEntity.filter(Column("serverId") == server.identifier.rawValue)
-                            .filter(Column("domain") == Domain.scene.rawValue).fetchAll(db)
+                        try HAAppEntity
+                            .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.scene.rawValue)
+                            .fetchAll(db)
                     }
                     scenes = scenes.sorted(by: { $0.name < $1.name })
                     if let string {
