@@ -28,7 +28,7 @@ final class MagicItemAddViewModel: ObservableObject {
                 let scripts: [HAAppEntity] = try Current.appGRDB().read { db in
                     try HAAppEntity
                         .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column("domain") == Domain.script.rawValue).fetchAll(db)
+                        .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.script.rawValue).fetchAll(db)
                 }
                 self?.dispatchInMain {
                     self?.scripts[server] = scripts
@@ -41,7 +41,7 @@ final class MagicItemAddViewModel: ObservableObject {
                 let scenes: [HAAppEntity] = try Current.appGRDB().read { db in
                     try HAAppEntity
                         .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column("domain") == Domain.scene.rawValue).fetchAll(db)
+                        .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.scene.rawValue).fetchAll(db)
                 }
                 self?.dispatchInMain {
                     self?.scenes[server] = scenes

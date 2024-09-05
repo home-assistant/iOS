@@ -73,7 +73,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             )
         case .script:
             guard let scriptsForServer = scriptsPerServer[item.serverId],
-                  let scriptItem = scriptsForServer.first(where: { $0.id == item.id }) else {
+                  let scriptItem = scriptsForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id), server id: \(String(describing: item.serverId))"
@@ -89,7 +89,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             )
         case .scene:
             guard let scenesForServer = scenesPerServer[item.serverId],
-                  let sceneItem = scenesForServer.first(where: { $0.id == item.id }) else {
+                  let sceneItem = scenesForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id), server id: \(String(describing: item.serverId))"
