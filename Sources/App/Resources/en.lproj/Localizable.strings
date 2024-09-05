@@ -936,6 +936,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.scene.description" = "Run scene";
 "widgets.controls.scene.display_name" = "Scene";
 "widgets.controls.scenes.placeholder_title" = "Choose scene";
