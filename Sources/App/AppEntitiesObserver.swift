@@ -15,7 +15,6 @@ enum AppEntitiesObserver {
 
     final class Observer {
         var container: PerServerContainer<HACancellable>?
-        var cachedScenes: [HAScene]?
 
         let domainsAppUse: [String] = [
             Domain.scene,
