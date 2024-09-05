@@ -34,10 +34,6 @@ enum AppEntitiesObserver {
             }
         }
 
-        enum HandleAppEntitiesError: Error {
-            case unchanged
-        }
-
         private func handle(appRelatedEntities: Set<HAEntity>, server: Server) {
             let appEntities = appRelatedEntities.map({ HAAppEntity(
                 id: "\(server.identifier.rawValue)-\($0.entityId)",
