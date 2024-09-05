@@ -561,6 +561,7 @@
 		423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F45202C19D89100766A99 /* AssistDefaultComplication.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
+		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayActionsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */; };
 		4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */; };
 		4251AA9B2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */; };
@@ -613,6 +614,7 @@
 		427692E32B98B82500F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E22B98B82500F24321 /* SharedPush */; };
 		427692E52B98B83200F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E42B98B83200F24321 /* SharedPush */; };
 		427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427756CA2C3ED5F700E11D0B /* VolumeView.swift */; };
+		4278C9BF2C89DD5D00A7B5F4 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		42790C422C4806A700E31B38 /* ImprovFailureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42790C412C4806A700E31B38 /* ImprovFailureView.swift */; };
@@ -690,13 +692,10 @@
 		42D3E49C2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
 		42D3E49D2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
 		42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */; };
-		42D3E4A32C5CF92700444BE6 /* ScriptsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A22C5CF92700444BE6 /* ScriptsObserver.swift */; };
 		42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */; };
 		42D3E4B12C5D2B3C00444BE6 /* ScriptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */; };
 		42D3E4B52C5D2BC200444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */; };
 		42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */; };
-		42D3E4B82C5D305E00444BE6 /* HAScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A42C5CFC1400444BE6 /* HAScript.swift */; };
-		42D3E4B92C5D305F00444BE6 /* HAScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A42C5CFC1400444BE6 /* HAScript.swift */; };
 		42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */; };
 		42D3E4BB2C5D313000444BE6 /* ScriptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */; };
 		42D3E4BD2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
@@ -1812,6 +1811,7 @@
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
+		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
 		424DD0592B3509170057E456 /* CarPlayActionsTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayActionsTemplate.swift; sourceTree = "<group>"; };
 		4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemCustomizationView.swift; sourceTree = "<group>"; };
 		4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemEditViewModel.swift; sourceTree = "<group>"; };
@@ -1938,8 +1938,6 @@
 		42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrontendStrings+Values.swift"; sourceTree = "<group>"; };
 		42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBatterySensor.swift; sourceTree = "<group>"; };
 		42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContext.test.swift; sourceTree = "<group>"; };
-		42D3E4A22C5CF92700444BE6 /* ScriptsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptsObserver.swift; sourceTree = "<group>"; };
-		42D3E4A42C5CFC1400444BE6 /* HAScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAScript.swift; sourceTree = "<group>"; };
 		42D3E4A72C5D00AD00444BE6 /* ScriptAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptAppIntent.swift; sourceTree = "<group>"; };
 		42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScripts.swift; sourceTree = "<group>"; };
 		42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
@@ -4341,7 +4339,6 @@
 				42B94BD92B9606CD00DEE060 /* Assist */,
 				42FCCFDD2B9B1AB00057783F /* BarcodeScanner */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				42D3E4A22C5CF92700444BE6 /* ScriptsObserver.swift */,
 				4265347A2C73896D004D7189 /* ScenesObserver.swift */,
 				4297ADA42C89C43F00790812 /* AppEntitiesObserver.swift */,
 				42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */,
@@ -4445,7 +4442,6 @@
 				B672334C225DE1490031D629 /* SubscribeEvents.swift */,
 				B6723349225DDF410031D629 /* Event.swift */,
 				115560E727011E3300A8F818 /* HAPanel.swift */,
-				42D3E4A42C5CFC1400444BE6 /* HAScript.swift */,
 				4265347C2C7389D5004D7189 /* HAScene.swift */,
 			);
 			path = WebSocket;
@@ -4632,6 +4628,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */,
 				4251AABD2C6CE230004CCC9D /* MagicItem */,
 				4264906A2C0F1B40002155CC /* Assist */,
 				426740A42B17348700C1DD73 /* Assets */,
@@ -6564,7 +6561,6 @@
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
-				42D3E4A32C5CF92700444BE6 /* ScriptsObserver.swift in Sources */,
 				42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
@@ -6836,6 +6832,7 @@
 				428338452BA1BB4F004798C2 /* Spaces.swift in Sources */,
 				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				11B38EEF275C54A300205C7B /* OpenPageIntentHandler.swift in Sources */,
+				4278C9BF2C89DD5D00A7B5F4 /* HAAppEntity.swift in Sources */,
 				420D5AE42C5A860900624A08 /* LocationPermissionSensor.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				11ADF941267D34B20040A7E3 /* NotificationsCommandManager.swift in Sources */,
@@ -6900,7 +6897,6 @@
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
-				42D3E4B92C5D305F00444BE6 /* HAScript.swift in Sources */,
 				3997926B2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */,
@@ -7080,6 +7076,7 @@
 				42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */,
 				42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
+				424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */,
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
 				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
@@ -7152,7 +7149,6 @@
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */,
-				42D3E4B82C5D305E00444BE6 /* HAScript.swift in Sources */,
 				11358AEC24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
 				42070EEB2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */,
 				11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */,

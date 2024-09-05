@@ -393,7 +393,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         WidgetOpenPageIntent.setupObserver()
 
         // TODO: Migrate observers to save values in GRDB
-        ScriptsObserver.setupObserver()
         ScenesObserver.setupObserver()
         AppEntitiesObserver.setupObserver()
     }
