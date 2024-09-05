@@ -66,7 +66,7 @@
 "app_intents.scenes.requires_confirmation_before_run.title" = "Confirm before run";
 "app_intents.scenes.scene.title" = "Scene";
 "app_intents.scenes.success_message.content" = "Scene \"%@\" executed.";
-"app_intents.scenes.title" = "Run Scene";
+"app_intents.scenes.parameter.scene.title" = "Scene";
 "app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
 "app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.icon.title" = "Icon";
@@ -79,6 +79,8 @@
 "app_intents.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.show_confirmation_dialog.title" = "Confirmation notification";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"app_intents.controls.assist.title" = "Assist in app";
+"app_intents.controls.assist.parameter.with_voice" = "With voice";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tap to ";
@@ -970,7 +972,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.open_page.title" = "Open Page";
 "widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
-"widgets.scene.description.title" = "Run Scene";
+"widgets.scene.activate.title" = "Activate scene";
 "widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";

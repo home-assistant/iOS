@@ -7,9 +7,9 @@ import SwiftUI
 
 @available(iOS 16.4, *)
 final class SceneAppIntent: AppIntent {
-    static let title: LocalizedStringResource = .init("widgets.scene.description.title", defaultValue: "Run Scene")
+    static let title: LocalizedStringResource = .init("widgets.scene.activate.title", defaultValue: "Activate scene")
 
-    @Parameter(title: LocalizedStringResource("app_intents.scenes.title", defaultValue: "Run Scene"))
+    @Parameter(title: LocalizedStringResource("app_intents.scenes.parameter.scene.title", defaultValue: "Scene"))
     var scene: IntentSceneEntity
 
     @Parameter(
