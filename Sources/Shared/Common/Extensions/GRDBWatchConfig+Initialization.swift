@@ -10,6 +10,9 @@ public extension DatabaseQueue {
         do {
             let database = try DatabaseQueue(path: AppConstants.watchGRDBFile.path)
             createWatchConfigTables(database: database)
+            #if targetEnvironment(simulator)
+            Current.Log.info("GRDB Watch database is stored at \(AppConstants.watchGRDBFile.description)")
+            #endif
             return database
         } catch {
             let errorMessage = "Failed to initialize GRDB, error: \(error.localizedDescription)"

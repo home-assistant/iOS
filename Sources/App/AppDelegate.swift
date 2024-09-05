@@ -395,6 +395,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // TODO: Migrate observers to save values in GRDB
         ScriptsObserver.setupObserver()
         ScenesObserver.setupObserver()
+        AppEntitiesObserver.setupObserver()
     }
 
     private func setupMenus() {
