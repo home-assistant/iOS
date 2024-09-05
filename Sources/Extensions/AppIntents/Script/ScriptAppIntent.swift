@@ -149,13 +149,13 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
             var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 do {
-                    let scenes: [HAAppEntity] = try Current.appGRDB().read { db in
+                    let scripts: [HAAppEntity] = try Current.appGRDB().read { db in
                         try HAAppEntity
                             .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
-                            .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.scene.rawValue)
+                            .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.script.rawValue)
                             .fetchAll(db)
                     }
-                    entities[server] = scenes.map({ entity in
+                    entities[server] = scripts.map({ entity in
                         .init(
                             id: entity.id,
                             serverId: server.identifier.rawValue,
