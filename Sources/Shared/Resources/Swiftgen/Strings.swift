@@ -3212,6 +3212,8 @@ public enum L10n {
     }
     public enum Controls {
       public enum Assist {
+        /// Open Assist in Home Assistant app
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.assist.description") }
         /// Assist
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.assist.title") }
         public enum Pipeline {
