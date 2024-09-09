@@ -92,7 +92,7 @@ struct MagicItemAddView: View {
                 NavigationLink {
                     MagicItemCustomizationView(
                         mode: .add,
-                        item: .init(id: script.id, serverId: serverId, type: .script)
+                        item: .init(id: script.entityId, serverId: serverId, type: .script)
                     ) { itemToAdd in
                         self.itemToAdd(itemToAdd)
                         dismiss()
@@ -119,7 +119,7 @@ struct MagicItemAddView: View {
             if visibleForSearch(title: scene.name) {
                 NavigationLink {
                     MagicItemCustomizationView(mode: .add, item: .init(
-                        id: scene.id,
+                        id: scene.entityId,
                         serverId: serverId,
                         type: .scene
                     )) { itemToAdd in
