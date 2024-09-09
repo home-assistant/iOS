@@ -36,7 +36,7 @@ enum AppEntitiesObserver {
 
         private func handle(appRelatedEntities: Set<HAEntity>, server: Server) {
             let appEntities = appRelatedEntities.map({ HAAppEntity(
-                id: "\(server.identifier.rawValue)-\($0.entityId)",
+                id: ServerEntity.uniqueId(serverId: server.identifier.rawValue, entityId: $0.entityId),
                 entityId: $0.entityId,
                 serverId: server.identifier.rawValue,
                 domain: $0.domain,

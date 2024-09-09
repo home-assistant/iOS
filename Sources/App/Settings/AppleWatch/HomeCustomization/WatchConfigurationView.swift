@@ -90,7 +90,7 @@ struct WatchConfigurationView: View {
 
     private var itemsSection: some View {
         Section(L10n.Watch.Configuration.Items.title) {
-            ForEach(viewModel.watchConfig.items, id: \.id) { item in
+            ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 makeListItem(item: item)
             }
             .onMove { indices, newOffset in
@@ -146,7 +146,7 @@ struct WatchConfigurationView: View {
         ZStack(alignment: .top) {
             List {
                 VStack {}.padding(.top, 40)
-                ForEach(viewModel.watchConfig.items, id: \.id) { item in
+                ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                     makeWatchItem(item: item)
                 }
                 if viewModel.watchConfig.items.isEmpty {

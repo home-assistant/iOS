@@ -18,3 +18,9 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.icon = icon
     }
 }
+
+public enum ServerEntity {
+    public static func uniqueId(serverId: String, entityId: String) -> String {
+        "\(serverId)-\(entityId)"
+    }
+}

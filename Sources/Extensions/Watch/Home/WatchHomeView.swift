@@ -26,7 +26,7 @@ struct WatchHomeView: View {
 
     private var content: some View {
         List {
-            ForEach(viewModel.watchConfig.items, id: \.id) { item in
+            ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 WatchMagicViewRow(
                     item: item,
                     itemInfo: viewModel.info(for: item)

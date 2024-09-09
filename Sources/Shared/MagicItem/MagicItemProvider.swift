@@ -61,7 +61,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 return .init(id: item.id, name: item.id, iconName: "")
             }
             return .init(
-                id: actionItem.ID,
+                id: ServerEntity.uniqueId(serverId: actionItem.serverIdentifier, entityId: actionItem.ID),
                 name: actionItem.Text,
                 iconName: actionItem.IconName,
                 customization: .init(
@@ -76,7 +76,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                   let scriptItem = scriptsForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
-                        "Failed to get magic item Script info for item id: \(item.id), server id: \(String(describing: item.serverId))"
+                        "Failed to get magic item Script info for item id: \(item.id)"
                     )
                 return .init(id: item.id, name: item.id, iconName: "")
             }
@@ -92,7 +92,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                   let sceneItem = scenesForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
-                        "Failed to get magic item Script info for item id: \(item.id), server id: \(String(describing: item.serverId))"
+                        "Failed to get magic item Script info for item id: \(item.id)"
                     )
                 return .init(id: item.id, name: item.id, iconName: "")
             }
