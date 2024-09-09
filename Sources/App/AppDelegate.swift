@@ -207,6 +207,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
+        #if !targetEnvironment(macCatalyst)
+        if UIDevice.current.userInterfaceIdiom == .phone, case .paired = Communicator.shared.currentWatchState {
+            Current.Log.verbose("Requesting watch sync from background fetch")
+            Communicator.shared.send(GuaranteedMessage(identifier: GuaranteedMessages.sync.rawValue)) { error in
+                Current.Log.error("Failed to request watch sync from background fetch: \(error)")
+            }
+        }
+        #endif
+
         Current.backgroundTask(withName: "background-fetch") { remaining in
             let updatePromise: Promise<Void>
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
