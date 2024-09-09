@@ -12,9 +12,11 @@ struct WidgetScriptsEntry: TimelineEntry {
     let showConfirmationDialog: Bool
 
     struct ScriptServer {
-        let script: HAAppEntity
+        let id: String
         let serverId: String
         let serverName: String
+        let name: String
+        let icon: String
     }
 }
 
@@ -32,9 +34,11 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let placeholder: [WidgetScriptsEntry.ScriptServer] = await Array(suggestions.flatMap { serverCollection in
             serverCollection.value.map { script in
                 WidgetScriptsEntry.ScriptServer(
-                    script: script,
+                    id: script.id,
                     serverId: serverCollection.key.identifier.rawValue,
-                    serverName: serverCollection.key.info.name
+                    serverName: serverCollection.key.info.name,
+                    name: script.name,
+                    icon: script.icon ?? ""
                 )
             }
         }.prefix(WidgetBasicContainerView.maximumCount(family: context.family)))
@@ -43,16 +47,11 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
             date: Date(),
             scripts: configuration.scripts?.compactMap({ intentScriptEntity in
                 .init(
-                    script: .init(
-                        id: "\(intentScriptEntity.serverId)-\(intentScriptEntity.id)",
-                        entityId: intentScriptEntity.id,
-                        serverId: intentScriptEntity.serverId,
-                        domain: Domain.script.rawValue,
-                        name: intentScriptEntity.displayString,
-                        icon: intentScriptEntity.iconName
-                    ),
+                    id: intentScriptEntity.id,
                     serverId: intentScriptEntity.serverId,
-                    serverName: intentScriptEntity.serverName
+                    serverName: intentScriptEntity.serverName,
+                    name: intentScriptEntity.displayString,
+                    icon: intentScriptEntity.iconName
                 )
             }) ?? placeholder,
             showServerName: showServerName(),
@@ -66,25 +65,22 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                 .prefix(WidgetBasicContainerView.maximumCount(family: context.family)) {
                 return Entry(date: Date(), scripts: configurationScripts.compactMap({ intentScriptEntity in
                     .init(
-                        script: .init(
-                            id: "\(intentScriptEntity.serverId)-\(intentScriptEntity.id)",
-                            entityId: intentScriptEntity.id,
-                            serverId: intentScriptEntity.serverId,
-                            domain: Domain.script.rawValue,
-                            name: intentScriptEntity.displayString,
-                            icon: intentScriptEntity.iconName
-                        ),
+                        id: intentScriptEntity.id,
                         serverId: intentScriptEntity.serverId,
-                        serverName: intentScriptEntity.serverName
+                        serverName: intentScriptEntity.serverName,
+                        name: intentScriptEntity.displayString,
+                        icon: intentScriptEntity.iconName
                     )
                 }), showServerName: showServerName(), showConfirmationDialog: configuration.showConfirmationDialog)
             } else {
                 let entries = await suggestions().flatMap { server, scripts in
                     scripts.map { script in
                         WidgetScriptsEntry.ScriptServer(
-                            script: script,
+                            id: script.entityId,
                             serverId: server.identifier.rawValue,
-                            serverName: server.info.name
+                            serverName: server.info.name,
+                            name: script.name,
+                            icon: script.icon ?? ""
                         )
                     }
                 }.prefix(WidgetBasicContainerView.maximumCount(family: context.family))
@@ -109,16 +105,11 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
         .init(
             date: Date(),
             scripts: [.init(
-                script: .init(
-                    id: "1",
-                    entityId: "1",
-                    serverId: "1",
-                    domain: Domain.script.rawValue,
-                    name: L10n.Widgets.Scripts.title,
-                    icon: nil
-                ),
+                id: "1",
                 serverId: "1",
-                serverName: "Home"
+                serverName: "Home",
+                name: L10n.Widgets.Scripts.title,
+                icon: ""
             )],
             showServerName: true, showConfirmationDialog: true
         )
