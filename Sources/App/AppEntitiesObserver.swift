@@ -45,14 +45,14 @@ enum AppEntitiesObserver {
             ) }).sorted(by: { $0.id < $1.id })
 
             do {
-                let cachedEntities: [HAAppEntity] = try Current.appGRDB().read { db in
+                let cachedEntities: [HAAppEntity] = try Current.database().read { db in
                     try HAAppEntity
-                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                         .orderByPrimaryKey()
                         .fetchAll(db)
                 }
                 if appEntities != cachedEntities {
-                    try Current.appGRDB().write { db in
+                    try Current.database().write { db in
                         try HAAppEntity.deleteAll(db, ids: cachedEntities.map(\.id))
                         for entity in appEntities {
                             try entity.insert(db)

@@ -25,10 +25,10 @@ final class MagicItemAddViewModel: ObservableObject {
     private func loadScriptsAndScenes() {
         Current.servers.all.forEach { [weak self] server in
             do {
-                let scripts: [HAAppEntity] = try Current.appGRDB().read { db in
+                let scripts: [HAAppEntity] = try Current.database().read { db in
                     try HAAppEntity
-                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.script.rawValue).fetchAll(db)
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.script.rawValue).fetchAll(db)
                 }
                 self?.dispatchInMain {
                     self?.scripts[server] = scripts
@@ -38,10 +38,10 @@ final class MagicItemAddViewModel: ObservableObject {
             }
 
             do {
-                let scenes: [HAAppEntity] = try Current.appGRDB().read { db in
+                let scenes: [HAAppEntity] = try Current.database().read { db in
                     try HAAppEntity
-                        .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.scene.rawValue).fetchAll(db)
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.scene.rawValue).fetchAll(db)
                 }
                 self?.dispatchInMain {
                     self?.scenes[server] = scenes

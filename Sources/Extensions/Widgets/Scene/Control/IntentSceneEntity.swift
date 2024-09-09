@@ -62,10 +62,10 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
             var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 do {
-                    var scenes: [HAAppEntity] = try Current.appGRDB().read { db in
+                    var scenes: [HAAppEntity] = try Current.database().read { db in
                         try HAAppEntity
-                            .filter(Column(HAAppEntityTableColumn.serverId.rawValue) == server.identifier.rawValue)
-                            .filter(Column(HAAppEntityTableColumn.domain.rawValue) == Domain.scene.rawValue)
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.scene.rawValue)
                             .fetchAll(db)
                     }
                     scenes = scenes.sorted(by: { $0.name < $1.name })
