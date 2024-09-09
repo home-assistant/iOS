@@ -86,19 +86,19 @@ struct MagicItemAddView: View {
     }
 
     @ViewBuilder
-    private func scriptsList(scripts: [HAScript], serverId: String) -> some View {
+    private func scriptsList(scripts: [HAAppEntity], serverId: String) -> some View {
         ForEach(scripts, id: \.id) { script in
-            if visibleForSearch(title: script.name ?? "") {
+            if visibleForSearch(title: script.name) {
                 NavigationLink {
                     MagicItemCustomizationView(
                         mode: .add,
-                        item: .init(id: script.id, serverId: serverId, type: .script)
+                        item: .init(id: script.entityId, serverId: serverId, type: .script)
                     ) { itemToAdd in
                         self.itemToAdd(itemToAdd)
                         dismiss()
                     }
                 } label: {
-                    makeItemRow(title: script.name ?? "Unknown", imageSystemName: nil)
+                    makeItemRow(title: script.name, imageSystemName: nil)
                 }
             }
         }
@@ -114,12 +114,12 @@ struct MagicItemAddView: View {
     }
 
     @ViewBuilder
-    private func scenesList(scenes: [HAScene], serverId: String) -> some View {
+    private func scenesList(scenes: [HAAppEntity], serverId: String) -> some View {
         ForEach(scenes, id: \.id) { scene in
-            if visibleForSearch(title: scene.name ?? "") {
+            if visibleForSearch(title: scene.name) {
                 NavigationLink {
                     MagicItemCustomizationView(mode: .add, item: .init(
-                        id: scene.id,
+                        id: scene.entityId,
                         serverId: serverId,
                         type: .scene
                     )) { itemToAdd in
@@ -127,7 +127,7 @@ struct MagicItemAddView: View {
                         dismiss()
                     }
                 } label: {
-                    makeItemRow(title: scene.name ?? "Unknown", imageSystemName: nil)
+                    makeItemRow(title: scene.name, imageSystemName: nil)
                 }
             }
         }

@@ -49,7 +49,7 @@ final class WatchConfigurationViewModel: ObservableObject {
 
     func deleteConfiguration(completion: (Bool) -> Void) {
         do {
-            try Current.watchGRDB().write { db in
+            try Current.database().write { db in
                 try WatchConfig.deleteAll(db)
                 completion(true)
             }
@@ -61,7 +61,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     @MainActor
     func save(completion: (Bool) -> Void) {
         do {
-            try Current.watchGRDB().write { db in
+            try Current.database().write { db in
                 let configsCount = try WatchConfig.all().fetchCount(db)
                 if configsCount > 1 {
                     Current.Log.error("More than one watch config detected, deleting all and saving new one.")
@@ -99,7 +99,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     @MainActor
     private func loadDatabase() {
         do {
-            if let config: WatchConfig = try Current.watchGRDB().read({ db in
+            if let config: WatchConfig = try Current.database().read({ db in
                 do {
                     return try WatchConfig.fetchOne(db)
                 } catch {

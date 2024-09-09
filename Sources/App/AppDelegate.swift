@@ -391,10 +391,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Action.setupObserver()
         NotificationCategory.setupObserver()
         WidgetOpenPageIntent.setupObserver()
-
-        // TODO: Migrate observers to save values in GRDB
-        ScriptsObserver.setupObserver()
-        ScenesObserver.setupObserver()
+        AppEntitiesObserver.setupObserver()
     }
 
     private func setupMenus() {

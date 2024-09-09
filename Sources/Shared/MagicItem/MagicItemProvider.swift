@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import PromiseKit
 
 public protocol MagicItemProviderProtocol {
@@ -7,59 +8,44 @@ public protocol MagicItemProviderProtocol {
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
-    private var scriptsPerServer: [String: [HAScript]] = [:]
-    private var scenesPerServer: [String: [HAScene]] = [:]
+    private var scriptsPerServer: [String: [HAAppEntity]] = [:]
+    private var scenesPerServer: [String: [HAAppEntity]] = [:]
 
     func loadInformation(completion: @escaping () -> Void) {
-        loadScripts { [weak self] in
-            self?.loadScenes {
+        loadScriptsAndScenes {
+            completion()
+        }
+    }
+
+    private func loadScriptsAndScenes(completion: @escaping () -> Void) {
+        var serversCompletedFetchCount = 0
+        Current.servers.all.forEach { [weak self] server in
+            do {
+                let scripts: [HAAppEntity] = try Current.database().read { db in
+                    try HAAppEntity
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.script.rawValue).fetchAll(db)
+                }
+                self?.scriptsPerServer[server.identifier.rawValue] = scripts
+
+            } catch {
+                Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+            }
+
+            do {
+                let scenes: [HAAppEntity] = try Current.database().read { db in
+                    try HAAppEntity
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.scene.rawValue).fetchAll(db)
+                }
+                self?.scenesPerServer[server.identifier.rawValue] = scenes
+            } catch {
+                Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+            }
+
+            serversCompletedFetchCount += 1
+            if serversCompletedFetchCount == Current.servers.all.count {
                 completion()
-            }
-        }
-    }
-
-    private func loadScripts(completion: @escaping () -> Void) {
-        var serversCompletedFetchCount = 0
-        Current.servers.all.forEach { [weak self] server in
-            let key = HAScript.cacheKey(serverId: server.identifier.rawValue)
-            (Current.diskCache.value(for: key) as Promise<[HAScript]>).pipe { result in
-                guard let self else { return }
-                switch result {
-                case let .fulfilled(scripts):
-                    self.scriptsPerServer[server.identifier.rawValue] = scripts
-                case let .rejected(error):
-                    Current.Log
-                        .error(
-                            "Failed to retrieve scripts from cache while adding watch item, error: \(error.localizedDescription)"
-                        )
-                }
-                serversCompletedFetchCount += 1
-                if serversCompletedFetchCount == Current.servers.all.count {
-                    completion()
-                }
-            }
-        }
-    }
-
-    private func loadScenes(completion: @escaping () -> Void) {
-        var serversCompletedFetchCount = 0
-        Current.servers.all.forEach { [weak self] server in
-            let key = HAScene.cacheKey(serverId: server.identifier.rawValue)
-            (Current.diskCache.value(for: key) as Promise<[HAScene]>).pipe { result in
-                guard let self else { return }
-                switch result {
-                case let .fulfilled(scenes):
-                    self.scenesPerServer[server.identifier.rawValue] = scenes
-                case let .rejected(error):
-                    Current.Log
-                        .error(
-                            "Failed to retrieve scenes from cache while adding watch item, error: \(error.localizedDescription)"
-                        )
-                }
-                serversCompletedFetchCount += 1
-                if serversCompletedFetchCount == Current.servers.all.count {
-                    completion()
-                }
             }
         }
     }
@@ -75,7 +61,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 return .init(id: item.id, name: item.id, iconName: "")
             }
             return .init(
-                id: actionItem.ID,
+                id: ServerEntity.uniqueId(serverId: actionItem.serverIdentifier, entityId: actionItem.ID),
                 name: actionItem.Text,
                 iconName: actionItem.IconName,
                 customization: .init(
@@ -87,33 +73,33 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             )
         case .script:
             guard let scriptsForServer = scriptsPerServer[item.serverId],
-                  let scriptItem = scriptsForServer.first(where: { $0.id == item.id }) else {
+                  let scriptItem = scriptsForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
-                        "Failed to get magic item Script info for item id: \(item.id), server id: \(String(describing: item.serverId))"
+                        "Failed to get magic item Script info for item id: \(item.id)"
                     )
                 return .init(id: item.id, name: item.id, iconName: "")
             }
 
             return .init(
                 id: scriptItem.id,
-                name: scriptItem.name ?? scriptItem.id,
-                iconName: scriptItem.iconName ?? MaterialDesignIcons.scriptIcon.name,
+                name: scriptItem.name,
+                iconName: scriptItem.icon ?? MaterialDesignIcons.scriptIcon.name,
                 customization: item.customization
             )
         case .scene:
             guard let scenesForServer = scenesPerServer[item.serverId],
-                  let sceneItem = scenesForServer.first(where: { $0.id == item.id }) else {
+                  let sceneItem = scenesForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
-                        "Failed to get magic item Script info for item id: \(item.id), server id: \(String(describing: item.serverId))"
+                        "Failed to get magic item Script info for item id: \(item.id)"
                     )
                 return .init(id: item.id, name: item.id, iconName: "")
             }
 
             return .init(
                 id: sceneItem.id,
-                name: sceneItem.name ?? sceneItem.id,
+                name: sceneItem.name,
                 iconName: MaterialDesignIcons.paletteIcon.name,
                 customization: item.customization
             )

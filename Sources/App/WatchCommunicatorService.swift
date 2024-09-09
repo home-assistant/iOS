@@ -88,7 +88,7 @@ final class WatchCommunicatorService {
 
     private func watchConfig(message: InteractiveImmediateMessage) {
         do {
-            if let config: WatchConfig = try Current.watchGRDB().read({ db in
+            if let config: WatchConfig = try Current.database().read({ db in
                 try WatchConfig.fetchOne(db)
             }) {
                 Current.Log.info("Watch configuration exists, moving forward providing it to watch")

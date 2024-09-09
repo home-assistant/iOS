@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import GRDB
 import PromiseKit
 import Shared
 
@@ -60,40 +61,34 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
             var entities: [Server: [IntentSceneEntity]] = [:]
             var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
-                (
-                    Current.diskCache
-                        .value(
-                            for: HAScene
-                                .cacheKey(serverId: server.identifier.rawValue)
-                        ) as? Promise<[HAScene]>
-                )?.pipe(to: { result in
-                    switch result {
-                    case let .fulfilled(scripts):
-                        var scripts = scripts.sorted(by: { $0.name ?? "" < $1.name ?? "" })
-                        if let string {
-                            scripts = scripts.filter { $0.name?.contains(string) ?? false }
-                        }
+                do {
+                    var scenes: [HAAppEntity] = try Current.database().read { db in
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.scene.rawValue)
+                            .fetchAll(db)
+                    }
+                    scenes = scenes.sorted(by: { $0.name < $1.name })
+                    if let string {
+                        scenes = scenes.filter { $0.name.contains(string) }
+                    }
 
-                        entities[server] = scripts.compactMap { script in
-                            IntentSceneEntity(
-                                id: script.id,
-                                serverId: server.identifier.rawValue,
-                                serverName: server.info.name,
-                                displayString: script.name ?? "Unknown",
-                                iconName: script.iconName ?? ""
-                            )
-                        }
-                    case let .rejected(error):
-                        Current.Log
-                            .error(
-                                "Failed to get scripts cache for server identifier: \(server.identifier.rawValue), error: \(error.localizedDescription)"
-                            )
-                    }
-                    serverCheckedCount += 1
-                    if serverCheckedCount == Current.servers.all.count {
-                        continuation.resume(returning: entities)
-                    }
-                })
+                    entities[server] = scenes.map({ entity in
+                        .init(
+                            id: entity.id,
+                            serverId: server.identifier.rawValue,
+                            serverName: server.info.name,
+                            displayString: entity.name,
+                            iconName: entity.icon ?? ""
+                        )
+                    })
+                } catch {
+                    Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+                }
+                serverCheckedCount += 1
+                if serverCheckedCount == Current.servers.all.count {
+                    continuation.resume(returning: entities)
+                }
             }
         }
     }

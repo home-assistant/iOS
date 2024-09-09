@@ -1,4 +1,5 @@
 import AppIntents
+import GRDB
 import PromiseKit
 import RealmSwift
 import Shared
@@ -11,9 +12,11 @@ struct WidgetScriptsEntry: TimelineEntry {
     let showConfirmationDialog: Bool
 
     struct ScriptServer {
-        let script: HAScript
+        let id: String
         let serverId: String
         let serverName: String
+        let name: String
+        let icon: String
     }
 }
 
@@ -28,26 +31,27 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func snapshot(for configuration: WidgetScriptsAppIntent, in context: Context) async -> Entry {
         let suggestions = await suggestions()
-        let placeholder: [WidgetScriptsEntry.ScriptServer] = Array(suggestions.flatMap { serverCollection in
+        let placeholder: [WidgetScriptsEntry.ScriptServer] = await Array(suggestions.flatMap { serverCollection in
             serverCollection.value.map { script in
                 WidgetScriptsEntry.ScriptServer(
-                    script: script,
+                    id: script.id,
                     serverId: serverCollection.key.identifier.rawValue,
-                    serverName: serverCollection.key.info.name
+                    serverName: serverCollection.key.info.name,
+                    name: script.name,
+                    icon: script.icon ?? ""
                 )
             }
         }.prefix(WidgetBasicContainerView.maximumCount(family: context.family)))
+
         return .init(
             date: Date(),
             scripts: configuration.scripts?.compactMap({ intentScriptEntity in
                 .init(
-                    script: .init(
-                        id: intentScriptEntity.id,
-                        name: intentScriptEntity.displayString,
-                        iconName: intentScriptEntity.iconName
-                    ),
+                    id: intentScriptEntity.id,
                     serverId: intentScriptEntity.serverId,
-                    serverName: intentScriptEntity.serverName
+                    serverName: intentScriptEntity.serverName,
+                    name: intentScriptEntity.displayString,
+                    icon: intentScriptEntity.iconName
                 )
             }) ?? placeholder,
             showServerName: showServerName(),
@@ -57,26 +61,26 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
         let entry: Entry = await {
-            if let configurationScripts = configuration.scripts?
+            if let configurationScripts = await configuration.scripts?
                 .prefix(WidgetBasicContainerView.maximumCount(family: context.family)) {
-                return Entry(date: Date(), scripts: configurationScripts.compactMap({ intentScriptEntry in
+                return Entry(date: Date(), scripts: configurationScripts.compactMap({ intentScriptEntity in
                     .init(
-                        script: .init(
-                            id: intentScriptEntry.id,
-                            name: intentScriptEntry.displayString,
-                            iconName: intentScriptEntry.iconName
-                        ),
-                        serverId: intentScriptEntry.serverId,
-                        serverName: intentScriptEntry.serverName
+                        id: intentScriptEntity.id,
+                        serverId: intentScriptEntity.serverId,
+                        serverName: intentScriptEntity.serverName,
+                        name: intentScriptEntity.displayString,
+                        icon: intentScriptEntity.iconName
                     )
                 }), showServerName: showServerName(), showConfirmationDialog: configuration.showConfirmationDialog)
             } else {
                 let entries = await suggestions().flatMap { server, scripts in
                     scripts.map { script in
                         WidgetScriptsEntry.ScriptServer(
-                            script: script,
+                            id: script.entityId,
                             serverId: server.identifier.rawValue,
-                            serverName: server.info.name
+                            serverName: server.info.name,
+                            name: script.name,
+                            icon: script.icon ?? ""
                         )
                     }
                 }.prefix(WidgetBasicContainerView.maximumCount(family: context.family))
@@ -101,9 +105,11 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
         .init(
             date: Date(),
             scripts: [.init(
-                script: .init(id: "1", name: "Run Script", iconName: nil),
+                id: "1",
                 serverId: "1",
-                serverName: "Home"
+                serverName: "Home",
+                name: L10n.Widgets.Scripts.title,
+                icon: ""
             )],
             showServerName: true, showConfirmationDialog: true
         )
@@ -113,33 +119,26 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
         Current.servers.all.count > 1
     }
 
-    private func suggestions() async -> [Server: [HAScript]] {
+    private func suggestions() async -> [Server: [HAAppEntity]] {
         await withCheckedContinuation { continuation in
-            var entities: [Server: [HAScript]] = [:]
+            var entities: [Server: [HAAppEntity]] = [:]
             var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
-                (
-                    Current.diskCache
-                        .value(
-                            for: HAScript
-                                .cacheKey(serverId: server.identifier.rawValue)
-                        ) as? Promise<[HAScript]>
-                )?.pipe(to: { result in
-                    switch result {
-                    case let .fulfilled(scripts):
-                        let scripts = scripts.sorted(by: { $0.name ?? "" < $1.name ?? "" })
-                        entities[server] = scripts
-                    case let .rejected(error):
-                        Current.Log
-                            .error(
-                                "Failed to get scripts cache for server identifier: \(server.identifier.rawValue), error: \(error.localizedDescription)"
-                            )
+                do {
+                    let scripts: [HAAppEntity] = try Current.database().read { db in
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.script.rawValue)
+                            .fetchAll(db)
                     }
-                    serverCheckedCount += 1
-                    if serverCheckedCount == Current.servers.all.count {
-                        continuation.resume(returning: entities)
-                    }
-                })
+                    entities[server] = scripts
+                } catch {
+                    Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+                }
+                serverCheckedCount += 1
+                if serverCheckedCount == Current.servers.all.count {
+                    continuation.resume(returning: entities)
+                }
             }
         }
     }

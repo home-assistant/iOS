@@ -1,6 +1,7 @@
 import AppIntents
 import AudioToolbox
 import Foundation
+import GRDB
 import PromiseKit
 import Shared
 import SwiftUI
@@ -147,40 +148,29 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
             var entities: [Server: [IntentScriptEntity]] = [:]
             var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
-                (
-                    Current.diskCache
-                        .value(
-                            for: HAScript
-                                .cacheKey(serverId: server.identifier.rawValue)
-                        ) as? Promise<[HAScript]>
-                )?.pipe(to: { result in
-                    switch result {
-                    case let .fulfilled(scripts):
-                        var scripts = scripts.sorted(by: { $0.name ?? "" < $1.name ?? "" })
-                        if let string {
-                            scripts = scripts.filter { $0.name?.contains(string) ?? false }
-                        }
-
-                        entities[server] = scripts.compactMap { script in
-                            IntentScriptEntity(
-                                id: script.id,
-                                serverId: server.identifier.rawValue,
-                                serverName: server.info.name,
-                                displayString: script.name ?? "Unknown",
-                                iconName: script.iconName ?? ""
-                            )
-                        }
-                    case let .rejected(error):
-                        Current.Log
-                            .error(
-                                "Failed to get scripts cache for server identifier: \(server.identifier.rawValue), error: \(error.localizedDescription)"
-                            )
+                do {
+                    let scripts: [HAAppEntity] = try Current.database().read { db in
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.script.rawValue)
+                            .fetchAll(db)
                     }
-                    serverCheckedCount += 1
-                    if serverCheckedCount == Current.servers.all.count {
-                        continuation.resume(returning: entities)
-                    }
-                })
+                    entities[server] = scripts.map({ entity in
+                        .init(
+                            id: entity.id,
+                            serverId: server.identifier.rawValue,
+                            serverName: server.info.name,
+                            displayString: entity.name,
+                            iconName: entity.icon ?? ""
+                        )
+                    })
+                } catch {
+                    Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+                }
+                serverCheckedCount += 1
+                if serverCheckedCount == Current.servers.all.count {
+                    continuation.resume(returning: entities)
+                }
             }
         }
     }

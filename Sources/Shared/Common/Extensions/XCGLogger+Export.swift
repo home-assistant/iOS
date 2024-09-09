@@ -43,15 +43,15 @@ public extension XCGLogger {
                 )
             }
 
-            // In case watch config does not exist it can safely fail
+            // In case App config does not exist it can safely fail
             do {
                 try archive.addEntry(
-                    with: AppConstants.watchGRDBFile.lastPathComponent,
-                    fileURL: AppConstants.watchGRDBFile
+                    with: AppConstants.appGRDBFile.lastPathComponent,
+                    fileURL: AppConstants.appGRDBFile
                 )
             } catch {
                 Current.Log
-                    .info("No watch config database file added to export logs, error: \(error.localizedDescription)")
+                    .info("No App config database file added to export logs, error: \(error.localizedDescription)")
             }
 
             for logFile in try fileManager.contentsOfDirectory(
