@@ -44,7 +44,10 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
         let scenesPerServer = await getSceneEntities()
 
         return .init(sections: scenesPerServer.map { (key: Server, value: [IntentSceneEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+            .init(
+                .init(stringLiteral: key.info.name),
+                items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
+            )
         })
     }
 

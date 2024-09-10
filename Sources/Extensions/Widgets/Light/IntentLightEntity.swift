@@ -44,7 +44,10 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
         let lightsPerServer = await getLightEntities()
 
         return .init(sections: lightsPerServer.map { (key: Server, value: [IntentLightEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+            .init(
+                .init(stringLiteral: key.info.name),
+                items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
+            )
         })
     }
 
