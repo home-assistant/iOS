@@ -131,7 +131,10 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         let scriptsPerServer = await getScriptEntities()
 
         return .init(sections: scriptsPerServer.map { (key: Server, value: [IntentScriptEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+            .init(
+                .init(stringLiteral: key.info.name),
+                items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
+            )
         })
     }
 

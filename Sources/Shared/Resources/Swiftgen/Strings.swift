@@ -280,7 +280,7 @@ public enum L10n {
     }
     public enum Lights {
       public enum Light {
-        /// Light target state
+        /// Target state
         public static var target: String { return L10n.tr("Localizable", "app_intents.lights.light.target") }
         /// Light
         public static var title: String { return L10n.tr("Localizable", "app_intents.lights.light.title") }
