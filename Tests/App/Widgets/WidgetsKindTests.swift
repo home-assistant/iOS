@@ -9,10 +9,11 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.gauge.rawValue, "WidgetGauge")
         XCTAssertEqual(WidgetsKind.details.rawValue, "WidgetDetails")
         XCTAssertEqual(WidgetsKind.scripts.rawValue, "WidgetScripts")
-        XCTAssertEqual(WidgetsKind.controlScript.rawValue, "ControlScript")
-        XCTAssertEqual(WidgetsKind.controlScene.rawValue, "ControlScene")
-        XCTAssertEqual(WidgetsKind.controlAssist.rawValue, "ControlAssist")
-        XCTAssertEqual(WidgetsKind.controlOpenPage.rawValue, "ControlOpenPage")
-        XCTAssertEqual(WidgetsKind.allCases.count, 10)
+        XCTAssertEqual(WidgetsKind.controlScript.rawValue, "controlScript")
+        XCTAssertEqual(WidgetsKind.controlScene.rawValue, "controlScene")
+        XCTAssertEqual(WidgetsKind.controlAssist.rawValue, "controlAssist")
+        XCTAssertEqual(WidgetsKind.controlOpenPage.rawValue, "controlOpenPage")
+        XCTAssertEqual(WidgetsKind.controlLight.rawValue, "controlLight")
+        XCTAssertEqual(WidgetsKind.allCases.count, 11)
     }
 }
