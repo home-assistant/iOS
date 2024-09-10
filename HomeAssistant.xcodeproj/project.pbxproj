@@ -3937,13 +3937,6 @@
 			path = Add;
 			sourceTree = "<group>";
 		};
-		42F1DA6E2B4EE2CE002729BC /* Responses */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Responses;
-			sourceTree = "<group>";
-		};
 		42F5CABA2B10AE0C00409816 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
@@ -4907,7 +4900,6 @@
 				42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */,
 				42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */,
 				FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */,
-				42F1DA6E2B4EE2CE002729BC /* Responses */,
 				425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */,
 			);
 			path = Templates;
