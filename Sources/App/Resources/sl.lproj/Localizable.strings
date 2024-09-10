@@ -54,6 +54,8 @@
 "announcement.drop_support.title" = "Important update";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
+"app_intents.controls.assist.parameter.with_voice" = "With voice";
+"app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
@@ -62,6 +64,7 @@
 "app_intents.perform_action.response_success" = "Done";
 "app_intents.scenes.failure_message.content" = "Scene \"%@\" failed to execute, please check your logs.";
 "app_intents.scenes.icon.title" = "Icon";
+"app_intents.scenes.parameter.scene.title" = "Scene";
 "app_intents.scenes.requires_confirmation_before_run.description" = "Requires manual confirmation before running the scene.";
 "app_intents.scenes.requires_confirmation_before_run.title" = "Confirm before run";
 "app_intents.scenes.scene.title" = "Scene";
@@ -934,8 +937,12 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
 "widgets.button.reload_timeline" = "Reload all widgets";
+"widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
+"widgets.controls.open_page.configuration.parameter.page" = "Page";
+"widgets.controls.open_page.configuration.title" = "Open Page";
 "widgets.controls.scene.description" = "Run scene";
 "widgets.controls.scene.display_name" = "Scene";
 "widgets.controls.scenes.placeholder_title" = "Choose scene";
@@ -967,6 +974,7 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "widgets.open_page.title" = "Open Page";
 "widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
+"widgets.scene.activate.title" = "Activate scene";
 "widgets.scene.description.title" = "Run Scene";
 "widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";

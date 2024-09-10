@@ -12,6 +12,6 @@
 "NSPhotoLibraryAddUsageDescription" = "Přístup do knihovny fotek je nutný k tomu, aby je bylo možné ukládat  z webového zobrazení.";
 "NSPhotoLibraryUsageDescription" = "Přístup do knihovny fotek je nutný k tomu, aby je bylo možné ukládat  z webového zobrazení.";
 "NSSiriUsageDescription" = "Používáme Siri, abychom umožnili interakci vytvořených zástupců s aplikací.";
-"NSSpeechRecognitionUsageDescription" = "Použito pro diktování textu asistentovi.";
+"NSSpeechRecognitionUsageDescription" = "Použito k diktování textu pro Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Odeslat polohu";
 "TemporaryFullAccuracyReasonManualUpdate" = "Udělte plnou přesnost, abyste mohli použít svou aktuální polohu pro sledování zařízení.";
