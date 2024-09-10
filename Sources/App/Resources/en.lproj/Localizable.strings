@@ -73,6 +73,8 @@
 "app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
 "app_intents.scripts.script.title" = "Run Script";
+"app_intents.lights.light.title" = "Light";
+"app_intents.lights.light.target" = "Light target state";
 "app_intents.scripts.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.scripts.show_confirmation_dialog.title" = "Confirmation notification";
 "app_intents.scripts.success_message.content" = "Script \"%@\" executed.";
@@ -939,6 +941,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
+"widgets.controls.light.title" = "Light";
+"widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.scene.description" = "Run scene";
 "widgets.controls.scene.display_name" = "Scene";
 "widgets.controls.scenes.placeholder_title" = "Choose scene";
@@ -975,6 +979,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
 "widgets.scene.activate.title" = "Activate scene";
 "widgets.scripts.description" = "Run Scripts";
+"widgets.lights.description" = "Turn on/off light";
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
 "yes_label" = "Yes";

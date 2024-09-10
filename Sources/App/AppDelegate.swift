@@ -12,6 +12,7 @@ import RealmSwift
 import SafariServices
 import Shared
 import UIKit
+import WidgetKit
 import XCGLogger
 
 let keychain = AppConstants.Keychain
@@ -206,6 +207,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
+
+        if #available(iOS 18.0, *) {
+            ControlCenter.shared.reloadAllControls()
+        }
 
         Current.backgroundTask(withName: "background-fetch") { remaining in
             let updatePromise: Promise<Void>

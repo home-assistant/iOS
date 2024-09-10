@@ -1,13 +1,13 @@
 import Foundation
 import HAKit
 
-struct HAAreaResponse: HADataDecodable {
-    let aliases: [String]
-    let areaId: String
-    let name: String
-    let picture: String?
+public struct HAAreaResponse: HADataDecodable {
+    public let aliases: [String]
+    public let areaId: String
+    public let name: String
+    public let picture: String?
 
-    init(data: HAData) throws {
+    public init(data: HAData) throws {
         try self.init(
             aliases: data.decode("aliases"),
             areaId: data.decode("area_id"),
@@ -16,7 +16,7 @@ struct HAAreaResponse: HADataDecodable {
         )
     }
 
-    init(aliases: [String], areaId: String, name: String, picture: String? = nil) {
+    public init(aliases: [String], areaId: String, name: String, picture: String? = nil) {
         self.aliases = aliases
         self.areaId = areaId
         self.name = name
@@ -24,12 +24,12 @@ struct HAAreaResponse: HADataDecodable {
     }
 }
 
-struct HAEntityAreaResponse: HADataDecodable {
-    let areaId: String?
-    let entityId: String?
-    let deviceId: String?
+public struct HAEntityAreaResponse: HADataDecodable {
+    public let areaId: String?
+    public let entityId: String?
+    public let deviceId: String?
 
-    init(data: HAData) throws {
+    public init(data: HAData) throws {
         self.init(
             areaId: try? data.decode("area_id"),
             entityId: try? data.decode("entity_id"),
@@ -37,25 +37,25 @@ struct HAEntityAreaResponse: HADataDecodable {
         )
     }
 
-    init(areaId: String?, entityId: String?, deviceId: String?) {
+    public init(areaId: String?, entityId: String?, deviceId: String?) {
         self.areaId = areaId
         self.entityId = entityId
         self.deviceId = deviceId
     }
 }
 
-struct HADeviceAreaResponse: HADataDecodable {
-    let areaId: String?
-    let deviceId: String?
+public struct HADeviceAreaResponse: HADataDecodable {
+    public let areaId: String?
+    public let deviceId: String?
 
-    init(data: HAData) throws {
+    public init(data: HAData) throws {
         self.init(
             areaId: try? data.decode("area_id"),
             deviceId: try? data.decode("id")
         )
     }
 
-    init(areaId: String?, deviceId: String?) {
+    public init(areaId: String?, deviceId: String?) {
         self.areaId = areaId
         self.deviceId = deviceId
     }
