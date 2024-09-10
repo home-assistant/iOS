@@ -618,6 +618,8 @@
 		427692E52B98B83200F24321 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 427692E42B98B83200F24321 /* SharedPush */; };
 		427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427756CA2C3ED5F700E11D0B /* VolumeView.swift */; };
 		4278C9BF2C89DD5D00A7B5F4 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
+		4278C9C12C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */; };
+		4278C9C22C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		42790C422C4806A700E31B38 /* ImprovFailureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42790C412C4806A700E31B38 /* ImprovFailureView.swift */; };
@@ -1844,6 +1846,7 @@
 		4276471F2C8F36950027B21F /* ControlLightsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLightsValueProvider.swift; sourceTree = "<group>"; };
 		427647212C8F36DB0027B21F /* LightIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightIntent.swift; sourceTree = "<group>"; };
 		427756CA2C3ED5F700E11D0B /* VolumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
+		4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuaranteedMessages.swift; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
 		4278DFB12B45C6680087C9D7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Core.strings"; sourceTree = "<group>"; };
 		4278DFB22B45C6680087C9D7 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Core.strings; sourceTree = "<group>"; };
@@ -3617,6 +3620,7 @@
 			children = (
 				4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */,
 				426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */,
+				4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -6809,6 +6813,7 @@
 				B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
 				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
+				4278C9C22C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */,
 				11CFD785273662DF0082D557 /* Server.swift in Sources */,
 				116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
@@ -7072,6 +7077,7 @@
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
 				110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */,
+				4278C9C12C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */,
 				11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* AppConstants.swift in Sources */,
 				119DE933263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
