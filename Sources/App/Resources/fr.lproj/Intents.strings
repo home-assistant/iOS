@@ -15,7 +15,7 @@
 "8BMgur" = "Fait";
 "8skKro" = "Quelles actions ?";
 "A1pokw" = "Demander de l'aide";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Avec la voix";
 "B28HAk" = "Assister";
 "B4bXyc" = "Fait";
 "BafuI1" = "Langue";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Quelle langue ?";
 "QVD2lM" = "Données du service";
 "QmGpOH" = "Erreur";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Souhaitez-vous une assistance vocale ?";
 "RCQAlr" = "Obtenir l’image depuis la caméra ${cameraID}";
 "RMQY3r" = "Envoyer l'emplacement à Home Assistant";
 "RsOw3P" = "Modèle rendu avec succès";
@@ -138,7 +138,7 @@
 "s9Gk3c" = "Assist In App";
 "sNFoWe" = "Quelle caméra ?";
 "sQJAJS" = "Erreur";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Demander de l'aide dans l'application";
 "sfDGvk" = "Modèle rendu";
 "txfcnn" = "Texte";
 "tycImk" = "Effectue une action définie dans l'application";

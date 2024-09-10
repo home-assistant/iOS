@@ -54,6 +54,8 @@
 "announcement.drop_support.title" = "중요 업데이트";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "선호됨";
+"app_intents.controls.assist.parameter.with_voice" = "With voice";
+"app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.perform_action.action_parameter_configuration" = "어떤 동작을 원하시나요?";
 "app_intents.perform_action.action_parameter_confirmation" = "확인하기 위해 '%@' 원하셨나요?";
@@ -62,6 +64,7 @@
 "app_intents.perform_action.response_success" = "완료";
 "app_intents.scenes.failure_message.content" = "Scene \"%@\" failed to execute, please check your logs.";
 "app_intents.scenes.icon.title" = "Icon";
+"app_intents.scenes.parameter.scene.title" = "Scene";
 "app_intents.scenes.requires_confirmation_before_run.description" = "Requires manual confirmation before running the scene.";
 "app_intents.scenes.requires_confirmation_before_run.title" = "Confirm before run";
 "app_intents.scenes.scene.title" = "Scene";
@@ -934,8 +937,12 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.assist.title" = "어시스트";
 "widgets.assist.unknown_configuration" = "설정";
 "widgets.button.reload_timeline" = "모든 위젯 새로고침";
+"widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
+"widgets.controls.open_page.configuration.parameter.page" = "Page";
+"widgets.controls.open_page.configuration.title" = "Open Page";
 "widgets.controls.scene.description" = "Run scene";
 "widgets.controls.scene.display_name" = "Scene";
 "widgets.controls.scenes.placeholder_title" = "Choose scene";
@@ -967,6 +974,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.open_page.title" = "페이지 열기";
 "widgets.reload_widgets.app_intent.description" = "모든 위젯의 타임라인을 다시 불러옵니다.";
 "widgets.reload_widgets.app_intent.title" = "위젯 새로고침";
+"widgets.scene.activate.title" = "Activate scene";
 "widgets.scene.description.title" = "Run Scene";
 "widgets.scripts.description" = "스크립트 실행";
 "widgets.scripts.not_configured" = "정의된 스크립트가 없습니다.";
