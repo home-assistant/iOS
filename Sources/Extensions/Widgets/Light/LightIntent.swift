@@ -9,7 +9,7 @@ struct LightIntent: SetValueIntent {
     @Parameter(title: .init("app_intents.lights.light.title", defaultValue: "Light"))
     var light: IntentLightEntity
 
-    @Parameter(title: .init("app_intents.lights.light.target", defaultValue: "Light target state"))
+    @Parameter(title: .init("app_intents.lights.light.target", defaultValue: "Target state"))
     var value: Bool
 
     func perform() async throws -> some IntentResult {
