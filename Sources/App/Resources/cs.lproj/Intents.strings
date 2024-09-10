@@ -16,7 +16,7 @@
 "8skKro" = "Jaké akce?";
 "A1pokw" = "Požádat o asistenci";
 "Asg4pN" = "S hlasem";
-"B28HAk" = "Asistovat";
+"B28HAk" = "Assist";
 "B4bXyc" = "Hotovo";
 "BafuI1" = "Jazyk";
 "Bw6Ucn" = "Které pipeline?";
@@ -24,7 +24,7 @@
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Otevřít ${page}";
 "DdnZyl" = "Získán poslední obrázek z ${cameraID}";
-"DhCruz" = "Výsledek asistence";
+"DhCruz" = "Výsledek Assist";
 "DqfwpO" = "Server";
 "DsasVx" = "Chyba";
 "EA0zLv" = "${count} voleb odpovídá \"${server}\".";
@@ -77,15 +77,15 @@
 "ZRPVYO" = "Otevřít stránku ve frontendu";
 "ZT9Mld" = "Název události";
 "ZmUm9Q" = "Jakou šablonu chcete vykreslit?";
-"Zoqsph" = "Strana";
+"Zoqsph" = "Stránka";
 "aXZJt9" = "Jen pro potvrzení, chtěli jste \"${server}\"?";
 "am5G4A" = "Jen pro potvrzení, chtěli jste \"${server}\"?";
 "cK9jdK" = "Selhání: ${error}";
 "cLmTme" = "Akce";
 "cuflz3" = "Selhání: Home Assistant není aktuálně dostupný";
-"d65H6l" = "Asistovat s \"${text}\"";
+"d65H6l" = "Assist s \"${text}\"";
 "dFHPYK" = "Provedeno ${action}";
-"eObn2i" = "Strana";
+"eObn2i" = "Stránka";
 "f1KX0Q" = "Zobrazit a spustit akce";
 "fiOkO4" = "Existuje ${count} voleb odpovídajících \"${pipeline}\"";
 "fkQXDn" = "${count} voleb odpovídá \"${action}\".";
@@ -142,7 +142,7 @@
 "sfDGvk" = "Vykreslená šablona";
 "txfcnn" = "Text";
 "tycImk" = "Provede akci definovanou v aplikaci";
-"uqeIcc" = "Asistovat s \"${text}\"";
+"uqeIcc" = "Assist s \"${text}\"";
 "v7TSD5" = "Odeslat polohu";
 "vAIAF2" = "Odeslat aktualizaci senzoru do Home Assistanta";
 "vebd70" = "Server";
@@ -153,4 +153,4 @@
 "ypnPyU" = "Provést ${action}";
 "yyjTxO" = "Chyba";
 "zIiPij" = "${result}";
-"zjdBxm" = "Která strana?";
+"zjdBxm" = "Která stránka?";

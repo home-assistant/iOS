@@ -305,6 +305,8 @@ public enum L10n {
       public static var responseSuccess: String { return L10n.tr("Localizable", "app_intents.perform_action.response_success") }
     }
     public enum Scenes {
+      /// Run Scene
+      public static var title: String { return L10n.tr("Localizable", "app_intents.scenes.title") }
       public enum FailureMessage {
         /// Scene "%@" failed to execute, please check your logs.
         public static func content(_ p1: Any) -> String {
@@ -3356,6 +3358,10 @@ public enum L10n {
       public enum Activate {
         /// Activate scene
         public static var title: String { return L10n.tr("Localizable", "widgets.scene.activate.title") }
+      }
+      public enum Description {
+        /// Run Scene
+        public static var title: String { return L10n.tr("Localizable", "widgets.scene.description.title") }
       }
     }
     public enum Scripts {
