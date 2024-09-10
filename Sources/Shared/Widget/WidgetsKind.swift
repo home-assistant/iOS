@@ -7,8 +7,9 @@ public enum WidgetsKind: String, CaseIterable {
     case gauge = "WidgetGauge"
     case details = "WidgetDetails"
     case scripts = "WidgetScripts"
-    case controlScript = "ControlScript"
-    case controlScene = "ControlScene"
-    case controlAssist = "ControlAssist"
-    case controlOpenPage = "ControlOpenPage"
+    case controlScript
+    case controlScene
+    case controlAssist
+    case controlOpenPage
+    case controlLight
 }

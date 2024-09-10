@@ -12,6 +12,7 @@ import RealmSwift
 import SafariServices
 import Shared
 import UIKit
+import WidgetKit
 import XCGLogger
 
 let keychain = AppConstants.Keychain
@@ -207,6 +208,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
+        if #available(iOS 18.0, *) {
+            ControlCenter.shared.reloadAllControls()
+        }
         #if !targetEnvironment(macCatalyst)
         if UIDevice.current.userInterfaceIdiom == .phone, case .paired = Communicator.shared.currentWatchState {
             Current.Log.verbose("Requesting watch sync from background fetch")

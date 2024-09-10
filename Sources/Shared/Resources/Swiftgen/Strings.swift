@@ -278,6 +278,14 @@ public enum L10n {
       /// Haptic confirmation
       public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
     }
+    public enum Lights {
+      public enum Light {
+        /// Light target state
+        public static var target: String { return L10n.tr("Localizable", "app_intents.lights.light.target") }
+        /// Light
+        public static var title: String { return L10n.tr("Localizable", "app_intents.lights.light.title") }
+      }
+    }
     public enum PerformAction {
       /// Which action?
       public static var actionParameterConfiguration: String { return L10n.tr("Localizable", "app_intents.perform_action.action_parameter_configuration") }
@@ -3237,6 +3245,12 @@ public enum L10n {
           public static var placeholder: String { return L10n.tr("Localizable", "widgets.controls.assist.pipeline.placeholder") }
         }
       }
+      public enum Light {
+        /// Turn on/off your light
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.light.description") }
+        /// Light
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.light.title") }
+      }
       public enum OpenPage {
         public enum Configuration {
           /// Open Page
@@ -3319,6 +3333,10 @@ public enum L10n {
           public static var normal: String { return L10n.tr("Localizable", "widgets.gauge.parameters.gauge_type.normal") }
         }
       }
+    }
+    public enum Lights {
+      /// Turn on/off light
+      public static var description: String { return L10n.tr("Localizable", "widgets.lights.description") }
     }
     public enum OpenPage {
       /// Open a frontend page in Home Assistant.
