@@ -82,17 +82,17 @@ public enum AppConstants {
         return groupDir
     }
 
-    public static var watchGRDBFile: URL {
+    public static var appGRDBFile: URL {
         let fileManager = FileManager.default
         let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
         if !fileManager.fileExists(atPath: directoryURL.path) {
             do {
                 try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
             } catch {
-                Current.Log.error("Failed to create GRDB file")
+                Current.Log.error("Failed to create App GRDB file")
             }
         }
-        let databaseURL = directoryURL.appendingPathComponent("WatchConfig.sqlite")
+        let databaseURL = directoryURL.appendingPathComponent("App.sqlite")
         return databaseURL
     }
 

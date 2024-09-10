@@ -14,7 +14,9 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
-        magicItemsInfo.first(where: { $0.id == magicItem.id }) ?? .init(
+        magicItemsInfo.first(where: {
+            $0.id == magicItem.serverUniqueId
+        }) ?? .init(
             id: magicItem.id,
             name: magicItem.id,
             iconName: ""
