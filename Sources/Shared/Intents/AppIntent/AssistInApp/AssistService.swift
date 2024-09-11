@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import HAKit
 
 public protocol AssistServiceProtocol {
@@ -81,9 +82,10 @@ public final class AssistService: AssistServiceProtocol {
     }
 
     public func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
-        connection.send(AssistRequests.fetchPipelinesTypedRequest) { result in
+        connection.send(AssistRequests.fetchPipelinesTypedRequest) { [weak self] result in
             switch result {
             case let .success(response):
+                self?.saveInDatabase(response)
                 completion(response)
             case let .failure(error):
                 Current.Log.error("Failed to fetch Assist pipelines: \(error.localizedDescription)")
@@ -103,6 +105,20 @@ public final class AssistService: AssistServiceProtocol {
     public func finishSendingAudio() {
         guard let sttBinaryHandlerId else { return }
         _ = connection.send(.init(type: .sttData(.init(rawValue: sttBinaryHandlerId))))
+    }
+
+    private func saveInDatabase(_ response: PipelineResponse) {
+        do {
+            let assistPipeline = AssistPipelines(serverId: server.identifier.rawValue, pipelineResponse: response)
+            _ = try Current.database().write { db in
+                try AssistPipelines.filter(
+                    Column(DatabaseTables.AssistPipelines.serverId.rawValue) == server.identifier.rawValue
+                ).deleteAll(db)
+                try assistPipeline.save(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save Assist pipelines cache in database: \(error.localizedDescription)")
+        }
     }
 
     private func assistWithAudio(pipelineId: String?, audioSampleRate: Double) {
