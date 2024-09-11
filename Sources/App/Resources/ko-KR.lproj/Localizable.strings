@@ -57,6 +57,8 @@
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
+"app_intents.lights.light.target" = "Target state";
+"app_intents.lights.light.title" = "Light";
 "app_intents.perform_action.action_parameter_configuration" = "어떤 동작을 원하시나요?";
 "app_intents.perform_action.action_parameter_confirmation" = "확인하기 위해 '%@' 원하셨나요?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "'%@'와 일치하는 %@ 옵션이 있습니다.";
@@ -940,6 +942,8 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";
@@ -969,6 +973,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.gauge.parameters.value_label_template" = "Value Label Template";
 "widgets.gauge.parameters.value_template" = "Value Template (0-1)";
 "widgets.gauge.title" = "게이지";
+"widgets.lights.description" = "Turn on/off light";
 "widgets.open_page.description" = "Home Assistant에서 프론트엔드 페이지를 엽니다.";
 "widgets.open_page.not_configured" = "해당 페이지가 없습니다";
 "widgets.open_page.title" = "페이지 열기";

@@ -57,6 +57,8 @@
 "app_intents.controls.assist.parameter.with_voice" = "Med rösten";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptisk bekräftelse";
+"app_intents.lights.light.target" = "Target state";
+"app_intents.lights.light.title" = "Light";
 "app_intents.perform_action.action_parameter_configuration" = "Vilken åtgärd?";
 "app_intents.perform_action.action_parameter_confirmation" = "Bara för att bekräfta, du ville ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Det finns %@ alternativ som matchar '%@'.";
@@ -941,6 +943,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Välj en pipeline";
 "widgets.controls.assist.title" = "Assistent";
+"widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Välj sida";
 "widgets.controls.open_page.configuration.parameter.page" = "Sida";
 "widgets.controls.open_page.configuration.title" = "Öppna sida";
@@ -970,6 +974,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.gauge.parameters.value_label_template" = "Mall för värdeetikett";
 "widgets.gauge.parameters.value_template" = "Värdemall (0-1)";
 "widgets.gauge.title" = "Mätare";
+"widgets.lights.description" = "Turn on/off light";
 "widgets.open_page.description" = "Öppna en frontend-sida i Home Assistant.";
 "widgets.open_page.not_configured" = "Inga sidor tillgängliga";
 "widgets.open_page.title" = "Öppna sida";
