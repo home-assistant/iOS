@@ -26,12 +26,14 @@ struct OpenPageAppIntent: AppIntent {
 
         let urlString = "/" + page.panel.path
         Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-            windowController.open(
-                from: .deeplink,
-                server: server,
-                urlString: urlString,
-                skipConfirm: true
-            )
+            DispatchQueue.main.async {
+                windowController.open(
+                    from: .deeplink,
+                    server: server,
+                    urlString: urlString,
+                    skipConfirm: true
+                )
+            }
         }
         #endif
         return .result()
