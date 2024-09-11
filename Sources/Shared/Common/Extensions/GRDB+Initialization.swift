@@ -4,6 +4,7 @@ import GRDB
 enum GRDBDatabaseTable: String {
     case HAAppEntity = "hAAppEntity"
     case watchConfig
+    case assistPipelines
 }
 
 public enum DatabaseTables {
@@ -20,6 +21,13 @@ public enum DatabaseTables {
         case id
         case assist
         case items
+    }
+
+    // Assist pipelines
+    public enum AssistPipelines: String {
+        case serverId
+        case preferredPipeline
+        case pipelines
     }
 }
 
@@ -61,6 +69,15 @@ public extension DatabaseQueue {
                         t.primaryKey(DatabaseTables.WatchConfig.id.rawValue, .text).notNull()
                         t.column(DatabaseTables.WatchConfig.assist.rawValue, .jsonText).notNull()
                         t.column(DatabaseTables.WatchConfig.items.rawValue, .jsonText).notNull()
+                    }
+                }
+
+                // PipelineResponse - Assist pipelines cache
+                if try !db.tableExists(GRDBDatabaseTable.assistPipelines.rawValue) {
+                    try db.create(table: GRDBDatabaseTable.assistPipelines.rawValue) { t in
+                        t.primaryKey(DatabaseTables.AssistPipelines.serverId.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AssistPipelines.preferredPipeline.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AssistPipelines.pipelines.rawValue, .jsonText).notNull()
                     }
                 }
             }

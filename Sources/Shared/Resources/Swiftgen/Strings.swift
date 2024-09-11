@@ -263,6 +263,10 @@ public enum L10n {
         /// Preferred
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.preferred_pipeline.title") }
       }
+      public enum RefreshWarning {
+        /// Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.
+        public static var title: String { return L10n.tr("Localizable", "app_intents.assist.refresh_warning.title") }
+      }
     }
     public enum Controls {
       public enum Assist {
