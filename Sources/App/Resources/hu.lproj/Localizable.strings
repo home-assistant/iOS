@@ -57,6 +57,8 @@
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
+"app_intents.lights.light.target" = "Target state";
+"app_intents.lights.light.title" = "Light";
 "app_intents.perform_action.action_parameter_configuration" = "Melyik művelet?";
 "app_intents.perform_action.action_parameter_confirmation" = "Csak megerősítésképp, ezt szeretné: ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "%@ lehetőség található a(z) ‘%@’ kifejezésre.";
@@ -940,6 +942,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";
@@ -969,6 +973,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.gauge.parameters.value_label_template" = "Értékcímke sablon";
 "widgets.gauge.parameters.value_template" = "Értéksablon (0-1)";
 "widgets.gauge.title" = "Mérőműszer";
+"widgets.lights.description" = "Turn on/off light";
 "widgets.open_page.description" = "Nyisson meg egy kezelőfelületet a Home Assistant alkalmazásban.";
 "widgets.open_page.not_configured" = "Nincsenek elérhető oldalak";
 "widgets.open_page.title" = "Oldal megnyitása";

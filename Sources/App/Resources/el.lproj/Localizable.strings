@@ -57,6 +57,8 @@
 "app_intents.controls.assist.parameter.with_voice" = "Με φωνή";
 "app_intents.controls.assist.title" = "Βοηθός στην εφαρμογή";
 "app_intents.haptic_confirmation.title" = "Απτική επιβεβαίωση";
+"app_intents.lights.light.target" = "Target state";
+"app_intents.lights.light.title" = "Light";
 "app_intents.perform_action.action_parameter_configuration" = "Ποια ενέργεια;";
 "app_intents.perform_action.action_parameter_confirmation" = "Απλώς για επιβεβαίωση, θέλατε ‘%@‘;";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Υπάρχουν %@ επιλογές που ταιριάζουν με το ‘%@‘.";
@@ -940,6 +942,8 @@
 "widgets.controls.assist.description" = "Ανοίξτε τον βοηθό στην εφαρμογή Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Επιλέξτε ένα pipeline";
 "widgets.controls.assist.title" = "Βοηθός";
+"widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Επιλέξτε σελίδα";
 "widgets.controls.open_page.configuration.parameter.page" = "Σελίδα";
 "widgets.controls.open_page.configuration.title" = "Ανοιγμα σελίδας";
@@ -969,6 +973,7 @@
 "widgets.gauge.parameters.value_label_template" = "Πρότυπο ετικέτας τιμής";
 "widgets.gauge.parameters.value_template" = "Πρότυπο τιμής (0-1)";
 "widgets.gauge.title" = "Μετρητής";
+"widgets.lights.description" = "Turn on/off light";
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
 "widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
 "widgets.open_page.title" = "Άνοιγμα σελίδας";

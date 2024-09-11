@@ -57,6 +57,8 @@
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Confirmation haptique";
+"app_intents.lights.light.target" = "Target state";
+"app_intents.lights.light.title" = "Light";
 "app_intents.perform_action.action_parameter_configuration" = "Quelle action ?";
 "app_intents.perform_action.action_parameter_confirmation" = "Juste pour confirmer, vous vouliez '%@' ?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Il y a %@ options correspondant à '%@'.";
@@ -940,6 +942,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choisir un canal";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choisir page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Ouvrir page";
@@ -969,6 +973,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.gauge.parameters.value_label_template" = "Modèle d'étiquette de valeur";
 "widgets.gauge.parameters.value_template" = "Modèle de valeur (0-1)";
 "widgets.gauge.title" = "Jauge";
+"widgets.lights.description" = "Turn on/off light";
 "widgets.open_page.description" = "Ouvrez une page frontale dans Home Assistant.";
 "widgets.open_page.not_configured" = "Aucune page disponible";
 "widgets.open_page.title" = "Ouvrir la page";

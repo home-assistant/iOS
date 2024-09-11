@@ -57,6 +57,8 @@
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptisk bekræftelse";
+"app_intents.lights.light.target" = "Target state";
+"app_intents.lights.light.title" = "Light";
 "app_intents.perform_action.action_parameter_configuration" = "Hvilken handling?";
 "app_intents.perform_action.action_parameter_confirmation" = "Bare for at bekræfte, at du ønskede '%@'?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Der er %@ muligheder, der matcher '%@'.";
@@ -940,6 +942,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Vælg en pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";
@@ -969,6 +973,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.gauge.parameters.value_label_template" = "Skabelon til værdi-etiket";
 "widgets.gauge.parameters.value_template" = "Værdi-skabelon (0-1)";
 "widgets.gauge.title" = "Måler";
+"widgets.lights.description" = "Turn on/off light";
 "widgets.open_page.description" = "Åbn en brugerflade-side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgængelig";
 "widgets.open_page.title" = "Åbn side";
