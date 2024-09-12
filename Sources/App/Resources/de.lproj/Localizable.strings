@@ -54,11 +54,12 @@
 "announcement.drop_support.title" = "Wichtiges Update";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Bevorzugt";
+"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "Mit Stimme";
 "app_intents.controls.assist.title" = "Assist in der App";
 "app_intents.haptic_confirmation.title" = "Haptische Bestätigung";
-"app_intents.lights.light.target" = "Target state";
-"app_intents.lights.light.title" = "Light";
+"app_intents.lights.light.target" = "Zielzustand";
+"app_intents.lights.light.title" = "Licht";
 "app_intents.perform_action.action_parameter_configuration" = "Welche Aktion?";
 "app_intents.perform_action.action_parameter_confirmation" = "Nur zur Bestätigung, du möchtest „%@“?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Es gibt %@ Optionen, die zu „%@“ passen.";
@@ -944,8 +945,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.controls.assist.description" = "Assist in der Home Assistant-App öffnen";
 "widgets.controls.assist.pipeline.placeholder" = "Eine Pipeline auswählen";
 "widgets.controls.assist.title" = "Assist";
-"widgets.controls.light.description" = "Turn on/off your light";
-"widgets.controls.light.title" = "Light";
+"widgets.controls.light.description" = "Schalte dein Licht ein/aus";
+"widgets.controls.light.title" = "Licht";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Seite auswählen";
 "widgets.controls.open_page.configuration.parameter.page" = "Seite";
 "widgets.controls.open_page.configuration.title" = "Seite öffnen";
@@ -975,7 +976,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.gauge.parameters.value_label_template" = "Template Werte-Label";
 "widgets.gauge.parameters.value_template" = "Werte-Template (0-1)";
 "widgets.gauge.title" = "Pegel";
-"widgets.lights.description" = "Turn on/off light";
+"widgets.lights.description" = "Licht ein-/ausschalten";
 "widgets.open_page.description" = "Öffnen einer Frontend-Seite in Home Assistant.";
 "widgets.open_page.not_configured" = "Keine Seiten verfügbar";
 "widgets.open_page.title" = "Seite öffnen";

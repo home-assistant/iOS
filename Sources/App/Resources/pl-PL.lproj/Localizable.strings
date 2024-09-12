@@ -54,6 +54,7 @@
 "announcement.drop_support.title" = "Ważna aktualizacja";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
+"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";

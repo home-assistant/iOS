@@ -54,11 +54,12 @@
 "announcement.drop_support.title" = "重要更新";
 "app_intents.assist.pipeline.title" = "助理設定";
 "app_intents.assist.preferred_pipeline.title" = "首選";
+"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "使用語音";
 "app_intents.controls.assist.title" = "App 中的助理";
 "app_intents.haptic_confirmation.title" = "觸覺回饋確認";
-"app_intents.lights.light.target" = "Target state";
-"app_intents.lights.light.title" = "Light";
+"app_intents.lights.light.target" = "目標狀態";
+"app_intents.lights.light.title" = "燈光";
 "app_intents.perform_action.action_parameter_configuration" = "哪個動作？";
 "app_intents.perform_action.action_parameter_confirmation" = "確認要  ‘%@’？";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "共有 %@ 個選項符合 ‘%@’。";
@@ -942,8 +943,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.controls.assist.description" = "於 Home Assistant App 中開啟助理";
 "widgets.controls.assist.pipeline.placeholder" = "選擇助理設定";
 "widgets.controls.assist.title" = "助理";
-"widgets.controls.light.description" = "Turn on/off your light";
-"widgets.controls.light.title" = "Light";
+"widgets.controls.light.description" = "開啟/關閉燈光";
+"widgets.controls.light.title" = "燈光";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "選擇頁面";
 "widgets.controls.open_page.configuration.parameter.page" = "頁面";
 "widgets.controls.open_page.configuration.title" = "開啟頁面";
@@ -973,7 +974,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.gauge.parameters.value_label_template" = "數值標籤模板";
 "widgets.gauge.parameters.value_template" = "數值模板（0-1）";
 "widgets.gauge.title" = "測量";
-"widgets.lights.description" = "Turn on/off light";
+"widgets.lights.description" = "開啟/關閉燈光";
 "widgets.open_page.description" = "於 Home Assistant 中開啟前端頁面。";
 "widgets.open_page.not_configured" = "無頁面可使用";
 "widgets.open_page.title" = "開啟頁面";
