@@ -103,7 +103,8 @@ class IncomingURLHandler {
                     webView.webViewExternalMessageHandler.showAssist(
                         server: server,
                         pipeline: pipeline?.identifier ?? "",
-                        autoStartRecording: autoStartRecording
+                        autoStartRecording: autoStartRecording,
+                        animated: false
                     )
                 case let .rejected(error):
                     Current.Log.error("Failed to obtain webview to open Assist In App: \(error.localizedDescription)")

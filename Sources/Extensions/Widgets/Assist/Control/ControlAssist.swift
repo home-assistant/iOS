@@ -17,7 +17,7 @@ struct ControlAssist: ControlWidget {
                 return intent
             }()) {
                 // ControlWidget can only display SF Symbol (Custom Assist SFSymbol)
-                Label("Assist", image: "message-processing-outline")
+                Label("Assist", image: "assist")
             }
             .tint(.init(uiColor: Asset.Colors.haPrimary.color))
         }
