@@ -30,7 +30,7 @@ pod 'Improv-iOS', '~> 0.0.6'
 pod 'SFSafeSymbols', '~> 5.3'
 
 pod 'RealmSwift'
-pod 'GRDB.swift', git: 'https://github.com/groue/GRDB.swift.git', tag: 'v6.29.1'
+pod 'GRDB.swift', git: 'https://github.com/groue/GRDB.swift.git', tag: 'v6.29.3'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
