@@ -54,6 +54,7 @@
 "announcement.drop_support.title" = "Önemli güncelleme";
 "app_intents.assist.pipeline.title" = "İşlem hattı";
 "app_intents.assist.preferred_pipeline.title" = "Tercih Edilen";
+"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "Ses ile";
 "app_intents.controls.assist.title" = "Uygulamada assist";
 "app_intents.haptic_confirmation.title" = "Dokunsal doğrulama";
