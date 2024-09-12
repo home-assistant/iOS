@@ -30,7 +30,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var updateImprovEntryViewCalled = false
     var lastUpdateImprovEntryViewState = false
 
-    func presentOverlayController(controller: UIViewController) {
+    func presentOverlayController(controller: UIViewController, animated: Bool) {
         presentOverlayControllerCalled = true
         overlayAppController = controller
     }
