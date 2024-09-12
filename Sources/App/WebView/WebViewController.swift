@@ -16,7 +16,7 @@ protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
     var overlayAppController: UIViewController? { get set }
 
-    func presentOverlayController(controller: UIViewController)
+    func presentOverlayController(controller: UIViewController, animated: Bool)
     func presentController(_ controller: UIViewController, animated: Bool)
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
@@ -226,7 +226,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let settingsView = SettingsViewController()
             settingsView.hidesBottomBarWhenPushed = true
             let navController = UINavigationController(rootViewController: settingsView)
-            presentOverlayController(controller: navController)
+            presentOverlayController(controller: navController, animated: true)
         }
     }
 
@@ -1037,10 +1037,10 @@ extension ConnectionInfo {
 }
 
 extension WebViewController: WebViewControllerProtocol {
-    func presentOverlayController(controller: UIViewController) {
+    func presentOverlayController(controller: UIViewController, animated: Bool) {
         overlayAppController?.dismiss(animated: false, completion: nil)
         overlayAppController = controller
-        present(controller, animated: true, completion: nil)
+        present(controller, animated: animated, completion: nil)
     }
 
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {

@@ -135,7 +135,7 @@ final class WebViewExternalMessageHandler {
                     activeOperationalDataset: activeOperationalDataset
                 )
             case .assistShow:
-                showAssist(server: webViewController.server, pipeline: "")
+                showAssist(server: webViewController.server, pipeline: "", animated: true)
             case .scanForImprov:
                 scanImprov()
             }
@@ -155,7 +155,7 @@ final class WebViewExternalMessageHandler {
             let settingsView = SettingsViewController()
             settingsView.hidesBottomBarWhenPushed = true
             let navController = UINavigationController(rootViewController: settingsView)
-            webViewController?.presentOverlayController(controller: navController)
+            webViewController?.presentOverlayController(controller: navController, animated: true)
         }
     }
 
@@ -253,10 +253,10 @@ final class WebViewExternalMessageHandler {
             incomingMessageId: incomingMessageId
         ))
         barcodeController.modalPresentationStyle = .fullScreen
-        webViewController?.presentOverlayController(controller: barcodeController)
+        webViewController?.presentOverlayController(controller: barcodeController, animated: true)
     }
 
-    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
+    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false, animated: Bool) {
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
@@ -271,7 +271,7 @@ final class WebViewExternalMessageHandler {
             autoStartRecording: autoStartRecording
         ))
 
-        webViewController?.presentOverlayController(controller: assistView)
+        webViewController?.presentOverlayController(controller: assistView, animated: animated)
     }
 
     func scanImprov() {
@@ -295,7 +295,7 @@ final class WebViewExternalMessageHandler {
         improvController.modalTransitionStyle = .crossDissolve
         improvController.modalPresentationStyle = .overFullScreen
         improvController.view.backgroundColor = .clear
-        webViewController?.presentOverlayController(controller: improvController)
+        webViewController?.presentOverlayController(controller: improvController, animated: true)
     }
 
     func stopImprovScanIfNeeded() {
