@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Σε αδράνεια";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Ανενεργό";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Σπίτι";
+"component::improv_ble::config::abort::already_configured" = "Η συσκευή έχει ήδη διαμορφωθεί";
+"component::improv_ble::config::abort::already_provisioned" = "Η συσκευή είναι ήδη συνδεδεμένη στο Wi-Fi. Αν θέλετε να τη συνδέσετε σε άλλο δίκτυο, δοκιμάστε πρώτα την επαναφορά εργοστασιακών ρυθμίσεων.";
+"component::improv_ble::config::abort::cannot_connect" = "Αποτυχία σύνδεσης";
+"component::improv_ble::config::abort::characteristic_missing" = "Η συσκευή είτε είναι ήδη συνδεδεμένη στο Wi-Fi είτε δεν μπορεί πλέον να συνδεθεί στο Wi-Fi. Αν θέλετε να τη συνδέσετε σε άλλο δίκτυο, δοκιμάστε πρώτα την επαναφορά εργοστασιακών ρυθμίσεων.";
+"component::improv_ble::config::abort::no_devices_found" = "Δεν βρέθηκαν συσκευές στο δίκτυο";
+"component::improv_ble::config::abort::provision_successful" = "Η συσκευή έχει συνδεθεί επιτυχώς στο δίκτυο Wi-Fi.";
+"component::improv_ble::config::abort::provision_successful_url" = "Η συσκευή έχει συνδεθεί επιτυχώς στο δίκτυο Wi-Fi.\
+\
+Παρακαλώ επισκεφθείτε το {url} για να ολοκληρώσετε τη ρύθμιση.";
+"component::improv_ble::config::abort::unknown" = "Μη αναμενόμενο σφάλμα";
+"component::improv_ble::config::error::unable_to_connect" = "Η συσκευή δεν μπόρεσε να συνδεθεί στο δίκτυο Wi-Fi. Ελέγξτε ότι το SSID και ο κωδικός πρόσβασης είναι σωστά και δοκιμάστε ξανά.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Η συσκευή απαιτεί εξουσιοδότηση, παρακαλώ πατήστε το κουμπί εξουσιοδότησης ή συμβουλευτείτε το εγχειρίδιο της συσκευής για το πώς να προχωρήσετε.";
+"component::improv_ble::config::progress::provisioning" = "Η συσκευή συνδέεται στο δίκτυο Wi-Fi.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Θέλετε να ρυθμίσετε το {name};";
+"component::improv_ble::config::step::identify::description" = "Η συσκευή πλέον αναγνωρίζει τον εαυτό της, για παράδειγμα αναβοσβήνει ή παράγει έναν ήχο.";
+"component::improv_ble::config::step::main_menu::description" = "Επιλέξτε το επόμενο βήμα.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Αναγνώριση συσκευής";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Σύνδεση συσκευής σε δίκτυο Wi-Fi";
+"component::improv_ble::config::step::provision::data::password" = "Κωδικός πρόσβασης";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Εισάγετε τα διαπιστευτήρια Wi-Fi για να συνδέσετε τη συσκευή στο δίκτυό σας.";
+"component::improv_ble::config::step::user::data::address" = "Συσκευή";
+"component::improv_ble::config::step::user::description" = "Επιλέξτε μια συσκευή για ρύθμιση";
 "component::input_boolean::entity_component::_::state::off" = "Ανενεργό";
 "component::input_boolean::entity_component::_::state::on" = "Ενεργό";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Οχι";

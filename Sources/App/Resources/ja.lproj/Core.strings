@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "待機中";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "オフ";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "在宅";
+"component::improv_ble::config::abort::already_configured" = "デバイスはすでに設定されています";
+"component::improv_ble::config::abort::already_provisioned" = "デバイスはすでに Wi-Fi に接続されています。別のネットワークに接続する場合は、まず出荷時設定にリセットしてみてください。";
+"component::improv_ble::config::abort::cannot_connect" = "接続に失敗しました";
+"component::improv_ble::config::abort::characteristic_missing" = "デバイスはすでに Wi-Fi に接続されているか、Wi-Fi に接続できなくなっています。別のネットワークに接続する場合は、まず出荷時設定にリセットしてみてください。";
+"component::improv_ble::config::abort::no_devices_found" = "ネットワーク上にデバイスが見つかりません";
+"component::improv_ble::config::abort::provision_successful" = "デバイスは Wi-Fi ネットワークに正常に接続されました。";
+"component::improv_ble::config::abort::provision_successful_url" = "デバイスは Wi-Fi ネットワークに正常に接続されました。 \
+\
+セットアップを完了するには、 {url}にアクセスしてください。";
+"component::improv_ble::config::abort::unknown" = "予期しないエラー";
+"component::improv_ble::config::error::unable_to_connect" = "デバイスは Wi-Fi ネットワークに接続できませんでした。 SSIDとパスワードが正しいことを確認して、もう一度お試しください。";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "デバイスには認証が必要です。続行方法については、デバイスの認証ボタンを押すか、デバイスのマニュアルを参照してください。";
+"component::improv_ble::config::progress::provisioning" = "デバイスは Wi-Fi ネットワークに接続しています。";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "{name} をセットアップしますか？";
+"component::improv_ble::config::step::identify::description" = "デバイスは、点滅やビープ音などによって自身を識別しています。";
+"component::improv_ble::config::step::main_menu::description" = "次のステップを選択してください。";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "デバイスの識別";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "デバイスを Wi-Fi ネットワークに接続する";
+"component::improv_ble::config::step::provision::data::password" = "パスワード";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Wi-Fi 認証情報を入力して、デバイスをネットワークに接続します。";
+"component::improv_ble::config::step::user::data::address" = "デバイス";
+"component::improv_ble::config::step::user::description" = "セットアップするデバイスを選択してください";
 "component::input_boolean::entity_component::_::state::off" = "オフ";
 "component::input_boolean::entity_component::_::state::on" = "オン";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "いいえ";

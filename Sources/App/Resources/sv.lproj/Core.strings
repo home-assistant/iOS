@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Inaktiv";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Av";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Hemma";
+"component::improv_ble::config::abort::already_configured" = "Enheten är redan konfigurerad";
+"component::improv_ble::config::abort::already_provisioned" = "Enheten är redan ansluten till Wi-Fi. Om du vill ansluta den till ett annat nätverk bör du först återställa den till fabriksinställningarna.";
+"component::improv_ble::config::abort::cannot_connect" = "Det gick inte att ansluta.";
+"component::improv_ble::config::abort::characteristic_missing" = "Enheten är antingen redan ansluten till Wi-Fi eller kan inte längre ansluta till Wi-Fi. Om du vill ansluta den till ett annat nätverk kan du först försöka återställa den till fabriksinställningarna.";
+"component::improv_ble::config::abort::no_devices_found" = "Inga enheter hittades i nätverket";
+"component::improv_ble::config::abort::provision_successful" = "Enheten har anslutit till Wi-Fi-nätverket.";
+"component::improv_ble::config::abort::provision_successful_url" = "Enheten har anslutit till Wi-Fi-nätverket.\
+\
+Besök {url} för att avsluta installationen.";
+"component::improv_ble::config::abort::unknown" = "Oväntat fel";
+"component::improv_ble::config::error::unable_to_connect" = "Enheten kunde inte ansluta till Wi-Fi-nätverket. Kontrollera att SSID och lösenordet är korrekt och försök sedan igen.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Enheten kräver auktorisering, tryck på auktoriseringsknappen eller läs i enhetens bruksanvisning om hur du går tillväga.";
+"component::improv_ble::config::progress::provisioning" = "Enheten ansluter till Wi-Fi-nätverket.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Vill du konfigurera {name}?";
+"component::improv_ble::config::step::identify::description" = "Enheten identifierar sig nu, genom att exempelvis blinka eller pipa.";
+"component::improv_ble::config::step::main_menu::description" = "Välj nästa steg.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Identifiera enhet";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Anslut enheten till ett Wi-Fi-nätverk";
+"component::improv_ble::config::step::provision::data::password" = "Lösenord";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Ange Wi-Fi-autentiseringsuppgifter för att ansluta enheten till ditt nätverk.";
+"component::improv_ble::config::step::user::data::address" = "Enhet";
+"component::improv_ble::config::step::user::description" = "Välj en enhet att konfigurera";
 "component::input_boolean::entity_component::_::state::off" = "Av";
 "component::input_boolean::entity_component::_::state::on" = "På";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Nej";

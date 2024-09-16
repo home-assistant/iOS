@@ -54,12 +54,12 @@
 "announcement.drop_support.title" = "Atualização Importante";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferido";
-"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.assist.refresh_warning.title" = "Não consegue encontrar seu pipeline do Assist? Abra o Assist no aplicativo para atualizar a lista de pipelines.";
 "app_intents.controls.assist.parameter.with_voice" = "Com voz";
 "app_intents.controls.assist.title" = "Assist no aplicativo";
 "app_intents.haptic_confirmation.title" = "Confirmação tátil";
-"app_intents.lights.light.target" = "Target state";
-"app_intents.lights.light.title" = "Light";
+"app_intents.lights.light.target" = "Estado alvo";
+"app_intents.lights.light.title" = "Luz";
 "app_intents.perform_action.action_parameter_configuration" = "Qual ação?";
 "app_intents.perform_action.action_parameter_confirmation" = "Só para confirmar, você queria ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Existem %@ opções correspondentes a ‘%@’.";
@@ -943,8 +943,8 @@
 "widgets.controls.assist.description" = "Abrir Assist no aplicativo Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Escolha um pipeline";
 "widgets.controls.assist.title" = "Assist";
-"widgets.controls.light.description" = "Turn on/off your light";
-"widgets.controls.light.title" = "Light";
+"widgets.controls.light.description" = "Ligue / desligue sua luz";
+"widgets.controls.light.title" = "Luz";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Escolha a página";
 "widgets.controls.open_page.configuration.parameter.page" = "Página";
 "widgets.controls.open_page.configuration.title" = "Abrir página";
@@ -974,7 +974,7 @@
 "widgets.gauge.parameters.value_label_template" = "Modelo de rótulo de valor";
 "widgets.gauge.parameters.value_template" = "Modelo de valor (0-1)";
 "widgets.gauge.title" = "Medidor";
-"widgets.lights.description" = "Turn on/off light";
+"widgets.lights.description" = "Ligar/desligar a luz";
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";

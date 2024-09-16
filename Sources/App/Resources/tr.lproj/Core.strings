@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Boşta";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Kapalı";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Evde";
+"component::improv_ble::config::abort::already_configured" = "Cihaz zaten yapılandırılmış";
+"component::improv_ble::config::abort::already_provisioned" = "Cihaz zaten Wi-Fi'ye bağlı. Başka bir ağa bağlamak istiyorsanız önce fabrika ayarlarına sıfırlamayı deneyin.";
+"component::improv_ble::config::abort::cannot_connect" = "Bağlanma hatası";
+"component::improv_ble::config::abort::characteristic_missing" = "Cihaz ya zaten Wi-Fi'ye bağlı ya da artık Wi-Fi'ye bağlanamıyor. Başka bir ağa bağlamak istiyorsanız önce fabrika ayarlarına sıfırlamayı deneyin.";
+"component::improv_ble::config::abort::no_devices_found" = "Ağda cihaz bulunamadı";
+"component::improv_ble::config::abort::provision_successful" = "Cihaz Wi-Fi ağına başarıyla bağlandı.";
+"component::improv_ble::config::abort::provision_successful_url" = "Cihaz Wi-Fi ağına başarıyla bağlandı. \
+\
+ Kurulumu tamamlamak için lütfen {url} ziyaret edin.";
+"component::improv_ble::config::abort::unknown" = "Beklenmeyen hata";
+"component::improv_ble::config::error::unable_to_connect" = "Cihaz Wi-Fi ağına bağlanamadı. SSID ve şifrenin doğru olup olmadığını kontrol edin ve tekrar deneyin.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Cihaz yetkilendirme gerektiriyor. Nasıl ilerleyeceğinizi öğrenmek için lütfen yetkilendirme düğmesine basın veya cihazın kılavuzuna bakın.";
+"component::improv_ble::config::progress::provisioning" = "Cihaz Wi-Fi ağına bağlanıyor.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "{name} 'i kurmak istiyor musunuz?";
+"component::improv_ble::config::step::identify::description" = "Cihaz artık örneğin yanıp sönerek veya bip sesi çıkararak kendini tanıtıyor.";
+"component::improv_ble::config::step::main_menu::description" = "Sonraki adımı seçin.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Cihazı tanımlayın";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Cihazı bir Wi-Fi ağına bağlayın";
+"component::improv_ble::config::step::provision::data::password" = "Şifre";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Cihazı ağınıza bağlamak için Wi-Fi kimlik bilgilerini girin.";
+"component::improv_ble::config::step::user::data::address" = "Cihaz";
+"component::improv_ble::config::step::user::description" = "Kurmak için bir cihaz seçin";
 "component::input_boolean::entity_component::_::state::off" = "Kapalı";
 "component::input_boolean::entity_component::_::state::on" = "Açık";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Hayır";

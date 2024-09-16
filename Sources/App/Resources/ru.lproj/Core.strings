@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Бездействие";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Выключено";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Дома";
+"component::improv_ble::config::abort::already_configured" = "Это устройство уже добавлено в Home Assistant";
+"component::improv_ble::config::abort::already_provisioned" = "Устройство уже подключено к Wi-Fi. Если вы хотите подключить его к другой сети, сначала попробуйте выполнить сброс настроек к заводским.";
+"component::improv_ble::config::abort::cannot_connect" = "Не удалось подключиться";
+"component::improv_ble::config::abort::characteristic_missing" = "Устройство либо уже подключено к Wi-Fi, либо больше не может подключиться к Wi-Fi. Если вы хотите подключить его к другой сети, сначала попробуйте выполнить сброс настроек к заводским.";
+"component::improv_ble::config::abort::no_devices_found" = "Устройства не найдены в сети";
+"component::improv_ble::config::abort::provision_successful" = "Устройство успешно подключилось к сети Wi-Fi.";
+"component::improv_ble::config::abort::provision_successful_url" = "Устройство успешно подключилось к сети Wi-Fi.\
+\
+Пожалуйста, перейдите по {url}, чтобы завершить настройку.";
+"component::improv_ble::config::abort::unknown" = "Непредвиденная ошибка";
+"component::improv_ble::config::error::unable_to_connect" = "Устройству не удалось подключиться к сети Wi-Fi. Проверьте правильность SSID и пароля и повторите попытку.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "The device requires authorization, please press its authorization button or consult the device's manual for how to proceed.";
+"component::improv_ble::config::progress::provisioning" = "Устройство подключается к сети Wi-Fi.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Хотите настроить {name}?";
+"component::improv_ble::config::step::identify::description" = "The device is now identifying itself, for example by blinking or beeping.";
+"component::improv_ble::config::step::main_menu::description" = "Choose next step.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Identify device";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Connect device to a Wi-Fi network";
+"component::improv_ble::config::step::provision::data::password" = "Пароль";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Введите учетные данные Wi-Fi, чтобы подключить устройство к вашей сети.";
+"component::improv_ble::config::step::user::data::address" = "Устройство";
+"component::improv_ble::config::step::user::description" = "Выберите устройство для настройки";
 "component::input_boolean::entity_component::_::state::off" = "Выключено";
 "component::input_boolean::entity_component::_::state::on" = "Включено";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Нет";

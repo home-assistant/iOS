@@ -54,7 +54,7 @@
 "announcement.drop_support.title" = "Oluline uuendus";
 "app_intents.assist.pipeline.title" = "Voog";
 "app_intents.assist.preferred_pipeline.title" = "Eelistatud";
-"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.assist.refresh_warning.title" = "Ei leia oma Assisti voogu? Voogude loendi värskendamiseks ava rakenduses Assist.";
 "app_intents.controls.assist.parameter.with_voice" = "Häälega";
 "app_intents.controls.assist.title" = "Assist rakenduses";
 "app_intents.haptic_confirmation.title" = "Tunnetatav kinnitus";

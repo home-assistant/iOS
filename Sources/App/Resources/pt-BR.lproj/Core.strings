@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Ocioso";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Desligado";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Em casa";
+"component::improv_ble::config::abort::already_configured" = "Dispositivo já está configurado";
+"component::improv_ble::config::abort::already_provisioned" = "The device is already connected to Wi-Fi. If you want to connect it to another network, try factory resetting it first.";
+"component::improv_ble::config::abort::cannot_connect" = "Falha ao conectar";
+"component::improv_ble::config::abort::characteristic_missing" = "The device is either already connected to Wi-Fi, or no longer able to connect to Wi-Fi. If you want to connect it to another network, try factory resetting it first.";
+"component::improv_ble::config::abort::no_devices_found" = "Nenhum dispositivo encontrado na rede";
+"component::improv_ble::config::abort::provision_successful" = "The device has successfully connected to the Wi-Fi network.";
+"component::improv_ble::config::abort::provision_successful_url" = "The device has successfully connected to the Wi-Fi network.\
+\
+Please visit {url} to finish setup.";
+"component::improv_ble::config::abort::unknown" = "Erro inesperado";
+"component::improv_ble::config::error::unable_to_connect" = "The device could not connect to the Wi-Fi network. Check that the SSID and password are correct and try again.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "The device requires authorization, please press its authorization button or consult the device's manual for how to proceed.";
+"component::improv_ble::config::progress::provisioning" = "The device is connecting to the Wi-Fi network.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Deseja configurar {name}?";
+"component::improv_ble::config::step::identify::description" = "The device is now identifying itself, for example by blinking or beeping.";
+"component::improv_ble::config::step::main_menu::description" = "Choose next step.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Identify device";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Connect device to a Wi-Fi network";
+"component::improv_ble::config::step::provision::data::password" = "Senha";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Enter Wi-Fi credentials to connect the device to your network.";
+"component::improv_ble::config::step::user::data::address" = "Dispositivo";
+"component::improv_ble::config::step::user::description" = "Escolha um dispositivo para configurar";
 "component::input_boolean::entity_component::_::state::off" = "Desligado";
 "component::input_boolean::entity_component::_::state::on" = "Ligado";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Não";
