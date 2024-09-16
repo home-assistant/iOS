@@ -13,6 +13,7 @@ struct WidgetScriptsEntry: TimelineEntry {
 
     struct ScriptServer {
         let id: String
+        let entityId: String
         let serverId: String
         let serverName: String
         let name: String
@@ -35,6 +36,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
             serverCollection.value.map { script in
                 WidgetScriptsEntry.ScriptServer(
                     id: script.id,
+                    entityId: script.entityId,
                     serverId: serverCollection.key.identifier.rawValue,
                     serverName: serverCollection.key.info.name,
                     name: script.name,
@@ -48,6 +50,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
             scripts: configuration.scripts?.compactMap({ intentScriptEntity in
                 .init(
                     id: intentScriptEntity.id,
+                    entityId: intentScriptEntity.entityId,
                     serverId: intentScriptEntity.serverId,
                     serverName: intentScriptEntity.serverName,
                     name: intentScriptEntity.displayString,
@@ -66,6 +69,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                 return Entry(date: Date(), scripts: configurationScripts.compactMap({ intentScriptEntity in
                     .init(
                         id: intentScriptEntity.id,
+                        entityId: intentScriptEntity.entityId,
                         serverId: intentScriptEntity.serverId,
                         serverName: intentScriptEntity.serverName,
                         name: intentScriptEntity.displayString,
@@ -77,6 +81,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                     scripts.map { script in
                         WidgetScriptsEntry.ScriptServer(
                             id: script.entityId,
+                            entityId: script.entityId,
                             serverId: server.identifier.rawValue,
                             serverName: server.info.name,
                             name: script.name,
@@ -106,6 +111,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
             date: Date(),
             scripts: [.init(
                 id: "1",
+                entityId: "1",
                 serverId: "1",
                 serverName: "Home",
                 name: L10n.Widgets.Scripts.title,

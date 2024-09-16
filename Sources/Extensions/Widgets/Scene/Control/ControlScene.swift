@@ -14,6 +14,7 @@ struct ControlScene: ControlWidget {
                 let intent = SceneAppIntent()
                 intent.scene = .init(
                     id: template.intentSceneEntity.id,
+                    entityId: template.intentSceneEntity.entityId,
                     serverId: template.intentSceneEntity.serverId,
                     serverName: template.intentSceneEntity.serverName,
                     displayString: template.intentSceneEntity.displayString,

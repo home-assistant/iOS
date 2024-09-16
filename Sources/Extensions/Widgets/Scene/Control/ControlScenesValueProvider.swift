@@ -39,6 +39,7 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
     private func placeholder() -> IntentSceneEntity {
         .init(
             id: UUID().uuidString,
+            entityId: "",
             serverId: "",
             serverName: "",
             displayString: L10n.Widgets.Controls.Scenes.placeholderTitle,

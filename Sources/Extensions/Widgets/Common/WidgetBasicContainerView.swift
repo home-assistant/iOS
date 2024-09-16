@@ -38,10 +38,11 @@ struct WidgetBasicContainerView: View {
                 intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
                 intent.hapticConfirmation = true
                 return intent
-            case let .script(id, serverId, name, showConfirmationNotification):
+            case let .script(id, entityId, serverId, name, showConfirmationNotification):
                 let intent = ScriptAppIntent()
                 intent.script = .init(
                     id: id,
+                    entityId: entityId,
                     serverId: serverId,
                     serverName: "", // not used in this context
                     displayString: name,

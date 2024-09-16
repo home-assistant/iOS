@@ -14,6 +14,7 @@ struct ControlScript: ControlWidget {
                 let intent = ScriptAppIntent()
                 intent.script = .init(
                     id: template.intentScriptEntity.id,
+                    entityId: template.intentScriptEntity.entityId,
                     serverId: template.intentScriptEntity.serverId,
                     serverName: template.intentScriptEntity.serverName,
                     displayString: template.intentScriptEntity.displayString,

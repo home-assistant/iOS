@@ -11,6 +11,7 @@ struct IntentSceneEntity: AppEntity {
     static let defaultQuery = IntentSceneAppEntityQuery()
 
     var id: String
+    var entityId: String
     var serverId: String
     var serverName: String
     var displayString: String
@@ -21,12 +22,14 @@ struct IntentSceneEntity: AppEntity {
 
     init(
         id: String,
+        entityId: String,
         serverId: String,
         serverName: String,
         displayString: String,
         iconName: String
     ) {
         self.id = id
+        self.entityId = entityId
         self.serverId = serverId
         self.serverName = serverName
         self.displayString = displayString
@@ -79,6 +82,7 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
                     entities[server] = scenes.map({ entity in
                         .init(
                             id: entity.id,
+                            entityId: entity.entityId,
                             serverId: server.identifier.rawValue,
                             serverName: server.info.name,
                             displayString: entity.name,

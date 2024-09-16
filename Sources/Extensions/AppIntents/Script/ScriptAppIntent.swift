@@ -15,19 +15,6 @@ final class ScriptAppIntent: AppIntent {
 
     @Parameter(
         title: LocalizedStringResource(
-            "app_intents.scripts.requires_confirmation_before_run.title",
-            defaultValue: "Confirm before run"
-        ),
-        description: LocalizedStringResource(
-            "app_intents.scripts.requires_confirmation_before_run.description",
-            defaultValue: "Requires manual confirmation before running the script."
-        ),
-        default: true
-    )
-    var requiresConfirmationBeforeRun: Bool
-
-    @Parameter(
-        title: LocalizedStringResource(
             "app_intents.scripts.show_confirmation_dialog.title",
             defaultValue: "Confirmation notification"
         ),
@@ -49,10 +36,6 @@ final class ScriptAppIntent: AppIntent {
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        if requiresConfirmationBeforeRun {
-            try await requestConfirmation()
-        }
-
         if hapticConfirmation {
             // Unfortunately this is the only 'haptics' that work with widgets
             // ideally in the future this should use CoreHaptics for a better experience
@@ -65,7 +48,7 @@ final class ScriptAppIntent: AppIntent {
                 return
             }
             let domain = Domain.script.rawValue
-            let service = script.id.replacingOccurrences(of: "\(domain).", with: "")
+            let service = script.entityId.replacingOccurrences(of: "\(domain).", with: "")
             Current.api(for: server).CallService(domain: domain, service: service, serviceData: [:])
                 .pipe { [weak self] result in
                     switch result {
@@ -98,6 +81,7 @@ struct IntentScriptEntity: AppEntity {
     static let defaultQuery = IntentScriptAppEntityQuery()
 
     var id: String
+    var entityId: String
     var serverId: String
     var serverName: String
     var displayString: String
@@ -108,12 +92,14 @@ struct IntentScriptEntity: AppEntity {
 
     init(
         id: String,
+        entityId: String,
         serverId: String,
         serverName: String,
         displayString: String,
         iconName: String
     ) {
         self.id = id
+        self.entityId = entityId
         self.serverId = serverId
         self.serverName = serverName
         self.displayString = displayString
@@ -161,6 +147,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                     entities[server] = scripts.map({ entity in
                         .init(
                             id: entity.id,
+                            entityId: entity.entityId,
                             serverId: server.identifier.rawValue,
                             serverName: server.info.name,
                             displayString: entity.name,

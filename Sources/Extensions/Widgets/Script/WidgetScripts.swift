@@ -22,6 +22,7 @@ struct WidgetScripts: Widget {
                         subtitle: timelineEntry.showServerName ? script.serverName : nil,
                         interactionType: .appIntent(.script(
                             id: script.id,
+                            entityId: script.entityId,
                             serverId: script.serverId,
                             name: script.name,
                             showConfirmationNotification: timelineEntry.showConfirmationDialog
