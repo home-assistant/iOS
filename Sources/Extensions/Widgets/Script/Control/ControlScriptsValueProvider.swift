@@ -39,6 +39,7 @@ struct ControlScriptsValueProvider: AppIntentControlValueProvider {
     private func placeholder() -> IntentScriptEntity {
         .init(
             id: UUID().uuidString,
+            entityId: "",
             serverId: "",
             serverName: "",
             displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,

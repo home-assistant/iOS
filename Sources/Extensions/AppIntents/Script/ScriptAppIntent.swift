@@ -65,7 +65,7 @@ final class ScriptAppIntent: AppIntent {
                 return
             }
             let domain = Domain.script.rawValue
-            let service = script.id.replacingOccurrences(of: "\(domain).", with: "")
+            let service = script.entityId.replacingOccurrences(of: "\(domain).", with: "")
             Current.api(for: server).CallService(domain: domain, service: service, serviceData: [:])
                 .pipe { [weak self] result in
                     switch result {
@@ -98,6 +98,7 @@ struct IntentScriptEntity: AppEntity {
     static let defaultQuery = IntentScriptAppEntityQuery()
 
     var id: String
+    var entityId: String
     var serverId: String
     var serverName: String
     var displayString: String
@@ -108,12 +109,14 @@ struct IntentScriptEntity: AppEntity {
 
     init(
         id: String,
+        entityId: String,
         serverId: String,
         serverName: String,
         displayString: String,
         iconName: String
     ) {
         self.id = id
+        self.entityId = entityId
         self.serverId = serverId
         self.serverName = serverName
         self.displayString = displayString
@@ -161,6 +164,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                     entities[server] = scripts.map({ entity in
                         .init(
                             id: entity.id,
+                            entityId: entity.entityId,
                             serverId: server.identifier.rawValue,
                             serverName: server.info.name,
                             displayString: entity.name,

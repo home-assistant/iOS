@@ -46,6 +46,7 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
             intent.requiresConfirmationBeforeRun = false
             intent.script = .init(
                 id: script.id,
+                entityId: script.entityId,
                 serverId: script.serverId,
                 serverName: script.serverName,
                 displayString: script.displayString,
