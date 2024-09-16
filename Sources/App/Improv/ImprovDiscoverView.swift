@@ -1,5 +1,6 @@
 import CoreBluetooth
 import Improv_iOS
+import NetworkExtension
 import Shared
 import SwiftUI
 
@@ -137,6 +138,13 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     if let peripheral = improvManager.foundDevices[peripheralKey] {
                         Button {
                             selectedPeripheral = peripheral
+
+                            // This only works if location permission is permitted
+                            NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+                                if let ssid = hotspotNetwork?.ssid, self.ssid.isEmpty {
+                                    self.ssid = ssid
+                                }
+                            }
                             showWifiAlert = true
                             state = .loading(L10n.Improv.State.connecting)
                         } label: {
