@@ -26,7 +26,7 @@ enum AppEntitiesObserver {
             container = .init { server in
                 .init(
                     Current.api(for: server).connection.caches.states.subscribe({ [weak self] _, states in
-                        guard let self else { return }
+                        guard let self, UIApplication.shared.applicationState == .active else { return }
                         let appRelatedEntities = states.all.filter { self.domainsAppUse.contains($0.domain) }
                         handle(appRelatedEntities: appRelatedEntities, server: server)
                     })
