@@ -4,11 +4,17 @@ import SwiftUI
 struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel: WatchHomeViewModel
-
+    @Binding var showAssist: Bool
     let reloadAction: () -> Void
 
-    init(watchConfig: WatchConfig, magicItemsInfo: [MagicItem.Info], reloadAction: @escaping () -> Void) {
+    init(
+        watchConfig: WatchConfig,
+        magicItemsInfo: [MagicItem.Info],
+        showAssist: Binding<Bool>,
+        reloadAction: @escaping () -> Void
+    ) {
         self._viewModel = .init(wrappedValue: .init(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo))
+        self._showAssist = showAssist
         self.reloadAction = reloadAction
     }
 
@@ -26,6 +32,12 @@ struct WatchHomeView: View {
 
     private var content: some View {
         List {
+            if #unavailable(watchOS 10),
+               viewModel.watchConfig.assist.showAssist,
+               !viewModel.watchConfig.assist.serverId.isEmpty,
+               !viewModel.watchConfig.assist.pipelineId.isEmpty {
+                assistButton
+            }
             ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
                 WatchMagicViewRow(
                     item: item,
@@ -35,6 +47,21 @@ struct WatchHomeView: View {
             reloadButton
         }
         .navigationTitle("")
+    }
+
+    private var assistButton: some View {
+        Button {
+            showAssist = true
+        } label: {
+            HStack {
+                Image(uiImage: MaterialDesignIcons.messageTextOutlineIcon.image(
+                    ofSize: .init(width: 24, height: 24),
+                    color: Asset.Colors.haPrimary.color
+                ))
+                Text("Assist")
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+        }
     }
 
     @ViewBuilder
@@ -63,7 +90,7 @@ struct WatchHomeView: View {
                 magicItemsInfo: [
                     .init(id: "1", name: "This is a script", iconName: "mdi:access-point-check"),
                     .init(id: "2", name: "This is an action", iconName: "fire_alert"),
-                ], reloadAction: {}
+                ], showAssist: .constant(false), reloadAction: {}
             )
         }
     } else {

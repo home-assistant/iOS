@@ -54,11 +54,6 @@ struct WatchHomeCoordinatorView: View {
         } else {
             NavigationView {
                 content
-                    .toolbar {
-                        if #available(watchOS 9.0, *), let config = viewModel.config, config.assist.showAssist {
-                            assistButton
-                        }
-                    }
             }
         }
     }
@@ -98,7 +93,7 @@ struct WatchHomeCoordinatorView: View {
                     reloadButton
                 }
             case let .config(watchConfig, magicItemsInfo):
-                WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo) {
+                WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo, showAssist: $showAssist) {
                     viewModel.requestConfig()
                 }
             case let .error(errorMessage):
