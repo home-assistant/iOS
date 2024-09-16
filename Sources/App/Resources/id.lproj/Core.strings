@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Siaga";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Mati";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Di Rumah";
+"component::improv_ble::config::abort::already_configured" = "Perangkat sudah dikonfigurasi";
+"component::improv_ble::config::abort::already_provisioned" = "Perangkat sudah terhubung ke Wi-Fi. Jika Anda ingin menyambungkannya ke jaringan lain, coba atur ulang ke pengaturan pabrik terlebih dahulu.";
+"component::improv_ble::config::abort::cannot_connect" = "Gagal terhubung";
+"component::improv_ble::config::abort::characteristic_missing" = "Perangkat sudah tersambung ke Wi-Fi, atau tidak lagi dapat tersambung ke Wi-Fi. Jika Anda ingin menyambungkannya ke jaringan lain, coba atur ulang ke pengaturan pabrik terlebih dahulu.";
+"component::improv_ble::config::abort::no_devices_found" = "Tidak ada perangkat yang ditemukan di jaringan";
+"component::improv_ble::config::abort::provision_successful" = "Perangkat telah berhasil terhubung ke jaringan Wi-Fi.";
+"component::improv_ble::config::abort::provision_successful_url" = "Perangkat berhasil terhubung ke jaringan Wi-Fi. \
+\
+Kunjungi {url} untuk menyelesaikan penyiapan.";
+"component::improv_ble::config::abort::unknown" = "Kesalahan tak terduga";
+"component::improv_ble::config::error::unable_to_connect" = "Perangkat tidak dapat tersambung ke jaringan Wi-Fi. Periksa apakah SSID dan kata sandi sudah benar, lalu coba lagi.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Perangkat memerlukan otorisasi, tekan tombol otorisasi atau baca panduan perangkat untuk mengetahui cara melanjutkannya.";
+"component::improv_ble::config::progress::provisioning" = "Perangkat terhubung ke jaringan Wi-Fi.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Ingin menyiapkan {name}?";
+"component::improv_ble::config::step::identify::description" = "Perangkat kini mengidentifikasi dirinya sendiri, misalnya dengan berkedip atau berbunyi bip.";
+"component::improv_ble::config::step::main_menu::description" = "Pilih langkah selanjutnya.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Identifikasi perangkat";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Hubungkan perangkat ke jaringan Wi-Fi";
+"component::improv_ble::config::step::provision::data::password" = "Kata sandi";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Masukkan kredensial Wi-Fi untuk menghubungkan perangkat ke jaringan Anda.";
+"component::improv_ble::config::step::user::data::address" = "Perangkat";
+"component::improv_ble::config::step::user::description" = "Pilih perangkat untuk disiapkan";
 "component::input_boolean::entity_component::_::state::off" = "Mati";
 "component::input_boolean::entity_component::_::state::on" = "Nyala";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Tidak";

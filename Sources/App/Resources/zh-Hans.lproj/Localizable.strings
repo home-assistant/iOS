@@ -54,7 +54,7 @@
 "announcement.drop_support.title" = "重要更新";
 "app_intents.assist.pipeline.title" = "管道";
 "app_intents.assist.preferred_pipeline.title" = "首选";
-"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.assist.refresh_warning.title" = "找不到您的语音助手管道 ？在应用中打开语音助手，刷新管道列表。";
 "app_intents.controls.assist.parameter.with_voice" = "带有语音";
 "app_intents.controls.assist.title" = "应用中语音助手";
 "app_intents.haptic_confirmation.title" = "触觉确认";

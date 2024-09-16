@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Inattivo";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Spento/a";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "In casa";
+"component::improv_ble::config::abort::already_configured" = "Il dispositivo è già configurato";
+"component::improv_ble::config::abort::already_provisioned" = "Il dispositivo è già connesso al Wi-Fi. Se desideri collegarlo a un'altra rete, prova prima a ripristinarlo alle impostazioni di fabbrica.";
+"component::improv_ble::config::abort::cannot_connect" = "Impossibile connettersi";
+"component::improv_ble::config::abort::characteristic_missing" = "Il dispositivo è già connesso al Wi-Fi o non è più in grado di connettersi al Wi-Fi. Se desideri collegarlo a un'altra rete, prova prima a ripristinarlo alle impostazioni di fabbrica.";
+"component::improv_ble::config::abort::no_devices_found" = "Nessun dispositivo trovato sulla rete";
+"component::improv_ble::config::abort::provision_successful" = "Il dispositivo si è connesso correttamente alla rete Wi-Fi.";
+"component::improv_ble::config::abort::provision_successful_url" = "Il dispositivo si è connesso correttamente alla rete Wi-Fi. \
+\
+ Visita {url} per completare la configurazione.";
+"component::improv_ble::config::abort::unknown" = "Errore imprevisto";
+"component::improv_ble::config::error::unable_to_connect" = "Il dispositivo non è riuscito a connettersi alla rete Wi-Fi. Controlla che l'SSID e la password siano corretti e riprova.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Il dispositivo richiede l'autorizzazione, premere il pulsante di autorizzazione o consultare il manuale del dispositivo per sapere come procedere.";
+"component::improv_ble::config::progress::provisioning" = "Il dispositivo si sta connettendo alla rete Wi-Fi.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Vuoi configurare {name}?";
+"component::improv_ble::config::step::identify::description" = "Il dispositivo si sta identificando, ad esempio lampeggiando o emettendo un segnale acustico.";
+"component::improv_ble::config::step::main_menu::description" = "Scegli il passaggio successivo.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Identifica il dispositivo";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Connetti il dispositivo a una rete Wi-Fi";
+"component::improv_ble::config::step::provision::data::password" = "Password";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Inserisci le credenziali Wi-Fi per connettere il dispositivo alla tua rete.";
+"component::improv_ble::config::step::user::data::address" = "Dispositivo";
+"component::improv_ble::config::step::user::description" = "Scegli un dispositivo da configurare";
 "component::input_boolean::entity_component::_::state::off" = "Spento/a";
 "component::input_boolean::entity_component::_::state::on" = "Acceso/a";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "No";

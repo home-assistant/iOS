@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Inactif";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Désactivé";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Maison";
+"component::improv_ble::config::abort::already_configured" = "L'appareil est déjà configuré";
+"component::improv_ble::config::abort::already_provisioned" = "L'appareil est déjà connecté au Wi-Fi. Si vous souhaitez le connecter à un autre réseau, essayez d'abord de le réinitialiser aux paramètres d'usine.";
+"component::improv_ble::config::abort::cannot_connect" = "Échec de connexion";
+"component::improv_ble::config::abort::characteristic_missing" = "L'appareil est soit déjà connecté au Wi-Fi, soit il ne parvient plus à se connecter au Wi-Fi. Si vous souhaitez le connecter à un autre réseau, essayez d'abord de le réinitialiser aux paramètres d'usine.";
+"component::improv_ble::config::abort::no_devices_found" = "Aucun appareil trouvé sur le réseau";
+"component::improv_ble::config::abort::provision_successful" = "L'appareil s'est connecté avec succès au réseau Wi-Fi.";
+"component::improv_ble::config::abort::provision_successful_url" = "L'appareil s'est connecté avec succès au réseau Wi-Fi.\
+\
+Veuillez visiter {url} pour terminer la configuration.";
+"component::improv_ble::config::abort::unknown" = "Erreur inattendue";
+"component::improv_ble::config::error::unable_to_connect" = "L'appareil n'a pas pu se connecter au réseau Wi-Fi. Vérifiez que le SSID et le mot de passe sont corrects et réessayez.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "L'appareil nécessite une autorisation, veuillez appuyer sur son bouton d'autorisation ou consulter le manuel de l'appareil pour savoir comment procéder.";
+"component::improv_ble::config::progress::provisioning" = "L'appareil se connecte au réseau Wi-Fi.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Voulez-vous configurer {name} ?";
+"component::improv_ble::config::step::identify::description" = "L'appareil s'identifie maintenant, par exemple en clignotant ou en émettant un signal sonore.";
+"component::improv_ble::config::step::main_menu::description" = "Choisissez l'étape suivante.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Identifier l'appareil";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Connecter l'appareil à un réseau Wi-Fi";
+"component::improv_ble::config::step::provision::data::password" = "Mot de passe";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Saisissez les informations d'identification Wi-Fi pour connecter l'appareil à votre réseau.";
+"component::improv_ble::config::step::user::data::address" = "Appareil";
+"component::improv_ble::config::step::user::description" = "Sélectionnez l'appareil à configurer";
 "component::input_boolean::entity_component::_::state::off" = "Désactivé";
 "component::input_boolean::entity_component::_::state::on" = "Activé";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Non";

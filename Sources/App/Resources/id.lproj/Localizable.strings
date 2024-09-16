@@ -54,7 +54,7 @@
 "announcement.drop_support.title" = "Pembaruan penting";
 "app_intents.assist.pipeline.title" = "Saluran";
 "app_intents.assist.preferred_pipeline.title" = "Diutamakan";
-"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.assist.refresh_warning.title" = "Tidak dapat menemukan saluran Assist Anda? Buka Assist di aplikasi untuk menyegarkan daftar salurannya.";
 "app_intents.controls.assist.parameter.with_voice" = "Dengan suara";
 "app_intents.controls.assist.title" = "Assist dalam aplikasi";
 "app_intents.haptic_confirmation.title" = "Konfirmasi haptik";

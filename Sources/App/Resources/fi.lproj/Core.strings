@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Toimeton";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Pois";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Kotona";
+"component::improv_ble::config::abort::already_configured" = "Laite on jo määritetty";
+"component::improv_ble::config::abort::already_provisioned" = "Laite on jo yhdistetty Wi-Fi-verkkoon. Jos haluat liittää sen toiseen verkkoon, yritä ensin palauttaa laite tehdasasetukset.";
+"component::improv_ble::config::abort::cannot_connect" = "Yhteyden muodostaminen epäonnistui";
+"component::improv_ble::config::abort::characteristic_missing" = "Laite on joko jo yhdistetty Wi-Fi-verkkoon tai se ei enää pysty muodostamaan yhteyttä Wi-Fi-verkkoon. Jos haluat yhdistää sen toiseen verkkoon, yritä ensin palauttaa laite tehdasasetukset.";
+"component::improv_ble::config::abort::no_devices_found" = "Verkosta ei löytynyt laitteita";
+"component::improv_ble::config::abort::provision_successful" = "Laite on muodostanut yhteyden Wi-Fi-verkkoon.";
+"component::improv_ble::config::abort::provision_successful_url" = "Laite on muodostanut onnistuneen yhteyden Wi-Fi-verkkoon.\
+\
+Käy osoitteessa {url} viimeistelläksesi asetukset.";
+"component::improv_ble::config::abort::unknown" = "Odottamaton virhe";
+"component::improv_ble::config::error::unable_to_connect" = "Laite ei voinut muodostaa yhteyttä Wi-Fi-verkkoon. Tarkista, että SSID ja salasana ovat oikein ja yritä uudelleen.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Laite vaatii valtuutuksen, paina sen valtuutuspainiketta tai katso laitteen käyttöoppaasta, miten toimia.";
+"component::improv_ble::config::progress::provisioning" = "Laite muodostaa yhteyttä Wi-Fi-verkkoon.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Haluatko määrittää {name}?";
+"component::improv_ble::config::step::identify::description" = "Laite tunnistaa nyt itse itsensä esimerkiksi vilkkumalla tai piippaamalla.";
+"component::improv_ble::config::step::main_menu::description" = "Valitse seuraava vaihe.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Tunnista laite";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Yhdistä laite Wi-Fi-verkkoon";
+"component::improv_ble::config::step::provision::data::password" = "Salasana";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Syötä Wi-Fi-tiedot, jotta laite voidaan liittää verkkoon.";
+"component::improv_ble::config::step::user::data::address" = "Laite";
+"component::improv_ble::config::step::user::description" = "Valitse laite, jonka haluat määrittää";
 "component::input_boolean::entity_component::_::state::off" = "Pois";
 "component::input_boolean::entity_component::_::state::on" = "Päällä";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Ei";

@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "유휴 중";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "꺼짐";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "재실";
+"component::improv_ble::config::abort::already_configured" = "기기가 이미 구성되었습니다";
+"component::improv_ble::config::abort::already_provisioned" = "기기가 이미 Wi-Fi에 연결되어 있습니다. 다른 네트워크에 연결하려면 먼저 공장 초기화를 시도해 보세요.";
+"component::improv_ble::config::abort::cannot_connect" = "연결하지 못했습니다";
+"component::improv_ble::config::abort::characteristic_missing" = "기기가 이미 Wi-Fi에 연결되어 있거나 더 이상 Wi-Fi에 연결할 수 없습니다. 다른 네트워크에 연결하려면 먼저 공장 초기화를 시도해 보세요.";
+"component::improv_ble::config::abort::no_devices_found" = "네트워크에서 기기를 찾을 수 없습니다";
+"component::improv_ble::config::abort::provision_successful" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다.";
+"component::improv_ble::config::abort::provision_successful_url" = "기기가 Wi-Fi 네트워크에 성공적으로 연결되었습니다. \
+\
+ 설정을 완료하려면 {url} 방문하세요.";
+"component::improv_ble::config::abort::unknown" = "예상치 못한 오류가 발생했습니다";
+"component::improv_ble::config::error::unable_to_connect" = "기기를 Wi-Fi 네트워크에 연결할 수 없습니다. SSID와 비밀번호가 올바른지 확인하고 다시 시도하세요.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "기기에 인증이 필요합니다. 인증 버튼을 누르거나 진행 방법을 알아보려면 기기 설명서를 참조하세요.";
+"component::improv_ble::config::progress::provisioning" = "기기가 Wi-Fi 네트워크에 연결 중입니다.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "{name}을(를) 설정하시겠습니까?";
+"component::improv_ble::config::step::identify::description" = "이제 기기가 깜박이거나 신호음이 울리는 등 스스로를 식별하고 있습니다.";
+"component::improv_ble::config::step::main_menu::description" = "다음 단계를 선택하세요.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "기기 식별";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "기기를 Wi-Fi 네트워크에 연결";
+"component::improv_ble::config::step::provision::data::password" = "암호";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "기기를 네트워크에 연결하려면 Wi-Fi 자격 증명을 입력하세요.";
+"component::improv_ble::config::step::user::data::address" = "기기";
+"component::improv_ble::config::step::user::description" = "설정할 기기 선택";
 "component::input_boolean::entity_component::_::state::off" = "꺼짐";
 "component::input_boolean::entity_component::_::state::on" = "켜짐";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "아니요";

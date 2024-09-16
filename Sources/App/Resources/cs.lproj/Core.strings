@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Nečinný";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Vypnuto";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Doma";
+"component::improv_ble::config::abort::already_configured" = "Zařízení je již nastaveno";
+"component::improv_ble::config::abort::already_provisioned" = "Zařízení je již připojeno k Wi-Fi. Pokud jej chcete připojit k jiné síti, zkuste jej nejprve obnovit do továrního nastavení.";
+"component::improv_ble::config::abort::cannot_connect" = "Nepodařilo se připojit";
+"component::improv_ble::config::abort::characteristic_missing" = "Zařízení je buď již připojeno k Wi-Fi, nebo se již nemůže připojit k Wi-Fi. Pokud jej chcete připojit k jiné síti, zkuste jej nejprve obnovit do továrního nastavení.";
+"component::improv_ble::config::abort::no_devices_found" = "V síti nebyla nalezena žádná zařízení";
+"component::improv_ble::config::abort::provision_successful" = "Zařízení se úspěšně připojilo k síti Wi-Fi.";
+"component::improv_ble::config::abort::provision_successful_url" = "Zařízení se úspěšně připojilo k síti Wi-Fi.\
+\
+Navštivte {url} a dokončete nastavení.";
+"component::improv_ble::config::abort::unknown" = "Neočekávaná chyba";
+"component::improv_ble::config::error::unable_to_connect" = "Zařízení se nemohlo připojit k síti Wi-Fi. Zkontrolujte správnost SSID a hesla a zkuste to znovu.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Zařízení vyžaduje ověření; stiskněte jeho ověřovací tlačítko nebo se podívejte do návodu k zařízení, jak postupovat.";
+"component::improv_ble::config::progress::provisioning" = "Zařízení se připojuje k síti Wi-Fi.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Chcete nastavit {name}?";
+"component::improv_ble::config::step::identify::description" = "Zařízení se nyní identifikuje, například blikáním nebo pípáním.";
+"component::improv_ble::config::step::main_menu::description" = "Vyberte další krok.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Identifikovat zařízení";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Připojit zařízení k síti Wi-Fi";
+"component::improv_ble::config::step::provision::data::password" = "Heslo";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "Zadejte přihlašovací údaje Wi-Fi pro připojení zařízení k vaší síti.";
+"component::improv_ble::config::step::user::data::address" = "Zařízení";
+"component::improv_ble::config::step::user::description" = "Zvolte zařízení, které chcete nastavit";
 "component::input_boolean::entity_component::_::state::off" = "Vypnuto";
 "component::input_boolean::entity_component::_::state::on" = "Zapnuto";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Ne";

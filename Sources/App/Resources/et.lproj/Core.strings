@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Ootel";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Väljas";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Kodus";
+"component::improv_ble::config::abort::already_configured" = "Seade on juba häälestatud";
+"component::improv_ble::config::abort::already_provisioned" = "Seade on juba Wi-Fi-ga ühendatud. Kui soovid selle teise võrguga ühendada, proovi see esmalt tehaseseadetele lähtestada.";
+"component::improv_ble::config::abort::cannot_connect" = "Ühendamine nurjus";
+"component::improv_ble::config::abort::characteristic_missing" = "Seade on juba Wi-Fi-ga ühendatud või ei saa enam Wi-Fi-ga ühendust luua. Kui soovid selle teise võrguga ühendada, proovi see esmalt tehaseseadetele lähtestada.";
+"component::improv_ble::config::abort::no_devices_found" = "Võrgust ei leitud ühtegi seadet";
+"component::improv_ble::config::abort::provision_successful" = "Seade on edukalt ühendatud Wi-Fi võrguga.";
+"component::improv_ble::config::abort::provision_successful_url" = "Seade on edukalt ühendatud Wi-Fi võrguga. \
+\
+ Seadistamise lõpetamiseks külasta {url} .";
+"component::improv_ble::config::abort::unknown" = "Ootamatu tõrge";
+"component::improv_ble::config::error::unable_to_connect" = "Seade ei saanud Wi-Fi-võrguga ühendust luua. Kontrolli kas SSID ja salasõna on õiged ja proovi uuesti.";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "Seade vajab tuvastamist, vajuta selle tuvastusnuppu või loe edasi toimimiseks seadme kasutusjuhendit.";
+"component::improv_ble::config::progress::provisioning" = "Seade loob ühendust Wi-Fi võrguga.";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "Kas seadistada {name} ?";
+"component::improv_ble::config::step::identify::description" = "Seade tuvastab end nüüd näiteks vilkumise või piiksu abil.";
+"component::improv_ble::config::step::main_menu::description" = "Vali järgmine samm.";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "Tuvasta seade";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Ühenda seade Wi-Fi-võrguga";
+"component::improv_ble::config::step::provision::data::password" = "Salasõna";
+"component::improv_ble::config::step::provision::data::ssid" = "Wi-Fi SSID";
+"component::improv_ble::config::step::provision::description" = "Seadme võrku ühendamiseks sisesta WiFi mandaadid.";
+"component::improv_ble::config::step::user::data::address" = "Seade";
+"component::improv_ble::config::step::user::description" = "Vali häälestatav seade";
 "component::input_boolean::entity_component::_::state::off" = "Väljas";
 "component::input_boolean::entity_component::_::state::on" = "Sees";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Ei";

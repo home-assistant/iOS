@@ -94,6 +94,30 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "待命";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "關閉";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "在家";
+"component::improv_ble::config::abort::already_configured" = "裝置已經設定完成";
+"component::improv_ble::config::abort::already_provisioned" = "該裝置已連接到 Wi-Fi。如果您想將其連接到另一個網路，請先嘗試恢復其出廠設定。";
+"component::improv_ble::config::abort::cannot_connect" = "連線失敗";
+"component::improv_ble::config::abort::characteristic_missing" = "該裝置已經連接到 Wi-Fi、或無法再連接到 Wi-Fi。如果您想將其連接到另一個網路、請先嘗試恢復其出廠設定。";
+"component::improv_ble::config::abort::no_devices_found" = "網路上找不到裝置";
+"component::improv_ble::config::abort::provision_successful" = "裝置已成功連線至 Wi-Fi 網路。";
+"component::improv_ble::config::abort::provision_successful_url" = "裝置已成功連線至 Wi-Fi 網路。\
+\
+請瀏覽 {url} 以完成設定。";
+"component::improv_ble::config::abort::unknown" = "未預期錯誤";
+"component::improv_ble::config::error::unable_to_connect" = "該裝置無法連接到 Wi-Fi 網路。請檢查 SSID 和密碼是否正確，然後再試一次。";
+"component::improv_ble::config::flow_title" = "{name}";
+"component::improv_ble::config::progress::authorize" = "該裝置需要授權，請按下其授權按鈕或參閱裝置的使用手冊以了解如何進行。";
+"component::improv_ble::config::progress::provisioning" = "裝置正在連接到 Wi-Fi 網路。";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "是否要設定 {name}？";
+"component::improv_ble::config::step::identify::description" = "裝置正在進行識別提是，例如閃爍或發出嗶聲。";
+"component::improv_ble::config::step::main_menu::description" = "選擇下一步。";
+"component::improv_ble::config::step::main_menu::menu_options::identify" = "識別裝置";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "將裝置連接到 Wi-Fi 網路";
+"component::improv_ble::config::step::provision::data::password" = "密碼";
+"component::improv_ble::config::step::provision::data::ssid" = "SSID";
+"component::improv_ble::config::step::provision::description" = "輸入 Wi-Fi 憑證以將裝置連接到您的網路。";
+"component::improv_ble::config::step::user::data::address" = "裝置";
+"component::improv_ble::config::step::user::description" = "選擇所要設定的裝置";
 "component::input_boolean::entity_component::_::state::off" = "關閉";
 "component::input_boolean::entity_component::_::state::on" = "開啟";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "否";
