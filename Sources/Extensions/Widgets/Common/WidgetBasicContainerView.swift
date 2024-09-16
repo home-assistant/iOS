@@ -85,12 +85,12 @@ struct WidgetBasicContainerView: View {
                     ForEach(column) { model in
                         if case let .widgetURL(url) = model.interactionType {
                             Link(destination: url.withWidgetAuthenticity()) {
-                                WidgetBasicView(model: model, sizeStyle: sizeStyle)
+                                WidgetBasicView(model: model, sizeStyle: sizeStyle, tinted: false)
                             }
                         } else {
                             if #available(iOS 17.0, *), let intent = intent(for: model) {
                                 Button(intent: intent) {
-                                    WidgetBasicView(model: model, sizeStyle: sizeStyle)
+                                    WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle)
                                 }
                                 .buttonStyle(.plain)
                             }
