@@ -58,7 +58,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         .onChange(of: improvManager.deviceState) { newValue in
             switch newValue {
             case .authorizationRequired:
-                state = .loading(L10n.Improv.ConnectionState.autorizationRequired)
+                state = .loading(CoreStrings.componentImprovBleConfigProgressAuthorize)
             case .authorized:
                 state = .loading(L10n.Improv.ConnectionState.authorized)
                 // Sending wifi credentials to device
