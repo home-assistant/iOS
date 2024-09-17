@@ -1,5 +1,6 @@
 import CoreBluetooth
 import Improv_iOS
+import NetworkExtension
 import Shared
 import SwiftUI
 
@@ -21,14 +22,8 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
 
     /// Device which is currently selected for connection and wifi operations
     @State private var selectedPeripheral: CBPeripheral?
-
+    @State private var readyToSendWifiCredentials = false
     @State private var bottomSheetState: AppleLikeBottomSheetViewState?
-
-    /*
-     If device is disconnected when user attempts to send wifi credentials
-     we ask the device to reconnect and as soon as it is authorized we retry with the same credentials
-     */
-    @State private var shouldRetryWifiSetup = false
 
     /// Redirect user to integrations page based on urlPath received from Improv
     private let redirectRequest: (_ urlPath: String) -> Void
@@ -64,15 +59,12 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         .onChange(of: improvManager.deviceState) { newValue in
             switch newValue {
             case .authorizationRequired:
-                state = .loading(L10n.Improv.ConnectionState.autorizationRequired)
+                state = .loading(CoreStrings.componentImprovBleConfigProgressAuthorize)
             case .authorized:
+                guard readyToSendWifiCredentials else { return }
                 state = .loading(L10n.Improv.ConnectionState.authorized)
-                if shouldRetryWifiSetup {
-                    shouldRetryWifiSetup = false
-                    authenticate()
-                } else {
-                    showWifiAlert = true
-                }
+                // Sending wifi credentials to device
+                authenticate()
             case .provisioned:
                 state = .success
             case .provisioning:
@@ -91,6 +83,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 state = .failure(L10n.Improv.ErrorState.unknownCommand)
             case .unableToConnect:
                 state = .failure(L10n.Improv.ErrorState.unableToConnect)
+                readyToSendWifiCredentials = false
             case .notAuthorized:
                 state = .failure(L10n.Improv.ErrorState.notAuthorized)
             case .unknown:
@@ -110,7 +103,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             TextField(L10n.Improv.Wifi.Alert.ssidPlaceholder, text: $ssid)
                 .textInputAutocapitalization(.never)
             SecureField(L10n.Improv.Wifi.Alert.passwordPlaceholder, text: $password)
-            Button(L10n.Improv.Wifi.Alert.connectButton, action: authenticate)
+            Button(L10n.Improv.Wifi.Alert.connectButton, action: connectToDevice)
             Button(L10n.Improv.Wifi.Alert.cancelButton, role: .cancel) {
                 cancelWifiInput()
             }
@@ -130,7 +123,10 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 successView
             case let .failure(message):
                 ImprovFailureView(message: message) {
-                    state = .list
+                    if let selectedPeripheral {
+                        improvManager.disconnectFromDevice(selectedPeripheral)
+                        state = .list
+                    }
                 }
             }
         }
@@ -147,7 +143,14 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     if let peripheral = improvManager.foundDevices[peripheralKey] {
                         Button {
                             selectedPeripheral = peripheral
-                            improvManager.connectToDevice(peripheral)
+
+                            // This only works if location permission is permitted
+                            NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+                                if let ssid = hotspotNetwork?.ssid, self.ssid.isEmpty {
+                                    self.ssid = ssid
+                                }
+                            }
+                            showWifiAlert = true
                             state = .loading(L10n.Improv.State.connecting)
                         } label: {
                             Text(peripheral.name ?? peripheral.identifier.uuidString)
@@ -179,14 +182,19 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         }
     }
 
+    private func connectToDevice() {
+        guard let selectedPeripheral else {
+            Current.Log.error("No peripheral selected")
+            return
+        }
+        readyToSendWifiCredentials = true
+        improvManager.connectToDevice(selectedPeripheral)
+    }
+
     private func authenticate() {
         state = .loading(L10n.Improv.State.connecting)
         if let error = improvManager.sendWifi(ssid: ssid, password: password) {
             Current.Log.error("Failed to send wifi credentials to Improv device, error: \(error)")
-            state = .list
-            guard let selectedPeripheral else { return }
-            shouldRetryWifiSetup = true
-            improvManager.connectToDevice(selectedPeripheral)
         }
     }
 
