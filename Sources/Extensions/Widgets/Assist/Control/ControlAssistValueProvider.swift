@@ -82,7 +82,11 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
         })
         sections.append(.init(
             .init(stringLiteral: L10n.helpLabel),
-            items: [.init(.init(id: "-1", serverId: "-1", name: L10n.AppIntents.Assist.RefreshWarning.title))]
+            items: [.init(.init(
+                id: "",
+                serverId: "",
+                name: L10n.AppIntents.Assist.RefreshWarning.title
+            ))]
         ))
         return .init(sections: sections)
     }
@@ -103,7 +107,7 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
         })
         sections.append(.init(
             .init(stringLiteral: L10n.helpLabel),
-            items: [.init(.init(id: "-1", serverId: "-1", name: L10n.AppIntents.Assist.RefreshWarning.title))]
+            items: [.init(.init(id: "-1", serverId: "", name: L10n.AppIntents.Assist.RefreshWarning.title))]
         ))
         return .init(sections: sections)
     }
@@ -118,6 +122,9 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
                 guard let server = Current.servers.all
                     .first(where: { $0.identifier.rawValue == assistPipeline.serverId }) else { return }
                 result[server] = assistPipeline.pipelines
+
+                // Preferred pipeline with empty id
+                result[server]?.insert(.init(id: "", name: L10n.AppIntents.Assist.PreferredPipeline.title), at: 0)
             }
             return result
         } catch {
