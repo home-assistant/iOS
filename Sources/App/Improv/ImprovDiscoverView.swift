@@ -22,7 +22,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
 
     /// Device which is currently selected for connection and wifi operations
     @State private var selectedPeripheral: CBPeripheral?
-
+    @State private var readyToSendWifiCredentials = false
     @State private var bottomSheetState: AppleLikeBottomSheetViewState?
 
     /// Redirect user to integrations page based on urlPath received from Improv
@@ -61,6 +61,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             case .authorizationRequired:
                 state = .loading(CoreStrings.componentImprovBleConfigProgressAuthorize)
             case .authorized:
+                guard readyToSendWifiCredentials else { return }
                 state = .loading(L10n.Improv.ConnectionState.authorized)
                 // Sending wifi credentials to device
                 authenticate()
@@ -82,6 +83,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 state = .failure(L10n.Improv.ErrorState.unknownCommand)
             case .unableToConnect:
                 state = .failure(L10n.Improv.ErrorState.unableToConnect)
+                readyToSendWifiCredentials = false
             case .notAuthorized:
                 state = .failure(L10n.Improv.ErrorState.notAuthorized)
             case .unknown:
@@ -121,7 +123,10 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 successView
             case let .failure(message):
                 ImprovFailureView(message: message) {
-                    state = .list
+                    if let selectedPeripheral {
+                        improvManager.disconnectFromDevice(selectedPeripheral)
+                        state = .list
+                    }
                 }
             }
         }
@@ -182,6 +187,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             Current.Log.error("No peripheral selected")
             return
         }
+        readyToSendWifiCredentials = true
         improvManager.connectToDevice(selectedPeripheral)
     }
 
@@ -189,9 +195,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         state = .loading(L10n.Improv.State.connecting)
         if let error = improvManager.sendWifi(ssid: ssid, password: password) {
             Current.Log.error("Failed to send wifi credentials to Improv device, error: \(error)")
-            state = .list
-            guard let selectedPeripheral else { return }
-            improvManager.connectToDevice(selectedPeripheral)
         }
     }
 
