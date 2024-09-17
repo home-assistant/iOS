@@ -101,7 +101,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             TextField(L10n.Improv.Wifi.Alert.ssidPlaceholder, text: $ssid)
                 .textInputAutocapitalization(.never)
             SecureField(L10n.Improv.Wifi.Alert.passwordPlaceholder, text: $password)
-            Button(L10n.Improv.Wifi.Alert.connectButton, action: authenticate)
+            Button(L10n.Improv.Wifi.Alert.connectButton, action: connectToDevice)
             Button(L10n.Improv.Wifi.Alert.cancelButton, role: .cancel) {
                 cancelWifiInput()
             }
