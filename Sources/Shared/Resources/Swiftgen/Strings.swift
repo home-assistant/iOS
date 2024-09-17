@@ -2207,6 +2207,12 @@ public enum L10n {
     public enum Thread {
       /// Thread
       public static var title: String { return L10n.tr("Localizable", "settings_details.thread.title") }
+      public enum DeleteCredential {
+        public enum Confirmation {
+          /// Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.
+          public static var title: String { return L10n.tr("Localizable", "settings_details.thread.delete_credential.confirmation.title") }
+        }
+      }
     }
     public enum Updates {
       public enum CheckForUpdates {
