@@ -123,7 +123,7 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
                     .first(where: { $0.identifier.rawValue == assistPipeline.serverId }) else { return }
                 result[server] = assistPipeline.pipelines
 
-                // Preferred pipeline with empty id
+                // Empty id indicates use of preferred pipeline
                 result[server]?.insert(.init(id: "", name: L10n.AppIntents.Assist.PreferredPipeline.title), at: 0)
             }
             return result

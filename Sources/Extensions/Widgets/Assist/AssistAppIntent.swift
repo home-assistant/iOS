@@ -23,18 +23,20 @@ struct AssistAppIntent: AppIntent {
     var withVoice: Bool
 
     func perform() async throws -> some IntentResult {
-        #if !WIDGET_EXTENSION
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == pipeline.serverId }) ?? Current
             .servers.all.first else { return .result() }
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { webViewController in
-            DispatchQueue.main.async {
-                webViewController.webViewExternalMessageHandler.showAssist(
-                    server: server,
-                    pipeline: pipeline.id,
-                    autoStartRecording: withVoice,
-                    animated: false
-                )
-            }
+
+        #if !WIDGET_EXTENSION
+        DispatchQueue.main.async {
+            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                .done { webViewController in
+                    webViewController.webViewExternalMessageHandler.showAssist(
+                        server: server,
+                        pipeline: pipeline.id,
+                        autoStartRecording: withVoice,
+                        animated: false
+                    )
+                }
         }
         #endif
         return .result()

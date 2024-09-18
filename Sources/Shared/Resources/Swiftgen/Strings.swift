@@ -258,6 +258,10 @@ public enum L10n {
       public enum Pipeline {
         /// Pipeline
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipeline.title") }
+        public enum Default {
+          /// Default
+          public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipeline.default.title") }
+        }
       }
       public enum PreferredPipeline {
         /// Preferred
