@@ -43,4 +43,8 @@ final class SimulatorThreadClientService: ThreadClientProtocol {
             ),
         ]
     }
+
+    public func deleteCredential(macExtendedAddress: String, completion: @escaping (Error?) -> Void) {
+        completion(nil)
+    }
 }

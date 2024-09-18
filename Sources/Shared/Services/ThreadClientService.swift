@@ -66,6 +66,15 @@ public final class ThreadClientService: ThreadClientProtocol {
             completion: completion
         )
     }
+
+    public func deleteCredential(macExtendedAddress: String, completion: @escaping (Error?) -> Void) {
+        guard let data = macExtendedAddress.hexadecimal else {
+            Current.Log.error("Thread operation, failed to convert to macExtendedAddress to hexadecimal")
+            completion(nil)
+            return
+        }
+        THClient().deleteCredentials(forBorderAgent: data, completion: completion)
+    }
 }
 #else
 /// For SwiftUI Preview
@@ -83,5 +92,9 @@ public final class ThreadClientService: ThreadClientProtocol {
         operationalDataSet: String,
         completion: @escaping (Error?) -> Void
     ) {}
+
+    public func deleteCredential(macExtendedAddress: String, completion: @escaping (Error?) -> Void) {
+        /* no-op */
+    }
 }
 #endif

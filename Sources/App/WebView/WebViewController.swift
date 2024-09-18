@@ -1048,8 +1048,10 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func presentController(_ controller: UIViewController, animated: Bool) {
-        let mainController = overlayAppController ?? self
-        mainController.present(controller, animated: animated)
+        if let overlayAppController {
+            overlayAppController.dismiss(animated: false)
+        }
+        present(controller, animated: animated)
     }
 
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
