@@ -53,6 +53,7 @@
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "app_intents.assist.pipeline.title" = "Pipeline";
+"app_intents.assist.pipeline.default.title" = "Default";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
