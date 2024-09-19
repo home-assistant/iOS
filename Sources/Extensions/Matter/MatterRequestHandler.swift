@@ -42,9 +42,28 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
            let selectedNetwork = threadScanResults.first(where: { result in
                result.extendedAddress == preferredNetworkMacExtendedAddress.hexadecimal
            }) {
-            // TODO: Save credentials in keychain before finishing this call? https://developer.apple.com/documentation/mattersupport/matteradddeviceextensionrequesthandler/selectthreadnetwork(from:)
+            // Saving credential in keychain before moving forward as required, docs: https://developer.apple.com/documentation/mattersupport/matteradddeviceextensionrequesthandler/selectthreadnetwork(from:)
+            let networkToUse: MatterAddDeviceExtensionRequestHandler
+                .ThreadNetworkAssociation = await withCheckedContinuation { continuation in
+                    Current.matter.threadClientService.saveCredential(
+                        macExtendedAddress: preferredNetworkMacExtendedAddress,
+                        operationalDataSet: preferredNetworkActiveOperationalDataset
+                    ) { error in
+                        if let error {
+                            Current.Log
+                                .error(
+                                    "Error saving credentials in keychain while comissioning matter device, error: \(error.localizedDescription)"
+                                )
+                            Current.Log.verbose("Using default system thread network")
+                            continuation.resume(returning: .defaultSystemNetwork)
+                        } else {
+                            Current.Log.verbose("Using Home Assistant defined thread network")
+                            continuation.resume(returning: .network(extendedPANID: selectedNetwork.extendedPANID))
+                        }
+                    }
+                }
 
-            return .network(extendedPANID: selectedNetwork.extendedPANID)
+            return networkToUse
         } else {
             return .defaultSystemNetwork
         }
