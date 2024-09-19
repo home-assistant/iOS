@@ -20,7 +20,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var assistService: AssistServiceProtocol
     private(set) var autoStartRecording: Bool
     private(set) var audioTask: Task<Void, Error>?
-    private(set) var routineTask: Task<Void, Error>?
 
     private(set) var canSendAudioData = false
 
@@ -47,7 +46,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor
     func initialRoutine() {
         AssistSession.shared.delegate = self
-        routineTask?.cancel()
         fetchPipelines()
         checkForAutoRecordingAndStart()
     }
@@ -56,7 +54,6 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioRecorder.stopRecording()
         audioPlayer.pause()
         audioTask?.cancel()
-        routineTask?.cancel()
     }
 
     @MainActor
@@ -109,9 +106,9 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         loadCachedPipelines()
 
-        assistService.fetchPipelines { [weak self] response in
+        assistService.fetchPipelines { [weak self] _ in
             self?.showScreenLoader = false
-            guard let self, let response else {
+            guard let self else {
                 self?.showError(message: L10n.Assist.Error.pipelinesResponse)
                 return
             }
