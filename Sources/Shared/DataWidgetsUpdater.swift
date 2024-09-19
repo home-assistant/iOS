@@ -1,9 +1,9 @@
 import Foundation
-import Shared
 import WidgetKit
 
-enum DataWidgetsUpdater {
-    static func update() {
+#if os(iOS)
+public enum DataWidgetsUpdater {
+    public static func update() {
         if #available(iOS 18.0, *) {
             ControlCenter.shared.reloadAllControls()
         }
@@ -11,3 +11,4 @@ enum DataWidgetsUpdater {
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.details.rawValue)
     }
 }
+#endif

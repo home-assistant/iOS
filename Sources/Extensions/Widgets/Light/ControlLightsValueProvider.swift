@@ -1,66 +1,65 @@
 import AppIntents
 import Foundation
+import SFSafeSymbols
 import Shared
 import WidgetKit
 
 @available(iOS 18, *)
-struct ControlLightItem {
-    let intentLightEntity: IntentLightEntity
+struct ControlEntityItem {
+    let id: String
+    let entityId: String
+    let serverId: String
+    let name: String
     let icon: SFSymbolEntity
     let value: Bool
 }
 
 @available(iOS 18, *)
 struct ControlLightsValueProvider: AppIntentControlValueProvider {
-    func currentValue(configuration: ControlLightsConfiguration) async throws -> ControlLightItem {
+    func currentValue(configuration: ControlLightsConfiguration) async throws -> ControlEntityItem {
         guard let serverId = configuration.light?.serverId,
-              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
-              let lightId = configuration.light?.entityId else {
+              let lightId = configuration.light?.entityId,
+              let state: String = try await ControlEntityProvider(domain: .light).currentState(
+                  serverId: serverId,
+                  entityId: lightId
+              ) else {
+            throw AppIntentError.restartPerform
+        }
+
+        let isOn = state == ControlEntityProvider.States.on.rawValue
+
+        return item(light: configuration.light, value: isOn, iconName: configuration.icon)
+    }
+
+    func placeholder(for configuration: ControlLightsConfiguration) -> ControlEntityItem {
+        item(light: configuration.light, value: nil, iconName: configuration.icon)
+    }
+
+    func previewValue(configuration: ControlLightsConfiguration) -> ControlEntityItem {
+        item(light: configuration.light, value: nil, iconName: configuration.icon)
+    }
+
+    private func item(light: IntentLightEntity?, value: Bool?, iconName: SFSymbolEntity?) -> ControlEntityItem {
+        let placeholder = placeholder()
+        if let light {
             return .init(
-                intentLightEntity: configuration.light ?? placeholder(),
-                icon: configuration.icon ?? placeholderIcon(),
+                id: light.id,
+                entityId: light.entityId,
+                serverId: light.serverId,
+                name: light.displayString,
+                icon: iconName ?? .init(id: placeholder.iconName),
+                value: value ?? false
+            )
+        } else {
+            return .init(
+                id: placeholder.id,
+                entityId: placeholder.entityId,
+                serverId: placeholder.serverId,
+                name: placeholder.displayString,
+                icon: .init(id: placeholder.iconName),
                 value: false
             )
         }
-        let api = Current.api(for: server)
-        let isOn: Bool = await withCheckedContinuation { continuation in
-            api.connection.send(.init(
-                type: .rest(.get, "states/\(lightId)"),
-                data: [:],
-                shouldRetry: true
-            )) { result in
-                switch result {
-                case let .success(data):
-                    let isOn: String = data.decode("state", fallback: "off")
-                    continuation.resume(returning: isOn == "on")
-                case let .failure(error):
-                    Current.Log.error("Failed to get light state for ControlLight widget: \(error)")
-                    continuation.resume(returning: false)
-                }
-            }
-        }
-
-        return .init(
-            intentLightEntity: configuration.light ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon(),
-            value: isOn
-        )
-    }
-
-    func placeholder(for configuration: ControlLightsConfiguration) -> ControlLightItem {
-        .init(
-            intentLightEntity: configuration.light ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon(),
-            value: false
-        )
-    }
-
-    func previewValue(configuration: ControlLightsConfiguration) -> ControlLightItem {
-        .init(
-            intentLightEntity: configuration.light ?? placeholder(),
-            icon: configuration.icon ?? placeholderIcon(),
-            value: false
-        )
     }
 
     private func placeholder() -> IntentLightEntity {
@@ -69,12 +68,8 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
             entityId: "",
             serverId: "",
             displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
-            iconName: "lightbulb.fill"
+            iconName: SFSymbol.lightbulbFill.rawValue
         )
-    }
-
-    private func placeholderIcon() -> SFSymbolEntity {
-        .init(id: "lightbulb.fill")
     }
 }
 
