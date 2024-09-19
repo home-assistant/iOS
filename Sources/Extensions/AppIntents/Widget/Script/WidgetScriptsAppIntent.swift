@@ -24,12 +24,12 @@ struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
 
     @Parameter(
         title: LocalizedStringResource(
-            "app_intents.scripts.show_confirmation_dialog.title",
-            defaultValue: "Confirmation notification"
+            "app_intents.notify_when_run.title",
+            defaultValue: "Notify when run"
         ),
         description: LocalizedStringResource(
-            "app_intents.scripts.show_confirmation_dialog.description",
-            defaultValue: "Shows confirmation notification after executed"
+            "app_intents.notify_when_run.description",
+            defaultValue: "Shows notification after executed"
         ),
         default: true
     )
