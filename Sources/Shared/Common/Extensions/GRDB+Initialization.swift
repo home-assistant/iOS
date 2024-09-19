@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-enum GRDBDatabaseTable: String {
+public enum GRDBDatabaseTable: String {
     case HAAppEntity = "hAAppEntity"
     case watchConfig
     case assistPipelines
