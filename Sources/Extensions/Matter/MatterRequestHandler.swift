@@ -26,6 +26,16 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
     override func selectThreadNetwork(from threadScanResults: [
         MatterAddDeviceExtensionRequestHandler.ThreadScanResult
     ]) async throws -> MatterAddDeviceExtensionRequestHandler.ThreadNetworkAssociation {
+        Current.Log
+            .verbose(
+                "preferredNetworkMacExtendedAddress: \(String(describing: Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress))"
+            )
+        Current.Log
+            .verbose(
+                "preferredNetworkActiveOperationalDataset: \(String(describing: Current.settingsStore.matterLastPreferredNetWorkActiveOperationalDataset))"
+            )
+        Current.Log.verbose("threadScanResults: \(threadScanResults.map(\.networkName))")
+
         if let preferredNetworkMacExtendedAddress = Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress,
            let preferredNetworkActiveOperationalDataset = Current.settingsStore
            .matterLastPreferredNetWorkActiveOperationalDataset,
