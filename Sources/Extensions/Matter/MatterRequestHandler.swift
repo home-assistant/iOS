@@ -26,7 +26,18 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
     override func selectThreadNetwork(from threadScanResults: [
         MatterAddDeviceExtensionRequestHandler.ThreadScanResult
     ]) async throws -> MatterAddDeviceExtensionRequestHandler.ThreadNetworkAssociation {
-        .defaultSystemNetwork
+        if let preferredNetworkMacExtendedAddress = Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress,
+           let preferredNetworkActiveOperationalDataset = Current.settingsStore
+           .matterLastPreferredNetWorkActiveOperationalDataset,
+           let selectedNetwork = threadScanResults.first(where: { result in
+               result.extendedAddress == preferredNetworkMacExtendedAddress.hexadecimal
+           }) {
+            // TODO: Save credentials in keychain before finishing this call? https://developer.apple.com/documentation/mattersupport/matteradddeviceextensionrequesthandler/selectthreadnetwork(from:)
+
+            return .network(extendedPANID: selectedNetwork.extendedPANID)
+        } else {
+            return .defaultSystemNetwork
+        }
     }
 
     override func commissionDevice(

@@ -98,6 +98,14 @@ final class WebViewExternalMessageHandler {
             case .themeUpdate:
                 webViewController.evaluateJavaScript("notifyThemeColors()", completion: nil)
             case .matterCommission:
+
+                let preferredNetWorkMacExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String
+                let preferredNetWorkActiveOperationalDataset = incomingMessage
+                    .Payload?["active_operational_dataset"] as? String
+                Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress = preferredNetWorkMacExtendedAddress
+                Current.settingsStore
+                    .matterLastPreferredNetWorkActiveOperationalDataset = preferredNetWorkActiveOperationalDataset
+
                 Current.matter.commission(webViewController.server).done {
                     Current.Log.info("commission call completed")
                 }.catch { error in

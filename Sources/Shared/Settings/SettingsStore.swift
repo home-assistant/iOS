@@ -46,6 +46,24 @@ public class SettingsStore {
     }
 
     #if os(iOS)
+    public var matterLastPreferredNetWorkMacExtendedAddress: String? {
+        get {
+            keychain["matterLastPreferredNetWorkMacExtendedAddress"]
+        }
+        set {
+            keychain["matterLastPreferredNetWorkMacExtendedAddress"] = newValue
+        }
+    }
+
+    public var matterLastPreferredNetWorkActiveOperationalDataset: String? {
+        get {
+            keychain["matterLastPreferredNetWorkActiveOperationalDataset"]
+        }
+        set {
+            keychain["matterLastPreferredNetWorkActiveOperationalDataset"] = newValue
+        }
+    }
+
     public func isLocationEnabled(for state: UIApplication.State) -> Bool {
         let authorizationStatus: CLAuthorizationStatus
 
