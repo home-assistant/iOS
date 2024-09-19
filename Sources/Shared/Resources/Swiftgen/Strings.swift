@@ -912,6 +912,10 @@ public enum L10n {
     public enum NameAndIcon {
       /// Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.
       public static var footer: String { return L10n.tr("Localizable", "magic_item.name_and_icon.footer") }
+      public enum Footer {
+        /// Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.
+        public static var scenes: String { return L10n.tr("Localizable", "magic_item.name_and_icon.footer.scenes") }
+      }
     }
     public enum RequireConfirmation {
       /// Require confirmation
