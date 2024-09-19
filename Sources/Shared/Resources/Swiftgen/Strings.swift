@@ -258,6 +258,10 @@ public enum L10n {
       public enum Pipeline {
         /// Pipeline
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipeline.title") }
+        public enum Default {
+          /// Default
+          public static var title: String { return L10n.tr("Localizable", "app_intents.assist.pipeline.default.title") }
+        }
       }
       public enum PreferredPipeline {
         /// Preferred
@@ -289,6 +293,12 @@ public enum L10n {
         /// Light
         public static var title: String { return L10n.tr("Localizable", "app_intents.lights.light.title") }
       }
+    }
+    public enum NotifyWhenRun {
+      /// Shows notification after executed
+      public static var description: String { return L10n.tr("Localizable", "app_intents.notify_when_run.description") }
+      /// Notify when run
+      public static var title: String { return L10n.tr("Localizable", "app_intents.notify_when_run.title") }
     }
     public enum PerformAction {
       /// Which action?
@@ -372,8 +382,6 @@ public enum L10n {
       public enum ShowConfirmationDialog {
         /// Shows confirmation notification after executed
         public static var description: String { return L10n.tr("Localizable", "app_intents.scripts.show_confirmation_dialog.description") }
-        /// Confirmation notification
-        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.show_confirmation_dialog.title") }
       }
       public enum SuccessMessage {
         /// Script "%@" executed.
@@ -381,12 +389,6 @@ public enum L10n {
           return L10n.tr("Localizable", "app_intents.scripts.success_message.content", String(describing: p1))
         }
       }
-    }
-    public enum ShowConfirmationDialog {
-      /// Shows confirmation notification after executed
-      public static var description: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.description") }
-      /// Confirmation notification
-      public static var title: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.title") }
     }
     public enum WidgetAction {
       /// Which actions?
@@ -910,6 +912,10 @@ public enum L10n {
     public enum NameAndIcon {
       /// Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.
       public static var footer: String { return L10n.tr("Localizable", "magic_item.name_and_icon.footer") }
+      public enum Footer {
+        /// Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.
+        public static var scenes: String { return L10n.tr("Localizable", "magic_item.name_and_icon.footer.scenes") }
+      }
     }
     public enum RequireConfirmation {
       /// Require confirmation

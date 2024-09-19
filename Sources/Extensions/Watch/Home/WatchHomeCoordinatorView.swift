@@ -47,6 +47,13 @@ struct WatchHomeCoordinatorView: View {
                            !config.assist.pipelineId.isEmpty {
                             ToolbarItem(placement: .topBarTrailing) {
                                 assistButton
+                                    .modify { view in
+                                        if #available(watchOS 11, *) {
+                                            view.handGestureShortcut(.primaryAction)
+                                        } else {
+                                            view
+                                        }
+                                    }
                             }
                         }
                     }

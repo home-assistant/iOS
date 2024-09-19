@@ -14,35 +14,41 @@ struct WatchAssistView: View {
 
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
-                micButton
-                chatList
-                stateView
-                inlineLoading
-            }
-            .modify({ view in
-                if #available(watchOS 10, *) {
-                    view.toolbar(content: {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            volumeButton
-                        }
-                    })
-                } else {
-                    view.toolbar(content: {
-                        ToolbarItem {
-                            volumeButton
-                        }
-                    })
+            Button(action: {
+                viewModel.assist()
+            }, label: {
+                ZStack(alignment: .bottom) {
+                    micButton
+                    chatList
+                    stateView
+                    inlineLoading
                 }
+                .modify({ view in
+                    if #available(watchOS 10, *) {
+                        view.toolbar(content: {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                volumeButton
+                            }
+                        })
+                    } else {
+                        view.toolbar(content: {
+                            ToolbarItem {
+                                volumeButton
+                            }
+                        })
+                    }
+                })
             })
+            .buttonStyle(.plain)
+            .modify { view in
+                if #available(watchOS 11, *) {
+                    view.handGestureShortcut(.primaryAction)
+                } else {
+                    view
+                }
+            }
         }
         .animation(.easeInOut, value: viewModel.state)
-        /* Double tap for watchOS 11
-         .handGestureShortcut(.primaryAction)
-          */
-        .onTapGesture {
-            viewModel.assist()
-        }
         .onAppear {
             viewModel.initialRoutine()
         }

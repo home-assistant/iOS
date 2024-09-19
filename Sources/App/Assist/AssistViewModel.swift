@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import GRDB
 import HAKit
 import Shared
 
@@ -19,7 +20,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var assistService: AssistServiceProtocol
     private(set) var autoStartRecording: Bool
     private(set) var audioTask: Task<Void, Error>?
-    private(set) var routineTask: Task<Void, Error>?
 
     private(set) var canSendAudioData = false
 
@@ -46,18 +46,14 @@ final class AssistViewModel: NSObject, ObservableObject {
     @MainActor
     func initialRoutine() {
         AssistSession.shared.delegate = self
-        routineTask?.cancel()
-        routineTask = Task.detached { [weak self] in
-            await self?.fetchPipelines()
-            self?.checkForAutoRecordingAndStart()
-        }
+        fetchPipelines()
+        checkForAutoRecordingAndStart()
     }
 
     func onDisappear() {
         audioRecorder.stopRecording()
         audioPlayer.pause()
         audioTask?.cancel()
-        routineTask?.cancel()
     }
 
     @MainActor
@@ -105,22 +101,38 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     @MainActor
-    private func fetchPipelines() async {
+    private func fetchPipelines() {
         showScreenLoader = true
-        await withCheckedContinuation { [weak self] continuation in
-            self?.assistService.fetchPipelines { [weak self] response in
-                self?.showScreenLoader = false
-                guard let self, let response else {
-                    self?.showError(message: L10n.Assist.Error.pipelinesResponse)
-                    continuation.resume()
-                    return
-                }
-                if preferredPipelineId.isEmpty {
-                    preferredPipelineId = response.preferredPipeline
-                }
-                pipelines = response.pipelines
-                continuation.resume()
+
+        loadCachedPipelines()
+
+        assistService.fetchPipelines { [weak self] _ in
+            self?.showScreenLoader = false
+            guard let self else {
+                self?.showError(message: L10n.Assist.Error.pipelinesResponse)
+                return
             }
+            loadCachedPipelines()
+        }
+    }
+
+    @MainActor
+    private func loadCachedPipelines() {
+        do {
+            if let cachedPipelineConfig = try Current.database().read({ db in
+                try AssistPipelines
+                    .filter(Column(DatabaseTables.AssistPipelines.serverId.rawValue) == server.identifier.rawValue)
+                    .fetchOne(db)
+            }) {
+                if preferredPipelineId.isEmpty {
+                    preferredPipelineId = cachedPipelineConfig.preferredPipeline
+                }
+                pipelines = cachedPipelineConfig.pipelines
+            } else {
+                Current.Log.error("Error loading cached pipelines: No cache found.")
+            }
+        } catch {
+            Current.Log.error("Error loading cached pipelines: \(error)")
         }
     }
 
@@ -226,4 +238,26 @@ extension AssistViewModel: AssistSessionDelegate {
             initialRoutine()
         }
     }
+}
+
+// Print all changes to a region.
+class Observer: TransactionObserver {
+    let observedRegion: DatabaseRegion
+
+    init(observedRegion: DatabaseRegion) {
+        self.observedRegion = observedRegion
+    }
+
+    func observes(eventsOfKind eventKind: DatabaseEventKind) -> Bool {
+        observedRegion.isModified(byEventsOfKind: eventKind)
+    }
+
+    func databaseDidChange(with event: DatabaseEvent) {
+        if observedRegion.isModified(by: event) {
+            print(event)
+        }
+    }
+
+    func databaseDidCommit(_ db: Database) {}
+    func databaseDidRollback(_ db: Database) {}
 }

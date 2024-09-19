@@ -643,6 +643,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging doit être activé pour que les notifications push fonctionnent.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Vie privée";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Inclure les versions bêta";
 "settings_details.updates.check_for_updates.title" = "Rechercher automatiquement les mises à jour";

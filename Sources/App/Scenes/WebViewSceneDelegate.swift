@@ -75,6 +75,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         #if targetEnvironment(macCatalyst)
         WindowScenesManager.shared.sceneWillResignActive(scene)
         #endif
+
+        DataWidgetsUpdater.update()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -86,6 +88,16 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         #if targetEnvironment(macCatalyst)
         WindowScenesManager.shared.didDiscardScene(scene)
         #endif
+
+        DataWidgetsUpdater.update()
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        DataWidgetsUpdater.update()
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        DataWidgetsUpdater.update()
     }
 
     func windowScene(

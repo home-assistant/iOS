@@ -641,6 +641,7 @@
 "settings_details.privacy.messaging.description" = "必须启用Firebase云信息才能使推送通知生效。";
 "settings_details.privacy.messaging.title" = "Firebase云消息";
 "settings_details.privacy.title" = "隐私";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "包括测试版";
 "settings_details.updates.check_for_updates.title" = "自动检查更新";
