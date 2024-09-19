@@ -36,7 +36,7 @@ struct ControlOpenPageValueProvider: AppIntentControlValueProvider {
             page: .init(
                 id: UUID().uuidString,
                 panel: .init(
-                    icon: nil,
+                    icon: SFSymbol.rectangleAndPaperclip.rawValue,
                     title: L10n.Widgets.Controls.OpenPage.Configuration.Parameter.choosePage,
                     path: "",
                     component: "",
