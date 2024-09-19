@@ -100,7 +100,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             return .init(
                 id: sceneItem.id,
                 name: sceneItem.name,
-                iconName: MaterialDesignIcons.paletteIcon.name,
+                iconName: sceneItem.icon ?? MaterialDesignIcons.paletteIcon.name,
                 customization: item.customization
             )
         }
