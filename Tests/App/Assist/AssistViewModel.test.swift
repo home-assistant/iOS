@@ -31,7 +31,6 @@ final class AssistViewModelTests: XCTestCase {
     func testOnAppearFetchPipelines() async throws {
         sut.initialRoutine()
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
-        try await sut.routineTask?.value
         XCTAssert(mockAssistService.fetchPipelinesCalled)
         XCTAssertEqual(AssistSession.shared.delegate.debugDescription, sut.debugDescription)
     }
@@ -42,7 +41,6 @@ final class AssistViewModelTests: XCTestCase {
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
 
         sut.initialRoutine()
-        try await sut.routineTask?.value
         try await sut.audioTask?.value
         XCTAssertNotNil(sut.audioTask)
         XCTAssertTrue(mockAudioPlayer.pauseCalled)
@@ -56,13 +54,11 @@ final class AssistViewModelTests: XCTestCase {
         sut = makeSut(autoStartRecording: true)
 
         sut.initialRoutine()
-        try await sut.routineTask?.value
         try await sut.audioTask?.value
         sut.onDisappear()
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
         XCTAssertTrue(mockAudioPlayer.pauseCalled)
         XCTAssertTrue(sut.audioTask!.isCancelled)
-        XCTAssertTrue(sut.routineTask!.isCancelled)
     }
 
     @MainActor
