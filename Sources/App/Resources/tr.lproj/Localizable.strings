@@ -643,6 +643,7 @@
 "settings_details.privacy.messaging.description" = "Push bildirimlerinin çalışabilmesi için Firebase Bulut Mesajlaşma etkinleştirilmelidir.";
 "settings_details.privacy.messaging.title" = "Firebase Bulut Mesajlaşma";
 "settings_details.privacy.title" = "Gizlilik";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Konu";
 "settings_details.updates.check_for_updates.include_betas" = "Beta Sürümlerini Dahil Et";
 "settings_details.updates.check_for_updates.title" = "Güncelleştirmeleri Otomatik Olarak Denetle";

@@ -643,6 +643,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.privacy.messaging.description" = "Tõukemärguannete toimimiseks peab Firebase'i pilvsõnumside olema lubatud.";
 "settings_details.privacy.messaging.title" = "Firebase'i pilvsõnumside";
 "settings_details.privacy.title" = "Privaatsus";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Kaasa beetaversioonid";
 "settings_details.updates.check_for_updates.title" = "Uuenduste automaatne kontrollimine";
