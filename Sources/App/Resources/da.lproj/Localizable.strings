@@ -643,6 +643,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging skal være aktiveret for at push-notifikationer kan fungere.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Privatliv";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Inkludér betaudgivelser";
 "settings_details.updates.check_for_updates.title" = "Søg automatisk efter opdateringer";

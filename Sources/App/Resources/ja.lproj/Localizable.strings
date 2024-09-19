@@ -643,6 +643,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.privacy.messaging.description" = "プッシュ通知を機能させるには、Firebase Cloud Messaging を有効にする必要があります。";
 "settings_details.privacy.messaging.title" = "Firebaseクラウドメッセージング";
 "settings_details.privacy.title" = "プライバシー";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "ベータリリースを含める";
 "settings_details.updates.check_for_updates.title" = "アップデートを自動的にチェック";

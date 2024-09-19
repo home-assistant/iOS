@@ -54,7 +54,7 @@
 "announcement.drop_support.title" = "Важное обновление";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Предпочтительный";
-"app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.assist.refresh_warning.title" = "Не можете найти свой Assist pipeline? Откройте Assist в приложении, чтобы обновить список pipeline.";
 "app_intents.controls.assist.parameter.with_voice" = "С помощью голоса";
 "app_intents.controls.assist.title" = "Assist в приложении";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
@@ -83,7 +83,7 @@
 "app_intents.scripts.show_confirmation_dialog.title" = "Уведомление о подтверждении";
 "app_intents.scripts.success_message.content" = "Скрипт \"%@\" выполнен.";
 "app_intents.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
-"app_intents.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.show_confirmation_dialog.title" = "Уведомление о подтверждении";
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -643,6 +643,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging необходим для доставки уведомлений на телефон.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Конфиденциальность";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Включая бета-версии";
 "settings_details.updates.check_for_updates.title" = "Автоматическая проверка наличия обновлений";
@@ -772,7 +773,7 @@ Home Assistant - это бесплатное программное обеспе
 "watch.configurator.sections.icon.header" = "Значок";
 "watch.configurator.sections.ring.footer" = "Кольцо, показывающее прогресс, окружающее текст.";
 "watch.configurator.sections.ring.header" = "Кольцо";
-"watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
+"watch.debug.delete_db.alert.failed.message" = "Не удалось удалить конфигурацию, ошибка: %@";
 "watch.debug.delete_db.alert.title" = "Вы уверены, что хотите удалить конфигурацию Apple Watch? Это невозможно отменить";
 "watch.debug.delete_db.reset.title" = "Сбросить конфигурацию";
 "watch.debug.delete_db.title" = "Удалить конфигурацию Apple Watch";
@@ -945,15 +946,15 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.controls.assist.title" = "Assist";
 "widgets.controls.light.description" = "Включить/выключить свет";
 "widgets.controls.light.title" = "Свет";
-"widgets.controls.open_page.configuration.parameter.choose_page" = "Выбрать страницу";
+"widgets.controls.open_page.configuration.parameter.choose_page" = "Выберите страницу";
 "widgets.controls.open_page.configuration.parameter.page" = "Страница";
 "widgets.controls.open_page.configuration.title" = "Открыть страницу";
 "widgets.controls.scene.description" = "Запустить сцену";
 "widgets.controls.scene.display_name" = "Сцена";
-"widgets.controls.scenes.placeholder_title" = "Выбрать сцену";
-"widgets.controls.script.description" = "Run script";
+"widgets.controls.scenes.placeholder_title" = "Выберите сцену";
+"widgets.controls.script.description" = "Запускает скрипт";
 "widgets.controls.script.display_name" = "Скрипт";
-"widgets.controls.scripts.placeholder_title" = "Choose script";
+"widgets.controls.scripts.placeholder_title" = "Выберите скрипт";
 "widgets.details.description" = "Отображает состояния с помощью Home Assistant в текстовом виде";
 "widgets.details.parameters.action" = "Действие";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";

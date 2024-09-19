@@ -643,6 +643,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging debe estar habilitado para que funcionen las notificaciones push.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Privacidad";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Incluir versiones beta";
 "settings_details.updates.check_for_updates.title" = "Buscar actualizaciones automáticamente";
