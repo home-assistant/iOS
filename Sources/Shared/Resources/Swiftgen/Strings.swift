@@ -382,6 +382,8 @@ public enum L10n {
       public enum ShowConfirmationDialog {
         /// Shows confirmation notification after executed
         public static var description: String { return L10n.tr("Localizable", "app_intents.scripts.show_confirmation_dialog.description") }
+        /// Confirmation notification
+        public static var title: String { return L10n.tr("Localizable", "app_intents.scripts.show_confirmation_dialog.title") }
       }
       public enum SuccessMessage {
         /// Script "%@" executed.
@@ -389,6 +391,12 @@ public enum L10n {
           return L10n.tr("Localizable", "app_intents.scripts.success_message.content", String(describing: p1))
         }
       }
+    }
+    public enum ShowConfirmationDialog {
+      /// Shows confirmation notification after executed
+      public static var description: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.description") }
+      /// Confirmation notification
+      public static var title: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.title") }
     }
     public enum WidgetAction {
       /// Which actions?
