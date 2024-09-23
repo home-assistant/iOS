@@ -22,12 +22,8 @@ jobs:
       matrix:
         kind: [mac, ios]
     steps:
-      - name: Clean up keychain and provisioning profile
-        if: ${{ always() }}
-        run: |
-          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
-          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
-  
+      - uses: sinoru/actions-setup-keychain@v1.0
+
       - uses: actions/checkout@v4
 
       - name: Install Brews
