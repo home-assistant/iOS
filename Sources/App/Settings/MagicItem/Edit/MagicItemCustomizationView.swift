@@ -48,6 +48,9 @@ struct MagicItemCustomizationView: View {
                     if viewModel.item.type == .script {
                         Text(L10n.MagicItem.NameAndIcon.footer)
                     }
+                    if viewModel.item.type == .scene {
+                        Text(L10n.MagicItem.NameAndIcon.Footer.scenes)
+                    }
                 }
 
                 Section {

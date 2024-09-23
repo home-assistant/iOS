@@ -643,6 +643,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.privacy.messaging.description" = "푸시 알림이 작동하려면 Firebase Cloud Messaging을 활성화해야 합니다.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "개인정보 보호";
+"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
 "settings_details.thread.title" = "스레드";
 "settings_details.updates.check_for_updates.include_betas" = "베타 릴리스 포함";
 "settings_details.updates.check_for_updates.title" = "자동으로 업데이트 확인";

@@ -241,9 +241,9 @@ struct WatchConfigurationView: View {
     ) -> UIImage {
         var icon: MaterialDesignIcons = .abTestingIcon
         switch item.type {
-        case .action, .scene:
+        case .action:
             icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script:
+        case .script, .scene:
             icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
         }
 
