@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Lisateave";
 "announcement.drop_support.subtitle" = "Pärast hoolikat kaalumist lõpetame oma tulevastes värskendustes iOS 12, 13 ja 14 toe.";
 "announcement.drop_support.title" = "Oluline uuendus";
+"app_intents.assist.pipeline.default.title" = "Vaikimisi";
 "app_intents.assist.pipeline.title" = "Voog";
 "app_intents.assist.preferred_pipeline.title" = "Eelistatud";
 "app_intents.assist.refresh_warning.title" = "Ei leia oma Assisti voogu? Voogude loendi värskendamiseks ava rakenduses Assist.";
@@ -60,6 +61,8 @@
 "app_intents.haptic_confirmation.title" = "Tunnetatav kinnitus";
 "app_intents.lights.light.target" = "Sihtolek";
 "app_intents.lights.light.title" = "Valgusti";
+"app_intents.notify_when_run.description" = "Pärast täitmist kuvab teatise";
+"app_intents.notify_when_run.title" = "Käivitamisel teavita";
 "app_intents.perform_action.action_parameter_configuration" = "Milline toiming?";
 "app_intents.perform_action.action_parameter_confirmation" = "Lihtsalt kinnita, kas sa tahtsid ' %@ '?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "On %@ valikut mis vastavad '%@'.";
@@ -231,6 +234,7 @@
 "magic_item.item_type.selection.list.title" = "Üksuse tüüp";
 "magic_item.name.title" = "Nimi";
 "magic_item.name_and_icon.footer" = "Muuda skripti nime ja ikooni kasutajaliideses jaotises \"Seaded\" > \"Automaatikad ja stseenid\" > \"Skriptid\".";
+"magic_item.name_and_icon.footer.scenes" = "Muuda stseeni nime ja ikooni kasutajaliideses jaotises „Seaded” > „Automatiseerimine ja stseenid” > „Stseenid”.";
 "magic_item.require_confirmation.title" = "Nõua kinnitust";
 "magic_item.text_color.title" = "Teksti värv";
 "magic_item.use_custom_colors.title" = "Kasuta kohandatud värve";
@@ -643,7 +647,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.privacy.messaging.description" = "Tõukemärguannete toimimiseks peab Firebase'i pilvsõnumside olema lubatud.";
 "settings_details.privacy.messaging.title" = "Firebase'i pilvsõnumside";
 "settings_details.privacy.title" = "Privaatsus";
-"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
+"settings_details.thread.delete_credential.confirmation.title" = "Kas oled kindel, et soovite selle kasutajatunnuse oma Apple'i võtmehoidjast kustutada? Seda ei saa tagasi võtta ja seda tuleks teostada ainult siis kui te tead mida teed.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Kaasa beetaversioonid";
 "settings_details.updates.check_for_updates.title" = "Uuenduste automaatne kontrollimine";
