@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Leer más";
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
+"app_intents.assist.pipeline.default.title" = "Default";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
@@ -60,6 +61,8 @@
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.notify_when_run.description" = "Shows notification after executed";
+"app_intents.notify_when_run.title" = "Notify when run";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
@@ -231,6 +234,7 @@
 "magic_item.item_type.selection.list.title" = "Item type";
 "magic_item.name.title" = "Name";
 "magic_item.name_and_icon.footer" = "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.";
+"magic_item.name_and_icon.footer.scenes" = "Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.";
 "magic_item.require_confirmation.title" = "Require confirmation";
 "magic_item.text_color.title" = "Text color";
 "magic_item.use_custom_colors.title" = "Use custom colors";

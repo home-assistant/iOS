@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Přečtěte si více";
 "announcement.drop_support.subtitle" = "Po pečlivém zvážení ukončíme podporu pro iOS 12, 13 a 14 v našich nadcházejících aktualizacích.";
 "announcement.drop_support.title" = "Důležitá aktualizace";
+"app_intents.assist.pipeline.default.title" = "Výchozí";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferováno";
 "app_intents.assist.refresh_warning.title" = "Nemůžete najít pipeline Assist? Otevřete Assist v aplikaci a obnovte seznam pipelines.";
@@ -60,6 +61,8 @@
 "app_intents.haptic_confirmation.title" = "Haptické potvrzení";
 "app_intents.lights.light.target" = "Cílový stav";
 "app_intents.lights.light.title" = "Světla";
+"app_intents.notify_when_run.description" = "Zobrazí oznámení po provedení.";
+"app_intents.notify_when_run.title" = "Oznámit při spuštění";
 "app_intents.perform_action.action_parameter_configuration" = "Která akce?";
 "app_intents.perform_action.action_parameter_confirmation" = "Jen pro potvrzení, chtěli jste \"%@\"?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Existuje %@ možností odpovídajících \"%@\".";
@@ -231,6 +234,7 @@
 "magic_item.item_type.selection.list.title" = "Typ položky";
 "magic_item.name.title" = "Název";
 "magic_item.name_and_icon.footer" = "Upravte název a ikonu skriptu ve webovém rozhraní v části \"Nastavení\" > \"Automatizace a scény\" > \"Skripty\".";
+"magic_item.name_and_icon.footer.scenes" = "Upravte název a ikonu scény v rozhraní v části \"Nastavení\" > \"Automatizace a scény\" > \"Scény\".";
 "magic_item.require_confirmation.title" = "Vyžadovat potvrzení";
 "magic_item.text_color.title" = "Barva textu";
 "magic_item.use_custom_colors.title" = "Použít vlastní barvy";
@@ -643,7 +647,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.privacy.messaging.description" = "Aby push oznámení fungovala, musí být povolena služba Firebase Cloud Messaging.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Soukromí";
-"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
+"settings_details.thread.delete_credential.confirmation.title" = "Opravdu chcete smazat toto pověření z vaší klíčenky Apple? Toto nelze vrátit zpět a mělo by být provedeno jen v případě, že víte, co děláte.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Zahrnout beta verze";
 "settings_details.updates.check_for_updates.title" = "Automaticky kontrolovat aktualizace";

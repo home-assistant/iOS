@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "閱讀更多";
 "announcement.drop_support.subtitle" = "經過仔細考慮後、我們將在即將推出的更新中停止對 iOS 12、13 和 14 的支援。";
 "announcement.drop_support.title" = "重要更新";
+"app_intents.assist.pipeline.default.title" = "預設";
 "app_intents.assist.pipeline.title" = "助理設定";
 "app_intents.assist.preferred_pipeline.title" = "首選";
 "app_intents.assist.refresh_warning.title" = "找不到助手設定？於 App 中開啟助力以更新設定列表。";
@@ -60,6 +61,8 @@
 "app_intents.haptic_confirmation.title" = "觸覺回饋確認";
 "app_intents.lights.light.target" = "目標狀態";
 "app_intents.lights.light.title" = "燈光";
+"app_intents.notify_when_run.description" = "於執行後顯示通知";
+"app_intents.notify_when_run.title" = "執行時通知";
 "app_intents.perform_action.action_parameter_configuration" = "哪個動作？";
 "app_intents.perform_action.action_parameter_confirmation" = "確認要  ‘%@’？";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "共有 %@ 個選項符合 ‘%@’。";
@@ -231,6 +234,7 @@
 "magic_item.item_type.selection.list.title" = "項目類型";
 "magic_item.name.title" = "名稱";
 "magic_item.name_and_icon.footer" = "在前端的 '設定' > '自動化與場景' > '腳本' 內編輯腳本名稱。";
+"magic_item.name_and_icon.footer.scenes" = "在前端的 '設定' > '自動化與場景' > '場景' 內編輯場景名稱。";
 "magic_item.require_confirmation.title" = "需要確認";
 "magic_item.text_color.title" = "文字顏色";
 "magic_item.use_custom_colors.title" = "使用自訂顏色";
@@ -643,7 +647,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.privacy.messaging.description" = "必須啟用 Firebase 雲端訊息方能使用推播訊息。";
 "settings_details.privacy.messaging.title" = "Firebase 雲端訊息";
 "settings_details.privacy.title" = "隱私權";
-"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
+"settings_details.thread.delete_credential.confirmation.title" = "確定要從 Apple 鑰匙圈中刪除此憑證嗎？此操作無法復原，只有在您知道自己在做什麼的情況下、才應該執行。";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "包含測試版本";
 "settings_details.updates.check_for_updates.title" = "自動檢查更新";

@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "阅读更多内容";
 "announcement.drop_support.subtitle" = "经过深思熟虑，我们在即将到来的更新中将停止对 iOS 12 、13 和 14 的支持。";
 "announcement.drop_support.title" = "重要更新";
+"app_intents.assist.pipeline.default.title" = "默认";
 "app_intents.assist.pipeline.title" = "管道";
 "app_intents.assist.preferred_pipeline.title" = "首选";
 "app_intents.assist.refresh_warning.title" = "找不到您的语音助手管道 ？在应用中打开语音助手，刷新管道列表。";
@@ -60,6 +61,8 @@
 "app_intents.haptic_confirmation.title" = "触觉确认";
 "app_intents.lights.light.target" = "目标状态";
 "app_intents.lights.light.title" = "灯光";
+"app_intents.notify_when_run.description" = "执行后显示通知";
+"app_intents.notify_when_run.title" = "运行时通知";
 "app_intents.perform_action.action_parameter_configuration" = "那个动作 ？";
 "app_intents.perform_action.action_parameter_confirmation" = "确认一下，你想要“%@” ？";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "有 %@ 个选项匹配“%@” 。";
@@ -231,6 +234,7 @@
 "magic_item.item_type.selection.list.title" = "项目类型";
 "magic_item.name.title" = "名称";
 "magic_item.name_and_icon.footer" = "在前端编辑脚本名称和图标，位于“设置” > “自动化与场景” > “脚本”。";
+"magic_item.name_and_icon.footer.scenes" = "在前端的“设置”>“自动化与场景”>“场景”中编辑场景名称和图标。";
 "magic_item.require_confirmation.title" = "需要确认";
 "magic_item.text_color.title" = "文本颜色";
 "magic_item.use_custom_colors.title" = "使用自定义颜色";
@@ -641,7 +645,7 @@
 "settings_details.privacy.messaging.description" = "必须启用Firebase云信息才能使推送通知生效。";
 "settings_details.privacy.messaging.title" = "Firebase云消息";
 "settings_details.privacy.title" = "隐私";
-"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
+"settings_details.thread.delete_credential.confirmation.title" = "您确定要从 Apple 钥匙串中删除此凭据吗 ？此操作无法恢复，只有当您知道自己在做什么时才可以执行。";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "包括测试版";
 "settings_details.updates.check_for_updates.title" = "自动检查更新";

@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "Devamını oku";
 "announcement.drop_support.subtitle" = "Dikkatli bir değerlendirmenin ardından gelecek güncellemelerimizde iOS 12, 13 ve 14 desteğine son vereceğiz.";
 "announcement.drop_support.title" = "Önemli güncelleme";
+"app_intents.assist.pipeline.default.title" = "Default";
 "app_intents.assist.pipeline.title" = "İşlem hattı";
 "app_intents.assist.preferred_pipeline.title" = "Tercih Edilen";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
@@ -60,6 +61,8 @@
 "app_intents.haptic_confirmation.title" = "Dokunsal doğrulama";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.notify_when_run.description" = "Shows notification after executed";
+"app_intents.notify_when_run.title" = "Notify when run";
 "app_intents.perform_action.action_parameter_configuration" = "Hangi eylem?";
 "app_intents.perform_action.action_parameter_confirmation" = "Onaylamak için ' %@ ' mi istediniz?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "' %@ ' ile eşleşen %@ seçenek var.";
@@ -231,6 +234,7 @@
 "magic_item.item_type.selection.list.title" = "Öğe türü";
 "magic_item.name.title" = "Ad";
 "magic_item.name_and_icon.footer" = "Komut dosyasının adını ve simgesini önyüzde 'Ayarlar' > 'Otomasyonlar ve sahneler' > 'Komut dosyaları' altında düzenleyin.";
+"magic_item.name_and_icon.footer.scenes" = "Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.";
 "magic_item.require_confirmation.title" = "Onay gerektirir";
 "magic_item.text_color.title" = "Metin rengi";
 "magic_item.use_custom_colors.title" = "Özel renkleri kullan";

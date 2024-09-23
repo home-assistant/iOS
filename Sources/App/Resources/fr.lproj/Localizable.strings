@@ -52,6 +52,7 @@
 "announcement.drop_support.button_read_more" = "En savoir plus";
 "announcement.drop_support.subtitle" = "Après mûre réflexion, nous mettrons fin à la prise en charge d’iOS 12, 13 et 14 dans nos prochaines mises à jour.";
 "announcement.drop_support.title" = "Mise à jour importante";
+"app_intents.assist.pipeline.default.title" = "Default";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Préféré";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
@@ -60,6 +61,8 @@
 "app_intents.haptic_confirmation.title" = "Confirmation haptique";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.notify_when_run.description" = "Shows notification after executed";
+"app_intents.notify_when_run.title" = "Notify when run";
 "app_intents.perform_action.action_parameter_configuration" = "Quelle action ?";
 "app_intents.perform_action.action_parameter_confirmation" = "Juste pour confirmer, vous vouliez '%@' ?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Il y a %@ options correspondant à '%@'.";
@@ -231,6 +234,7 @@
 "magic_item.item_type.selection.list.title" = "Type d'élément";
 "magic_item.name.title" = "Nom";
 "magic_item.name_and_icon.footer" = "Modifiez le nom et l'icône du script dans l'interface sous 'Paramètres' > 'Automatisations et scènes' > 'Scripts'.";
+"magic_item.name_and_icon.footer.scenes" = "Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.";
 "magic_item.require_confirmation.title" = "Require confirmation";
 "magic_item.text_color.title" = "Couleur du texte";
 "magic_item.use_custom_colors.title" = "Utiliser des couleurs personnalisées";
