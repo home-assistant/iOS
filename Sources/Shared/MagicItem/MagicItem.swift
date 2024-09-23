@@ -32,11 +32,11 @@ public struct MagicItem: Codable, Equatable {
     }
 
     public struct Customization: Codable, Equatable {
-        public let iconColor: String?
-        public let textColor: String?
-        public let backgroundColor: String?
+        public var iconColor: String?
+        public var textColor: String?
+        public var backgroundColor: String?
         /// If true, execution will request confirmation before running
-        public let requiresConfirmation: Bool
+        public var requiresConfirmation: Bool
 
         public init(
             iconColor: String? = nil,
