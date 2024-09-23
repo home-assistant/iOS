@@ -52,7 +52,7 @@ struct WidgetsBundle18: WidgetBundle {
     var body: some Widget {
         ControlAssist()
         ControlLight()
-//        ControlSwitch()
+        ControlSwitch()
         ControlScript()
         ControlScene()
         ControlOpenPage()

@@ -40,7 +40,7 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
     }
 
     private func item(light: IntentLightEntity?, value: Bool?, iconName: SFSymbolEntity?) -> ControlEntityItem {
-        let placeholder = placeholder()
+        let placeholder = placeholder(value: value)
         if let light {
             return .init(
                 id: light.id,
@@ -62,13 +62,13 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
         }
     }
 
-    private func placeholder() -> IntentLightEntity {
+    private func placeholder(value: Bool?) -> IntentLightEntity {
         .init(
             id: UUID().uuidString,
             entityId: "",
             serverId: "",
             displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
-            iconName: SFSymbol.lightbulbFill.rawValue
+            iconName: (value ?? false) ? SFSymbol.lightbulbFill.rawValue : SFSymbol.lightbulb.rawValue
         )
     }
 }
