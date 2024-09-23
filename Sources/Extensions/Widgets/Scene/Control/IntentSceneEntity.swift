@@ -1,12 +1,12 @@
 import AppIntents
 import Foundation
-import GRDB
 import PromiseKit
+import SFSafeSymbols
 import Shared
 
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
 struct IntentSceneEntity: AppEntity {
-    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Script")
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Scene")
 
     static let defaultQuery = IntentSceneAppEntityQuery()
 
@@ -40,13 +40,11 @@ struct IntentSceneEntity: AppEntity {
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
 struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentSceneEntity] {
-        await getSceneEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
+        getSceneEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentSceneEntity> {
-        let scenesPerServer = await getSceneEntities()
-
-        return .init(sections: scenesPerServer.map { (key: Server, value: [IntentSceneEntity]) in
+        .init(sections: getSceneEntities(matching: string).map { (key: Server, value: [IntentSceneEntity]) in
             .init(
                 .init(stringLiteral: key.info.name),
                 items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
@@ -55,48 +53,28 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSceneEntity> {
-        let scriptsPerServer = await getSceneEntities()
-
-        return .init(sections: scriptsPerServer.map { (key: Server, value: [IntentSceneEntity]) in
+        .init(sections: getSceneEntities().map { (key: Server, value: [IntentSceneEntity]) in
             .init(.init(stringLiteral: key.info.name), items: value)
         })
     }
 
-    private func getSceneEntities(matching string: String? = nil) async -> [Server: [IntentSceneEntity]] {
-        await withCheckedContinuation { continuation in
-            var entities: [Server: [IntentSceneEntity]] = [:]
-            var serverCheckedCount = 0
-            for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
-                do {
-                    var scenes: [HAAppEntity] = try Current.database().read { db in
-                        try HAAppEntity
-                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.scene.rawValue)
-                            .fetchAll(db)
-                    }
-                    scenes = scenes.sorted(by: { $0.name < $1.name })
-                    if let string {
-                        scenes = scenes.filter { $0.name.contains(string) }
-                    }
+    private func getSceneEntities(matching string: String? = nil) -> [Server: [IntentSceneEntity]] {
+        var sceneEntities: [Server: [IntentSceneEntity]] = [:]
+        let entities = ControlEntityProvider(domain: .scene).getEntities(matching: string)
 
-                    entities[server] = scenes.map({ entity in
-                        .init(
-                            id: entity.id,
-                            entityId: entity.entityId,
-                            serverId: server.identifier.rawValue,
-                            serverName: server.info.name,
-                            displayString: entity.name,
-                            iconName: entity.icon ?? ""
-                        )
-                    })
-                } catch {
-                    Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
-                }
-                serverCheckedCount += 1
-                if serverCheckedCount == Current.servers.all.count {
-                    continuation.resume(returning: entities)
-                }
-            }
+        for (server, values) in entities {
+            sceneEntities[server] = values.map({ entity in
+                IntentSceneEntity(
+                    id: entity.id,
+                    entityId: entity.entityId,
+                    serverId: entity.serverId,
+                    serverName: server.info.name,
+                    displayString: entity.name,
+                    iconName: entity.icon ?? SFSymbol.moonStarsCircleFill.rawValue
+                )
+            })
         }
+
+        return sceneEntities
     }
 }

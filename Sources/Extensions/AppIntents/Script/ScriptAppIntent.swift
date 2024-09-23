@@ -1,8 +1,8 @@
 import AppIntents
 import AudioToolbox
 import Foundation
-import GRDB
 import PromiseKit
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -70,6 +70,9 @@ final class ScriptAppIntent: AppIntent {
                     .Scripts.FailureMessage.content(script.displayString)
             ))
         }
+
+        DataWidgetsUpdater.update()
+
         return .result(value: success)
     }
 }
@@ -110,11 +113,11 @@ struct IntentScriptEntity: AppEntity {
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
 struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentScriptEntity] {
-        await getScriptEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
+        getScriptEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentScriptEntity> {
-        let scriptsPerServer = await getScriptEntities()
+        let scriptsPerServer = getScriptEntities()
 
         return .init(sections: scriptsPerServer.map { (key: Server, value: [IntentScriptEntity]) in
             .init(
@@ -125,43 +128,30 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentScriptEntity> {
-        let scriptsPerServer = await getScriptEntities()
+        let scriptsPerServer = getScriptEntities()
 
         return .init(sections: scriptsPerServer.map { (key: Server, value: [IntentScriptEntity]) in
             .init(.init(stringLiteral: key.info.name), items: value)
         })
     }
 
-    private func getScriptEntities(matching string: String? = nil) async -> [Server: [IntentScriptEntity]] {
-        await withCheckedContinuation { continuation in
-            var entities: [Server: [IntentScriptEntity]] = [:]
-            var serverCheckedCount = 0
-            for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
-                do {
-                    let scripts: [HAAppEntity] = try Current.database().read { db in
-                        try HAAppEntity
-                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.script.rawValue)
-                            .fetchAll(db)
-                    }
-                    entities[server] = scripts.map({ entity in
-                        .init(
-                            id: entity.id,
-                            entityId: entity.entityId,
-                            serverId: server.identifier.rawValue,
-                            serverName: server.info.name,
-                            displayString: entity.name,
-                            iconName: entity.icon ?? ""
-                        )
-                    })
-                } catch {
-                    Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
-                }
-                serverCheckedCount += 1
-                if serverCheckedCount == Current.servers.all.count {
-                    continuation.resume(returning: entities)
-                }
-            }
+    private func getScriptEntities(matching string: String? = nil) -> [Server: [IntentScriptEntity]] {
+        var scriptEntities: [Server: [IntentScriptEntity]] = [:]
+        let entities = ControlEntityProvider(domain: .script).getEntities(matching: string)
+
+        for (server, values) in entities {
+            scriptEntities[server] = values.map({ entity in
+                IntentScriptEntity(
+                    id: entity.id,
+                    entityId: entity.entityId,
+                    serverId: entity.serverId,
+                    serverName: server.info.name,
+                    displayString: entity.name,
+                    iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
+                )
+            })
         }
+
+        return scriptEntities
     }
 }
