@@ -114,7 +114,7 @@ PODS:
   - SwiftMessages (9.0.6):
     - SwiftMessages/App (= 9.0.6)
   - SwiftMessages/App (9.0.6)
-  - UIColor_Hex_Swift (5.1.7)
+  - UIColor_Hex_Swift (5.1.9)
   - Version (0.8.0)
   - ViewRow (0.8):
     - Eureka (>= 5.0.0)
@@ -297,7 +297,7 @@ SPEC CHECKSUMS:
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
-  UIColor_Hex_Swift: 31cd3e47440f07a20d2503a36bb0437a445b3c29
+  UIColor_Hex_Swift: 20cb4e8d51b63e168a9da6933bc5d39cd8fb4ab5
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
