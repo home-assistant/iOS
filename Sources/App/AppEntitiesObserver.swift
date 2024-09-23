@@ -20,6 +20,7 @@ enum AppEntitiesObserver {
             Domain.scene,
             Domain.script,
             Domain.light,
+            Domain.switch,
         ].map(\.rawValue)
 
         func start() {

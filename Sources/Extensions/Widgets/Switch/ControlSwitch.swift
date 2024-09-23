@@ -1,20 +1,19 @@
 import AppIntents
 import Foundation
-import GRDB
 import Shared
 import SwiftUI
 import WidgetKit
 
 @available(iOS 18, *)
-struct ControlLight: ControlWidget {
+struct ControlSwitch: ControlWidget {
     var body: some ControlWidgetConfiguration {
         AppIntentControlConfiguration(
-            kind: WidgetsKind.controlLight.rawValue,
-            provider: ControlLightsValueProvider()
+            kind: WidgetsKind.controlSwitch.rawValue,
+            provider: ControlSwitchValueProvider()
         ) { template in
             ControlWidgetToggle(isOn: template.value, action: {
-                let intent = LightIntent()
-                intent.light = .init(
+                let intent = SwitchIntent()
+                intent.entity = .init(
                     id: template.id,
                     entityId: template.entityId,
                     serverId: template.serverId,
@@ -28,7 +27,7 @@ struct ControlLight: ControlWidget {
             }
             .tint(.yellow)
         }
-        .displayName(.init(stringLiteral: L10n.Widgets.Controls.Light.title))
-        .description(.init(stringLiteral: L10n.Widgets.Controls.Light.description))
+        .displayName(.init(stringLiteral: L10n.Widgets.Controls.Switch.title))
+        .description(.init(stringLiteral: L10n.Widgets.Controls.Switch.description))
     }
 }

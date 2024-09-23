@@ -3307,6 +3307,12 @@ public enum L10n {
         /// Choose script
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.scripts.placeholder_title") }
       }
+      public enum Switch {
+        /// Turn on/off your switch
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.switch.description") }
+        /// Switch
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.switch.title") }
+      }
     }
     public enum Details {
       /// Display states using from Home Assistant in text

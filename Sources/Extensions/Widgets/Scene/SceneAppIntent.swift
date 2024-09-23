@@ -71,6 +71,9 @@ final class SceneAppIntent: AppIntent {
                     .Scenes.FailureMessage.content(scene.displayString)
             ))
         }
+
+        DataWidgetsUpdater.update()
+
         return .result(value: success)
     }
 }
