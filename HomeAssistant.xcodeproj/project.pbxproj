@@ -548,6 +548,7 @@
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
 		421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
+		421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */; };
 		421B1C162BD65246001ED18C /* WidgetsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C152BD65246001ED18C /* WidgetsSettingsView.swift */; };
 		421B1C182BD6524E001ED18C /* WidgetsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetsSettingsViewModel.swift */; };
 		421B1C1A2BD65255001ED18C /* WidgetsSettingsView+build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C192BD65255001ED18C /* WidgetsSettingsView+build.swift */; };
@@ -1778,6 +1779,7 @@
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
 		420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayEntitiesListTemplate+Build.swift"; sourceTree = "<group>"; };
+		4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistViewTintedWrapper.swift; sourceTree = "<group>"; };
 		421B1C152BD65246001ED18C /* WidgetsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsSettingsView.swift; sourceTree = "<group>"; };
 		421B1C172BD6524E001ED18C /* WidgetsSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsSettingsViewModel.swift; sourceTree = "<group>"; };
 		421B1C192BD65255001ED18C /* WidgetsSettingsView+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetsSettingsView+build.swift"; sourceTree = "<group>"; };
@@ -3982,6 +3984,7 @@
 				42F958972BB4681E00497981 /* WidgetAssist.swift */,
 				42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */,
 				42F9589D2BB4705E00497981 /* WidgetAssistView.swift */,
+				4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */,
 			);
 			path = Assist;
 			sourceTree = "<group>";
@@ -6431,6 +6434,7 @@
 				403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */,
 				42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */,
+				421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */,
 				42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */,
 				403AE9122C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,

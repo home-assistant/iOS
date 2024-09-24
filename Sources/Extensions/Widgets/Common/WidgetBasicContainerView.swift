@@ -26,7 +26,7 @@ struct WidgetBasicContainerView: View {
         .widgetBackground(Color.asset(Asset.Colors.primaryBackground))
     }
 
-    @available(iOS 17.0, *)
+    @available(iOS 16.4, *)
     private func intent(for model: WidgetBasicViewModel) -> (any AppIntent)? {
         switch model.interactionType {
         case .widgetURL:
@@ -34,7 +34,7 @@ struct WidgetBasicContainerView: View {
         case let .appIntent(widgetIntentType):
             switch widgetIntentType {
             case .action:
-                var intent = PerformAction()
+                let intent = PerformAction()
                 intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
                 intent.hapticConfirmation = true
                 return intent
@@ -86,7 +86,11 @@ struct WidgetBasicContainerView: View {
                     ForEach(column) { model in
                         if case let .widgetURL(url) = model.interactionType {
                             Link(destination: url.withWidgetAuthenticity()) {
-                                WidgetBasicView(model: model, sizeStyle: sizeStyle, tinted: false)
+                                if #available(iOS 18.0, *) {
+                                    WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle)
+                                } else {
+                                    WidgetBasicView(model: model, sizeStyle: sizeStyle, tinted: false)
+                                }
                             }
                         } else {
                             if #available(iOS 17.0, *), let intent = intent(for: model) {

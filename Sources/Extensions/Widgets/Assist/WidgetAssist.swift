@@ -10,8 +10,13 @@ struct WidgetAssist: Widget {
             intent: AssistInAppIntent.self,
             provider: WidgetAssistProvider(),
             content: { entry in
-                WidgetAssistView(entry: entry)
-                    .widgetBackground(Color.clear)
+                if #available(iOS 18.0, *) {
+                    WidgetAssistViewTintedWrapper(entry: entry)
+                        .widgetBackground(Color.clear)
+                } else {
+                    WidgetAssistView(entry: entry, tinted: false)
+                        .widgetBackground(Color.clear)
+                }
             }
         )
         .contentMarginsDisabledIfAvailable()
