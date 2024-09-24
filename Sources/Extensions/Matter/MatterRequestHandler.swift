@@ -26,7 +26,22 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
     override func selectThreadNetwork(from threadScanResults: [
         MatterAddDeviceExtensionRequestHandler.ThreadScanResult
     ]) async throws -> MatterAddDeviceExtensionRequestHandler.ThreadNetworkAssociation {
-        .defaultSystemNetwork
+        Current.Log
+            .verbose(
+                "preferredNetworkMacExtendedAddress: \(String(describing: Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress))"
+            )
+        Current.Log.verbose("threadScanResults: \(threadScanResults.map(\.networkName))")
+
+        if let preferredNetworkMacExtendedAddress = Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress,
+           let selectedNetwork = threadScanResults.first(where: { result in
+               result.extendedAddress == preferredNetworkMacExtendedAddress.hexadecimal
+           }) {
+            Current.Log.verbose("Using selected thread network, name: \(selectedNetwork.networkName)")
+            return .network(extendedPANID: selectedNetwork.extendedPANID)
+        } else {
+            Current.Log.verbose("Using default thread network")
+            return .defaultSystemNetwork
+        }
     }
 
     override func commissionDevice(

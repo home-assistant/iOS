@@ -2349,6 +2349,14 @@ public enum L10n {
       /// Network Key
       public static var title: String { return L10n.tr("Localizable", "thread.network_key.title") }
     }
+    public enum SaveCredential {
+      public enum Fail {
+        public enum Alert {
+          /// Failed to save thread network credential.
+          public static var message: String { return L10n.tr("Localizable", "thread.save_credential.fail.alert.message") }
+        }
+      }
+    }
     public enum StoreInKeychain {
       public enum Error {
         /// Operation failed

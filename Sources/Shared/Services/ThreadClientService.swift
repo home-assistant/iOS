@@ -7,8 +7,11 @@ import ThreadNetwork
 public final class ThreadClientService: ThreadClientProtocol {
     public init() {}
 
+    private var client: THClient?
+
     public func retrieveAllCredentials() async throws -> [ThreadCredential] {
-        let client = THClient()
+        client = THClient()
+        guard let client else { return [] }
         let placeholder = "Unknown"
 
         // Thre preferred credential call is necessary as it triggers a permission dialog
@@ -20,6 +23,7 @@ public final class ThreadClientService: ThreadClientProtocol {
         allCredentials = allCredentials.filter { $0.borderAgentID != preferredCredential.borderAgentID }
         allCredentials.insert(preferredCredential)
 
+        self.client = nil
         return allCredentials.map { credential in
             ThreadCredential(
                 networkName: credential.networkName ?? placeholder,
@@ -43,11 +47,12 @@ public final class ThreadClientService: ThreadClientProtocol {
               let activeOperationalDataSet = operationalDataSet.hexadecimal else {
             throw ThreadClientServiceError.failedToConvertToHexadecimal
         }
-
-        try await THClient().storeCredentials(
+        client = THClient()
+        try await client?.storeCredentials(
             forBorderAgent: borderAgent,
             activeOperationalDataSet: activeOperationalDataSet
         )
+        client = nil
     }
 
     public func saveCredential(
@@ -60,10 +65,14 @@ public final class ThreadClientService: ThreadClientProtocol {
             completion(ThreadClientServiceError.failedToConvertToHexadecimal)
             return
         }
-        THClient().storeCredentials(
+        client = THClient()
+        client?.storeCredentials(
             forBorderAgent: borderAgent,
             activeOperationalDataSet: activeOperationalDataSet,
-            completion: completion
+            completion: { [weak self] error in
+                completion(error)
+                self?.client = nil
+            }
         )
     }
 
@@ -73,7 +82,12 @@ public final class ThreadClientService: ThreadClientProtocol {
             completion(nil)
             return
         }
-        THClient().deleteCredentials(forBorderAgent: data, completion: completion)
+
+        client = THClient()
+        client?.deleteCredentials(forBorderAgent: data, completion: { [weak self] error in
+            completion(error)
+            self?.client = nil
+        })
     }
 }
 #else

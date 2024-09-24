@@ -674,6 +674,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "share_extension.error.title" = "Couldn't Send";
 "success_label" = "Success";
 "thread.active_operational_data_set.title" = "Active operational data set";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.border_agent_id.title" = "Border Agent ID";
 "thread.credentials.border_agent_id_title" = "Border Agent ID";
 "thread.credentials.network_key_title" = "Network Key";

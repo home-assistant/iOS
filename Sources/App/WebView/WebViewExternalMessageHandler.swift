@@ -98,13 +98,7 @@ final class WebViewExternalMessageHandler {
             case .themeUpdate:
                 webViewController.evaluateJavaScript("notifyThemeColors()", completion: nil)
             case .matterCommission:
-                Current.matter.commission(webViewController.server).done {
-                    Current.Log.info("commission call completed")
-                }.catch { error in
-                    // we don't show a user-visible error because even a successful operation will return 'cancelled'
-                    // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
-                    Current.Log.error(error)
-                }
+                matterComissioningHandler(incomingMessage: incomingMessage)
             case .threadImportCredentials:
                 transferKeychainThreadCredentialsToHARequested()
             case .barCodeScanner:
@@ -254,6 +248,66 @@ final class WebViewExternalMessageHandler {
         ))
         barcodeController.modalPresentationStyle = .fullScreen
         webViewController?.presentOverlayController(controller: barcodeController, animated: true)
+    }
+
+    private func matterComissioningHandler(incomingMessage: WebSocketMessage) {
+        if let preferredNetWorkMacExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
+           let preferredNetWorkActiveOperationalDataset = incomingMessage
+           .Payload?["active_operational_dataset"] as? String {
+            Current.settingsStore
+                .matterLastPreferredNetWorkMacExtendedAddress = preferredNetWorkMacExtendedAddress
+            Current.settingsStore
+                .matterLastPreferredNetWorkActiveOperationalDataset = preferredNetWorkActiveOperationalDataset
+
+            Current.Log
+                .verbose(
+                    "Matter comission requested using preferredNetWorkMacExtendedAddress: \(String(describing: preferredNetWorkMacExtendedAddress)) and preferredNetWorkActiveOperationalDataset: \(String(describing: preferredNetWorkActiveOperationalDataset))"
+                )
+
+            // Saving credential in keychain before moving forward as required, docs: https://developer.apple.com/documentation/mattersupport/matteradddeviceextensionrequesthandler/selectthreadnetwork(from:)
+            Current.matter.threadClientService.saveCredential(
+                macExtendedAddress: preferredNetWorkMacExtendedAddress,
+                operationalDataSet: preferredNetWorkActiveOperationalDataset
+            ) { [weak self] error in
+                if let error {
+                    Current.Log
+                        .error(
+                            "Error saving credentials in keychain while comissioning matter device, error: \(error.localizedDescription)"
+                        )
+                    let alert = UIAlertController(
+                        title: nil,
+                        message: L10n.Thread.SaveCredential.Fail.Alert.message,
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(.init(title: L10n.okLabel, style: .default))
+                    self?.webViewController?.presentController(alert, animated: false)
+                } else {
+                    Current.Log
+                        .verbose(
+                            "Succeeded saving thread credentials in keychain, moving forward to matter comissioning"
+                        )
+                    self?.comissionMatterDevice()
+                }
+            }
+        } else {
+            comissionMatterDevice()
+        }
+    }
+
+    private func comissionMatterDevice() {
+        guard let webViewController else {
+            Current.Log.error("WebViewController not available while commissioning matter device")
+            return
+        }
+        Current.matter.commission(webViewController.server).done {
+            Current.Log.info("commission call completed")
+        }.catch { error in
+            // we don't show a user-visible error because even a successful operation will return 'cancelled'
+            // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
+            Current.Log.error(error)
+        }.finally { [weak self] in
+            self?.webViewController?.reload()
+        }
     }
 
     func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false, animated: Bool) {

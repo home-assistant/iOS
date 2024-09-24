@@ -51,17 +51,21 @@ public class MatterWrapper {
 
     public lazy var commission: (_ server: Server) -> Promise<Void> = { [self] server in
         #if canImport(MatterSupport)
-        guard #available(iOS 16.1, *) else {
+        guard #available(iOS 16.4, *) else {
             return .value(())
         }
 
         lastCommissionServerIdentifier = server.identifier
 
+        let request = MatterAddDeviceRequest(
+            topology: .init(ecosystemName: "Home Assistant", homes: []),
+            shouldScanNetworks: true
+        )
+
         return Promise<Void> { seal in
             Task {
                 do {
-                    try await MatterAddDeviceRequest(topology: .init(ecosystemName: "Home Assistant", homes: []))
-                        .perform()
+                    try await request.perform()
                     Current.Log.info("Matter pairing finished (native flow manually closed or pairing succeeded)")
                     seal.fulfill(())
                 } catch {
