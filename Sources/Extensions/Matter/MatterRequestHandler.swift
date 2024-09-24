@@ -39,6 +39,7 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
             Current.Log.verbose("Using selected thread network, name: \(selectedNetwork.networkName)")
             return .network(extendedPANID: selectedNetwork.extendedPANID)
         } else {
+            Current.Log.verbose("Using default thread network")
             return .defaultSystemNetwork
         }
     }

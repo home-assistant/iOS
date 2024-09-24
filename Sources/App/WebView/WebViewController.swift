@@ -23,6 +23,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func dismissControllerAboveOverlayController()
     func updateSettingsButton(state: String)
     func navigateToPath(path: String)
+    func reload()
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -1077,5 +1078,9 @@ extension WebViewController: WebViewControllerProtocol {
         if let url = URL(string: server.info.connection.activeURL().absoluteString + path) {
             webView.load(URLRequest(url: url))
         }
+    }
+
+    func reload() {
+        webView.reload()
     }
 }

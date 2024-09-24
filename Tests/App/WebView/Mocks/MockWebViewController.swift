@@ -30,6 +30,8 @@ final class MockWebViewController: WebViewControllerProtocol {
     var updateImprovEntryViewCalled = false
     var lastUpdateImprovEntryViewState = false
 
+    var reloadCalled = false
+
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         presentOverlayControllerCalled = true
         overlayAppController = controller
@@ -70,5 +72,9 @@ final class MockWebViewController: WebViewControllerProtocol {
     func navigateToPath(path: String) {
         navigateToPathCalled = true
         lastNavigateToPathPath = path
+    }
+
+    func reload() {
+        reloadCalled = true
     }
 }
