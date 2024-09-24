@@ -20,6 +20,7 @@ final class WebViewExternalMessageHandler {
         self.localNotificationDispatcher = localNotificationDispatcher
     }
 
+    // swiftlint:disable cyclomatic_complexity
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
             Current.Log.error("WebViewExternalMessageHandler has nil webViewController")
