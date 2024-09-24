@@ -20,7 +20,6 @@ final class WebViewExternalMessageHandler {
         self.localNotificationDispatcher = localNotificationDispatcher
     }
 
-    // swiftlint:disable cyclomatic_complexity
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
             Current.Log.error("WebViewExternalMessageHandler has nil webViewController")
@@ -283,7 +282,10 @@ final class WebViewExternalMessageHandler {
                     alert.addAction(.init(title: L10n.okLabel, style: .default))
                     self?.webViewController?.presentController(alert, animated: false)
                 } else {
-                    Current.Log.verbose("Succeeded saving thread credentials in keychain, moving forward to matter comissioning")
+                    Current.Log
+                        .verbose(
+                            "Succeeded saving thread credentials in keychain, moving forward to matter comissioning"
+                        )
                     self?.comissionMatterDevice()
                 }
             }
