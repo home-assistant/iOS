@@ -686,6 +686,7 @@
 "thread.extended_pan_id.title" = "Genişletilmiş PAN Kimliği";
 "thread.management.title" = "İş Parçacığı Kimlik Bilgileri";
 "thread.network_key.title" = "Ağ Anahtarı";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Konu kimlik bilgileri anahtarlıkta depolanamadı. Daha fazla bilgi için günlükleri kontrol edin.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Anahtar zincirinde iş parçacığı kimlik bilgileri saklanırken giriş onaltılı sayıya dönüştürülemedi";
 "thread.store_in_keychain.error.title" = "Operasyon başarısız";
@@ -959,6 +960,8 @@
 "widgets.controls.script.description" = "Senaryoyu çalıştır";
 "widgets.controls.script.display_name" = "Senaryo";
 "widgets.controls.scripts.placeholder_title" = "Senaryo seçin";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Metinde Home Asistanı'nın kullanıldığı durumları görüntüleme";
 "widgets.details.parameters.action" = "Eylem";
 "widgets.details.parameters.details_template" = "Ayrıntılar Metin Şablonu (yalnızca dikdörtgen ailede)";

@@ -686,6 +686,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "thread.extended_pan_id.title" = "Udvidet PAN-ID";
 "thread.management.title" = "Thread-legitimationsoplysninger";
 "thread.network_key.title" = "Netværksnøgle";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Kunne ikke gemme Thread-legitimationsoplysninger i nøglering. Tjek logfiler for flere oplysninger.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Kunne ikke konvertere input til hexadecimal under lagring af Thread-legitimationsoplysninger i nøglering";
 "thread.store_in_keychain.error.title" = "Handlingen mislykkedes";
@@ -959,6 +960,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.controls.script.description" = "Kør script";
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Vælg script";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Vis tilstande fra Home Assistant i tekstform";
 "widgets.details.parameters.action" = "Handling";
 "widgets.details.parameters.details_template" = "Detaljer tekstskabelon (kun i rektangulær familie)";

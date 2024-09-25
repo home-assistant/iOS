@@ -686,6 +686,7 @@
 "thread.extended_pan_id.title" = "ID PAN esteso";
 "thread.management.title" = "Credenziali del thread";
 "thread.network_key.title" = "Password di rete";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Impossibile memorizzare le credenziali del thread nel portachiavi, controlla i log per ulteriori informazioni.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Impossibile convertire l'input in esadecimale durante la memorizzazione delle credenziali del thread nel portachiavi";
 "thread.store_in_keychain.error.title" = "Operazione fallita";
@@ -959,6 +960,8 @@
 "widgets.controls.script.description" = "Run script";
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";

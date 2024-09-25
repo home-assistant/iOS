@@ -686,6 +686,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "thread.extended_pan_id.title" = "拡張PAN ID";
 "thread.management.title" = "Thread 認証情報";
 "thread.network_key.title" = "ネットワークキー";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Thread 認証情報をキーチェーンに保存できませんでした。詳細についてはログを確認してください。";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Thread 認証情報をキーチェーンに保存するときに入力を 16 進数に変換できませんでした";
 "thread.store_in_keychain.error.title" = "操作に失敗しました";
@@ -959,6 +960,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.controls.script.description" = "スクリプトの実行";
 "widgets.controls.script.display_name" = "スクリプト";
 "widgets.controls.scripts.placeholder_title" = "スクリプトを選択";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Home Assistantからテキストを使用して状態を表示する";
 "widgets.details.parameters.action" = "アクション";
 "widgets.details.parameters.details_template" = "詳細テキスト テンプレート (長方形ファミリのみ)";

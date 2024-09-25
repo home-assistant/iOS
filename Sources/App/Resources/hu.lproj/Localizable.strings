@@ -686,6 +686,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "thread.extended_pan_id.title" = "Kiterjesztett PAN azonosító";
 "thread.management.title" = "Thread hitelesítő adatai";
 "thread.network_key.title" = "Hálózati kulcs";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Nem sikerült tárolni a thread hitelesítő adatait a kulcskarikában, további információért ellenőrizze a naplókat.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Nem sikerült hexadecimálisra konvertálni a bemenetet, miközben a Thread hitelesítő adatait a kulcskarikában tárolta";
 "thread.store_in_keychain.error.title" = "A művelet sikertelen";
@@ -959,6 +960,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.script.description" = "Run script";
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Az állapotok megjelenítése a Home Assistant segítségével szöveges formában";
 "widgets.details.parameters.action" = "Művelet";
 "widgets.details.parameters.details_template" = "Részletek szöveg sablon (csak a téglalap alakú családban)";
