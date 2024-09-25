@@ -686,6 +686,7 @@ Home Assistant - это бесплатное программное обеспе
 "thread.extended_pan_id.title" = "Расширенный PAN ID";
 "thread.management.title" = "Учетные данные Thread";
 "thread.network_key.title" = "Ключ сети";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Не удалось сохранить учетные данные thread в связке ключей, проверьте журналы для получения дополнительной информации.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Не удалось преобразовать вводимые данные в шестнадцатеричный формат при сохранении учетных данных thread в связке ключей";
 "thread.store_in_keychain.error.title" = "Операция завершилась неудачей";
@@ -959,6 +960,8 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.controls.script.description" = "Запускает скрипт";
 "widgets.controls.script.display_name" = "Скрипт";
 "widgets.controls.scripts.placeholder_title" = "Выберите скрипт";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Отображает состояния с помощью Home Assistant в текстовом виде";
 "widgets.details.parameters.action" = "Действие";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
