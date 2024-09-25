@@ -3,6 +3,7 @@ import Foundation
 import HAKit
 import PromiseKit
 import Shared
+import SwiftUI
 
 class OnboardingAuth {
     func successController(server: Server?) -> UIViewController {
@@ -10,7 +11,7 @@ class OnboardingAuth {
     }
 
     func failureController(error: Error) -> UIViewController {
-        OnboardingErrorViewController(error: error)
+        UIHostingController(rootView: OnboardingErrorView(error: error))
     }
 
     var login: OnboardingAuthLogin = OnboardingAuthLoginImpl()

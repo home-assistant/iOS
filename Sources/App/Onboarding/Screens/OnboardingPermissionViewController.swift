@@ -25,7 +25,7 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = Current.style.onboardingBackground
+        view.backgroundColor = .systemBackground
         navigationItem.hidesBackButton = true
 
         let (_, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
@@ -44,7 +44,7 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
         let descriptionLabel = with(UILabel()) {
             $0.text = permission.enableDescription
             $0.font = .preferredFont(forTextStyle: .body)
-            $0.textColor = Current.style.onboardingLabelSecondary
+            $0.textColor = .secondaryLabel
             $0.numberOfLines = 0
             $0.textAlignment = .center
         }
@@ -69,8 +69,8 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
                 })
                 $0.addArrangedSubview(with(UILabel()) {
                     $0.text = bulletPoint.1
-                    $0.textColor = Current.style.onboardingLabel
-                    $0.font = .preferredFont(forTextStyle: .body)
+                    $0.textColor = .label
+                    $0.font = .boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize)
                     $0.numberOfLines = 0
                     $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
                 })
@@ -98,7 +98,7 @@ class OnboardingPermissionViewController: UIViewController, OnboardingViewContro
 
         stackView.addArrangedSubview(with(UILabel()) {
             $0.font = .preferredFont(forTextStyle: .footnote)
-            $0.textColor = Current.style.onboardingLabelSecondary
+            $0.textColor = Asset.Colors.haPrimary.color
             $0.text = L10n.Onboarding.Permissions.changeLaterNote
             $0.numberOfLines = 0
             $0.textAlignment = .center

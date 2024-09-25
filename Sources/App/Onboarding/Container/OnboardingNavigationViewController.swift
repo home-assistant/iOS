@@ -1,5 +1,6 @@
 import Eureka
 import Shared
+import SwiftUI
 import UIKit
 
 enum OnboardingBarAppearance {
@@ -56,13 +57,15 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
         let rootViewController: UIViewController
 
+        let onboardingWelcomeViewController = UIHostingController(rootView: OnboardingWelcomeView())
+
         switch onboardingStyle {
-        case .initial: rootViewController = OnboardingWelcomeViewController()
+        case .initial: rootViewController = onboardingWelcomeViewController
         case .secondary: rootViewController = OnboardingScanningViewController()
         case let .required(type):
             switch type {
             case .full:
-                rootViewController = OnboardingWelcomeViewController()
+                rootViewController = onboardingWelcomeViewController
             case .permissions:
                 rootViewController = OnboardingPermissionViewControllerFactory.next(server: nil)
             }
@@ -89,31 +92,22 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         fatalError("init(coder:) has not been implemented")
     }
 
-    override var childForStatusBarStyle: UIViewController? {
-        nil
-    }
-
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .lightContent
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         delegate = self
-        view.tintColor = Current.style.onboardingTintColor
-
-        overrideUserInterfaceStyle = .dark
+        view.tintColor = Asset.Colors.haPrimary.color
+        navigationController?.navigationBar.tintColor = Asset.Colors.haPrimary.color
 
         let appearance = with(UINavigationBarAppearance()) {
             $0.configureWithOpaqueBackground()
-            $0.backgroundColor = Current.style.onboardingBackground
+            $0.backgroundColor = .systemBackground
             $0.shadowColor = .clear
-            $0.titleTextAttributes = [.foregroundColor: UIColor.white]
+            $0.titleTextAttributes = [.foregroundColor: UIColor.label]
         }
         navigationBar.standardAppearance = appearance
         navigationBar.scrollEdgeAppearance = appearance
-        navigationBar.tintColor = .white
+        navigationBar.tintColor = .label
     }
 
     @objc private func cancelTapped(_ sender: UIBarButtonItem) {

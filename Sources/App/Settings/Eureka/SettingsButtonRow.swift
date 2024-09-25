@@ -29,7 +29,7 @@ public final class SettingsButtonRow: _ButtonRowOf<String>, RowType {
             cell.imageView?.image = icon.settingsIcon(for: cell.traitCollection)
         } else if let image {
             cell.imageView?.image = image.scaledToSize(.init(width: 24, height: 24))
-                .withTintColor(AppConstants.darkerTintColor)
+                .withTintColor(Asset.Colors.haPrimary.color)
         } else {
             cell.imageView?.image = nil
         }
