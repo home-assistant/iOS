@@ -253,22 +253,22 @@
 "nfc.detail.example_trigger" = "Exemple de déclencheur";
 "nfc.detail.fire" = "Événement d'incendie";
 "nfc.detail.share" = "Partager l'identifiant";
-"nfc.detail.tag_value" = "Identifiant de la balise";
+"nfc.detail.tag_value" = "Identifiant du tag";
 "nfc.detail.title" = "Balise NFC";
 "nfc.generic_tag_read" = "Tag lu";
 "nfc.list.description" = "Les balises NFC écrites par l'application afficheront une notification lorsque vous rapprochez votre appareil. L'activation de la notification lancera l'application et déclenchera un événement. \
 \
 Les balises fonctionneront sur tout appareil sur lequel Home Assistant est installé et qui dispose d'un support matériel pour les lire.";
 "nfc.list.learn_more" = "En savoir plus";
-"nfc.list.read_tag" = "Lire la balise";
+"nfc.list.read_tag" = "Lire un tag";
 "nfc.list.title" = "Balises NFC";
-"nfc.list.write_tag" = "Ecrire une balise";
+"nfc.list.write_tag" = "Écrire un tag";
 "nfc.not_available" = "Le NFC n'est pas disponible sur cet appareil";
 "nfc.read.error.generic_failure" = "Échec de lecture de la balise";
 "nfc.read.error.not_home_assistant" = "Le tag NFC n'est pas un tag Home Assistant";
 "nfc.read.error.tag_invalid" = "Le tag NFC n'est pas valide";
 "nfc.read.start_message" = "Tenez votre %@ près d’une balise NFC";
-"nfc.tag_read" = "Balise NFC lue";
+"nfc.tag_read" = "Tag NFC lu";
 "nfc.write.error.capacity" = "La balise NFC a une capacité insuffisante: nécessite %ld mais n'a que %ld";
 "nfc.write.error.invalid_format" = "La balise NFC n'est pas au format NDEF";
 "nfc.write.error.not_writable" = "Le tag NFC est en lecture seule";
@@ -686,6 +686,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "thread.extended_pan_id.title" = "Extended PAN ID";
 "thread.management.title" = "Informations d'identification Thread";
 "thread.network_key.title" = "Clé réseau";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Échec du stockage des informations d'identification du thread dans le trousseau. Consultez les journaux pour plus d'informations.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Échec de la conversion de l'entrée en hexadécimal lors du stockage des informations d'identification du thread dans le trousseau";
 "thread.store_in_keychain.error.title" = "Échec de l'opération";
@@ -959,6 +960,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.script.description" = "Exécuter le script";
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Afficher les états à l'aide de Home Assistant dans le texte";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";

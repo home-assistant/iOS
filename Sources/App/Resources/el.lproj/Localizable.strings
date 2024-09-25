@@ -686,6 +686,7 @@
 "thread.extended_pan_id.title" = "Εκτεταμένο PAN ID";
 "thread.management.title" = "Διαπιστευτήρια νήματος";
 "thread.network_key.title" = "Κλειδί δικτύου";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Απέτυχε η αποθήκευση του διαπιστευτηρίου νήματος στην κλειδοθήκη, ελέγξτε τα αρχεία καταγραφής για περισσότερες πληροφορίες.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Απέτυχε η μετατροπή της εισόδου σε δεκαεξαδικό σύστημα κατά την αποθήκευση των διαπιστευτηρίων νήματος στην κλειδοθήκη";
 "thread.store_in_keychain.error.title" = "Η λειτουργία απέτυχε";
@@ -959,6 +960,8 @@
 "widgets.controls.script.description" = "Εκτέλεση σεναρίου";
 "widgets.controls.script.display_name" = "Σενάριο";
 "widgets.controls.scripts.placeholder_title" = "Επιλέξτε σενάριο";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Εμφάνιση καταστάσεων με χρήση από το Home Assistant σε κείμενο";
 "widgets.details.parameters.action" = "Ενέργεια";
 "widgets.details.parameters.details_template" = "Πρότυπο κειμένου λεπτομερειών (μόνο σε ορθογώνια)";

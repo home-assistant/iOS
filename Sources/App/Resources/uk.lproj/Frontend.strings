@@ -10,5 +10,5 @@
 "panel::profile" = "Профіль";
 "panel::shopping_list" = "Список покупок";
 "panel::states" = "Огляд";
-"state::default::unavailable" = "Недоступний";
+"state::default::unavailable" = "Недоступно";
 "state::default::unknown" = "Невідомо";

@@ -686,6 +686,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "thread.extended_pan_id.title" = "Erweiterte PAN-ID";
 "thread.management.title" = "Thread-Zugangsdaten";
 "thread.network_key.title" = "Netzwerkschlüssel";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Thread-Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden, prüfe die Protokolle für weitere Informationen.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Beim Speichern der Thread-Zugangsdaten im Schlüsselbund konnte die Eingabe nicht in Hexadezimal konvertiert werden.";
 "thread.store_in_keychain.error.title" = "Vorgang fehlgeschlagen";
@@ -961,6 +962,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.controls.script.description" = "Skript ausführen";
 "widgets.controls.script.display_name" = "Skript";
 "widgets.controls.scripts.placeholder_title" = "Skript auswählen";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Anzeigen von Zuständen mit Home Assistant in Textform";
 "widgets.details.parameters.action" = "Aktion";
 "widgets.details.parameters.details_template" = "Template Detail-Text (nur in rechteckiger Familie)";

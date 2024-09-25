@@ -686,6 +686,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "thread.extended_pan_id.title" = "ID rozšířené PAN";
 "thread.management.title" = "Přihlašovací údaje Thread";
 "thread.network_key.title" = "Síťový klíč";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Nepodařilo se uložit přihlašovací údaje Thread do klíčenky. Další informace naleznete v protokolech.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Při ukládání pověření Thread do klíčenky se nepodařilo převést vstup na hexadecimální.";
 "thread.store_in_keychain.error.title" = "Operace se nezdařila";
@@ -959,6 +960,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.script.description" = "Spustit skript";
 "widgets.controls.script.display_name" = "Skript";
 "widgets.controls.scripts.placeholder_title" = "Vybrat skript";
+"widgets.controls.switch.description" = "Zapne/Vypne spínač.";
+"widgets.controls.switch.title" = "Spínač";
 "widgets.details.description" = "Zobrazí stavy pomocí aplikace Home Assistant v textu.";
 "widgets.details.parameters.action" = "Akce";
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";
