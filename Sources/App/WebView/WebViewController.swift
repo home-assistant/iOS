@@ -1039,9 +1039,12 @@ extension ConnectionInfo {
 
 extension WebViewController: WebViewControllerProtocol {
     func presentOverlayController(controller: UIViewController, animated: Bool) {
-        overlayAppController?.dismiss(animated: false, completion: nil)
-        overlayAppController = controller
-        present(controller, animated: animated, completion: nil)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            overlayAppController?.dismiss(animated: false, completion: nil)
+            overlayAppController = controller
+            present(controller, animated: animated, completion: nil)
+        }
     }
 
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {
@@ -1049,10 +1052,13 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func presentController(_ controller: UIViewController, animated: Bool) {
-        if let overlayAppController {
-            overlayAppController.dismiss(animated: false)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if let overlayAppController {
+                overlayAppController.dismiss(animated: false)
+            }
+            present(controller, animated: animated)
         }
-        present(controller, animated: animated)
     }
 
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
