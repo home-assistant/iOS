@@ -8,32 +8,13 @@ struct WidgetDetailsView: View {
     var entry: WidgetDetailsEntry
 
     var body: some View {
-        if family == .accessoryRectangular {
-            VStack(alignment: .leading) {
-                if entry.upperText != nil {
-                    Text(entry.upperText!)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .fontWeight(.bold)
-                } else {
-                    Text("Unknown upper")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .fontWeight(.bold)
-                        .redacted(reason: .placeholder)
-                }
-                if entry.lowerText != nil {
-                    Text(entry.lowerText!)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else {
-                    Text("Unknown lower")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .redacted(reason: .placeholder)
-                }
-                if entry.detailsText != nil {
-                    Text(entry.detailsText!)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-        } else {
+        
+    switch family {
+        case .accessoryRectangular:
+        createTextView(alignment: HorizontalAlignment.leading)
+        case .systemSmall:
+        createTextView(alignment: HorizontalAlignment.center)
+        default:
             if entry.upperText != nil || entry.lowerText != nil {
                 Text((entry.upperText ?? "") + (entry.lowerText ?? ""))
             } else {
@@ -42,4 +23,28 @@ struct WidgetDetailsView: View {
             }
         }
     }
+    
+    func createTextView(alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment) {
+             if let upperText = entry.upperText {
+                 Text(upperText)
+                     .fontWeight(.bold)
+             } else {
+                 Text("Unknown upper")
+                     .fontWeight(.bold)
+                     .redacted(reason: .placeholder)
+             }
+
+             if let lowerText = entry.lowerText {
+                 Text(lowerText)
+             } else {
+                 Text("Unknown lower")
+                     .redacted(reason: .placeholder)
+             }
+
+             if let detailsText = entry.detailsText {
+                 Text(detailsText)
+             }
+         }
+     }
 }

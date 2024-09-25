@@ -42,5 +42,6 @@ enum WidgetDetailsSupportedFamilies {
     static let families: [WidgetFamily] = [
         .accessoryInline,
         .accessoryRectangular,
+        .systemSmall,
     ]
 }
