@@ -51,30 +51,30 @@ struct MagicItemCustomizationView: View {
 
                 Section {
                     ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                        Color(uiColor: .init(hex: viewModel.item.customization?.iconColor))
+                        Color(uiColor: .init(hex: viewModel.item.customization.iconColor))
                     }, set: { newColor in
-                        viewModel.item.customization?.iconColor = UIColor(newColor).hexString()
+                        viewModel.item.customization.iconColor = UIColor(newColor).hexString()
                     }), supportsOpacity: false)
                     Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
                     if useCustomColors {
                         ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
-                            Color(uiColor: .init(hex: viewModel.item.customization?.backgroundColor))
+                            Color(uiColor: .init(hex: viewModel.item.customization.backgroundColor))
                         }, set: { newColor in
-                            viewModel.item.customization?.backgroundColor = UIColor(newColor).hexString()
+                            viewModel.item.customization.backgroundColor = UIColor(newColor).hexString()
                         }), supportsOpacity: false)
                         ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
-                            Color(uiColor: .init(hex: viewModel.item.customization?.textColor))
+                            Color(uiColor: .init(hex: viewModel.item.customization.textColor))
                         }, set: { newColor in
-                            viewModel.item.customization?.textColor = UIColor(newColor).hexString()
+                            viewModel.item.customization.textColor = UIColor(newColor).hexString()
                         }), supportsOpacity: false)
                     }
                 }
 
                 Section {
                     Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                        viewModel.item.customization?.requiresConfirmation ?? true
+                        viewModel.item.customization.requiresConfirmation
                     }, set: { newValue in
-                        viewModel.item.customization?.requiresConfirmation = newValue
+                        viewModel.item.customization.requiresConfirmation = newValue
                     }))
                 }
             }
@@ -85,13 +85,13 @@ struct MagicItemCustomizationView: View {
         }
         .onChange(of: useCustomColors) { newValue in
             if newValue {
-                viewModel.item.customization?.backgroundColor = viewModel.item.customization?.backgroundColor ?? UIColor
+                viewModel.item.customization.backgroundColor = viewModel.item.customization.backgroundColor ?? UIColor
                     .black.hexString()
-                viewModel.item.customization?.textColor = viewModel.item.customization?.textColor ?? UIColor.white
+                viewModel.item.customization.textColor = viewModel.item.customization.textColor ?? UIColor.white
                     .hexString()
             } else {
-                viewModel.item.customization?.backgroundColor = nil
-                viewModel.item.customization?.textColor = nil
+                viewModel.item.customization.backgroundColor = nil
+                viewModel.item.customization.textColor = nil
             }
         }
         .toolbar {
