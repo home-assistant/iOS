@@ -17,7 +17,7 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = Current.style.onboardingBackground
+        view.backgroundColor = .systemBackground
 
         let (scrollView, stackView, equalSpacers) = UIView.contentStackView(in: view, scrolling: true)
         self.scrollView = scrollView
@@ -30,7 +30,7 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = L10n.Onboarding.ManualSetup.description
             $0.font = .preferredFont(forTextStyle: .body)
-            $0.textColor = Current.style.onboardingLabelSecondary
+            $0.textColor = Asset.Colors.haPrimary.color
             $0.textAlignment = .natural
             $0.numberOfLines = 0
         })

@@ -6,20 +6,20 @@ class OnboardingScanningInstanceCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         with(textLabel) {
-            $0?.textColor = Current.style.onboardingLabel
+            $0?.textColor = .label
             $0?.numberOfLines = 0
             $0?.font = UIFont.boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize)
         }
         with(detailTextLabel) {
-            $0?.textColor = Current.style.onboardingLabelSecondary
+            $0?.textColor = .secondaryLabel
             $0?.numberOfLines = 0
             $0?.font = .preferredFont(forTextStyle: .body)
         }
         backgroundView = with(UIView()) {
-            $0.backgroundColor = Current.style.onboardingBackground
+            $0.backgroundColor = .systemBackground
         }
         selectedBackgroundView = with(UIView()) {
-            $0.backgroundColor = UIColor(white: 0, alpha: 0.25)
+            $0.backgroundColor = .secondarySystemBackground
             $0.layer.cornerRadius = 4.0
         }
         backgroundColor = .clear
@@ -81,7 +81,8 @@ class OnboardingScanningViewController: UIViewController {
 
         let (_, stackView, _) = UIView.contentStackView(in: view, scrolling: false)
 
-        view.backgroundColor = Current.style.onboardingBackground
+        view.backgroundColor = .systemBackground
+        title = L10n.Onboarding.Scanning.title
 
         stackView.addArrangedSubview(with(UILabel()) {
             $0.text = L10n.Onboarding.Scanning.title
@@ -94,9 +95,9 @@ class OnboardingScanningViewController: UIViewController {
             $0.dataSource = self
             $0.cellLayoutMarginsFollowReadableWidth = true
 
-            $0.backgroundColor = Current.style.onboardingBackground
+            $0.backgroundColor = .systemBackground
             $0.backgroundView = with(UIView()) {
-                $0.backgroundColor = Current.style.onboardingBackground
+                $0.backgroundColor = .systemBackground
             }
 
             // hides the empty separators
@@ -111,7 +112,7 @@ class OnboardingScanningViewController: UIViewController {
 
         let manualHintLabel: UILabel = with(UILabel()) {
             $0.text = L10n.Onboarding.Scanning.manualHint
-            $0.textColor = Current.style.onboardingLabelSecondary
+            $0.textColor = Asset.Colors.haPrimary.color
             $0.font = .preferredFont(forTextStyle: .footnote)
             $0.numberOfLines = 1
             $0.baselineAdjustment = .alignCenters
@@ -240,9 +241,14 @@ extension OnboardingScanningViewController: UITableViewDelegate {
             tableView.isUserInteractionEnabled = true
             tableView.deselectRow(at: indexPath, animated: true)
         }.done { [self] server in
-            show(authentication.successController(server: server), sender: self)
+            let controller = authentication.successController(server: server)
+            if controller is OnboardingTerminalViewController {
+                show(controller, sender: self)
+            } else {
+                navigationController?.pushViewController(controller, animated: true)
+            }
         }.catch { [self] error in
-            show(authentication.failureController(error: error), sender: self)
+            navigationController?.pushViewController(authentication.failureController(error: error), animated: true)
         }
     }
 }

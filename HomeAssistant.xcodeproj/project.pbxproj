@@ -608,6 +608,7 @@
 		426CBB6C2C9C550D003CA3AC /* IntentSwitchEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */; };
 		426D9C742C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
 		426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
+		426EE49B2CA4194E00A5EF4F /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */; };
 		4273C4872C8857B00065A5B4 /* ControlOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */; };
 		4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */; };
 		4273C48A2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */; };
@@ -725,6 +726,9 @@
 		42DEDA9A2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42DEDA9B2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42E65F082C8079FE00C4A6F2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
+		42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C542CA44FC90010ECE3 /* SafariWebView.swift */; };
+		42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */; };
+		42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ActivityView.swift */; };
 		42EB03062C6E42F900A184A6 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03052C6E42F900A184A6 /* WatchHomeView.swift */; };
 		42EB03082C6E430300A184A6 /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
@@ -945,7 +949,6 @@
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB69226BBDA900E541DD /* SettingsViewController.swift */; };
 		B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */; };
-		B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB73226C110A00E541DD /* OnboardingWelcomeViewController.swift */; };
 		B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
 		B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */; };
@@ -1031,7 +1034,6 @@
 		B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D8A3282271448E00FA765D /* error.json in Resources */ = {isa = PBXBuildFile; fileRef = B6D8A3272271448D00FA765D /* error.json */; };
-		B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D8A3292271455300FA765D /* OnboardingErrorViewController.swift */; };
 		B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */; };
 		B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7222691A5000DE811C /* AKConverter.swift */; };
 		B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */; };
@@ -1854,6 +1856,7 @@
 		426CBB692C9C543F003CA3AC /* ControlSwitchValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSwitchValueProvider.swift; sourceTree = "<group>"; };
 		426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSwitchEntity.swift; sourceTree = "<group>"; };
 		426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlEntityProvider.swift; sourceTree = "<group>"; };
+		426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
 		4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenPage.swift; sourceTree = "<group>"; };
 		4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenPageValueProvider.swift; sourceTree = "<group>"; };
 		4273C48C2C8859530065A5B4 /* PageAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageAppEntity.swift; sourceTree = "<group>"; };
@@ -1982,6 +1985,9 @@
 		42DD84392B15DC3F00936F16 /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Localizable.strings; sourceTree = "<group>"; };
 		42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionSensor.swift; sourceTree = "<group>"; };
 		42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssistValueProvider.swift; sourceTree = "<group>"; };
+		42E95C542CA44FC90010ECE3 /* SafariWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebView.swift; sourceTree = "<group>"; };
+		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
+		42E95C582CA46AD50010ECE3 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		42EB03052C6E42F900A184A6 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
@@ -2291,7 +2297,6 @@
 		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
 		B661FB69226BBDA900E541DD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsViewController.swift; sourceTree = "<group>"; };
-		B661FB73226C110A00E541DD /* OnboardingWelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeViewController.swift; sourceTree = "<group>"; };
 		B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManualURLViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
 		B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningViewController.swift; sourceTree = "<group>"; };
@@ -2355,7 +2360,6 @@
 		B6D0D2810993156972329EA6 /* Pods-iOS-Extensions-Matter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Matter.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Matter/Pods-iOS-Extensions-Matter.release.xcconfig"; sourceTree = "<group>"; };
 		B6D3B4EB225B26300082BB4F /* SensorContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.swift; sourceTree = "<group>"; };
 		B6D8A3272271448D00FA765D /* error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
-		B6D8A3292271455300FA765D /* OnboardingErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorViewController.swift; sourceTree = "<group>"; };
 		B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSoundsViewController.swift; sourceTree = "<group>"; };
 		B6DA3C7222691A5000DE811C /* AKConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKConverter.swift; sourceTree = "<group>"; };
 		B6DAC734215F069300727D2A /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
@@ -2796,12 +2800,14 @@
 		1168BF35271811C200DD4D15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				B6D8A3292271455300FA765D /* OnboardingErrorViewController.swift */,
 				B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */,
 				11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */,
 				B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */,
 				11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */,
-				B661FB73226C110A00E541DD /* OnboardingWelcomeViewController.swift */,
+				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
+				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
+				42E95C582CA46AD50010ECE3 /* ActivityView.swift */,
+				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -6513,6 +6519,7 @@
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
 				1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */,
+				426EE49B2CA4194E00A5EF4F /* OnboardingWelcomeView.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
@@ -6543,6 +6550,7 @@
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				42FCD0142B9B29740057783F /* ThreadCredentialDetailsView.swift in Sources */,
+				42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				42FCD0122B9B29740057783F /* ThreadCredentialsManagementView+Build.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,
@@ -6623,7 +6631,6 @@
 				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,
 				420FE8492B556A0200878E06 /* CarPlayActionsViewModel.swift in Sources */,
 				4273C48E2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
-				B6D8A32A2271455300FA765D /* OnboardingErrorViewController.swift in Sources */,
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
@@ -6637,7 +6644,9 @@
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
+				42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
+				42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
@@ -6661,7 +6670,6 @@
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
-				B661FB74226C110A00E541DD /* OnboardingWelcomeViewController.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
 				4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
