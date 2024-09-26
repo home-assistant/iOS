@@ -684,7 +684,7 @@
 "thread.extended_pan_id.title" = "扩展 PAN ID";
 "thread.management.title" = "Thread 凭据";
 "thread.network_key.title" = "网络密钥";
-"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.message" = "保存 Thread 网络凭据失败。";
 "thread.store_in_keychain.error.generic.body" = "无法在钥匙串中存储线程凭据，检查日志可获取更多信息。";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "在钥匙串中存储线程凭据时无法将输入转换为十六进制";
 "thread.store_in_keychain.error.title" = "操作失败";
