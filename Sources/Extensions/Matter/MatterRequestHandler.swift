@@ -30,7 +30,10 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
             .verbose(
                 "preferredNetworkMacExtendedAddress: \(String(describing: Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress))"
             )
-        Current.Log.verbose("threadScanResults: \(threadScanResults.map(\.networkName))")
+        Current.Log
+            .verbose(
+                "threadScanResults: \(threadScanResults.map { "Network name: \($0.networkName), Mac extended address: \($0.extendedAddress.hexadecimal)" })"
+            )
 
         if let preferredNetworkMacExtendedAddress = Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress,
            let selectedNetwork = threadScanResults.first(where: { result in
