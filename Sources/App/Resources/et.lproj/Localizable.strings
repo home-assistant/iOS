@@ -686,7 +686,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "thread.extended_pan_id.title" = "Laiendatud PAN ID";
 "thread.management.title" = "Threadi sidumse volitused";
 "thread.network_key.title" = "Võrgu võti";
-"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.message" = "Thread võrgu identimisteabe salvestamine nurjus.";
 "thread.store_in_keychain.error.generic.body" = "Threadi mandaadi salvestamine võtmehoidlasse nurjus. Lisateabe saamiseks vaata logisid.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Sisendi teisendamine kuueteistkümnendsüsteemiks nurjus lõimemandaadi salvestamisel võtmehoidlasse";
 "thread.store_in_keychain.error.title" = "Toiming nurjus";
