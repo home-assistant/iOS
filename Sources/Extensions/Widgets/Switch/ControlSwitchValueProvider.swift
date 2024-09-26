@@ -65,10 +65,13 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
 
 @available(iOS 18.0, *)
 struct ControlSwitchConfiguration: ControlConfigurationIntent {
-    static var title: LocalizedStringResource = .init("widgets.lights.description", defaultValue: "Turn on/off Light")
+    static var title: LocalizedStringResource = .init(
+        "widgets.controls.switch.description",
+        defaultValue: "Turn on/off switch"
+    )
 
     @Parameter(
-        title: .init("app_intents.lights.light.title", defaultValue: "Light")
+        title: .init("widgets.controls.switch.title", defaultValue: "Switch")
     )
     var entity: IntentSwitchEntity?
     @Parameter(
