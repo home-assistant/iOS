@@ -253,11 +253,14 @@ final class WebViewExternalMessageHandler {
     private func matterComissioningHandler(incomingMessage: WebSocketMessage) {
         if let preferredNetWorkMacExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
            let preferredNetWorkActiveOperationalDataset = incomingMessage
-           .Payload?["active_operational_dataset"] as? String {
+           .Payload?["active_operational_dataset"] as? String,
+           let preferredNetworkExtendedPANID = incomingMessage.Payload?["extended_pan_id"] as? String {
             Current.settingsStore
                 .matterLastPreferredNetWorkMacExtendedAddress = preferredNetWorkMacExtendedAddress
             Current.settingsStore
                 .matterLastPreferredNetWorkActiveOperationalDataset = preferredNetWorkActiveOperationalDataset
+            Current.settingsStore
+                .matterLastPreferredNetWorkExtendedPANID = preferredNetworkExtendedPANID
 
             Current.Log
                 .verbose(
