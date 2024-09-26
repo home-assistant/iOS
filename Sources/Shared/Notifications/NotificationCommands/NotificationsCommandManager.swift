@@ -121,6 +121,8 @@ private struct HandlerUpdateWidgets: NotificationCommandHandler {
             DispatchQueue.main.async {
                 WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.gauge.rawValue)
                 WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.details.rawValue)
+                WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.detailsTable.rawValue)
+
                 seal.fulfill(())
             }
         }

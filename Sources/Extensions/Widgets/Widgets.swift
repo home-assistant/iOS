@@ -40,6 +40,7 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetDetails()
         WidgetActions()
         WidgetOpenPage()
+        WidgetDetailsTable()
     }
 }
 
@@ -60,6 +61,7 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetScripts()
         WidgetGauge()
         WidgetDetails()
+        WidgetDetailsTable()
         WidgetActions()
         WidgetOpenPage()
     }

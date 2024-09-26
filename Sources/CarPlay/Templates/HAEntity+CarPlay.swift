@@ -60,6 +60,8 @@ extension HAEntity {
             default:
                 break
             }
+        case .sensor:
+            return .value
         case .none:
             break
         }
@@ -97,6 +99,8 @@ extension HAEntity {
                 image = MaterialDesignIcons.scriptTextOutlineIcon
             case .switch:
                 image = getSwitchIcon()
+            case .sensor:
+                image = MaterialDesignIcons.thermometerIcon
             }
         }
 
