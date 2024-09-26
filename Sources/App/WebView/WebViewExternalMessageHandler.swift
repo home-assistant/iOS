@@ -275,11 +275,14 @@ final class WebViewExternalMessageHandler {
                             "Error saving credentials in keychain while comissioning matter device, error: \(error.localizedDescription)"
                         )
                     let alert = UIAlertController(
-                        title: nil,
+                        title: L10n.Thread.SaveCredential.Fail.Alert.title(error.localizedDescription),
                         message: L10n.Thread.SaveCredential.Fail.Alert.message,
                         preferredStyle: .alert
                     )
-                    alert.addAction(.init(title: L10n.okLabel, style: .default))
+                    alert.addAction(.init(title: L10n.cancelLabel, style: .default))
+                    alert.addAction(.init(title: L10n.continueLabel, style: .destructive, handler: { [weak self] _ in
+                        self?.comissionMatterDevice()
+                    }))
                     self?.webViewController?.presentController(alert, animated: false)
                 } else {
                     Current.Log

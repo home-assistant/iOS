@@ -2354,8 +2354,16 @@ public enum L10n {
     public enum SaveCredential {
       public enum Fail {
         public enum Alert {
-          /// Failed to save thread network credential.
+          /// If you tap continue, Apple will use thread credentials that are available in keychain.
           public static var message: String { return L10n.tr("Localizable", "thread.save_credential.fail.alert.message") }
+          /// Failed to save thread network credential. error: %@
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "thread.save_credential.fail.alert.title", String(describing: p1))
+          }
+        }
+        public enum Continue {
+          /// Continue
+          public static var button: String { return L10n.tr("Localizable", "thread.save_credential.fail.continue.button") }
         }
       }
     }
