@@ -65,7 +65,6 @@ PODS:
     - PromiseKit (~> 6.13)
   - Improv-iOS (0.0.6)
   - KeychainAccess (4.2.2)
-  - lottie-ios (4.1.2)
   - MBProgressHUD (1.2.0)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
@@ -139,7 +138,6 @@ DEPENDENCIES:
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
   - Improv-iOS (~> 0.0.6)
   - KeychainAccess
-  - lottie-ios
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
@@ -171,7 +169,6 @@ SPEC REPOS:
     - GoogleUtilities
     - Improv-iOS
     - KeychainAccess
-    - lottie-ios
     - MBProgressHUD
     - nanopb
     - ObjcExceptionBridging
@@ -279,7 +276,6 @@ SPEC CHECKSUMS:
   HAKit: 92e9bd30717270df15025184b608b7902a773286
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  lottie-ios: b3846a9fa8ca1a1a3bebfa256ebe8b6fd4aaaaad
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -303,6 +299,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: e74a19f202198268745428ea4069d3a9738407d8
+PODFILE CHECKSUM: 7db8d8bc3dbacceb0cd00e82d8ee470965549665
 
 COCOAPODS: 1.15.2

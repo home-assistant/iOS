@@ -373,6 +373,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
+"onboarding.welcome.learn_more" = "Learn more";
 "open_label" = "Open";
 "preview_output" = "Preview Output";
 "reload_label" = "Reload";

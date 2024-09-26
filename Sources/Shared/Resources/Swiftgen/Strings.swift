@@ -1360,6 +1360,8 @@ public enum L10n {
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
+      /// Learn more
+      public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
       /// Welcome to Home Assistant %@!
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))

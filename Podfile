@@ -77,7 +77,6 @@ abstract_target 'iOS' do
 
     pod 'FirebaseMessaging'
 
-    pod 'lottie-ios'
     pod 'SwiftMessages'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
 
