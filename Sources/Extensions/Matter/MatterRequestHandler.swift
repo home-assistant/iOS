@@ -32,7 +32,7 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
             )
         Current.Log
             .verbose(
-                "threadScanResults: \(threadScanResults.map { "Network name: \($0.networkName), Mac extended address: \($0.extendedAddress.hexadecimal), Extended PAN ID: \($0.extendedPANID)" })"
+                "threadScanResults: \(threadScanResults.map { "Network name: \($0.networkName), Extended PAN ID: \($0.extendedPANID), Mac extended address: \($0.extendedAddress.hexadecimal)" })"
             )
         Current.Log
             .verbose(
