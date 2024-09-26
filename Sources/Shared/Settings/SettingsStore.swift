@@ -64,6 +64,15 @@ public class SettingsStore {
         }
     }
 
+    public var matterLastPreferredNetWorkExtendedPANID: String? {
+        get {
+            keychain["matterLastPreferredNetWorkExtendedPANID"]
+        }
+        set {
+            keychain["matterLastPreferredNetWorkExtendedPANID"] = newValue
+        }
+    }
+
     public func isLocationEnabled(for state: UIApplication.State) -> Bool {
         let authorizationStatus: CLAuthorizationStatus
 
