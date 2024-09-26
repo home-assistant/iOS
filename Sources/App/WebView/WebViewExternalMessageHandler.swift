@@ -251,10 +251,14 @@ final class WebViewExternalMessageHandler {
     }
 
     private func matterComissioningHandler(incomingMessage: WebSocketMessage) {
+        // So we avoid conflicting credentials (or absence) between servers
+        cleanPreferredThreadCredentials()
+
         if let preferredNetWorkMacExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
            let preferredNetWorkActiveOperationalDataset = incomingMessage
            .Payload?["active_operational_dataset"] as? String,
            let preferredNetworkExtendedPANID = incomingMessage.Payload?["extended_pan_id"] as? String {
+            // This information will be used in 'MatterRequestHandler'
             Current.settingsStore
                 .matterLastPreferredNetWorkMacExtendedAddress = preferredNetWorkMacExtendedAddress
             Current.settingsStore
@@ -298,6 +302,12 @@ final class WebViewExternalMessageHandler {
         } else {
             comissionMatterDevice()
         }
+    }
+
+    private func cleanPreferredThreadCredentials() {
+        Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress = nil
+        Current.settingsStore.matterLastPreferredNetWorkActiveOperationalDataset = nil
+        Current.settingsStore.matterLastPreferredNetWorkExtendedPANID = nil
     }
 
     private func comissionMatterDevice() {
