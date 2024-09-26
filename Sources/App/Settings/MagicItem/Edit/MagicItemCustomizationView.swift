@@ -51,21 +51,21 @@ struct MagicItemCustomizationView: View {
 
                 Section {
                     ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                        Color(uiColor: .init(hex: viewModel.item.customization.iconColor))
+                        Color(hex: viewModel.item.customization.iconColor)
                     }, set: { newColor in
-                        viewModel.item.customization.iconColor = UIColor(newColor).hexString()
+                        viewModel.item.customization.iconColor = newColor.hex()
                     }), supportsOpacity: false)
                     Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
                     if useCustomColors {
                         ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
-                            Color(uiColor: .init(hex: viewModel.item.customization.backgroundColor))
+                            Color(hex: viewModel.item.customization.backgroundColor)
                         }, set: { newColor in
-                            viewModel.item.customization.backgroundColor = UIColor(newColor).hexString()
+                            viewModel.item.customization.backgroundColor = newColor.hex()
                         }), supportsOpacity: false)
                         ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
-                            Color(uiColor: .init(hex: viewModel.item.customization.textColor))
+                            Color(hex: viewModel.item.customization.textColor)
                         }, set: { newColor in
-                            viewModel.item.customization.textColor = UIColor(newColor).hexString()
+                            viewModel.item.customization.textColor = newColor.hex()
                         }), supportsOpacity: false)
                     }
                 }
