@@ -503,6 +503,12 @@
 		399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */; };
+		3E02C0E22CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift */; };
+		3E02C0E32CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift */; };
+		3E02C0E72CA7FCF400102131 /* WidgetDetailsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E52CA7FCF400102131 /* WidgetDetailsTableView.swift */; };
+		3E02C0E82CA7FCF400102131 /* WidgetDetailsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E42CA7FCF400102131 /* WidgetDetailsTable.swift */; };
+		3E02C0EC2CA7FD2A00102131 /* WidgetDetailsTableAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E92CA7FD2A00102131 /* WidgetDetailsTableAppIntent.swift */; };
+		3E02C0ED2CA7FD2A00102131 /* WidgetDetailsTableAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0EA2CA7FD2A00102131 /* WidgetDetailsTableAppIntentTimelineProvider.swift */; };
 		4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */; };
 		403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9082C2E220200D48147 /* WidgetGauge.swift */; };
 		403AE90E2C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE90B2C2E28B200D48147 /* WidgetGaugeAppIntent.swift */; };
@@ -1753,6 +1759,11 @@
 		3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPush.swift; sourceTree = "<group>"; };
 		399792702B7F909900231B54 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
 		39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scaledToSize.swift"; sourceTree = "<group>"; };
+		3E02C0E02CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentDetailsTableAppEntity.swift; sourceTree = "<group>"; };
+		3E02C0E42CA7FCF400102131 /* WidgetDetailsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsTable.swift; sourceTree = "<group>"; };
+		3E02C0E52CA7FCF400102131 /* WidgetDetailsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsTableView.swift; sourceTree = "<group>"; };
+		3E02C0E92CA7FD2A00102131 /* WidgetDetailsTableAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsTableAppIntent.swift; sourceTree = "<group>"; };
+		3E02C0EA2CA7FD2A00102131 /* WidgetDetailsTableAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsTableAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCircularView.swift; sourceTree = "<group>"; };
 		403AE9082C2E220200D48147 /* WidgetGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGauge.swift; sourceTree = "<group>"; };
@@ -2857,6 +2868,7 @@
 				42D3E4A92C5D28F800444BE6 /* Script */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				110E694524E771AB004AA96D /* Color+Hex.swift */,
+				3E02C0E62CA7FCF400102131 /* DetailsTable */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -3432,6 +3444,32 @@
 			path = WebView;
 			sourceTree = "<group>";
 		};
+		3E02C0E12CA7FCBF00102131 /* DetailsTable */ = {
+			isa = PBXGroup;
+			children = (
+				3E02C0E02CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift */,
+			);
+			path = DetailsTable;
+			sourceTree = "<group>";
+		};
+		3E02C0E62CA7FCF400102131 /* DetailsTable */ = {
+			isa = PBXGroup;
+			children = (
+				3E02C0E42CA7FCF400102131 /* WidgetDetailsTable.swift */,
+				3E02C0E52CA7FCF400102131 /* WidgetDetailsTableView.swift */,
+			);
+			path = DetailsTable;
+			sourceTree = "<group>";
+		};
+		3E02C0EB2CA7FD2A00102131 /* DetailsTable */ = {
+			isa = PBXGroup;
+			children = (
+				3E02C0E92CA7FD2A00102131 /* WidgetDetailsTableAppIntent.swift */,
+				3E02C0EA2CA7FD2A00102131 /* WidgetDetailsTableAppIntentTimelineProvider.swift */,
+			);
+			path = DetailsTable;
+			sourceTree = "<group>";
+		};
 		403AE9072C2E214D00D48147 /* Gauge */ = {
 			isa = PBXGroup;
 			children = (
@@ -3773,6 +3811,7 @@
 				42D3E4A62C5D009A00444BE6 /* Script */,
 				4296C3722B91F06D0051B63C /* Widget */,
 				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
+				3E02C0E12CA7FCBF00102131 /* DetailsTable */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -3785,6 +3824,7 @@
 				403AE90A2C2E28A200D48147 /* Gauge */,
 				4080D5C02C319AF400099C88 /* Details */,
 				42D3E4B22C5D2BA400444BE6 /* Script */,
+				3E02C0EB2CA7FD2A00102131 /* DetailsTable */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -6426,6 +6466,8 @@
 				115560F227012FE100A8F818 /* WidgetOpenPageProvider.swift in Sources */,
 				403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
+				3E02C0E72CA7FCF400102131 /* WidgetDetailsTableView.swift in Sources */,
+				3E02C0E82CA7FCF400102131 /* WidgetDetailsTable.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
 				4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
@@ -6437,6 +6479,7 @@
 				403AE9272C2F333A00D48147 /* WidgetGaugeView.swift in Sources */,
 				4296C3782B91F6260051B63C /* PerformAction.swift in Sources */,
 				42E65F082C8079FE00C4A6F2 /* ControlAssistValueProvider.swift in Sources */,
+				3E02C0E32CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift in Sources */,
 				4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */,
 				4080D5BF2C319AA000099C88 /* WidgetDetails.swift in Sources */,
 				4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */,
@@ -6676,6 +6719,7 @@
 				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
 				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
 				4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
+				3E02C0E22CA7FCBF00102131 /* IntentDetailsTableAppEntity.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
@@ -6776,6 +6820,8 @@
 			files = (
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
 				420F53F12C4EA314003C8415 /* ReloadWidgetsAppIntent.swift in Sources */,
+				3E02C0EC2CA7FD2A00102131 /* WidgetDetailsTableAppIntent.swift in Sources */,
+				3E02C0ED2CA7FD2A00102131 /* WidgetDetailsTableAppIntentTimelineProvider.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
