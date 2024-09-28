@@ -16,8 +16,10 @@ struct WidgetDetailsTable: Widget {
                 .widgetBackground(Color.clear)
         }
         .contentMarginsDisabledIfAvailable()
-        .configurationDisplayName("de echte")
-        .description(L10n.Widgets.Details.description)
+        // @todo Alter displayName
+        .configurationDisplayName("Sensors")
+        // @todo Alter description
+        .description("Display state of sensors")
         .supportedFamilies(WidgetDetailsTableSupportedFamilies.families)
     }
 }
