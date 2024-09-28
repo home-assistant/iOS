@@ -24,7 +24,6 @@ struct WidgetDetailsTable: Widget {
     }
 }
 
-
 enum WidgetDetailsTableSupportedFamilies {
     @available(iOS 17.0, *)
     static let families: [WidgetFamily] = [

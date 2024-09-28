@@ -11,7 +11,7 @@ struct WidgetDetailsTableView: View {
         VStack(alignment: .leading) {
             ForEach(entry.sensorData.indices, id: \.self) { index in
                 let sensorData = entry.sensorData[index]
-                
+
                 HStack {
                     Text(sensorData.key)
                         .font(.system(size: 11))
@@ -20,7 +20,7 @@ struct WidgetDetailsTableView: View {
                     Text("\(sensorData.value) \(sensorData.unitOfMeasurement ?? "")")
                         .font(.system(size: 13))
                 }
-                
+
                 // Add a divider only if there's a next entry
                 if index < entry.sensorData.count - 1 {
                     Divider()
@@ -31,5 +31,4 @@ struct WidgetDetailsTableView: View {
         }
         .padding(.horizontal)
     }
-
 }
