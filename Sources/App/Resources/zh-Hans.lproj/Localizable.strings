@@ -684,6 +684,7 @@
 "thread.extended_pan_id.title" = "扩展 PAN ID";
 "thread.management.title" = "Thread 凭据";
 "thread.network_key.title" = "网络密钥";
+"thread.save_credential.fail.alert.message" = "保存 Thread 网络凭据失败。";
 "thread.store_in_keychain.error.generic.body" = "无法在钥匙串中存储线程凭据，检查日志可获取更多信息。";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "在钥匙串中存储线程凭据时无法将输入转换为十六进制";
 "thread.store_in_keychain.error.title" = "操作失败";
@@ -959,6 +960,8 @@
 "widgets.controls.script.description" = "运行脚本";
 "widgets.controls.script.display_name" = "脚本";
 "widgets.controls.scripts.placeholder_title" = "选择脚本";
+"widgets.controls.switch.description" = "打开/关闭你的开关";
+"widgets.controls.switch.title" = "开关";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";
 "widgets.details.parameters.action" = "动作";
 "widgets.details.parameters.details_template" = "详情文本模板（仅限矩形系列）";

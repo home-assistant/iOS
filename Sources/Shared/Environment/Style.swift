@@ -3,13 +3,9 @@ import UIKit
 
 public struct Style {
     #if os(iOS)
-    public var onboardingBackground: UIColor = AppConstants.darkerTintColor
-    public var onboardingTintColor: UIColor = .white
-    public var onboardingLabel: UIColor = .white
-    public var onboardingLabelSecondary: UIColor = .white.withAlphaComponent(0.85)
     public var onboardingTitle: (_ label: UILabel) -> Void = { label in
-        label.font = .preferredFont(forTextStyle: .title1)
-        label.textColor = Current.style.onboardingLabel
+        label.font = .boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .title1).pointSize)
+        label.textColor = .label
         label.textAlignment = .center
         label.numberOfLines = 0
         label.accessibilityTraits.insert(.header)
@@ -25,17 +21,24 @@ public struct Style {
                     widthAnchor.constraint(equalTo: superview.readableContentGuide.widthAnchor)
                         .isActive = true
                 default:
-                    widthAnchor.constraint(equalTo: superview.layoutMarginsGuide.widthAnchor)
-                        .isActive = true
+                    break
                 }
             }
         }
     }
 
     private static func onboardingButton(_ button: UIButton) {
-        button.layer.cornerRadius = 6.0
+        button.layer.cornerRadius = 12
         button.layer.masksToBounds = true
-        button.contentEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+
+        var config = UIButton.Configuration.filled()
+        config.contentInsets = .init(
+            top: Spaces.two,
+            leading: Spaces.two,
+            bottom: Spaces.two,
+            trailing: Spaces.two
+        )
+        button.configuration = config
 
         button.titleLabel?.font = UIFont.systemFont(
             ofSize: UIFont.preferredFont(forTextStyle: .callout).pointSize,
@@ -50,7 +53,9 @@ public struct Style {
     public var onboardingButtonPrimary: (_ button: UIButton) -> Void = { button in
         Self.onboardingButton(button)
 
-        button.setTitleColor(AppConstants.darkerTintColor, for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = Asset.Colors.haPrimary.color
+
         button.setBackgroundImage(
             UIImage(size: CGSize(width: 1, height: 1), color: .white),
             for: .normal
@@ -60,9 +65,7 @@ public struct Style {
             for: .highlighted
         )
 
-        #if targetEnvironment(macCatalyst)
         button.role = .primary
-        #endif
     }
 
     public var onboardingButtonSecondary: (_ button: UIButton) -> Void = { button in

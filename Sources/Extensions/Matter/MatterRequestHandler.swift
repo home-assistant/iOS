@@ -30,11 +30,18 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
             .verbose(
                 "preferredNetworkMacExtendedAddress: \(String(describing: Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress))"
             )
-        Current.Log.verbose("threadScanResults: \(threadScanResults.map(\.networkName))")
-
-        if let preferredNetworkMacExtendedAddress = Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress,
+        Current.Log
+            .verbose(
+                "threadScanResults: \(threadScanResults.map { "Network name: \($0.networkName), Extended PAN ID: \($0.extendedPANID), Mac extended address: \($0.extendedAddress.hexadecimal)" })"
+            )
+        Current.Log
+            .verbose(
+                "Preferred Extended PAN ID: \(String(describing: UInt64(Current.settingsStore.matterLastPreferredNetWorkExtendedPANID ?? "", radix: 16)))"
+            )
+        if let matterLastPreferredNetWorkExtendedPANID = Current.settingsStore.matterLastPreferredNetWorkExtendedPANID,
+           let preferredExtendedPANID = UInt64(matterLastPreferredNetWorkExtendedPANID, radix: 16),
            let selectedNetwork = threadScanResults.first(where: { result in
-               result.extendedAddress == preferredNetworkMacExtendedAddress.hexadecimal
+               result.extendedPANID == preferredExtendedPANID
            }) {
             Current.Log.verbose("Using selected thread network, name: \(selectedNetwork.networkName)")
             return .network(extendedPANID: selectedNetwork.extendedPANID)

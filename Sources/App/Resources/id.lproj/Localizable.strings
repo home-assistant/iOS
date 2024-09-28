@@ -686,6 +686,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "thread.extended_pan_id.title" = "ID PAN yang diperluas";
 "thread.management.title" = "Kredensial Thread";
 "thread.network_key.title" = "Kunci Jaringan";
+"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
 "thread.store_in_keychain.error.generic.body" = "Gagal menyimpan kredensial thread di rantai kunci, periksa log untuk informasi lebih lanjut.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Gagal mengonversi input ke heksadesimal saat menyimpan kredensial thread di rantai kunci";
 "thread.store_in_keychain.error.title" = "Operasi gagal";
@@ -959,6 +960,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.controls.script.description" = "Jalankan skrip";
 "widgets.controls.script.display_name" = "Skrip";
 "widgets.controls.scripts.placeholder_title" = "Pilih skrip";
+"widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Menampilkan status dari Home Assistant dalam bentuk teks";
 "widgets.details.parameters.action" = "Aksi";
 "widgets.details.parameters.details_template" = "Templat Teks Detail (hanya dalam format persegi panjang)";

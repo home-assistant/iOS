@@ -40,7 +40,7 @@ struct WatchMagicViewRow: View {
             }
         )
         .modify { view in
-            if let backgroundColor = viewModel.item.customization?.backgroundColor {
+            if let backgroundColor = viewModel.item.customization.backgroundColor {
                 view.listRowBackground(
                     Color(uiColor: .init(hex: backgroundColor))
                         .clipShape(RoundedRectangle(cornerRadius: 14))

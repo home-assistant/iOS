@@ -251,13 +251,20 @@ final class WebViewExternalMessageHandler {
     }
 
     private func matterComissioningHandler(incomingMessage: WebSocketMessage) {
+        // So we avoid conflicting credentials (or absence) between servers
+        cleanPreferredThreadCredentials()
+
         if let preferredNetWorkMacExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
            let preferredNetWorkActiveOperationalDataset = incomingMessage
-           .Payload?["active_operational_dataset"] as? String {
+           .Payload?["active_operational_dataset"] as? String,
+           let preferredNetworkExtendedPANID = incomingMessage.Payload?["extended_pan_id"] as? String {
+            // This information will be used in 'MatterRequestHandler'
             Current.settingsStore
                 .matterLastPreferredNetWorkMacExtendedAddress = preferredNetWorkMacExtendedAddress
             Current.settingsStore
                 .matterLastPreferredNetWorkActiveOperationalDataset = preferredNetWorkActiveOperationalDataset
+            Current.settingsStore
+                .matterLastPreferredNetWorkExtendedPANID = preferredNetworkExtendedPANID
 
             Current.Log
                 .verbose(
@@ -275,11 +282,14 @@ final class WebViewExternalMessageHandler {
                             "Error saving credentials in keychain while comissioning matter device, error: \(error.localizedDescription)"
                         )
                     let alert = UIAlertController(
-                        title: nil,
+                        title: L10n.Thread.SaveCredential.Fail.Alert.title(error.localizedDescription),
                         message: L10n.Thread.SaveCredential.Fail.Alert.message,
                         preferredStyle: .alert
                     )
-                    alert.addAction(.init(title: L10n.okLabel, style: .default))
+                    alert.addAction(.init(title: L10n.cancelLabel, style: .default))
+                    alert.addAction(.init(title: L10n.continueLabel, style: .destructive, handler: { [weak self] _ in
+                        self?.comissionMatterDevice()
+                    }))
                     self?.webViewController?.presentController(alert, animated: false)
                 } else {
                     Current.Log
@@ -292,6 +302,12 @@ final class WebViewExternalMessageHandler {
         } else {
             comissionMatterDevice()
         }
+    }
+
+    private func cleanPreferredThreadCredentials() {
+        Current.settingsStore.matterLastPreferredNetWorkMacExtendedAddress = nil
+        Current.settingsStore.matterLastPreferredNetWorkActiveOperationalDataset = nil
+        Current.settingsStore.matterLastPreferredNetWorkExtendedPANID = nil
     }
 
     private func comissionMatterDevice() {

@@ -1360,6 +1360,8 @@ public enum L10n {
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
+      /// Learn more
+      public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
       /// Welcome to Home Assistant %@!
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
@@ -2352,8 +2354,16 @@ public enum L10n {
     public enum SaveCredential {
       public enum Fail {
         public enum Alert {
-          /// Failed to save thread network credential.
+          /// If you tap continue, Home Assistant will use the default Thread credentials that are available in the Apple keychain.
           public static var message: String { return L10n.tr("Localizable", "thread.save_credential.fail.alert.message") }
+          /// Failed to save thread network credential, error: %@
+          public static func title(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "thread.save_credential.fail.alert.title", String(describing: p1))
+          }
+        }
+        public enum Continue {
+          /// Continue
+          public static var button: String { return L10n.tr("Localizable", "thread.save_credential.fail.continue.button") }
         }
       }
     }
