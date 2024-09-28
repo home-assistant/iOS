@@ -11,18 +11,14 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func snapshot(for configuration: WidgetDetailsTableAppIntent, in context: Context) async -> WidgetDetailsTableEntry {
         do {
-            return WidgetDetailsTableEntry.init(
-                sensorData: [WidgetDetailsTableEntry.SensorData(entityId: "lol", key: "123", value: "123")]
-            )
-//            return try await entry(for: configuration, in: context)
+            return try await entry(for: configuration, in: context)
         } catch {
-            Current.Log.error("Using placeholder for detailtable widget snapshot")
+            Current.Log.error("Using placeholder for detail table widget snapshot")
             return placeholder(in: context)
         }
     }
 
     func timeline(for configuration: WidgetDetailsTableAppIntent, in context: Context) async -> Timeline<Entry> {
-        print("IK WORD AANGEROEPEN")
         do {
             let snapshot = try await entry(for: configuration, in: context)
             return .init(
@@ -33,8 +29,7 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
                 )
             )
         } catch {
-            Current.Log.debug("Using placeholder for detailtable widget")
-            print("")
+            Current.Log.debug("Using placeholder for detail table widget")
             return .init(
                 entries: [placeholder(in: context)],
                 policy: .after(
@@ -47,25 +42,24 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func placeholder(in context: Context) -> WidgetDetailsTableEntry {
         .init(
-            sensorData: [WidgetDetailsTableEntry.SensorData(entityId: "1", key: "2", value: "3")]
+            sensorData: [
+                WidgetDetailsTableEntry.SensorData(entityId: "1", key: "Solar Generation", value: "3404 Watt"),
+                WidgetDetailsTableEntry.SensorData(entityId: "2", key: "Temperature", value: "22.4 C"),
+                WidgetDetailsTableEntry.SensorData(entityId: "3", key: "Humidity", value: "56.4 %")
+            ]
         )
     }
 
     private func entry(for configuration: WidgetDetailsTableAppIntent, in context: Context) async throws -> Entry {
-        Current.Log.error("AAAAAAAAAAAAAAAA")
-
         let sensorsGroupedByServer = Dictionary(grouping: configuration.sensors ?? [], by: { $0.serverId })
 
-        // Use async operations to gather results
         var sensorValues: [WidgetDetailsTableEntry.SensorData] = []
 
-        // Iterate over each group of sensors asynchronously
         for (serverId, sensors) in sensorsGroupedByServer {
             guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
                 throw WidgetDetailsTableDataError.noServers
             }
             
-            // Fetch sensor data for each sensor asynchronously
             for sensor in sensors {
                 let sensorData = try await fetchSensorData(for: sensor, server: server)
                 sensorValues.append(sensorData)
@@ -76,10 +70,9 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func fetchSensorData(for sensor: IntentDetailsTableAppEntity, server: Server) async throws -> WidgetDetailsTableEntry.SensorData {
-        // Define the task to fetch sensor data
         let result = await withCheckedContinuation { continuation in
             Current.api(for: server).connection.send(.init(
-                type: .rest(.post, "states/\(sensor.serverId)"),
+                type: .rest(.get, "states/\(sensor.entityId)"),
                 shouldRetry: true
             )) { result in
                 continuation.resume(returning: result)
@@ -88,18 +81,34 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
 
         var data: HAData?
         switch result {
-        case let .success(resultData):
-            data = resultData
-        case let .failure(error):
-            Current.Log.error("Failed to render template for details widget: \(error)")
+            case let .success(resultData):
+                data = resultData
+            case let .failure(error):
+                Current.Log.error("Failed to render template for details widget: \(error)")
+                throw WidgetDetailsTableDataError.apiError
+            }
+        
+        guard let data else {
             throw WidgetDetailsTableDataError.apiError
         }
 
-        // Return the processed SensorData (replace "123" with actual value from `data`)
+        var state: [String: Any]?
+        switch data {
+        case let .dictionary(response):
+            state = response
+        default:
+            Current.Log.error("Failed to render template for detail table widget: Bad response data")
+            throw WidgetDetailsTableDataError.badResponse
+        }
+
+        let stateValue = (state?["state"] as? String) ?? "N/A"
+        let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
+
         return WidgetDetailsTableEntry.SensorData(
             entityId: sensor.entityId,
             key: sensor.displayString,
-            value: "123" // Replace with actual sensor data
+            value: stateValue,
+            unitOfMeasurement: unitOfMeasurement
         )
     }
 }
@@ -120,6 +129,7 @@ struct WidgetDetailsTableEntry: TimelineEntry {
         var entityId: String
         var key: String
         var value: String
+        var unitOfMeasurement: String?
     }
 }
 

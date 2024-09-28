@@ -4,17 +4,16 @@ import Foundation
 import Shared
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
-struct WidgetDetailsTableAppIntent: WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = .init("widgets.actions.title", defaultValue: "Actions")
+struct WidgetDetailsTableAppIntent: AppIntent, WidgetConfigurationIntent {
+    static let title: LocalizedStringResource = .init("widgets.sensors.title", defaultValue: "Sensors")
     static let description = IntentDescription(
-        .init("widgets.actions.description", defaultValue: "Perform Home Assistant actions.")
+        .init("widgets.sensors.title", defaultValue: "Show sensor state.")
     )
 
     @Parameter(
-        title: .init("TODO", defaultValue: "Choose Sensor"),
+        title: .init("app_intents.choose_sensor.title", defaultValue: "Choose Sensor"),
         size: [
-            .systemSmall: 2,
-            .systemMedium: 4,
+            .systemSmall: 3,
         ]
     )
     var sensors: [IntentDetailsTableAppEntity]?
