@@ -50,7 +50,6 @@ public extension DatabaseQueue {
     private static func createAppConfigTables(database: DatabaseQueue) {
         do {
             try database.write { db in
-
                 // HAAppEntity - App used domain entities
                 if try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue) {
                     try db.create(table: GRDBDatabaseTable.HAAppEntity.rawValue) { t in
