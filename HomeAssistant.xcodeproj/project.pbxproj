@@ -690,6 +690,8 @@
 		42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */; };
 		42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
 		42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
+		42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */; };
+		42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */; };
 		42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
@@ -1950,6 +1952,8 @@
 		42B94BE72B9607D100DEE060 /* AssistModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AssistModel.swift; path = Sources/Shared/Intents/AppIntent/AssistInApp/AssistModel.swift; sourceTree = SOURCE_ROOT; };
 		42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeScriptMessageHandler.swift; sourceTree = "<group>"; };
 		42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageAppIntent.swift; sourceTree = "<group>"; };
+		42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.test.swift; sourceTree = "<group>"; };
+		42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = WatchConfigV1.sqlite; sourceTree = "<group>"; };
 		42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAccessoryViews.swift; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
@@ -3921,6 +3925,8 @@
 			children = (
 				4207EB772C8757EB00286A2D /* Home */,
 				42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */,
+				42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */,
+				42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -5779,6 +5785,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */,
 				1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6726,6 +6733,7 @@
 			files = (
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */,
+				42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				420F53E52C4E67FC003C8415 /* MockLocalNotificationDispatcher.swift in Sources */,
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,

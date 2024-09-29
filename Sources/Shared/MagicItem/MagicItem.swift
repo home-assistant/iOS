@@ -11,14 +11,14 @@ public struct MagicItem: Codable, Equatable {
     public let id: String
     public let serverId: String
     public let type: ItemType
-    public var customization: Customization
+    public var customization: Customization?
 
     /// Server unique ID - e.g. "EB1364-script.open_gate"
     public var serverUniqueId: String {
         "\(serverId)-\(id)"
     }
 
-    public init(id: String, serverId: String, type: ItemType, customization: Customization = .init()) {
+    public init(id: String, serverId: String, type: ItemType, customization: Customization? = .init()) {
         self.id = id
         self.serverId = serverId
         self.type = type
