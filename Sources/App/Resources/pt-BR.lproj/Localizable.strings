@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "Este aplicativo se conecta ao servidor do Home Assistant e permite integrar dados sobre você e seu telefone. \
 \
  O Home Assistant é um software de automação residencial gratuito e de código aberto com foco no controle local e na privacidade.";
+"onboarding.welcome.learn_more" = "Saiba mais";
 "onboarding.welcome.title" = "Bem-vindo ao Home Assistant %@ !";
 "open_label" = "Abrir";
 "preview_output" = "Pré-visualização da saída";
@@ -687,6 +688,8 @@
 "thread.management.title" = "Credenciais do Thread";
 "thread.network_key.title" = "Chave de rede";
 "thread.save_credential.fail.alert.message" = "Falha ao salvar a credencial de rede do thread.";
+"thread.save_credential.fail.alert.title" = "Falha ao salvar credencial de rede do thread, erro: %@";
+"thread.save_credential.fail.continue.button" = "Continuar";
 "thread.store_in_keychain.error.generic.body" = "Falha ao armazenar credencial de thread nas chaves. Verifique os registros para obter mais informações.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Falha ao converter a entrada em hexadecimal ao armazenar a credencial do thread nas chaves";
 "thread.store_in_keychain.error.title" = "Operação falhou";

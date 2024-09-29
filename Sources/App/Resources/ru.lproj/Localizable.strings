@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "Это приложение подключается к вашему серверу Home Assistant и позволяет интегрировать данные о вас и вашем телефоне.\
 \
 Home Assistant - это бесплатное программное обеспечение для домашней автоматизации с открытым исходным кодом, ориентированное на локальный контроль и конфиденциальность.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
 "open_label" = "Открыто";
 "preview_output" = "Предварительный результат";
@@ -687,6 +688,8 @@ Home Assistant - это бесплатное программное обеспе
 "thread.management.title" = "Учетные данные Thread";
 "thread.network_key.title" = "Ключ сети";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Не удалось сохранить учетные данные thread в связке ключей, проверьте журналы для получения дополнительной информации.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Не удалось преобразовать вводимые данные в шестнадцатеричный формат при сохранении учетных данных thread в связке ключей";
 "thread.store_in_keychain.error.title" = "Операция завершилась неудачей";

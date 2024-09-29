@@ -372,6 +372,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.welcome.description" = "Denne app forbinder til din Home Assistant-server og giver mulighed for at integrere data om dig og din telefon. \
 \
 Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus på lokal kontrol og privatliv.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@!";
 "open_label" = "Åbn";
 "preview_output" = "Forhåndsvisning af output";
@@ -687,6 +688,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "thread.management.title" = "Thread-legitimationsoplysninger";
 "thread.network_key.title" = "Netværksnøgle";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Kunne ikke gemme Thread-legitimationsoplysninger i nøglering. Tjek logfiler for flere oplysninger.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Kunne ikke konvertere input til hexadecimal under lagring af Thread-legitimationsoplysninger i nøglering";
 "thread.store_in_keychain.error.title" = "Handlingen mislykkedes";

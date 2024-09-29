@@ -259,7 +259,7 @@
 "nfc.list.description" = "NFC štítky zapsané pomocí aplikace vyvolají událost, jakmile k nim přiblížíte své zařízení.\
 \
 Štítky budou fungovat na jakémkoli zařízení s Home Assistantem a hardwarovou podporou k jejich čtení.";
-"nfc.list.learn_more" = "Další informace";
+"nfc.list.learn_more" = "Více informací";
 "nfc.list.read_tag" = "Přečíst štítek";
 "nfc.list.title" = "NFC štítky";
 "nfc.list.write_tag" = "Zapsat štítek";
@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "Tato aplikace se připojí k Vašemu Home Assistantovi a umožní Vám propojení s Vašim telefonem.\
 \
 Home Assistant je bezplatný a otevřený software pro domácí automatizaci se zaměřením na místní ovládání a soukromí.";
+"onboarding.welcome.learn_more" = "Více informací";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
 "open_label" = "Otevřít";
 "preview_output" = "Náhled výstupu";
@@ -686,7 +687,9 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "thread.extended_pan_id.title" = "ID rozšířené PAN";
 "thread.management.title" = "Přihlašovací údaje Thread";
 "thread.network_key.title" = "Síťový klíč";
-"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.message" = "Nepodařilo se uložit pověření sítě Thread.";
+"thread.save_credential.fail.alert.title" = "Nepodařilo se uložit pověření sítě Thread, chyba: %@";
+"thread.save_credential.fail.continue.button" = "Pokračovat";
 "thread.store_in_keychain.error.generic.body" = "Nepodařilo se uložit přihlašovací údaje Thread do klíčenky. Další informace naleznete v protokolech.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Při ukládání pověření Thread do klíčenky se nepodařilo převést vstup na hexadecimální.";
 "thread.store_in_keychain.error.title" = "Operace se nezdařila";

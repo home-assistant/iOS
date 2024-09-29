@@ -372,6 +372,7 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "open_label" = "Abrir";
 "preview_output" = "Preview Output";
@@ -687,6 +688,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "thread.management.title" = "Thread Credentials";
 "thread.network_key.title" = "Network Key";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
 "thread.store_in_keychain.error.title" = "Operation failed";

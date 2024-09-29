@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "Αυτή η εφαρμογή συνδέεται με τον διακομιστή Home Assistant και επιτρέπει την ενσωμάτωση δεδομένων σχετικά με εσάς και το τηλέφωνό σας. \
 \
  Το Home Assistant είναι δωρεάν και ανοιχτού κώδικα λογισμικό αυτοματισμού σπιτιού με έμφαση στον τοπικό έλεγχο και την ιδιωτικότητα.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Καλώς ορίσατε στο Home Assistant %@!";
 "open_label" = "Άνοιγμα";
 "preview_output" = "Έξοδος προεπισκόπησης";
@@ -687,6 +688,8 @@
 "thread.management.title" = "Διαπιστευτήρια νήματος";
 "thread.network_key.title" = "Κλειδί δικτύου";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Απέτυχε η αποθήκευση του διαπιστευτηρίου νήματος στην κλειδοθήκη, ελέγξτε τα αρχεία καταγραφής για περισσότερες πληροφορίες.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Απέτυχε η μετατροπή της εισόδου σε δεκαεξαδικό σύστημα κατά την αποθήκευση των διαπιστευτηρίων νήματος στην κλειδοθήκη";
 "thread.store_in_keychain.error.title" = "Η λειτουργία απέτυχε";

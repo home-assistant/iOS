@@ -372,6 +372,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.welcome.description" = "Ez az alkalmazás csatlakozik a Home Assistant szerverhez és lehetővé teszi az Önre és telefonjára vonatkozó adatok integrálását.\
 \
 A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási szoftver, amely a vezérlés helyben történő kivitelezésére és az adatvédelemre összpontosít.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "open_label" = "Megnyitás";
 "preview_output" = "Eredmény előnézete";
@@ -687,6 +688,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "thread.management.title" = "Thread hitelesítő adatai";
 "thread.network_key.title" = "Hálózati kulcs";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Nem sikerült tárolni a thread hitelesítő adatait a kulcskarikában, további információért ellenőrizze a naplókat.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Nem sikerült hexadecimálisra konvertálni a bemenetet, miközben a Thread hitelesítő adatait a kulcskarikában tárolta";
 "thread.store_in_keychain.error.title" = "A művelet sikertelen";
