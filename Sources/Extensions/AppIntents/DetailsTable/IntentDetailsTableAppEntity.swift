@@ -59,11 +59,11 @@ struct IntentDetailsTableAppEntity: AppEntity {
         }
 
         private func getSensorEntities(matching string: String? = nil) -> [Server: [IntentDetailsTableAppEntity]] {
-            var lightEntities: [Server: [IntentDetailsTableAppEntity]] = [:]
+            var sensorEntities: [Server: [IntentDetailsTableAppEntity]] = [:]
             let entities = ControlEntityProvider(domain: .sensor).getEntities(matching: string)
 
             for (server, values) in entities {
-                lightEntities[server] = values.map({ entity in
+                sensorEntities[server] = values.map({ entity in
                     IntentDetailsTableAppEntity(
                         id: entity.id,
                         entityId: entity.entityId,
@@ -74,7 +74,7 @@ struct IntentDetailsTableAppEntity: AppEntity {
                 })
             }
 
-            return lightEntities
+            return sensorEntities
         }
     }
 }
