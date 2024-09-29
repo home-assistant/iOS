@@ -253,10 +253,11 @@ final class WebViewExternalMessageHandler {
     private func matterComissioningHandler(incomingMessage: WebSocketMessage) {
         // So we avoid conflicting credentials (or absence) between servers
         cleanPreferredThreadCredentials()
-        let preferredNetWorkMacExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String
+        let preferredNetWorkMacExtendedAddress = incomingMessage
+            .Payload?[PayloadConstants.macExtendedAddress.rawValue] as? String
         let preferredNetWorkActiveOperationalDataset = incomingMessage
-            .Payload?["active_operational_dataset"] as? String
-        let preferredNetworkExtendedPANID = incomingMessage.Payload?["extended_pan_id"] as? String
+            .Payload?[PayloadConstants.activeOperationalDataset.rawValue] as? String
+        let preferredNetworkExtendedPANID = incomingMessage.Payload?[PayloadConstants.extendedPanId.rawValue] as? String
 
         Current.Log
             .verbose(
