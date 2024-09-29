@@ -40,7 +40,7 @@ final class ThreadTransferCredentialToKeychainViewModel: ThreadCredentialsSharin
             Current.Log.error("Failed to store thread credential in keychain: \(error.localizedDescription)")
             alertType = .error(
                 title: L10n.Thread.StoreInKeychain.Error.title,
-                message: L10n.Thread.StoreInKeychain.Error.Generic.body
+                message: L10n.Thread.StoreInKeychain.Error.message(error.localizedDescription)
             )
         }
         showAlert = true
