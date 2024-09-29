@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "이 앱은 Home Assitant 서버에 연결되어 사용자와 휴대전화에 대한 데이터를 통합할 수 있습니다.\
 \
 Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료 오픈 소스 홈 자동화 소프트웨어입니다.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Home Assistant %@에 오신것을 환영합니다!";
 "open_label" = "열기";
 "preview_output" = "미리보기 출력";
@@ -687,6 +688,8 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "thread.management.title" = "스레드 자격 증명";
 "thread.network_key.title" = "네트워크 키";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "키체인에 스레드 자격 증명을 저장하지 못했습니다. 자세한 내용은 로그를 확인하세요.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "키체인에 스레드 자격 증명을 저장하는 동안 입력을 16진수로 변환하지 못했습니다.";
 "thread.store_in_keychain.error.title" = "작업 실패";

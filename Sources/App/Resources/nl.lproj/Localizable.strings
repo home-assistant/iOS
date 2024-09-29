@@ -372,6 +372,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.welcome.description" = "Deze app maakt verbinding met uw Home Assistant-server en maakt het mogelijk gegevens over u en uw telefoon te integreren.\
 \
 Home Assistant is gratis en open source domotica-software met een focus op lokale controle en privacy.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";
 "preview_output" = "Voorbeeld Output";
@@ -687,6 +688,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "thread.management.title" = "Thread Credentials";
 "thread.network_key.title" = "Network Key";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
 "thread.store_in_keychain.error.title" = "Operation failed";

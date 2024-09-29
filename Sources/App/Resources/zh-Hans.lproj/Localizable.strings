@@ -370,6 +370,7 @@
 "onboarding.scanning.manual_hint" = "没有找到您的服务器 ？";
 "onboarding.scanning.title" = "正在扫描服务器";
 "onboarding.welcome.description" = "此应用程序将连接到您的 Home Assistant 服务器，并将集成有关您和您的移动设备的数据。Home Assistant 是免费的开源家庭自动化软件，专注于本地控制和隐私保护。";
+"onboarding.welcome.learn_more" = "了解更多信息";
 "onboarding.welcome.title" = "欢迎使用 Home Assistant %@ ！";
 "open_label" = "打开";
 "preview_output" = "预览输出";
@@ -685,6 +686,8 @@
 "thread.management.title" = "Thread 凭据";
 "thread.network_key.title" = "网络密钥";
 "thread.save_credential.fail.alert.message" = "保存 Thread 网络凭据失败。";
+"thread.save_credential.fail.alert.title" = "保存 Thread 网络凭据失败，错误：%@";
+"thread.save_credential.fail.continue.button" = "继续";
 "thread.store_in_keychain.error.generic.body" = "无法在钥匙串中存储线程凭据，检查日志可获取更多信息。";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "在钥匙串中存储线程凭据时无法将输入转换为十六进制";
 "thread.store_in_keychain.error.title" = "操作失败";

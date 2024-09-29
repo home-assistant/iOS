@@ -372,6 +372,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.welcome.description" = "ഈ ആപ്പ് നിങ്ങളുടെ ഹോം അസിസ്റ്റന്റ് സെർവറിലേക്ക് കണക്‌റ്റ് ചെയ്യുകയും നിങ്ങളെയും ഫോണിനെയും കുറിച്ചുള്ള ഡാറ്റ സംയോജിപ്പിക്കാൻ അനുവദിക്കുകയും ചെയ്യുന്നു. \
 \
 ഹോം അസിസ്റ്റന്റ് തൽസ്ഥല നിയന്ത്രണത്തിലും സ്വകാര്യതയിലും ശ്രദ്ധ കേന്ദ്രീകരിക്കുന്ന സൗജന്യവും ഓപ്പൺ സോഴ്സും ആയ ഹോം ഓട്ടോമേഷൻ സോഫ്‌റ്റ്‌വെയറാണ്.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "ഹോം അസിസ്റ്റന്റിലേക്ക് സ്വാഗതം %@ !";
 "open_label" = "Open";
 "preview_output" = "Preview Output";
@@ -687,6 +688,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "thread.management.title" = "Thread Credentials";
 "thread.network_key.title" = "Network Key";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
 "thread.store_in_keychain.error.title" = "Operation failed";

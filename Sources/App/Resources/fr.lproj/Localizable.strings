@@ -372,6 +372,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.welcome.description" = "Cette application se connecte à votre serveur Home Assistant et permet d'intégrer des données sur vous et votre téléphone. \
 \
 Home Assistant est un logiciel de domotique gratuit et open source axé sur le contrôle local et la confidentialité.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Bienvenue dans Home Assistant %@ !";
 "open_label" = "Ouvert";
 "preview_output" = "Aperçu du résultat";
@@ -687,6 +688,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "thread.management.title" = "Informations d'identification Thread";
 "thread.network_key.title" = "Clé réseau";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Échec du stockage des informations d'identification du thread dans le trousseau. Consultez les journaux pour plus d'informations.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Échec de la conversion de l'entrée en hexadécimal lors du stockage des informations d'identification du thread dans le trousseau";
 "thread.store_in_keychain.error.title" = "Échec de l'opération";
