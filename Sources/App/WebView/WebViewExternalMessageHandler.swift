@@ -300,6 +300,7 @@ final class WebViewExternalMessageHandler {
                     )
                     alert.addAction(.init(title: L10n.cancelLabel, style: .default))
                     alert.addAction(.init(title: L10n.continueLabel, style: .destructive, handler: { [weak self] _ in
+                        self?.cleanPreferredThreadCredentials()
                         self?.comissionMatterDevice()
                     }))
                     self?.webViewController?.presentController(alert, animated: false)
