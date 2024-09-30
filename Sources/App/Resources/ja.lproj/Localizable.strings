@@ -52,7 +52,7 @@
 "announcement.drop_support.button_read_more" = "続きを読む";
 "announcement.drop_support.subtitle" = "慎重に検討した結果、今後のアップデートで iOS 12、13、14 のサポートを終了する予定です。";
 "announcement.drop_support.title" = "重要なアップデート";
-"app_intents.assist.pipeline.default.title" = "Default";
+"app_intents.assist.pipeline.default.title" = "デフォルト";
 "app_intents.assist.pipeline.title" = "パイプライン";
 "app_intents.assist.preferred_pipeline.title" = "優先";
 "app_intents.assist.refresh_warning.title" = "アシストパイプラインが見つかりませんか？アプリでアシストを開き、パイプラインの一覧を更新してください。";
