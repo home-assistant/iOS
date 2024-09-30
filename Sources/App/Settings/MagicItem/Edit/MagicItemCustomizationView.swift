@@ -51,7 +51,13 @@ struct MagicItemCustomizationView: View {
 
                 Section {
                     ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                        Color(hex: viewModel.item.customization?.iconColor)
+                        var color = Color(uiColor: Asset.Colors.haPrimary.color)
+                        if let configIconColor = viewModel.item.customization?.iconColor {
+                            color = Color(hex: configIconColor)
+                        } else {
+                            viewModel.item.customization?.iconColor = color.hex()
+                        }
+                        return color
                     }, set: { newColor in
                         viewModel.item.customization?.iconColor = newColor.hex()
                     }), supportsOpacity: false)
