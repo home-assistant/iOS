@@ -62,7 +62,7 @@
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
-"app_intents.notify_when_run.title" = "Notify when run";
+"app_intents.notify_when_run.title" = "Értesítés futtatáskor";
 "app_intents.perform_action.action_parameter_configuration" = "Melyik művelet?";
 "app_intents.perform_action.action_parameter_confirmation" = "Csak megerősítésképp, ezt szeretné: ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "%@ lehetőség található a(z) ‘%@’ kifejezésre.";
@@ -234,7 +234,7 @@
 "magic_item.item_type.selection.list.title" = "Item type";
 "magic_item.name.title" = "Name";
 "magic_item.name_and_icon.footer" = "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.";
-"magic_item.name_and_icon.footer.scenes" = "Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.";
+"magic_item.name_and_icon.footer.scenes" = "A jelenet nevét és ikonját a felületen a 'Beállítások' > 'Automatizálások és jelenetek' > 'Jelenetek' alatt szerkesztheti.";
 "magic_item.require_confirmation.title" = "Require confirmation";
 "magic_item.text_color.title" = "Text color";
 "magic_item.use_custom_colors.title" = "Use custom colors";
@@ -372,7 +372,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.welcome.description" = "Ez az alkalmazás csatlakozik a Home Assistant szerverhez és lehetővé teszi az Önre és telefonjára vonatkozó adatok integrálását.\
 \
 A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási szoftver, amely a vezérlés helyben történő kivitelezésére és az adatvédelemre összpontosít.";
-"onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.learn_more" = "Tudjon meg többet";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "open_label" = "Megnyitás";
 "preview_output" = "Eredmény előnézete";
@@ -687,9 +687,9 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "thread.extended_pan_id.title" = "Kiterjesztett PAN azonosító";
 "thread.management.title" = "Thread hitelesítő adatai";
 "thread.network_key.title" = "Hálózati kulcs";
-"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
-"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
-"thread.save_credential.fail.continue.button" = "Continue";
+"thread.save_credential.fail.alert.message" = "A Thread hálózati hitelesítő adat mentése sikertelen.";
+"thread.save_credential.fail.alert.title" = "A Thread hálózati hitelesítő adat mentése sikertelen, hiba: %@";
+"thread.save_credential.fail.continue.button" = "Folytatás";
 "thread.store_in_keychain.error.generic.body" = "Nem sikerült tárolni a thread hitelesítő adatait a kulcskarikában, további információért ellenőrizze a naplókat.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Nem sikerült hexadecimálisra konvertálni a bemenetet, miközben a Thread hitelesítő adatait a kulcskarikában tárolta";
 "thread.store_in_keychain.error.title" = "A művelet sikertelen";
@@ -963,8 +963,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.script.description" = "Run script";
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
-"widgets.controls.switch.description" = "Turn on/off your switch";
-"widgets.controls.switch.title" = "Switch";
+"widgets.controls.switch.description" = "A kapcsoló be- és kikapcsolása";
+"widgets.controls.switch.title" = "Kapcsoló";
 "widgets.details.description" = "Az állapotok megjelenítése a Home Assistant segítségével szöveges formában";
 "widgets.details.parameters.action" = "Művelet";
 "widgets.details.parameters.details_template" = "Részletek szöveg sablon (csak a téglalap alakú családban)";

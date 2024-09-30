@@ -6,7 +6,7 @@
 "common::state::enabled" = "Engedélyezve";
 "common::state::home" = "Otthon";
 "common::state::idle" = "Tétlen";
-"common::state::locked" = "Zárva";
+"common::state::locked" = "Zárolt";
 "common::state::no" = "Nem";
 "common::state::not_home" = "Távol";
 "common::state::off" = "Ki";
@@ -29,7 +29,7 @@
 "component::binary_sensor::entity_component::door::state::on" = "Nyitva";
 "component::binary_sensor::entity_component::garage_door::state::off" = "Zárva";
 "component::binary_sensor::entity_component::garage_door::state::on" = "Nyitva";
-"component::binary_sensor::entity_component::lock::state::off" = "Zárva";
+"component::binary_sensor::entity_component::lock::state::off" = "Zárolt";
 "component::binary_sensor::entity_component::lock::state::on" = "Feloldva";
 "component::binary_sensor::entity_component::opening::state::off" = "Zárva";
 "component::binary_sensor::entity_component::opening::state::on" = "Nyitva";
@@ -75,7 +75,7 @@
 "component::google_mail::services::set_vacation::fields::enabled::name" = "Engedélyezve";
 "component::group::entity_component::_::state::closed" = "Zárva";
 "component::group::entity_component::_::state::home" = "Otthon";
-"component::group::entity_component::_::state::locked" = "Zárva";
+"component::group::entity_component::_::state::locked" = "Zárolt";
 "component::group::entity_component::_::state::not_home" = "Távol";
 "component::group::entity_component::_::state::off" = "Ki";
 "component::group::entity_component::_::state::on" = "Be";
@@ -144,7 +144,7 @@
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Ki";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "Szünetel";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Engedélyezve";
-"component::lock::entity_component::_::state::locked" = "Zárva";
+"component::lock::entity_component::_::state::locked" = "Zárolt";
 "component::lock::entity_component::_::state::unlocked" = "Feloldva";
 "component::lock::title" = "Zár";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "Ki";
