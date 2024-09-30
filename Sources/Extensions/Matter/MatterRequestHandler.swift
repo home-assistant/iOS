@@ -36,7 +36,7 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
             )
         Current.Log
             .verbose(
-                "Preferred Extended PAN ID: \(String(describing: UInt64(Current.settingsStore.matterLastPreferredNetWorkExtendedPANID ?? "", radix: 16)))"
+                "Preferred Extended PAN ID (UInt64): \(String(describing: UInt64(Current.settingsStore.matterLastPreferredNetWorkExtendedPANID ?? "", radix: 16)))"
             )
         if let matterLastPreferredNetWorkExtendedPANID = Current.settingsStore.matterLastPreferredNetWorkExtendedPANID,
            let preferredExtendedPANID = UInt64(matterLastPreferredNetWorkExtendedPANID, radix: 16),
