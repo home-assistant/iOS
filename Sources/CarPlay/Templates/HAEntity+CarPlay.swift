@@ -60,9 +60,7 @@ extension HAEntity {
             default:
                 break
             }
-        case .sensor:
-            return .value
-        case .none:
+        case .none, .sensor:
             break
         }
         if let request {

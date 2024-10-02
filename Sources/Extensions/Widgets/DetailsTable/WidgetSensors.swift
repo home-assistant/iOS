@@ -5,21 +5,19 @@ import SwiftUI
 import WidgetKit
 
 @available(iOS 17, *)
-struct WidgetDetailsTable: Widget {
+struct WidgetSensors: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
             kind: WidgetsKind.detailsTable.rawValue,
-            intent: WidgetDetailsTableAppIntent.self,
-            provider: WidgetDetailsTableAppIntentTimelineProvider()
+            intent: WidgetSensorsAppIntent.self,
+            provider: WidgetSensorsAppIntentTimelineProvider()
         ) { timelineEntry in
-            WidgetDetailsTableView(entry: timelineEntry)
+            WidgetSensorsView(entry: timelineEntry)
                 .widgetBackground(Color.clear)
         }
         .contentMarginsDisabledIfAvailable()
-        // @todo Alter displayName
-        .configurationDisplayName("Sensors")
-        // @todo Alter description
-        .description("Display state of sensors")
+        .configurationDisplayName(L10n.Widgets.Sensors.title)
+        .description(L10n.Widgets.Sensors.description)
         .supportedFamilies(WidgetDetailsTableSupportedFamilies.families)
     }
 }

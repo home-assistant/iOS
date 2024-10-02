@@ -2,26 +2,34 @@ import AppIntents
 import HAKit
 import RealmSwift
 import Shared
+import GRDB
+import PromiseKit
 import WidgetKit
 
 @available(iOS 17, *)
-struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
-    typealias Entry = WidgetDetailsTableEntry
-    typealias Intent = WidgetDetailsTableAppIntent
+struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
+    typealias Entry = WidgetSensorsEntry
+    typealias Intent = WidgetSensorsAppIntent
 
     func snapshot(
-        for configuration: WidgetDetailsTableAppIntent,
+        for configuration: WidgetSensorsAppIntent,
         in context: Context
-    ) async -> WidgetDetailsTableEntry {
+    ) async -> WidgetSensorsEntry {
         do {
+            let suggestions = await suggestions()
+            configuration.sensors = Array(suggestions.flatMap { key, value in
+                return value.map { sensor in
+                    IntentSensorsAppEntity(id: sensor.id, entityId: sensor.entityId, serverId: key.identifier.rawValue, displayString: sensor.name)
+                }
+            }.prefix(upTo: 3))
             return try await entry(for: configuration, in: context)
         } catch {
-            Current.Log.error("Using placeholder for detail table widget snapshot")
+            Current.Log.error("Using placeholder for sensor widget snapshot")
             return placeholder(in: context)
         }
     }
 
-    func timeline(for configuration: WidgetDetailsTableAppIntent, in context: Context) async -> Timeline<Entry> {
+    func timeline(for configuration: WidgetSensorsAppIntent, in context: Context) async -> Timeline<Entry> {
         do {
             let snapshot = try await entry(for: configuration, in: context)
             return .init(
@@ -32,7 +40,7 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
                 )
             )
         } catch {
-            Current.Log.debug("Using placeholder for detail table widget")
+            Current.Log.debug("Using placeholder for sensor widget")
             return .init(
                 entries: [placeholder(in: context)],
                 policy: .after(
@@ -43,24 +51,24 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
         }
     }
 
-    func placeholder(in context: Context) -> WidgetDetailsTableEntry {
+    func placeholder(in context: Context) -> WidgetSensorsEntry {
         .init(
             sensorData: [
-                WidgetDetailsTableEntry.SensorData(entityId: "1", key: "Solar Generation", value: "3404 Watt"),
-                WidgetDetailsTableEntry.SensorData(entityId: "2", key: "Temperature", value: "22.4 C"),
-                WidgetDetailsTableEntry.SensorData(entityId: "3", key: "Humidity", value: "56.4 %"),
+                WidgetSensorsEntry.SensorData(entityId: "1", key: "Solar Generation", value: "3404 Watt"),
+                WidgetSensorsEntry.SensorData(entityId: "2", key: "Temperature", value: "22.4 C"),
+                WidgetSensorsEntry.SensorData(entityId: "3", key: "Humidity", value: "56.4 %"),
             ]
         )
     }
 
-    private func entry(for configuration: WidgetDetailsTableAppIntent, in context: Context) async throws -> Entry {
+    private func entry(for configuration: WidgetSensorsAppIntent, in context: Context) async throws -> Entry {
         let sensorsGroupedByServer = Dictionary(grouping: configuration.sensors ?? [], by: { $0.serverId })
 
-        var sensorValues: [WidgetDetailsTableEntry.SensorData] = []
+        var sensorValues: [WidgetSensorsEntry.SensorData] = []
 
         for (serverId, sensors) in sensorsGroupedByServer {
             guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
-                throw WidgetDetailsTableDataError.noServers
+                throw WidgetSensorsDataError.noServers
             }
 
             for sensor in sensors {
@@ -69,13 +77,13 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
             }
         }
 
-        return WidgetDetailsTableEntry(sensorData: sensorValues)
+        return WidgetSensorsEntry(sensorData: sensorValues)
     }
 
     private func fetchSensorData(
-        for sensor: IntentDetailsTableAppEntity,
+        for sensor: IntentSensorsAppEntity,
         server: Server
-    ) async throws -> WidgetDetailsTableEntry.SensorData {
+    ) async throws -> WidgetSensorsEntry.SensorData {
         let result = await withCheckedContinuation { continuation in
             Current.api(for: server).connection.send(.init(
                 type: .rest(.get, "states/\(sensor.entityId)"),
@@ -91,11 +99,11 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
             data = resultData
         case let .failure(error):
             Current.Log.error("Failed to render template for details widget: \(error)")
-            throw WidgetDetailsTableDataError.apiError
+            throw WidgetSensorsDataError.apiError
         }
 
         guard let data else {
-            throw WidgetDetailsTableDataError.apiError
+            throw WidgetSensorsDataError.apiError
         }
 
         var state: [String: Any]?
@@ -104,18 +112,42 @@ struct WidgetDetailsTableAppIntentTimelineProvider: AppIntentTimelineProvider {
             state = response
         default:
             Current.Log.error("Failed to render template for detail table widget: Bad response data")
-            throw WidgetDetailsTableDataError.badResponse
+            throw WidgetSensorsDataError.badResponse
         }
 
         let stateValue = (state?["state"] as? String) ?? "N/A"
         let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
 
-        return WidgetDetailsTableEntry.SensorData(
+        return WidgetSensorsEntry.SensorData(
             entityId: sensor.entityId,
             key: sensor.displayString,
             value: stateValue,
             unitOfMeasurement: unitOfMeasurement
         )
+    }
+    
+    private func suggestions() async -> [Server: [HAAppEntity]] {
+        await withCheckedContinuation { continuation in
+            var entities: [Server: [HAAppEntity]] = [:]
+            var serverCheckedCount = 0
+            for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
+                do {
+                    let scripts: [HAAppEntity] = try Current.database().read { db in
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.sensor.rawValue)
+                            .fetchAll(db)
+                    }
+                    entities[server] = scripts
+                } catch {
+                    Current.Log.error("Failed to load sensors from database: \(error.localizedDescription)")
+                }
+                serverCheckedCount += 1
+                if serverCheckedCount == Current.servers.all.count {
+                    continuation.resume(returning: entities)
+                }
+            }
+        }
     }
 }
 
@@ -126,7 +158,7 @@ enum WidgetDetailsTableDataSource {
 }
 
 @available(iOS 17, *)
-struct WidgetDetailsTableEntry: TimelineEntry {
+struct WidgetSensorsEntry: TimelineEntry {
     var date = Date()
 
     var sensorData: [SensorData] = []
@@ -139,7 +171,7 @@ struct WidgetDetailsTableEntry: TimelineEntry {
     }
 }
 
-enum WidgetDetailsTableDataError: Error {
+enum WidgetSensorsDataError: Error {
     case noServers
     case apiError
     case badResponse
