@@ -5,7 +5,7 @@ import Shared
 
 @available(iOS 17.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct IntentSensorsAppEntity: AppEntity {
-    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "DETAIL TABLE")
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Sensor")
 
     static let defaultQuery = IntentDetailsTableAppEntityQuery()
 

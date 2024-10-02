@@ -111,7 +111,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         case let .dictionary(response):
             state = response
         default:
-            Current.Log.error("Failed to render template for detail table widget: Bad response data")
+            Current.Log.error("Failed to render template for sensor widget: Bad response data")
             throw WidgetSensorsDataError.badResponse
         }
 

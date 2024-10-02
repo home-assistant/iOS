@@ -2857,6 +2857,7 @@
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				3E02C0F82CAD9EC700102131 /* Sensor */,
 				426CBB682C9C5426003CA3AC /* Switch */,
 				420461672C8F29290062E89F /* Light */,
 				42F958962BB4680100497981 /* Assist */,
@@ -2870,7 +2871,6 @@
 				42D3E4A92C5D28F800444BE6 /* Script */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				110E694524E771AB004AA96D /* Color+Hex.swift */,
-				3E02C0E62CA7FCF400102131 /* DetailsTable */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -3446,30 +3446,30 @@
 			path = WebView;
 			sourceTree = "<group>";
 		};
-		3E02C0E12CA7FCBF00102131 /* DetailsTable */ = {
-			isa = PBXGroup;
-			children = (
-				3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */,
-			);
-			path = DetailsTable;
-			sourceTree = "<group>";
-		};
-		3E02C0E62CA7FCF400102131 /* DetailsTable */ = {
+		3E02C0F82CAD9EC700102131 /* Sensor */ = {
 			isa = PBXGroup;
 			children = (
 				3E02C0E42CA7FCF400102131 /* WidgetSensors.swift */,
 				3E02C0E52CA7FCF400102131 /* WidgetSensorsView.swift */,
 			);
-			path = DetailsTable;
+			path = Sensor;
 			sourceTree = "<group>";
 		};
-		3E02C0EB2CA7FD2A00102131 /* DetailsTable */ = {
+		3E02C0F92CAD9EDF00102131 /* Sensor */ = {
+			isa = PBXGroup;
+			children = (
+				3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */,
+			);
+			path = Sensor;
+			sourceTree = "<group>";
+		};
+		3E02C0FA2CAD9EEB00102131 /* Sensor */ = {
 			isa = PBXGroup;
 			children = (
 				3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */,
 				3E02C0EA2CA7FD2A00102131 /* WidgetSensorsAppIntentTimelineProvider.swift */,
 			);
-			path = DetailsTable;
+			path = Sensor;
 			sourceTree = "<group>";
 		};
 		403AE9072C2E214D00D48147 /* Gauge */ = {
@@ -3809,11 +3809,11 @@
 		4296C36A2B90DB630051B63C /* AppIntents */ = {
 			isa = PBXGroup;
 			children = (
+				3E02C0F92CAD9EDF00102131 /* Sensor */,
 				420F53E62C4E9AA9003C8415 /* Action */,
 				42D3E4A62C5D009A00444BE6 /* Script */,
 				4296C3722B91F06D0051B63C /* Widget */,
 				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
-				3E02C0E12CA7FCBF00102131 /* DetailsTable */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -3821,12 +3821,12 @@
 		4296C3722B91F06D0051B63C /* Widget */ = {
 			isa = PBXGroup;
 			children = (
+				3E02C0FA2CAD9EEB00102131 /* Sensor */,
 				420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */,
 				4296C3732B91F0730051B63C /* Actions */,
 				403AE90A2C2E28A200D48147 /* Gauge */,
 				4080D5C02C319AF400099C88 /* Details */,
 				42D3E4B22C5D2BA400444BE6 /* Script */,
-				3E02C0EB2CA7FD2A00102131 /* DetailsTable */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
