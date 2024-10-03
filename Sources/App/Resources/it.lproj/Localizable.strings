@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "Questa app si connette al tuo server Home Assistant e consente di integrare i dati su di te e sul tuo telefono. \
 \
  Home Assistant è un software di automazione domestica gratuito e open source con particolare attenzione al controllo locale e alla privacy.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Benvenuto in Home Assistant %@ !";
 "open_label" = "Aperto";
 "preview_output" = "Anteprima dell'output";
@@ -687,8 +688,11 @@
 "thread.management.title" = "Credenziali del thread";
 "thread.network_key.title" = "Password di rete";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Impossibile memorizzare le credenziali del thread nel portachiavi, controlla i log per ulteriori informazioni.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Impossibile convertire l'input in esadecimale durante la memorizzazione delle credenziali del thread nel portachiavi";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operazione fallita";
 "thread.transter_to_apple.title" = "Trasferisci ad Apple Keychain";
 "thread.transter_to_homeassistant.title" = "Trasferisci ad Home Assistant";

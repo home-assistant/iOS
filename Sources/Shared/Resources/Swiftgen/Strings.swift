@@ -2354,7 +2354,7 @@ public enum L10n {
     public enum SaveCredential {
       public enum Fail {
         public enum Alert {
-          /// If you tap continue, Home Assistant will use the default Thread credentials that are available in the Apple keychain.
+          /// Failed to save thread network credential.
           public static var message: String { return L10n.tr("Localizable", "thread.save_credential.fail.alert.message") }
           /// Failed to save thread network credential, error: %@
           public static func title(_ p1: Any) -> String {
@@ -2369,6 +2369,10 @@ public enum L10n {
     }
     public enum StoreInKeychain {
       public enum Error {
+        /// Failed to store thread credential in keychain, error: %@
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "thread.store_in_keychain.error.message", String(describing: p1))
+        }
         /// Operation failed
         public static var title: String { return L10n.tr("Localizable", "thread.store_in_keychain.error.title") }
         public enum Generic {

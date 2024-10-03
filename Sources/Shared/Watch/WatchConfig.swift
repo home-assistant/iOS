@@ -16,7 +16,7 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
         self.items = items
     }
 
-    public struct Assist: Codable {
+    public struct Assist: Codable, Equatable {
         public var showAssist: Bool
         public var serverId: String
         public var pipelineId: String

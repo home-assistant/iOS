@@ -43,16 +43,15 @@ struct OnboardingWelcomeView: View {
     }
 
     private var continueButton: some View {
-        NavigationLink(L10n.continueLabel) {
-            OnboardingScanningView()
-        }
-        .font(.callout.bold())
-        .foregroundStyle(.white)
-        .frame(maxWidth: .infinity)
-        .frame(height: 55)
-        .background(Color.asset(Asset.Colors.haPrimary))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .padding(Spaces.two)
+        NavigationLink(destination: OnboardingScanningView()) {
+            Text(L10n.continueLabel)
+                .font(.callout.bold())
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 55)
+                .background(Color.asset(Asset.Colors.haPrimary))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        }.padding(Spaces.two)
     }
 }
 

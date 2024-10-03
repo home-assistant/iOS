@@ -52,7 +52,7 @@
 "announcement.drop_support.button_read_more" = "続きを読む";
 "announcement.drop_support.subtitle" = "慎重に検討した結果、今後のアップデートで iOS 12、13、14 のサポートを終了する予定です。";
 "announcement.drop_support.title" = "重要なアップデート";
-"app_intents.assist.pipeline.default.title" = "Default";
+"app_intents.assist.pipeline.default.title" = "デフォルト";
 "app_intents.assist.pipeline.title" = "パイプライン";
 "app_intents.assist.preferred_pipeline.title" = "優先";
 "app_intents.assist.refresh_warning.title" = "アシストパイプラインが見つかりませんか？アプリでアシストを開き、パイプラインの一覧を更新してください。";
@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "このアプリは、あなたのHome Assistantのサーバーに接続し、あなたとあなたの携帯電話に関するデータを統合することができます。\
 \
 Home Assistantは、ローカルコントロールとプライバシーに重点を置いた、フリーでオープンソースなホームオートメーションソフトウェアです。";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Home Assistantへようこそ %@！";
 "open_label" = "オープン";
 "preview_output" = "プレビュー出力";
@@ -687,8 +688,11 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "thread.management.title" = "Thread 認証情報";
 "thread.network_key.title" = "ネットワークキー";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Thread 認証情報をキーチェーンに保存できませんでした。詳細についてはログを確認してください。";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Thread 認証情報をキーチェーンに保存するときに入力を 16 進数に変換できませんでした";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "操作に失敗しました";
 "thread.transter_to_apple.title" = "Apple キーチェーンに転送";
 "thread.transter_to_homeassistant.title" = "Home Assistantに転送";

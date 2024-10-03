@@ -372,6 +372,7 @@
 "onboarding.welcome.description" = "Bu uygulama, Home Assistant sunucunuza bağlanır ve siz ve telefonunuz hakkındaki verilerin entegre edilmesini sağlar. \
 \
  Home Assistant, yerel kontrol ve gizliliğe odaklanan ücretsiz ve açık kaynaklı bir ev otomasyon yazılımıdır.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Home Assistant'a Hoş Geldiniz %@!";
 "open_label" = "Açık";
 "preview_output" = "Önizleme Çıktısı";
@@ -687,8 +688,11 @@
 "thread.management.title" = "İş Parçacığı Kimlik Bilgileri";
 "thread.network_key.title" = "Ağ Anahtarı";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Konu kimlik bilgileri anahtarlıkta depolanamadı. Daha fazla bilgi için günlükleri kontrol edin.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Anahtar zincirinde iş parçacığı kimlik bilgileri saklanırken giriş onaltılı sayıya dönüştürülemedi";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operasyon başarısız";
 "thread.transter_to_apple.title" = "Apple Anahtarlık'a Aktar";
 "thread.transter_to_homeassistant.title" = "Home Asistanına Aktar";

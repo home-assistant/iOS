@@ -372,6 +372,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.welcome.description" = "Ta aplikacija se poveže s strežnikom Home Assistant in omogoča integracijo podatkov o vas in vašem telefonu. \
 \
 Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo doma s poudarkom na lokalnem nadzoru in zasebnosti.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Dobrodošli v Home Assistant-u %@!";
 "open_label" = "Odprto";
 "preview_output" = "Preview Output";
@@ -687,8 +688,11 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "thread.management.title" = "Thread Credentials";
 "thread.network_key.title" = "Network Key";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operation failed";
 "thread.transter_to_apple.title" = "Transfer to Apple Keychain";
 "thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";

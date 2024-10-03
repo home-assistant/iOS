@@ -208,7 +208,7 @@ class OnboardingScanningViewController: UIViewController {
     }
 
     @objc private func didSelectManual(_ sender: UIButton) {
-        show(OnboardingManualURLViewController(), sender: self)
+        navigationController?.pushViewController(OnboardingManualURLViewController(), animated: true)
     }
 }
 

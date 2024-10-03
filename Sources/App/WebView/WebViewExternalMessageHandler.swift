@@ -253,11 +253,28 @@ final class WebViewExternalMessageHandler {
     private func matterComissioningHandler(incomingMessage: WebSocketMessage) {
         // So we avoid conflicting credentials (or absence) between servers
         cleanPreferredThreadCredentials()
+        let preferredNetWorkMacExtendedAddress = incomingMessage
+            .Payload?[PayloadConstants.macExtendedAddress.rawValue] as? String
+        let preferredNetWorkActiveOperationalDataset = incomingMessage
+            .Payload?[PayloadConstants.activeOperationalDataset.rawValue] as? String
+        let preferredNetworkExtendedPANID = incomingMessage.Payload?[PayloadConstants.extendedPanId.rawValue] as? String
 
-        if let preferredNetWorkMacExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
-           let preferredNetWorkActiveOperationalDataset = incomingMessage
-           .Payload?["active_operational_dataset"] as? String,
-           let preferredNetworkExtendedPANID = incomingMessage.Payload?["extended_pan_id"] as? String {
+        Current.Log
+            .verbose(
+                "Matter comission received preferredNetWorkMacExtendedAddress from frontend: \(String(describing: preferredNetWorkMacExtendedAddress))"
+            )
+        Current.Log
+            .verbose(
+                "Matter comission received preferredNetWorkActiveOperationalDataset from frontend: \(String(describing: preferredNetWorkActiveOperationalDataset))"
+            )
+        Current.Log
+            .verbose(
+                "Matter comission received preferredNetworkExtendedPANID from frontend: \(String(describing: preferredNetworkExtendedPANID))"
+            )
+
+        if let preferredNetWorkMacExtendedAddress, !preferredNetWorkMacExtendedAddress.isEmpty,
+           let preferredNetWorkActiveOperationalDataset, !preferredNetWorkActiveOperationalDataset.isEmpty,
+           let preferredNetworkExtendedPANID, !preferredNetworkExtendedPANID.isEmpty {
             // This information will be used in 'MatterRequestHandler'
             Current.settingsStore
                 .matterLastPreferredNetWorkMacExtendedAddress = preferredNetWorkMacExtendedAddress
@@ -265,11 +282,6 @@ final class WebViewExternalMessageHandler {
                 .matterLastPreferredNetWorkActiveOperationalDataset = preferredNetWorkActiveOperationalDataset
             Current.settingsStore
                 .matterLastPreferredNetWorkExtendedPANID = preferredNetworkExtendedPANID
-
-            Current.Log
-                .verbose(
-                    "Matter comission requested using preferredNetWorkMacExtendedAddress: \(String(describing: preferredNetWorkMacExtendedAddress)) and preferredNetWorkActiveOperationalDataset: \(String(describing: preferredNetWorkActiveOperationalDataset))"
-                )
 
             // Saving credential in keychain before moving forward as required, docs: https://developer.apple.com/documentation/mattersupport/matteradddeviceextensionrequesthandler/selectthreadnetwork(from:)
             Current.matter.threadClientService.saveCredential(

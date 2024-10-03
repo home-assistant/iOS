@@ -25,7 +25,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     func executeItem() {
         guard state != .loading else { return }
-        if item.customization.requiresConfirmation {
+        if item.customization?.requiresConfirmation ?? true {
             showConfirmationDialog = true
         } else {
             executeItemAction()

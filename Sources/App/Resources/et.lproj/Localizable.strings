@@ -372,6 +372,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.welcome.description" = "See rakendus loob ühenduse Home Assistanti serveriga ja võimaldab integreerida teie ja teie telefoni andmeid. \
 \
  Home Assistant on tasuta avatud lähtekoodiga koduautomaatika tarkvara, mis keskendub kohalikule juhtimisele ja privaatsusele.";
+"onboarding.welcome.learn_more" = "Lisateave";
 "onboarding.welcome.title" = "Tere tulemast Home Assistanti %@!";
 "open_label" = "Avatud";
 "preview_output" = "Kujunduse eelvaade";
@@ -687,8 +688,11 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "thread.management.title" = "Threadi sidumse volitused";
 "thread.network_key.title" = "Võrgu võti";
 "thread.save_credential.fail.alert.message" = "Thread võrgu identimisteabe salvestamine nurjus.";
+"thread.save_credential.fail.alert.title" = "Thread võrgu mandaadi salvestamine nurjus, viga: %@";
+"thread.save_credential.fail.continue.button" = "Jätka";
 "thread.store_in_keychain.error.generic.body" = "Threadi mandaadi salvestamine võtmehoidlasse nurjus. Lisateabe saamiseks vaata logisid.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Sisendi teisendamine kuueteistkümnendsüsteemiks nurjus lõimemandaadi salvestamisel võtmehoidlasse";
+"thread.store_in_keychain.error.message" = "Threadi volituste salvestamine võtmehoidlasse nurjus, viga: %@";
 "thread.store_in_keychain.error.title" = "Toiming nurjus";
 "thread.transter_to_apple.title" = "Siirda Apple'i võtmehoidlasse";
 "thread.transter_to_homeassistant.title" = "Siirda Home Assistantisse";

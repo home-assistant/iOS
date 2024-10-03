@@ -372,6 +372,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.welcome.description" = "Aquesta aplicació es connecta al vostre servidor Home Assistant i permet integrar dades sobre tu i el teu telèfon. \
 \
 Home Assistant és un programari d'automatització de la llar gratuït i de codi obert, centrat en el control local i la privadesa.";
+"onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Benvinguts a Home Assistant %@!";
 "open_label" = "Obrir";
 "preview_output" = "Previsualització de la sortida";
@@ -687,8 +688,11 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "thread.management.title" = "Thread Credentials";
 "thread.network_key.title" = "Network Key";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "L'operació ha fallat";
 "thread.transter_to_apple.title" = "Transferir al clauer d'Apple";
 "thread.transter_to_homeassistant.title" = "Transferir a Home Assistant";

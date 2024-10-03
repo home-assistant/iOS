@@ -51,30 +51,36 @@ struct MagicItemCustomizationView: View {
 
                 Section {
                     ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                        Color(hex: viewModel.item.customization.iconColor)
+                        var color = Color(uiColor: Asset.Colors.haPrimary.color)
+                        if let configIconColor = viewModel.item.customization?.iconColor {
+                            color = Color(hex: configIconColor)
+                        } else {
+                            viewModel.item.customization?.iconColor = color.hex()
+                        }
+                        return color
                     }, set: { newColor in
-                        viewModel.item.customization.iconColor = newColor.hex()
+                        viewModel.item.customization?.iconColor = newColor.hex()
                     }), supportsOpacity: false)
                     Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
                     if useCustomColors {
                         ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
-                            Color(hex: viewModel.item.customization.backgroundColor)
+                            Color(hex: viewModel.item.customization?.backgroundColor)
                         }, set: { newColor in
-                            viewModel.item.customization.backgroundColor = newColor.hex()
+                            viewModel.item.customization?.backgroundColor = newColor.hex()
                         }), supportsOpacity: false)
                         ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
-                            Color(hex: viewModel.item.customization.textColor)
+                            Color(hex: viewModel.item.customization?.textColor)
                         }, set: { newColor in
-                            viewModel.item.customization.textColor = newColor.hex()
+                            viewModel.item.customization?.textColor = newColor.hex()
                         }), supportsOpacity: false)
                     }
                 }
 
                 Section {
                     Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                        viewModel.item.customization.requiresConfirmation
+                        viewModel.item.customization?.requiresConfirmation ?? true
                     }, set: { newValue in
-                        viewModel.item.customization.requiresConfirmation = newValue
+                        viewModel.item.customization?.requiresConfirmation = newValue
                     }))
                 }
             }
@@ -85,13 +91,13 @@ struct MagicItemCustomizationView: View {
         }
         .onChange(of: useCustomColors) { newValue in
             if newValue {
-                viewModel.item.customization.backgroundColor = viewModel.item.customization.backgroundColor ?? UIColor
+                viewModel.item.customization?.backgroundColor = viewModel.item.customization?.backgroundColor ?? UIColor
                     .black.hexString()
-                viewModel.item.customization.textColor = viewModel.item.customization.textColor ?? UIColor.white
+                viewModel.item.customization?.textColor = viewModel.item.customization?.textColor ?? UIColor.white
                     .hexString()
             } else {
-                viewModel.item.customization.backgroundColor = nil
-                viewModel.item.customization.textColor = nil
+                viewModel.item.customization?.backgroundColor = nil
+                viewModel.item.customization?.textColor = nil
             }
         }
         .toolbar {
@@ -103,7 +109,15 @@ struct MagicItemCustomizationView: View {
             }
         }
         .onAppear {
+            // Avoid nil customization object to prevent state values from crash
+            preventNilCustomization()
             viewModel.loadMagicInfo()
+        }
+    }
+
+    private func preventNilCustomization() {
+        if viewModel.item.customization == nil {
+            viewModel.item.customization = .init()
         }
     }
 }
