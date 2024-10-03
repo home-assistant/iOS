@@ -1,9 +1,9 @@
 import AppIntents
+import GRDB
 import HAKit
+import PromiseKit
 import RealmSwift
 import Shared
-import GRDB
-import PromiseKit
 import WidgetKit
 
 @available(iOS 17, *)
@@ -18,8 +18,13 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         do {
             let suggestions = await suggestions()
             configuration.sensors = Array(suggestions.flatMap { key, value in
-                return value.map { sensor in
-                    IntentSensorsAppEntity(id: sensor.id, entityId: sensor.entityId, serverId: key.identifier.rawValue, displayString: sensor.name)
+                value.map { sensor in
+                    IntentSensorsAppEntity(
+                        id: sensor.id,
+                        entityId: sensor.entityId,
+                        serverId: key.identifier.rawValue,
+                        displayString: sensor.name
+                    )
                 }
             }.prefix(upTo: 3))
             return try await entry(for: configuration, in: context)
@@ -125,7 +130,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             unitOfMeasurement: unitOfMeasurement
         )
     }
-    
+
     private func suggestions() async -> [Server: [HAAppEntity]] {
         await withCheckedContinuation { continuation in
             var entities: [Server: [HAAppEntity]] = [:]

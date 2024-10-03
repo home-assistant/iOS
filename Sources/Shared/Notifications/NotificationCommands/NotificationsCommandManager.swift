@@ -120,7 +120,7 @@ private struct HandlerUpdateWidgets: NotificationCommandHandler {
         return Promise<Void> { seal in
             DispatchQueue.main.async {
                 #if os(iOS)
-                    DataWidgetsUpdater.update()
+                DataWidgetsUpdater.update()
                 #endif
                 seal.fulfill(())
             }
