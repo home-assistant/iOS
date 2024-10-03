@@ -8,7 +8,7 @@ import WidgetKit
 struct WidgetSensors: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
-            kind: WidgetsKind.detailsTable.rawValue,
+            kind: WidgetsKind.sensors.rawValue,
             intent: WidgetSensorsAppIntent.self,
             provider: WidgetSensorsAppIntentTimelineProvider()
         ) { timelineEntry in

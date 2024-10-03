@@ -9,7 +9,7 @@ public enum DataWidgetsUpdater {
         }
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.gauge.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.details.rawValue)
-        WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.detailsTable.rawValue)
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.sensors.rawValue)
     }
 }
 #endif
