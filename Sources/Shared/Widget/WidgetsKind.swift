@@ -7,7 +7,7 @@ public enum WidgetsKind: String, CaseIterable {
     case gauge = "WidgetGauge"
     case details = "WidgetDetails"
     case scripts = "WidgetScripts"
-    case detailsTable = "WidgetDetailsTable"
+    case sensors
     case controlScript
     case controlScene
     case controlAssist
