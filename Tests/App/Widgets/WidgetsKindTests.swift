@@ -9,7 +9,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.gauge.rawValue, "WidgetGauge")
         XCTAssertEqual(WidgetsKind.details.rawValue, "WidgetDetails")
         XCTAssertEqual(WidgetsKind.scripts.rawValue, "WidgetScripts")
-        XCTAssertEqual(WidgetsKind.detailsTable.rawValue, "WidgetDetailsTable")
+        XCTAssertEqual(WidgetsKind.sensors.rawValue, "sensors")
         XCTAssertEqual(WidgetsKind.controlScript.rawValue, "controlScript")
         XCTAssertEqual(WidgetsKind.controlScene.rawValue, "controlScene")
         XCTAssertEqual(WidgetsKind.controlAssist.rawValue, "controlAssist")
