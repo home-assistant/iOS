@@ -372,7 +372,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.welcome.description" = "Den här appen ansluter till din Home Assistant-server och låter dig integrera data om dig och din telefon. \
 \
 Home Assistant är gratis och öppen källkod för hemautomatisering med fokus på lokal kontroll och integritet.";
-"onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.learn_more" = "Läs mer";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
 "open_label" = "Öppen";
 "preview_output" = "Förhandsgranska";
@@ -689,10 +689,11 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "thread.management.title" = "Autentiseringsuppgifter för Thread";
 "thread.network_key.title" = "Nätverksnyckel";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
-"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
-"thread.save_credential.fail.continue.button" = "Continue";
+"thread.save_credential.fail.alert.title" = "Det gick inte att spara Thread-nätverkets autentiseringsuppgifter, fel: %@";
+"thread.save_credential.fail.continue.button" = "Fortsätt";
 "thread.store_in_keychain.error.generic.body" = "Det gick inte att lagra autentiseringsuppgifterna för Thread i nyckelringen, kontrollera loggarna för mer information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Det gick inte att konvertera indata till hexadecimalt vid lagring av autentiseringsuppgifter för Thread i nyckelringen";
+"thread.store_in_keychain.error.message" = "Det gick inte att lagra Thread-uppgifterna i nyckelringen, fel: %@";
 "thread.store_in_keychain.error.title" = "Operationen misslyckades";
 "thread.transter_to_apple.title" = "Flytta till Apple Nyckelring";
 "thread.transter_to_homeassistant.title" = "Flytta till Home Assistant";

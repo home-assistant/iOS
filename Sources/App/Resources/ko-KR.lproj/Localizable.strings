@@ -692,6 +692,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "키체인에 스레드 자격 증명을 저장하지 못했습니다. 자세한 내용은 로그를 확인하세요.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "키체인에 스레드 자격 증명을 저장하는 동안 입력을 16진수로 변환하지 못했습니다.";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "작업 실패";
 "thread.transter_to_apple.title" = "Apple 키체인으로 전송";
 "thread.transter_to_homeassistant.title" = "Home Assistant로 전송";

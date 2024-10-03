@@ -692,6 +692,7 @@
 "thread.save_credential.fail.continue.button" = "Continuar";
 "thread.store_in_keychain.error.generic.body" = "Falha ao armazenar credencial de thread nas chaves. Verifique os registros para obter mais informações.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Falha ao converter a entrada em hexadecimal ao armazenar a credencial do thread nas chaves";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operação falhou";
 "thread.transter_to_apple.title" = "Transferir para o Apple Keychain";
 "thread.transter_to_homeassistant.title" = "Transferir para o Home Assistant";

@@ -692,6 +692,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "thread.save_credential.fail.continue.button" = "Pokračovat";
 "thread.store_in_keychain.error.generic.body" = "Nepodařilo se uložit přihlašovací údaje Thread do klíčenky. Další informace naleznete v protokolech.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Při ukládání pověření Thread do klíčenky se nepodařilo převést vstup na hexadecimální.";
+"thread.store_in_keychain.error.message" = "Nepodařilo se uložit pověření Thread do klíčenky, chyba: %@";
 "thread.store_in_keychain.error.title" = "Operace se nezdařila";
 "thread.transter_to_apple.title" = "Převod do klíčenky Apple";
 "thread.transter_to_homeassistant.title" = "Přenést do Home Assistanta";

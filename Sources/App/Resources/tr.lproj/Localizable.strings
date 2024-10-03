@@ -692,6 +692,7 @@
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Konu kimlik bilgileri anahtarlıkta depolanamadı. Daha fazla bilgi için günlükleri kontrol edin.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Anahtar zincirinde iş parçacığı kimlik bilgileri saklanırken giriş onaltılı sayıya dönüştürülemedi";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operasyon başarısız";
 "thread.transter_to_apple.title" = "Apple Anahtarlık'a Aktar";
 "thread.transter_to_homeassistant.title" = "Home Asistanına Aktar";

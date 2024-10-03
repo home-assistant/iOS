@@ -692,6 +692,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "thread.save_credential.fail.continue.button" = "Jatka";
 "thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operation failed";
 "thread.transter_to_apple.title" = "Siirrä Apple-Avainnippuun";
 "thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
