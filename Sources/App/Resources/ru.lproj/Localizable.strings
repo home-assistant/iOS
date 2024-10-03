@@ -692,6 +692,7 @@ Home Assistant - это бесплатное программное обеспе
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Не удалось сохранить учетные данные thread в связке ключей, проверьте журналы для получения дополнительной информации.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Не удалось преобразовать вводимые данные в шестнадцатеричный формат при сохранении учетных данных thread в связке ключей";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Операция завершилась неудачей";
 "thread.transter_to_apple.title" = "Перенос в связку ключей Apple";
 "thread.transter_to_homeassistant.title" = "Перенос в Home Assistant";

@@ -692,6 +692,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Échec du stockage des informations d'identification du thread dans le trousseau. Consultez les journaux pour plus d'informations.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Échec de la conversion de l'entrée en hexadécimal lors du stockage des informations d'identification du thread dans le trousseau";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Échec de l'opération";
 "thread.transter_to_apple.title" = "Transférer vers le trousseau Apple";
 "thread.transter_to_homeassistant.title" = "Transférer vers Home Assistant";

@@ -372,7 +372,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.welcome.description" = "Aplikasi ini terhubung ke server Home Assistant Anda dan memungkinkan integrasi data tentang Anda dan ponsel Anda.\
 \
 Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka dengan fokus pada kontrol dan privasi lokal.";
-"onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.learn_more" = "Pelajari lebih lanjut";
 "onboarding.welcome.title" = "Selamat datang di Home Assistant %@!";
 "open_label" = "Buka";
 "preview_output" = "Pratinjau Output";
@@ -688,10 +688,11 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "thread.management.title" = "Kredensial Thread";
 "thread.network_key.title" = "Kunci Jaringan";
 "thread.save_credential.fail.alert.message" = "Gagal menyimpan kredensial jaringan Thread.";
-"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
-"thread.save_credential.fail.continue.button" = "Continue";
+"thread.save_credential.fail.alert.title" = "Gagal menyimpan kredensial jaringan Thread, kesalahan: %@";
+"thread.save_credential.fail.continue.button" = "Lanjutkan";
 "thread.store_in_keychain.error.generic.body" = "Gagal menyimpan kredensial thread di rantai kunci, periksa log untuk informasi lebih lanjut.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Gagal mengonversi input ke heksadesimal saat menyimpan kredensial thread di rantai kunci";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operasi gagal";
 "thread.transter_to_apple.title" = "Transfer ke Rantai Kunci Apple";
 "thread.transter_to_homeassistant.title" = "Transfer ke Home Assistant";

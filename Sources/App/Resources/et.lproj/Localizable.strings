@@ -692,6 +692,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "thread.save_credential.fail.continue.button" = "Jätka";
 "thread.store_in_keychain.error.generic.body" = "Threadi mandaadi salvestamine võtmehoidlasse nurjus. Lisateabe saamiseks vaata logisid.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Sisendi teisendamine kuueteistkümnendsüsteemiks nurjus lõimemandaadi salvestamisel võtmehoidlasse";
+"thread.store_in_keychain.error.message" = "Threadi volituste salvestamine võtmehoidlasse nurjus, viga: %@";
 "thread.store_in_keychain.error.title" = "Toiming nurjus";
 "thread.transter_to_apple.title" = "Siirda Apple'i võtmehoidlasse";
 "thread.transter_to_homeassistant.title" = "Siirda Home Assistantisse";

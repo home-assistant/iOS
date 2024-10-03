@@ -692,6 +692,7 @@
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Impossibile memorizzare le credenziali del thread nel portachiavi, controlla i log per ulteriori informazioni.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Impossibile convertire l'input in esadecimale durante la memorizzazione delle credenziali del thread nel portachiavi";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operazione fallita";
 "thread.transter_to_apple.title" = "Trasferisci ad Apple Keychain";
 "thread.transter_to_homeassistant.title" = "Trasferisci ad Home Assistant";

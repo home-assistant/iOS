@@ -372,7 +372,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
 Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
-"onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.learn_more" = "Mehr erfahren";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";
 "preview_output" = "Vorschau der Ausgabe";
@@ -688,10 +688,11 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "thread.management.title" = "Thread-Zugangsdaten";
 "thread.network_key.title" = "Netzwerkschlüssel";
 "thread.save_credential.fail.alert.message" = "Die Anmeldeinformationen für das Thread-Netzwerk konnten nicht gespeichert werden.";
-"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
-"thread.save_credential.fail.continue.button" = "Continue";
+"thread.save_credential.fail.alert.title" = "Fehler beim Speichern der Zugangsdaten für das Thread-Netzwerk, Fehler: %@";
+"thread.save_credential.fail.continue.button" = "Weiter";
 "thread.store_in_keychain.error.generic.body" = "Thread-Zugangsdaten konnten nicht im Schlüsselbund gespeichert werden, prüfe die Protokolle für weitere Informationen.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Beim Speichern der Thread-Zugangsdaten im Schlüsselbund konnte die Eingabe nicht in Hexadezimal konvertiert werden.";
+"thread.store_in_keychain.error.message" = "Fehler beim Speichern der Thread-Zugangsdaten im Schlüsselbund, Fehler: %@";
 "thread.store_in_keychain.error.title" = "Vorgang fehlgeschlagen";
 "thread.transter_to_apple.title" = "In den Apple-Schlüsselbund übertragen";
 "thread.transter_to_homeassistant.title" = "An Home Assistant übertragen";

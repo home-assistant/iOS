@@ -690,6 +690,7 @@
 "thread.save_credential.fail.continue.button" = "继续";
 "thread.store_in_keychain.error.generic.body" = "无法在钥匙串中存储线程凭据，检查日志可获取更多信息。";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "在钥匙串中存储线程凭据时无法将输入转换为十六进制";
+"thread.store_in_keychain.error.message" = "在钥匙串中存储 Thread 凭据失败，错误：%@";
 "thread.store_in_keychain.error.title" = "操作失败";
 "thread.transter_to_apple.title" = "转移至 Apple 钥匙串";
 "thread.transter_to_homeassistant.title" = "转移至 Home Assistant";

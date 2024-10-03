@@ -692,6 +692,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Kunne ikke gemme Thread-legitimationsoplysninger i nøglering. Tjek logfiler for flere oplysninger.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Kunne ikke konvertere input til hexadecimal under lagring af Thread-legitimationsoplysninger i nøglering";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Handlingen mislykkedes";
 "thread.transter_to_apple.title" = "Overførsel til Apple-nøglering";
 "thread.transter_to_homeassistant.title" = "Overfør til Home Assistant";

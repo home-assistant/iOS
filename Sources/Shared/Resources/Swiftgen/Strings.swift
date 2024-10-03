@@ -2375,6 +2375,10 @@ public enum L10n {
         }
         /// Operation failed
         public static var title: String { return L10n.tr("Localizable", "thread.store_in_keychain.error.title") }
+        public enum Generic {
+          /// Failed to store thread credential in keychain, check logs for more information.
+          public static var body: String { return L10n.tr("Localizable", "thread.store_in_keychain.error.generic.body") }
+        }
         public enum HexadecimalConversion {
           /// Failed to convert input to hexadecimal while storing thread credential in keychain
           public static var body: String { return L10n.tr("Localizable", "thread.store_in_keychain.error.hexadecimal_conversion.body") }

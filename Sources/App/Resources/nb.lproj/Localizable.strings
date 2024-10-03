@@ -692,6 +692,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Failed to store thread credential in keychain, check logs for more information.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Failed to convert input to hexadecimal while storing thread credential in keychain";
+"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
 "thread.store_in_keychain.error.title" = "Operation failed";
 "thread.transter_to_apple.title" = "Transfer to Apple Keychain";
 "thread.transter_to_homeassistant.title" = "Transfer to Home Assistant";
