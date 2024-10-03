@@ -9,12 +9,13 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.gauge.rawValue, "WidgetGauge")
         XCTAssertEqual(WidgetsKind.details.rawValue, "WidgetDetails")
         XCTAssertEqual(WidgetsKind.scripts.rawValue, "WidgetScripts")
+        XCTAssertEqual(WidgetsKind.sensors.rawValue, "sensors")
         XCTAssertEqual(WidgetsKind.controlScript.rawValue, "controlScript")
         XCTAssertEqual(WidgetsKind.controlScene.rawValue, "controlScene")
         XCTAssertEqual(WidgetsKind.controlAssist.rawValue, "controlAssist")
         XCTAssertEqual(WidgetsKind.controlOpenPage.rawValue, "controlOpenPage")
         XCTAssertEqual(WidgetsKind.controlLight.rawValue, "controlLight")
         XCTAssertEqual(WidgetsKind.controlSwitch.rawValue, "controlSwitch")
-        XCTAssertEqual(WidgetsKind.allCases.count, 12)
+        XCTAssertEqual(WidgetsKind.allCases.count, 13)
     }
 }

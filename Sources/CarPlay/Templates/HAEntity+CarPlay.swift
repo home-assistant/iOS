@@ -60,7 +60,7 @@ extension HAEntity {
             default:
                 break
             }
-        case .none:
+        case .none, .sensor:
             break
         }
         if let request {
@@ -97,6 +97,8 @@ extension HAEntity {
                 image = MaterialDesignIcons.scriptTextOutlineIcon
             case .switch:
                 image = getSwitchIcon()
+            case .sensor:
+                image = MaterialDesignIcons.thermometerIcon
             }
         }
 
