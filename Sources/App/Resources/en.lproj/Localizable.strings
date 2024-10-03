@@ -997,10 +997,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
-<<<<<<< HEAD
 "widgets.sensors.title" = "Sensors";
 "widgets.sensors.description" = "Display state of sensors";
 "yes_label" = "Yes";
-=======
-"yes_label" = "Yes";
->>>>>>> master
