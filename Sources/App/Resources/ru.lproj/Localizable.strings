@@ -648,7 +648,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging необходим для доставки уведомлений на телефон.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.title" = "Конфиденциальность";
-"settings_details.thread.delete_credential.confirmation.title" = "Are you sure you want to delete this credential from your Apple Keychain? This can't be reverted and should only be executed if you know what you're doing.";
+"settings_details.thread.delete_credential.confirmation.title" = "Вы уверены, что хотите удалить эти учетные данные из своей связки ключей Apple? Это невозможно отменить и следует выполнять только в том случае, если вы знаете, что делаете.";
 "settings_details.thread.title" = "Thread";
 "settings_details.updates.check_for_updates.include_betas" = "Включая бета-версии";
 "settings_details.updates.check_for_updates.title" = "Автоматическая проверка наличия обновлений";
@@ -688,11 +688,11 @@ Home Assistant - это бесплатное программное обеспе
 "thread.management.title" = "Учетные данные Thread";
 "thread.network_key.title" = "Ключ сети";
 "thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
-"thread.save_credential.fail.alert.title" = "Failed to save thread network credential, error: %@";
+"thread.save_credential.fail.alert.title" = "Не удалось сохранить учетные данные сети thread, ошибка: %@";
 "thread.save_credential.fail.continue.button" = "Continue";
 "thread.store_in_keychain.error.generic.body" = "Не удалось сохранить учетные данные thread в связке ключей, проверьте журналы для получения дополнительной информации.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Не удалось преобразовать вводимые данные в шестнадцатеричный формат при сохранении учетных данных thread в связке ключей";
-"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
+"thread.store_in_keychain.error.message" = "Не удалось сохранить учетные данные thread в связке ключей, ошибка: %@";
 "thread.store_in_keychain.error.title" = "Операция завершилась неудачей";
 "thread.transter_to_apple.title" = "Перенос в связку ключей Apple";
 "thread.transter_to_homeassistant.title" = "Перенос в Home Assistant";
