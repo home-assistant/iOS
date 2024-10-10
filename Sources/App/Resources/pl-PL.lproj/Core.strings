@@ -4,7 +4,7 @@
 "common::state::disabled" = "wyłączono";
 "common::state::disconnected" = "offline";
 "common::state::enabled" = "włączono";
-"common::state::home" = "w domu";
+"common::state::home" = "W domu";
 "common::state::idle" = "brak aktywności";
 "common::state::locked" = "zamknięto";
 "common::state::no" = "nie";
@@ -34,7 +34,7 @@
 "component::binary_sensor::entity_component::opening::state::off" = "zamknięto";
 "component::binary_sensor::entity_component::opening::state::on" = "otwarto";
 "component::binary_sensor::entity_component::presence::state::off" = "poza domem";
-"component::binary_sensor::entity_component::presence::state::on" = "w domu";
+"component::binary_sensor::entity_component::presence::state::on" = "W domu";
 "component::binary_sensor::entity_component::window::state::off" = "zamknięto";
 "component::binary_sensor::entity_component::window::state::on" = "otwarto";
 "component::button::title" = "Przycisk";
@@ -50,7 +50,7 @@
 "component::climate::entity_component::_::state_attributes::fan_mode::state::on" = "włączono";
 "component::climate::entity_component::_::state_attributes::hvac_action::state::idle" = "brak aktywności";
 "component::climate::entity_component::_::state_attributes::hvac_action::state::off" = "wyłączono";
-"component::climate::entity_component::_::state_attributes::preset_mode::state::home" = "w domu";
+"component::climate::entity_component::_::state_attributes::preset_mode::state::home" = "W domu";
 "component::climate::entity_component::_::state_attributes::swing_mode::state::off" = "wyłączono";
 "component::climate::entity_component::_::state_attributes::swing_mode::state::on" = "włączono";
 "component::counter::entity_component::_::state_attributes::editable::state::false" = "nie";
@@ -61,7 +61,7 @@
 "component::deluge::entity::sensor::status::state::idle" = "brak aktywności";
 "component::demo::entity::climate::ubercool::state_attributes::swing_mode::state::off" = "wyłączono";
 "component::demo::entity::sensor::thermostat_mode::state::away" = "poza domem";
-"component::device_tracker::entity_component::_::state::home" = "w domu";
+"component::device_tracker::entity_component::_::state::home" = "W domu";
 "component::device_tracker::entity_component::_::state::not_home" = "poza domem";
 "component::ecoforest::entity::sensor::status::state::off" = "wyłączono";
 "component::ecoforest::entity::sensor::status::state::on" = "włączono";
@@ -74,7 +74,7 @@
 "component::gardena_bluetooth::entity::switch::state::name" = "otwarto";
 "component::google_mail::services::set_vacation::fields::enabled::name" = "włączono";
 "component::group::entity_component::_::state::closed" = "zamknięto";
-"component::group::entity_component::_::state::home" = "w domu";
+"component::group::entity_component::_::state::home" = "W domu";
 "component::group::entity_component::_::state::locked" = "zamknięto";
 "component::group::entity_component::_::state::not_home" = "poza domem";
 "component::group::entity_component::_::state::off" = "wyłączono";
@@ -83,7 +83,7 @@
 "component::group::entity_component::_::state::unlocked" = "otwarto";
 "component::hdmi_cec::services::standby::name" = "tryb czuwania";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "poza domem";
-"component::homekit_controller::entity::select::ecobee_mode::state::home" = "w domu";
+"component::homekit_controller::entity::select::ecobee_mode::state::home" = "W domu";
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "wyłączono";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "online";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "offline";
@@ -93,7 +93,7 @@
 "component::humidifier::entity_component::_::state::on" = "włączono";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "brak aktywności";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "wyłączono";
-"component::humidifier::entity_component::_::state_attributes::mode::state::home" = "w domu";
+"component::humidifier::entity_component::_::state_attributes::mode::state::home" = "W domu";
 "component::improv_ble::config::abort::already_configured" = "Urządzenie jest już skonfigurowane";
 "component::improv_ble::config::abort::already_provisioned" = "The device is already connected to Wi-Fi. If you want to connect it to another network, try factory resetting it first.";
 "component::improv_ble::config::abort::cannot_connect" = "Nie można nawiązać połączenia";
@@ -168,9 +168,9 @@ Please visit {url} to finish setup.";
 "component::overkiz::entity::select::open_closed_pedestrian::state::open" = "otwarto";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::closed" = "zamknięto";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::open" = "otwarto";
-"component::person::entity_component::_::state::home" = "w domu";
+"component::person::entity_component::_::state::home" = "W domu";
 "component::person::entity_component::_::state::not_home" = "poza domem";
-"component::plugwise::entity::climate::plugwise::state_attributes::preset_mode::state::home" = "w domu";
+"component::plugwise::entity::climate::plugwise::state_attributes::preset_mode::state::home" = "W domu";
 "component::plugwise::entity::select::dhw_mode::state::off" = "wyłączono";
 "component::plugwise::entity::select::regulation_mode::state::off" = "wyłączono";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "brak aktywności";
