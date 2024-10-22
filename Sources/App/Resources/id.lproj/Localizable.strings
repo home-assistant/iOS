@@ -692,7 +692,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "thread.save_credential.fail.continue.button" = "Lanjutkan";
 "thread.store_in_keychain.error.generic.body" = "Gagal menyimpan kredensial thread di rantai kunci, periksa log untuk informasi lebih lanjut.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Gagal mengonversi input ke heksadesimal saat menyimpan kredensial thread di rantai kunci";
-"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
+"thread.store_in_keychain.error.message" = "Gagal menyimpan kredensial utas di rantai kunci, kesalahan: %@";
 "thread.store_in_keychain.error.title" = "Operasi gagal";
 "thread.transter_to_apple.title" = "Transfer ke Rantai Kunci Apple";
 "thread.transter_to_homeassistant.title" = "Transfer ke Home Assistant";
