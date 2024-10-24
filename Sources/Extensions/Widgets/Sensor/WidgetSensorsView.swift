@@ -13,7 +13,10 @@ struct WidgetSensorsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if entry.sensorData.count != WidgetSensorsView.maxItems {
-                resizedLogoView()
+                HStack {
+                    resizedLogoView()
+                    Spacer()
+                }
                 Spacer()
             }
 
@@ -44,11 +47,8 @@ struct WidgetSensorsView: View {
     }
 
     func resizedLogoView() -> some View {
-        HStack {
-            Image(uiImage: Asset.SharedAssets.logo.image)
-                .resizable()
-                .frame(width: 30, height: 30)
-            Spacer()
-        }
+        Image(uiImage: Asset.SharedAssets.logo.image)
+            .resizable()
+            .frame(width: 30, height: 30)
     }
 }
