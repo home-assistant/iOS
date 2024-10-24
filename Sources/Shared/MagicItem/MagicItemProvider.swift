@@ -68,6 +68,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                     iconColor: actionItem.IconColor,
                     textColor: actionItem.TextColor,
                     backgroundColor: actionItem.BackgroundColor,
+                    // Legacy iOS Actions always run without confirmation as it previously did
                     requiresConfirmation: false
                 )
             )
