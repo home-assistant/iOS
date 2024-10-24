@@ -11,6 +11,7 @@ public enum Domain: String, CaseIterable {
     case scene
     case script
     case `switch`
+    case sensor
     // TODO: Map more domains
 
     public enum State: String {
@@ -53,6 +54,8 @@ public enum Domain: String, CaseIterable {
             states = []
         case .switch:
             states = [.on, .off]
+        case .sensor:
+            states = []
         }
 
         states.append(contentsOf: [.unavailable, .unknown])
@@ -80,6 +83,8 @@ public enum Domain: String, CaseIterable {
             image = MaterialDesignIcons.scriptTextOutlineIcon
         case .switch:
             image = MaterialDesignIcons.lightSwitchIcon
+        case .sensor:
+            image = MaterialDesignIcons.thermometerIcon
         }
         return image
     }
