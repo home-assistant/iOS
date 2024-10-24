@@ -692,7 +692,7 @@
 "thread.save_credential.fail.continue.button" = "Συνέχεια";
 "thread.store_in_keychain.error.generic.body" = "Απέτυχε η αποθήκευση του διαπιστευτηρίου νήματος στην κλειδοθήκη, ελέγξτε τα αρχεία καταγραφής για περισσότερες πληροφορίες.";
 "thread.store_in_keychain.error.hexadecimal_conversion.body" = "Απέτυχε η μετατροπή της εισόδου σε δεκαεξαδικό σύστημα κατά την αποθήκευση των διαπιστευτηρίων νήματος στην κλειδοθήκη";
-"thread.store_in_keychain.error.message" = "Failed to store thread credential in keychain, error: %@";
+"thread.store_in_keychain.error.message" = "Αποτυχία αποθήκευσης διαπιστευτηρίων νήματος στην κλειδοθήκη, σφάλμα: %@";
 "thread.store_in_keychain.error.title" = "Η λειτουργία απέτυχε";
 "thread.transter_to_apple.title" = "Μεταφορά στην Κλειδοθήκη Apple";
 "thread.transter_to_homeassistant.title" = "Μεταφορά στο Home Assistant";
