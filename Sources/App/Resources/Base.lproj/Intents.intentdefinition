@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>23F79</string>
+	<string>24B5070a</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>15F31d</string>
+	<string>16A242d</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>15.4</string>
+	<string>16.0</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -1700,7 +1700,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Open Page</string>
+			<string>Open Page (Legacy)</string>
 			<key>INIntentTitleID</key>
 			<string>iMvUhs</string>
 			<key>INIntentType</key>
@@ -2432,7 +2432,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Assist In App</string>
+			<string>Assist In App (Legacy)</string>
 			<key>INIntentTitleID</key>
 			<string>x7FAm9</string>
 			<key>INIntentType</key>

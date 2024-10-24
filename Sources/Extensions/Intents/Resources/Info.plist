@@ -44,11 +44,11 @@
 				<string>OpenPageIntent</string>
 				<string>PerformActionIntent</string>
 				<string>RenderTemplateIntent</string>
+				<string>ScriptAppIntent</string>
 				<string>SendLocationIntent</string>
 				<string>UpdateSensorsIntent</string>
 				<string>WidgetActionsIntent</string>
 				<string>WidgetOpenPageIntent</string>
-				<string>ScriptAppIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

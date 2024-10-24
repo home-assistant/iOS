@@ -1,7 +1,7 @@
 import Foundation
 import WidgetKit
 
-#if os(iOS)
+#if os(iOS) || os(macOS)
 public enum DataWidgetsUpdater {
     public static func update() {
         if #available(iOS 18.0, *) {
