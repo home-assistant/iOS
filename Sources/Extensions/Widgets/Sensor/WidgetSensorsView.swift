@@ -13,7 +13,7 @@ struct WidgetSensorsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if entry.sensorData.count != WidgetSensorsView.maxItems {
-                Image(uiImage: Self.scaleLogo(logo: Asset.SharedAssets.logo.image, size: 30))
+                resizedLogoView()
                 Spacer()
             }
 
@@ -43,11 +43,12 @@ struct WidgetSensorsView: View {
         }
     }
 
-    private static func scaleLogo(logo: UIImage, size: CGFloat) -> UIImage {
-        let canvas = CGSize(width: size, height: size)
-        let format = logo.imageRendererFormat
-        return UIGraphicsImageRenderer(size: canvas, format: format).image {
-            _ in logo.draw(in: CGRect(origin: .zero, size: canvas))
+    func resizedLogoView() -> some View {
+        HStack {
+            Image(uiImage: Asset.SharedAssets.logo.image)
+                .resizable()
+                .frame(width: 30, height: 30)
+            Spacer()
         }
     }
 }

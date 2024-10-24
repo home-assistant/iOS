@@ -4,7 +4,7 @@ import Foundation
 import Shared
 
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
-struct WidgetSensorsAppIntent: AppIntent, WidgetConfigurationIntent {
+struct WidgetSensorsAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.sensors.title", defaultValue: "Sensors")
     static let description = IntentDescription(
         .init("widgets.sensors.title", defaultValue: "Show sensor state.")

@@ -119,9 +119,7 @@ private struct HandlerUpdateWidgets: NotificationCommandHandler {
         Current.Log.verbose("Reloading widgets triggered by notification command")
         return Promise<Void> { seal in
             DispatchQueue.main.async {
-                #if os(iOS)
                 DataWidgetsUpdater.update()
-                #endif
                 seal.fulfill(())
             }
         }
