@@ -3424,6 +3424,12 @@ public enum L10n {
       /// Scripts
       public static var title: String { return L10n.tr("Localizable", "widgets.scripts.title") }
     }
+    public enum Sensors {
+      /// Display state of sensors
+      public static var description: String { return L10n.tr("Localizable", "widgets.sensors.description") }
+      /// Sensors
+      public static var title: String { return L10n.tr("Localizable", "widgets.sensors.title") }
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
