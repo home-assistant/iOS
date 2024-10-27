@@ -70,15 +70,14 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let sensorsGroupedByServer = Dictionary(grouping: configuration.sensors ?? [], by: { $0.serverId })
 
         var sensorValues: [WidgetSensorsEntry.SensorData] = []
-        
+
         for sensor in configuration.sensors ?? [] {
             guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == sensor.serverId }) else {
                 throw WidgetSensorsDataError.noServers
             }
-            
+
             let sensorData = try await fetchSensorData(for: sensor, server: server)
             sensorValues.append(sensorData)
-
         }
 
         return WidgetSensorsEntry(sensorData: sensorValues)

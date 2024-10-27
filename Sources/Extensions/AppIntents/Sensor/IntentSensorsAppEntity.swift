@@ -40,9 +40,9 @@ struct IntentDetailsTableAppEntityQuery: EntityQuery {
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSensorsAppEntity> {
         let sensorsPerServer = getSensorEntities()
-        
+
         return .init(sections: sensorsPerServer.map { (key: Server, value: [IntentSensorsAppEntity]) in
-                .init(.init(stringLiteral: key.info.name), items: value)
+            .init(.init(stringLiteral: key.info.name), items: value)
         })
     }
 
