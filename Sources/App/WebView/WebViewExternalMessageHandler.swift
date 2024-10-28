@@ -129,7 +129,14 @@ final class WebViewExternalMessageHandler {
                     activeOperationalDataset: activeOperationalDataset
                 )
             case .assistShow:
-                showAssist(server: webViewController.server, pipeline: "", animated: true)
+                let startListening = incomingMessage.Payload?["start_listening"] as? Bool
+                let pipelineId = incomingMessage.Payload?["pipeline_id"] as? String
+                showAssist(
+                    server: webViewController.server,
+                    pipeline: pipelineId ?? "",
+                    autoStartRecording: startListening ?? false,
+                    animated: true
+                )
             case .scanForImprov:
                 scanImprov()
             }
