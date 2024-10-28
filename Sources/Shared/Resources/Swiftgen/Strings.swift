@@ -1369,6 +1369,19 @@ public enum L10n {
     }
   }
 
+  public enum Permission {
+    public enum Screen {
+      public enum Bluetooth {
+        /// Configure Improv devices
+        public static var reason1: String { return L10n.tr("Localizable", "permission.screen.bluetooth.reason1") }
+        /// Allow auto discover devices using your device's bluetooth.
+        public static var subtitle: String { return L10n.tr("Localizable", "permission.screen.bluetooth.subtitle") }
+        /// Bluetooth
+        public static var title: String { return L10n.tr("Localizable", "permission.screen.bluetooth.title") }
+      }
+    }
+  }
+
   public enum Sensors {
     public enum Active {
       public enum Setting {

@@ -357,8 +357,23 @@ final class WebViewExternalMessageHandler {
     }
 
     func scanImprov() {
-        improvManager.delegate = self
-        improvManager.scan()
+        switch Current.bluetoothPermissionStatus {
+        case .denied, .restricted:
+            break
+        case .allowedAlways:
+            improvManager.delegate = self
+            improvManager.scan()
+        default:
+            guard (BluetoothPermissionScreenDisplayedCount().value ?? 0) < 2 else {
+                Current.Log
+                    .info(
+                        "Bluetooth permission screen already displayed twice and no decision was made by the user, permission won't be asked again."
+                    )
+                return
+            }
+            let bluetoothPermissionView = UIHostingController(rootView: BluetoothPermissionView())
+            webViewController?.presentOverlayController(controller: bluetoothPermissionView, animated: true)
+        }
     }
 
     func presentImprov() {

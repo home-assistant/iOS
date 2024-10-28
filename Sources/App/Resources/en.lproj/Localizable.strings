@@ -999,4 +999,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.title" = "Scripts";
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.title" = "Sensors";
+"permission.screen.bluetooth.title" = "Bluetooth";
+"permission.screen.bluetooth.subtitle" = "Allow auto discover devices using your device's bluetooth.";
+"permission.screen.bluetooth.reason1" = "Configure Improv devices";
 "yes_label" = "Yes";
