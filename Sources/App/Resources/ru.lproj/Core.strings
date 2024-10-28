@@ -6,7 +6,7 @@
 "common::state::enabled" = "Включено";
 "common::state::home" = "Дома";
 "common::state::idle" = "Бездействие";
-"common::state::locked" = "Закрыто";
+"common::state::locked" = "Заблокировано";
 "common::state::no" = "Нет";
 "common::state::not_home" = "Не дома";
 "common::state::off" = "Выключено";
@@ -29,7 +29,7 @@
 "component::binary_sensor::entity_component::door::state::on" = "Открыто";
 "component::binary_sensor::entity_component::garage_door::state::off" = "Закрыто";
 "component::binary_sensor::entity_component::garage_door::state::on" = "Открыто";
-"component::binary_sensor::entity_component::lock::state::off" = "Закрыто";
+"component::binary_sensor::entity_component::lock::state::off" = "Заблокировано";
 "component::binary_sensor::entity_component::lock::state::on" = "Открыто";
 "component::binary_sensor::entity_component::opening::state::off" = "Закрыто";
 "component::binary_sensor::entity_component::opening::state::on" = "Открыто";
@@ -75,7 +75,7 @@
 "component::google_mail::services::set_vacation::fields::enabled::name" = "Включено";
 "component::group::entity_component::_::state::closed" = "Закрыто";
 "component::group::entity_component::_::state::home" = "Дома";
-"component::group::entity_component::_::state::locked" = "Закрыто";
+"component::group::entity_component::_::state::locked" = "Заблокировано";
 "component::group::entity_component::_::state::not_home" = "Не дома";
 "component::group::entity_component::_::state::off" = "Выключено";
 "component::group::entity_component::_::state::on" = "Включено";
@@ -144,7 +144,7 @@
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Выключено";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "Пауза";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Включено";
-"component::lock::entity_component::_::state::locked" = "Закрыто";
+"component::lock::entity_component::_::state::locked" = "Заблокировано";
 "component::lock::entity_component::_::state::unlocked" = "Открыто";
 "component::lock::title" = "Замок";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "Выключено";

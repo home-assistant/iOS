@@ -997,4 +997,6 @@
 "widgets.scripts.description" = "Εκτέλεση σεναρίων";
 "widgets.scripts.not_configured" = "Δεν έχουν διαμορφωθεί σενάρια";
 "widgets.scripts.title" = "Σενάρια";
+"widgets.sensors.description" = "Εμφάνιση κατάστασης αισθητήρων";
+"widgets.sensors.title" = "Αισθητήρες";
 "yes_label" = "Ναι";

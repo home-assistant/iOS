@@ -997,4 +997,6 @@
 "widgets.scripts.description" = "运行脚本";
 "widgets.scripts.not_configured" = "未配置脚本";
 "widgets.scripts.title" = "脚本";
+"widgets.sensors.description" = "显示传感器状态";
+"widgets.sensors.title" = "传感器";
 "yes_label" = "是";

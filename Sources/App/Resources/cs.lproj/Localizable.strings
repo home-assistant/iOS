@@ -997,4 +997,6 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.scripts.description" = "Spustit skripty";
 "widgets.scripts.not_configured" = "Nebyly nastaveny žádné skripty";
 "widgets.scripts.title" = "Skripty";
+"widgets.sensors.description" = "Zobrazení stavu senzorů.";
+"widgets.sensors.title" = "Senzory";
 "yes_label" = "Ano";

@@ -997,4 +997,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.scripts.description" = "Skriptide käivitamine";
 "widgets.scripts.not_configured" = "Skripte pole seadistatud";
 "widgets.scripts.title" = "Skriptid";
+"widgets.sensors.description" = "Andurite oleku kuvamine";
+"widgets.sensors.title" = "Andurid";
 "yes_label" = "Jah";

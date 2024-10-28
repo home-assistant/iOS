@@ -997,4 +997,6 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";

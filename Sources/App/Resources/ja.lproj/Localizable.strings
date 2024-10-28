@@ -997,4 +997,6 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.scripts.description" = "スクリプトの実行";
 "widgets.scripts.not_configured" = "スクリプトの設定なし";
 "widgets.scripts.title" = "スクリプト";
+"widgets.sensors.description" = "センサーの状態を表示";
+"widgets.sensors.title" = "センサー";
 "yes_label" = "はい";
