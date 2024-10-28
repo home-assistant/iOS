@@ -38,8 +38,12 @@ struct IntentDetailsTableAppEntityQuery: EntityQuery {
         getSensorEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
     }
 
-    func suggestedEntities() async throws -> [IntentSensorsAppEntity] {
-        getSensorEntities().flatMap(\.value)
+    func suggestedEntities() async throws -> IntentItemCollection<IntentSensorsAppEntity> {
+        let sensorsPerServer = getSensorEntities()
+
+        return .init(sections: sensorsPerServer.map { (key: Server, value: [IntentSensorsAppEntity]) in
+            .init(.init(stringLiteral: key.info.name), items: value)
+        })
     }
 
     func defaultResult() async -> IntentSensorsAppEntity? {
