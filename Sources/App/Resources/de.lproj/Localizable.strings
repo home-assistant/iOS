@@ -999,4 +999,6 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.scripts.description" = "Skripte ausführen";
 "widgets.scripts.not_configured" = "Keine Skripte konfiguriert";
 "widgets.scripts.title" = "Skripte";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "Ja";

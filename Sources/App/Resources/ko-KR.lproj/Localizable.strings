@@ -997,4 +997,6 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.scripts.description" = "스크립트 실행";
 "widgets.scripts.not_configured" = "정의된 스크립트가 없습니다.";
 "widgets.scripts.title" = "스크립트";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "네";

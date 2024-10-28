@@ -997,4 +997,6 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.scripts.description" = "Exécuter les scripts";
 "widgets.scripts.not_configured" = "Aucun script configuré";
 "widgets.scripts.title" = "Scripts";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "Oui";

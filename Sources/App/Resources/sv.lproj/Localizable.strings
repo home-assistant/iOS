@@ -998,4 +998,6 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.scripts.description" = "Kör skript";
 "widgets.scripts.not_configured" = "Inga skript konfigurerade";
 "widgets.scripts.title" = "Skripts";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "Ja";

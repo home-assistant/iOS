@@ -997,4 +997,6 @@
 "widgets.scripts.description" = "Executar scripts";
 "widgets.scripts.not_configured" = "Nenhum script configurado";
 "widgets.scripts.title" = "Scripts";
+"widgets.sensors.description" = "Exibir estado dos sensores";
+"widgets.sensors.title" = "Sensores";
 "yes_label" = "Sim";

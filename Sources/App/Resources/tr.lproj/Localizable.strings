@@ -997,4 +997,6 @@
 "widgets.scripts.description" = "Senaryoları Çalıştır";
 "widgets.scripts.not_configured" = "Yapılandırılmış Senaryo Yok";
 "widgets.scripts.title" = "Senaryolar";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "Evet";

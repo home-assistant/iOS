@@ -997,4 +997,6 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "widgets.scripts.description" = "Run Scripts";
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "Ja";

@@ -997,4 +997,6 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.scripts.description" = "Kør Scripts";
 "widgets.scripts.not_configured" = "Ingen Scripts Konfigureret";
 "widgets.scripts.title" = "Scripts";
+"widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.title" = "Sensors";
 "yes_label" = "Ja";

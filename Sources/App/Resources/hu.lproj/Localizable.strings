@@ -997,4 +997,6 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.scripts.description" = "Szkriptek futtatása";
 "widgets.scripts.not_configured" = "Nincsenek beállított szkriptek";
 "widgets.scripts.title" = "Szkriptek";
+"widgets.sensors.description" = "Érzékelők állapotának megjelenítése";
+"widgets.sensors.title" = "Érzékelők";
 "yes_label" = "Igen";

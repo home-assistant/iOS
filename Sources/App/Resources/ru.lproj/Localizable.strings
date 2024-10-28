@@ -58,7 +58,7 @@
 "app_intents.assist.refresh_warning.title" = "Не можете найти свой Assist pipeline? Откройте Assist в приложении, чтобы обновить список pipeline.";
 "app_intents.controls.assist.parameter.with_voice" = "С помощью голоса";
 "app_intents.controls.assist.title" = "Assist в приложении";
-"app_intents.haptic_confirmation.title" = "Haptic confirmation";
+"app_intents.haptic_confirmation.title" = "Тактильное подтверждение";
 "app_intents.lights.light.target" = "Целевое состояние";
 "app_intents.lights.light.title" = "Свет";
 "app_intents.notify_when_run.description" = "Показывать уведомление после выполнения";
@@ -71,16 +71,16 @@
 "app_intents.scenes.failure_message.content" = "Не удалось выполнить сцену \"%@\", пожалуйста, проверьте свои логи.";
 "app_intents.scenes.icon.title" = "Иконка";
 "app_intents.scenes.parameter.scene.title" = "Сцена";
-"app_intents.scenes.requires_confirmation_before_run.description" = "Requires manual confirmation before running the scene.";
-"app_intents.scenes.requires_confirmation_before_run.title" = "Confirm before run";
+"app_intents.scenes.requires_confirmation_before_run.description" = "Требуется ручное подтверждение перед запуском сцены.";
+"app_intents.scenes.requires_confirmation_before_run.title" = "Подтверждение перед запуском";
 "app_intents.scenes.scene.title" = "Сцена";
 "app_intents.scenes.success_message.content" = "Сцена \"%@\" выполнена.";
 "app_intents.scenes.title" = "Запустить сцену";
 "app_intents.scripts.failure_message.content" = "Скрипт \"%@\" не удалось выполнить, пожалуйста, проверьте свои логи.";
 "app_intents.scripts.haptic_confirmation.title" = "Тактильное подтверждение";
 "app_intents.scripts.icon.title" = "Иконка";
-"app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
-"app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
+"app_intents.scripts.requires_confirmation_before_run.description" = "Требуется ручное подтверждение перед запуском скрипта.";
+"app_intents.scripts.requires_confirmation_before_run.title" = "Подтверждение перед запуском";
 "app_intents.scripts.script.title" = "Запустить скрипт";
 "app_intents.scripts.show_confirmation_dialog.description" = "Показывает уведомление о подтверждении после выполнения";
 "app_intents.scripts.show_confirmation_dialog.title" = "Уведомление о подтверждении";
@@ -997,4 +997,6 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.scripts.description" = "Запуск скриптов";
 "widgets.scripts.not_configured" = "Никакие скрипты не настроены";
 "widgets.scripts.title" = "Скрипты";
+"widgets.sensors.description" = "Отображение состояния сенсоров";
+"widgets.sensors.title" = "Сенсоры";
 "yes_label" = "Да";
