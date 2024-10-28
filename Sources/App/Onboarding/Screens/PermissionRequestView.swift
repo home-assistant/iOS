@@ -14,43 +14,29 @@ struct PermissionRequestView: View {
     let title: String
     let subtitle: String
     let reasons: [Reason]
-    let showCloseButton: Bool
+    let showSkipButton: Bool
     let continueAction: () -> Void
     let dismissAction: (() -> Void)?
 
     @State private var accentColor: UIColor = Asset.Colors.haPrimary.color
     var body: some View {
         VStack {
-            ZStack(alignment: .topTrailing) {
-                ScrollView {
-                    VStack(spacing: Spaces.two) {
-                        Image(uiImage: icon.image(
-                            ofSize: .init(width: 100, height: 100), color: accentColor
-                        ))
-                        Text(title)
-                            .font(.title.bold())
-                            .multilineTextAlignment(.center)
-                        Text(subtitle)
-                            .font(.body)
-                            .foregroundStyle(Color(uiColor: .secondaryLabel))
-                            .multilineTextAlignment(.center)
-                        reasonsList
-                    }
-                    .padding()
-                    .padding(.top, Spaces.four)
+            ScrollView {
+                VStack(spacing: Spaces.two) {
+                    Image(uiImage: icon.image(
+                        ofSize: .init(width: 100, height: 100), color: accentColor
+                    ))
+                    Text(title)
+                        .font(.title.bold())
+                        .multilineTextAlignment(.center)
+                    Text(subtitle)
+                        .font(.body)
+                        .foregroundStyle(Color(uiColor: .secondaryLabel))
+                        .multilineTextAlignment(.center)
+                    reasonsList
                 }
-                if showCloseButton {
-                    Button {
-                        dismissAction?()
-                        dismiss()
-                    } label: {
-                        Image(systemSymbol: .xmarkCircleFill)
-                            .tint(Color(uiColor: .tertiaryLabel))
-                            .font(.title)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding([.trailing, .top])
-                }
+                .padding()
+                .padding(.top, Spaces.four)
             }
             VStack(spacing: Spaces.two) {
                 Button {
@@ -59,12 +45,15 @@ struct PermissionRequestView: View {
                     Text(L10n.continueLabel)
                 }
                 .buttonStyle(HAButtonStyle())
-                Button {
-                    /* no-op */
-                } label: {
-                    Text(L10n.Onboarding.Permissions.changeLaterNote)
+                if showSkipButton {
+                    Button {
+                        dismissAction?()
+                        dismiss()
+                    } label: {
+                        Text(L10n.Permission.Screen.Bluetooth.secondaryButton)
+                    }
+                    .buttonStyle(HASecondaryButtonStyle())
                 }
-                .buttonStyle(HALinkButtonStyle())
             }
             .padding()
         }
@@ -102,7 +91,7 @@ struct PermissionRequestView: View {
                 text: "Configure Improv devices"
             ),
         ],
-        showCloseButton: true
+        showSkipButton: true
     ) {} dismissAction: {}
 }
 
@@ -114,6 +103,16 @@ struct HAButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .frame(height: 55)
             .background(Color.asset(Asset.Colors.haPrimary))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+struct HASecondaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.callout.bold())
+            .foregroundColor(Color.asset(Asset.Colors.haPrimary))
+            .frame(maxWidth: .infinity)
+            .frame(height: 55)
             .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

@@ -18,7 +18,7 @@ struct BluetoothPermissionView: View {
                     text: L10n.Permission.Screen.Bluetooth.reason1
                 ),
             ],
-            showCloseButton: true,
+            showSkipButton: true,
             continueAction: {
                 // Request BT permission
                 viewModel.requestAuthorization()
