@@ -589,7 +589,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.location.zones.radius.title" = "Радиус";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Сбрасывает значок на 0 каждый раз, когда вы запускаете приложение.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Автоматически";
-"settings_details.notifications.badge_section.button.title" = "Сбросить счётчик на значке";
+"settings_details.notifications.badge_section.button.title" = "Сбросить значок";
 "settings_details.notifications.categories.deprecated_note" = "Категории больше не требуются для уведомлений, требующих действий, и будут удалены в следующем обновлении.";
 "settings_details.notifications.categories.header" = "Категории";
 "settings_details.notifications.categories_synced.empty" = "Нет синхронизированных категорий";
