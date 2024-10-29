@@ -44,7 +44,7 @@ struct PermissionRequestView: View {
                 } label: {
                     Text(L10n.continueLabel)
                 }
-                .buttonStyle(HAButtonStyle())
+                .buttonStyle(.primaryButton)
                 if showSkipButton {
                     Button {
                         dismissAction?()
@@ -52,7 +52,14 @@ struct PermissionRequestView: View {
                     } label: {
                         Text(L10n.Permission.Screen.Bluetooth.secondaryButton)
                     }
-                    .buttonStyle(HASecondaryButtonStyle())
+                    .buttonStyle(.secondaryButton)
+                } else {
+                    Button {
+                        /* no-op */
+                    } label: {
+                        Text(L10n.Onboarding.Permissions.changeLaterNote)
+                    }
+                    .buttonStyle(.linkButton)
                 }
             }
             .padding()
@@ -93,35 +100,4 @@ struct PermissionRequestView: View {
         ],
         showSkipButton: true
     ) {} dismissAction: {}
-}
-
-struct HAButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.callout.bold())
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .frame(height: 55)
-            .background(Color.asset(Asset.Colors.haPrimary))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-}
-struct HASecondaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.callout.bold())
-            .foregroundColor(Color.asset(Asset.Colors.haPrimary))
-            .frame(maxWidth: .infinity)
-            .frame(height: 55)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-}
-
-struct HALinkButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.footnote)
-            .foregroundColor(Color.asset(Asset.Colors.haPrimary))
-            .frame(maxWidth: .infinity)
-    }
 }

@@ -1376,7 +1376,7 @@ public enum L10n {
         public static var reason1: String { return L10n.tr("Localizable", "permission.screen.bluetooth.reason1") }
         /// Skip
         public static var secondaryButton: String { return L10n.tr("Localizable", "permission.screen.bluetooth.secondary_button") }
-        /// Allow auto discover devices using your device's bluetooth.
+        /// Allow discover new devices using your device's bluetooth.
         public static var subtitle: String { return L10n.tr("Localizable", "permission.screen.bluetooth.subtitle") }
         /// Bluetooth
         public static var title: String { return L10n.tr("Localizable", "permission.screen.bluetooth.title") }
