@@ -1,3 +1,4 @@
+import CoreBluetooth
 import CoreLocation
 import CoreMotion
 import Foundation
@@ -402,4 +403,8 @@ public class AppEnvironment {
     public var focusStatus = FocusStatusWrapper()
 
     public var diskCache: DiskCache = DiskCacheImpl()
+
+    public var bluetoothPermissionStatus: CBManagerAuthorization {
+        CBCentralManager.authorization
+    }
 }

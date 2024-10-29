@@ -1369,6 +1369,19 @@ public enum L10n {
     }
   }
 
+  public enum Permission {
+    public enum Screen {
+      public enum Bluetooth {
+        /// Skip
+        public static var secondaryButton: String { return L10n.tr("Localizable", "permission.screen.bluetooth.secondary_button") }
+        /// The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.
+        public static var subtitle: String { return L10n.tr("Localizable", "permission.screen.bluetooth.subtitle") }
+        /// Search devices
+        public static var title: String { return L10n.tr("Localizable", "permission.screen.bluetooth.title") }
+      }
+    }
+  }
+
   public enum Sensors {
     public enum Active {
       public enum Setting {
