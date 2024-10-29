@@ -3,6 +3,7 @@ import Foundation
 import Improv_iOS
 import PromiseKit
 import Shared
+import SwiftMessages
 import SwiftUI
 
 final class WebViewExternalMessageHandler {
@@ -129,7 +130,14 @@ final class WebViewExternalMessageHandler {
                     activeOperationalDataset: activeOperationalDataset
                 )
             case .assistShow:
-                showAssist(server: webViewController.server, pipeline: "", animated: true)
+                let startListening = incomingMessage.Payload?["start_listening"] as? Bool
+                let pipelineId = incomingMessage.Payload?["pipeline_id"] as? String
+                showAssist(
+                    server: webViewController.server,
+                    pipeline: pipelineId ?? "",
+                    autoStartRecording: startListening ?? false,
+                    animated: true
+                )
             case .scanForImprov:
                 scanImprov()
             }
@@ -400,21 +408,49 @@ final class WebViewExternalMessageHandler {
             improvManager.stopScan()
         }
     }
+
+    @MainActor
+    private func showImprovDeviceSetupNotification() {
+        var config = SwiftMessages.Config()
+        config.presentationContext = .automatic
+        config.duration = .seconds(seconds: 5)
+        config.presentationStyle = .bottom
+        config.dimMode = .gray(interactive: true)
+        config.dimModeAccessibilityLabel = L10n.cancelLabel
+        config.haptic = .warning
+
+        let view = MessageView.viewFromNib(layout: .messageView)
+        view.configureTheme(.info)
+        view.configureContent(
+            title: L10n.Improv.Toast.title,
+            body: "",
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: nil,
+            buttonTitle: L10n.continueLabel,
+            buttonTapHandler: { [weak self] _ in
+                SwiftMessages.hide()
+                self?.presentImprov()
+            }
+        )
+        view.titleLabel?.numberOfLines = 0
+        view.bodyLabel?.numberOfLines = 0
+
+        SwiftMessages.show(config: config, view: view)
+    }
 }
 
-extension WebViewExternalMessageHandler: ImprovManagerDelegate {
+extension WebViewExternalMessageHandler: @preconcurrency ImprovManagerDelegate {
     func didUpdateBluetoohState(_ state: CBManagerState) {
         if state == .poweredOn {
             improvManager.scan()
         }
     }
 
+    @MainActor
     func didUpdateFoundDevices(devices: [String: CBPeripheral]) {
         if !devices.isEmpty {
-            localNotificationDispatcher.send(.init(
-                id: .improvSetup,
-                title: L10n.Improv.Toast.title
-            ))
+            showImprovDeviceSetupNotification()
         }
     }
 }
