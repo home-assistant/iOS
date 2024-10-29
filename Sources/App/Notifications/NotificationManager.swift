@@ -278,13 +278,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                 $0.present(navController)
             }
         }
-
-        if response.notification.request.identifier == NotificationIdentifier.improvSetup.rawValue {
-            Current.Log.info("Launching Improv setup")
-            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
-                controller.webViewExternalMessageHandler.presentImprov()
-            }
-        }
     }
 
     public func userNotificationCenter(

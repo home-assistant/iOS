@@ -77,7 +77,7 @@ abstract_target 'iOS' do
 
     pod 'FirebaseMessaging'
 
-    pod 'SwiftMessages'
+    pod 'SwiftMessages', '~> 10.0.1'
     pod 'ViewRow', git: 'https://github.com/EurekaCommunity/ViewRow', branch: 'master'
 
     support_modules

@@ -110,9 +110,9 @@ PODS:
   - SwiftFormat/CLI (0.53.1)
   - SwiftGen (6.5.1)
   - SwiftLint (0.54.0)
-  - SwiftMessages (9.0.6):
-    - SwiftMessages/App (= 9.0.6)
-  - SwiftMessages/App (9.0.6)
+  - SwiftMessages (10.0.1):
+    - SwiftMessages/App (= 10.0.1)
+  - SwiftMessages/App (10.0.1)
   - UIColor_Hex_Swift (5.1.9)
   - Version (0.8.0)
   - ViewRow (0.8):
@@ -150,7 +150,7 @@ DEPENDENCIES:
   - SwiftFormat/CLI (= 0.53.1)
   - SwiftGen (~> 6.5.0)
   - SwiftLint (= 0.54.0)
-  - SwiftMessages
+  - SwiftMessages (~> 10.0.1)
   - UIColor_Hex_Swift
   - Version
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
@@ -292,13 +292,13 @@ SPEC CHECKSUMS:
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
-  SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
+  SwiftMessages: 759b4a0bf5c3a116a0d7e8a34b098ba83c458625
   UIColor_Hex_Swift: 20cb4e8d51b63e168a9da6933bc5d39cd8fb4ab5
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 7db8d8bc3dbacceb0cd00e82d8ee470965549665
+PODFILE CHECKSUM: 30b5c6369c33ce4a4fa8239d093141d7b7cba3f0
 
 COCOAPODS: 1.15.2
