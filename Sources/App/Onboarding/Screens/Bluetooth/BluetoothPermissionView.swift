@@ -9,16 +9,12 @@ struct BluetoothPermissionView: View {
 
     var body: some View {
         PermissionRequestView(
-            icon: .bluetoothIcon,
+            icon: .radarIcon,
             title: L10n.Permission.Screen.Bluetooth.title,
             subtitle: L10n.Permission.Screen.Bluetooth.subtitle,
-            reasons: [
-                .init(
-                    icon: .accessPointIcon,
-                    text: L10n.Permission.Screen.Bluetooth.reason1
-                ),
-            ],
+            reasons: [],
             showSkipButton: true,
+            showCloseButton: true,
             continueAction: {
                 // Request BT permission
                 viewModel.requestAuthorization()

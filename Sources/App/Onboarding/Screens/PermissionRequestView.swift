@@ -15,54 +15,68 @@ struct PermissionRequestView: View {
     let subtitle: String
     let reasons: [Reason]
     let showSkipButton: Bool
+    let showCloseButton: Bool
     let continueAction: () -> Void
     let dismissAction: (() -> Void)?
 
     @State private var accentColor: UIColor = Asset.Colors.haPrimary.color
     var body: some View {
-        VStack {
-            ScrollView {
+        ZStack(alignment: .topTrailing) {
+            VStack {
+                ScrollView {
+                    VStack(spacing: Spaces.two) {
+                        Image(uiImage: icon.image(
+                            ofSize: .init(width: 100, height: 100), color: accentColor
+                        ))
+                        Text(title)
+                            .font(.title.bold())
+                            .multilineTextAlignment(.center)
+                        Text(subtitle)
+                            .font(.body)
+                            .foregroundStyle(Color(uiColor: .secondaryLabel))
+                            .multilineTextAlignment(.center)
+                        reasonsList
+                    }
+                    .padding()
+                    .padding(.top, Spaces.four)
+                }
                 VStack(spacing: Spaces.two) {
-                    Image(uiImage: icon.image(
-                        ofSize: .init(width: 100, height: 100), color: accentColor
-                    ))
-                    Text(title)
-                        .font(.title.bold())
-                        .multilineTextAlignment(.center)
-                    Text(subtitle)
-                        .font(.body)
-                        .foregroundStyle(Color(uiColor: .secondaryLabel))
-                        .multilineTextAlignment(.center)
-                    reasonsList
+                    Button {
+                        continueAction()
+                    } label: {
+                        Text(L10n.continueLabel)
+                    }
+                    .buttonStyle(.primaryButton)
+                    if showSkipButton {
+                        Button {
+                            dismissAction?()
+                            dismiss()
+                        } label: {
+                            Text(L10n.Permission.Screen.Bluetooth.secondaryButton)
+                        }
+                        .buttonStyle(.secondaryButton)
+                    } else {
+                        Button {
+                            /* no-op */
+                        } label: {
+                            Text(L10n.Onboarding.Permissions.changeLaterNote)
+                        }
+                        .buttonStyle(.linkButton)
+                    }
                 }
                 .padding()
-                .padding(.top, Spaces.four)
             }
-            VStack(spacing: Spaces.two) {
+            if showCloseButton {
                 Button {
-                    continueAction()
+                    dismissAction?()
+                    dismiss()
                 } label: {
-                    Text(L10n.continueLabel)
+                    Image(systemSymbol: .xmarkCircleFill)
+                        .foregroundStyle(Color(uiColor: .tertiaryLabel))
+                        .font(.title)
                 }
-                .buttonStyle(.primaryButton)
-                if showSkipButton {
-                    Button {
-                        dismissAction?()
-                        dismiss()
-                    } label: {
-                        Text(L10n.Permission.Screen.Bluetooth.secondaryButton)
-                    }
-                    .buttonStyle(.secondaryButton)
-                } else {
-                    Button {
-                        /* no-op */
-                    } label: {
-                        Text(L10n.Onboarding.Permissions.changeLaterNote)
-                    }
-                    .buttonStyle(.linkButton)
-                }
+                .padding()
             }
-            .padding()
         }
     }
 
@@ -98,6 +112,7 @@ struct PermissionRequestView: View {
                 text: "Configure Improv devices"
             ),
         ],
-        showSkipButton: true
+        showSkipButton: true,
+        showCloseButton: true
     ) {} dismissAction: {}
 }
