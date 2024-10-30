@@ -22,7 +22,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     private func loadDatabase() {
         do {
-            if let config: CarPlayConfig = try Current.carPlayGRDB().read({ db in
+            if let config: CarPlayConfig = try Current.database().read({ db in
                 do {
                     return try CarPlayConfig.fetchOne(db)
                 } catch {
@@ -74,7 +74,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     func save(completion: (Bool) -> Void) {
         do {
-            try Current.carPlayGRDB().write { db in
+            try Current.database().write { db in
                 let configsCount = try CarPlayConfig.all().fetchCount(db)
                 if configsCount > 1 {
                     Current.Log.error("More than one CarPlay config detected, deleting all and saving new one.")

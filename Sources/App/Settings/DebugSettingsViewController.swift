@@ -201,40 +201,6 @@ class DebugSettingsViewController: HAFormViewController {
                     style: .destructive,
                     handler: { _ in
                         do {
-                            try FileManager.default.removeItem(at: AppConstants.watchGRDBFile)
-                            Current.Log.info("Watch database deleted successfully.")
-                        } catch {
-                            Current.Log.error("Watch database failed to delete: \(error.localizedDescription)")
-                        }
-                    }
-                ))
-
-                with(alert.popoverPresentationController) {
-                    $0?.sourceView = cell
-                    $0?.sourceRect = cell.bounds
-                }
-
-                self?.present(alert, animated: true, completion: nil)
-            }
-        }
-
-        section <<< SettingsButtonRow {
-            $0.isDestructive = true
-            $0.title = L10n.Watch.Debug.DeleteDb.title
-            $0.onCellSelection { [weak self] cell, _ in
-                let alert = UIAlertController(
-                    title: L10n.Watch.Debug.DeleteDb.Alert.title,
-                    message: "",
-                    preferredStyle: .actionSheet
-                )
-
-                alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
-
-                alert.addAction(UIAlertAction(
-                    title: L10n.yesLabel,
-                    style: .destructive,
-                    handler: { _ in
-                        do {
                             try FileManager.default.removeItem(at: AppConstants.carPlayGRDBFile)
                             Current.Log.info("CarPlay database deleted successfully.")
                         } catch {
