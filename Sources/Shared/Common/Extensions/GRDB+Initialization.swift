@@ -5,6 +5,7 @@ public enum GRDBDatabaseTable: String {
     case HAAppEntity = "hAAppEntity"
     case watchConfig
     case assistPipelines
+    case carPlayConfig
 }
 
 public enum DatabaseTables {
@@ -28,6 +29,13 @@ public enum DatabaseTables {
         case serverId
         case preferredPipeline
         case pipelines
+    }
+
+    // CarPlay configuration
+    public enum CarPlayConfig: String {
+        case id
+        case tabs
+        case quickAccessItems
     }
 }
 
@@ -77,6 +85,15 @@ public extension DatabaseQueue {
                         t.primaryKey(DatabaseTables.AssistPipelines.serverId.rawValue, .text).notNull()
                         t.column(DatabaseTables.AssistPipelines.preferredPipeline.rawValue, .text).notNull()
                         t.column(DatabaseTables.AssistPipelines.pipelines.rawValue, .jsonText).notNull()
+                    }
+                }
+
+                // WatchConfig - Apple Watch configuration
+                if try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue) {
+                    try db.create(table: GRDBDatabaseTable.carPlayConfig.rawValue) { t in
+                        t.primaryKey(DatabaseTables.CarPlayConfig.id.rawValue, .text).notNull()
+                        t.column(DatabaseTables.CarPlayConfig.tabs.rawValue, .text).notNull()
+                        t.column(DatabaseTables.CarPlayConfig.quickAccessItems.rawValue, .jsonText).notNull()
                     }
                 }
             }

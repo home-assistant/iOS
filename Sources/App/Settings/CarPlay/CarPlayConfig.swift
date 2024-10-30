@@ -3,18 +3,18 @@ import GRDB
 import Shared
 
 public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord {
-    public var id = UUID().uuidString
+    public var id = "carplay-config"
     public var tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
-    public var quickAccess: [MagicItem] = []
+    public var quickAccessItems: [MagicItem] = []
 
     public init(
         id: String = UUID().uuidString,
         tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings],
-        quickActions: [MagicItem] = []
+        quickAccessItems: [MagicItem] = []
     ) {
         self.id = id
         self.tabs = tabs
-        self.quickAccess = quickActions
+        self.quickAccessItems = quickAccessItems
     }
 }
 

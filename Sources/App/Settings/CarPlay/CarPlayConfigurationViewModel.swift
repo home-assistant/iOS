@@ -59,7 +59,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
         let newActionItems = actions.map { action in
             MagicItem(id: action.ID, serverId: action.serverIdentifier, type: .action)
         }
-        newConfig.quickAccess = newActionItems
+        newConfig.quickAccessItems = newActionItems
         setConfig(newConfig)
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
@@ -130,22 +130,22 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     }
 
     func addItem(_ item: MagicItem) {
-        config.quickAccess.append(item)
+        config.quickAccessItems.append(item)
     }
 
     func updateItem(_ item: MagicItem) {
-        if let indexToUpdate = config.quickAccess
+        if let indexToUpdate = config.quickAccessItems
             .firstIndex(where: { $0.id == item.id && $0.serverId == item.serverId }) {
-            config.quickAccess.remove(at: indexToUpdate)
-            config.quickAccess.insert(item, at: indexToUpdate)
+            config.quickAccessItems.remove(at: indexToUpdate)
+            config.quickAccessItems.insert(item, at: indexToUpdate)
         }
     }
 
     func deleteItem(at offsets: IndexSet) {
-        config.quickAccess.remove(atOffsets: offsets)
+        config.quickAccessItems.remove(atOffsets: offsets)
     }
 
     func moveItem(from source: IndexSet, to destination: Int) {
-        config.quickAccess.move(fromOffsets: source, toOffset: destination)
+        config.quickAccessItems.move(fromOffsets: source, toOffset: destination)
     }
 }

@@ -692,8 +692,6 @@
 		42AA4C842C2DACAD00EA2E99 /* UIImage+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */; };
 		42ABB0B92C888AA10081461D /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
 		42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */; };
-		42ABB0BD2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0BC2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift */; };
-		42ABB0BE2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0BC2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
 		42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */; };
@@ -1973,7 +1971,6 @@
 		42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Circle.swift"; sourceTree = "<group>"; };
 		42ABB0B82C888AA10081461D /* CarPlayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfig.swift; sourceTree = "<group>"; };
 		42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationViewModel.swift; sourceTree = "<group>"; };
-		42ABB0BC2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GRDBCarPlayConfig+Initialization.swift"; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
 		42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.swift; sourceTree = "<group>"; };
@@ -4869,7 +4866,6 @@
 			isa = PBXGroup;
 			children = (
 				4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */,
-				42ABB0BC2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift */,
 				B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */,
 				B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */,
 				114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */,
@@ -6944,7 +6940,6 @@
 				1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
 				42070EEC2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */,
 				11B38EF9275C54A300205C7B /* RenderTemplateIntentHandler.swift in Sources */,
-				42ABB0BD2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift in Sources */,
 				11F855DB24DF6C7A0018013E /* IconDrawable.swift in Sources */,
 				11F2F25F25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */,
@@ -7321,7 +7316,6 @@
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
-				42ABB0BE2C889DAA0081461D /* GRDBCarPlayConfig+Initialization.swift in Sources */,
 				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,

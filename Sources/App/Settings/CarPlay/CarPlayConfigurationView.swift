@@ -65,7 +65,7 @@ struct CarPlayConfigurationView: View {
 
     private var itemsSection: some View {
         Section("Quick Actions") {
-            ForEach(viewModel.config.quickAccess, id: \.id) { item in
+            ForEach(viewModel.config.quickAccessItems, id: \.id) { item in
                 makeListItem(item: item)
             }
             .onMove { indices, newOffset in
