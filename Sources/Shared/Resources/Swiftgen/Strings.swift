@@ -440,6 +440,12 @@ public enum L10n {
         }
       }
     }
+    public enum Config {
+      public enum Tabs {
+        /// Tabs
+        public static var title: String { return L10n.tr("Localizable", "carPlay.config.tabs.title") }
+      }
+    }
     public enum Debug {
       public enum DeleteDb {
         public enum Alert {
@@ -658,6 +664,21 @@ public enum L10n {
           public static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
           }
+        }
+      }
+    }
+  }
+
+  public enum Grdb {
+    public enum Config {
+      public enum MigrationError {
+        /// Failed to access database (GRDB), error: %@
+        public static func failedAccessGrdb(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "grdb.config.migration_error.failed_access_grdb", String(describing: p1))
+        }
+        /// Failed to save new config, error: %@
+        public static func failedToSave(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "grdb.config.migration_error.failed_to_save", String(describing: p1))
         }
       }
     }
@@ -2535,10 +2556,6 @@ public enum L10n {
         public static var selectServer: String { return L10n.tr("Localizable", "watch.config.assist.select_server") }
       }
       public enum MigrationError {
-        /// Failed to access database (GRDB), error: %@
-        public static func failedAccessGrdb(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "watch.config.migration_error.failed_access_grdb", String(describing: p1))
-        }
         /// Failed to save initial watch config, error: %@
         public static func failedCreateNewConfig(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.config.migration_error.failed_create_new_config", String(describing: p1))
@@ -2546,10 +2563,6 @@ public enum L10n {
         /// Failed to migrate actions to watch config, error: %@
         public static func failedMigrateActions(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.config.migration_error.failed_migrate_actions", String(describing: p1))
-        }
-        /// Failed to save new Watch config, error: %@
-        public static func failedToSave(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "watch.config.migration_error.failed_to_save", String(describing: p1))
         }
       }
     }

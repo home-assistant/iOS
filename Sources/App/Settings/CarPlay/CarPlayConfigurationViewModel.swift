@@ -26,19 +26,19 @@ final class CarPlayConfigurationViewModel: ObservableObject {
                 do {
                     return try CarPlayConfig.fetchOne(db)
                 } catch {
-                    Current.Log.error("Error fetching watch config \(error)")
+                    Current.Log.error("Error fetching CarPlay config \(error)")
                 }
                 return nil
             }) {
                 setConfig(config)
-                Current.Log.info("Watch configuration exists")
+                Current.Log.info("CarPlay configuration exists")
             } else {
-                Current.Log.error("No watch config found")
+                Current.Log.error("No CarPlay config found")
                 convertLegacyActionsToCarPlayConfig()
             }
         } catch {
             Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
-            showError(message: L10n.Watch.Config.MigrationError.failedAccessGrdb(error.localizedDescription))
+            showError(message: L10n.Grdb.Config.MigrationError.failedAccessGrdb(error.localizedDescription))
         }
     }
 
@@ -52,7 +52,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     private func convertLegacyActionsToCarPlayConfig() {
         var newConfig = CarPlayConfig()
         let actions = Current.realm().objects(Action.self).sorted(by: { $0.Position < $1.Position })
-            .filter(\.showInWatch)
+            .filter(\.showInCarPlay)
 
         guard !actions.isEmpty else { return }
 
@@ -65,7 +65,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
             guard let self else { return }
             save { success in
                 if !success {
-                    Current.Log.error("Failed to migrate actions to watch config, failed to save config.")
+                    Current.Log.error("Failed to migrate actions to CarPlay config, failed to save config.")
                 }
             }
         }
@@ -79,7 +79,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
                 if configsCount > 1 {
                     Current.Log.error("More than one CarPlay config detected, deleting all and saving new one.")
                     // Making sure only one config exists
-                    try WatchConfig.deleteAll(db)
+                    try CarPlayConfig.deleteAll(db)
                     // Save new config
                     try config.save(db)
                 } else if configsCount == 0 {
@@ -93,7 +93,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
             }
         } catch {
             Current.Log.error("Failed to save new CarPlay config, error: \(error.localizedDescription)")
-            showError(message: L10n.Watch.Config.MigrationError.failedToSave(error.localizedDescription))
+            showError(message: L10n.Grdb.Config.MigrationError.failedToSave(error.localizedDescription))
             completion(false)
         }
     }

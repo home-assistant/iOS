@@ -55,7 +55,8 @@ struct CarPlayConfigurationView: View {
 
     private var content: some View {
         VStack {
-            carPlayPreview
+            carPlayLogo
+                .padding()
             List {
                 tabsSection
                 itemsSection
@@ -132,36 +133,18 @@ struct CarPlayConfigurationView: View {
         )
     }
 
-    private var carPlayPreview: some View {
-        ZStack {
-            carPlayBackground
-            carPlayContent
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private var carPlayContent: some View {
-        VStack {
-            Text("Hello, World!")
-                .font(.largeTitle)
-                .foregroundColor(.white)
-        }
-        .background(.red)
-    }
-
-    private var carPlayBackground: some View {
-        Image("carplay-config")
+    private var carPlayLogo: some View {
+        Image("carplay-logo")
             .resizable()
-            .frame(maxWidth: .infinity)
-            .aspectRatio(contentMode: .fit)
+            .frame(width: 150, height: 150)
     }
 
     private var tabsSection: some View {
-        Section {
+        Section(L10n.CarPlay.Config.Tabs.title) {
             NavigationLink {
                 tabsSelection
             } label: {
-                Text("Tabs")
+                Text(viewModel.config.tabs.compactMap(\.name).joined(separator: ", "))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
