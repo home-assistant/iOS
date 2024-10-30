@@ -3,9 +3,9 @@ import Foundation
 import RealmSwift
 import Shared
 
-final class CarPlayActionsTemplate: CarPlayTemplateProvider {
+final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var actions: Results<Action>?
-    private let viewModel: CarPlayActionsViewModel
+    private let viewModel: CarPlayQuickAccessViewModel
 
     private let paginatedList = CarPlayPaginatedListTemplate(
         title: L10n.CarPlay.Navigation.Tab.quickAccess,
@@ -16,9 +16,9 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
 
     weak var interfaceController: CPInterfaceController?
 
-    private lazy var introduceActionsListItem: CPListItem = {
+    private lazy var introduceQuickAccessListItem: CPListItem = {
         let item = CPListItem(
-            text: L10n.CarPlay.Action.Intro.Item.title,
+            text: L10n.CarPlay.QuickAccess.Intro.Item.title,
             detailText: L10n.CarPlay.Action.Intro.Item.body,
             image: MaterialDesignIcons.homeLightningBoltIcon
                 .carPlayIcon()
@@ -31,7 +31,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
         return item
     }()
 
-    init(viewModel: CarPlayActionsViewModel) {
+    init(viewModel: CarPlayQuickAccessViewModel) {
         self.viewModel = viewModel
 
         self.template = paginatedList.template
@@ -69,7 +69,7 @@ final class CarPlayActionsTemplate: CarPlayTemplateProvider {
     }
 
     private func presentIntroductionItem() {
-        template.updateSections([.init(items: [introduceActionsListItem])])
+        template.updateSections([.init(items: [introduceQuickAccessListItem])])
     }
 
     private func listItems(actions: Results<Action>) -> [CPListItem] {

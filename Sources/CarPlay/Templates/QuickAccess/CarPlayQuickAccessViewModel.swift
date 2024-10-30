@@ -3,9 +3,9 @@ import HAKit
 import RealmSwift
 import Shared
 
-final class CarPlayActionsViewModel {
+final class CarPlayQuickAccessViewModel {
     private var actionsToken: NotificationToken?
-    weak var templateProvider: CarPlayActionsTemplate?
+    weak var templateProvider: CarPlayQuickAccessTemplate?
 
     func update() {
         let actions = Current.realm().objects(Action.self)

@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 import Shared
 
-public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord {
+public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equatable {
     public var id = "carplay-config"
     public var tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
     public var quickAccessItems: [MagicItem] = []
@@ -18,7 +18,7 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord {
     }
 }
 
-public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible {
+public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible, Equatable {
     case quickAccess
     case areas
     case domains

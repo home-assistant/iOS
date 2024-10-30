@@ -23,21 +23,66 @@ class CarPlaySceneDelegate: UIResponder {
         [actionsListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
     }
 
+    private var cachedConfig: CarPlayConfig?
+
     override init() {
         self.domainsListTemplate = CarPlayDomainsListTemplate.build()
         self.serversListTemplate = CarPlayServersListTemplate.build()
-        self.actionsListTemplate = CarPlayActionsTemplate.build()
+        self.actionsListTemplate = CarPlayQuickAccessTemplate.build()
         self.areasZonesListTemplate = CarPlayAreasZonesTemplate.build()
         super.init()
     }
 
     private func setTemplates() {
-        let tabBar = CPTabBarTemplate(templates: allTemplates.map { templateProvider in
+        var visibleTemplates = allTemplates
+
+        // In case config exists, we will only show the tabs that are enabled
+        if let config = getConfig() {
+            guard config != cachedConfig else { return }
+            cachedConfig = config
+            visibleTemplates = config.tabs.map {
+                switch $0 {
+                case .quickAccess:
+                    return actionsListTemplate
+                case .areas:
+                    return areasZonesListTemplate
+                case .domains:
+                    return domainsListTemplate
+                case .settings:
+                    return serversListTemplate
+                }
+            }
+        }
+
+        let tabBar = CPTabBarTemplate(templates: visibleTemplates.map { templateProvider in
             templateProvider.template
         })
         setInterfaceControllerForChildren()
         interfaceController?.setRootTemplate(tabBar, animated: true, completion: nil)
         updateTemplates()
+    }
+
+    @MainActor
+    private func getConfig() -> CarPlayConfig? {
+        do {
+            if let config: CarPlayConfig = try Current.database().read({ db in
+                do {
+                    return try CarPlayConfig.fetchOne(db)
+                } catch {
+                    Current.Log.error("Error fetching CarPlay config \(error)")
+                }
+                return nil
+            }) {
+                Current.Log.info("CarPlay configuration exists, using it in CarPlay")
+                return config
+            } else {
+                Current.Log.error("No CarPlay config found when CarPlay started")
+                return nil
+            }
+        } catch {
+            Current.Log.error("Failed to access database (GRDB) in CarPlay, error: \(error.localizedDescription)")
+            return nil
+        }
     }
 
     private func setInterfaceControllerForChildren() {
@@ -97,5 +142,9 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
         allTemplates.forEach { $0.templateWillAppear(template: aTemplate) }
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        setTemplates()
     }
 }

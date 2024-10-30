@@ -95,7 +95,7 @@
 "assist.watch.volume.title" = "Volume control";
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
-"carPlay.action.intro.item.title" = "Create your first action";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";

@@ -435,8 +435,6 @@ public enum L10n {
         public enum Item {
           /// Tap to continue on your iPhone
           public static var body: String { return L10n.tr("Localizable", "carPlay.action.intro.item.body") }
-          /// Create your first action
-          public static var title: String { return L10n.tr("Localizable", "carPlay.action.intro.item.title") }
         }
       }
     }
@@ -511,6 +509,14 @@ public enum L10n {
           public static var body: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.body") }
           /// Create iOS Action
           public static var title: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.title") }
+        }
+      }
+    }
+    public enum QuickAccess {
+      public enum Intro {
+        public enum Item {
+          /// Create your CarPlay configuration
+          public static var title: String { return L10n.tr("Localizable", "carPlay.quick_access.intro.item.title") }
         }
       }
     }
