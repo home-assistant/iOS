@@ -980,6 +980,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.controls.switch.description" = "Turn on/off your switch";
 "widgets.controls.switch.title" = "Switch";
+"widgets.controls.cover.description" = "Open/Close cover";
+"widgets.controls.cover.title" = "Cover";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";

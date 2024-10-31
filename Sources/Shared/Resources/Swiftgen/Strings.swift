@@ -3366,6 +3366,12 @@ public enum L10n {
           public static var placeholder: String { return L10n.tr("Localizable", "widgets.controls.assist.pipeline.placeholder") }
         }
       }
+      public enum Cover {
+        /// Open/Close cover
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.cover.description") }
+        /// Cover
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
+      }
       public enum Light {
         /// Turn on/off your light
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.light.description") }
