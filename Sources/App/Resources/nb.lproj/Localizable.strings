@@ -375,6 +375,9 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@ !";
 "open_label" = "Åpen";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Forhåndsvisning";
 "reload_label" = "Reload";
 "requires_version" = "Krever %@ eller nyere.";

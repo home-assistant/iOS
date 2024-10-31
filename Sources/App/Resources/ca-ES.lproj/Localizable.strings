@@ -375,6 +375,9 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Benvinguts a Home Assistant %@!";
 "open_label" = "Obrir";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Previsualització de la sortida";
 "reload_label" = "Reload";
 "requires_version" = "Requereix %@ o posterior";

@@ -375,6 +375,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.welcome.learn_more" = "Lisateave";
 "onboarding.welcome.title" = "Tere tulemast Home Assistanti %@!";
 "open_label" = "Avatud";
+"permission.screen.bluetooth.secondary_button" = "Jäta vahele";
+"permission.screen.bluetooth.subtitle" = "Home Assistant'i rakendus suudab selle seadme Bluetoothiga seadmeid leida. Luba rakenduse Home Assistant jaoks Bluetooth-juurdepääs.";
+"permission.screen.bluetooth.title" = "Otsi seadmeid";
 "preview_output" = "Kujunduse eelvaade";
 "reload_label" = "Taaslae";
 "requires_version" = "Nõuab %@ või uuemat versiooni.";

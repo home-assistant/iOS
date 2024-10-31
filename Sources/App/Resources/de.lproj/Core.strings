@@ -26,7 +26,7 @@
 "component::binary_sensor::entity_component::connectivity::state::off" = "Getrennt";
 "component::binary_sensor::entity_component::connectivity::state::on" = "Verbunden";
 "component::binary_sensor::entity_component::door::state::off" = "Geschlossen";
-"component::binary_sensor::entity_component::door::state::on" = "Offen";
+"component::binary_sensor::entity_component::door::state::on" = "Geöffnet";
 "component::binary_sensor::entity_component::garage_door::state::off" = "Geschlossen";
 "component::binary_sensor::entity_component::garage_door::state::on" = "Offen";
 "component::binary_sensor::entity_component::lock::state::off" = "Abgeschlossen";
@@ -36,7 +36,7 @@
 "component::binary_sensor::entity_component::presence::state::off" = "Abwesend";
 "component::binary_sensor::entity_component::presence::state::on" = "Zu Hause";
 "component::binary_sensor::entity_component::window::state::off" = "Geschlossen";
-"component::binary_sensor::entity_component::window::state::on" = "Offen";
+"component::binary_sensor::entity_component::window::state::on" = "Geöffnet";
 "component::button::title" = "Knopf";
 "component::calendar::entity_component::_::state::off" = "Aus";
 "component::calendar::entity_component::_::state::on" = "An";

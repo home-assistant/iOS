@@ -375,6 +375,9 @@ Home Assistant е безплатен и с отворен код софтуер 
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Добре дошли в Home Assistant %@!";
 "open_label" = "Open";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Preview Output";
 "reload_label" = "Reload";
 "requires_version" = "Изисква %@ или по-нова версия.";

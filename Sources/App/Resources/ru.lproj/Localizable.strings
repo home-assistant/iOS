@@ -375,6 +375,9 @@ Home Assistant - это бесплатное программное обеспе
 "onboarding.welcome.learn_more" = "Узнать больше";
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
 "open_label" = "Открыто";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Предварительный результат";
 "reload_label" = "Перезагрузить";
 "requires_version" = "Требуется %@ или более поздняя версия.";

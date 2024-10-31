@@ -57,7 +57,7 @@
 "app_intents.assist.preferred_pipeline.title" = "Föredragen";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "Med rösten";
-"app_intents.controls.assist.title" = "Assist in app";
+"app_intents.controls.assist.title" = "Assistent i appen";
 "app_intents.haptic_confirmation.title" = "Haptisk bekräftelse";
 "app_intents.lights.light.target" = "Måltillstånd";
 "app_intents.lights.light.title" = "Belysning";
@@ -85,8 +85,8 @@
 "app_intents.scripts.show_confirmation_dialog.description" = "Visar bekräftelsemeddelande efter utförd åtgärd";
 "app_intents.scripts.show_confirmation_dialog.title" = "Meddelande om bekräftelse";
 "app_intents.scripts.success_message.content" = "Skriptet \" %@ \" har körts.";
-"app_intents.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
-"app_intents.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.show_confirmation_dialog.description" = "Visar bekräftelsemeddelande efter utförd åtgärd";
+"app_intents.show_confirmation_dialog.title" = "Meddelande om bekräftelse";
 "app_intents.widget_action.actions_parameter_configuration" = "Vilka åtgärder?";
 "assist.error.pipelines_response" = "Misslyckades med att inhämta Assist Pipelines, kontrollera din pipelinekonfiguration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -375,6 +375,9 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "onboarding.welcome.learn_more" = "Läs mer";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
 "open_label" = "Öppen";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Förhandsgranska";
 "reload_label" = "Ladda om";
 "requires_version" = "Kräver %@ eller nyare.";
@@ -688,7 +691,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "thread.extended_pan_id.title" = "Utökat PAN-ID";
 "thread.management.title" = "Autentiseringsuppgifter för Thread";
 "thread.network_key.title" = "Nätverksnyckel";
-"thread.save_credential.fail.alert.message" = "Failed to save thread network credential.";
+"thread.save_credential.fail.alert.message" = "Det gick inte att spara inloggningsuppgifter för Threadnätverk.";
 "thread.save_credential.fail.alert.title" = "Det gick inte att spara Thread-nätverkets autentiseringsuppgifter, fel: %@";
 "thread.save_credential.fail.continue.button" = "Fortsätt";
 "thread.store_in_keychain.error.generic.body" = "Det gick inte att lagra autentiseringsuppgifterna för Thread i nyckelringen, kontrollera loggarna för mer information.";
@@ -998,6 +1001,6 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.scripts.description" = "Kör skript";
 "widgets.scripts.not_configured" = "Inga skript konfigurerade";
 "widgets.scripts.title" = "Skripts";
-"widgets.sensors.description" = "Display state of sensors";
-"widgets.sensors.title" = "Sensors";
+"widgets.sensors.description" = "Visa tillstånd för sensorer";
+"widgets.sensors.title" = "Sensorer";
 "yes_label" = "Ja";
