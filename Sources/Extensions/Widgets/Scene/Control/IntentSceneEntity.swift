@@ -40,7 +40,7 @@ struct IntentSceneEntity: AppEntity {
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
 struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentSceneEntity] {
-        getSceneEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
+        getSceneEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentSceneEntity> {
@@ -58,12 +58,12 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func getSceneEntities(matching string: String? = nil) -> [Server: [IntentSceneEntity]] {
-        var sceneEntities: [Server: [IntentSceneEntity]] = [:]
+    private func getSceneEntities(matching string: String? = nil) -> [(Server, [IntentSceneEntity])] {
+        var sceneEntities: [(Server, [IntentSceneEntity])] = []
         let entities = ControlEntityProvider(domain: .scene).getEntities(matching: string)
 
         for (server, values) in entities {
-            sceneEntities[server] = values.map({ entity in
+            sceneEntities.append((server, values.map({ entity in
                 IntentSceneEntity(
                     id: entity.id,
                     entityId: entity.entityId,
@@ -72,7 +72,7 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.moonStarsCircleFill.rawValue
                 )
-            })
+            })))
         }
 
         return sceneEntities

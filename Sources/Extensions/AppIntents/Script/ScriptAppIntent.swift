@@ -113,7 +113,7 @@ struct IntentScriptEntity: AppEntity {
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
 struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentScriptEntity] {
-        getScriptEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
+        getScriptEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentScriptEntity> {
@@ -135,12 +135,12 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func getScriptEntities(matching string: String? = nil) -> [Server: [IntentScriptEntity]] {
-        var scriptEntities: [Server: [IntentScriptEntity]] = [:]
+    private func getScriptEntities(matching string: String? = nil) -> [(Server, [IntentScriptEntity])] {
+        var scriptEntities: [(Server, [IntentScriptEntity])] = []
         let entities = ControlEntityProvider(domain: .script).getEntities(matching: string)
 
         for (server, values) in entities {
-            scriptEntities[server] = values.map({ entity in
+            scriptEntities.append((server, values.map({ entity in
                 IntentScriptEntity(
                     id: entity.id,
                     entityId: entity.entityId,
@@ -149,7 +149,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
                 )
-            })
+            })))
         }
 
         return scriptEntities

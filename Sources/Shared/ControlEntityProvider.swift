@@ -36,8 +36,8 @@ public final class ControlEntityProvider {
         return state
     }
 
-    public func getEntities(matching string: String? = nil) -> [Server: [HAAppEntity]] {
-        var entitiesPerServer: [Server: [HAAppEntity]] = [:]
+    public func getEntities(matching string: String? = nil) -> [(Server, [HAAppEntity])] {
+        var entitiesPerServer: [(Server, [HAAppEntity])] = []
         for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
             do {
                 var entities: [HAAppEntity] = try Current.database().read { db in
@@ -51,7 +51,7 @@ public final class ControlEntityProvider {
                         entity.name.lowercased().contains(string.lowercased())
                     })
                 }
-                entitiesPerServer[server] = entities
+                entitiesPerServer.append((server, entities))
             } catch {
                 Current.Log.error("Failed to load entities from database: \(error.localizedDescription)")
             }
