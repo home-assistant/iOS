@@ -641,6 +641,15 @@ public enum L10n {
     }
   }
 
+  public enum Debug {
+    public enum Reset {
+      public enum EntitiesDatabase {
+        /// Reset app entities database
+        public static var title: String { return L10n.tr("Localizable", "debug.reset.entities_database.title") }
+      }
+    }
+  }
+
   public enum Extensions {
     public enum Map {
       public enum Location {
