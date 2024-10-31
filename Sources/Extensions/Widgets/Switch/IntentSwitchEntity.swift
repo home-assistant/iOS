@@ -38,7 +38,7 @@ struct IntentSwitchEntity: AppEntity {
 @available(iOS 18.0, *)
 struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentSwitchEntity] {
-        await getSwitchEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
+        await getSwitchEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentSwitchEntity> {
@@ -60,12 +60,12 @@ struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func getSwitchEntities(matching string: String? = nil) async -> [Server: [IntentSwitchEntity]] {
-        var switchEntities: [Server: [IntentSwitchEntity]] = [:]
+    private func getSwitchEntities(matching string: String? = nil) async -> [(Server, [IntentSwitchEntity])] {
+        var switchEntities: [(Server, [IntentSwitchEntity])] = []
         let entities = ControlEntityProvider(domain: .switch).getEntities(matching: string)
 
         for (server, values) in entities {
-            switchEntities[server] = values.map({ entity in
+            switchEntities.append((server, values.map({ entity in
                 IntentSwitchEntity(
                     id: entity.id,
                     entityId: entity.entityId,
@@ -73,7 +73,7 @@ struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.lightswitchOnFill.rawValue
                 )
-            })
+            })))
         }
 
         return switchEntities

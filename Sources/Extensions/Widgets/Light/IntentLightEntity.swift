@@ -38,7 +38,7 @@ struct IntentLightEntity: AppEntity {
 @available(iOS 18.0, *)
 struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentLightEntity] {
-        getLightEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
+        getLightEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentLightEntity> {
@@ -60,12 +60,12 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
         })
     }
 
-    private func getLightEntities(matching string: String? = nil) -> [Server: [IntentLightEntity]] {
-        var lightEntities: [Server: [IntentLightEntity]] = [:]
+    private func getLightEntities(matching string: String? = nil) -> [(Server, [IntentLightEntity])] {
+        var lightEntities: [(Server, [IntentLightEntity])] = []
         let entities = ControlEntityProvider(domain: .light).getEntities(matching: string)
 
         for (server, values) in entities {
-            lightEntities[server] = values.map({ entity in
+            lightEntities.append((server, values.map({ entity in
                 IntentLightEntity(
                     id: entity.id,
                     entityId: entity.entityId,
@@ -73,7 +73,7 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.lightbulbFill.rawValue
                 )
-            })
+            })))
         }
 
         return lightEntities
