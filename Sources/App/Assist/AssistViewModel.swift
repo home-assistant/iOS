@@ -41,6 +41,10 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         self.audioRecorder.delegate = self
         self.assistService.delegate = self
+
+        if preferredPipelineId == "last_used" {
+            self.preferredPipelineId = ""
+        }
     }
 
     @MainActor
