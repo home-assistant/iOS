@@ -7,6 +7,7 @@ import WidgetKit
 @available(iOS 18, *)
 struct ControlSwitchValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlSwitchConfiguration) async throws -> ControlEntityItem {
+        try await ControlRefreshDelay.wait()
         guard let serverId = configuration.entity?.serverId,
               let switchId = configuration.entity?.entityId,
               let state = try await ControlEntityProvider(domain: .switch).currentState(
