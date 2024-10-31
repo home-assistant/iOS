@@ -761,6 +761,38 @@ public class HomeAssistantAPI {
         }
     }
 
+    public func executeMagicItem(item: MagicItem, completion: @escaping (Bool) -> Void) {
+        Current.Log.verbose("Selected magic item id: \(item.id)")
+        firstly { () -> Promise<Void> in
+            switch item.type {
+            case .script:
+                let domain = Domain.script.rawValue
+                let service = item.id.replacingOccurrences(of: "\(domain).", with: "")
+                return Current.api(for: server).CallService(
+                    domain: domain,
+                    service: service,
+                    serviceData: [:],
+                    shouldLog: true
+                )
+            case .action:
+                return Current.api(for: server).HandleAction(actionID: item.id, source: .CarPlay)
+            case .scene:
+                let domain = Domain.scene.rawValue
+                return Current.api(for: server).CallService(
+                    domain: domain,
+                    service: "turn_on",
+                    serviceData: ["entity_id": item.id],
+                    shouldLog: true
+                )
+            }
+        }.done {
+            completion(true)
+        }.catch { err in
+            Current.Log.error("Error during magic item event fire: \(err)")
+            completion(false)
+        }
+    }
+
     public func registerSensors() -> Promise<Void> {
         firstly {
             Current.sensors.sensors(reason: .registration, server: server).map(\.sensors)

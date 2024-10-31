@@ -27,6 +27,7 @@ enum SettingsRootDataSource {
         case actions
         case sensors
         case watch
+        case carPlay
         case complications
         case nfc
         case widgets
@@ -46,6 +47,7 @@ enum SettingsRootDataSource {
                 case .actions: return SettingsRootDataSource.actions()
                 case .sensors: return SettingsRootDataSource.sensors()
                 case .watch: return SettingsRootDataSource.watch()
+                case .carPlay: return SettingsRootDataSource.carPlay()
                 case .complications: return SettingsRootDataSource.complications()
                 case .nfc: return SettingsRootDataSource.nfc()
                 case .widgets: return SettingsRootDataSource.widgets()
@@ -145,6 +147,21 @@ enum SettingsRootDataSource {
             $0.hidden = .isCatalyst
             $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                 let controller = UIHostingController(rootView: WatchConfigurationView())
+                controller.overrideUserInterfaceStyle = .dark
+                return controller
+            }, onDismiss: { _ in
+
+            })
+        }
+    }
+
+    private static func carPlay() -> SettingsButtonRow {
+        SettingsButtonRow {
+            $0.title = "CarPlay"
+            $0.icon = .carBackIcon
+            $0.hidden = .isCatalyst
+            $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                let controller = UIHostingController(rootView: CarPlayConfigurationView())
                 controller.overrideUserInterfaceStyle = .dark
                 return controller
             }, onDismiss: { _ in

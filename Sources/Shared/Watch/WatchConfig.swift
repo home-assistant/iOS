@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
-    public var id = UUID().uuidString
+    public var id = "watch-config"
     public var assist: Assist = .init(showAssist: true)
     public var items: [MagicItem] = []
 

@@ -80,7 +80,7 @@ final class WatchConfigurationViewModel: ObservableObject {
             }
         } catch {
             Current.Log.error("Failed to save new Watch config, error: \(error.localizedDescription)")
-            showError(message: L10n.Watch.Config.MigrationError.failedToSave(error.localizedDescription))
+            showError(message: L10n.Grdb.Config.MigrationError.failedToSave(error.localizedDescription))
             completion(false)
         }
     }
@@ -115,7 +115,7 @@ final class WatchConfigurationViewModel: ObservableObject {
             }
         } catch {
             Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
-            showError(message: L10n.Watch.Config.MigrationError.failedAccessGrdb(error.localizedDescription))
+            showError(message: L10n.Grdb.Config.MigrationError.failedAccessGrdb(error.localizedDescription))
         }
     }
 

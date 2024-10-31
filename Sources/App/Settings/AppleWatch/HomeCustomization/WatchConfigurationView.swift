@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -188,7 +189,7 @@ struct WatchConfigurationView: View {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
             Text(info.name)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemName: "line.3.horizontal")
+            Image(systemName: SFSymbol.line3Horizontal.rawValue)
                 .foregroundStyle(.gray)
         }
     }

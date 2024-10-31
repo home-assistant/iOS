@@ -142,7 +142,8 @@ final class CarPlayAreasViewModel {
             a1.name < a2.name
         }).compactMap { area -> CPListItem? in
             guard let entityIdsForAreaId = areasAndEntitiesDict[area.areaId] else { return nil }
-            let item = CPListItem(text: area.name, detailText: nil)
+            let icon = MaterialDesignIcons(serversideValueNamed: area.icon ?? "mdi:circle").carPlayIcon()
+            let item = CPListItem(text: area.name, detailText: nil, image: icon)
             item.accessoryType = .disclosureIndicator
             item.handler = { [weak self] _, completion in
                 self?.listItemHandler(area: area, entityIdsForAreaId: entityIdsForAreaId, server: server)

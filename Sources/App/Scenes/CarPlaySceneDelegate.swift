@@ -16,23 +16,47 @@ class CarPlaySceneDelegate: UIResponder {
 
     private var domainsListTemplate: any CarPlayTemplateProvider
     private var serversListTemplate: any CarPlayTemplateProvider
-    private var actionsListTemplate: any CarPlayTemplateProvider
+    private var quickAccessListTemplate: any CarPlayTemplateProvider
     private var areasZonesListTemplate: any CarPlayTemplateProvider
 
     private var allTemplates: [any CarPlayTemplateProvider] {
-        [actionsListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
+        [quickAccessListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
     }
+
+    private var cachedConfig: CarPlayConfig?
 
     override init() {
         self.domainsListTemplate = CarPlayDomainsListTemplate.build()
         self.serversListTemplate = CarPlayServersListTemplate.build()
-        self.actionsListTemplate = CarPlayActionsTemplate.build()
+        self.quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
         self.areasZonesListTemplate = CarPlayAreasZonesTemplate.build()
         super.init()
     }
 
     private func setTemplates() {
-        let tabBar = CPTabBarTemplate(templates: allTemplates.map { templateProvider in
+        var visibleTemplates = allTemplates
+
+        // In case config exists, we will only show the tabs that are enabled
+        if let config = CarPlayConfig.getConfig() {
+            guard config != cachedConfig else { return }
+            cachedConfig = config
+            visibleTemplates = config.tabs.map {
+                switch $0 {
+                case .quickAccess:
+                    // Reload the quick access list template
+                    quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+                    return quickAccessListTemplate
+                case .areas:
+                    return areasZonesListTemplate
+                case .domains:
+                    return domainsListTemplate
+                case .settings:
+                    return serversListTemplate
+                }
+            }
+        }
+
+        let tabBar = CPTabBarTemplate(templates: visibleTemplates.map { templateProvider in
             templateProvider.template
         })
         setInterfaceControllerForChildren()
@@ -43,7 +67,7 @@ class CarPlaySceneDelegate: UIResponder {
     private func setInterfaceControllerForChildren() {
         domainsListTemplate.interfaceController = interfaceController
         serversListTemplate.interfaceController = interfaceController
-        actionsListTemplate.interfaceController = interfaceController
+        quickAccessListTemplate.interfaceController = interfaceController
         areasZonesListTemplate.interfaceController = interfaceController
     }
 
@@ -97,5 +121,9 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
         allTemplates.forEach { $0.templateWillAppear(template: aTemplate) }
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        setTemplates()
     }
 }
