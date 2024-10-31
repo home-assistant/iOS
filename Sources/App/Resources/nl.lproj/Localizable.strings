@@ -375,6 +375,9 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Voorbeeld Output";
 "reload_label" = "Reload";
 "requires_version" = "Vereist %@ of hoger.";

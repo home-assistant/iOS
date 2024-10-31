@@ -373,6 +373,9 @@
 "onboarding.welcome.learn_more" = "了解更多信息";
 "onboarding.welcome.title" = "欢迎使用 Home Assistant %@ ！";
 "open_label" = "打开";
+"permission.screen.bluetooth.secondary_button" = "跳过";
+"permission.screen.bluetooth.subtitle" = "Home Assistant 应用可以找到使用此设备蓝牙的那些设备。允许 Home Assistant 应用可访问蓝牙。";
+"permission.screen.bluetooth.title" = "搜索设备";
 "preview_output" = "预览输出";
 "reload_label" = "重新加载";
 "requires_version" = "需要 %@ 或更高版本。";

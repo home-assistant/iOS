@@ -375,6 +375,9 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "onboarding.welcome.learn_more" = "Tudjon meg többet";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "open_label" = "Megnyitás";
+"permission.screen.bluetooth.secondary_button" = "Kihagyás";
+"permission.screen.bluetooth.subtitle" = "A Home Assistant alkalmazás Bluetooth-on keresztül képes megkeresni az eszköz Bluetooth-kapcsolatát használó eszközöket. Engedélyezze a Bluetooth-hozzáférést a Home Assistant alkalmazás számára.";
+"permission.screen.bluetooth.title" = "Eszközök keresése";
 "preview_output" = "Eredmény előnézete";
 "reload_label" = "Újratöltés";
 "requires_version" = "%@ vagy újabb szükséges.";

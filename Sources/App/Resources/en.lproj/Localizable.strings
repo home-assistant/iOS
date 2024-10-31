@@ -375,6 +375,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "open_label" = "Open";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Preview Output";
 "reload_label" = "Reload";
 "requires_version" = "Requires %@ or later.";

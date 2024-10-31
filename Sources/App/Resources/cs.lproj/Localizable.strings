@@ -375,6 +375,9 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "onboarding.welcome.learn_more" = "Více informací";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
 "open_label" = "Otevřít";
+"permission.screen.bluetooth.secondary_button" = "Přeskočit";
+"permission.screen.bluetooth.subtitle" = "Aplikace Home Assistant dokáže najít zařízení pomocí Bluetooth tohoto zařízení. Povolte aplikaci Home Assistant přístup přes Bluetooth.";
+"permission.screen.bluetooth.title" = "Hledat zařízení";
 "preview_output" = "Náhled výstupu";
 "reload_label" = "Znovu načíst";
 "requires_version" = "Vyžaduje %@ nebo novější.";

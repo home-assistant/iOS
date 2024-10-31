@@ -375,6 +375,9 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "onboarding.welcome.learn_more" = "Plus d'informations";
 "onboarding.welcome.title" = "Bienvenue dans Home Assistant %@ !";
 "open_label" = "Ouvert";
+"permission.screen.bluetooth.secondary_button" = "Skip";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Aperçu du résultat";
 "reload_label" = "Recharger";
 "requires_version" = "Nécessite %@ ou une version ultérieure.";

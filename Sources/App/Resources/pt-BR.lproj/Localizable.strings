@@ -375,6 +375,9 @@
 "onboarding.welcome.learn_more" = "Saiba mais";
 "onboarding.welcome.title" = "Bem-vindo ao Home Assistant %@ !";
 "open_label" = "Abrir";
+"permission.screen.bluetooth.secondary_button" = "Pular";
+"permission.screen.bluetooth.subtitle" = "O aplicativo Home Assistant pode encontrar dispositivos usando o Bluetooth deste dispositivo. Permita o acesso Bluetooth para o aplicativo Home Assistant.";
+"permission.screen.bluetooth.title" = "Pesquisar dispositivos";
 "preview_output" = "Pré-visualização da saída";
 "reload_label" = "Recarregar";
 "requires_version" = "Requer %@ ou posterior.";
