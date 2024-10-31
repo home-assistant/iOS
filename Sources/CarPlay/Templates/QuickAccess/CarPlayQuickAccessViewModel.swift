@@ -8,16 +8,11 @@ final class CarPlayQuickAccessViewModel {
     weak var templateProvider: CarPlayQuickAccessTemplate?
 
     func update() {
-        let actions = Current.realm().objects(Action.self)
-            .sorted(byKeyPath: "Position")
-            .filter("Scene == nil AND showInCarPlay == true")
-
-        actionsToken?.invalidate()
-        actionsToken = actions.observe { [weak self] _ in
-            self?.templateProvider?.updateList(for: actions)
+        if let config = CarPlayConfig.getConfig() {
+            templateProvider?.updateList(for: config.quickAccessItems)
+        } else {
+            templateProvider?.updateList(for: [])
         }
-
-        templateProvider?.updateList(for: actions)
     }
 
     func invalidateActionsToken() {

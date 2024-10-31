@@ -1,5 +1,6 @@
 import CarPlay
 import Foundation
+import PromiseKit
 import RealmSwift
 import Shared
 
@@ -14,6 +15,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     )
     var template: CPListTemplate
 
+    private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
 
     private lazy var introduceQuickAccessListItem: CPListItem = {
@@ -57,39 +59,79 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     func update() {
-        viewModel.update()
+        magicItemProvider.loadInformation { [weak self] in
+            self?.viewModel.update()
+        }
     }
 
-    func updateList(for actions: Results<Action>) {
-        guard !actions.isEmpty else {
+    func updateList(for items: [MagicItem]) {
+        guard !items.isEmpty else {
             presentIntroductionItem()
             return
         }
-        paginatedList.updateItems(items: listItems(actions: actions))
+        paginatedList.updateItems(items: listItems(items: items))
     }
 
     private func presentIntroductionItem() {
         template.updateSections([.init(items: [introduceQuickAccessListItem])])
     }
 
-    private func listItems(actions: Results<Action>) -> [CPListItem] {
-        let items: [CPListItem] = actions.map { action in
-            let materialDesignIcon = MaterialDesignIcons(named: action.IconName)
-                .carPlayIcon()
+    private func listItems(items: [MagicItem]) -> [CPListItem] {
+        let items: [CPListItem] = items.map { magicItem in
+            let info = magicItemProvider.getInfo(for: magicItem)
+            let materialDesignIcon = MaterialDesignIcons(named: info.iconName)
+                .carPlayIcon(color: .init(hex: info.customization?.iconColor))
             let item = CPListItem(
-                text: action.Text,
+                text: info.name,
                 detailText: nil,
                 image: materialDesignIcon
             )
             item.handler = { [weak self] _, _ in
-                self?.viewModel.handleAction(action: action) { success in
-                    self?.displayActionResultIcon(on: item, success: success)
+                if info.customization?.requiresConfirmation ?? false {
+                    self?.showConfirmationForRunningMagicItem(item: magicItem, info: info) {
+                        self?.executeMagicItem(magicItem, item: item)
+                    }
+                } else {
+                    self?.executeMagicItem(magicItem, item: item)
                 }
             }
             return item
         }
 
         return items
+    }
+
+    private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem) {
+        guard let server = Current.servers.all.first(where: { server in
+            server.identifier.rawValue == magicItem.serverId
+        }) else {
+            Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
+            displayActionResultIcon(on: item, success: false)
+            return
+        }
+        Current.api(for: server).executeMagicItem(item: magicItem) { success in
+            self.displayActionResultIcon(on: item, success: success)
+        }
+    }
+
+    private func showConfirmationForRunningMagicItem(
+        item: MagicItem,
+        info: MagicItem.Info,
+        completion: @escaping () -> Void
+    ) {
+        let alert = CPAlertTemplate(titleVariants: [
+            L10n.Watch.Home.Run.Confirmation.title(info.name),
+        ], actions: [
+            .init(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { [weak self] _ in
+                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+            }),
+            .init(title: L10n.Alerts.Confirm.confirm, style: .default, handler: { [weak self] _ in
+                completion()
+                self?.interfaceController?.dismissTemplate(animated: true, completion: nil)
+            }),
+        ])
+
+        interfaceController?.presentTemplate(alert, animated: true, completion: nil)
     }
 
     // Present a checkmark or cross depending on success or failure

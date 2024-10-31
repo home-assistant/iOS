@@ -16,11 +16,11 @@ class CarPlaySceneDelegate: UIResponder {
 
     private var domainsListTemplate: any CarPlayTemplateProvider
     private var serversListTemplate: any CarPlayTemplateProvider
-    private var actionsListTemplate: any CarPlayTemplateProvider
+    private var quickAccessListTemplate: any CarPlayTemplateProvider
     private var areasZonesListTemplate: any CarPlayTemplateProvider
 
     private var allTemplates: [any CarPlayTemplateProvider] {
-        [actionsListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
+        [quickAccessListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
     }
 
     private var cachedConfig: CarPlayConfig?
@@ -28,7 +28,7 @@ class CarPlaySceneDelegate: UIResponder {
     override init() {
         self.domainsListTemplate = CarPlayDomainsListTemplate.build()
         self.serversListTemplate = CarPlayServersListTemplate.build()
-        self.actionsListTemplate = CarPlayQuickAccessTemplate.build()
+        self.quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
         self.areasZonesListTemplate = CarPlayAreasZonesTemplate.build()
         super.init()
     }
@@ -37,13 +37,15 @@ class CarPlaySceneDelegate: UIResponder {
         var visibleTemplates = allTemplates
 
         // In case config exists, we will only show the tabs that are enabled
-        if let config = getConfig() {
+        if let config = CarPlayConfig.getConfig() {
             guard config != cachedConfig else { return }
             cachedConfig = config
             visibleTemplates = config.tabs.map {
                 switch $0 {
                 case .quickAccess:
-                    return actionsListTemplate
+                    // Reload the quick access list template
+                    quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+                    return quickAccessListTemplate
                 case .areas:
                     return areasZonesListTemplate
                 case .domains:
@@ -62,33 +64,10 @@ class CarPlaySceneDelegate: UIResponder {
         updateTemplates()
     }
 
-    @MainActor
-    private func getConfig() -> CarPlayConfig? {
-        do {
-            if let config: CarPlayConfig = try Current.database().read({ db in
-                do {
-                    return try CarPlayConfig.fetchOne(db)
-                } catch {
-                    Current.Log.error("Error fetching CarPlay config \(error)")
-                }
-                return nil
-            }) {
-                Current.Log.info("CarPlay configuration exists, using it in CarPlay")
-                return config
-            } else {
-                Current.Log.error("No CarPlay config found when CarPlay started")
-                return nil
-            }
-        } catch {
-            Current.Log.error("Failed to access database (GRDB) in CarPlay, error: \(error.localizedDescription)")
-            return nil
-        }
-    }
-
     private func setInterfaceControllerForChildren() {
         domainsListTemplate.interfaceController = interfaceController
         serversListTemplate.interfaceController = interfaceController
-        actionsListTemplate.interfaceController = interfaceController
+        quickAccessListTemplate.interfaceController = interfaceController
         areasZonesListTemplate.interfaceController = interfaceController
     }
 

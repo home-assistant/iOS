@@ -16,6 +16,28 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
         self.tabs = tabs
         self.quickAccessItems = quickAccessItems
     }
+
+    public static func getConfig() -> CarPlayConfig? {
+        do {
+            if let config: CarPlayConfig = try Current.database().read({ db in
+                do {
+                    return try CarPlayConfig.fetchOne(db)
+                } catch {
+                    Current.Log.error("Error fetching CarPlay config \(error)")
+                }
+                return nil
+            }) {
+                Current.Log.info("CarPlay configuration exists")
+                return config
+            } else {
+                Current.Log.error("No CarPlay config found")
+                return nil
+            }
+        } catch {
+            Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
+            return nil
+        }
+    }
 }
 
 public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible, Equatable {
