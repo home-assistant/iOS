@@ -7,7 +7,7 @@ import Shared
 struct IntentSensorsAppEntity: AppEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Sensor")
 
-    static let defaultQuery = IntentDetailsTableAppEntityQuery()
+    static let defaultQuery = IntentSensorsAppEntityQuery()
 
     // UniqueID: serverId-entityId
     var id: String
@@ -33,9 +33,9 @@ struct IntentSensorsAppEntity: AppEntity {
 }
 
 @available(iOS 17.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-struct IntentDetailsTableAppEntityQuery: EntityQuery {
+struct IntentSensorsAppEntityQuery: EntityQuery {
     func entities(for identifiers: [IntentSensorsAppEntity.ID]) async throws -> [IntentSensorsAppEntity] {
-        getSensorEntities().flatMap(\.value).filter { identifiers.contains($0.id) }
+        getSensorEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentSensorsAppEntity> {
@@ -47,22 +47,22 @@ struct IntentDetailsTableAppEntityQuery: EntityQuery {
     }
 
     func defaultResult() async -> IntentSensorsAppEntity? {
-        try? getSensorEntities().flatMap(\.value).first
+        getSensorEntities().flatMap(\.1).first
     }
 
-    private func getSensorEntities(matching string: String? = nil) -> [Server: [IntentSensorsAppEntity]] {
-        var sensorEntities: [Server: [IntentSensorsAppEntity]] = [:]
+    private func getSensorEntities(matching string: String? = nil) -> [(Server, [IntentSensorsAppEntity])] {
+        var sensorEntities: [(Server, [IntentSensorsAppEntity])] = []
         let entities = ControlEntityProvider(domain: .sensor).getEntities(matching: string)
 
         for (server, values) in entities {
-            sensorEntities[server] = values.map({ entity in
+            sensorEntities.append((server, values.map({ entity in
                 IntentSensorsAppEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     displayString: entity.name
                 )
-            })
+            })))
         }
 
         return sensorEntities
