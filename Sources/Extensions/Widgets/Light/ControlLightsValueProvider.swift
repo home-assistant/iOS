@@ -17,6 +17,7 @@ struct ControlEntityItem {
 @available(iOS 18, *)
 struct ControlLightsValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlLightsConfiguration) async throws -> ControlEntityItem {
+        try await ControlRefreshDelay.wait()
         guard let serverId = configuration.light?.serverId,
               let lightId = configuration.light?.entityId,
               let state: String = try await ControlEntityProvider(domain: .light).currentState(
@@ -25,9 +26,9 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
               ) else {
             throw AppIntentError.restartPerform
         }
-
         let isOn = state == ControlEntityProvider.States.on.rawValue
-
+        print(Date())
+        print("isOn: \(isOn)")
         return item(light: configuration.light, value: isOn, iconName: configuration.icon)
     }
 
