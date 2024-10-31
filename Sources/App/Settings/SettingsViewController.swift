@@ -71,6 +71,7 @@ class SettingsViewController: HAFormViewController {
         return (section, { Current.servers.remove(observer: observer) })
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
 
