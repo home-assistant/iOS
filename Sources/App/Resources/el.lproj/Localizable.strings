@@ -96,6 +96,9 @@
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Εχει ήδη προστεθεί";
 "carPlay.labels.empty_domain_list" = "Δεν υπάρχουν διαθέσιμα domains";
 "carPlay.labels.no_servers_available" = "Δεν υπάρχουν διαθέσιμοι servers. Προσθέστε έναν server στην εφαρμογή.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Ενέργειες";
 "carPlay.navigation.tab.areas" = "Περιοχές";
 "carPlay.navigation.tab.domains" = "Ελεγχος";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Ανοίξτε το Home Assistant Companion για iOS για να δημιουργήσετε ενέργειες για το CarPlay.";
 "carPlay.no_entities.title" = "Δεν υπάρχουν διαθέσιμες οντότητες συμβατές με CarPlay.";
 "carPlay.notification.action.intro.body" = "Πατήστε για να δημιουργήσετε την πρώτη σας ενέργεια iOS";
 "carPlay.notification.action.intro.title" = "Δημιουργία ενέργειας iOS";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Φόρτωση...";
 "carPlay.unlock.confirmation.title" = "Είστε σίγουροι ότι θέλετε να εκτελέσετε ενέργεια ξεκλειδώματος στο %@;";
 "carplay.labels.already_added_server" = "Εχει ήδη προστεθεί";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Διαγραφή βάσης δεδομένων και έξοδος από την εφαρμογή";
 "database.problem.quit" = "Έξοδος εφαρμογής";
 "database.problem.title" = "Σφάλμα βάσης δεδομένων";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Εντοπισμός σφαλμάτων";
 "delete" = "Διαγραφή";
 "done_label" = "Έγινε!";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Η οντότητα '%@' δεν βρέθηκε!";
 "extensions.notification_content.error.request.hls_unavailable" = "Η ροή HLS δεν είναι διαθέσιμη";
 "extensions.notification_content.error.request.other" = "Λήφθηκε κωδικός κατάστασης που δεν είναι 200 (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Δεν είναι δυνατή η δημιουργία URL API";
 "ha_api.api_error.invalid_response" = "Λάβαμε μη έγκυρη απάντηση από το Home Assistant";
 "ha_api.api_error.manager_not_available" = "Το HA API Manager δεν είναι διαθέσιμο";

@@ -96,6 +96,9 @@
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Tryck för att fortsätta på din iPhone";
 "carPlay.action.intro.item.title" = "Skapa din första åtgärd";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Redan tillagd";
 "carPlay.labels.empty_domain_list" = "Inga tillgängliga domäner";
 "carPlay.labels.no_servers_available" = "Inga servrar tillgängliga. Lägg till en server i appen.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Åtgärder";
 "carPlay.navigation.tab.areas" = "Områden";
 "carPlay.navigation.tab.domains" = "Kontrollera";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Öppna iOS Companion App för att skapa åtgärder för CarPlay.";
 "carPlay.no_entities.title" = "Inga CarPlay-kompatibla enheter tillgängliga.";
 "carPlay.notification.action.intro.body" = "Tryck för att skapa din första iOS-åtgärd";
 "carPlay.notification.action.intro.title" = "Skapa iOS-åtgärd";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Laddar...";
 "carPlay.unlock.confirmation.title" = "Är du säker på att du vill låsa upp %@?";
 "carplay.labels.already_added_server" = "Redan tillagd";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Radera databasen & stäng appen";
 "database.problem.quit" = "Stäng appen";
 "database.problem.title" = "Databasfel";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Felsökning";
 "delete" = "Ta bort";
 "done_label" = "Klar";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitet '%@' hittades inte!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-flöde ej tillgängligt";
 "extensions.notification_content.error.request.other" = "Fick icke-200 statusskoden (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Kan inte skapa API-URL";
 "ha_api.api_error.invalid_response" = "Mottog ogiltigt svar från Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager är inte tillgänglig";
@@ -375,9 +384,9 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "onboarding.welcome.learn_more" = "Läs mer";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
 "open_label" = "Öppen";
-"permission.screen.bluetooth.secondary_button" = "Skip";
-"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
-"permission.screen.bluetooth.title" = "Search devices";
+"permission.screen.bluetooth.secondary_button" = "Hoppa över";
+"permission.screen.bluetooth.subtitle" = "Home Assistant-appen kan hitta enheter som använder Bluetooth på den här enheten. Tillåt Bluetooth-åtkomst för Home Assistant-appen.";
+"permission.screen.bluetooth.title" = "Sök enheter";
 "preview_output" = "Förhandsgranska";
 "reload_label" = "Ladda om";
 "requires_version" = "Kräver %@ eller nyare.";
