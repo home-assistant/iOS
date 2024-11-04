@@ -37,11 +37,11 @@ final class CarPlayQuickAccessViewModel {
 
     func sendIntroNotification() {
         let content = UNMutableNotificationContent()
-        content.title = L10n.CarPlay.Notification.Action.Intro.title
-        content.body = L10n.CarPlay.Notification.Action.Intro.body
+        content.title = L10n.CarPlay.Notification.QuickAccess.Intro.title
+        content.body = L10n.CarPlay.Notification.QuickAccess.Intro.body
         content.sound = UNNotificationSound.default
         let request = UNNotificationRequest(
-            identifier: NotificationIdentifier.carPlayActionIntro.rawValue,
+            identifier: NotificationIdentifier.carPlayIntro.rawValue,
             content: content,
             trigger: nil
         )
