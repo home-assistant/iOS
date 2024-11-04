@@ -15,6 +15,7 @@ enum SettingsDetailsGroup: String {
     case general
     case location
     case privacy
+    case carPlay
 }
 
 class SettingsDetailViewController: HAFormViewController, TypedRowControllerType {

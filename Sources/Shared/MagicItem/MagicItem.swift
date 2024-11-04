@@ -65,4 +65,20 @@ public struct MagicItem: Codable, Equatable {
             self.customization = customization
         }
     }
+
+    /// Icon for given magic item type
+    public func icon(info: Info) -> MaterialDesignIcons {
+        var icon: MaterialDesignIcons
+        switch type {
+        case .action, .scene:
+            icon = MaterialDesignIcons(named: info.iconName, fallback: .scriptTextOutlineIcon)
+        case .script:
+            icon = MaterialDesignIcons(
+                serversideValueNamed: info.iconName,
+                fallback: .scriptTextOutlineIcon
+            )
+        }
+
+        return icon
+    }
 }
