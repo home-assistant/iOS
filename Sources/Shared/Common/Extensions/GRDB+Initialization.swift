@@ -42,7 +42,7 @@ public enum DatabaseTables {
 public extension DatabaseQueue {
     static let appDatabase: () -> DatabaseQueue = {
         do {
-            let database = try DatabaseQueue(path: AppConstants.appGRDBFile.path)
+            let database = try DatabaseQueue(path: databasePath())
             createAppConfigTables(database: database)
             #if targetEnvironment(simulator)
             Current.Log.info("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
@@ -52,6 +52,17 @@ public extension DatabaseQueue {
             let errorMessage = "Failed to initialize GRDB, error: \(error.localizedDescription)"
             Current.Log.error(errorMessage)
             fatalError(errorMessage)
+        }
+    }
+
+    static func databasePath() -> String {
+        // Path for tests
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+            let tempDirectory = NSTemporaryDirectory()
+            return (tempDirectory as NSString).appendingPathComponent("test_database.sqlite")
+        } else {
+            // Path for App use
+            return AppConstants.appGRDBFile.path
         }
     }
 

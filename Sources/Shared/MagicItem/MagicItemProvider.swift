@@ -19,7 +19,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
     }
 
-    private func migrateCarPlayConfig(completion: @escaping () -> Void) {
+    func migrateCarPlayConfig(completion: @escaping () -> Void) {
         guard var carPlayConfig = try? Current.carPlayConfig() else {
             completion()
             return
@@ -37,7 +37,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         completion()
     }
 
-    private func migrateWatchConfig(completion: @escaping () -> Void) {
+    func migrateWatchConfig(completion: @escaping () -> Void) {
         guard var watchConfig = try? Current.watchConfig() else {
             completion()
             return
