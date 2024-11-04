@@ -96,6 +96,9 @@
 "cancel_label" = "キャンセル";
 "carPlay.action.intro.item.body" = "iPhoneで続けるをタップ";
 "carPlay.action.intro.item.title" = "最初のアクションを作成する";
+"carPlay.config.tabs.title" = "タブ";
+"carPlay.debug.delete_db.alert.title" = "CarPlay 設定を削除してもよろしいですか? 元に戻すことはできません";
+"carPlay.debug.delete_db.button.title" = "CarPlay設定を削除する";
 "carPlay.labels.already_added_server" = "すでに追加されています";
 "carPlay.labels.empty_domain_list" = "利用可能なドメインがありません";
 "carPlay.labels.no_servers_available" = "利用可能なサーバーがありません。アプリにサーバーを追加します。";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "アクション";
 "carPlay.navigation.tab.areas" = "エリア";
 "carPlay.navigation.tab.domains" = "コントロール";
+"carPlay.navigation.tab.quick_access" = "クイックアクセス";
+"carPlay.navigation.tab.settings" = "設定";
 "carPlay.no_actions.title" = "iOS コンパニオン アプリを開いて、CarPlay のアクションを作成します。";
 "carPlay.no_entities.title" = "利用可能な CarPlay 互換エンティティがありません。";
 "carPlay.notification.action.intro.body" = "タップして最初の iOS アクションを作成します";
 "carPlay.notification.action.intro.title" = "iOS アクションの作成";
+"carPlay.quick_access.intro.item.title" = "CarPlay設定を作成する";
 "carPlay.state.loading.title" = "読み込み中…";
 "carPlay.unlock.confirmation.title" = "%@にロック解除アクションを実行しますか?";
 "carplay.labels.already_added_server" = "すでに追加されています";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "データベースを削除してアプリを終了する";
 "database.problem.quit" = "アプリを終了";
 "database.problem.title" = "データベースエラー";
+"debug.reset.entities_database.title" = "アプリエンティティデータベースをリセット";
 "debug_section_label" = "デバッグ";
 "delete" = "削除";
 "done_label" = "完了";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "エンティティ '%@' が見つかりません！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLSストリームは利用できません";
 "extensions.notification_content.error.request.other" = "200以外のステータスコードを取得しました (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "データベース (GRDB) にアクセスできませんでした。エラー: %@";
+"grdb.config.migration_error.failed_to_save" = "新しい設定を保存できませんでした。エラー: %@";
 "ha_api.api_error.cant_build_url" = "API URLを構築できません";
 "ha_api.api_error.invalid_response" = "Home Assistantから無効な応答を受け取りました";
 "ha_api.api_error.manager_not_available" = "HA APIマネージャーが使用できません。";

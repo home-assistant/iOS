@@ -96,6 +96,9 @@
 "cancel_label" = "Anuluj";
 "carPlay.action.intro.item.body" = "Stuknij, aby kontynuować na iPhone";
 "carPlay.action.intro.item.title" = "Utwórz swoją pierwszą akcję";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Już dodane";
 "carPlay.labels.empty_domain_list" = "Brak dostępnych domen";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Akcje";
 "carPlay.navigation.tab.areas" = "Obszary";
 "carPlay.navigation.tab.domains" = "Control";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Należy otworzyć aplikację IOS, aby utworzyć akcje CarPlay.";
 "carPlay.no_entities.title" = "Nie znaleziono encji zgodnych z CarPlay.";
 "carPlay.notification.action.intro.body" = "Stuknij, aby utworzyć pierwszą akcję iOS";
 "carPlay.notification.action.intro.title" = "Utwórz akcję iOS";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Ładuję…";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Już dodane";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Usuń bazę i opuść aplikację";
 "database.problem.quit" = "Zamknij aplikację";
 "database.problem.title" = "Błąd bazy danych";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Debug";
 "delete" = "Usuń";
 "done_label" = "Gotowe";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Nie znaleziono encji \"%@\"!";
 "extensions.notification_content.error.request.hls_unavailable" = "Strumień HLS niedostępny";
 "extensions.notification_content.error.request.other" = "Otrzymano kod inny niż 200 (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Nie można stworzyć adresu URL interfejsu API";
 "ha_api.api_error.invalid_response" = "Otrzymano nieprawidłową odpowiedź od Home Assistant";
 "ha_api.api_error.manager_not_available" = "Menedżer interfejsu API HA jest niedostępny";

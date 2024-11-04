@@ -96,6 +96,9 @@
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "在您的 iPhone 上点击并继续";
 "carPlay.action.intro.item.title" = "创建您的第一个动作";
+"carPlay.config.tabs.title" = "标签";
+"carPlay.debug.delete_db.alert.title" = "您确定要删除 CarPlay 配置吗 ？此操作无法恢复";
+"carPlay.debug.delete_db.button.title" = "删除 CarPlay 配置";
 "carPlay.labels.already_added_server" = "已添加";
 "carPlay.labels.empty_domain_list" = "没有可用的域";
 "carPlay.labels.no_servers_available" = "没有可用的服务器。在应用中添加服务器。";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "动作";
 "carPlay.navigation.tab.areas" = "区域";
 "carPlay.navigation.tab.domains" = "控制";
+"carPlay.navigation.tab.quick_access" = "快速访问";
+"carPlay.navigation.tab.settings" = "设置";
 "carPlay.no_actions.title" = "打开 iOS Companion 应用为 CarPlay 创建动作。";
 "carPlay.no_entities.title" = "没有可用的 CarPlay 兼容实体。";
 "carPlay.notification.action.intro.body" = "点击可创建您的第一个 iOS 动作";
 "carPlay.notification.action.intro.title" = "创建 iOS 动作";
+"carPlay.quick_access.intro.item.title" = "创建您的 CarPlay 配置";
 "carPlay.state.loading.title" = "正在加载…";
 "carPlay.unlock.confirmation.title" = "您确定要对%@执行解锁动作吗 ？";
 "carplay.labels.already_added_server" = "已添加";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "删除数据库并退出应用程序";
 "database.problem.quit" = "退出应用";
 "database.problem.title" = "数据库错误";
+"debug.reset.entities_database.title" = "重置应用实体数据库";
 "debug_section_label" = "调试";
 "delete" = "删除";
 "done_label" = "完成";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "实体“%@”未找到！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 流不可用";
 "extensions.notification_content.error.request.other" = "得到了非 200 的状态码（%li）";
+"grdb.config.migration_error.failed_access_grdb" = "无法访问数据库 (GRDB) ，错误：%@";
+"grdb.config.migration_error.failed_to_save" = "无法保存新配置，错误：%@";
 "ha_api.api_error.cant_build_url" = "无法构建API URL";
 "ha_api.api_error.invalid_response" = "从Home Assistant中收到的反馈无效";
 "ha_api.api_error.manager_not_available" = "Home Assistant API 管理不可用";

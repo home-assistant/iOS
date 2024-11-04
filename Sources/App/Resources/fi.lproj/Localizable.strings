@@ -96,6 +96,9 @@
 "cancel_label" = "Peruuta";
 "carPlay.action.intro.item.body" = "Napauta jatkaaksesi iPhonessasi";
 "carPlay.action.intro.item.title" = "Luo ensimmäinen toiminto";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Lisätty jo";
 "carPlay.labels.empty_domain_list" = "Verkkotunnuksia ei ole saatavilla";
 "carPlay.labels.no_servers_available" = "Palvelimia ei ole saatavilla. Lisää palvelin sovelluksessa.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Toiminnot";
 "carPlay.navigation.tab.areas" = "Alueet";
 "carPlay.navigation.tab.domains" = "Control";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
 "carPlay.notification.action.intro.body" = "Napauta luodaksesi ensimmäisen iOS-toiminnon";
 "carPlay.notification.action.intro.title" = "Luo iOS-toiminto";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Ladataan…";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Lisätty jo";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Poista tietokanta ja sulje sovellus";
 "database.problem.quit" = "Sulje sovellus";
 "database.problem.title" = "Tietokantavirhe";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Vianmääritys";
 "delete" = "Poista";
 "done_label" = "Valmis";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entiteettiä '%@' ei löydy";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.error.request.other" = "Saatiin non-200 tilakoodia (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Ei voi rakentaa API URL:ia";
 "ha_api.api_error.invalid_response" = "Vastaanotettu virheellinen vastaus Home Assistantilta";
 "ha_api.api_error.manager_not_available" = "HA API Manager ei ole käytettävissä";

@@ -435,6 +435,8 @@ public enum L10n {
         public enum Item {
           /// Tap to continue on your iPhone
           public static var body: String { return L10n.tr("Localizable", "carPlay.action.intro.item.body") }
+          /// Create your first action
+          public static var title: String { return L10n.tr("Localizable", "carPlay.action.intro.item.title") }
         }
       }
     }
@@ -484,6 +486,8 @@ public enum L10n {
         public static var previous: String { return L10n.tr("Localizable", "carPlay.navigation.button.previous") }
       }
       public enum Tab {
+        /// Actions
+        public static var actions: String { return L10n.tr("Localizable", "carPlay.navigation.tab.actions") }
         /// Areas
         public static var areas: String { return L10n.tr("Localizable", "carPlay.navigation.tab.areas") }
         /// Control
@@ -531,6 +535,43 @@ public enum L10n {
         /// Are you sure you want to perform unlock action on %@?
         public static func title(_ p1: Any) -> String {
           return L10n.tr("Localizable", "carPlay.unlock.confirmation.title", String(describing: p1))
+        }
+      }
+    }
+  }
+
+  public enum Carplay {
+    public enum Labels {
+      /// Already added
+      public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carplay.labels.already_added_server") }
+      /// No domains available
+      public static var emptyDomainList: String { return L10n.tr("Localizable", "carplay.labels.empty_domain_list") }
+      /// No servers available. Add a server in the app.
+      public static var noServersAvailable: String { return L10n.tr("Localizable", "carplay.labels.no_servers_available") }
+      /// Servers
+      public static var servers: String { return L10n.tr("Localizable", "carplay.labels.servers") }
+    }
+    public enum Lock {
+      public enum Confirmation {
+        /// Are you sure you want to perform lock action on %@?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "carplay.lock.confirmation.title", String(describing: p1))
+        }
+      }
+    }
+    public enum Navigation {
+      public enum Button {
+        /// Next
+        public static var next: String { return L10n.tr("Localizable", "carplay.navigation.button.next") }
+        /// Previous
+        public static var previous: String { return L10n.tr("Localizable", "carplay.navigation.button.previous") }
+      }
+    }
+    public enum Unlock {
+      public enum Confirmation {
+        /// Are you sure you want to perform unlock action on %@?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "carplay.unlock.confirmation.title", String(describing: p1))
         }
       }
     }
@@ -2571,6 +2612,10 @@ public enum L10n {
         public static var selectServer: String { return L10n.tr("Localizable", "watch.config.assist.select_server") }
       }
       public enum MigrationError {
+        /// Failed to access database (GRDB), error: %@
+        public static func failedAccessGrdb(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_access_grdb", String(describing: p1))
+        }
         /// Failed to save initial watch config, error: %@
         public static func failedCreateNewConfig(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.config.migration_error.failed_create_new_config", String(describing: p1))
@@ -2578,6 +2623,10 @@ public enum L10n {
         /// Failed to migrate actions to watch config, error: %@
         public static func failedMigrateActions(_ p1: Any) -> String {
           return L10n.tr("Localizable", "watch.config.migration_error.failed_migrate_actions", String(describing: p1))
+        }
+        /// Failed to save new Watch config, error: %@
+        public static func failedToSave(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.migration_error.failed_to_save", String(describing: p1))
         }
       }
     }

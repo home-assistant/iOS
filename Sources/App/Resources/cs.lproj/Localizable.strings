@@ -96,6 +96,9 @@
 "cancel_label" = "Zrušit";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";
 "carPlay.action.intro.item.title" = "Vytvořte svou první akci";
+"carPlay.config.tabs.title" = "Karty";
+"carPlay.debug.delete_db.alert.title" = "Opravdu chcete smazat nastavení CarPlay? Toto nelze vrátit zpět.";
+"carPlay.debug.delete_db.button.title" = "Smazat nastavení CarPlay";
 "carPlay.labels.already_added_server" = "Již přidáno";
 "carPlay.labels.empty_domain_list" = "Nejsou k dispozici žádné domény";
 "carPlay.labels.no_servers_available" = "Nejsou k dispozici žádné servery. Přidejte server do aplikace.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Akce";
 "carPlay.navigation.tab.areas" = "Oblasti";
 "carPlay.navigation.tab.domains" = "Řízení";
+"carPlay.navigation.tab.quick_access" = "Rychlý přístup";
+"carPlay.navigation.tab.settings" = "Nastavení";
 "carPlay.no_actions.title" = "Otevřete aplikaci Home Assistanta a vytvořte akce pro CarPlay.";
 "carPlay.no_entities.title" = "Nejsou k dispozici žádné entity kompatibilní s CarPlay.";
 "carPlay.notification.action.intro.body" = "Klepnutím vytvořte svou první akci pro iOS";
 "carPlay.notification.action.intro.title" = "Vytvořit akci pro iOS";
+"carPlay.quick_access.intro.item.title" = "Vytvořte nastavení CarPlay";
 "carPlay.state.loading.title" = "Načítání...";
 "carPlay.unlock.confirmation.title" = "Opravdu chcete provést akci odemknutí na %@?";
 "carplay.labels.already_added_server" = "Již přidáno";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Smazat databázi a ukončit aplikaci";
 "database.problem.quit" = "Ukončit aplikaci";
 "database.problem.title" = "Chyba databáze";
+"debug.reset.entities_database.title" = "Resetovat databázi entit aplikace";
 "debug_section_label" = "Ladění";
 "delete" = "Smazat";
 "done_label" = "Hotovo";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entita \"%@\" nebyla nalezena!";
 "extensions.notification_content.error.request.hls_unavailable" = "Proud HLS je nedostupný";
 "extensions.notification_content.error.request.other" = "Stavový kód jiný než 200 (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Nepodařilo se získat přístup k databázi (GRDB), chyba: %@";
+"grdb.config.migration_error.failed_to_save" = "Nepodařilo se uložit nové nastavení, chyba: %@";
 "ha_api.api_error.cant_build_url" = "Nelze sestavit URL API";
 "ha_api.api_error.invalid_response" = "Byla přijata neplatná odpověď od Home Assistanta";
 "ha_api.api_error.manager_not_available" = "API manažer Home Assistanta není dostupný";

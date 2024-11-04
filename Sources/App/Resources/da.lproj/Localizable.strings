@@ -96,6 +96,9 @@
 "cancel_label" = "Annullér";
 "carPlay.action.intro.item.body" = "Tryk for at fortsætte på din iPhone";
 "carPlay.action.intro.item.title" = "Opret din første handling";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Allerede tilføjet";
 "carPlay.labels.empty_domain_list" = "Ingen domæner tilgængelig";
 "carPlay.labels.no_servers_available" = "Ingen servere tilgængelige. Tilføj en server i appen.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Handlinger";
 "carPlay.navigation.tab.areas" = "Områder";
 "carPlay.navigation.tab.domains" = "Kontrol";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Åbn iOS-appen for at oprette handlinger til CarPlay.";
 "carPlay.no_entities.title" = "Ingen tilgængelige CarPlay-kompatible entiteter.";
 "carPlay.notification.action.intro.body" = "Tryk for at oprette din første iOS-handling";
 "carPlay.notification.action.intro.title" = "Opret iOS-handling";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Indlæser…";
 "carPlay.unlock.confirmation.title" = "Er du sikker på, at du vil udføre oplåsningshandling på %@?";
 "carplay.labels.already_added_server" = "Allerede tilføjet";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Slet database og afslut app";
 "database.problem.quit" = "Afslut app";
 "database.problem.title" = "Fejl i database";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Fejlsøg";
 "delete" = "Slet";
 "done_label" = "Færdig";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entiteten '%@' blev ikke fundet!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-stream er ikke tilgængelig";
 "extensions.notification_content.error.request.other" = "Modtog en ikke-200 statuskode (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Kan ikke oprette API-URL";
 "ha_api.api_error.invalid_response" = "Modtog ugyldigt svar fra Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager er ikke tilgængelig";
