@@ -12,13 +12,33 @@ struct WidgetSensors: Widget {
             intent: WidgetSensorsAppIntent.self,
             provider: WidgetSensorsAppIntentTimelineProvider()
         ) { timelineEntry in
-            WidgetSensorsView(entry: timelineEntry)
-                .widgetBackground(Color.clear)
+            WidgetBasicContainerView(
+                emptyViewGenerator: {
+                    AnyView(WidgetEmptyView(message: L10n.Widgets.Sensors.notConfigured))
+                },
+                contents: timelineEntry.sensorData.map { sensor in
+                    WidgetBasicViewModel(
+                        id: sensor.id,
+                        title: appendUnitOfMeasurementToValue(sensor: sensor),
+                        subtitle: sensor.key,
+                        interactionType: .refresh,
+                        icon: MaterialDesignIcons(
+                            serversideValueNamed: sensor.icon ?? "",
+                            fallback: .temperatureKelvinIcon
+                        ),
+                        useCustomColors: false
+                    )
+                }
+            )
         }
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Sensors.title)
         .description(L10n.Widgets.Sensors.description)
         .supportedFamilies(WidgetDetailsTableSupportedFamilies.families)
+    }
+
+    private func appendUnitOfMeasurementToValue(sensor: WidgetSensorsEntry.SensorData) -> String {
+        "\(sensor.value) \(sensor.unitOfMeasurement ?? "")"
     }
 }
 

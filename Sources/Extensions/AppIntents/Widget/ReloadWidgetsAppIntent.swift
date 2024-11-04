@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import WidgetKit
 
-@available(iOS 17, *)
+@available(iOS 16, *)
 struct ReloadWidgetsAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.reload_widgets.app_intent.title",

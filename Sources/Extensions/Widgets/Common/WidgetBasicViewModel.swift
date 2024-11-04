@@ -41,6 +41,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     enum InteractionType: Hashable, Encodable {
         case widgetURL(URL)
         case appIntent(WidgetIntentType)
+        case refresh
     }
 
     enum WidgetIntentType: Hashable, Encodable {

@@ -52,6 +52,8 @@ struct WidgetBasicContainerView: View {
                 intent.showConfirmationNotification = showConfirmationNotification
                 return intent
             }
+        case .refresh:
+            return ReloadWidgetsAppIntent()
         }
     }
 
