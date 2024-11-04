@@ -36,24 +36,28 @@ class CarPlaySceneDelegate: UIResponder {
     private func setTemplates() {
         var visibleTemplates = allTemplates
 
-        // In case config exists, we will only show the tabs that are enabled
-        if let config = CarPlayConfig.getConfig() {
-            guard config != cachedConfig else { return }
-            cachedConfig = config
-            visibleTemplates = config.tabs.map {
-                switch $0 {
-                case .quickAccess:
-                    // Reload the quick access list template
-                    quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
-                    return quickAccessListTemplate
-                case .areas:
-                    return areasZonesListTemplate
-                case .domains:
-                    return domainsListTemplate
-                case .settings:
-                    return serversListTemplate
+        do {
+            // In case config exists, we will only show the tabs that are enabled
+            if let config = try CarPlayConfig.config() {
+                guard config != cachedConfig else { return }
+                cachedConfig = config
+                visibleTemplates = config.tabs.map {
+                    switch $0 {
+                    case .quickAccess:
+                        // Reload the quick access list template
+                        quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+                        return quickAccessListTemplate
+                    case .areas:
+                        return areasZonesListTemplate
+                    case .domains:
+                        return domainsListTemplate
+                    case .settings:
+                        return serversListTemplate
+                    }
                 }
             }
+        } catch {
+            Current.Log.error("Error fetching CarPlay config \(error)")
         }
 
         let tabBar = CPTabBarTemplate(templates: visibleTemplates.map { templateProvider in

@@ -96,6 +96,9 @@
 "cancel_label" = "Cancel·lar";
 "carPlay.action.intro.item.body" = "Continua a l'iPhone";
 "carPlay.action.intro.item.title" = "Crea la teva primera acció";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Ja s'ha afegit";
 "carPlay.labels.empty_domain_list" = "No hi ha dominis disponibles";
 "carPlay.labels.no_servers_available" = "No hi ha servidors disponibles. Afegiu un servidor a l'aplicació.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Accions";
 "carPlay.navigation.tab.areas" = "Àrees";
 "carPlay.navigation.tab.domains" = "Control";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Obriu l'aplicació complementària d'iOS per crear accions per a CarPlay.";
 "carPlay.no_entities.title" = "No hi ha entitats compatibles amb el CarPlay.";
 "carPlay.notification.action.intro.body" = "Toca per crear la teva primera acció d'iOS";
 "carPlay.notification.action.intro.title" = "Crea una acció d'iOS";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "S'està carregant…";
 "carPlay.unlock.confirmation.title" = "Esteu segur que voleu realitzar accions de desbloqueig a %@?";
 "carplay.labels.already_added_server" = "Ja s'ha afegit";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Eliminar la base de dades i sortir de l'aplicació";
 "database.problem.quit" = "Surt de l'aplicació";
 "database.problem.title" = "Error de base de dades";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Depurar";
 "delete" = "Suprimeix";
 "done_label" = "Fet";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitat '%@' no trobada!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS Stream no disponible";
 "extensions.notification_content.error.request.other" = "S'ha rebut codi d'estat no-200 (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "No es pot crear l'adreça URL de l'API";
 "ha_api.api_error.invalid_response" = "S'ha rebut una resposta invàlida del Home Assistant";
 "ha_api.api_error.manager_not_available" = "El gestor API HA no està disponible";

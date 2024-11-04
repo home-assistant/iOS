@@ -96,6 +96,9 @@
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";
 "carPlay.action.intro.item.title" = "Az első művelet létrehozása";
+"carPlay.config.tabs.title" = "Lapfülek";
+"carPlay.debug.delete_db.alert.title" = "Biztosan törli a CarPlay konfigurációt? Ez a művelet nem visszavonható";
+"carPlay.debug.delete_db.button.title" = "CarPlay konfiguráció törlése";
 "carPlay.labels.already_added_server" = "Már hozzáadva";
 "carPlay.labels.empty_domain_list" = "Nincsenek elérhető domainek";
 "carPlay.labels.no_servers_available" = "Nincs elérhető szerver. Adjon hozzá egy kiszolgálót az alkalmazáshoz.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Műveletek";
 "carPlay.navigation.tab.areas" = "Területek";
 "carPlay.navigation.tab.domains" = "Ellenőrzés";
+"carPlay.navigation.tab.quick_access" = "Gyors elérés";
+"carPlay.navigation.tab.settings" = "Beállítások";
 "carPlay.no_actions.title" = "Nyissa meg az iOS Companion alkalmazást a CarPlayhez tartozó műveletek létrehozásához.";
 "carPlay.no_entities.title" = "Nem állnak rendelkezésre CarPlay-kompatibilis entitások.";
 "carPlay.notification.action.intro.body" = "Koppintással létrehozhatja első iOS-műveletét";
 "carPlay.notification.action.intro.title" = "iOS-művelet létrehozása";
+"carPlay.quick_access.intro.item.title" = "Hozza létre CarPlay konfigurációját";
 "carPlay.state.loading.title" = "Betöltés...";
 "carPlay.unlock.confirmation.title" = "Biztos, hogy feloldó műveletet hajt végre a következőn %@ ?";
 "carplay.labels.already_added_server" = "Már hozzáadva";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Adatbázis törlése és kilépés az alkalmazásból";
 "database.problem.quit" = "Kilépés az alkalmazásból";
 "database.problem.title" = "Adatbázis hiba";
+"debug.reset.entities_database.title" = "Alkalmazás entitások adatbázisának visszaállítása";
 "debug_section_label" = "Hibakeresés";
 "delete" = "Törlés";
 "done_label" = "Kész";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "'%@' entitás nem található!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream nem elérhető";
 "extensions.notification_content.error.request.other" = "Nem 200-as állapotkód (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Nem sikerült elérni az adatbázist (GRDB), hiba: %@";
+"grdb.config.migration_error.failed_to_save" = "Nem sikerült elmenteni az új konfigurációt, hiba: %@";
 "ha_api.api_error.cant_build_url" = "Nem lehet API URL-t létrehozni";
 "ha_api.api_error.invalid_response" = "Érvénytelen válasz érkezett a Home Assistant-tól";
 "ha_api.api_error.manager_not_available" = "A HA API Manager nem elérhető";

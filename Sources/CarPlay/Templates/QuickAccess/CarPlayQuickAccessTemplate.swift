@@ -27,7 +27,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         )
         item.handler = { [weak self] _, completion in
             self?.viewModel.sendIntroNotification()
-            self?.displayActionResultIcon(on: item, success: true)
+            self?.displayItemResultIcon(on: item, success: true)
             completion()
         }
         return item
@@ -78,13 +78,17 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {
         let items: [CPListItem] = items.map { magicItem in
-            let info = magicItemProvider.getInfo(for: magicItem)
-            let materialDesignIcon = MaterialDesignIcons(named: info.iconName)
-                .carPlayIcon(color: .init(hex: info.customization?.iconColor))
+            let info = magicItemProvider.getInfo(for: magicItem) ?? .init(
+                id: magicItem.id,
+                name: magicItem.id,
+                iconName: "",
+                customization: nil
+            )
+            let icon = magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
             let item = CPListItem(
                 text: info.name,
                 detailText: nil,
-                image: materialDesignIcon
+                image: icon
             )
             item.handler = { [weak self] _, _ in
                 if info.customization?.requiresConfirmation ?? false {
@@ -106,11 +110,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             server.identifier.rawValue == magicItem.serverId
         }) else {
             Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
-            displayActionResultIcon(on: item, success: false)
+            displayItemResultIcon(on: item, success: false)
             return
         }
         Current.api(for: server).executeMagicItem(item: magicItem) { success in
-            self.displayActionResultIcon(on: item, success: success)
+            self.displayItemResultIcon(on: item, success: success)
         }
     }
 
@@ -136,7 +140,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     // Present a checkmark or cross depending on success or failure
     // After 2 seconds the original icon is restored
-    private func displayActionResultIcon(on item: CPListItem, success: Bool) {
+    private func displayItemResultIcon(on item: CPListItem, success: Bool) {
         let itemOriginalIcon = item.image
         if success {
             item.setImage(MaterialDesignIcons.checkIcon.carPlayIcon(color: AppConstants.tintColor))

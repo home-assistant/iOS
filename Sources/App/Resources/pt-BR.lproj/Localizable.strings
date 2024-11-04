@@ -96,6 +96,9 @@
 "cancel_label" = "Cancelar";
 "carPlay.action.intro.item.body" = "Toque para continuar em seu iPhone";
 "carPlay.action.intro.item.title" = "Crie sua primeira ação";
+"carPlay.config.tabs.title" = "Abas";
+"carPlay.debug.delete_db.alert.title" = "Tem certeza de que deseja excluir a configuração do CarPlay? Isso não pode ser revertido";
+"carPlay.debug.delete_db.button.title" = "Excluir configuração do CarPlay";
 "carPlay.labels.already_added_server" = "Já adicionado";
 "carPlay.labels.empty_domain_list" = "Nenhum domínio disponível";
 "carPlay.labels.no_servers_available" = "Nenhum servidor disponível. Adicione um servidor no aplicativo.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Ações";
 "carPlay.navigation.tab.areas" = "Áreas";
 "carPlay.navigation.tab.domains" = "Controle";
+"carPlay.navigation.tab.quick_access" = "Acesso rápido";
+"carPlay.navigation.tab.settings" = "Configurações";
 "carPlay.no_actions.title" = "Abra o aplicativo iOS Companion para criar ações para o CarPlay.";
 "carPlay.no_entities.title" = "Nenhuma entidade compatível com CarPlay disponível.";
 "carPlay.notification.action.intro.body" = "Toque para criar sua primeira ação do iOS";
 "carPlay.notification.action.intro.title" = "Criar ação do iOS";
+"carPlay.quick_access.intro.item.title" = "Crie sua configuração do CarPlay";
 "carPlay.state.loading.title" = "Carregando…";
 "carPlay.unlock.confirmation.title" = "Tem certeza de que deseja executar a ação de desbloqueio em %@?";
 "carplay.labels.already_added_server" = "Adicionado";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Excluir banco de dados e sair do aplicativo";
 "database.problem.quit" = "Sair do aplicativo";
 "database.problem.title" = "Erro de banco de dados";
+"debug.reset.entities_database.title" = "Redefinir o banco de dados de entidades do aplicativo";
 "debug_section_label" = "Depurar";
 "delete" = "Excluir";
 "done_label" = "Feito";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entidade ' %@ ' não encontrada!";
 "extensions.notification_content.error.request.hls_unavailable" = "Fluxo HLS indisponível";
 "extensions.notification_content.error.request.other" = "Código de status diferente de 200 ( %li )";
+"grdb.config.migration_error.failed_access_grdb" = "Falha ao acessar o banco de dados (GRDB), erro: %@";
+"grdb.config.migration_error.failed_to_save" = "Falha ao salvar a nova configuração, erro: %@";
 "ha_api.api_error.cant_build_url" = "Não é possível criar a URL da API";
 "ha_api.api_error.invalid_response" = "Resposta inválida recebida do Home Assistant";
 "ha_api.api_error.manager_not_available" = "O Gerenciador da API HA  não está disponível";

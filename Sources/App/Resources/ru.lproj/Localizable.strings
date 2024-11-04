@@ -96,6 +96,9 @@
 "cancel_label" = "Отмена";
 "carPlay.action.intro.item.body" = "Нажмите, чтобы продолжить на iPhone";
 "carPlay.action.intro.item.title" = "Создать свое первое действие";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "Домены недоступны";
 "carPlay.labels.no_servers_available" = "Нет доступных серверов. Добавьте сервер в приложении.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Действия";
 "carPlay.navigation.tab.areas" = "Зоны";
 "carPlay.navigation.tab.domains" = "Управление";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Откройте приложение для iOS, чтобы создавать действия для CarPlay.";
 "carPlay.no_entities.title" = "Объекты, совместимые с CarPlay, недоступны.";
 "carPlay.notification.action.intro.body" = "Нажмите, чтобы создать свое первое действие в iOS";
 "carPlay.notification.action.intro.title" = "Создание действия iOS";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Загрузка…";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Already added";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Удалить базу данных и выйти из приложения";
 "database.problem.quit" = "Выйти из приложения";
 "database.problem.title" = "Ошибка базы данных";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Отладка";
 "delete" = "Удалить";
 "done_label" = "Готово";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Объект «%@» не найден!";
 "extensions.notification_content.error.request.hls_unavailable" = "Поток HLS недоступен";
 "extensions.notification_content.error.request.other" = "Получен неожиданный (не 200) код состояния (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Не удается построить URL-адрес API";
 "ha_api.api_error.invalid_response" = "Получен недопустимый ответ от Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager недоступен";
@@ -376,7 +385,7 @@ Home Assistant - это бесплатное программное обеспе
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
 "open_label" = "Открыто";
 "permission.screen.bluetooth.secondary_button" = "Skip";
-"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.subtitle" = "Приложение Home Assistant может находить устройства, использующие Bluetooth этого устройства. Разрешите доступ по Bluetooth для приложения Home Assistant.";
 "permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Предварительный результат";
 "reload_label" = "Перезагрузить";

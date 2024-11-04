@@ -8,9 +8,14 @@ final class CarPlayQuickAccessViewModel {
     weak var templateProvider: CarPlayQuickAccessTemplate?
 
     func update() {
-        if let config = CarPlayConfig.getConfig() {
-            templateProvider?.updateList(for: config.quickAccessItems)
-        } else {
+        do {
+            if let config = try CarPlayConfig.config() {
+                templateProvider?.updateList(for: config.quickAccessItems)
+            } else {
+                templateProvider?.updateList(for: [])
+            }
+        } catch {
+            Current.Log.error("Failed to access CarPlay configuration, error: \(error.localizedDescription)")
             templateProvider?.updateList(for: [])
         }
     }
@@ -37,11 +42,11 @@ final class CarPlayQuickAccessViewModel {
 
     func sendIntroNotification() {
         let content = UNMutableNotificationContent()
-        content.title = L10n.CarPlay.Notification.Action.Intro.title
-        content.body = L10n.CarPlay.Notification.Action.Intro.body
+        content.title = L10n.CarPlay.Notification.QuickAccess.Intro.title
+        content.body = L10n.CarPlay.Notification.QuickAccess.Intro.body
         content.sound = UNNotificationSound.default
         let request = UNNotificationRequest(
-            identifier: NotificationIdentifier.carPlayActionIntro.rawValue,
+            identifier: NotificationIdentifier.carPlayIntro.rawValue,
             content: content,
             trigger: nil
         )

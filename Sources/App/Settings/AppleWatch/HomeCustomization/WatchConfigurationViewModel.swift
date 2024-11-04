@@ -23,7 +23,7 @@ final class WatchConfigurationViewModel: ObservableObject {
         }
     }
 
-    func magicItemInfo(for item: MagicItem) -> MagicItem.Info {
+    func magicItemInfo(for item: MagicItem) -> MagicItem.Info? {
         magicItemProvider.getInfo(for: item)
     }
 
@@ -99,14 +99,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     @MainActor
     private func loadDatabase() {
         do {
-            if let config: WatchConfig = try Current.database().read({ db in
-                do {
-                    return try WatchConfig.fetchOne(db)
-                } catch {
-                    Current.Log.error("Error fetching watch config \(error)")
-                }
-                return nil
-            }) {
+            if let config = try WatchConfig.config() {
                 setConfig(config)
                 Current.Log.info("Watch configuration exists")
             } else {

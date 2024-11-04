@@ -96,6 +96,9 @@
 "cancel_label" = "Annulla";
 "carPlay.action.intro.item.body" = "Tocca per continuare sul tuo iPhone";
 "carPlay.action.intro.item.title" = "Crea la tua prima azione";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Già aggiunto";
 "carPlay.labels.empty_domain_list" = "Nessun dominio disponibile";
 "carPlay.labels.no_servers_available" = "Nessun server disponibile. Aggiungere un server nell'app.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Azioni";
 "carPlay.navigation.tab.areas" = "Aree";
 "carPlay.navigation.tab.domains" = "Controllo";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Apri l'app iOS Companion per creare azioni per CarPlay.";
 "carPlay.no_entities.title" = "Nessuna entità compatibile CarPlay disponibile.";
 "carPlay.notification.action.intro.body" = "Tocca per creare la tua prima azione iOS";
 "carPlay.notification.action.intro.title" = "Crea azione iOS";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Caricamento…";
 "carPlay.unlock.confirmation.title" = "Sei sicuro di voler eseguire l'azione di sblocco su %@?";
 "carplay.labels.already_added_server" = "Già aggiunto";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Elimina il database e chiudi l'applicazione";
 "database.problem.quit" = "Esci dall'app";
 "database.problem.title" = "Errore del database";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "";
 "delete" = "Cancella";
 "done_label" = "Fatto";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entità ' %@ ' non trovata!";
 "extensions.notification_content.error.request.hls_unavailable" = "Flusso HLS non disponibile";
 "extensions.notification_content.error.request.other" = "Ha ottenuto un codice di stato non-200 (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Impossibile costruire l'URL API";
 "ha_api.api_error.invalid_response" = "Ricevuta risposta non valida da Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager non è disponibile";

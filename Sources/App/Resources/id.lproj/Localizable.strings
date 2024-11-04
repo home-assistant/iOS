@@ -96,6 +96,9 @@
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";
 "carPlay.action.intro.item.title" = "Buat aksi pertama Anda";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Sudah ditambahkan";
 "carPlay.labels.empty_domain_list" = "Tidak ada domain tersedia";
 "carPlay.labels.no_servers_available" = "Tidak ada server tersedia. Tambahkan di aplikasi.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Aksi";
 "carPlay.navigation.tab.areas" = "Area";
 "carPlay.navigation.tab.domains" = "Kontrol";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Buka Aplikasi Pendamping iOS untuk membuat aksi untuk CarPlay.";
 "carPlay.no_entities.title" = "Tidak ada entitas yang kompatibel dengan CarPlay.";
 "carPlay.notification.action.intro.body" = "Ketuk untuk membuat Aksi iOS pertama Anda";
 "carPlay.notification.action.intro.title" = "Buat Aksi iOS";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Memuat…";
 "carPlay.unlock.confirmation.title" = "Yakin ingin melakukan tindakan membuka kunci pada %@?";
 "carplay.labels.already_added_server" = "Sudah ditambahkan";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Hapus Basis Data dan Keluar dari Aplikasi";
 "database.problem.quit" = "Keluar dari Aplikasi";
 "database.problem.title" = "Kesalahan Basis Data";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Debug";
 "delete" = "Hapus";
 "done_label" = "Selesai";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitas '%@' tidak ditemukan!";
 "extensions.notification_content.error.request.hls_unavailable" = "Aliran HLS tidak tersedia";
 "extensions.notification_content.error.request.other" = "Diterima kode status bernilai bukan 200 (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Tidak dapat membangun URL API";
 "ha_api.api_error.invalid_response" = "Menerima respons yang tidak valid dari Home Assistant";
 "ha_api.api_error.manager_not_available" = "Manajer API Home Assistant tidak tersedia";

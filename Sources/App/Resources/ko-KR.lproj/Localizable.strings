@@ -96,6 +96,9 @@
 "cancel_label" = "취소";
 "carPlay.action.intro.item.body" = "iPhone에서 계속하려면 탭하세요.";
 "carPlay.action.intro.item.title" = "첫 번째 동작 만들기";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "이미 추가됨";
 "carPlay.labels.empty_domain_list" = "사용 가능한 도메인이 없습니다.";
 "carPlay.labels.no_servers_available" = "사용 가능한 서버가 없습니다. 앱에 서버를 추가하세요.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "동작";
 "carPlay.navigation.tab.areas" = "영역";
 "carPlay.navigation.tab.domains" = "제어하기";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "CarPlay용 동작을 생성하려면 iOS Companion App을 엽니다.";
 "carPlay.no_entities.title" = "사용 가능한 CarPlay 호환 구성요소가 없습니다.";
 "carPlay.notification.action.intro.body" = "첫 번째 iOS 동작을 만들려면 탭하세요.";
 "carPlay.notification.action.intro.title" = "iOS 동작 생성";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "로드 중…";
 "carPlay.unlock.confirmation.title" = "%@ 에서 잠금 해제 동작을 수행하시겠습니까?";
 "carplay.labels.already_added_server" = "이미 추가됨";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "데이터베이스 삭제 및 앱 종료";
 "database.problem.quit" = "앱 종료";
 "database.problem.title" = "데이터베이스 오류";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "디버그";
 "delete" = "삭제";
 "done_label" = "완료";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "구성요소 '%@'를 찾을 수 없습니다!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 스트림을 사용할 수 없음";
 "extensions.notification_content.error.request.other" = "200이 아닌 상태 코드를 받았습니다(%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "API URL을 빌드할 수 없습니다.";
 "ha_api.api_error.invalid_response" = "Home Assistant로부터 잘못된 응답을 받았습니다.";
 "ha_api.api_error.manager_not_available" = "HA API Manager를 사용할 수 없습니다.";

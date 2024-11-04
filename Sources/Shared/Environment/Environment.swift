@@ -101,6 +101,14 @@ public class AppEnvironment {
     }
 
     public var database: () -> DatabaseQueue = DatabaseQueue.appDatabase
+    public var watchConfig: () throws -> WatchConfig? = {
+        try WatchConfig.config()
+    }
+
+    public var carPlayConfig: () throws -> CarPlayConfig? = {
+        try CarPlayConfig.config()
+    }
+
     public var magicItemProvider: () -> MagicItemProviderProtocol = {
         MagicItemProvider()
     }
