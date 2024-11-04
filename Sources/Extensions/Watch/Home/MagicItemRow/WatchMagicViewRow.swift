@@ -69,9 +69,12 @@ struct WatchMagicViewRow: View {
         VStack {
             switch viewModel.state {
             case .idle:
-                Image(uiImage: image)
-                    .foregroundStyle(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)))
-                    .padding()
+                Image(uiImage: viewModel.item.icon(info: viewModel.itemInfo).image(
+                    ofSize: .init(width: 24, height: 24),
+                    color: .init(hex: viewModel.itemInfo.customization?.iconColor)
+                ))
+                .foregroundStyle(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)))
+                .padding()
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -111,24 +114,6 @@ struct WatchMagicViewRow: View {
         } else {
             .gray.opacity(0.3)
         }
-    }
-
-    private var image: UIImage {
-        var icon: MaterialDesignIcons
-        switch viewModel.item.type {
-        case .action, .scene:
-            icon = MaterialDesignIcons(named: viewModel.itemInfo.iconName, fallback: .scriptTextOutlineIcon)
-        case .script:
-            icon = MaterialDesignIcons(
-                serversideValueNamed: viewModel.itemInfo.iconName,
-                fallback: .scriptTextOutlineIcon
-            )
-        }
-
-        return icon.image(
-            ofSize: .init(width: 24, height: 24),
-            color: .init(hex: viewModel.itemInfo.customization?.iconColor)
-        )
     }
 }
 

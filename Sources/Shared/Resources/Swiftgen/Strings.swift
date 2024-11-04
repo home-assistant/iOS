@@ -503,12 +503,12 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "carPlay.no_entities.title") }
     }
     public enum Notification {
-      public enum Action {
+      public enum QuickAccess {
         public enum Intro {
-          /// Tap to create your first iOS Action
-          public static var body: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.body") }
-          /// Create iOS Action
-          public static var title: String { return L10n.tr("Localizable", "carPlay.notification.action.intro.title") }
+          /// Tap to create your CarPlay configuration.
+          public static var body: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.body") }
+          /// Create CarPlay configuration
+          public static var title: String { return L10n.tr("Localizable", "carPlay.notification.quick_access.intro.title") }
         }
       }
     }
