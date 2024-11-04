@@ -27,6 +27,12 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
             self.pipelineId = pipelineId
         }
     }
+
+    public static func config() throws -> WatchConfig? {
+        try Current.database().read({ db in
+            try WatchConfig.fetchOne(db)
+        })
+    }
 }
 
 public protocol WatchCodable: Codable {

@@ -165,7 +165,12 @@ struct WatchConfigurationView: View {
     }
 
     private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item)
+        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
+            id: item.id,
+            name: item.id,
+            iconName: "",
+            customization: nil
+        )
         return makeListItemRow(item: item, info: itemInfo)
     }
 
@@ -195,7 +200,12 @@ struct WatchConfigurationView: View {
     }
 
     private func makeWatchItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item)
+        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
+            id: item.id,
+            name: item.id,
+            iconName: "",
+            customization: nil
+        )
 
         return HStack(spacing: Spaces.one) {
             VStack {

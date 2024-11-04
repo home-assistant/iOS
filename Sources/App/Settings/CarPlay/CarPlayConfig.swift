@@ -1,6 +1,5 @@
 import Foundation
 import GRDB
-import Shared
 
 public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equatable {
     public var id = "carplay-config"
@@ -17,26 +16,10 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
         self.quickAccessItems = quickAccessItems
     }
 
-    public static func getConfig() -> CarPlayConfig? {
-        do {
-            if let config: CarPlayConfig = try Current.database().read({ db in
-                do {
-                    return try CarPlayConfig.fetchOne(db)
-                } catch {
-                    Current.Log.error("Error fetching CarPlay config \(error)")
-                }
-                return nil
-            }) {
-                Current.Log.info("CarPlay configuration exists")
-                return config
-            } else {
-                Current.Log.error("No CarPlay config found")
-                return nil
-            }
-        } catch {
-            Current.Log.error("Failed to access database (GRDB), error: \(error.localizedDescription)")
-            return nil
-        }
+    public static func config() throws -> CarPlayConfig? {
+        try Current.database().read({ db in
+            try CarPlayConfig.fetchOne(db)
+        })
     }
 }
 
@@ -46,7 +29,7 @@ public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible,
     case domains
     case settings
 
-    var name: String {
+    public var name: String {
         switch self {
         case .quickAccess:
             return L10n.CarPlay.Navigation.Tab.quickAccess

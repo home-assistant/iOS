@@ -84,7 +84,12 @@ struct CarPlayConfigurationView: View {
     }
 
     private func makeListItem(item: MagicItem) -> some View {
-        let itemInfo = viewModel.magicItemInfo(for: item)
+        let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
+            id: item.id,
+            name: item.id,
+            iconName: "",
+            customization: nil
+        )
         return makeListItemRow(item: item, info: itemInfo)
     }
 
