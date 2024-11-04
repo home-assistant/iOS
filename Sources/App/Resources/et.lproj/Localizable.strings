@@ -96,6 +96,9 @@
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";
 "carPlay.action.intro.item.title" = "Loo oma esimene toiming";
+"carPlay.config.tabs.title" = "Vahekaardid";
+"carPlay.debug.delete_db.alert.title" = "Oled kindel, et soovid CarPlay konfiguratsiooni kustutada? Seda ei saa tagasi võtta";
+"carPlay.debug.delete_db.button.title" = "Kustuta CarPlay konfiguratsioon";
 "carPlay.labels.already_added_server" = "Juba lisatud";
 "carPlay.labels.empty_domain_list" = "Domeene pole saadaval";
 "carPlay.labels.no_servers_available" = "Serverid ei ole saadaval. Lisa server rakendusse.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Toimingud";
 "carPlay.navigation.tab.areas" = "Alad";
 "carPlay.navigation.tab.domains" = "Juhtimine";
+"carPlay.navigation.tab.quick_access" = "Kiire juurdepääs";
+"carPlay.navigation.tab.settings" = "Seaded";
 "carPlay.no_actions.title" = "Ava iOS Companion App, et luua tegevusi CarPlay jaoks.";
 "carPlay.no_entities.title" = "CarPlayga ühilduvaid olemeid pole saadaval.";
 "carPlay.notification.action.intro.body" = "Esimese iOS-i toimingu loomiseks puuduta";
 "carPlay.notification.action.intro.title" = "iOS-i toimingu loomine";
+"carPlay.quick_access.intro.item.title" = "Loo oma CarPlay konfiguratsioon";
 "carPlay.state.loading.title" = "Laadimine…";
 "carPlay.unlock.confirmation.title" = "Kas oled kindel, et soovid teostada %@ lukustuse avamise toimingut?";
 "carplay.labels.already_added_server" = "Juba lisatud";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Kustuta andmebaas ja sulge rakendus";
 "database.problem.quit" = "Sulge rakendus";
 "database.problem.title" = "Andmebaasi viga";
+"debug.reset.entities_database.title" = "Rakenduse olemite andmebaasi lähtestamine";
 "debug_section_label" = "Silumine";
 "delete" = "Kustuta";
 "done_label" = "Valmis";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Olemit \"%@\" ei leitud!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-voog pole saadaval";
 "extensions.notification_content.error.request.other" = "Olekukood on mitte 200 ( %li )";
+"grdb.config.migration_error.failed_access_grdb" = "Andmebaasile (GRDB) ei pääsenud juurde, tõrge: %@";
+"grdb.config.migration_error.failed_to_save" = "Uue konfiguratsiooni salvestamine nurjus, tõrge: %@";
 "ha_api.api_error.cant_build_url" = "API URL-i ei saa luua";
 "ha_api.api_error.invalid_response" = "Saadi Home Assistantilt vale vastus";
 "ha_api.api_error.manager_not_available" = "HA API haldur pole saadaval";

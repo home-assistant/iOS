@@ -96,6 +96,9 @@
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "於 iPhone 點擊繼續";
 "carPlay.action.intro.item.title" = "建立第一個觸發動作";
+"carPlay.config.tabs.title" = "頁面";
+"carPlay.debug.delete_db.alert.title" = "確定要刪除 CarPlay 設定？此操作無法復原";
+"carPlay.debug.delete_db.button.title" = "刪除 CarPlay 設定";
 "carPlay.labels.already_added_server" = "已新增";
 "carPlay.labels.empty_domain_list" = "沒有可用實體類群";
 "carPlay.labels.no_servers_available" = "無可用伺服器、請於 App 中新增。";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "動作";
 "carPlay.navigation.tab.areas" = "分區";
 "carPlay.navigation.tab.domains" = "控制";
+"carPlay.navigation.tab.quick_access" = "快速存取";
+"carPlay.navigation.tab.settings" = "設定";
 "carPlay.no_actions.title" = "請開啟 iOS Companion App 以新增 CarPlay 動作。";
 "carPlay.no_entities.title" = "沒有可用的 CarPlay 相容實體。";
 "carPlay.notification.action.intro.body" = "點擊以建立第一個 iOS 觸發動作";
 "carPlay.notification.action.intro.title" = "新增 iOS 觸發動作";
+"carPlay.quick_access.intro.item.title" = "新增 CarPlay 設定";
 "carPlay.state.loading.title" = "正在載入…";
 "carPlay.unlock.confirmation.title" = "確定要對 %@ 進行解鎖操作嗎？";
 "carplay.labels.already_added_server" = "已新增";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "刪除資料數據並退出 App";
 "database.problem.quit" = "退出 App";
 "database.problem.title" = "資料數據錯誤";
+"debug.reset.entities_database.title" = "重置應用程式實體資料庫";
 "debug_section_label" = "回報錯誤";
 "delete" = "刪除";
 "done_label" = "完成";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "找不到實體 '%@'！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 串流不可用";
 "extensions.notification_content.error.request.other" = "取得 non-200 狀態代碼（%li）";
+"grdb.config.migration_error.failed_access_grdb" = "存取資料庫 (GRDB) 失敗，錯誤：%@";
+"grdb.config.migration_error.failed_to_save" = "儲存新設定失敗、錯誤：%@";
 "ha_api.api_error.cant_build_url" = "無法建立 API URL";
 "ha_api.api_error.invalid_response" = "來自 Home Assistant 回應無效";
 "ha_api.api_error.manager_not_available" = "HA API 管理員不可用";

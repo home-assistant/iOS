@@ -96,6 +96,9 @@
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Докоснете, за да продължите на вашия iPhone";
 "carPlay.action.intro.item.title" = "Създайте първото си действие";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Вече е добавено";
 "carPlay.labels.empty_domain_list" = "Няма налични домейни";
 "carPlay.labels.no_servers_available" = "Няма налични сървъри. Добавете сървър в приложението.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Действия";
 "carPlay.navigation.tab.areas" = "Области";
 "carPlay.navigation.tab.domains" = "Контрол";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Отворете приложението iOS Companion, за да създадете действия за CarPlay.";
 "carPlay.no_entities.title" = "Няма налични съвместими с CarPlay обекти.";
 "carPlay.notification.action.intro.body" = "Докоснете, за да създадете първото си действие в iOS";
 "carPlay.notification.action.intro.title" = "Създайте iOS действие";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Зареждане…";
 "carPlay.unlock.confirmation.title" = "Сигурни ли сте, че искате да извършите действие за отключване на %@?";
 "carplay.labels.already_added_server" = "Вече е добавено";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Delete Database & Quit App";
 "database.problem.quit" = "Quit App";
 "database.problem.title" = "Database Error";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Debug";
 "delete" = "Delete";
 "done_label" = "Done";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Cant build API URL";
 "ha_api.api_error.invalid_response" = "Received invalid response from Home Assistant";
 "ha_api.api_error.manager_not_available" = "HA API Manager is unavailable";

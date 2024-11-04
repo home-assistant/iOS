@@ -96,6 +96,9 @@
 "cancel_label" = "İptal";
 "carPlay.action.intro.item.body" = "iPhone'unuzda devam etmek için dokunun";
 "carPlay.action.intro.item.title" = "İlk eyleminizi oluşturun";
+"carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
+"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.labels.already_added_server" = "Zaten eklendi";
 "carPlay.labels.empty_domain_list" = "Mevcut alan adı yok";
 "carPlay.labels.no_servers_available" = "Sunucu yok. Uygulamaya bir sunucu ekleyin.";
@@ -107,10 +110,13 @@
 "carPlay.navigation.tab.actions" = "Eylemler";
 "carPlay.navigation.tab.areas" = "Alanlar";
 "carPlay.navigation.tab.domains" = "Kontrol";
+"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "CarPlay'e yönelik eylemler oluşturmak için iOS Companion Uygulamasını açın.";
 "carPlay.no_entities.title" = "CarPlay uyumlu varlık yok.";
 "carPlay.notification.action.intro.body" = "İlk iOS Eyleminizi oluşturmak için dokunun";
 "carPlay.notification.action.intro.title" = "iOS Eylemi Oluştur";
+"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Yükleniyor …";
 "carPlay.unlock.confirmation.title" = "%@ üzerinde kilit açma eylemi gerçekleştirmek istediğinizden emin misiniz?";
 "carplay.labels.already_added_server" = "Zaten eklendi";
@@ -157,6 +163,7 @@
 "database.problem.delete" = "Veritabanını Sil ve Uygulamadan Çık";
 "database.problem.quit" = "Uygulamadan Çık";
 "database.problem.title" = "Veri tabanı hatası";
+"debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Hata ayıklama";
 "delete" = "Sil";
 "done_label" = "Bitti";
@@ -171,6 +178,8 @@
 "extensions.notification_content.error.request.entity_not_found" = "Varlık ' %@ ' bulunamadı!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS akışı kullanılamıyor";
 "extensions.notification_content.error.request.other" = "200 olmayan durum kodu var ( %li )";
+"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "API URL'si oluşturulamaz";
 "ha_api.api_error.invalid_response" = "Home Assistant'dan geçersiz yanıt alındı";
 "ha_api.api_error.manager_not_available" = "HA API Yöneticisi kullanılamıyor";
