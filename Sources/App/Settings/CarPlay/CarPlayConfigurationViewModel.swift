@@ -125,7 +125,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     // MARK: - Quick access items
 
-    func magicItemInfo(for item: MagicItem) -> MagicItem.Info {
+    func magicItemInfo(for item: MagicItem) -> MagicItem.Info? {
         magicItemProvider.getInfo(for: item)
     }
 

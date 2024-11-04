@@ -106,7 +106,7 @@ final class WatchCommunicatorService {
         let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation {
-            let magicItemsInfo: [MagicItem.Info] = watchConfig.items.map { magicItem in
+            let magicItemsInfo: [MagicItem.Info] = watchConfig.items.compactMap { magicItem in
                 magicItemProvider.getInfo(for: magicItem)
             }
             message.reply(.init(identifier: responseIdentifier, content: [

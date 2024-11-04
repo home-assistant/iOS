@@ -4,17 +4,55 @@ import PromiseKit
 
 public protocol MagicItemProviderProtocol {
     func loadInformation(completion: @escaping () -> Void)
-    func getInfo(for item: MagicItem) -> MagicItem.Info
+    func getInfo(for item: MagicItem) -> MagicItem.Info?
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
-    private var scriptsPerServer: [String: [HAAppEntity]] = [:]
-    private var scenesPerServer: [String: [HAAppEntity]] = [:]
+    var scriptsPerServer: [String: [HAAppEntity]] = [:]
+    var scenesPerServer: [String: [HAAppEntity]] = [:]
 
     func loadInformation(completion: @escaping () -> Void) {
-        loadScriptsAndScenes {
-            completion()
+        loadScriptsAndScenes { [weak self] in
+            self?.migrateWatchConfig(completion: {
+                self?.migrateCarPlayConfig(completion: completion)
+            })
         }
+    }
+
+    private func migrateCarPlayConfig(completion: @escaping () -> Void) {
+        guard var carPlayConfig = try? Current.carPlayConfig() else {
+            completion()
+            return
+        }
+        carPlayConfig.quickAccessItems = migrateItemsIfNeeded(items: carPlayConfig.quickAccessItems)
+
+        do {
+            try Current.database().write { db in
+                try carPlayConfig.update(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save migration CarPlay config, error: \(error.localizedDescription)")
+        }
+
+        completion()
+    }
+
+    private func migrateWatchConfig(completion: @escaping () -> Void) {
+        guard var watchConfig = try? Current.watchConfig() else {
+            completion()
+            return
+        }
+        watchConfig.items = migrateItemsIfNeeded(items: watchConfig.items)
+
+        do {
+            try Current.database().write { db in
+                try watchConfig.update(db)
+            }
+        } catch {
+            Current.Log.error("Failed to save migration Watch config, error: \(error.localizedDescription)")
+        }
+
+        completion()
     }
 
     private func loadScriptsAndScenes(completion: @escaping () -> Void) {
@@ -50,7 +88,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
     }
 
-    func getInfo(for item: MagicItem) -> MagicItem.Info {
+    func getInfo(for item: MagicItem) -> MagicItem.Info? {
         switch item.type {
         case .action:
             guard let actionItem = Current.realm().object(ofType: Action.self, forPrimaryKey: item.id) else {
@@ -58,7 +96,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                     .error(
                         "Failed to get magic item Action info for item id: \(item.id), server id: \(String(describing: item.serverId))"
                     )
-                return .init(id: item.id, name: item.id, iconName: "")
+                return nil
             }
             return .init(
                 id: ServerEntity.uniqueId(serverId: actionItem.serverIdentifier, entityId: actionItem.ID),
@@ -79,7 +117,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id)"
                     )
-                return .init(id: item.id, name: item.id, iconName: "")
+                return nil
             }
 
             return .init(
@@ -95,7 +133,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id)"
                     )
-                return .init(id: item.id, name: item.id, iconName: "")
+                return nil
             }
 
             return .init(

@@ -8,9 +8,14 @@ final class CarPlayQuickAccessViewModel {
     weak var templateProvider: CarPlayQuickAccessTemplate?
 
     func update() {
-        if let config = CarPlayConfig.getConfig() {
-            templateProvider?.updateList(for: config.quickAccessItems)
-        } else {
+        do {
+            if let config = try CarPlayConfig.config() {
+                templateProvider?.updateList(for: config.quickAccessItems)
+            } else {
+                templateProvider?.updateList(for: [])
+            }
+        } catch {
+            Current.Log.error("Failed to access CarPlay configuration, error: \(error.localizedDescription)")
             templateProvider?.updateList(for: [])
         }
     }

@@ -78,7 +78,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {
         let items: [CPListItem] = items.map { magicItem in
-            let info = magicItemProvider.getInfo(for: magicItem)
+            let info = magicItemProvider.getInfo(for: magicItem) ?? .init(
+                id: magicItem.id,
+                name: magicItem.id,
+                iconName: "",
+                customization: nil
+            )
             let materialDesignIcon = MaterialDesignIcons(named: info.iconName)
                 .carPlayIcon(color: .init(hex: info.customization?.iconColor))
             let item = CPListItem(
