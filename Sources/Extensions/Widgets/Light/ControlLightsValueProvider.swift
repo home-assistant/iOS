@@ -68,7 +68,7 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
             id: UUID().uuidString,
             entityId: "",
             serverId: "",
-            displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Light.placeholderTitle,
             iconName: (value ?? false) ? SFSymbol.lightbulbFill.rawValue : SFSymbol.lightbulb.rawValue
         )
     }

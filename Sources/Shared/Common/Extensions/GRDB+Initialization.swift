@@ -68,9 +68,20 @@ public extension DatabaseQueue {
 
     private static func createAppConfigTables(database: DatabaseQueue) {
         do {
-            try database.write { db in
-                // HAAppEntity - App used domain entities
-                if try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue) {
+            var shouldCreateHAppEntity: Bool = false
+            var shouldCreateAssistPipelines: Bool = false
+            var shouldCreateWatchConfig: Bool = false
+            var shouldCreateCarPlayConfig: Bool = false
+            try database.read { db in
+                shouldCreateHAppEntity = try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue)
+                shouldCreateWatchConfig = try !db.tableExists(GRDBDatabaseTable.watchConfig.rawValue)
+                shouldCreateCarPlayConfig = try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue)
+                shouldCreateAssistPipelines = try !db.tableExists(GRDBDatabaseTable.assistPipelines.rawValue)
+            }
+
+            // HAAppEntity - App used domain entities
+            if shouldCreateHAppEntity {
+                try database.write { db in
                     try db.create(table: GRDBDatabaseTable.HAAppEntity.rawValue) { t in
                         t.primaryKey(DatabaseTables.AppEntity.id.rawValue, .text).notNull()
                         t.column(DatabaseTables.AppEntity.entityId.rawValue, .text).notNull()
@@ -80,31 +91,36 @@ public extension DatabaseQueue {
                         t.column(DatabaseTables.AppEntity.icon.rawValue, .text)
                     }
                 }
-
-                // WatchConfig - Apple Watch configuration
-                if try !db.tableExists(GRDBDatabaseTable.watchConfig.rawValue) {
+            }
+            // WatchConfig - Apple Watch configuration
+            if shouldCreateWatchConfig {
+                try database.write { db in
                     try db.create(table: GRDBDatabaseTable.watchConfig.rawValue) { t in
                         t.primaryKey(DatabaseTables.WatchConfig.id.rawValue, .text).notNull()
                         t.column(DatabaseTables.WatchConfig.assist.rawValue, .jsonText).notNull()
                         t.column(DatabaseTables.WatchConfig.items.rawValue, .jsonText).notNull()
                     }
                 }
-
-                // PipelineResponse - Assist pipelines cache
-                if try !db.tableExists(GRDBDatabaseTable.assistPipelines.rawValue) {
+            }
+            // CarPlayConfig - CarPlay configuration
+            if shouldCreateCarPlayConfig {
+                try database.write { db in
+                    if try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue) {
+                        try db.create(table: GRDBDatabaseTable.carPlayConfig.rawValue) { t in
+                            t.primaryKey(DatabaseTables.CarPlayConfig.id.rawValue, .text).notNull()
+                            t.column(DatabaseTables.CarPlayConfig.tabs.rawValue, .text).notNull()
+                            t.column(DatabaseTables.CarPlayConfig.quickAccessItems.rawValue, .jsonText).notNull()
+                        }
+                    }
+                }
+            }
+            // PipelineResponse - Assist pipelines cache
+            if shouldCreateAssistPipelines {
+                try database.write { db in
                     try db.create(table: GRDBDatabaseTable.assistPipelines.rawValue) { t in
                         t.primaryKey(DatabaseTables.AssistPipelines.serverId.rawValue, .text).notNull()
                         t.column(DatabaseTables.AssistPipelines.preferredPipeline.rawValue, .text).notNull()
                         t.column(DatabaseTables.AssistPipelines.pipelines.rawValue, .jsonText).notNull()
-                    }
-                }
-
-                // WatchConfig - Apple Watch configuration
-                if try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue) {
-                    try db.create(table: GRDBDatabaseTable.carPlayConfig.rawValue) { t in
-                        t.primaryKey(DatabaseTables.CarPlayConfig.id.rawValue, .text).notNull()
-                        t.column(DatabaseTables.CarPlayConfig.tabs.rawValue, .text).notNull()
-                        t.column(DatabaseTables.CarPlayConfig.quickAccessItems.rawValue, .jsonText).notNull()
                     }
                 }
             }

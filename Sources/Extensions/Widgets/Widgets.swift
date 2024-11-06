@@ -54,6 +54,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlAssist()
         ControlLight()
         ControlSwitch()
+        ControlCover()
         ControlScript()
         ControlScene()
         ControlOpenPage()
