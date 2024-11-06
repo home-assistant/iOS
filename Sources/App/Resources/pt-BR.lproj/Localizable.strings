@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "Nenhuma entidade compatível com CarPlay disponível.";
 "carPlay.notification.action.intro.body" = "Toque para criar sua primeira ação do iOS";
 "carPlay.notification.action.intro.title" = "Criar ação do iOS";
+"carPlay.notification.quick_access.intro.body" = "Toque para criar sua configuração do CarPlay.";
+"carPlay.notification.quick_access.intro.title" = "Criar configuração do CarPlay";
 "carPlay.quick_access.intro.item.title" = "Crie sua configuração do CarPlay";
 "carPlay.state.loading.title" = "Carregando…";
 "carPlay.unlock.confirmation.title" = "Tem certeza de que deseja executar a ação de desbloqueio em %@?";

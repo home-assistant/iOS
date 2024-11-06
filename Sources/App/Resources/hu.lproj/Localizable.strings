@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "Nem állnak rendelkezésre CarPlay-kompatibilis entitások.";
 "carPlay.notification.action.intro.body" = "Koppintással létrehozhatja első iOS-műveletét";
 "carPlay.notification.action.intro.title" = "iOS-művelet létrehozása";
+"carPlay.notification.quick_access.intro.body" = "Érintse meg a CarPlay konfiguráció létrehozásához.";
+"carPlay.notification.quick_access.intro.title" = "CarPlay konfiguráció létrehozása";
 "carPlay.quick_access.intro.item.title" = "Hozza létre CarPlay konfigurációját";
 "carPlay.state.loading.title" = "Betöltés...";
 "carPlay.unlock.confirmation.title" = "Biztos, hogy feloldó műveletet hajt végre a következőn %@ ?";

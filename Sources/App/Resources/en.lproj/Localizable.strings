@@ -114,6 +114,8 @@
 "carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
 "carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";

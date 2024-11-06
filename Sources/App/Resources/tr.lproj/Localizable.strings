@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "CarPlay uyumlu varlık yok.";
 "carPlay.notification.action.intro.body" = "İlk iOS Eyleminizi oluşturmak için dokunun";
 "carPlay.notification.action.intro.title" = "iOS Eylemi Oluştur";
+"carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
+"carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Yükleniyor …";
 "carPlay.unlock.confirmation.title" = "%@ üzerinde kilit açma eylemi gerçekleştirmek istediğinizden emin misiniz?";

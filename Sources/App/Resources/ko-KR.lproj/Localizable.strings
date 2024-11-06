@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "사용 가능한 CarPlay 호환 구성요소가 없습니다.";
 "carPlay.notification.action.intro.body" = "첫 번째 iOS 동작을 만들려면 탭하세요.";
 "carPlay.notification.action.intro.title" = "iOS 동작 생성";
+"carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
+"carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "로드 중…";
 "carPlay.unlock.confirmation.title" = "%@ 에서 잠금 해제 동작을 수행하시겠습니까?";

@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "沒有可用的 CarPlay 相容實體。";
 "carPlay.notification.action.intro.body" = "點擊以建立第一個 iOS 觸發動作";
 "carPlay.notification.action.intro.title" = "新增 iOS 觸發動作";
+"carPlay.notification.quick_access.intro.body" = "點選以新增 CarPlay 設定";
+"carPlay.notification.quick_access.intro.title" = "新增 CarPlay 設定";
 "carPlay.quick_access.intro.item.title" = "新增 CarPlay 設定";
 "carPlay.state.loading.title" = "正在載入…";
 "carPlay.unlock.confirmation.title" = "確定要對 %@ 進行解鎖操作嗎？";
