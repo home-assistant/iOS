@@ -1,9 +1,9 @@
-"panel::calendar" = "കലണ്ടർ";
+"panel::calendar" = "നാൾകാട്ടി";
 "panel::config" = "ക്രമീകരണങ്ങൾ";
 "panel::developer_tools" = "വികസക സാമഗ്രികൾ";
 "panel::energy" = "ഊര്‍ജ്ജം";
 "panel::history" = "ചരിത്രം";
-"panel::logbook" = "നാൾവിവരക്കുറിപ്പ് പുസ്തകം";
+"panel::logbook" = "പതിവു പുസ്തകം";
 "panel::mailbox" = "മെയിൽബോക്സ്";
 "panel::map" = "ഭൂപടം";
 "panel::media_browser" = "മീഡിയ";

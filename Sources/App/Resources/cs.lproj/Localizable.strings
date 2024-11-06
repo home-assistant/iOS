@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "Nejsou k dispozici žádné entity kompatibilní s CarPlay.";
 "carPlay.notification.action.intro.body" = "Klepnutím vytvořte svou první akci pro iOS";
 "carPlay.notification.action.intro.title" = "Vytvořit akci pro iOS";
+"carPlay.notification.quick_access.intro.body" = "Klepnutím vytvoříte nastavení CarPlay.";
+"carPlay.notification.quick_access.intro.title" = "Vytvořit nastavení CarPlay";
 "carPlay.quick_access.intro.item.title" = "Vytvořte nastavení CarPlay";
 "carPlay.state.loading.title" = "Načítání...";
 "carPlay.unlock.confirmation.title" = "Opravdu chcete provést akci odemknutí na %@?";
