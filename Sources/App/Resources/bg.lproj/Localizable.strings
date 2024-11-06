@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "Няма налични съвместими с CarPlay обекти.";
 "carPlay.notification.action.intro.body" = "Докоснете, за да създадете първото си действие в iOS";
 "carPlay.notification.action.intro.title" = "Създайте iOS действие";
+"carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
+"carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Зареждане…";
 "carPlay.unlock.confirmation.title" = "Сигурни ли сте, че искате да извършите действие за отключване на %@?";

@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "Inga CarPlay-kompatibla enheter tillgängliga.";
 "carPlay.notification.action.intro.body" = "Tryck för att skapa din första iOS-åtgärd";
 "carPlay.notification.action.intro.title" = "Skapa iOS-åtgärd";
+"carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
+"carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Laddar...";
 "carPlay.unlock.confirmation.title" = "Är du säker på att du vill låsa upp %@?";

@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "利用可能な CarPlay 互換エンティティがありません。";
 "carPlay.notification.action.intro.body" = "タップして最初の iOS アクションを作成します";
 "carPlay.notification.action.intro.title" = "iOS アクションの作成";
+"carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
+"carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "CarPlay設定を作成する";
 "carPlay.state.loading.title" = "読み込み中…";
 "carPlay.unlock.confirmation.title" = "%@にロック解除アクションを実行しますか?";

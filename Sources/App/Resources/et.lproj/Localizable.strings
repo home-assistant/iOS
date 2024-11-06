@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "CarPlayga ühilduvaid olemeid pole saadaval.";
 "carPlay.notification.action.intro.body" = "Esimese iOS-i toimingu loomiseks puuduta";
 "carPlay.notification.action.intro.title" = "iOS-i toimingu loomine";
+"carPlay.notification.quick_access.intro.body" = "Klõpsa CarPlay konfiguratsiooni loomiseks.";
+"carPlay.notification.quick_access.intro.title" = "Loo CarPlay konfiguratsioon";
 "carPlay.quick_access.intro.item.title" = "Loo oma CarPlay konfiguratsioon";
 "carPlay.state.loading.title" = "Laadimine…";
 "carPlay.unlock.confirmation.title" = "Kas oled kindel, et soovid teostada %@ lukustuse avamise toimingut?";

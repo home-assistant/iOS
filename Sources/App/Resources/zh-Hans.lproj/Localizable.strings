@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "没有可用的 CarPlay 兼容实体。";
 "carPlay.notification.action.intro.body" = "点击可创建您的第一个 iOS 动作";
 "carPlay.notification.action.intro.title" = "创建 iOS 动作";
+"carPlay.notification.quick_access.intro.body" = "点击即可创建您的 CarPlay 配置。";
+"carPlay.notification.quick_access.intro.title" = "创建 CarPlay 配置";
 "carPlay.quick_access.intro.item.title" = "创建您的 CarPlay 配置";
 "carPlay.state.loading.title" = "正在加载…";
 "carPlay.unlock.confirmation.title" = "您确定要对%@执行解锁动作吗 ？";

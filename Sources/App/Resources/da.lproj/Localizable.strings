@@ -116,6 +116,8 @@
 "carPlay.no_entities.title" = "Ingen tilgængelige CarPlay-kompatible entiteter.";
 "carPlay.notification.action.intro.body" = "Tryk for at oprette din første iOS-handling";
 "carPlay.notification.action.intro.title" = "Opret iOS-handling";
+"carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
+"carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Indlæser…";
 "carPlay.unlock.confirmation.title" = "Er du sikker på, at du vil udføre oplåsningshandling på %@?";

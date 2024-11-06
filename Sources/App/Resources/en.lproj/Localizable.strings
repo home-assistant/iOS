@@ -114,6 +114,8 @@
 "carPlay.navigation.tab.settings" = "Settings";
 "carPlay.no_actions.title" = "Open iOS Companion App to create actions for CarPlay.";
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
+"carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
+"carPlay.notification.action.intro.title" = "Create iOS Action";
 "carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
 "carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
@@ -1011,8 +1013,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.title" = "Scripts";
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.title" = "Sensors";
-"permission.screen.bluetooth.title" = "Search devices";
-"permission.screen.bluetooth.secondary_button" = "Skip";
-"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
-"debug.reset.entities_database.title" = "Reset app entities database";
 "yes_label" = "Yes";
