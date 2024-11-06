@@ -120,7 +120,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
 
         return WidgetSensorsEntry.SensorData(
-            id: sensor.entityId,
+            id: sensor.id,
             key: sensor.displayString,
             value: stateValue,
             unitOfMeasurement: unitOfMeasurement,

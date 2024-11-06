@@ -51,9 +51,9 @@ struct WidgetBasicContainerView: View {
                 intent.hapticConfirmation = true
                 intent.showConfirmationNotification = showConfirmationNotification
                 return intent
+            case .refresh:
+                return ReloadWidgetsAppIntent()
             }
-        case .refresh:
-            return ReloadWidgetsAppIntent()
         }
     }
 

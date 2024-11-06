@@ -21,7 +21,7 @@ struct WidgetSensors: Widget {
                         id: sensor.id,
                         title: appendUnitOfMeasurementToValue(sensor: sensor),
                         subtitle: sensor.key,
-                        interactionType: .refresh,
+                        interactionType: .appIntent(.refresh),
                         icon: MaterialDesignIcons(
                             serversideValueNamed: sensor.icon ?? "",
                             fallback: .temperatureKelvinIcon
