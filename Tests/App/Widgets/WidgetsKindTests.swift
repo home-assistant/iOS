@@ -16,6 +16,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlOpenPage.rawValue, "controlOpenPage")
         XCTAssertEqual(WidgetsKind.controlLight.rawValue, "controlLight")
         XCTAssertEqual(WidgetsKind.controlSwitch.rawValue, "controlSwitch")
-        XCTAssertEqual(WidgetsKind.allCases.count, 13)
+        XCTAssertEqual(WidgetsKind.controlCover.rawValue, "controlCover")
+        XCTAssertEqual(WidgetsKind.allCases.count, 14)
     }
 }

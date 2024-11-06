@@ -71,9 +71,11 @@ public extension DatabaseQueue {
             var shouldCreateHAppEntity: Bool = false
             var shouldCreateAssistPipelines: Bool = false
             var shouldCreateWatchConfig: Bool = false
+            var shouldCreateCarPlayConfig: Bool = false
             try database.read { db in
                 shouldCreateHAppEntity = try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue)
                 shouldCreateWatchConfig = try !db.tableExists(GRDBDatabaseTable.watchConfig.rawValue)
+                shouldCreateCarPlayConfig = try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue)
                 shouldCreateAssistPipelines = try !db.tableExists(GRDBDatabaseTable.assistPipelines.rawValue)
             }
 
@@ -97,6 +99,18 @@ public extension DatabaseQueue {
                         t.primaryKey(DatabaseTables.WatchConfig.id.rawValue, .text).notNull()
                         t.column(DatabaseTables.WatchConfig.assist.rawValue, .jsonText).notNull()
                         t.column(DatabaseTables.WatchConfig.items.rawValue, .jsonText).notNull()
+                    }
+                }
+            }
+            // CarPlayConfig - CarPlay configuration
+            if shouldCreateCarPlayConfig {
+                try database.write { db in
+                    if try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue) {
+                        try db.create(table: GRDBDatabaseTable.carPlayConfig.rawValue) { t in
+                            t.primaryKey(DatabaseTables.CarPlayConfig.id.rawValue, .text).notNull()
+                            t.column(DatabaseTables.CarPlayConfig.tabs.rawValue, .text).notNull()
+                            t.column(DatabaseTables.CarPlayConfig.quickAccessItems.rawValue, .jsonText).notNull()
+                        }
                     }
                 }
             }
