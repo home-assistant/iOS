@@ -109,15 +109,6 @@ public extension DatabaseQueue {
                         t.column(DatabaseTables.AssistPipelines.pipelines.rawValue, .jsonText).notNull()
                     }
                 }
-
-                // WatchConfig - Apple Watch configuration
-                if try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue) {
-                    try db.create(table: GRDBDatabaseTable.carPlayConfig.rawValue) { t in
-                        t.primaryKey(DatabaseTables.CarPlayConfig.id.rawValue, .text).notNull()
-                        t.column(DatabaseTables.CarPlayConfig.tabs.rawValue, .text).notNull()
-                        t.column(DatabaseTables.CarPlayConfig.quickAccessItems.rawValue, .jsonText).notNull()
-                    }
-                }
             }
         } catch {
             let errorMessage = "Failed to create GRDB tables, error: \(error.localizedDescription)"
