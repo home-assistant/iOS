@@ -250,17 +250,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             Current.servers.restoreState(servers)
         }
 
-        if let actionsDictionary = content["actions"] as? [[String: Any]] {
-            let actions = actionsDictionary.compactMap { try? Action(JSON: $0) }
-
-            Current.Log.verbose("Updating actions from context \(actions)")
-
-            realm.reentrantWrite {
-                realm.delete(realm.objects(Action.self))
-                realm.add(actions, update: .all)
-            }
-        }
-
         if let complicationsDictionary = content["complications"] as? [[String: Any]] {
             let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
 
