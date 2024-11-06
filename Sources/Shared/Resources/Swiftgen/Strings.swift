@@ -282,9 +282,31 @@ public enum L10n {
         }
       }
     }
+    public enum Cover {
+      /// Cover
+      public static var title: String { return L10n.tr("Localizable", "app_intents.cover.title") }
+    }
     public enum HapticConfirmation {
       /// Haptic confirmation
       public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
+    }
+    public enum Icon {
+      /// Icon
+      public static var title: String { return L10n.tr("Localizable", "app_intents.icon.title") }
+    }
+    public enum Intent {
+      public enum Cover {
+        /// Control cover
+        public static var title: String { return L10n.tr("Localizable", "app_intents.intent.cover.title") }
+      }
+      public enum Light {
+        /// Control light
+        public static var title: String { return L10n.tr("Localizable", "app_intents.intent.light.title") }
+      }
+      public enum Switch {
+        /// Control switch
+        public static var title: String { return L10n.tr("Localizable", "app_intents.intent.switch.title") }
+      }
     }
     public enum Lights {
       public enum Light {
@@ -397,6 +419,12 @@ public enum L10n {
       public static var description: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.description") }
       /// Confirmation notification
       public static var title: String { return L10n.tr("Localizable", "app_intents.show_confirmation_dialog.title") }
+    }
+    public enum State {
+      /// Target state
+      public static var target: String { return L10n.tr("Localizable", "app_intents.state.target") }
+      /// Toggle
+      public static var toggle: String { return L10n.tr("Localizable", "app_intents.state.toggle") }
     }
     public enum WidgetAction {
       /// Which actions?
@@ -3367,14 +3395,18 @@ public enum L10n {
         }
       }
       public enum Cover {
-        /// Open/Close cover
+        /// Toggle cover
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.cover.description") }
+        /// Choose cover
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.cover.placeholder_title") }
         /// Cover
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
       }
       public enum Light {
         /// Turn on/off your light
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.light.description") }
+        /// Choose Light
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.light.placeholder_title") }
         /// Light
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.light.title") }
       }
@@ -3413,6 +3445,8 @@ public enum L10n {
       public enum Switch {
         /// Turn on/off your switch
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.switch.description") }
+        /// Choose switch
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.switch.placeholder_title") }
         /// Switch
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.switch.title") }
       }

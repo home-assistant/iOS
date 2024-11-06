@@ -4,15 +4,15 @@ import Shared
 
 @available(iOS 18, *)
 struct CoverIntent: SetValueIntent {
-    static var title: LocalizedStringResource = "Open/Close Cover"
+    static var title: LocalizedStringResource = .init("app_intents.intent.cover.title", defaultValue: "Control cover")
 
-    @Parameter(title: .init("app_intents.lights.light.title", defaultValue: "Light"))
+    @Parameter(title: .init("app_intents.cover.title", defaultValue: "Cover"))
     var entity: IntentCoverEntity
 
-    @Parameter(title: .init("app_intents.lights.light.target", defaultValue: "Target state"))
+    @Parameter(title: .init("app_intents.state.target", defaultValue: "Target state"))
     var value: Bool
 
-    @Parameter(title: .init("app_intents.lights.light.target", defaultValue: "Toggle"), default: false)
+    @Parameter(title: .init("app_intents.state.toggle", defaultValue: "Toggle"), default: false)
     var toggle: Bool
 
     func perform() async throws -> some IntentResult {
@@ -20,9 +20,9 @@ struct CoverIntent: SetValueIntent {
             return .result()
         }
 
-        var service = "toggle"
+        var service = HAServices.toggle
         if !toggle {
-            service = value ? "open_cover" : "close_cover"
+            service = value ? HAServices.openCover : HAServices.closeCover
         }
 
         let _ = await withCheckedContinuation { continuation in

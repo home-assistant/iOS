@@ -53,9 +53,9 @@ struct IntentCoverAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentCoverEntity> {
-        let CoveresPerServer = await getCoverEntities()
+        let coversPerServer = await getCoverEntities()
 
-        return .init(sections: CoveresPerServer.map { (key: Server, value: [IntentCoverEntity]) in
+        return .init(sections: coversPerServer.map { (key: Server, value: [IntentCoverEntity]) in
             .init(.init(stringLiteral: key.info.name), items: value)
         })
     }

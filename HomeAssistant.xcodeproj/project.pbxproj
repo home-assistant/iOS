@@ -567,6 +567,8 @@
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
+		4235075D2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
+		4235075E2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
 		4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */; };
 		423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44EF2C17238200766A99 /* ChatBubbleView.swift */; };
 		423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */; };
@@ -1828,6 +1830,7 @@
 		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
+		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
 		4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUserDefaults.swift; sourceTree = "<group>"; };
 		423F44EF2C17238200766A99 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -4852,6 +4855,7 @@
 				426266432C11B0070081A818 /* Watch */,
 				420F53E92C4E9D43003C8415 /* Widget */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
+				4235075C2CDB756800A19902 /* HAServices.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -6996,6 +7000,7 @@
 				11AF4D23249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				4264906F2C0F1CCA002155CC /* View+RoundedCorner.swift in Sources */,
 				11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
+				4235075E2CDB756800A19902 /* HAServices.swift in Sources */,
 				1182620224F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
 				B6872E672226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
@@ -7356,6 +7361,7 @@
 				42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
+				4235075D2CDB756800A19902 /* HAServices.swift in Sources */,
 				429821172CD0DDCD005ECD39 /* HAButtonStyles.swift in Sources */,
 				11B38EE8275C54A200205C7B /* WidgetActionsIntentHandler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,

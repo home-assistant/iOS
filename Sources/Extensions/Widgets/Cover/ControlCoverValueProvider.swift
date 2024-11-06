@@ -7,16 +7,12 @@ import WidgetKit
 @available(iOS 18, *)
 struct ControlCoverValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlCoverConfiguration) async throws -> ControlEntityItem {
-        guard let serverId = configuration.entity?.serverId,
-              let CoverId = configuration.entity?.entityId,
-              let state = try await ControlEntityProvider(domain: .cover).currentState(
-                  serverId: serverId,
-                  entityId: CoverId
-              ) else {
-            throw AppIntentError.restartPerform
-        }
-
-        let isOpen = state == ControlEntityProvider.States.open.rawValue
+        /*
+         For now we don't have a reliable way to get the current state of a cover
+         due to the fact that we don't know when the cover will finish opening or closing
+         and we can't always update through push notification due to user push notification limitations
+         */
+        let isOpen = false
 
         return item(entity: configuration.entity, value: isOpen, iconName: configuration.icon)
     }
@@ -57,7 +53,7 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
             id: UUID().uuidString,
             entityId: "",
             serverId: "",
-            displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Cover.placeholderTitle,
             iconName: (value ?? false) ? SFSymbol.blindsVerticalOpen.rawValue : SFSymbol.blindsVerticalClosed.rawValue
         )
     }
@@ -66,16 +62,16 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
 @available(iOS 18.0, *)
 struct ControlCoverConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
-        "widgets.controls.Cover.description",
-        defaultValue: "Turn on/off Cover"
+        "widgets.controls.cover.description",
+        defaultValue: "Toggle cover"
     )
 
     @Parameter(
-        title: .init("widgets.controls.Cover.title", defaultValue: "Cover")
+        title: .init("widgets.controls.cover.title", defaultValue: "Cover")
     )
     var entity: IntentCoverEntity?
     @Parameter(
-        title: .init("app_intents.scripts.icon.title", defaultValue: "Icon")
+        title: .init("app_intents.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
 }

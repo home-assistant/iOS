@@ -58,7 +58,7 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
             id: UUID().uuidString,
             entityId: "",
             serverId: "",
-            displayString: L10n.Widgets.Controls.Scripts.placeholderTitle,
+            displayString: L10n.Widgets.Controls.Switch.placeholderTitle,
             iconName: (value ?? false) ? SFSymbol.lightswitchOnFill.rawValue : SFSymbol.lightswitchOffFill.rawValue
         )
     }

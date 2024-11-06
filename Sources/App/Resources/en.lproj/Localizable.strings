@@ -60,7 +60,13 @@
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.lights.light.target" = "Target state";
+"app_intents.state.target" = "Target state";
+"app_intents.state.toggle" = "Toggle";
 "app_intents.lights.light.title" = "Light";
+"app_intents.intent.light.title" = "Control light";
+"app_intents.intent.switch.title" = "Control switch";
+"app_intents.cover.title" = "Cover";
+"app_intents.intent.cover.title" = "Control cover";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
 "app_intents.notify_when_run.title" = "Notify when run";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
@@ -79,6 +85,7 @@
 "app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
 "app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.icon.title" = "Icon";
+"app_intents.icon.title" = "Icon";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
 "app_intents.scripts.script.title" = "Run Script";
@@ -978,9 +985,12 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.controls.script.description" = "Run script";
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
+"widgets.controls.cover.placeholder_title" = "Choose cover";
+"widgets.controls.switch.placeholder_title" = "Choose switch";
+"widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.switch.description" = "Turn on/off your switch";
 "widgets.controls.switch.title" = "Switch";
-"widgets.controls.cover.description" = "Open/Close cover";
+"widgets.controls.cover.description" = "Toggle cover";
 "widgets.controls.cover.title" = "Cover";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.parameters.action" = "Action";
