@@ -1014,8 +1014,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.title" = "Sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
-"permission.screen.bluetooth.title" = "Search devices";
-"permission.screen.bluetooth.secondary_button" = "Skip";
-"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
-"debug.reset.entities_database.title" = "Reset app entities database";
 "yes_label" = "Yes";
