@@ -23,10 +23,11 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
                         id: sensor.id,
                         entityId: sensor.entityId,
                         serverId: key.identifier.rawValue,
-                        displayString: sensor.name
+                        displayString: sensor.name,
+                        icon: sensor.icon
                     )
                 }
-            }.prefix(upTo: 3))
+            }.prefix(upTo: 2))
             return try await entry(for: configuration, in: context)
         } catch {
             Current.Log.error("Using placeholder for sensor widget snapshot")
@@ -59,16 +60,13 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> WidgetSensorsEntry {
         .init(
             sensorData: [
-                WidgetSensorsEntry.SensorData(entityId: "1", key: "Solar Generation", value: "3404 Watt"),
-                WidgetSensorsEntry.SensorData(entityId: "2", key: "Temperature", value: "22.4 C"),
-                WidgetSensorsEntry.SensorData(entityId: "3", key: "Humidity", value: "56.4 %"),
+                WidgetSensorsEntry.SensorData(id: "1", key: "Solar Generation", value: "3404 Watt"),
+                WidgetSensorsEntry.SensorData(id: "2", key: "Temperature", value: "22.4 C"),
             ]
         )
     }
 
     private func entry(for configuration: WidgetSensorsAppIntent, in context: Context) async throws -> Entry {
-        let sensorsGroupedByServer = Dictionary(grouping: configuration.sensors ?? [], by: { $0.serverId })
-
         var sensorValues: [WidgetSensorsEntry.SensorData] = []
 
         for sensor in configuration.sensors ?? [] {
@@ -122,10 +120,11 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
 
         return WidgetSensorsEntry.SensorData(
-            entityId: sensor.entityId,
+            id: sensor.id,
             key: sensor.displayString,
             value: stateValue,
-            unitOfMeasurement: unitOfMeasurement
+            unitOfMeasurement: unitOfMeasurement,
+            icon: sensor.icon
         )
     }
 
@@ -135,13 +134,13 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 do {
-                    let scripts: [HAAppEntity] = try Current.database().read { db in
+                    let sensors: [HAAppEntity] = try Current.database().read { db in
                         try HAAppEntity
                             .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                             .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.sensor.rawValue)
                             .fetchAll(db)
                     }
-                    entities[server] = scripts
+                    entities[server] = sensors
                 } catch {
                     Current.Log.error("Failed to load sensors from database: \(error.localizedDescription)")
                 }
@@ -167,10 +166,11 @@ struct WidgetSensorsEntry: TimelineEntry {
     var sensorData: [SensorData] = []
 
     struct SensorData {
-        var entityId: String
+        var id: String
         var key: String
         var value: String
         var unitOfMeasurement: String?
+        var icon: String?
     }
 }
 

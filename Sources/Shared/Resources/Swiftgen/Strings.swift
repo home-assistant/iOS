@@ -3542,6 +3542,8 @@ public enum L10n {
     public enum Sensors {
       /// Display state of sensors
       public static var description: String { return L10n.tr("Localizable", "widgets.sensors.description") }
+      /// No Sensors Configured
+      public static var notConfigured: String { return L10n.tr("Localizable", "widgets.sensors.not_configured") }
       /// Sensors
       public static var title: String { return L10n.tr("Localizable", "widgets.sensors.title") }
     }

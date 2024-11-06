@@ -1025,4 +1025,5 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.title" = "Scripts";
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.title" = "Sensors";
+"widgets.sensors.not_configured" = "No Sensors Configured";
 "yes_label" = "Yes";

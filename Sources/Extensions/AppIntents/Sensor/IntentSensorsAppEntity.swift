@@ -14,6 +14,7 @@ struct IntentSensorsAppEntity: AppEntity {
     var entityId: String
     var serverId: String
     var displayString: String
+    var icon: String?
 
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(title: "\(displayString)")
@@ -23,12 +24,14 @@ struct IntentSensorsAppEntity: AppEntity {
         id: String,
         entityId: String,
         serverId: String,
-        displayString: String
+        displayString: String,
+        icon: String?
     ) {
         self.id = id
         self.entityId = entityId
         self.serverId = serverId
         self.displayString = displayString
+        self.icon = icon
     }
 }
 
@@ -60,7 +63,8 @@ struct IntentSensorsAppEntityQuery: EntityQuery {
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
-                    displayString: entity.name
+                    displayString: entity.name,
+                    icon: entity.icon
                 )
             })))
         }
