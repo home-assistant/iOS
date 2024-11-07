@@ -76,7 +76,6 @@ final class CarPlayAreasViewModel {
         )
     }
 
-    // swiftlint:disable cyclomatic_complexity
     private func updateAreas(
         _ areas: [HAAreaResponse],
         entitiesAndAreas: [HAEntityAreaResponse],
