@@ -625,6 +625,8 @@
 		426D9C742C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
 		426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
 		426EE49B2CA4194E00A5EF4F /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */; };
+		4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4272B9A82CDCE15C008CC262 /* CarPlayConfig.test.swift */; };
+		4272B9AB2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 4272B9AA2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite */; };
 		4273C4872C8857B00065A5B4 /* ControlOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */; };
 		4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */; };
 		4273C48A2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */; };
@@ -1899,6 +1901,8 @@
 		426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSwitchEntity.swift; sourceTree = "<group>"; };
 		426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlEntityProvider.swift; sourceTree = "<group>"; };
 		426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
+		4272B9A82CDCE15C008CC262 /* CarPlayConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfig.test.swift; sourceTree = "<group>"; };
+		4272B9AA2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = CarPlayConfigV1.sqlite; sourceTree = "<group>"; };
 		4273C4862C8857B00065A5B4 /* ControlOpenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenPage.swift; sourceTree = "<group>"; };
 		4273C4892C8858470065A5B4 /* ControlOpenPageValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenPageValueProvider.swift; sourceTree = "<group>"; };
 		4273C48C2C8859530065A5B4 /* PageAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageAppEntity.swift; sourceTree = "<group>"; };
@@ -3808,6 +3812,15 @@
 			path = Switch;
 			sourceTree = "<group>";
 		};
+		4272B9A72CDCE140008CC262 /* CarPlay */ = {
+			isa = PBXGroup;
+			children = (
+				4272B9AA2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite */,
+				4272B9A82CDCE15C008CC262 /* CarPlayConfig.test.swift */,
+			);
+			path = CarPlay;
+			sourceTree = "<group>";
+		};
 		4273C4852C88579E0065A5B4 /* Control */ = {
 			isa = PBXGroup;
 			children = (
@@ -4560,6 +4573,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				4272B9A72CDCE140008CC262 /* CarPlay */,
 				424151FE2CD90CA200D7A6F9 /* MagicItem */,
 				39A32EE32C0E38A100985722 /* WebView */,
 				39A32EDF2C0E37FC00985722 /* Thread */,
@@ -5932,6 +5946,7 @@
 			files = (
 				42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */,
 				1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */,
+				4272B9AB2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6911,6 +6926,7 @@
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				42FCD0032B9B1CB70057783F /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				42FCD0042B9B1CB70057783F /* ThreadCredentialsSharing.test.swift in Sources */,
+				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
