@@ -272,9 +272,7 @@ public class WebhookManager: NSObject {
                 /* If user's cloud subscription expired or account was signed out, retry with activeURL
                  instad of cloud hook */
                 if let self, let error = error as? WebhookError, error == WebhookError.unacceptableStatusCode(503),
-                   overrideURL == nil {
-                    let activeURL = server.info.connection.activeURL()
-
+                   overrideURL == nil, let activeURL = server.info.connection.activeURL() {
                     let event = ClientEvent(
                         text: "Retrying with active URL - \(activeURL.absoluteString)",
                         type: .networkRequest

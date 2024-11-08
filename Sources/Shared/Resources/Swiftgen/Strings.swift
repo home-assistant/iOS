@@ -1546,6 +1546,10 @@ public enum L10n {
           /// Requires setup
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.requires_setup.title") }
         }
+        public enum SsidBssidRequired {
+          /// To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.ssid_bssid_required.title") }
+        }
         public enum SsidRequired {
           /// To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.ssid_required.title") }
