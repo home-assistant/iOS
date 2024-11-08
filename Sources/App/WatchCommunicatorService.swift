@@ -105,7 +105,7 @@ final class WatchCommunicatorService {
     private func notifyWatchConfig(message: InteractiveImmediateMessage, watchConfig: WatchConfig) {
         let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
         let magicItemProvider = Current.magicItemProvider()
-        magicItemProvider.loadInformation {
+        magicItemProvider.loadInformation { _ in
             let magicItemsInfo: [MagicItem.Info] = watchConfig.items.compactMap { magicItem in
                 magicItemProvider.getInfo(for: magicItem)
             }
@@ -161,12 +161,16 @@ final class WatchCommunicatorService {
                 serviceData: ["entity_id": itemId],
                 responseIdentifier: responseIdentifier
             )
-        case .cover:
+        case .entity:
+            guard let domain = MagicItem(id: itemId, serverId: "", type: .entity).domain else {
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                return
+            }
             callService(
                 server: server,
                 message: message,
                 magicItemId: itemId,
-                domain: .scene,
+                domain: domain,
                 serviceName: "toggle",
                 serviceData: ["entity_id": itemId],
                 responseIdentifier: responseIdentifier

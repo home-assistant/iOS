@@ -788,7 +788,6 @@ public class HomeAssistantAPI {
                 guard let domain = item.domain else {
                     throw MagicItemError.unknownDomain
                 }
-                // TODO: Handle different domains
                 return Current.api(for: server).CallService(
                     domain: domain.rawValue,
                     service: "toggle",
