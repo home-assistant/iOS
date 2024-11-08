@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
+"app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
+"app_intents.icon.title" = "Icon";
+"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.light.title" = "Control light";
+"app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "Script \"%@\" executed.";
 "app_intents.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.state.target" = "Target state";
+"app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -96,9 +103,9 @@
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
-"carPlay.config.tabs.title" = "Tabs";
-"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
-"carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
+"carPlay.config.tabs.title" = "പാളികൾ";
+"carPlay.debug.delete_db.alert.title" = "CarPlay ക്രമീകരണം ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ? ഇത് പഴയപടിയാക്കാനാകില്ല";
+"carPlay.debug.delete_db.button.title" = "CarPlay ക്രമീകരണം ഇല്ലാതാക്കുക";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
@@ -116,8 +123,8 @@
 "carPlay.no_entities.title" = "No CarPlay compatible entities available.";
 "carPlay.notification.action.intro.body" = "Tap to create your first iOS Action";
 "carPlay.notification.action.intro.title" = "Create iOS Action";
-"carPlay.notification.quick_access.intro.body" = "Tap to create your CarPlay configuration.";
-"carPlay.notification.quick_access.intro.title" = "Create CarPlay configuration";
+"carPlay.notification.quick_access.intro.body" = "നിങ്ങളുടെ CarPlay കോൺഫിഗറേഷൻ ഉണ്ടാക്കാൻ അമർത്തുക.";
+"carPlay.notification.quick_access.intro.title" = "CarPlay ക്രമീകരണം ഉണ്ടാക്കുക";
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Loading…";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
@@ -165,7 +172,7 @@
 "database.problem.delete" = "Delete Database & Quit App";
 "database.problem.quit" = "Quit App";
 "database.problem.title" = "Database Error";
-"debug.reset.entities_database.title" = "Reset app entities database";
+"debug.reset.entities_database.title" = "ആപ്പ് ഉരുക്കളുടെ ഡാറ്റാബേസ് പുനഃസജ്ജമാക്കുക";
 "debug_section_label" = "Debug";
 "delete" = "Delete";
 "done_label" = "Done";
@@ -967,7 +974,11 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Toggle cover";
+"widgets.controls.cover.placeholder_title" = "Choose cover";
+"widgets.controls.cover.title" = "Cover";
 "widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
@@ -979,6 +990,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.parameters.action" = "Action";
@@ -1012,5 +1024,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
 "widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";

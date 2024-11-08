@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Não consegue encontrar seu pipeline do Assist? Abra o Assist no aplicativo para atualizar a lista de pipelines.";
 "app_intents.controls.assist.parameter.with_voice" = "Com voz";
 "app_intents.controls.assist.title" = "Assist no aplicativo";
+"app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Confirmação tátil";
+"app_intents.icon.title" = "Icon";
+"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.light.title" = "Control light";
+"app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Estado alvo";
 "app_intents.lights.light.title" = "Luz";
 "app_intents.notify_when_run.description" = "Mostra notificação após executado";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "Script \" %@ \" executado.";
 "app_intents.show_confirmation_dialog.description" = "Mostra notificação de confirmação após executado";
 "app_intents.show_confirmation_dialog.title" = "Notificação de confirmação";
+"app_intents.state.target" = "Target state";
+"app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Quais ações?";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -967,7 +974,11 @@
 "widgets.controls.assist.description" = "Abrir Assist no aplicativo Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Escolha um pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Toggle cover";
+"widgets.controls.cover.placeholder_title" = "Choose cover";
+"widgets.controls.cover.title" = "Cover";
 "widgets.controls.light.description" = "Ligue / desligue sua luz";
+"widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Luz";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Escolha a página";
 "widgets.controls.open_page.configuration.parameter.page" = "Página";
@@ -979,6 +990,7 @@
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Escolha o script";
 "widgets.controls.switch.description" = "Ligue/desligue seu interruptor";
+"widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Interruptor";
 "widgets.details.description" = "Exibir estados usando o Home Assistant em texto";
 "widgets.details.parameters.action" = "Ação";
@@ -1012,5 +1024,6 @@
 "widgets.scripts.not_configured" = "Nenhum script configurado";
 "widgets.scripts.title" = "Scripts";
 "widgets.sensors.description" = "Exibir estado dos sensores";
+"widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensores";
 "yes_label" = "Sim";

@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Nemůžete najít pipeline Assist? Otevřete Assist v aplikaci a obnovte seznam pipelines.";
 "app_intents.controls.assist.parameter.with_voice" = "S hlasem";
 "app_intents.controls.assist.title" = "Assist v aplikaci";
+"app_intents.cover.title" = "Kryt";
 "app_intents.haptic_confirmation.title" = "Haptické potvrzení";
+"app_intents.icon.title" = "Ikona";
+"app_intents.intent.cover.title" = "Ovládat kryt";
+"app_intents.intent.light.title" = "Ovládat světlo";
+"app_intents.intent.switch.title" = "Ovládat spínač";
 "app_intents.lights.light.target" = "Cílový stav";
 "app_intents.lights.light.title" = "Světla";
 "app_intents.notify_when_run.description" = "Zobrazí oznámení po provedení.";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "Skript \"%@\" byl spuštěn.";
 "app_intents.show_confirmation_dialog.description" = "Po provedení zobrazí potvrzovací oznámení.";
 "app_intents.show_confirmation_dialog.title" = "Potvrzovací oznámení";
+"app_intents.state.target" = "Cílový stav";
+"app_intents.state.toggle" = "Přepnout";
 "app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
 "assist.pipelines_picker.title" = "Pipeline Assist";
@@ -967,7 +974,11 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.assist.description" = "Otevře Assist v aplikaci Home Assistant.";
 "widgets.controls.assist.pipeline.placeholder" = "Vybrat pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Přepnout kryt";
+"widgets.controls.cover.placeholder_title" = "Vybrat kryt";
+"widgets.controls.cover.title" = "Kryt";
 "widgets.controls.light.description" = "Zapne/Vypne světlo.";
+"widgets.controls.light.placeholder_title" = "Vybrat světlo";
 "widgets.controls.light.title" = "Světlo";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Vybrat stránku";
 "widgets.controls.open_page.configuration.parameter.page" = "Stránka";
@@ -979,6 +990,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.script.display_name" = "Skript";
 "widgets.controls.scripts.placeholder_title" = "Vybrat skript";
 "widgets.controls.switch.description" = "Zapne/Vypne spínač.";
+"widgets.controls.switch.placeholder_title" = "Vybrat spínač";
 "widgets.controls.switch.title" = "Spínač";
 "widgets.details.description" = "Zobrazí stavy pomocí aplikace Home Assistant v textu.";
 "widgets.details.parameters.action" = "Akce";
@@ -1012,5 +1024,6 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.scripts.not_configured" = "Nebyly nastaveny žádné skripty";
 "widgets.scripts.title" = "Skripty";
 "widgets.sensors.description" = "Zobrazení stavu senzorů.";
+"widgets.sensors.not_configured" = "Nejsou nastaveny žádné senzory";
 "widgets.sensors.title" = "Senzory";
 "yes_label" = "Ano";

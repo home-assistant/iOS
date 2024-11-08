@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Nem található az Assist csatorna? Nyissa meg az Assist funkciót az alkalmazásban a csatornalista frissítéséhez.";
 "app_intents.controls.assist.parameter.with_voice" = "Hanggal";
 "app_intents.controls.assist.title" = "Assist az alkalmazásban";
+"app_intents.cover.title" = "Árnyékoló";
 "app_intents.haptic_confirmation.title" = "Haptikus megerősítés";
+"app_intents.icon.title" = "Ikon";
+"app_intents.intent.cover.title" = "Árnyékoló vezérlése";
+"app_intents.intent.light.title" = "Lámpa vezérlése";
+"app_intents.intent.switch.title" = "Kapcsoló vezérlése";
 "app_intents.lights.light.target" = "Célállapot";
 "app_intents.lights.light.title" = "Fény";
 "app_intents.notify_when_run.description" = "Értesítést jelenít meg a végrehajtás után";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "A(z) \"%@\" szkript végrehajtása megtörtént.";
 "app_intents.show_confirmation_dialog.description" = "Megerősítő értesítést jelenít meg a végrehajtás után";
 "app_intents.show_confirmation_dialog.title" = "Megerősítő értesítés";
+"app_intents.state.target" = "Célállapot";
+"app_intents.state.toggle" = "Kapcsolás";
 "app_intents.widget_action.actions_parameter_configuration" = "Milyen műveletek?";
 "assist.error.pipelines_response" = "Nem sikerült lekérni az Assist folyamatokat, kérjük, ellenőrizze a folyamatok konfigurációját.";
 "assist.pipelines_picker.title" = "Assist folyamatok";
@@ -967,7 +974,11 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.assist.description" = "Az Assist funkció megnyitása a Home Assistant alkalmazásban";
 "widgets.controls.assist.pipeline.placeholder" = "Válasszon egy csatornát";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Árnyékoló mozgatása";
+"widgets.controls.cover.placeholder_title" = "Válasszon árnyékolót";
+"widgets.controls.cover.title" = "Árnyékoló";
 "widgets.controls.light.description" = "Kapcsolja be vagy ki a lámpát";
+"widgets.controls.light.placeholder_title" = "Válasszon lámpát";
 "widgets.controls.light.title" = "Fény";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Válasszon oldalt";
 "widgets.controls.open_page.configuration.parameter.page" = "Oldal";
@@ -979,6 +990,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.script.display_name" = "Szkript";
 "widgets.controls.scripts.placeholder_title" = "Szkript kiválasztása";
 "widgets.controls.switch.description" = "A kapcsoló be- és kikapcsolása";
+"widgets.controls.switch.placeholder_title" = "Válasszon kapcsolót";
 "widgets.controls.switch.title" = "Kapcsoló";
 "widgets.details.description" = "Az állapotok megjelenítése a Home Assistant segítségével szöveges formában";
 "widgets.details.parameters.action" = "Művelet";
@@ -1012,5 +1024,6 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.scripts.not_configured" = "Nincsenek beállított szkriptek";
 "widgets.scripts.title" = "Szkriptek";
 "widgets.sensors.description" = "Érzékelők állapotának megjelenítése";
+"widgets.sensors.not_configured" = "Nincs konfigurálva érzékelő";
 "widgets.sensors.title" = "Érzékelők";
 "yes_label" = "Igen";

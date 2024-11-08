@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "Avec la voix";
 "app_intents.controls.assist.title" = "Assist in app";
+"app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Confirmation haptique";
+"app_intents.icon.title" = "Icon";
+"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.light.title" = "Control light";
+"app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Statut de la cible";
 "app_intents.lights.light.title" = "Lumière";
 "app_intents.notify_when_run.description" = "Afficher la notification après exécution";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "Scénario \"%@» exécuté.";
 "app_intents.show_confirmation_dialog.description" = "Affiche une notification de confirmation après l'exécution";
 "app_intents.show_confirmation_dialog.title" = "Notification de confirmation";
+"app_intents.state.target" = "Target state";
+"app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Quelles actions ?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -967,7 +974,11 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choisir un canal";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Toggle cover";
+"widgets.controls.cover.placeholder_title" = "Choose cover";
+"widgets.controls.cover.title" = "Cover";
 "widgets.controls.light.description" = "Allumer/éteindre votre lumière";
+"widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Lumière";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choisir page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
@@ -979,6 +990,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.controls.switch.description" = "Allumer/éteindre votre interrupteur";
+"widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Interrupteur";
 "widgets.details.description" = "Afficher les états à l'aide de Home Assistant dans le texte";
 "widgets.details.parameters.action" = "Action";
@@ -1012,5 +1024,6 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.scripts.not_configured" = "Aucun script configuré";
 "widgets.scripts.title" = "Scripts";
 "widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Oui";
