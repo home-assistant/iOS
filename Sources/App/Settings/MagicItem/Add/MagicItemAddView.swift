@@ -18,8 +18,8 @@ struct MagicItemAddView: View {
             VStack {
                 Picker(L10n.MagicItem.ItemType.Selection.List.title, selection: $viewModel.selectedItemType) {
                     if context == .carPlay {
-                        Text(L10n.MagicItem.ItemType.Cover.List.title)
-                            .tag(MagicItemAddType.covers)
+                        Text(L10n.MagicItem.ItemType.Entity.List.title)
+                            .tag(MagicItemAddType.entities)
                     }
                     Text(L10n.MagicItem.ItemType.Script.List.title)
                         .tag(MagicItemAddType.scripts)
@@ -38,8 +38,8 @@ struct MagicItemAddView: View {
                         scriptsPerServerList
                     case .scenes:
                         scenesPerServerList
-                    case .covers:
-                        coversPerServerList
+                    case .entities:
+                        entitiesPerServerList
                     }
                 }
                 .searchable(text: $viewModel.searchText)
@@ -107,10 +107,10 @@ struct MagicItemAddView: View {
     }
 
     @ViewBuilder
-    private var coversPerServerList: some View {
-        ForEach(Array(viewModel.covers.keys), id: \.identifier) { server in
+    private var entitiesPerServerList: some View {
+        ForEach(Array(viewModel.entities.keys), id: \.identifier) { server in
             Section(server.info.name) {
-                list(entities: viewModel.covers[server] ?? [], serverId: server.identifier.rawValue, type: .cover)
+                list(entities: viewModel.entities[server] ?? [], serverId: server.identifier.rawValue, type: .entity)
             }
         }
     }

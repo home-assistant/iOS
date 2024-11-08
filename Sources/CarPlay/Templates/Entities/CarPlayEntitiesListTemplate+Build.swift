@@ -8,7 +8,7 @@ extension CarPlayEntitiesListTemplate {
         title: String,
         filterType: CarPlayEntitiesListViewModel.FilterType,
         server: Server,
-        entitiesCachedStates: HACache<HACachedStates>
+        entitiesCachedStates: HACachedStates
     ) -> CarPlayEntitiesListTemplate {
         let viewModel = CarPlayEntitiesListViewModel(
             filterType: filterType,

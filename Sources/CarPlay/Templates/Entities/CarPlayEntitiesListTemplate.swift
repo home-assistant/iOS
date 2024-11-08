@@ -25,15 +25,18 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
 
     func templateWillDisappear(template: CPTemplate) {
         if self.template == template {
-            viewModel.cancelSubscriptionToken()
+            /* no-op */
         }
     }
 
     func templateWillAppear(template: CPTemplate) {
         if self.template == template {
             update()
-            viewModel.subscribe()
         }
+    }
+
+    func entitiesStateChange(entities: HACachedStates) {
+        viewModel.updateStates(entities: entities)
     }
 
     func update() {

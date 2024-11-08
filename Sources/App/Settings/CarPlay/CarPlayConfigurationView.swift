@@ -124,12 +124,12 @@ struct CarPlayConfigurationView: View {
         watchPreview: Bool,
         color: UIColor? = nil
     ) -> UIImage {
-        var icon: MaterialDesignIcons = .abTestingIcon
+        var icon: MaterialDesignIcons = .dotsGridIcon
         switch item.type {
         case .action, .scene:
             icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .cover:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
+        case .script, .entity:
+            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
         }
 
         return icon.image(

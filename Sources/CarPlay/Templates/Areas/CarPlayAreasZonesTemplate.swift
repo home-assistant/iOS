@@ -39,6 +39,10 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
         childTemplateProvider?.templateWillAppear(template: template)
     }
 
+    func entitiesStateChange(entities: HACachedStates) {
+        viewModel.entitiesListTemplate?.entitiesStateChange(entities: entities)
+    }
+
     func update() {
         viewModel.update()
     }

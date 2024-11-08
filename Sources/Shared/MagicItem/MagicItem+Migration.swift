@@ -27,10 +27,10 @@ extension MagicItemProvider {
                 // Action does not require migration
                 return item
             case .script:
-                return getSimilarItem(for: item, source: scriptsPerServer)
+                return getSimilarItem(for: item)
             case .scene:
-                return getSimilarItem(for: item, source: scenesPerServer)
-            case .cover:
+                return getSimilarItem(for: item)
+            case .entity:
                 return item
             }
         }
@@ -41,8 +41,8 @@ extension MagicItemProvider {
         }
     }
 
-    private func getSimilarItem(for item: MagicItem, source: [String: [HAAppEntity]]) -> MagicItem? {
-        if let similarEntityInCache = source.first(where: { dict in
+    private func getSimilarItem(for item: MagicItem) -> MagicItem? {
+        if let similarEntityInCache = entitiesPerServer.first(where: { dict in
             dict.value.contains { $0.entityId == item.id }
         }).flatMap(\.value)?.first(where: { entity in
             entity.entityId == item.id

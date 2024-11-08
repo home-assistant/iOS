@@ -3,8 +3,8 @@ import HAKit
 import RealmSwift
 import Shared
 
+@available(iOS 16.0, *)
 final class CarPlayQuickAccessViewModel {
-    private var actionsToken: NotificationToken?
     weak var templateProvider: CarPlayQuickAccessTemplate?
 
     func update() {
@@ -17,26 +17,6 @@ final class CarPlayQuickAccessViewModel {
         } catch {
             Current.Log.error("Failed to access CarPlay configuration, error: \(error.localizedDescription)")
             templateProvider?.updateList(for: [])
-        }
-    }
-
-    func invalidateActionsToken() {
-        actionsToken?.invalidate()
-    }
-
-    func handleAction(action: Action, completion: @escaping (Bool) -> Void) {
-        guard let server = Current.servers.server(for: action) else {
-            completion(false)
-            return
-        }
-        Current.api(for: server).HandleAction(actionID: action.ID, source: .CarPlay).pipe { result in
-            switch result {
-            case .fulfilled:
-                completion(true)
-            case let .rejected(error):
-                Current.Log.info(error)
-                completion(false)
-            }
         }
     }
 

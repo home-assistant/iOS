@@ -254,8 +254,8 @@ struct WatchConfigurationView: View {
         switch item.type {
         case .action:
             icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .scene, .cover:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
+        case .script, .scene, .entity:
+            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
         }
 
         return icon.image(

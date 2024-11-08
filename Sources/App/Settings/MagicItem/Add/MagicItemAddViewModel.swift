@@ -7,16 +7,17 @@ enum MagicItemAddType {
     case scripts
     case actions
     case scenes
-    case covers
+    case entities
 }
 
 final class MagicItemAddViewModel: ObservableObject {
     @Published var selectedItemType = MagicItemAddType.scripts
     @Published var scripts: [Server: [HAAppEntity]] = [:]
     @Published var scenes: [Server: [HAAppEntity]] = [:]
-    @Published var covers: [Server: [HAAppEntity]] = [:]
+    @Published var entities: [Server: [HAAppEntity]] = [:]
     @Published var actions: [Action] = []
     @Published var searchText: String = ""
+
     @MainActor
     func loadContent() {
         loadAppEntities()
@@ -25,44 +26,11 @@ final class MagicItemAddViewModel: ObservableObject {
 
     @MainActor
     private func loadAppEntities() {
-        Current.servers.all.forEach { [weak self] server in
-            do {
-                let scripts: [HAAppEntity] = try Current.database().read { db in
-                    try HAAppEntity
-                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.script.rawValue).fetchAll(db)
-                }
-                self?.dispatchInMain {
-                    self?.scripts[server] = scripts
-                }
-            } catch {
-                Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
-            }
-
-            do {
-                let scenes: [HAAppEntity] = try Current.database().read { db in
-                    try HAAppEntity
-                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.scene.rawValue).fetchAll(db)
-                }
-                self?.dispatchInMain {
-                    self?.scenes[server] = scenes
-                }
-            } catch {
-                Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
-            }
-
-            do {
-                let covers: [HAAppEntity] = try Current.database().read { db in
-                    try HAAppEntity
-                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.cover.rawValue).fetchAll(db)
-                }
-                self?.dispatchInMain {
-                    self?.covers[server] = covers
-                }
-            } catch {
-                Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+        Current.magicItemProvider().loadInformation { [weak self] entities in
+            guard let self else { return }
+            entities.forEach { key, value in
+                guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == key }) else { return }
+                self.entities[server] = value
             }
         }
     }
@@ -72,11 +40,5 @@ final class MagicItemAddViewModel: ObservableObject {
         actions = Current.realm().objects(Action.self)
             .filter({ $0.Scene == nil })
             .sorted(by: { $0.Position < $1.Position })
-    }
-
-    private func dispatchInMain(completion: @escaping () -> Void) {
-        DispatchQueue.main.async {
-            completion()
-        }
     }
 }

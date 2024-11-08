@@ -38,6 +38,10 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         }
     }
 
+    func entitiesStateChange(entities: HACachedStates) {
+        // TODO: Implement
+    }
+
     @objc func update() {
         var serverList: [CPListItem] = []
         for serverOption in Current.servers.all {

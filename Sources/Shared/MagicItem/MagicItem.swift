@@ -18,6 +18,15 @@ public struct MagicItem: Codable, Equatable {
         "\(serverId)-\(id)"
     }
 
+    /// Domain retrieved from id when item is entity else nil
+    public var domain: Domain? {
+        if let domainString = id.split(separator: ".").first, let domain = Domain(rawValue: String(domainString)) {
+            return domain
+        } else {
+            return nil
+        }
+    }
+
     public init(id: String, serverId: String, type: ItemType, customization: Customization? = .init()) {
         self.id = id
         self.serverId = serverId
@@ -29,7 +38,7 @@ public struct MagicItem: Codable, Equatable {
         case action
         case script
         case scene
-        case cover
+        case entity
     }
 
     public struct Customization: Codable, Equatable {
@@ -73,13 +82,17 @@ public struct MagicItem: Codable, Equatable {
         switch type {
         case .action, .scene:
             icon = MaterialDesignIcons(named: info.iconName, fallback: .scriptTextOutlineIcon)
-        case .script, .cover:
+        case .script, .entity:
             icon = MaterialDesignIcons(
                 serversideValueNamed: info.iconName,
-                fallback: .scriptTextOutlineIcon
+                fallback: .dotsGridIcon
             )
         }
 
         return icon
     }
+}
+
+public enum MagicItemError: Error {
+    case unknownDomain
 }
