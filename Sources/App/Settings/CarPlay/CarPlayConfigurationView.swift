@@ -65,7 +65,7 @@ struct CarPlayConfigurationView: View {
     }
 
     private var itemsSection: some View {
-        Section("Quick Actions") {
+        Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
             ForEach(viewModel.config.quickAccessItems, id: \.id) { item in
                 makeListItem(item: item)
             }
