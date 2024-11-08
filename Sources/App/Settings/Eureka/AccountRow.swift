@@ -216,7 +216,9 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                         throw FetchAvatarError.missingURL
                     }
                 }.map { path throws -> URL in
-                    let url = server.info.connection.activeURL().appendingPathComponent(path)
+                    guard let url = server.info.connection.activeURL()?.appendingPathComponent(path) else {
+                        throw ServerConnectionError.noActiveURL
+                    }
                     if let lastTask, lastTask.error == nil, lastTask.request?.url == url {
                         throw FetchAvatarError.alreadySet
                     }

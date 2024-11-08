@@ -68,8 +68,12 @@ public class HomeAssistantAPI {
         self.connection = HAKit.connection(configuration: .init(
             connectionInfo: {
                 do {
+                    guard let activeURL = server.info.connection.activeURL() else {
+                        Current.Log.error("activeURL was not available when HAAPI called initializer")
+                        return nil
+                    }
                     return try .init(
-                        url: server.info.connection.activeURL(),
+                        url: activeURL,
                         userAgent: HomeAssistantAPI.userAgent,
                         evaluateCertificate: { secTrust, completion in
                             completion(
@@ -273,7 +277,10 @@ public class HomeAssistantAPI {
             let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
 
             if needsAuth {
-                let activeURL = server.info.connection.activeURL()
+                guard let activeURL = server.info.connection.activeURL() else {
+                    seal.reject(ServerConnectionError.noActiveURL)
+                    return
+                }
 
                 if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
                     Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
@@ -352,8 +359,11 @@ public class HomeAssistantAPI {
 
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
-            let queryUrl = server.info.connection.activeAPIURL()
-                .appendingPathComponent("camera_proxy/\(cameraEntityID)")
+            guard let queryUrl = server.info.connection.activeAPIURL()?
+                .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
+                seal.reject(ServerConnectionError.noActiveURL)
+                return
+            }
             _ = manager.request(queryUrl)
                 .validate()
                 .responseData { response in
