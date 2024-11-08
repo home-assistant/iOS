@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Не можете найти свой Assist pipeline? Откройте Assist в приложении, чтобы обновить список pipeline.";
 "app_intents.controls.assist.parameter.with_voice" = "С помощью голоса";
 "app_intents.controls.assist.title" = "Assist в приложении";
+"app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Тактильное подтверждение";
+"app_intents.icon.title" = "Icon";
+"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.light.title" = "Control light";
+"app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Целевое состояние";
 "app_intents.lights.light.title" = "Свет";
 "app_intents.notify_when_run.description" = "Показывать уведомление после выполнения";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "Скрипт \"%@\" выполнен.";
 "app_intents.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.show_confirmation_dialog.title" = "Уведомление о подтверждении";
+"app_intents.state.target" = "Target state";
+"app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -967,7 +974,11 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.controls.assist.description" = "Открыть Assist в приложении Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Toggle cover";
+"widgets.controls.cover.placeholder_title" = "Choose cover";
+"widgets.controls.cover.title" = "Cover";
 "widgets.controls.light.description" = "Включить/выключить свет";
+"widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Свет";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Выберите страницу";
 "widgets.controls.open_page.configuration.parameter.page" = "Страница";
@@ -979,6 +990,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.controls.script.display_name" = "Скрипт";
 "widgets.controls.scripts.placeholder_title" = "Выберите скрипт";
 "widgets.controls.switch.description" = "Включает/выключает ваш переключатель";
+"widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Переключатель";
 "widgets.details.description" = "Отображает состояния с помощью Home Assistant в текстовом виде";
 "widgets.details.parameters.action" = "Действие";
@@ -1012,5 +1024,6 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.scripts.not_configured" = "Никакие скрипты не настроены";
 "widgets.scripts.title" = "Скрипты";
 "widgets.sensors.description" = "Отображение состояния сенсоров";
+"widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Сенсоры";
 "yes_label" = "Да";

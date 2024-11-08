@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
+"app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
+"app_intents.icon.title" = "Icon";
+"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.light.title" = "Control light";
+"app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "Script \"%@\" executed.";
 "app_intents.show_confirmation_dialog.description" = "Shows confirmation notification after executed";
 "app_intents.show_confirmation_dialog.title" = "Confirmation notification";
+"app_intents.state.target" = "Target state";
+"app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
@@ -967,7 +974,11 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Toggle cover";
+"widgets.controls.cover.placeholder_title" = "Choose cover";
+"widgets.controls.cover.title" = "Cover";
 "widgets.controls.light.description" = "Turn on/off your light";
+"widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
@@ -979,6 +990,7 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "widgets.controls.script.display_name" = "Script";
 "widgets.controls.scripts.placeholder_title" = "Choose script";
 "widgets.controls.switch.description" = "Turn on/off your switch";
+"widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.parameters.action" = "Action";
@@ -1012,5 +1024,6 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "widgets.scripts.not_configured" = "No Scripts Configured";
 "widgets.scripts.title" = "Scripts";
 "widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";

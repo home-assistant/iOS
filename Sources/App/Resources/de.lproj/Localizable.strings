@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "Du kannst deine Assist-Pipeline nicht finden? Öffne Assist in der App, um die Liste der Pipelines zu aktualisieren.";
 "app_intents.controls.assist.parameter.with_voice" = "Mit Stimme";
 "app_intents.controls.assist.title" = "Assist in der App";
+"app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Haptische Bestätigung";
+"app_intents.icon.title" = "Icon";
+"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.light.title" = "Control light";
+"app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Zielzustand";
 "app_intents.lights.light.title" = "Licht";
 "app_intents.notify_when_run.description" = "Zeigt eine Benachrichtigung nach der Ausführung an";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "Skript „%@“ ausgeführt.";
 "app_intents.show_confirmation_dialog.description" = "Zeigt eine Bestätigungsmeldung nach dem Ausführen an";
 "app_intents.show_confirmation_dialog.title" = "Bestätigungsmeldung";
+"app_intents.state.target" = "Target state";
+"app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Welche Aktionen?";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";
 "assist.pipelines_picker.title" = "Assist-Pipelines";
@@ -969,7 +976,11 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.controls.assist.description" = "Assist in der Home Assistant-App öffnen";
 "widgets.controls.assist.pipeline.placeholder" = "Eine Pipeline auswählen";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.cover.description" = "Toggle cover";
+"widgets.controls.cover.placeholder_title" = "Choose cover";
+"widgets.controls.cover.title" = "Cover";
 "widgets.controls.light.description" = "Schalte dein Licht ein/aus";
+"widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Licht";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Seite auswählen";
 "widgets.controls.open_page.configuration.parameter.page" = "Seite";
@@ -981,6 +992,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.controls.script.display_name" = "Skript";
 "widgets.controls.scripts.placeholder_title" = "Skript auswählen";
 "widgets.controls.switch.description" = "Schalte deinen Schalter ein/aus";
+"widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Schalter";
 "widgets.details.description" = "Anzeigen von Zuständen mit Home Assistant in Textform";
 "widgets.details.parameters.action" = "Aktion";
@@ -1014,5 +1026,6 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.scripts.not_configured" = "Keine Skripte konfiguriert";
 "widgets.scripts.title" = "Skripte";
 "widgets.sensors.description" = "Display state of sensors";
+"widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Ja";

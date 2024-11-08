@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "找不到助手設定？於 App 中開啟助力以更新設定列表。";
 "app_intents.controls.assist.parameter.with_voice" = "使用語音";
 "app_intents.controls.assist.title" = "App 中的助理";
+"app_intents.cover.title" = "門簾";
 "app_intents.haptic_confirmation.title" = "觸覺回饋確認";
+"app_intents.icon.title" = "圖示";
+"app_intents.intent.cover.title" = "控制門簾";
+"app_intents.intent.light.title" = "設定燈光";
+"app_intents.intent.switch.title" = "控制開關";
 "app_intents.lights.light.target" = "目標狀態";
 "app_intents.lights.light.title" = "燈光";
 "app_intents.notify_when_run.description" = "於執行後顯示通知";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "腳本 \"%@\" 已執行。";
 "app_intents.show_confirmation_dialog.description" = "於執行後顯示確認通知";
 "app_intents.show_confirmation_dialog.title" = "確認通知";
+"app_intents.state.target" = "目標狀態";
+"app_intents.state.toggle" = "開關";
 "app_intents.widget_action.actions_parameter_configuration" = "哪個動作？";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";
 "assist.pipelines_picker.title" = "助理細部設定";
@@ -967,7 +974,11 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.controls.assist.description" = "於 Home Assistant App 中開啟助理";
 "widgets.controls.assist.pipeline.placeholder" = "選擇助理設定";
 "widgets.controls.assist.title" = "助理";
+"widgets.controls.cover.description" = "切換門簾";
+"widgets.controls.cover.placeholder_title" = "選擇門簾";
+"widgets.controls.cover.title" = "門簾";
 "widgets.controls.light.description" = "開啟/關閉燈光";
+"widgets.controls.light.placeholder_title" = "選擇燈光";
 "widgets.controls.light.title" = "燈光";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "選擇頁面";
 "widgets.controls.open_page.configuration.parameter.page" = "頁面";
@@ -979,6 +990,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.controls.script.display_name" = "腳本";
 "widgets.controls.scripts.placeholder_title" = "選擇腳本";
 "widgets.controls.switch.description" = "開啟/關閉開關";
+"widgets.controls.switch.placeholder_title" = "選擇開關";
 "widgets.controls.switch.title" = "開關";
 "widgets.details.description" = "在文字中使用 Home Assistant 顯示狀態";
 "widgets.details.parameters.action" = "觸發動作";
@@ -1012,5 +1024,6 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.scripts.not_configured" = "未設定腳本";
 "widgets.scripts.title" = "腳本";
 "widgets.sensors.description" = "顯示感測器狀態";
+"widgets.sensors.not_configured" = "尚未設定感測器";
 "widgets.sensors.title" = "感測器";
 "yes_label" = "是";

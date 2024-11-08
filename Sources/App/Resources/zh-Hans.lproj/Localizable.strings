@@ -58,7 +58,12 @@
 "app_intents.assist.refresh_warning.title" = "找不到您的语音助手管道 ？在应用中打开语音助手，刷新管道列表。";
 "app_intents.controls.assist.parameter.with_voice" = "带有语音";
 "app_intents.controls.assist.title" = "应用中语音助手";
+"app_intents.cover.title" = "覆盖";
 "app_intents.haptic_confirmation.title" = "触觉确认";
+"app_intents.icon.title" = "图标";
+"app_intents.intent.cover.title" = "控制覆盖";
+"app_intents.intent.light.title" = "控制灯光";
+"app_intents.intent.switch.title" = "控制开关";
 "app_intents.lights.light.target" = "目标状态";
 "app_intents.lights.light.title" = "灯光";
 "app_intents.notify_when_run.description" = "执行后显示通知";
@@ -87,6 +92,8 @@
 "app_intents.scripts.success_message.content" = "脚本“%@”已执行。";
 "app_intents.show_confirmation_dialog.description" = "执行后显示确认通知";
 "app_intents.show_confirmation_dialog.title" = "确认通知";
+"app_intents.state.target" = "目标状态";
+"app_intents.state.toggle" = "切换";
 "app_intents.widget_action.actions_parameter_configuration" = "哪些动作 ？";
 "assist.error.pipelines_response" = "无法获取语音助手管道，请检查您的管道配置。";
 "assist.pipelines_picker.title" = "语音助手管道";
@@ -967,7 +974,11 @@
 "widgets.controls.assist.description" = "打开 Home Assistant 应用中的语音助手";
 "widgets.controls.assist.pipeline.placeholder" = "选择管道";
 "widgets.controls.assist.title" = "语音助手";
+"widgets.controls.cover.description" = "切换覆盖";
+"widgets.controls.cover.placeholder_title" = "选择覆盖";
+"widgets.controls.cover.title" = "覆盖";
 "widgets.controls.light.description" = "打开/关闭您的灯";
+"widgets.controls.light.placeholder_title" = "选择灯光";
 "widgets.controls.light.title" = "灯光";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "选择页面";
 "widgets.controls.open_page.configuration.parameter.page" = "页面";
@@ -979,6 +990,7 @@
 "widgets.controls.script.display_name" = "脚本";
 "widgets.controls.scripts.placeholder_title" = "选择脚本";
 "widgets.controls.switch.description" = "打开/关闭你的开关";
+"widgets.controls.switch.placeholder_title" = "选择开关";
 "widgets.controls.switch.title" = "开关";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";
 "widgets.details.parameters.action" = "动作";
@@ -1012,5 +1024,6 @@
 "widgets.scripts.not_configured" = "未配置脚本";
 "widgets.scripts.title" = "脚本";
 "widgets.sensors.description" = "显示传感器状态";
+"widgets.sensors.not_configured" = "未配置传感器";
 "widgets.sensors.title" = "传感器";
 "yes_label" = "是";
