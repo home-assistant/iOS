@@ -161,6 +161,16 @@ final class WatchCommunicatorService {
                 serviceData: ["entity_id": itemId],
                 responseIdentifier: responseIdentifier
             )
+        case .cover:
+            callService(
+                server: server,
+                message: message,
+                magicItemId: itemId,
+                domain: .scene,
+                serviceName: "toggle",
+                serviceData: ["entity_id": itemId],
+                responseIdentifier: responseIdentifier
+            )
         }
     }
 

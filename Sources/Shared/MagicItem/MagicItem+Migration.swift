@@ -30,6 +30,8 @@ extension MagicItemProvider {
                 return getSimilarItem(for: item, source: scriptsPerServer)
             case .scene:
                 return getSimilarItem(for: item, source: scenesPerServer)
+            case .cover:
+                return item
             }
         }
 

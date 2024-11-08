@@ -96,6 +96,30 @@ public enum Domain: String, CaseIterable {
     public var isCarPlaySupported: Bool {
         carPlaySupportedDomains.contains(self)
     }
+
+    public func localizedState(for state: String) -> String {
+        switch self {
+        case .button, .inputButton, .scene:
+            if let relativeDate = isoDateToRelativeTimeString(state) {
+                return relativeDate
+            }
+        default:
+            break
+        }
+        return CoreStrings.getDomainStateLocalizedTitle(state: state) ?? FrontendStrings
+            .getDefaultStateLocalizedTitle(state: state) ?? state
+    }
+
+    private func isoDateToRelativeTimeString(_ isoDateString: String) -> String? {
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        guard let date = dateFormatter.date(from: isoDateString) else {
+            return nil
+        }
+
+        let relativeFormatter = RelativeDateTimeFormatter()
+        return relativeFormatter.localizedString(for: date, relativeTo: Date())
+    }
 }
 
 // MARK: - CarPlay

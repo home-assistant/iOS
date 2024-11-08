@@ -8,14 +8,8 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayEntitiesListViewModel
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
-
     private let entityIdKey = "entityId"
-
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
-
-    private var userInterfaceStyle: UIUserInterfaceStyle? {
-        interfaceController?.carTraitCollection.userInterfaceStyle
-    }
 
     init(
         viewModel: CarPlayEntitiesListViewModel,

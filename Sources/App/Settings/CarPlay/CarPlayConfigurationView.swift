@@ -39,7 +39,7 @@ struct CarPlayConfigurationView: View {
                     isLoaded = true
                 }
                 .sheet(isPresented: $viewModel.showAddItem, content: {
-                    MagicItemAddView { itemToAdd in
+                    MagicItemAddView(context: .carPlay) { itemToAdd in
                         guard let itemToAdd else { return }
                         viewModel.addItem(itemToAdd)
                     }
@@ -128,7 +128,7 @@ struct CarPlayConfigurationView: View {
         switch item.type {
         case .action, .scene:
             icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script:
+        case .script, .cover:
             icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
         }
 

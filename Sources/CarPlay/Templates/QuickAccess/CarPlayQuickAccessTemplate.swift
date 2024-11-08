@@ -84,25 +84,45 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 iconName: "",
                 customization: nil
             )
-            let icon = magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
-            let item = CPListItem(
-                text: info.name,
-                detailText: nil,
-                image: icon
-            )
-            item.handler = { [weak self] _, _ in
-                if info.customization?.requiresConfirmation ?? false {
-                    self?.showConfirmationForRunningMagicItem(item: magicItem, info: info) {
-                        self?.executeMagicItem(magicItem, item: item)
-                    }
-                } else {
-                    self?.executeMagicItem(magicItem, item: item)
+            switch magicItem.type {
+            case .cover:
+                let item = CarPlayQuickAccessListItem(
+                    item: magicItem,
+                    info: info
+                )
+                item.template.handler = { [weak self] _, _ in
+                    self?.itemTap(magicItem: magicItem, info: info, item: item.template)
                 }
+                return item.template
+            default:
+                let icon = magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
+                let item = CPListItem(
+                    text: info.name,
+                    detailText: nil,
+                    image: icon
+                )
+                item.handler = { [weak self] _, _ in
+                    self?.itemTap(magicItem: magicItem, info: info, item: item)
+                }
+                return item
             }
-            return item
         }
 
         return items
+    }
+
+    private func itemTap(
+        magicItem: MagicItem,
+        info: MagicItem.Info,
+        item: CPListItem
+    ) {
+        if info.customization?.requiresConfirmation ?? false {
+            showConfirmationForRunningMagicItem(item: magicItem, info: info) { [weak self] in
+                self?.executeMagicItem(magicItem, item: item)
+            }
+        } else {
+            executeMagicItem(magicItem, item: item)
+        }
     }
 
     private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem) {

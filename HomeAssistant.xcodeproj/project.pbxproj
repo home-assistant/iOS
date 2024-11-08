@@ -585,6 +585,7 @@
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
 		424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424DD0592B3509170057E456 /* CarPlayQuickAccessTemplate.swift */; };
+		424EF2462CDE59420089809B /* CarPlayQuickAccessListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424EF2452CDE59420089809B /* CarPlayQuickAccessListItem.swift */; };
 		4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */; };
 		4251AA9B2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */; };
 		4251AABC2C6CE224004CCC9D /* MagicItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AABA2C6CE1D0004CCC9D /* MagicItemProvider.swift */; };
@@ -1879,6 +1880,7 @@
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
 		424DD0592B3509170057E456 /* CarPlayQuickAccessTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayQuickAccessTemplate.swift; sourceTree = "<group>"; };
+		424EF2452CDE59420089809B /* CarPlayQuickAccessListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayQuickAccessListItem.swift; sourceTree = "<group>"; };
 		4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemCustomizationView.swift; sourceTree = "<group>"; };
 		4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemEditViewModel.swift; sourceTree = "<group>"; };
 		4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.swift; sourceTree = "<group>"; };
@@ -3622,6 +3624,7 @@
 				424DD0592B3509170057E456 /* CarPlayQuickAccessTemplate.swift */,
 				420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */,
 				420FE8482B556A0200878E06 /* CarPlayQuickAccessViewModel.swift */,
+				424EF2452CDE59420089809B /* CarPlayQuickAccessListItem.swift */,
 			);
 			path = QuickAccess;
 			sourceTree = "<group>";
@@ -6767,6 +6770,7 @@
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
+				424EF2462CDE59420089809B /* CarPlayQuickAccessListItem.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,

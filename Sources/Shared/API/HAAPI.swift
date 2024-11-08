@@ -784,6 +784,15 @@ public class HomeAssistantAPI {
                     serviceData: ["entity_id": item.id],
                     shouldLog: true
                 )
+            case .cover:
+                return Current.api(for: server).CallService(
+                    domain: .init(stringLiteral: Domain.cover.rawValue),
+                    service: "toggle",
+                    serviceData: [
+                        "entity_id": item.id,
+                    ],
+                    shouldLog: true
+                )
             }
         }.done {
             completion(true)

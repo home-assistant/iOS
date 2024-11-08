@@ -41,7 +41,7 @@ struct WatchConfigurationView: View {
             viewModel.loadPipelines(for: newValue)
         }
         .sheet(isPresented: $viewModel.showAddItem, content: {
-            MagicItemAddView { itemToAdd in
+            MagicItemAddView(context: .watch) { itemToAdd in
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
@@ -254,7 +254,7 @@ struct WatchConfigurationView: View {
         switch item.type {
         case .action:
             icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .scene:
+        case .script, .scene, .cover:
             icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
         }
 

@@ -29,6 +29,7 @@ public struct MagicItem: Codable, Equatable {
         case action
         case script
         case scene
+        case cover
     }
 
     public struct Customization: Codable, Equatable {
@@ -72,7 +73,7 @@ public struct MagicItem: Codable, Equatable {
         switch type {
         case .action, .scene:
             icon = MaterialDesignIcons(named: info.iconName, fallback: .scriptTextOutlineIcon)
-        case .script:
+        case .script, .cover:
             icon = MaterialDesignIcons(
                 serversideValueNamed: info.iconName,
                 fallback: .scriptTextOutlineIcon

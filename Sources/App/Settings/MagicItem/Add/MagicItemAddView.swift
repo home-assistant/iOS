@@ -2,15 +2,25 @@ import Shared
 import SwiftUI
 
 struct MagicItemAddView: View {
+    enum Context {
+        case watch
+        case carPlay
+    }
+
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = MagicItemAddViewModel()
 
+    let context: Context
     let itemToAdd: (MagicItem?) -> Void
 
     var body: some View {
         NavigationView {
             VStack {
                 Picker(L10n.MagicItem.ItemType.Selection.List.title, selection: $viewModel.selectedItemType) {
+                    if context == .carPlay {
+                        Text(L10n.MagicItem.ItemType.Cover.List.title)
+                            .tag(MagicItemAddType.covers)
+                    }
                     Text(L10n.MagicItem.ItemType.Script.List.title)
                         .tag(MagicItemAddType.scripts)
                     Text(L10n.MagicItem.ItemType.Scene.List.title)
@@ -28,6 +38,8 @@ struct MagicItemAddView: View {
                         scriptsPerServerList
                     case .scenes:
                         scenesPerServerList
+                    case .covers:
+                        coversPerServerList
                     }
                 }
                 .searchable(text: $viewModel.searchText)
@@ -80,26 +92,7 @@ struct MagicItemAddView: View {
     private var scriptsPerServerList: some View {
         ForEach(Array(viewModel.scripts.keys), id: \.identifier) { server in
             Section(server.info.name) {
-                scriptsList(scripts: viewModel.scripts[server] ?? [], serverId: server.identifier.rawValue)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func scriptsList(scripts: [HAAppEntity], serverId: String) -> some View {
-        ForEach(scripts, id: \.id) { script in
-            if visibleForSearch(title: script.name) {
-                NavigationLink {
-                    MagicItemCustomizationView(
-                        mode: .add,
-                        item: .init(id: script.entityId, serverId: serverId, type: .script)
-                    ) { itemToAdd in
-                        self.itemToAdd(itemToAdd)
-                        dismiss()
-                    }
-                } label: {
-                    makeItemRow(title: script.name, imageSystemName: nil)
-                }
+                list(entities: viewModel.scripts[server] ?? [], serverId: server.identifier.rawValue, type: .script)
             }
         }
     }
@@ -108,26 +101,35 @@ struct MagicItemAddView: View {
     private var scenesPerServerList: some View {
         ForEach(Array(viewModel.scenes.keys), id: \.identifier) { server in
             Section(server.info.name) {
-                scenesList(scenes: viewModel.scenes[server] ?? [], serverId: server.identifier.rawValue)
+                list(entities: viewModel.scenes[server] ?? [], serverId: server.identifier.rawValue, type: .scene)
             }
         }
     }
 
     @ViewBuilder
-    private func scenesList(scenes: [HAAppEntity], serverId: String) -> some View {
-        ForEach(scenes, id: \.id) { scene in
-            if visibleForSearch(title: scene.name) {
+    private var coversPerServerList: some View {
+        ForEach(Array(viewModel.covers.keys), id: \.identifier) { server in
+            Section(server.info.name) {
+                list(entities: viewModel.covers[server] ?? [], serverId: server.identifier.rawValue, type: .cover)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func list(entities: [HAAppEntity], serverId: String, type: MagicItem.ItemType) -> some View {
+        ForEach(entities, id: \.id) { entity in
+            if visibleForSearch(title: entity.name) {
                 NavigationLink {
                     MagicItemCustomizationView(mode: .add, item: .init(
-                        id: scene.entityId,
+                        id: entity.entityId,
                         serverId: serverId,
-                        type: .scene
+                        type: type
                     )) { itemToAdd in
                         self.itemToAdd(itemToAdd)
                         dismiss()
                     }
                 } label: {
-                    makeItemRow(title: scene.name, imageSystemName: nil)
+                    makeItemRow(title: entity.name, imageSystemName: nil)
                 }
             }
         }
@@ -155,6 +157,6 @@ struct MagicItemAddView: View {
 }
 
 #Preview {
-    MagicItemAddView { _ in
+    MagicItemAddView(context: .carPlay) { _ in
     }
 }

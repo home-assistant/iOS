@@ -10,9 +10,10 @@ public protocol MagicItemProviderProtocol {
 final class MagicItemProvider: MagicItemProviderProtocol {
     var scriptsPerServer: [String: [HAAppEntity]] = [:]
     var scenesPerServer: [String: [HAAppEntity]] = [:]
+    var coversPerServer: [String: [HAAppEntity]] = [:]
 
     func loadInformation(completion: @escaping () -> Void) {
-        loadScriptsAndScenes { [weak self] in
+        loadAppEntities { [weak self] in
             self?.migrateWatchConfig(completion: {
                 self?.migrateCarPlayConfig(completion: completion)
             })
@@ -55,7 +56,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         completion()
     }
 
-    private func loadScriptsAndScenes(completion: @escaping () -> Void) {
+    private func loadAppEntities(completion: @escaping () -> Void) {
         var serversCompletedFetchCount = 0
         Current.servers.all.forEach { [weak self] server in
             do {
@@ -79,6 +80,17 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 self?.scenesPerServer[server.identifier.rawValue] = scenes
             } catch {
                 Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+            }
+
+            do {
+                let covers: [HAAppEntity] = try Current.database().read { db in
+                    try HAAppEntity
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.cover.rawValue).fetchAll(db)
+                }
+                self?.coversPerServer[server.identifier.rawValue] = covers
+            } catch {
+                Current.Log.error("Failed to load covers from database: \(error.localizedDescription)")
             }
 
             serversCompletedFetchCount += 1
@@ -140,6 +152,22 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 id: sceneItem.id,
                 name: sceneItem.name,
                 iconName: sceneItem.icon ?? MaterialDesignIcons.paletteIcon.name,
+                customization: item.customization
+            )
+        case .cover:
+            guard let coversForServer = coversPerServer[item.serverId],
+                  let coverItem = coversForServer.first(where: { $0.entityId == item.id }) else {
+                Current.Log
+                    .error(
+                        "Failed to get magic item Script info for item id: \(item.id)"
+                    )
+                return nil
+            }
+
+            return .init(
+                id: coverItem.id,
+                name: coverItem.name,
+                iconName: coverItem.icon ?? MaterialDesignIcons.blindsIcon.name,
                 customization: item.customization
             )
         }
