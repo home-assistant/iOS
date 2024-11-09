@@ -416,6 +416,9 @@
 "settings.connection_section.header" = "连接";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "示例 http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.";
 "settings.connection_section.internal_base_url.title" = "内部 URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "添加新的硬件地址";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "当主网络接口的 MAC 地址与这些硬件地址之一匹配时，将使用内部 URL。";
@@ -431,6 +434,7 @@
 "settings.connection_section.location_send_type.setting.zone_only" = "仅区域名称";
 "settings.connection_section.location_send_type.title" = "位置已发送";
 "settings.connection_section.logged_in_as" = "当前用户";
+"settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.remote_ui_url.title" = "远程UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "全部";
 "settings.connection_section.sensor_send_type.setting.none" = "无";

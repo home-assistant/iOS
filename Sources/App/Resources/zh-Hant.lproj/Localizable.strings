@@ -418,6 +418,9 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings.connection_section.header" = "連線";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud 服務";
 "settings.connection_section.internal_base_url.placeholder" = "例如、http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.";
 "settings.connection_section.internal_base_url.title" = "內部 URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "新增硬體位址";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "當主要網路介面之MAC 位址與以下硬體位址吻合時，將使用內部 URL。";
@@ -433,6 +436,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings.connection_section.location_send_type.setting.zone_only" = "僅區域名稱";
 "settings.connection_section.location_send_type.title" = "座標傳送";
 "settings.connection_section.logged_in_as" = "登入帳號：";
+"settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.remote_ui_url.title" = "遠端 UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "全部";
 "settings.connection_section.sensor_send_type.setting.none" = "無";
