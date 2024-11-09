@@ -418,6 +418,9 @@
 "settings.connection_section.header" = "Connessione";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "ad es. http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.";
 "settings.connection_section.internal_base_url.title" = "URL interno";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Aggiungi nuovo indirizzo hardware";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "L'URL interno verrà utilizzato quando l'interfaccia di rete primaria ha un indirizzo MAC corrispondente a uno di questi indirizzi hardware.";
@@ -433,6 +436,7 @@
 "settings.connection_section.location_send_type.setting.zone_only" = "Solo nome della zona";
 "settings.connection_section.location_send_type.title" = "Posizione inviata";
 "settings.connection_section.logged_in_as" = "Connesso come";
+"settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "Tutti";
 "settings.connection_section.sensor_send_type.setting.none" = "Nessuno";

@@ -418,6 +418,9 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings.connection_section.header" = "연결";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "예: http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.";
 "settings.connection_section.internal_base_url.title" = "내부 URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "새 하드웨어 주소 추가";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "내부 URL은 기본 네트워크 인터페이스에 이러한 하드웨어 주소 중 하나와 일치하는 MAC 주소가 있는 경우에 사용됩니다.";
@@ -433,6 +436,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings.connection_section.location_send_type.setting.zone_only" = "영역 이름만";
 "settings.connection_section.location_send_type.title" = "위치 전송됨";
 "settings.connection_section.logged_in_as" = "다음 계정으로 로그인";
+"settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.remote_ui_url.title" = "원격 UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "모두";
 "settings.connection_section.sensor_send_type.setting.none" = "없음";

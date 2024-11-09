@@ -418,6 +418,9 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.connection_section.header" = "Forbindelse";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "fx http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.";
 "settings.connection_section.internal_base_url.title" = "Intern webadresse";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Tilføj ny hardwareadresse";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Intern URL vil blive brugt, når den primære netværksgrænseflade har en MAC-adresse, der matcher en af disse hardwareadresser.";
@@ -433,6 +436,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.connection_section.location_send_type.setting.zone_only" = "Kun zonenavn";
 "settings.connection_section.location_send_type.title" = "Lokalitet sendt";
 "settings.connection_section.logged_in_as" = "Logget ind som";
+"settings.connection_section.no_base_url.title" = "No URL";
 "settings.connection_section.remote_ui_url.title" = "Ekstern webadresse til UI";
 "settings.connection_section.sensor_send_type.setting.all" = "Alle";
 "settings.connection_section.sensor_send_type.setting.none" = "Ingen";
