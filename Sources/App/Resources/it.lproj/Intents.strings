@@ -2,7 +2,7 @@
 "2KWKqM" = "Fallito: Home Assistant non è raggiungibile";
 "2LIxe4" = "Fallito: ${error}";
 "2b0Uo4" = "Servizio";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Quale pipeline vuoi utilizzare?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Aggiornato";
 "4tpAXn" = "Solo per confermare, volevi '${server}'?";
@@ -15,11 +15,11 @@
 "8BMgur" = "Completato";
 "8skKro" = "Quali azioni?";
 "A1pokw" = "Richiedi Assistenza";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Con voce";
 "B28HAk" = "Assist";
 "B4bXyc" = "Completato";
 "BafuI1" = "Lingua";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Quale pipeline?";
 "BwZv3u" = "Quale server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Apri ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Azioni";
 "J3qct4" = "Server";
 "JBMp1T" = "Solo per confermare, volevi '${server}'?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Solo per confermare, volevi '${pipeline}'?";
 "K4xrvF" = "Errore";
 "KHH48D" = "Fallito: Home Assistant non è attualmente raggiungibile";
 "KJS2jk" = "Fallito: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Quale lingua?";
 "QVD2lM" = "Dati del servizio";
 "QmGpOH" = "Errore";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Desiderate essere assistiti con la voce?";
 "RCQAlr" = "Ottieni immagine di ${cameraID}";
 "RMQY3r" = "Invia la posizione a Home Assistant";
 "RsOw3P" = "Modello renderizzato con successo";
@@ -73,7 +73,7 @@
 "YNQXwq" = "Errore";
 "YxAau3" = "Ci sono ${count} opzioni che corrispondono a '${server}'.";
 "ZApPxB" = "Nome del Servizio";
-"ZG5nuL" = "Assist In App";
+"ZG5nuL" = "Assist nell'app";
 "ZRPVYO" = "Apri una pagina nel frontend";
 "ZT9Mld" = "Nome dell'evento";
 "ZmUm9Q" = "Quale modello desideri renderizzare?";
@@ -87,7 +87,7 @@
 "dFHPYK" = "Eseguito ${action}";
 "eObn2i" = "Pagina";
 "f1KX0Q" = "Visualizza ed esegui azioni";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Ci sono $ {count} opzioni corrispondenti a '$ {pipeline} '";
 "fkQXDn" = "Ci sono ${count} opzioni che corrispondono a '${action}'.";
 "flUgtx" = "Quale azione?";
 "fnz838" = "Sensori aggiornati";
@@ -135,10 +135,10 @@
 "rFSNpu" = "Completato";
 "rOlW1x" = "Quale posizione vuoi inviare?";
 "rU3vhT" = "Identificatore del server";
-"s9Gk3c" = "Assist In App";
+"s9Gk3c" = "Assist nell'app";
 "sNFoWe" = "Quale fotocamera?";
 "sQJAJS" = "Errore";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Chiedi per Assist nell'app";
 "sfDGvk" = "Modello Renderizzato";
 "txfcnn" = "Testo";
 "tycImk" = "Esegue un'azione definita nell'app";
