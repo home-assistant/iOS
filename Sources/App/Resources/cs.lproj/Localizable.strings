@@ -418,9 +418,9 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.connection_section.header" = "Připojení";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "např. http://homeassistant.local:8123/";
-"settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
-"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
-"settings.connection_section.internal_base_url.ssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.";
+"settings.connection_section.internal_base_url.requires_setup.title" = "Vyžaduje nastavení";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "Chcete-li použít interní adresu URL, musíte zadat název sítě Wi-Fi (SSID) nebo hardwarové adresy, jinak bude aplikace vždy používat výchozí externí URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "Chcete-li použít interní adresu URL, musíte zadat název sítě Wi-Fi (SSID), jinak bude aplikace vždy používat výchozí externí URL.";
 "settings.connection_section.internal_base_url.title" = "Interní URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Přidat novou adresu hardware";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Interní URL se použije, pokud má primární síťové rozhraní adresu MAC odpovídající jedné z těchto hardwarových adres.";
@@ -436,7 +436,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.connection_section.location_send_type.setting.zone_only" = "Jen název zóny";
 "settings.connection_section.location_send_type.title" = "Odeslaná poloha";
 "settings.connection_section.logged_in_as" = "Přihlášen jako";
-"settings.connection_section.no_base_url.title" = "No URL";
+"settings.connection_section.no_base_url.title" = "Žádná adresa URL";
 "settings.connection_section.remote_ui_url.title" = "Vzdálená URL uživatelského rozhraní";
 "settings.connection_section.sensor_send_type.setting.all" = "Vše";
 "settings.connection_section.sensor_send_type.setting.none" = "Nic";
