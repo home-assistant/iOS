@@ -87,7 +87,7 @@
 "dFHPYK" = "Eseguito ${action}";
 "eObn2i" = "Pagina";
 "f1KX0Q" = "Visualizza ed esegui azioni";
-"fiOkO4" = "Ci sono $ {count} opzioni corrispondenti a '$ {pipeline} '";
+"fiOkO4" = "Ci sono ${count} opzioni corrispondenti a '${pipeline} '";
 "fkQXDn" = "Ci sono ${count} opzioni che corrispondono a '${action}'.";
 "flUgtx" = "Quale azione?";
 "fnz838" = "Sensori aggiornati";
