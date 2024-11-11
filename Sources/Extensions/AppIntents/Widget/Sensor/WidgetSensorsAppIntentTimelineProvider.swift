@@ -134,7 +134,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 do {
-                    let sensors: [HAAppEntity] = try Current.database().read { db in
+                    let sensors: [HAAppEntity] = try Current.database.read { db in
                         try HAAppEntity
                             .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                             .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.sensor.rawValue)

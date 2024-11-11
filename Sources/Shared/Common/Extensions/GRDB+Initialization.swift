@@ -39,12 +39,10 @@ public enum DatabaseTables {
     }
 }
 
-public enum SharedDatabaseQueue {
-    static var carPlay: DatabaseQueue?
-}
-
 public extension DatabaseQueue {
-    static let appDatabase: () -> DatabaseQueue = {
+    // Following GRDB cocnurrency rules, we have just one database instance
+    // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
+    static var appDatabase: DatabaseQueue = {
         do {
             let database = try DatabaseQueue(path: databasePath())
             createAppConfigTables(database: database)
@@ -57,18 +55,7 @@ public extension DatabaseQueue {
             Current.Log.error(errorMessage)
             fatalError(errorMessage)
         }
-    }
-
-    /// Used exclusively for CarPlay so it allows database observation and realtime updates in CarPlay
-    static let sharedCarPlayDatabaseQueue: () -> DatabaseQueue = {
-        if let sharedQueue = SharedDatabaseQueue.carPlay {
-            return sharedQueue
-        } else {
-            let databaseQueue = DatabaseQueue.appDatabase()
-            SharedDatabaseQueue.carPlay = databaseQueue
-            return databaseQueue
-        }
-    }
+    }()
 
     static func databasePath() -> String {
         // Path for tests
