@@ -505,8 +505,24 @@ public enum L10n {
       public static var noServersAvailable: String { return L10n.tr("Localizable", "carPlay.labels.no_servers_available") }
       /// Select server
       public static var selectServer: String { return L10n.tr("Localizable", "carPlay.labels.select_server") }
-      /// Servers
-      public static var servers: String { return L10n.tr("Localizable", "carPlay.labels.servers") }
+      public enum Settings {
+        public enum Advanced {
+          public enum Section {
+            /// Advanced
+            public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.title") }
+            public enum Button {
+              /// Use this option if your server data is not loaded properly.
+              public static var detail: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.button.detail") }
+              /// Restart App
+              public static var title: String { return L10n.tr("Localizable", "carPlay.labels.settings.advanced.section.button.title") }
+            }
+          }
+        }
+      }
+      public enum Tab {
+        /// Settings
+        public static var settings: String { return L10n.tr("Localizable", "carPlay.labels.tab.settings") }
+      }
     }
     public enum Lock {
       public enum Confirmation {

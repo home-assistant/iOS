@@ -110,7 +110,10 @@
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
 "carPlay.labels.select_server" = "Select server";
-"carPlay.labels.servers" = "Servers";
+"carPlay.labels.tab.settings" = "Settings";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
 "carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carPlay.navigation.button.next" = "Next";
 "carPlay.navigation.button.previous" = "Previous";
