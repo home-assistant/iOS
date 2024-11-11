@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import GRDB
 import PromiseKit
 import Shared
@@ -17,6 +18,33 @@ final class MagicItemAddViewModel: ObservableObject {
     @Published var entities: [Server: [HAAppEntity]] = [:]
     @Published var actions: [Action] = []
     @Published var searchText: String = ""
+
+    private var entitiesSubscription: AnyCancellable?
+
+    init() {
+        entitiesSubscription = $entities.sink { entities in
+            var scripts = entities
+            scripts.forEach { key, value in
+                scripts[key] = value.filter({ entity in
+                    entity.domain == Domain.script.rawValue
+                })
+            }
+            var scenes = entities
+            scenes.forEach { key, value in
+                scenes[key] = value.filter({ entity in
+                    entity.domain == Domain.scene.rawValue
+                })
+            }
+            DispatchQueue.main.async {
+                self.scripts = scripts
+                self.scenes = scenes
+            }
+        }
+    }
+
+    deinit {
+        entitiesSubscription?.cancel()
+    }
 
     @MainActor
     func loadContent() {
