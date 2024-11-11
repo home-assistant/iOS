@@ -1,11 +1,12 @@
 import CarPlay
 import Foundation
+import HAKit
 import PromiseKit
 import RealmSwift
 import Shared
 
+@available(iOS 16.0, *)
 final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
-    private var actions: Results<Action>?
     private let viewModel: CarPlayQuickAccessViewModel
 
     private let paginatedList = CarPlayPaginatedListTemplate(
@@ -17,6 +18,11 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
+    private var entityProviders: [CarPlayEntityListItem] = []
+
+    private var preferredServerId: String {
+        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
+    }
 
     private lazy var introduceQuickAccessListItem: CPListItem = {
         let item = CPListItem(
@@ -48,7 +54,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     func templateWillDisappear(template: CPTemplate) {
         if template == self.template {
-            viewModel.invalidateActionsToken()
+            /* no-op */
         }
     }
 
@@ -58,8 +64,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
     }
 
+    func entitiesStateChange(entities: HACachedStates) {
+        entityProviders.forEach { item in
+            guard let entity = entities.all.filter({ $0.entityId == item.entity.entityId }).first else { return }
+            item.update(entity: entity)
+        }
+    }
+
     func update() {
-        magicItemProvider.loadInformation { [weak self] in
+        magicItemProvider.loadInformation { [weak self] _ in
             self?.viewModel.update()
         }
     }
@@ -77,32 +90,59 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     }
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {
-        let items: [CPListItem] = items.map { magicItem in
+        entityProviders = []
+        let items: [CPListItem?] = items.compactMap { magicItem in
             let info = magicItemProvider.getInfo(for: magicItem) ?? .init(
                 id: magicItem.id,
                 name: magicItem.id,
                 iconName: "",
                 customization: nil
             )
-            let icon = magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
-            let item = CPListItem(
-                text: info.name,
-                detailText: nil,
-                image: icon
-            )
-            item.handler = { [weak self] _, _ in
-                if info.customization?.requiresConfirmation ?? false {
-                    self?.showConfirmationForRunningMagicItem(item: magicItem, info: info) {
-                        self?.executeMagicItem(magicItem, item: item)
-                    }
-                } else {
-                    self?.executeMagicItem(magicItem, item: item)
+            switch magicItem.type {
+            case .entity:
+                guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all
+                    .first,
+                    let item = Current.api(for: server).connection.caches.states.value?.all.first(where: {
+                        $0.entityId == magicItem.id
+                    }) else { return .init(text: "", detailText: "") }
+
+                let entityProvider = CarPlayEntityListItem(entity: item)
+                let listItem = entityProvider.template
+                listItem.handler = { [weak self] _, _ in
+                    self?.itemTap(magicItem: magicItem, info: info, item: listItem)
                 }
+                entityProviders.append(entityProvider)
+                return listItem
+            default:
+
+                let icon = magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
+                let item = CPListItem(
+                    text: info.name,
+                    detailText: nil,
+                    image: icon
+                )
+                item.handler = { [weak self] _, _ in
+                    self?.itemTap(magicItem: magicItem, info: info, item: item)
+                }
+                return item
             }
-            return item
         }
 
-        return items
+        return items.compactMap({ $0 })
+    }
+
+    private func itemTap(
+        magicItem: MagicItem,
+        info: MagicItem.Info,
+        item: CPListItem
+    ) {
+        if info.customization?.requiresConfirmation ?? false {
+            showConfirmationForRunningMagicItem(item: magicItem, info: info) { [weak self] in
+                self?.executeMagicItem(magicItem, item: item)
+            }
+        } else {
+            executeMagicItem(magicItem, item: item)
+        }
     }
 
     private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem) {

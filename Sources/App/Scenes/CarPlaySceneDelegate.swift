@@ -12,7 +12,8 @@ public protocol EntitiesStateSubscription {
 @available(iOS 16.0, *)
 class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
-    private var entities: HACache<Set<HAEntity>>?
+    private var entities: HACache<HACachedStates>?
+    private var entitiesSubscriptionToken: HACancellable?
 
     private var domainsListTemplate: any CarPlayTemplateProvider
     private var serversListTemplate: any CarPlayTemplateProvider
@@ -24,6 +25,9 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private var cachedConfig: CarPlayConfig?
+    private var preferredServerId: String {
+        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
+    }
 
     override init() {
         self.domainsListTemplate = CarPlayDomainsListTemplate.build()
@@ -78,6 +82,19 @@ class CarPlaySceneDelegate: UIResponder {
     @objc private func updateTemplates() {
         allTemplates.forEach { $0.update() }
     }
+
+    private func subscribeToEntitiesChanges() {
+        let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
+
+        guard let server, entitiesSubscriptionToken == nil else { return }
+        entities = Current.api(for: server).connection.caches.states
+        entitiesSubscriptionToken?.cancel()
+        entitiesSubscriptionToken = entities?.subscribe { [weak self] _, states in
+            self?.allTemplates.forEach {
+                $0.entitiesStateChange(entities: states)
+            }
+        }
+    }
 }
 
 // MARK: - CPTemplateApplicationSceneDelegate
@@ -106,6 +123,7 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
         )
 
         setTemplates()
+        subscribeToEntitiesChanges()
     }
 
     func templateApplicationScene(

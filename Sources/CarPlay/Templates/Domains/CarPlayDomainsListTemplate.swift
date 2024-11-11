@@ -24,10 +24,6 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         viewModel.templateProvider = self
     }
 
-    func update() {
-        viewModel.update()
-    }
-
     func updateList(domains: [Domain]) {
         let items: [CPListItem] = domains.map { domain in
             let itemTitle = domain.localizedDescription
@@ -50,18 +46,27 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         template.updateSections([CPListSection(items: items)])
     }
 
+    func update() {
+        /* no-op */
+    }
+
     func templateWillDisappear(template: CPTemplate) {
         if self.template == template {
-            viewModel.cancelSubscriptionToken()
+            /* no-op */
         }
         childTemplateProvider?.templateWillDisappear(template: template)
     }
 
     func templateWillAppear(template: CPTemplate) {
         if template == self.template {
-            update()
+            /* no-op */
         }
         childTemplateProvider?.templateWillAppear(template: template)
+    }
+
+    func entitiesStateChange(entities: HACachedStates) {
+        viewModel.update(entities: entities)
+        viewModel.entitiesListTemplate?.entitiesStateChange(entities: entities)
     }
 
     func presentEntitiesList(template: CarPlayEntitiesListTemplate) {

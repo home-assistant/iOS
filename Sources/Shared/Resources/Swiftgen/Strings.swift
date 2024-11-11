@@ -984,6 +984,12 @@ public enum L10n {
           }
         }
       }
+      public enum Entity {
+        public enum List {
+          /// Entity
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.entity.list.title") }
+        }
+      }
       public enum Scene {
         public enum List {
           /// Scenes

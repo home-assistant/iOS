@@ -5,32 +5,29 @@ import Shared
 
 @available(iOS 16.0, *)
 final class CarPlayDomainsListViewModel {
-    private var entities: HACache<HACachedStates>?
-    private var entitiesSubscriptionToken: HACancellable?
+    private var entities: HACachedStates?
     private var domainsCurrentlyInList: [Domain] = []
 
     weak var templateProvider: CarPlayDomainsListTemplate?
+
+    var entitiesListTemplate: CarPlayEntitiesListTemplate?
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
     }
 
-    func cancelSubscriptionToken() {
-        entitiesSubscriptionToken?.cancel()
-    }
-
-    func update() {
+    func update(entities: HACachedStates) {
         guard !Current.servers.all.isEmpty else {
             templateProvider?.template.updateSections([])
             return
         }
+        self.entities = entities
 
         let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
 
         guard let server else { return }
-        entities = Current.api(for: server).connection.caches.states
 
-        let entityDomains = Set(entities?.value?.all.map(\.domain) ?? [])
+        let entityDomains = Set(entities.all.map(\.domain))
         let domains = entityDomains.compactMap({ Domain(rawValue: $0) }).filter(\.isCarPlaySupported)
             .sorted(by: { d1, d2 in
                 // Fix covers at the top for quick garage door access
@@ -48,23 +45,18 @@ final class CarPlayDomainsListViewModel {
         domainsCurrentlyInList = domains
 
         templateProvider?.updateList(domains: domains)
-
-        guard entitiesSubscriptionToken == nil else { return }
-        entitiesSubscriptionToken = entities?.subscribe { [weak self] _, _ in
-            self?.update()
-        }
     }
 
     func listItemHandler(domain: String) {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first,
               let entitiesCachedStates = entities else { return }
-        let entitiesListTemplate = CarPlayEntitiesListTemplate.build(
+        entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: Domain(rawValue: domain)?.localizedDescription ?? domain,
             filterType: .domain(domain),
             server: server,
             entitiesCachedStates: entitiesCachedStates
         )
-
+        guard let entitiesListTemplate else { return }
         templateProvider?.presentEntitiesList(template: entitiesListTemplate)
     }
 }

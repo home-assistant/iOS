@@ -15,11 +15,13 @@ struct MagicItemProviderTests {
         watchConfig.items = [
             .init(id: "script.one", serverId: "1", type: .script),
             .init(id: "scene.one", serverId: "1", type: .scene),
+            .init(id: "light.one", serverId: "1", type: .entity),
         ]
 
         carPlayConfig.quickAccessItems = [
             .init(id: "script.one", serverId: "1", type: .script),
             .init(id: "scene.one", serverId: "1", type: .scene),
+            .init(id: "light.one", serverId: "1", type: .entity),
         ]
 
         try await Current.database().write { [watchConfig, carPlayConfig] db in
@@ -32,15 +34,17 @@ struct MagicItemProviderTests {
         #expect(try! WatchConfig.config()?.items == [
             .init(id: "script.one", serverId: "1", type: .script),
             .init(id: "scene.one", serverId: "1", type: .scene),
+            .init(id: "light.one", serverId: "1", type: .entity),
         ])
 
         #expect(try! CarPlayConfig.config()?.quickAccessItems == [
             .init(id: "script.one", serverId: "1", type: .script),
             .init(id: "scene.one", serverId: "1", type: .scene),
+            .init(id: "light.one", serverId: "1", type: .entity),
         ])
 
-        // Defining current scripts that are in the database
-        sut.scriptsPerServer = [
+        // Defining current scripts and scenes that are in the database
+        sut.entitiesPerServer = [
             "2": [
                 .init(
                     id: "2-script.one",
@@ -50,11 +54,6 @@ struct MagicItemProviderTests {
                     name: "Script One",
                     icon: nil
                 ),
-            ],
-        ]
-        // Defining current scenes that are in the database
-        sut.scenesPerServer = [
-            "2": [
                 .init(
                     id: "2-scene.one",
                     entityId: "scene.one",
@@ -65,6 +64,7 @@ struct MagicItemProviderTests {
                 ),
             ],
         ]
+
         await withCheckedContinuation { continuation in
             sut.migrateWatchConfig {
                 continuation.resume()
@@ -83,11 +83,13 @@ struct MagicItemProviderTests {
         #expect(newWatchConfig?.items == [
             .init(id: "script.one", serverId: "2", type: .script),
             .init(id: "scene.one", serverId: "2", type: .scene),
+            .init(id: "light.one", serverId: "2", type: .entity),
         ])
 
         #expect(newCarPlayConfig?.quickAccessItems == [
             .init(id: "script.one", serverId: "2", type: .script),
             .init(id: "scene.one", serverId: "2", type: .scene),
+            .init(id: "light.one", serverId: "2", type: .entity),
         ])
     }
 }

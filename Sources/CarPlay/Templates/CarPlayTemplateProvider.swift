@@ -1,5 +1,6 @@
 import CarPlay
 import Foundation
+import HAKit
 
 protocol CarPlayTemplateProvider {
     associatedtype Template: CPTemplate
@@ -7,5 +8,6 @@ protocol CarPlayTemplateProvider {
     var interfaceController: CPInterfaceController? { get set }
     func templateWillDisappear(template: CPTemplate)
     func templateWillAppear(template: CPTemplate)
+    func entitiesStateChange(entities: HACachedStates)
     func update()
 }

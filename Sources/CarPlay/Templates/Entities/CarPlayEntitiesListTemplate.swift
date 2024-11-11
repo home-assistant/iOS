@@ -8,14 +8,8 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayEntitiesListViewModel
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
-
     private let entityIdKey = "entityId"
-
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
-
-    private var userInterfaceStyle: UIUserInterfaceStyle? {
-        interfaceController?.carTraitCollection.userInterfaceStyle
-    }
 
     init(
         viewModel: CarPlayEntitiesListViewModel,
@@ -31,15 +25,18 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
 
     func templateWillDisappear(template: CPTemplate) {
         if self.template == template {
-            viewModel.cancelSubscriptionToken()
+            /* no-op */
         }
     }
 
     func templateWillAppear(template: CPTemplate) {
         if self.template == template {
             update()
-            viewModel.subscribe()
         }
+    }
+
+    func entitiesStateChange(entities: HACachedStates) {
+        viewModel.updateStates(entities: entities)
     }
 
     func update() {

@@ -13,7 +13,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     func loadConfig() {
         servers = Current.servers.all
-        magicItemProvider.loadInformation { [weak self] in
+        magicItemProvider.loadInformation { [weak self] _ in
             guard let self else { return }
             loadDatabase()
         }

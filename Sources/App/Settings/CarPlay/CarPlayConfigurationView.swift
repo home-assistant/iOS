@@ -39,7 +39,7 @@ struct CarPlayConfigurationView: View {
                     isLoaded = true
                 }
                 .sheet(isPresented: $viewModel.showAddItem, content: {
-                    MagicItemAddView { itemToAdd in
+                    MagicItemAddView(context: .carPlay) { itemToAdd in
                         guard let itemToAdd else { return }
                         viewModel.addItem(itemToAdd)
                     }
@@ -65,7 +65,7 @@ struct CarPlayConfigurationView: View {
     }
 
     private var itemsSection: some View {
-        Section("Quick Actions") {
+        Section(L10n.CarPlay.Navigation.Tab.quickAccess) {
             ForEach(viewModel.config.quickAccessItems, id: \.id) { item in
                 makeListItem(item: item)
             }
@@ -124,12 +124,12 @@ struct CarPlayConfigurationView: View {
         watchPreview: Bool,
         color: UIColor? = nil
     ) -> UIImage {
-        var icon: MaterialDesignIcons = .abTestingIcon
+        var icon: MaterialDesignIcons = .dotsGridIcon
         switch item.type {
         case .action, .scene:
             icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .scriptTextOutlineIcon)
+        case .script, .entity:
+            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
         }
 
         return icon.image(

@@ -58,77 +58,65 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
+    private func executeMagicItemUsingiPhone(magicItem: MagicItem, completion: @escaping (Bool) -> Void) {
+        Current.Log.verbose("Signaling magic item pressed via phone")
+        let itemMessage = InteractiveImmediateMessage(
+            identifier: InteractiveImmediateMessages.magicItemPressed.rawValue,
+            content: [
+                "itemId": magicItem.id,
+                "serverId": magicItem.serverId,
+                "itemType": magicItem.type.rawValue,
+            ],
+            reply: { message in
+                Current.Log.verbose("Received reply dictionary \(message)")
+                if message.content["fired"] as? Bool == true {
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            }
+        )
+
+        Current.Log
+            .verbose(
+                "Sending \(InteractiveImmediateMessages.magicItemPressed.rawValue) message \(itemMessage)"
+            )
+        Communicator.shared.send(itemMessage, errorHandler: { error in
+            Current.Log.error("Received error when sending immediate message \(error)")
+            completion(false)
+        })
+    }
+
+    private func executeMagicItemUsingAPI(magicItem: MagicItem, completion: @escaping (Bool) -> Void) {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
+            completion(false)
+            return
+        }
+        Current.Log.error("Executing watch magic item directly via API")
+        Current.api(for: server).executeMagicItem(item: magicItem) { success in
+            completion(success)
+        }
+    }
+
     private func executeMagicItem(completion: @escaping (Bool) -> Void) {
         let magicItem = item
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
-        fetchNetworkInfo {
-            firstly { () -> Promise<Void> in
-                Promise { seal in
-                    guard Communicator.shared.currentReachability == .immediatelyReachable else {
-                        seal.reject(WatchSendError.notImmediate)
-                        return
-                    }
-
-                    Current.Log.verbose("Signaling magic item pressed via phone")
-                    let itemMessage = InteractiveImmediateMessage(
-                        identifier: InteractiveImmediateMessages.magicItemPressed.rawValue,
-                        content: [
-                            "itemId": magicItem.id,
-                            "serverId": magicItem.serverId,
-                            "itemType": magicItem.type.rawValue,
-                        ],
-                        reply: { message in
-                            Current.Log.verbose("Received reply dictionary \(message)")
-                            if message.content["fired"] as? Bool == true {
-                                seal.fulfill(())
-                            } else {
-                                seal.reject(WatchSendError.phoneFailed)
-                            }
+        fetchNetworkInfo { [weak self] in
+            guard let self else { return }
+            if Communicator.shared.currentReachability == .immediatelyReachable {
+                executeMagicItemUsingiPhone(magicItem: magicItem) { success in
+                    if success {
+                        completion(success)
+                    } else {
+                        self.executeMagicItemUsingAPI(magicItem: magicItem) { success in
+                            completion(success)
                         }
-                    )
-
-                    Current.Log
-                        .verbose(
-                            "Sending \(InteractiveImmediateMessages.magicItemPressed.rawValue) message \(itemMessage)"
-                        )
-                    Communicator.shared.send(itemMessage, errorHandler: { error in
-                        Current.Log.error("Received error when sending immediate message \(error)")
-                        seal.reject(error)
-                    })
+                    }
                 }
-            }.recover { error -> Promise<Void> in
-                guard let error = error as? WatchSendError, error == WatchSendError.notImmediate,
-                      let server = Current.servers.all.first(where: { $0.identifier.rawValue == magicItem.serverId }) else {
-                    throw error
+            } else {
+                executeMagicItemUsingAPI(magicItem: magicItem) { success in
+                    completion(success)
                 }
-                Current.Log.error("recovering error \(error) by trying locally")
-
-                switch magicItem.type {
-                case .script:
-                    let domain = Domain.script.rawValue
-                    let service = magicItem.id.replacingOccurrences(of: "\(domain).", with: "")
-                    return Current.api(for: server).CallService(
-                        domain: domain,
-                        service: service,
-                        serviceData: [:],
-                        shouldLog: true
-                    )
-                case .action:
-                    return Current.api(for: server).HandleAction(actionID: magicItem.id, source: .Watch)
-                case .scene:
-                    let domain = Domain.scene.rawValue
-                    return Current.api(for: server).CallService(
-                        domain: domain,
-                        service: "turn_on",
-                        serviceData: ["entity_id": magicItem.id],
-                        shouldLog: true
-                    )
-                }
-            }.done {
-                completion(true)
-            }.catch { err in
-                Current.Log.error("Error during magic item event fire: \(err)")
-                completion(false)
             }
         }
     }

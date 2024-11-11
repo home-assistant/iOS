@@ -794,6 +794,18 @@ public class HomeAssistantAPI {
                     serviceData: ["entity_id": item.id],
                     shouldLog: true
                 )
+            case .entity:
+                guard let domain = item.domain else {
+                    throw MagicItemError.unknownDomain
+                }
+                return Current.api(for: server).CallService(
+                    domain: domain.rawValue,
+                    service: "toggle",
+                    serviceData: [
+                        "entity_id": item.id,
+                    ],
+                    shouldLog: true
+                )
             }
         }.done {
             completion(true)

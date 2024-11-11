@@ -3,18 +3,20 @@ import GRDB
 import PromiseKit
 
 public protocol MagicItemProviderProtocol {
-    func loadInformation(completion: @escaping () -> Void)
+    func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void)
     func getInfo(for item: MagicItem) -> MagicItem.Info?
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
-    var scriptsPerServer: [String: [HAAppEntity]] = [:]
-    var scenesPerServer: [String: [HAAppEntity]] = [:]
+    var entitiesPerServer: [String: [HAAppEntity]] = [:]
 
-    func loadInformation(completion: @escaping () -> Void) {
-        loadScriptsAndScenes { [weak self] in
-            self?.migrateWatchConfig(completion: {
-                self?.migrateCarPlayConfig(completion: completion)
+    func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void) {
+        loadAppEntities { [weak self] in
+            guard let self else { return }
+            migrateWatchConfig(completion: {
+                self.migrateCarPlayConfig {
+                    completion(self.entitiesPerServer)
+                }
             })
         }
     }
@@ -55,30 +57,18 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         completion()
     }
 
-    private func loadScriptsAndScenes(completion: @escaping () -> Void) {
+    private func loadAppEntities(completion: @escaping () -> Void) {
         var serversCompletedFetchCount = 0
         Current.servers.all.forEach { [weak self] server in
             do {
-                let scripts: [HAAppEntity] = try Current.database().read { db in
+                let entities: [HAAppEntity] = try Current.database().read { db in
                     try HAAppEntity
                         .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.script.rawValue).fetchAll(db)
+                        .fetchAll(db)
                 }
-                self?.scriptsPerServer[server.identifier.rawValue] = scripts
-
+                self?.entitiesPerServer[server.identifier.rawValue] = entities
             } catch {
-                Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
-            }
-
-            do {
-                let scenes: [HAAppEntity] = try Current.database().read { db in
-                    try HAAppEntity
-                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.scene.rawValue).fetchAll(db)
-                }
-                self?.scenesPerServer[server.identifier.rawValue] = scenes
-            } catch {
-                Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
+                Current.Log.error("Failed to load covers from database: \(error.localizedDescription)")
             }
 
             serversCompletedFetchCount += 1
@@ -111,8 +101,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 )
             )
         case .script:
-            guard let scriptsForServer = scriptsPerServer[item.serverId],
-                  let scriptItem = scriptsForServer.first(where: { $0.entityId == item.id }) else {
+            guard let scriptsForServer = entitiesPerServer[item.serverId]?
+                .filter({ $0.domain == Domain.script.rawValue }),
+                let scriptItem = scriptsForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id)"
@@ -127,8 +118,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 customization: item.customization
             )
         case .scene:
-            guard let scenesForServer = scenesPerServer[item.serverId],
-                  let sceneItem = scenesForServer.first(where: { $0.entityId == item.id }) else {
+            guard let scenesForServer = entitiesPerServer[item.serverId]?
+                .filter({ $0.domain == Domain.scene.rawValue }),
+                let sceneItem = scenesForServer.first(where: { $0.entityId == item.id }) else {
                 Current.Log
                     .error(
                         "Failed to get magic item Script info for item id: \(item.id)"
@@ -140,6 +132,23 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 id: sceneItem.id,
                 name: sceneItem.name,
                 iconName: sceneItem.icon ?? MaterialDesignIcons.paletteIcon.name,
+                customization: item.customization
+            )
+        case .entity:
+            guard let entitiesForServer = entitiesPerServer[item.serverId],
+                  let entityItem = entitiesForServer.first(where: { $0.entityId == item.id }) else {
+                Current.Log
+                    .error(
+                        "Failed to get magic item entity info for item id: \(item.id)"
+                    )
+                return nil
+            }
+
+            // TODO: Default icons per domain
+            return .init(
+                id: entityItem.id,
+                name: entityItem.name,
+                iconName: entityItem.icon ?? MaterialDesignIcons.dotsGridIcon.name,
                 customization: item.customization
             )
         }

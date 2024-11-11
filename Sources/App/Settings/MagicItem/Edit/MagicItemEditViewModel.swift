@@ -14,7 +14,7 @@ final class MagicItemEditViewModel: ObservableObject {
 
     @MainActor
     func loadMagicInfo() {
-        itemProvider.loadInformation { [weak self] in
+        itemProvider.loadInformation { [weak self] _ in
             guard let self else { return }
             loadInfo()
         }
