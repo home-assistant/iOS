@@ -4,6 +4,9 @@ import GRDB
 public final class ControlEntityProvider {
     public enum States: String {
         case open
+        case opening
+        case close
+        case closing
         case on
         case off
     }
