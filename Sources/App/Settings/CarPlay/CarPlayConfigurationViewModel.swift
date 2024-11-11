@@ -98,6 +98,17 @@ final class CarPlayConfigurationViewModel: ObservableObject {
         }
     }
 
+    func deleteConfiguration(completion: (Bool) -> Void) {
+        do {
+            try Current.database().write { db in
+                try CarPlayConfig.deleteAll(db)
+                completion(true)
+            }
+        } catch {
+            showError(message: L10n.CarPlay.Debug.DeleteDb.Alert.Failed.message(error.localizedDescription))
+        }
+    }
+
     private func showError(message: String) {
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = message
