@@ -39,8 +39,8 @@ struct MagicItemProviderTests {
             .init(id: "scene.one", serverId: "1", type: .scene),
         ])
 
-        // Defining current scripts that are in the database
-        sut.scriptsPerServer = [
+        // Defining current scripts and scenes that are in the database
+        sut.entitiesPerServer = [
             "2": [
                 .init(
                     id: "2-script.one",
@@ -50,11 +50,6 @@ struct MagicItemProviderTests {
                     name: "Script One",
                     icon: nil
                 ),
-            ],
-        ]
-        // Defining current scenes that are in the database
-        sut.scenesPerServer = [
-            "2": [
                 .init(
                     id: "2-scene.one",
                     entityId: "scene.one",
@@ -65,6 +60,7 @@ struct MagicItemProviderTests {
                 ),
             ],
         ]
+
         await withCheckedContinuation { continuation in
             sut.migrateWatchConfig {
                 continuation.resume()
