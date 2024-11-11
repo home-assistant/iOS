@@ -26,12 +26,8 @@ extension MagicItemProvider {
             case .action:
                 // Action does not require migration
                 return item
-            case .script:
+            default:
                 return getSimilarItem(for: item)
-            case .scene:
-                return getSimilarItem(for: item)
-            case .entity:
-                return item
             }
         }
 
