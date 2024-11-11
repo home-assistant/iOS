@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 import GRDB
 import PromiseKit
 import Shared
@@ -22,15 +22,15 @@ final class MagicItemAddViewModel: ObservableObject {
     private var entitiesSubscription: AnyCancellable?
 
     init() {
-        entitiesSubscription = $entities.sink { entities in
+        self.entitiesSubscription = $entities.sink { entities in
             var scripts = entities
-            scripts.forEach { key, value in
+            for (key, value) in scripts {
                 scripts[key] = value.filter({ entity in
                     entity.domain == Domain.script.rawValue
                 })
             }
             var scenes = entities
-            scenes.forEach { key, value in
+            for (key, value) in scenes {
                 scenes[key] = value.filter({ entity in
                     entity.domain == Domain.scene.rawValue
                 })
