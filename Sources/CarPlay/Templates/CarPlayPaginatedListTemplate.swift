@@ -29,8 +29,11 @@ final class CarPlayPaginatedListTemplate {
     }
 
     func updateItems(items: [CPListItem]) {
-        self.items = items
-        updateTemplate()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.items = items
+            updateTemplate()
+        }
     }
 
     func updateTemplate() {

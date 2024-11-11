@@ -15,6 +15,7 @@ enum AppEntitiesObserver {
 
     final class Observer {
         var container: PerServerContainer<HACancellable>?
+        private var cachedEntities: [Server: [HAAppEntity]] = [:]
 
         let domainsAppUse: [String] = [
             Domain.scene,
@@ -48,15 +49,21 @@ enum AppEntitiesObserver {
             ) }).sorted(by: { $0.id < $1.id })
 
             do {
-                let cachedEntities: [HAAppEntity] = try Current.database().read { db in
-                    try HAAppEntity
-                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .orderByPrimaryKey()
-                        .fetchAll(db)
+                // Avoid opening database often if cache is already in memory
+                if cachedEntities[server] == nil {
+                    cachedEntities[server] = try Current.database().read { db in
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .orderByPrimaryKey()
+                            .fetchAll(db)
+                    }
                 }
-                if appEntities != cachedEntities {
+                if appEntities != cachedEntities[server] {
+                    cachedEntities[server] = appEntities
+
+                    guard let cachedEntitiesForServer = cachedEntities[server] else { return }
                     try Current.database().write { db in
-                        try HAAppEntity.deleteAll(db, ids: cachedEntities.map(\.id))
+                        try HAAppEntity.deleteAll(db, ids: cachedEntitiesForServer.map(\.id))
                         for entity in appEntities {
                             try entity.insert(db)
                         }
