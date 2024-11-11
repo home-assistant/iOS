@@ -27,8 +27,6 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
             throw AppIntentError.restartPerform
         }
         let isOn = state == ControlEntityProvider.States.on.rawValue
-        print(Date())
-        print("isOn: \(isOn)")
         return item(light: configuration.light, value: isOn, iconName: configuration.icon)
     }
 

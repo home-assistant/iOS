@@ -7,13 +7,19 @@ import WidgetKit
 @available(iOS 18, *)
 struct ControlCoverValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlCoverConfiguration) async throws -> ControlEntityItem {
-        /*
-         For now we don't have a reliable way to get the current state of a cover
-         due to the fact that we don't know when the cover will finish opening or closing
-         and we can't always update through push notification due to user push notification limitations
-         */
-        let isOpen = false
-
+        try await ControlRefreshDelay.wait()
+        guard let serverId = configuration.entity?.serverId,
+              let lightId = configuration.entity?.entityId,
+              let state: String = try await ControlEntityProvider(domain: .cover).currentState(
+                  serverId: serverId,
+                  entityId: lightId
+              ) else {
+            throw AppIntentError.restartPerform
+        }
+        let isOpen = [
+            ControlEntityProvider.States.open.rawValue,
+            ControlEntityProvider.States.opening.rawValue,
+        ].contains(state)
         return item(entity: configuration.entity, value: isOpen, iconName: configuration.icon)
     }
 

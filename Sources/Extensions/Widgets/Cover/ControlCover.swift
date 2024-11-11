@@ -21,7 +21,7 @@ struct ControlCover: ControlWidget {
                     iconName: template.icon.id
                 )
                 intent.value = !template.value
-                intent.toggle = true
+                intent.toggle = false
                 return intent
             }()) {
                 Label(template.name, systemImage: template.icon.id)
