@@ -1,5 +1,7 @@
 import CarPlay
+import Combine
 import Communicator
+import GRDB
 import HAKit
 import PromiseKit
 import Shared
@@ -25,6 +27,8 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private var cachedConfig: CarPlayConfig?
+    private var configObservation: AnyDatabaseCancellable?
+
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
     }
@@ -37,31 +41,27 @@ class CarPlaySceneDelegate: UIResponder {
         super.init()
     }
 
-    private func setTemplates() {
+    private func setTemplates(config: CarPlayConfig?) {
         var visibleTemplates = allTemplates
 
-        do {
-            // In case config exists, we will only show the tabs that are enabled
-            if let config = try CarPlayConfig.config() {
-                guard config != cachedConfig else { return }
-                cachedConfig = config
-                visibleTemplates = config.tabs.map {
-                    switch $0 {
-                    case .quickAccess:
-                        // Reload the quick access list template
-                        quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
-                        return quickAccessListTemplate
-                    case .areas:
-                        return areasZonesListTemplate
-                    case .domains:
-                        return domainsListTemplate
-                    case .settings:
-                        return serversListTemplate
-                    }
+        // In case config exists, we will only show the tabs that are enabled
+        if let config {
+            guard config != cachedConfig else { return }
+            cachedConfig = config
+            visibleTemplates = config.tabs.map {
+                switch $0 {
+                case .quickAccess:
+                    // Reload the quick access list template
+                    quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+                    return quickAccessListTemplate
+                case .areas:
+                    return areasZonesListTemplate
+                case .domains:
+                    return domainsListTemplate
+                case .settings:
+                    return serversListTemplate
                 }
             }
-        } catch {
-            Current.Log.error("Error fetching CarPlay config \(error)")
         }
 
         let tabBar = CPTabBarTemplate(templates: visibleTemplates.map { templateProvider in
@@ -95,6 +95,21 @@ class CarPlaySceneDelegate: UIResponder {
             }
         }
     }
+
+    private func observeCarPlayConfigChanges() {
+        configObservation?.cancel()
+        let observation = ValueObservation.tracking(CarPlayConfig.fetchOne)
+        configObservation = observation.start(
+            in: Current.carPlaySharedDatabaseQueue(),
+            onError: { error in
+                Current.Log.error("CarPlay config observation failed with error: \(error)")
+            },
+            onChange: { [weak self] carPlayConfig in
+                // Observation uses main queue https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/valueobservation#ValueObservation-Scheduling
+                self?.setTemplates(config: carPlayConfig)
+            }
+        )
+    }
 }
 
 // MARK: - CPTemplateApplicationSceneDelegate
@@ -122,7 +137,6 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
             object: nil
         )
 
-        setTemplates()
         subscribeToEntitiesChanges()
     }
 
@@ -146,6 +160,6 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        setTemplates()
+        observeCarPlayConfigChanges()
     }
 }

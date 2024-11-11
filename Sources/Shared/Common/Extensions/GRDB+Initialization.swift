@@ -39,6 +39,10 @@ public enum DatabaseTables {
     }
 }
 
+public enum SharedDatabaseQueue {
+    static var carPlay: DatabaseQueue?
+}
+
 public extension DatabaseQueue {
     static let appDatabase: () -> DatabaseQueue = {
         do {
@@ -52,6 +56,17 @@ public extension DatabaseQueue {
             let errorMessage = "Failed to initialize GRDB, error: \(error.localizedDescription)"
             Current.Log.error(errorMessage)
             fatalError(errorMessage)
+        }
+    }
+
+    /// Used exclusively for CarPlay so it allows database observation and realtime updates in CarPlay
+    static let sharedCarPlayDatabaseQueue: () -> DatabaseQueue = {
+        if let sharedQueue = SharedDatabaseQueue.carPlay {
+            return sharedQueue
+        } else {
+            let databaseQueue = DatabaseQueue.appDatabase()
+            SharedDatabaseQueue.carPlay = databaseQueue
+            return databaseQueue
         }
     }
 
