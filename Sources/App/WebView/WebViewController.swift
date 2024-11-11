@@ -994,7 +994,12 @@ extension ConnectionInfo {
         if Current.appConfiguration == .fastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
             return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
         }
-        guard var components = URLComponents(url: activeURL(), resolvingAgainstBaseURL: true) else {
+        guard let activeURL = activeURL() else {
+            Current.Log.error("No activeURL available while webviewURLComponents was called")
+            return nil
+        }
+
+        guard var components = URLComponents(url: activeURL, resolvingAgainstBaseURL: true) else {
             return nil
         }
 
@@ -1081,7 +1086,7 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func navigateToPath(path: String) {
-        if let url = URL(string: server.info.connection.activeURL().absoluteString + path) {
+        if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
             webView.load(URLRequest(url: url))
         }
     }

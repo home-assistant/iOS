@@ -1548,6 +1548,18 @@ public enum L10n {
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder") }
         /// Internal URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.title") }
+        public enum RequiresSetup {
+          /// Requires setup
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.requires_setup.title") }
+        }
+        public enum SsidBssidRequired {
+          /// To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.ssid_bssid_required.title") }
+        }
+        public enum SsidRequired {
+          /// To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.internal_base_url.ssid_required.title") }
+        }
       }
       public enum InternalUrlHardwareAddresses {
         /// Add New Hardware Address
@@ -1580,6 +1592,10 @@ public enum L10n {
           /// Zone Name Only
           public static var zoneOnly: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.zone_only") }
         }
+      }
+      public enum NoBaseUrl {
+        /// No URL
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.no_base_url.title") }
       }
       public enum RemoteUiUrl {
         /// Remote UI URL

@@ -30,7 +30,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     public var overrideActiveURLType: URLType?
-    public private(set) var activeURLType: URLType = .internal
+    public private(set) var activeURLType: URLType = .external
 
     public var isLocalPushEnabled = true {
         didSet {
@@ -92,6 +92,7 @@ public struct ConnectionInfo: Codable, Equatable {
         case `internal`
         case remoteUI
         case external
+        case none
 
         public var debugDescription: String {
             switch self {
@@ -101,6 +102,8 @@ public struct ConnectionInfo: Codable, Equatable {
                 return "Remote UI"
             case .external:
                 return "External URL"
+            case .none:
+                return "No URL (Active URL nil)"
             }
         }
 
@@ -112,27 +115,29 @@ public struct ConnectionInfo: Codable, Equatable {
                 return L10n.Settings.ConnectionSection.RemoteUiUrl.title
             case .external:
                 return L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+            case .none:
+                return L10n.Settings.ConnectionSection.NoBaseUrl.title
             }
         }
 
         public var isAffectedBySSID: Bool {
             switch self {
             case .internal: return true
-            case .remoteUI, .external: return false
+            case .remoteUI, .external, .none: return false
             }
         }
 
         public var isAffectedByCloud: Bool {
             switch self {
             case .internal: return false
-            case .remoteUI, .external: return true
+            case .remoteUI, .external, .none: return true
             }
         }
 
         public var isAffectedByHardwareAddress: Bool {
             switch self {
             case .internal: return Current.isCatalyst
-            case .remoteUI, .external: return false
+            case .remoteUI, .external, .none: return false
             }
         }
 
@@ -149,7 +154,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
-    public mutating func activeURL() -> URL {
+    public mutating func activeURL() -> URL? {
         if let overrideActiveURLType {
             let overrideURL: URL?
 
@@ -163,6 +168,9 @@ public struct ConnectionInfo: Codable, Equatable {
             case .external:
                 activeURLType = .external
                 overrideURL = externalURL
+            case .none:
+                activeURLType = .none
+                overrideURL = nil
             }
 
             if let overrideURL {
@@ -170,7 +178,7 @@ public struct ConnectionInfo: Codable, Equatable {
             }
         }
 
-        let url: URL
+        let url: URL?
 
         if let internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
             activeURLType = .internal
@@ -182,33 +190,37 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .external
             url = externalURL
         } else {
-            // we're missing a url, so try and fall back to one that _could_ work
-            if let remoteUIURL {
-                activeURLType = .remoteUI
-                url = remoteUIURL
-            } else if let internalURL {
-                activeURLType = .internal
-                url = internalURL
-            } else {
-                activeURLType = .internal
-                url = URL(string: "http://homeassistant.local:8123")!
-            }
+            activeURLType = .none
+            url = nil
+            /*
+             No URL that can be used in this context is available
+             This can happen when only internal URL is set and
+             user tries to access the App remotely
+             */
         }
 
-        return url.sanitized()
+        return url?.sanitized()
     }
 
     /// Returns the activeURL with /api appended.
-    public mutating func activeAPIURL() -> URL {
-        activeURL().appendingPathComponent("api", isDirectory: false)
+    public mutating func activeAPIURL() -> URL? {
+        if let activeURL = activeURL() {
+            return activeURL.appendingPathComponent("api", isDirectory: false)
+        } else {
+            return nil
+        }
     }
 
-    public mutating func webhookURL() -> URL {
+    public mutating func webhookURL() -> URL? {
         if let cloudhookURL, !isOnInternalNetwork {
             return cloudhookURL
         }
 
-        return activeURL().appendingPathComponent(webhookPath, isDirectory: false)
+        if let activeURL = activeURL() {
+            return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
+        } else {
+            return nil
+        }
     }
 
     public var webhookPath: String {
@@ -220,6 +232,7 @@ public struct ConnectionInfo: Codable, Equatable {
         case .internal: return internalURL
         case .external: return externalURL
         case .remoteUI: return remoteUIURL
+        case .none: return nil
         }
     }
 
@@ -231,6 +244,8 @@ public struct ConnectionInfo: Codable, Equatable {
             externalURL = address
         case .remoteUI:
             remoteUIURL = address
+        case .none:
+            break
         }
     }
 
@@ -294,10 +309,15 @@ class ServerRequestAdapter: RequestAdapter {
         var updatedRequest: URLRequest = urlRequest
 
         if let currentURL = urlRequest.url {
-            let expectedURL = server.info.connection.activeURL().adapting(url: currentURL)
-            if currentURL != expectedURL {
-                Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
-                updatedRequest.url = expectedURL
+            if let activeURL = server.info.connection.activeURL() {
+                let expectedURL = activeURL.adapting(url: currentURL)
+                if currentURL != expectedURL {
+                    Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
+                    updatedRequest.url = expectedURL
+                }
+            } else {
+                Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
+                completion(.failure(ServerConnectionError.noActiveURL))
             }
         }
 
