@@ -118,7 +118,7 @@ public extension HATypedRequest {
 }
 
 private struct HAPanelsCacheKey: HACacheKey {
-    static func create(connection: HAConnection) -> HACache<HAPanels> {
+    static func create(connection: HAConnection, data: [String: Any]) -> HACache<HAPanels> {
         HACache(
             connection: connection,
             populate: .init(

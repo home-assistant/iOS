@@ -49,7 +49,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             return
         }
 
-        connection.caches.states.once().promise.map(\.all)
+        connection.caches.states().once().promise.map(\.all)
             .filterValues { $0.domain == "camera" }
             .mapValues(\.entityId)
             .sortedValues()

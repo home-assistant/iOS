@@ -202,7 +202,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                 }
             }
 
-            avatarSubscription = api.connection.caches.states.subscribe { [weak self] _, states in
+            avatarSubscription = api.connection.caches.states().subscribe { [weak self] _, states in
                 firstly { () -> Guarantee<Set<HAEntity>> in
                     Guarantee.value(states.all)
                 }.map { states throws -> HAEntity in

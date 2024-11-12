@@ -9,6 +9,37 @@ public class ModelManager: ServerObserver {
     private var subscribedSubscriptions = [SubscribeDefinition]()
     private var cleanupDefinitions = [CleanupDefinition]()
 
+    private static var includedDomains: [Domain] = {
+        // Mac does not need all domains given it does not have all features as iOS (CarPlay, Watch)
+        #if targetEnvironment(macCatalyst)
+        [
+            .cover,
+            .light,
+            .scene,
+            .script,
+            .switch,
+            .sensor,
+            .binarySensor,
+            .zone,
+        ]
+        #else
+        [
+            .button,
+            .cover,
+            .inputBoolean,
+            .inputButton,
+            .light,
+            .lock,
+            .scene,
+            .script,
+            .switch,
+            .sensor,
+            .binarySensor,
+            .zone,
+        ]
+        #endif
+    }()
+
     public var workQueue: DispatchQueue = .global(qos: .userInitiated)
     static var isAppInForeground: () -> Bool = { false }
 
@@ -210,7 +241,15 @@ public class ModelManager: ServerObserver {
                 var lastUpdate: Date?
 
                 return [
-                    connection.caches.states.subscribe { [weak someManager] token, value in
+                    // Since here is where the app first initializes the cache, we need to make sure
+                    // we define the correct domains to include in the subscription
+                    connection.caches.states(
+                        [
+                            "include": [
+                                "domains": ModelManager.includedDomains.map(\.rawValue),
+                            ],
+                        ]
+                    ).subscribe { [weak someManager] token, value in
                         queue.async {
                             guard let manager = someManager else {
                                 token.cancel()
