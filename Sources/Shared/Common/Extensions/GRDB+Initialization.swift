@@ -40,12 +40,14 @@ public enum DatabaseTables {
 }
 
 public extension DatabaseQueue {
-    static let appDatabase: () -> DatabaseQueue = {
+    // Following GRDB cocnurrency rules, we have just one database instance
+    // https://swiftpackageindex.com/groue/grdb.swift/v6.29.3/documentation/grdb/concurrency#Concurrency-Rules
+    static var appDatabase: DatabaseQueue = {
         do {
             let database = try DatabaseQueue(path: databasePath())
             createAppConfigTables(database: database)
             #if targetEnvironment(simulator)
-            Current.Log.info("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
+            print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
             return database
         } catch {
@@ -53,7 +55,7 @@ public extension DatabaseQueue {
             Current.Log.error(errorMessage)
             fatalError(errorMessage)
         }
-    }
+    }()
 
     static func databasePath() -> String {
         // Path for tests

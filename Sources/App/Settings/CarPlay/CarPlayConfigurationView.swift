@@ -6,7 +6,10 @@ import SwiftUI
 struct CarPlayConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = CarPlayConfigurationViewModel()
+
     @State private var isLoaded = false
+    @State private var showResetConfirmation = false
+
     var body: some View {
         NavigationView {
             content
@@ -60,6 +63,7 @@ struct CarPlayConfigurationView: View {
             List {
                 tabsSection
                 itemsSection
+                resetView
             }
         }
     }
@@ -204,6 +208,26 @@ struct CarPlayConfigurationView: View {
             }
         }
         .animation(.bouncy, value: viewModel.config.tabs)
+    }
+
+    private var resetView: some View {
+        Button(L10n.CarPlay.Debug.DeleteDb.Reset.title, role: .destructive) {
+            showResetConfirmation = true
+        }
+        .confirmationDialog(
+            L10n.CarPlay.Debug.DeleteDb.Alert.title,
+            isPresented: $showResetConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.yesLabel, role: .destructive) {
+                viewModel.deleteConfiguration { success in
+                    if success {
+                        dismiss()
+                    }
+                }
+            }
+            Button(L10n.noLabel, role: .cancel) {}
+        }
     }
 }
 
