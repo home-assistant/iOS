@@ -17,7 +17,7 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
     }
 
     public static func config() throws -> CarPlayConfig? {
-        try Current.database().read({ db in
+        try Current.database.read({ db in
             try CarPlayConfig.fetchOne(db)
         })
     }

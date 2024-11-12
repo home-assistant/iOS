@@ -29,7 +29,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         carPlayConfig.quickAccessItems = migrateItemsIfNeeded(items: carPlayConfig.quickAccessItems)
 
         do {
-            try Current.database().write { db in
+            try Current.database.write { db in
                 try carPlayConfig.update(db)
             }
         } catch {
@@ -47,7 +47,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         watchConfig.items = migrateItemsIfNeeded(items: watchConfig.items)
 
         do {
-            try Current.database().write { db in
+            try Current.database.write { db in
                 try watchConfig.update(db)
             }
         } catch {
@@ -61,7 +61,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         var serversCompletedFetchCount = 0
         Current.servers.all.forEach { [weak self] server in
             do {
-                let entities: [HAAppEntity] = try Current.database().read { db in
+                let entities: [HAAppEntity] = try Current.database.read { db in
                     try HAAppEntity
                         .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                         .fetchAll(db)

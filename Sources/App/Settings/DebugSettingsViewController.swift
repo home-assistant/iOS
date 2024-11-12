@@ -196,7 +196,7 @@ class DebugSettingsViewController: HAFormViewController {
                 let (promise, seal) = Guarantee<Void>.pending()
 
                 do {
-                    _ = try Current.database().write { db in
+                    _ = try Current.database.write { db in
                         try HAAppEntity.deleteAll(db)
                         seal(())
                     }

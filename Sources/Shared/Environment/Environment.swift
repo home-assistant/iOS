@@ -100,7 +100,8 @@ public class AppEnvironment {
         Realm.getRealm(objectTypes: objectTypes)
     }
 
-    public var database: () -> DatabaseQueue = DatabaseQueue.appDatabase
+    public var database: DatabaseQueue = .appDatabase
+
     public var watchConfig: () throws -> WatchConfig? = {
         try WatchConfig.config()
     }
