@@ -10,7 +10,7 @@ import Shared
 import SwiftMessages
 import SwiftUI
 import UIKit
-import WebKit
+@preconcurrency import WebKit
 
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
@@ -212,11 +212,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         updateWebViewForServerValues()
         getLatestConfig()
 
-        #if DEBUG
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
         }
-        #endif
     }
 
     public func showSettingsViewController() {
