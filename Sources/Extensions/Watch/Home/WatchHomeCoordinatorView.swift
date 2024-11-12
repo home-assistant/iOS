@@ -18,14 +18,10 @@ struct WatchHomeCoordinatorView: View {
                 loadingState
             })
             .fullScreenCover(isPresented: $showAssist, content: {
-                if let config = viewModel.config {
-                    WatchAssistView.build(
-                        serverId: config.assist.serverId,
-                        pipelineId: config.assist.pipelineId
-                    )
-                } else {
-                    Text(L10n.Watch.Assist.LackConfig.Error.title)
-                }
+                WatchAssistView.build(
+                    serverId: viewModel.watchConfig.assist.serverId,
+                    pipelineId: viewModel.watchConfig.assist.pipelineId
+                )
             })
             .onAppear {
                 viewModel.initialRoutine()
@@ -41,10 +37,7 @@ struct WatchHomeCoordinatorView: View {
                         ToolbarItem(placement: .topBarLeading) {
                             navReloadButton
                         }
-                        if let config = viewModel.config,
-                           config.assist.showAssist,
-                           !config.assist.serverId.isEmpty,
-                           !config.assist.pipelineId.isEmpty {
+                        if viewModel.showAssist {
                             ToolbarItem(placement: .topBarTrailing) {
                                 assistButton
                                     .modify { view in
@@ -89,25 +82,26 @@ struct WatchHomeCoordinatorView: View {
 
     @ViewBuilder
     private var content: some View {
-        Group {
-            switch viewModel.homeType {
-            case .undefined:
-                reloadButton
-            case .empty:
-                List {
-                    Text(L10n.Watch.Labels.noConfig)
-                        .font(.footnote)
-                    reloadButton
-                }
-            case let .config(watchConfig, magicItemsInfo):
-                WatchHomeView(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo, showAssist: $showAssist) {
+        List {
+            if viewModel.showError {
+                Text(viewModel.errorMessage)
+                    .font(.footnote)
+                    .listRowBackground(Color.red.opacity(0.5).clipShape(RoundedRectangle(cornerRadius: 12)))
+            }
+            if viewModel.watchConfig.items.isEmpty {
+                Text(L10n.Watch.Labels.noConfig)
+                    .font(.footnote)
+            } else {
+                WatchHomeView(
+                    watchConfig: $viewModel.watchConfig,
+                    magicItemsInfo: $viewModel.magicItemsInfo,
+                    showAssist: $showAssist
+                ) {
                     viewModel.requestConfig()
                 }
-            case let .error(errorMessage):
-                List {
-                    Text(errorMessage)
-                    reloadButton
-                }
+            }
+            if viewModel.watchConfig.items.isEmpty || viewModel.showError {
+                reloadButton
             }
         }
         .navigationTitle("")

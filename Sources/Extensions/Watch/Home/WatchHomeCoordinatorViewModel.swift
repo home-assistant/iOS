@@ -12,9 +12,13 @@ enum WatchHomeType {
 
 final class WatchHomeCoordinatorViewModel: ObservableObject {
     @Published var isLoading = false
+    @Published var showAssist = false
+    @Published var showError = false
+    @Published var errorMessage = ""
     @Published private(set) var homeType: WatchHomeType = .undefined
 
-    @Published private(set) var config: WatchConfig?
+    @Published var watchConfig: WatchConfig = .init()
+    @Published var magicItemsInfo: [MagicItem.Info] = []
 
     private let watchConfigCacheKey = "watch-config"
     private let magicItemsInfoCacheKey = "magic-items-info"
@@ -60,7 +64,6 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
 
     @MainActor
     func loadCache() {
-        updateHomeType(type: .undefined)
         let configPromise: Promise<WatchConfig> = Current.diskCache.value(for: watchConfigCacheKey)
         configPromise.pipe { [weak self] result in
             self?.handleCacheResponse(result)
@@ -73,7 +76,7 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
         let emptyMagicItems: [MagicItem]? = nil
         _ = Current.diskCache.set(emptyConfig, for: watchConfigCacheKey)
         _ = Current.diskCache.set(emptyMagicItems, for: magicItemsInfoCacheKey)
-        updateHomeType(type: .empty)
+        loadCache()
     }
 
     @MainActor
@@ -87,7 +90,8 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
             }
         case let .rejected(error):
             Current.Log.error("Failed to retrieve watch config cache, error: \(error.localizedDescription)")
-            updateHomeType(type: .empty)
+            displayError(message: L10n.Watch.Config.Cache.Error.message)
+            updateConfig(config: .init(), magicItemsInfo: [])
         }
 
         updateLoading(isLoading: false)
@@ -95,13 +99,13 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
 
     @MainActor
     private func handleMagicItemsCacheResponse(result: Result<[MagicItem.Info]>, watchConfig: WatchConfig) {
-        updateConfig(config: watchConfig)
         switch result {
-        case let .fulfilled(magicItems):
-            updateHomeType(type: .config(watchConfig: watchConfig, magicItemsInfo: magicItems))
+        case let .fulfilled(magicItemsInfo):
+            updateConfig(config: watchConfig, magicItemsInfo: magicItemsInfo)
+            resetError()
         case let .rejected(error):
             Current.Log.error("Failed to retrieve magic items cache, error: \(error.localizedDescription)")
-            updateHomeType(type: .error(message: "Failed to load watch config, error: \(error.localizedDescription)"))
+            displayError(message: L10n.Watch.Config.Error.message(error.localizedDescription))
         }
     }
 
@@ -124,9 +128,18 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
         loadCache()
     }
 
-    private func updateConfig(config: WatchConfig) {
+    private func updateConfig(config: WatchConfig, magicItemsInfo: [MagicItem.Info]) {
         DispatchQueue.main.async { [weak self] in
-            self?.config = config
+            self?.watchConfig = config
+            self?.magicItemsInfo = magicItemsInfo
+
+            if config.assist.showAssist,
+               !config.assist.serverId.isEmpty,
+               !config.assist.pipelineId.isEmpty {
+                self?.showAssist = true
+            } else {
+                self?.showAssist = false
+            }
         }
     }
 
@@ -136,9 +149,17 @@ final class WatchHomeCoordinatorViewModel: ObservableObject {
         }
     }
 
-    private func updateHomeType(type: WatchHomeType) {
+    private func displayError(message: String) {
         DispatchQueue.main.async { [weak self] in
-            self?.homeType = type
+            self?.errorMessage = message
+            self?.showError = true
+        }
+    }
+
+    private func resetError() {
+        DispatchQueue.main.async { [weak self] in
+            self?.errorMessage = ""
+            self?.showError = false
         }
     }
 }

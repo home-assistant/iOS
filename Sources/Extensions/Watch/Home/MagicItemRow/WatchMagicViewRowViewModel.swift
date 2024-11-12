@@ -12,11 +12,30 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         case failure
     }
 
+    enum MagicItemResponse {
+        case success
+        case failed
+        case tookLonger
+
+        var rowState: RowState {
+            switch self {
+            case .success:
+                return .success
+            case .failed:
+                return .failure
+            case .tookLonger:
+                return .idle
+            }
+        }
+    }
+
     @Published private(set) var state: RowState = .idle
     @Published var showConfirmationDialog = false
 
     @Published private(set) var item: MagicItem
     @Published private(set) var itemInfo: MagicItem.Info
+
+    private var timeoutWorkItem: DispatchWorkItem?
 
     init(item: MagicItem, itemInfo: MagicItem.Info) {
         self.item = item
@@ -37,9 +56,9 @@ final class WatchMagicViewRowViewModel: ObservableObject {
 
     private func executeItemAction() {
         state = .loading
-        executeMagicItem { [weak self] success in
+        executeMagicItem { [weak self] response in
             DispatchQueue.main.async { [weak self] in
-                self?.state = success ? .success : .failure
+                self?.state = response.rowState
             }
             self?.resetState()
         }
@@ -98,7 +117,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
     }
 
-    private func executeMagicItem(completion: @escaping (Bool) -> Void) {
+    private func executeMagicItem(completion: @escaping (MagicItemResponse) -> Void) {
         let magicItem = item
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
         fetchNetworkInfo { [weak self] in
@@ -106,18 +125,38 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             if Communicator.shared.currentReachability == .immediatelyReachable {
                 executeMagicItemUsingiPhone(magicItem: magicItem) { success in
                     if success {
-                        completion(success)
+                        self.cancelTimeout()
+                        completion(success ? .success : .failed)
                     } else {
                         self.executeMagicItemUsingAPI(magicItem: magicItem) { success in
-                            completion(success)
+                            self.cancelTimeout()
+                            completion(success ? .success : .failed)
                         }
                     }
                 }
             } else {
                 executeMagicItemUsingAPI(magicItem: magicItem) { success in
-                    completion(success)
+                    self.cancelTimeout()
+                    completion(success ? .success : .failed)
                 }
             }
+            startTimeoutTimerWhichResetsState(completion: completion)
         }
+    }
+
+    private func startTimeoutTimerWhichResetsState(completion: @escaping (MagicItemResponse) -> Void) {
+        timeoutWorkItem?.cancel()
+
+        timeoutWorkItem = DispatchWorkItem {
+            completion(.tookLonger)
+        }
+
+        if let workItem = timeoutWorkItem {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: workItem)
+        }
+    }
+
+    private func cancelTimeout() {
+        timeoutWorkItem?.cancel()
     }
 }
