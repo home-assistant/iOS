@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Nejsou k dispozici žádné servery. Přidejte server do aplikace.";
 "carPlay.labels.select_server" = "Vybrat server";
 "carPlay.labels.servers" = "Servery";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Opravdu chcete provést akci uzamčení na %@?";
 "carPlay.navigation.button.next" = "Další";
 "carPlay.navigation.button.previous" = "Předchozí";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Název ikony";
 "magic_item.item_type.action.list.title" = "Akce iOS";
 "magic_item.item_type.action.list.warning.title" = "V budoucnu přestaneme podporovat Akce iOS, zvažte použití skriptů nebo scén v Home Assistantovi.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scény";
 "magic_item.item_type.script.list.title" = "Skripty";
 "magic_item.item_type.selection.list.title" = "Typ položky";

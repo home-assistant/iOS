@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Keine Server verfügbar. Füge einen Server in der App hinzu.";
 "carPlay.labels.select_server" = "Server auswählen";
 "carPlay.labels.servers" = "Server";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Bist du sicher, dass du die Sperraktion für %@ ausführen möchtest?";
 "carPlay.navigation.button.next" = "Weiter";
 "carPlay.navigation.button.previous" = "Zurück";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Icon-Name";
 "magic_item.item_type.action.list.title" = "iOS-Aktionen";
 "magic_item.item_type.action.list.warning.title" = "Wir werden iOS-Aktionen in Zukunft nicht mehr unterstützen. Bitte verwende stattdessen Home Assistant-Skripte oder -Szenen.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Szenen";
 "magic_item.item_type.script.list.title" = "Skripte";
 "magic_item.item_type.selection.list.title" = "Eintragsart";

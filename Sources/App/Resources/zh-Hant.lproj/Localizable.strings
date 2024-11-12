@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "無可用伺服器、請於 App 中新增。";
 "carPlay.labels.select_server" = "選擇伺服器";
 "carPlay.labels.servers" = "伺服器";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "確定要對 %@ 進行鎖定操作嗎？";
 "carPlay.navigation.button.next" = "下一個";
 "carPlay.navigation.button.previous" = "上一個";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "圖示名稱";
 "magic_item.item_type.action.list.title" = "iOS 動作";
 "magic_item.item_type.action.list.warning.title" = "我們即將停止支援 iOS 動作、請考慮改用 Hom Assist 腳本或場景進行替代。";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "場景";
 "magic_item.item_type.script.list.title" = "腳本";
 "magic_item.item_type.selection.list.title" = "項目類型";

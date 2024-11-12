@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Serverid ei ole saadaval. Lisa server rakendusse.";
 "carPlay.labels.select_server" = "Vali server";
 "carPlay.labels.servers" = "Serverid";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Kas oled kindel, et soovid teostada %@ lukustustamise toimingut?";
 "carPlay.navigation.button.next" = "Järgmine";
 "carPlay.navigation.button.previous" = "Eelmine";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Ikooni nimi";
 "magic_item.item_type.action.list.title" = "iOS-i toimingud";
 "magic_item.item_type.action.list.warning.title" = "Lõpetame tulevikus iOS-i toimingute toetamise, kaalu selle asemel Home Assistanti skriptide või stseenide kasutamist.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Stseenid";
 "magic_item.item_type.script.list.title" = "Skriptid";
 "magic_item.item_type.selection.list.title" = "Üksuse tüüp";

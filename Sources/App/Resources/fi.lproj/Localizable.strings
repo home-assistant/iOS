@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Palvelimia ei ole saatavilla. Lisää palvelin sovelluksessa.";
 "carPlay.labels.select_server" = "Valitse palvelin";
 "carPlay.labels.servers" = "Palvelimet";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carPlay.navigation.button.next" = "Seuraava";
 "carPlay.navigation.button.previous" = "Edellinen";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Icon name";
 "magic_item.item_type.action.list.title" = "iOS Actions";
 "magic_item.item_type.action.list.warning.title" = "We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scenes";
 "magic_item.item_type.script.list.title" = "Scripts";
 "magic_item.item_type.selection.list.title" = "Item type";

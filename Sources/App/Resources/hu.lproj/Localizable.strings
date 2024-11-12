@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Nincs elérhető szerver. Adjon hozzá egy kiszolgálót az alkalmazáshoz.";
 "carPlay.labels.select_server" = "Szerver kiválasztása";
 "carPlay.labels.servers" = "Szerverek";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Biztos, hogy zárolási műveletet hajt végre a következőn %@ ?";
 "carPlay.navigation.button.next" = "Tovább";
 "carPlay.navigation.button.previous" = "Előző";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Ikon neve";
 "magic_item.item_type.action.list.title" = "iOS műveletek";
 "magic_item.item_type.action.list.warning.title" = "A jövőben megszüntetésre kerül az iOS Műveletek támogatása, kérjük, fontolja meg a Home Assistant szkriptek vagy jelenetek használatát helyette.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Jelenetek";
 "magic_item.item_type.script.list.title" = "Szkriptek";
 "magic_item.item_type.selection.list.title" = "Elem típusa";

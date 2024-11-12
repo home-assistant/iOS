@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Нет доступных серверов. Добавьте сервер в приложении.";
 "carPlay.labels.select_server" = "Выбрать сервер";
 "carPlay.labels.servers" = "Серверы";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carPlay.navigation.button.next" = "Далее";
 "carPlay.navigation.button.previous" = "Назад";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Название значка";
 "magic_item.item_type.action.list.title" = "IOS Действия";
 "magic_item.item_type.action.list.warning.title" = "В будущем мы прекратим поддержку iOS действий, пожалуйста, рассмотрите возможность использования вместо этого скриптов или сцен Home Assistant.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Сцены";
 "magic_item.item_type.script.list.title" = "Скрипты";
 "magic_item.item_type.selection.list.title" = "Item type";

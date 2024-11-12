@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "没有可用的服务器。在应用中添加服务器。";
 "carPlay.labels.select_server" = "选择服务器";
 "carPlay.labels.servers" = "服务器";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "您确定要对%@执行锁定动作吗 ？";
 "carPlay.navigation.button.next" = "下一步";
 "carPlay.navigation.button.previous" = "上一步";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "图标名称";
 "magic_item.item_type.action.list.title" = "iOS 操作";
 "magic_item.item_type.action.list.warning.title" = "我们将在未来停止支持 iOS 操作，请考虑换用 Home Assistant 脚本或场景。";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "场景";
 "magic_item.item_type.script.list.title" = "脚本";
 "magic_item.item_type.selection.list.title" = "项目类型";

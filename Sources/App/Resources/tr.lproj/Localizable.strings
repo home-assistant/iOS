@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Sunucu yok. Uygulamaya bir sunucu ekleyin.";
 "carPlay.labels.select_server" = "Sunucu seç";
 "carPlay.labels.servers" = "Sunucular";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "%@ üzerinde kilitleme eylemi gerçekleştirmek istediğinizden emin misiniz?";
 "carPlay.navigation.button.next" = "Sonraki";
 "carPlay.navigation.button.previous" = "Önceki";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Simge adı";
 "magic_item.item_type.action.list.title" = "iOS Eylemleri";
 "magic_item.item_type.action.list.warning.title" = "Gelecekte iOS Actions desteğini durduracağız, lütfen bunun yerine Home Assistant komut dosyalarını veya sahnelerini kullanmayı düşünün.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Sahneler";
 "magic_item.item_type.script.list.title" = "Senaryolar";
 "magic_item.item_type.selection.list.title" = "Öğe türü";
