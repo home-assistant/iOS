@@ -22,7 +22,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     private func loadDatabase() {
         do {
-            if let config: CarPlayConfig = try Current.database().read({ db in
+            if let config: CarPlayConfig = try Current.database.read({ db in
                 do {
                     return try CarPlayConfig.fetchOne(db)
                 } catch {
@@ -74,7 +74,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     func save(completion: (Bool) -> Void) {
         do {
-            try Current.database().write { db in
+            try Current.database.write { db in
                 let configsCount = try CarPlayConfig.all().fetchCount(db)
                 if configsCount > 1 {
                     Current.Log.error("More than one CarPlay config detected, deleting all and saving new one.")
@@ -95,6 +95,17 @@ final class CarPlayConfigurationViewModel: ObservableObject {
             Current.Log.error("Failed to save new CarPlay config, error: \(error.localizedDescription)")
             showError(message: L10n.Grdb.Config.MigrationError.failedToSave(error.localizedDescription))
             completion(false)
+        }
+    }
+
+    func deleteConfiguration(completion: (Bool) -> Void) {
+        do {
+            try Current.database.write { db in
+                try CarPlayConfig.deleteAll(db)
+                completion(true)
+            }
+        } catch {
+            showError(message: L10n.CarPlay.Debug.DeleteDb.Alert.Failed.message(error.localizedDescription))
         }
     }
 

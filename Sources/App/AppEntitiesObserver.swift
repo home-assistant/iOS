@@ -51,7 +51,7 @@ enum AppEntitiesObserver {
             do {
                 // Avoid opening database often if cache is already in memory
                 if cachedEntities[server] == nil {
-                    cachedEntities[server] = try Current.database().read { db in
+                    cachedEntities[server] = try Current.database.read { db in
                         try HAAppEntity
                             .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                             .orderByPrimaryKey()
@@ -62,7 +62,7 @@ enum AppEntitiesObserver {
                     cachedEntities[server] = appEntities
 
                     guard let cachedEntitiesForServer = cachedEntities[server] else { return }
-                    try Current.database().write { db in
+                    try Current.database.write { db in
                         try HAAppEntity.deleteAll(db, ids: cachedEntitiesForServer.map(\.id))
                         for entity in appEntities {
                             try entity.insert(db)
