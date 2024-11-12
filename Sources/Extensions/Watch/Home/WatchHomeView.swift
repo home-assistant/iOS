@@ -3,17 +3,20 @@ import SwiftUI
 
 struct WatchHomeView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var viewModel: WatchHomeViewModel
+    @StateObject private var viewModel = WatchHomeViewModel()
+    @Binding var watchConfig: WatchConfig
+    @Binding var magicItemsInfo: [MagicItem.Info]
     @Binding var showAssist: Bool
     let reloadAction: () -> Void
 
     init(
-        watchConfig: WatchConfig,
-        magicItemsInfo: [MagicItem.Info],
+        watchConfig: Binding<WatchConfig>,
+        magicItemsInfo: Binding<[MagicItem.Info]>,
         showAssist: Binding<Bool>,
         reloadAction: @escaping () -> Void
     ) {
-        self._viewModel = .init(wrappedValue: .init(watchConfig: watchConfig, magicItemsInfo: magicItemsInfo))
+        self._watchConfig = watchConfig
+        self._magicItemsInfo = magicItemsInfo
         self._showAssist = showAssist
         self.reloadAction = reloadAction
     }
@@ -31,22 +34,21 @@ struct WatchHomeView: View {
     }
 
     private var content: some View {
-        List {
+        Group {
             if #unavailable(watchOS 10),
-               viewModel.watchConfig.assist.showAssist,
-               !viewModel.watchConfig.assist.serverId.isEmpty,
-               !viewModel.watchConfig.assist.pipelineId.isEmpty {
+               watchConfig.assist.showAssist,
+               !watchConfig.assist.serverId.isEmpty,
+               !watchConfig.assist.pipelineId.isEmpty {
                 assistButton
             }
-            ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
+            ForEach(watchConfig.items, id: \.serverUniqueId) { item in
                 WatchMagicViewRow(
                     item: item,
-                    itemInfo: viewModel.info(for: item)
+                    itemInfo: info(for: item)
                 )
             }
             reloadButton
         }
-        .navigationTitle("")
     }
 
     private var assistButton: some View {
@@ -78,6 +80,16 @@ struct WatchHomeView: View {
             .listRowBackground(Color.clear)
         }
     }
+
+    private func info(for magicItem: MagicItem) -> MagicItem.Info {
+        magicItemsInfo.first(where: {
+            $0.id == magicItem.serverUniqueId
+        }) ?? .init(
+            id: magicItem.id,
+            name: magicItem.id,
+            iconName: ""
+        )
+    }
 }
 
 #if DEBUG
@@ -86,11 +98,11 @@ struct WatchHomeView: View {
     if #available(watchOS 9.0, *) {
         return NavigationStack {
             WatchHomeView(
-                watchConfig: WatchConfig.fixture,
-                magicItemsInfo: [
+                watchConfig: .constant(WatchConfig.fixture),
+                magicItemsInfo: .constant([
                     .init(id: "1", name: "This is a script", iconName: "mdi:access-point-check"),
                     .init(id: "2", name: "This is an action", iconName: "fire_alert"),
-                ], showAssist: .constant(false), reloadAction: {}
+                ]), showAssist: .constant(false), reloadAction: {}
             )
         }
     } else {

@@ -2695,6 +2695,18 @@ public enum L10n {
         /// Server
         public static var selectServer: String { return L10n.tr("Localizable", "watch.config.assist.select_server") }
       }
+      public enum Cache {
+        public enum Error {
+          /// Failed to load watch config from cache.
+          public static var message: String { return L10n.tr("Localizable", "watch.config.cache.error.message") }
+        }
+      }
+      public enum Error {
+        /// Failed to load watch config, error: %@
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "watch.config.error.message", String(describing: p1))
+        }
+      }
       public enum MigrationError {
         /// Failed to access database (GRDB), error: %@
         public static func failedAccessGrdb(_ p1: Any) -> String {
