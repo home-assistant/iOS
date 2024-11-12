@@ -110,10 +110,11 @@
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
 "carPlay.labels.select_server" = "Select server";
-"carPlay.labels.tab.settings" = "Settings";
-"carPlay.labels.settings.advanced.section.title" = "Advanced";
-"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.servers" = "Servers";
 "carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carPlay.navigation.button.next" = "Next";
 "carPlay.navigation.button.previous" = "Previous";
@@ -250,10 +251,10 @@
 "magic_item.icon_name.title" = "Icon name";
 "magic_item.item_type.action.list.title" = "iOS Actions";
 "magic_item.item_type.action.list.warning.title" = "We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scenes";
 "magic_item.item_type.script.list.title" = "Scripts";
 "magic_item.item_type.selection.list.title" = "Item type";
-"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.name.title" = "Name";
 "magic_item.name_and_icon.footer" = "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.";
 "magic_item.name_and_icon.footer.scenes" = "Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.";

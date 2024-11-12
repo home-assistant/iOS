@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Tidak ada server tersedia. Tambahkan di aplikasi.";
 "carPlay.labels.select_server" = "Pilih server";
 "carPlay.labels.servers" = "Server";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Yakin ingin melakukan tindakan mengunci pada %@?";
 "carPlay.navigation.button.next" = "Berikutnya";
 "carPlay.navigation.button.previous" = "Sebelumnya";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Nama ikon";
 "magic_item.item_type.action.list.title" = "Tindakan iOS";
 "magic_item.item_type.action.list.warning.title" = "Kami akan berhenti mendukung Tindakan iOS di masa mendatang, pertimbangkan untuk menggunakan skrip atau skenario Home Assistant sebagai gantinya.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Skenario";
 "magic_item.item_type.script.list.title" = "Skrip";
 "magic_item.item_type.selection.list.title" = "Jenis item";

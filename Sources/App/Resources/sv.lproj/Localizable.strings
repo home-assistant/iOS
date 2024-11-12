@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "Inga servrar tillgängliga. Lägg till en server i appen.";
 "carPlay.labels.select_server" = "Välj server";
 "carPlay.labels.servers" = "Servrar";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "Är du säker på att du vill låsa %@?";
 "carPlay.navigation.button.next" = "Nästa";
 "carPlay.navigation.button.previous" = "Föregående";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "Ikonnamn";
 "magic_item.item_type.action.list.title" = "iOS Actions";
 "magic_item.item_type.action.list.warning.title" = "Vi kommer att sluta stödja iOS Actions i framtiden, överväg att använda Home Assistant-skript eller scener istället.";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "Scener";
 "magic_item.item_type.script.list.title" = "Skripts";
 "magic_item.item_type.selection.list.title" = "Typ av artikel";

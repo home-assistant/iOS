@@ -111,6 +111,10 @@
 "carPlay.labels.no_servers_available" = "利用可能なサーバーがありません。アプリにサーバーを追加します。";
 "carPlay.labels.select_server" = "サーバーを選択";
 "carPlay.labels.servers" = "サーバー";
+"carPlay.labels.settings.advanced.section.button.detail" = "Use this option if your server data is not loaded properly.";
+"carPlay.labels.settings.advanced.section.button.title" = "Restart App";
+"carPlay.labels.settings.advanced.section.title" = "Advanced";
+"carPlay.labels.tab.settings" = "Settings";
 "carPlay.lock.confirmation.title" = "%@にロック アクションを実行しますか?";
 "carPlay.navigation.button.next" = "次";
 "carPlay.navigation.button.previous" = "前";
@@ -247,6 +251,7 @@
 "magic_item.icon_name.title" = "アイコン名";
 "magic_item.item_type.action.list.title" = "iOSアクション";
 "magic_item.item_type.action.list.warning.title" = "今後、iOS アクションのサポートは停止される予定ですので、代わりに Home Assistant スクリプトまたはシーンの使用を検討してください。";
+"magic_item.item_type.entity.list.title" = "Entity";
 "magic_item.item_type.scene.list.title" = "シーン";
 "magic_item.item_type.script.list.title" = "スクリプト";
 "magic_item.item_type.selection.list.title" = "アイテムの種類";

@@ -505,6 +505,8 @@ public enum L10n {
       public static var noServersAvailable: String { return L10n.tr("Localizable", "carPlay.labels.no_servers_available") }
       /// Select server
       public static var selectServer: String { return L10n.tr("Localizable", "carPlay.labels.select_server") }
+      /// Servers
+      public static var servers: String { return L10n.tr("Localizable", "carPlay.labels.servers") }
       public enum Settings {
         public enum Advanced {
           public enum Section {
