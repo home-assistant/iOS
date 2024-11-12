@@ -115,7 +115,7 @@ struct AssistPipelineEntityQuery: EntityQuery, EntityStringQuery {
     private func pipelines() async throws -> [Server: [Pipeline]] {
         do {
             var result: [Server: [Pipeline]] = [:]
-            let pipelines = try await Current.database().read { db in
+            let pipelines = try await Current.database.read { db in
                 try AssistPipelines.fetchAll(db)
             }
             pipelines.forEach { assistPipeline in

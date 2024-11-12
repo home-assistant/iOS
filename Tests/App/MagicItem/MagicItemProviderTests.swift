@@ -24,7 +24,7 @@ struct MagicItemProviderTests {
             .init(id: "light.one", serverId: "1", type: .entity),
         ]
 
-        try await Current.database().write { [watchConfig, carPlayConfig] db in
+        try await Current.database.write { [watchConfig, carPlayConfig] db in
             try WatchConfig.deleteAll(db)
             try CarPlayConfig.deleteAll(db)
             try watchConfig.insert(db)

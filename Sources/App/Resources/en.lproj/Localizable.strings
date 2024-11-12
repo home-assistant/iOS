@@ -812,10 +812,13 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
