@@ -47,7 +47,7 @@ public extension DatabaseQueue {
             let database = try DatabaseQueue(path: databasePath())
             createAppConfigTables(database: database)
             #if targetEnvironment(simulator)
-            Current.Log.info("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
+            print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
             return database
         } catch {
