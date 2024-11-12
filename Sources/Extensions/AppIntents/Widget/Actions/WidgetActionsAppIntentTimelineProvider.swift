@@ -109,7 +109,7 @@ extension IntentActionAppEntity {
 
 enum WidgetActionsDataSource {
     static var expiration: Measurement<UnitDuration> {
-        .init(value: 24, unit: .hours)
+        DefaultWidgetValues.expiration
     }
 
     static func getActions() -> Results<Action> {

@@ -27,7 +27,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
     typealias Intent = WidgetScriptsAppIntent
 
     static var expiration: Measurement<UnitDuration> {
-        .init(value: 24, unit: .hours)
+        DefaultWidgetValues.expiration
     }
 
     func snapshot(for configuration: WidgetScriptsAppIntent, in context: Context) async -> Entry {

@@ -155,7 +155,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
 enum WidgetDetailsTableDataSource {
     static var expiration: Measurement<UnitDuration> {
-        .init(value: 15, unit: .minutes)
+        DefaultWidgetValues.expiration
     }
 }
 

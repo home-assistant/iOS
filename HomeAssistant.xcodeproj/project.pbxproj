@@ -695,6 +695,8 @@
 		42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A892C452DB500C9B43D /* MockWebViewController.swift */; };
 		42A47A8C2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A8B2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift */; };
 		42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A8F2C4548E100C9B43D /* ImprovDiscoverView.swift */; };
+		42A616212CE36A90009593CF /* DefaultWidgetValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A616202CE36A90009593CF /* DefaultWidgetValues.swift */; };
+		42A616222CE36A90009593CF /* DefaultWidgetValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A616202CE36A90009593CF /* DefaultWidgetValues.swift */; };
 		42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */; };
 		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
@@ -1986,6 +1988,7 @@
 		42A47A8B2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewExternalMessageHandler+Build.swift"; sourceTree = "<group>"; };
 		42A47A8F2C4548E100C9B43D /* ImprovDiscoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovDiscoverView.swift; sourceTree = "<group>"; };
 		42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWidgetsUpdater.swift; sourceTree = "<group>"; };
+		42A616202CE36A90009593CF /* DefaultWidgetValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultWidgetValues.swift; sourceTree = "<group>"; };
 		42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistViewModel.test.swift; sourceTree = "<group>"; };
 		42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioRecorder.swift; sourceTree = "<group>"; };
 		42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlayer.swift; sourceTree = "<group>"; };
@@ -3897,6 +3900,7 @@
 				42D3E4A62C5D009A00444BE6 /* Script */,
 				4296C3722B91F06D0051B63C /* Widget */,
 				403AE9292C2F3A9200D48147 /* IntentServerAppEntitiy.swift */,
+				42A616202CE36A90009593CF /* DefaultWidgetValues.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -6631,6 +6635,7 @@
 				4080D5BF2C319AA000099C88 /* WidgetDetails.swift in Sources */,
 				4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */,
 				424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
+				42A616222CE36A90009593CF /* DefaultWidgetValues.swift in Sources */,
 				403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */,
 				42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */,
@@ -6733,6 +6738,7 @@
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
 				42FCCFFB2B9B1C310057783F /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
+				42A616212CE36A90009593CF /* DefaultWidgetValues.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
