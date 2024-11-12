@@ -12,10 +12,6 @@ struct WidgetBasicContainerView: View {
     init(emptyViewGenerator: @escaping () -> AnyView, contents: [WidgetBasicViewModel]) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
-
-        // Use the opportunity of widget refresh to also refresh control center controls
-        // since those controls dont have a refresh interval
-        DataWidgetsUpdater.updateControlCenterControls()
     }
 
     var body: some View {
