@@ -14,11 +14,7 @@ class BarcodeScannerCamera: NSObject {
     private var allBackCaptureDevices: [AVCaptureDevice] {
         AVCaptureDevice.DiscoverySession(
             deviceTypes: [
-                .builtInTrueDepthCamera,
-                .builtInDualCamera,
-                .builtInDualWideCamera,
                 .builtInWideAngleCamera,
-                .builtInDualWideCamera,
             ],
             mediaType: .video,
             position: .back
@@ -186,7 +182,27 @@ class BarcodeScannerCamera: NSObject {
         if let deviceInput = deviceInputFor(device: captureDevice) {
             if !captureSession.inputs.contains(deviceInput), captureSession.canAddInput(deviceInput) {
                 captureSession.addInput(deviceInput)
+                configureFocus(for: deviceInput.device)
             }
+        }
+    }
+
+    private func configureFocus(for device: AVCaptureDevice) {
+        do {
+            try device.lockForConfiguration()
+
+            if device.isFocusModeSupported(.continuousAutoFocus) {
+                device.focusMode = .continuousAutoFocus
+            }
+
+            // Set focus point to center
+            if device.isFocusPointOfInterestSupported {
+                device.focusPointOfInterest = CGPoint(x: 0.5, y: 0.5) // Center of the screen
+            }
+
+            device.unlockForConfiguration()
+        } catch {
+            Current.Log.error("Error setting  barcode scanner camera focus: \(error)")
         }
     }
 
