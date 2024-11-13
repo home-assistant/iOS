@@ -17,6 +17,7 @@ final class CarPlayServerListViewModel {
     }
 
     func addServerObserver() {
+        removeServerObserver()
         Current.servers.add(observer: self)
     }
 

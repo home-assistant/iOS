@@ -39,37 +39,28 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     func entitiesStateChange(entities: HACachedStates) {
-        // TODO: Implement
+        /* no-op */
     }
 
     @objc func update() {
-        var serverList: [CPListItem] = []
-        for serverOption in Current.servers.all {
-            let serverItem = CPListItem(
-                text: serverOption.info.name,
-                detailText: nil
-            )
-            serverItem.handler = { [weak self] _, completion in
-                self?.viewModel.setServer(server: serverOption)
-                completion()
-            }
-            serverItem.accessoryType = viewModel.preferredServerId == serverOption.identifier.rawValue ? .cloud : .none
-            serverList.append(serverItem)
+        let serverList: [CPListItem] = Current.servers.all.filter({
+            // Only display servers that can be used in the user current environment
+            $0.info.connection.activeURL() != nil
+        }).compactMap { server in
+            serverItem(server: server)
         }
-        let section = CPListSection(items: serverList, header: L10n.CarPlay.Labels.selectServer, sectionIndexTitle: nil)
-        let advancedSection = CPListSection(items: [
-            {
-                let item = CPListItem(
-                    text: L10n.CarPlay.Labels.Settings.Advanced.Section.Button.title,
-                    detailText: L10n.CarPlay.Labels.Settings.Advanced.Section.Button.detail
-                )
-                item.handler = { _, _ in
-                    fatalError("Intentional crash, triggered from CarPlay advanced option to restart App.")
-                }
-                return item
-            }(),
-        ], header: L10n.CarPlay.Labels.Settings.Advanced.Section.title, sectionIndexTitle: nil)
-        template.updateSections([section, advancedSection])
+        let serversSection = CPListSection(items: serverList, header: L10n.CarPlay.Labels.selectServer, sectionIndexTitle: nil)
+
+        let advancedSection = CPListSection(
+            items: [restartItem],
+            header: L10n.CarPlay.Labels.Settings.Advanced.Section.title,
+            sectionIndexTitle: nil
+        )
+        
+        template.updateSections([
+            serversSection,
+            advancedSection
+        ])
     }
 
     func showNoServerAlert() {
@@ -80,5 +71,29 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         let alertTemplate = CarPlayNoServerAlert()
         alertTemplate.interfaceController = interfaceController
         alertTemplate.present()
+    }
+
+    private func serverItem(server: Server) -> CPListItem {
+        let serverItem = CPListItem(
+            text: server.info.name,
+            detailText: nil
+        )
+        serverItem.handler = { [weak self] _, completion in
+            self?.viewModel.setServer(server: server)
+            completion()
+        }
+        serverItem.accessoryType = viewModel.preferredServerId == server.identifier.rawValue ? .cloud : .none
+        return serverItem
+    }
+
+    private var restartItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Labels.Settings.Advanced.Section.Button.title,
+            detailText: L10n.CarPlay.Labels.Settings.Advanced.Section.Button.detail
+        )
+        item.handler = { _, _ in
+            fatalError("Intentional crash, triggered from CarPlay advanced option to restart App.")
+        }
+        return item
     }
 }

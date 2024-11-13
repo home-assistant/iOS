@@ -14,16 +14,15 @@ public protocol EntitiesStateSubscription {
 @available(iOS 16.0, *)
 class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
-    private var entities: HACache<HACachedStates>?
     private var entitiesSubscriptionToken: HACancellable?
 
-    private var domainsListTemplate: any CarPlayTemplateProvider
-    private var serversListTemplate: any CarPlayTemplateProvider
-    private var quickAccessListTemplate: any CarPlayTemplateProvider
-    private var areasZonesListTemplate: any CarPlayTemplateProvider
+    private var domainsListTemplate: (any CarPlayTemplateProvider)?
+    private var serversListTemplate: (any CarPlayTemplateProvider)?
+    private var quickAccessListTemplate: (any CarPlayTemplateProvider)?
+    private var areasZonesListTemplate: (any CarPlayTemplateProvider)?
 
     private var allTemplates: [any CarPlayTemplateProvider] {
-        [quickAccessListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate]
+        [quickAccessListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate].compactMap({$0})
     }
 
     private var cachedConfig: CarPlayConfig?
@@ -33,35 +32,33 @@ class CarPlaySceneDelegate: UIResponder {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
     }
 
-    override init() {
-        self.domainsListTemplate = CarPlayDomainsListTemplate.build()
-        self.serversListTemplate = CarPlayServersListTemplate.build()
-        self.quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
-        self.areasZonesListTemplate = CarPlayAreasZonesTemplate.build()
-        super.init()
-    }
-
     private func setTemplates(config: CarPlayConfig?) {
-        var visibleTemplates = allTemplates
+        var visibleTemplates: [any CarPlayTemplateProvider] = []
 
         // In case config exists, we will only show the tabs that are enabled
         if let config {
             guard config != cachedConfig else { return }
             cachedConfig = config
-            visibleTemplates = config.tabs.map {
+            visibleTemplates = config.tabs.compactMap {
                 switch $0 {
                 case .quickAccess:
                     // Reload the quick access list template
                     quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
                     return quickAccessListTemplate
                 case .areas:
+                    areasZonesListTemplate = CarPlayAreasZonesTemplate.build()
                     return areasZonesListTemplate
                 case .domains:
+                    domainsListTemplate = CarPlayDomainsListTemplate.build()
                     return domainsListTemplate
                 case .settings:
+                    serversListTemplate = CarPlayServersListTemplate.build()
                     return serversListTemplate
                 }
             }
+        } else {
+            quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+            visibleTemplates = [quickAccessListTemplate].compactMap({$0})
         }
 
         let tabBar = CPTabBarTemplate(templates: visibleTemplates.map { templateProvider in
@@ -73,10 +70,10 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func setInterfaceControllerForChildren() {
-        domainsListTemplate.interfaceController = interfaceController
-        serversListTemplate.interfaceController = interfaceController
-        quickAccessListTemplate.interfaceController = interfaceController
-        areasZonesListTemplate.interfaceController = interfaceController
+        domainsListTemplate?.interfaceController = interfaceController
+        serversListTemplate?.interfaceController = interfaceController
+        quickAccessListTemplate?.interfaceController = interfaceController
+        areasZonesListTemplate?.interfaceController = interfaceController
     }
 
     @objc private func updateTemplates() {
@@ -87,9 +84,8 @@ class CarPlaySceneDelegate: UIResponder {
         let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
 
         guard let server, entitiesSubscriptionToken == nil else { return }
-        entities = Current.api(for: server).connection.caches.states
         entitiesSubscriptionToken?.cancel()
-        entitiesSubscriptionToken = entities?.subscribe { [weak self] _, states in
+        entitiesSubscriptionToken = Current.api(for: server).connection.caches.states.subscribe { [weak self] _, states in
             self?.allTemplates.forEach {
                 $0.entitiesStateChange(entities: states)
             }
