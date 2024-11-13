@@ -56,7 +56,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             header: L10n.CarPlay.Labels.Settings.Advanced.Section.title,
             sectionIndexTitle: nil
         )
-        
+
         template.updateSections([
             serversSection,
             advancedSection

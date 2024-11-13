@@ -81,9 +81,7 @@ class CarPlaySceneDelegate: UIResponder {
     }
 
     private func subscribeToEntitiesChanges() {
-        let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
-
-        guard let server, entitiesSubscriptionToken == nil else { return }
+        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else { return }
         entitiesSubscriptionToken?.cancel()
         entitiesSubscriptionToken = Current.api(for: server).connection.caches.states.subscribe { [weak self] _, states in
             self?.allTemplates.forEach {
@@ -118,30 +116,11 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
     ) {
         self.interfaceController = interfaceController
         self.interfaceController?.delegate = self
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateTemplates),
-            name: HAConnectionState.didTransitionToStateNotification,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateTemplates),
-            name: HomeAssistantAPI.didConnectNotification,
-            object: nil
-        )
-
-        subscribeToEntitiesChanges()
     }
-
-    func templateApplicationScene(
-        _ templateApplicationScene: CPTemplateApplicationScene,
-        didDisconnect interfaceController: CPInterfaceController,
-        from window: CPWindow
-    ) {
-        NotificationCenter.default.removeObserver(self)
+    
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        observeCarPlayConfigChanges()
+        subscribeToEntitiesChanges()
     }
 }
 
@@ -153,9 +132,5 @@ extension CarPlaySceneDelegate: CPInterfaceControllerDelegate {
 
     func templateWillAppear(_ aTemplate: CPTemplate, animated: Bool) {
         allTemplates.forEach { $0.templateWillAppear(template: aTemplate) }
-    }
-
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        observeCarPlayConfigChanges()
     }
 }
