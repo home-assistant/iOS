@@ -24,6 +24,7 @@ final class CarPlayServerListViewModel {
     func setServer(server: Server) {
         prefs.set(server.identifier.rawValue, forKey: CarPlayServersListTemplate.carPlayPreferredServerKey)
         templateProvider?.update()
+        templateProvider?.sceneDelegate?.setup()
     }
 }
 

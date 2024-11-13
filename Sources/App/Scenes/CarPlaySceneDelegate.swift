@@ -22,7 +22,12 @@ class CarPlaySceneDelegate: UIResponder {
     private var areasZonesListTemplate: (any CarPlayTemplateProvider)?
 
     private var allTemplates: [any CarPlayTemplateProvider] {
-        [quickAccessListTemplate, areasZonesListTemplate, domainsListTemplate, serversListTemplate].compactMap({$0})
+        [
+            quickAccessListTemplate,
+            areasZonesListTemplate,
+            domainsListTemplate,
+            serversListTemplate
+        ].compactMap({$0})
     }
 
     private var cachedConfig: CarPlayConfig?
@@ -32,17 +37,19 @@ class CarPlaySceneDelegate: UIResponder {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
     }
 
+    func setup() {
+        observeCarPlayConfigChanges()
+        subscribeToEntitiesChanges()
+    }
+
     private func setTemplates(config: CarPlayConfig?) {
         var visibleTemplates: [any CarPlayTemplateProvider] = []
-
-        // In case config exists, we will only show the tabs that are enabled
         if let config {
             guard config != cachedConfig else { return }
             cachedConfig = config
             visibleTemplates = config.tabs.compactMap {
                 switch $0 {
                 case .quickAccess:
-                    // Reload the quick access list template
                     quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
                     return quickAccessListTemplate
                 case .areas:
@@ -53,6 +60,8 @@ class CarPlaySceneDelegate: UIResponder {
                     return domainsListTemplate
                 case .settings:
                     serversListTemplate = CarPlayServersListTemplate.build()
+                    // So it can reload in case of server changes
+                    (serversListTemplate as? CarPlayServersListTemplate)?.sceneDelegate = self
                     return serversListTemplate
                 }
             }
@@ -117,10 +126,9 @@ extension CarPlaySceneDelegate: CPTemplateApplicationSceneDelegate {
         self.interfaceController = interfaceController
         self.interfaceController?.delegate = self
     }
-    
+
     func sceneWillEnterForeground(_ scene: UIScene) {
-        observeCarPlayConfigChanges()
-        subscribeToEntitiesChanges()
+        setup()
     }
 }
 

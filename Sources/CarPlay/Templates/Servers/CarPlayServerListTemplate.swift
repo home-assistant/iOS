@@ -10,6 +10,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayServerListViewModel
 
     var template: CPListTemplate
+    weak var sceneDelegate: CarPlaySceneDelegate?
     weak var interfaceController: CPInterfaceController? {
         didSet {
             viewModel.interfaceController = interfaceController
