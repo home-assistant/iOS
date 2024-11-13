@@ -26,8 +26,8 @@ class CarPlaySceneDelegate: UIResponder {
             quickAccessListTemplate,
             areasZonesListTemplate,
             domainsListTemplate,
-            serversListTemplate
-        ].compactMap({$0})
+            serversListTemplate,
+        ].compactMap({ $0 })
     }
 
     private var cachedConfig: CarPlayConfig?
@@ -67,7 +67,7 @@ class CarPlaySceneDelegate: UIResponder {
             }
         } else {
             quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
-            visibleTemplates = [quickAccessListTemplate].compactMap({$0})
+            visibleTemplates = [quickAccessListTemplate].compactMap({ $0 })
         }
 
         let tabBar = CPTabBarTemplate(templates: visibleTemplates.map { templateProvider in
@@ -92,11 +92,12 @@ class CarPlaySceneDelegate: UIResponder {
     private func subscribeToEntitiesChanges() {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else { return }
         entitiesSubscriptionToken?.cancel()
-        entitiesSubscriptionToken = Current.api(for: server).connection.caches.states.subscribe { [weak self] _, states in
-            self?.allTemplates.forEach {
-                $0.entitiesStateChange(entities: states)
+        entitiesSubscriptionToken = Current.api(for: server).connection.caches.states
+            .subscribe { [weak self] _, states in
+                self?.allTemplates.forEach {
+                    $0.entitiesStateChange(entities: states)
+                }
             }
-        }
     }
 
     private func observeCarPlayConfigChanges() {

@@ -50,7 +50,11 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         }).compactMap { server in
             serverItem(server: server)
         }
-        let serversSection = CPListSection(items: serverList, header: L10n.CarPlay.Labels.selectServer, sectionIndexTitle: nil)
+        let serversSection = CPListSection(
+            items: serverList,
+            header: L10n.CarPlay.Labels.selectServer,
+            sectionIndexTitle: nil
+        )
 
         let advancedSection = CPListSection(
             items: [restartItem],
@@ -60,7 +64,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
 
         template.updateSections([
             serversSection,
-            advancedSection
+            advancedSection,
         ])
     }
 
