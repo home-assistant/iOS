@@ -764,6 +764,8 @@
 		42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */; };
 		42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2E2CCF918D00D7EC14 /* BluetoothPermissionView.swift */; };
 		42E65F082C8079FE00C4A6F2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
+		42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E6C0892CE4F4FA007CA622 /* DownloadManagerView.swift */; };
+		42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */; };
 		42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C542CA44FC90010ECE3 /* SafariWebView.swift */; };
 		42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */; };
 		42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ActivityView.swift */; };
@@ -2052,6 +2054,8 @@
 		42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionRequestView.swift; sourceTree = "<group>"; };
 		42DF6B2E2CCF918D00D7EC14 /* BluetoothPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionView.swift; sourceTree = "<group>"; };
 		42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssistValueProvider.swift; sourceTree = "<group>"; };
+		42E6C0892CE4F4FA007CA622 /* DownloadManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerView.swift; sourceTree = "<group>"; };
+		42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerViewModel.swift; sourceTree = "<group>"; };
 		42E95C542CA44FC90010ECE3 /* SafariWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebView.swift; sourceTree = "<group>"; };
 		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
 		42E95C582CA46AD50010ECE3 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
@@ -3068,6 +3072,7 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				42E6C0882CE4F4EC007CA622 /* DownloadManager */,
 				42B942F42CAA1E4400E36E02 /* Payload */,
 				42BE698B2C4691E000745ECA /* Views */,
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
@@ -4139,6 +4144,15 @@
 				42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */,
 			);
 			path = Add;
+			sourceTree = "<group>";
+		};
+		42E6C0882CE4F4EC007CA622 /* DownloadManager */ = {
+			isa = PBXGroup;
+			children = (
+				42E6C0892CE4F4FA007CA622 /* DownloadManagerView.swift */,
+				42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */,
+			);
+			path = DownloadManager;
 			sourceTree = "<group>";
 		};
 		42EFFAEA2C8882CC002F10FC /* CarPlay */ = {
@@ -6728,6 +6742,7 @@
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				42A47A8C2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
+				42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
@@ -6846,6 +6861,7 @@
 				B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
+				42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,

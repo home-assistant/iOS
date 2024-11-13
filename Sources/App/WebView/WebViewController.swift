@@ -439,6 +439,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         updateWebViewSettings(reason: .load)
     }
 
+    func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
+        if #available(iOS 17.0, *) {
+            let viewModel = DownloadManagerViewModel()
+            let downloadManager = DownloadManagerView(viewModel: viewModel)
+            let downloadController = UIHostingController(rootView: downloadManager)
+            presentOverlayController(controller: downloadController, animated: true)
+            download.delegate = viewModel
+        }
+    }
+
     func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationResponse: WKNavigationResponse,
