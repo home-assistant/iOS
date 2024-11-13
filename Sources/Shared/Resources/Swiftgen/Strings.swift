@@ -744,6 +744,23 @@ public enum L10n {
     }
   }
 
+  public enum DownloadManager {
+    public enum Downloading {
+      /// Downloading
+      public static var title: String { return L10n.tr("Localizable", "download_manager.downloading.title") }
+    }
+    public enum Failed {
+      /// Failed to download file, error: %@
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "download_manager.failed.title", String(describing: p1))
+      }
+    }
+    public enum Finished {
+      /// Download finished
+      public static var title: String { return L10n.tr("Localizable", "download_manager.finished.title") }
+    }
+  }
+
   public enum Extensions {
     public enum Map {
       public enum Location {
