@@ -17,12 +17,14 @@ final class CarPlayServerListViewModel {
     }
 
     func addServerObserver() {
+        removeServerObserver()
         Current.servers.add(observer: self)
     }
 
     func setServer(server: Server) {
         prefs.set(server.identifier.rawValue, forKey: CarPlayServersListTemplate.carPlayPreferredServerKey)
         templateProvider?.update()
+        templateProvider?.sceneDelegate?.setup()
     }
 }
 
