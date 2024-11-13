@@ -50,7 +50,7 @@ class CarPlaySceneDelegate: UIResponder {
             visibleTemplates = config.tabs.compactMap {
                 switch $0 {
                 case .quickAccess:
-                    quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+                    buildQuickAccessTab()
                     return quickAccessListTemplate
                 case .areas:
                     areasZonesListTemplate = CarPlayAreasZonesTemplate.build()
@@ -59,15 +59,14 @@ class CarPlaySceneDelegate: UIResponder {
                     domainsListTemplate = CarPlayDomainsListTemplate.build()
                     return domainsListTemplate
                 case .settings:
-                    serversListTemplate = CarPlayServersListTemplate.build()
-                    // So it can reload in case of server changes
-                    (serversListTemplate as? CarPlayServersListTemplate)?.sceneDelegate = self
+                    buildServerTab()
                     return serversListTemplate
                 }
             }
         } else {
-            quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
-            visibleTemplates = [quickAccessListTemplate].compactMap({ $0 })
+            buildQuickAccessTab()
+            buildServerTab()
+            visibleTemplates = allTemplates
         }
 
         let tabBar = CPTabBarTemplate(templates: visibleTemplates.map { templateProvider in
@@ -76,6 +75,16 @@ class CarPlaySceneDelegate: UIResponder {
         setInterfaceControllerForChildren()
         interfaceController?.setRootTemplate(tabBar, animated: true, completion: nil)
         updateTemplates()
+    }
+
+    private func buildQuickAccessTab() {
+        quickAccessListTemplate = CarPlayQuickAccessTemplate.build()
+    }
+
+    private func buildServerTab() {
+        serversListTemplate = CarPlayServersListTemplate.build()
+        // So it can reload in case of server changes
+        (serversListTemplate as? CarPlayServersListTemplate)?.sceneDelegate = self
     }
 
     private func setInterfaceControllerForChildren() {
