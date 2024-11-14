@@ -111,6 +111,25 @@ public enum AppConstants {
         return directoryURL
     }
 
+    public static var DownloadsDirectory: URL {
+        let fileManager = FileManager.default
+        let directoryURL = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
+            .appendingPathComponent(
+                "Downloads",
+                isDirectory: true
+            )
+
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                fatalError("Error while attempting to create downloads path URL: \(error)")
+            }
+        }
+
+        return directoryURL
+    }
+
     /// An initialized Keychain from KeychainAccess.
     public static var Keychain: KeychainAccess.Keychain {
         KeychainAccess.Keychain(service: BundleID)
