@@ -166,6 +166,7 @@ public class AppEnvironment {
         $0.register(provider: WatchBatterySensor.self)
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
+        $0.register(provider: AudioOutputSensor.self)
     }
 
     public var localized = LocalizedManager()
