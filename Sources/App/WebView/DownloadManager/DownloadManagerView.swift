@@ -15,6 +15,7 @@ struct DownloadManagerView: View {
         VStack(spacing: .zero) {
             HStack {
                 Button(action: {
+                    viewModel.cancelDownload()
                     viewModel.deleteFile()
                     dismiss()
                 }, label: {
@@ -25,6 +26,7 @@ struct DownloadManagerView: View {
                             .gray.opacity(0.5)
                         )
                 })
+                .buttonStyle(.plain)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding()
             }
@@ -41,8 +43,15 @@ struct DownloadManagerView: View {
                 Text(L10n.DownloadManager.Downloading.title)
                     .font(.title.bold())
                 fileCard
+                Text(viewModel.progress)
+                    .animation(.easeInOut(duration: 1), value: viewModel.progress)
             }
             Spacer()
+        }
+        .onChange(of: viewModel.finished) { _, newValue in
+            if newValue, Current.isCatalyst {
+                UIApplication.shared.open(AppConstants.DownloadsDirectory)
+            }
         }
     }
 
@@ -58,12 +67,20 @@ struct DownloadManagerView: View {
             Text(L10n.DownloadManager.Finished.title)
                 .font(.title.bold())
             if let url = viewModel.lastURLCreated {
-                ShareLink(viewModel.fileName, item: url)
-                    .padding()
-                    .foregroundStyle(.white)
-                    .background(Color.asset(Asset.Colors.haPrimary))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .padding()
+                if Current.isCatalyst {
+                    Button {
+                        UIApplication.shared.open(AppConstants.DownloadsDirectory)
+                    } label: {
+                        Label(viewModel.fileName, systemSymbol: .folder)
+                    }
+                } else {
+                    ShareLink(viewModel.fileName, item: url)
+                        .padding()
+                        .foregroundStyle(.white)
+                        .background(Color.asset(Asset.Colors.haPrimary))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .padding()
+                }
             }
         }
     }
