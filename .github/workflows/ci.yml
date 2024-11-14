@@ -110,7 +110,7 @@ jobs:
     if: |
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
