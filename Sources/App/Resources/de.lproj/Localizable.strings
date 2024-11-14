@@ -104,8 +104,10 @@
 "carPlay.action.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";
 "carPlay.action.intro.item.title" = "Erstelle deine erste Aktion";
 "carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "Bereits hinzugefügt";
 "carPlay.labels.empty_domain_list" = "Keine Domänen verfügbar";
 "carPlay.labels.no_servers_available" = "Keine Server verfügbar. Füge einen Server in der App hinzu.";
@@ -180,6 +182,9 @@
 "debug_section_label" = "Debuggen";
 "delete" = "Löschen";
 "done_label" = "Erledigt";
+"download_manager.downloading.title" = "Downloading";
+"download_manager.failed.title" = "Failed to download file, error: %@";
+"download_manager.finished.title" = "Download finished";
 "error_label" = "Fehler";
 "extensions.map.location.new" = "Neuer Standort";
 "extensions.map.location.original" = "Ursprünglicher Standort";
@@ -762,6 +767,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "username_label" = "Benutzername";
 "watch.assist.lack_config.error.title" = "Bitte konfiguriere Assist mit der iOS-Companion-App";
 "watch.config.assist.select_server" = "Server";
+"watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.migration_error.failed_access_grdb" = "Zugriff auf Datenbank (GRDB) fehlgeschlagen, Fehler: %@";
 "watch.config.migration_error.failed_create_new_config" = "Speichern der initialen Watch-Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Migration von Aktionen in die Watch-Konfiguration fehlgeschlagen, Fehler: %@";

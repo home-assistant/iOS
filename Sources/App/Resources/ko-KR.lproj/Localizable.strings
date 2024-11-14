@@ -104,8 +104,10 @@
 "carPlay.action.intro.item.body" = "iPhone에서 계속하려면 탭하세요.";
 "carPlay.action.intro.item.title" = "첫 번째 동작 만들기";
 "carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "이미 추가됨";
 "carPlay.labels.empty_domain_list" = "사용 가능한 도메인이 없습니다.";
 "carPlay.labels.no_servers_available" = "사용 가능한 서버가 없습니다. 앱에 서버를 추가하세요.";
@@ -180,6 +182,9 @@
 "debug_section_label" = "디버그";
 "delete" = "삭제";
 "done_label" = "완료";
+"download_manager.downloading.title" = "Downloading";
+"download_manager.failed.title" = "Failed to download file, error: %@";
+"download_manager.finished.title" = "Download finished";
 "error_label" = "오류";
 "extensions.map.location.new" = "새 위치";
 "extensions.map.location.original" = "원래 위치";
@@ -760,6 +765,8 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "username_label" = "사용자 이름";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";
+"watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "watch.config.migration_error.failed_create_new_config" = "Failed to save initial watch config, error: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Failed to migrate actions to watch config, error: %@";

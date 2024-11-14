@@ -104,8 +104,10 @@
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";
 "carPlay.action.intro.item.title" = "Az első művelet létrehozása";
 "carPlay.config.tabs.title" = "Lapfülek";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Biztosan törli a CarPlay konfigurációt? Ez a művelet nem visszavonható";
 "carPlay.debug.delete_db.button.title" = "CarPlay konfiguráció törlése";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "Már hozzáadva";
 "carPlay.labels.empty_domain_list" = "Nincsenek elérhető domainek";
 "carPlay.labels.no_servers_available" = "Nincs elérhető szerver. Adjon hozzá egy kiszolgálót az alkalmazáshoz.";
@@ -180,6 +182,9 @@
 "debug_section_label" = "Hibakeresés";
 "delete" = "Törlés";
 "done_label" = "Kész";
+"download_manager.downloading.title" = "Downloading";
+"download_manager.failed.title" = "Failed to download file, error: %@";
+"download_manager.finished.title" = "Download finished";
 "error_label" = "Hiba";
 "extensions.map.location.new" = "Új helyszín";
 "extensions.map.location.original" = "Eredeti helyszín";
@@ -760,6 +765,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "username_label" = "Felhasználónév";
 "watch.assist.lack_config.error.title" = "Kérjük, konfigurálja az Assist funkciót az iOS mobilalkalmazás segítségével";
 "watch.config.assist.select_server" = "Szerver";
+"watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.migration_error.failed_access_grdb" = "Nem sikerült elérni az adatbázist (GRDB), hiba: %@";
 "watch.config.migration_error.failed_create_new_config" = "Nem sikerült menteni az óra kezdeti konfigurációját, hiba: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Nem sikerült a műveletek migrálása az óra konfigurációba, hiba: %@";
