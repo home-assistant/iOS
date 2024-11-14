@@ -104,8 +104,10 @@
 "carPlay.action.intro.item.body" = "Appuyez pour continuer sur votre iPhone";
 "carPlay.action.intro.item.title" = "Créez votre première action";
 "carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "Déjà ajouté";
 "carPlay.labels.empty_domain_list" = "Aucun domaine disponible";
 "carPlay.labels.no_servers_available" = "Aucun serveur disponible. Ajoutez un serveur dans l'app.";
@@ -180,6 +182,9 @@
 "debug_section_label" = "Déboguer";
 "delete" = "Supprimer";
 "done_label" = "Fait";
+"download_manager.downloading.title" = "Downloading";
+"download_manager.failed.title" = "Failed to download file, error: %@";
+"download_manager.finished.title" = "Download finished";
 "error_label" = "Erreur";
 "extensions.map.location.new" = "Nouvel emplacement";
 "extensions.map.location.original" = "Emplacement d’origine";
@@ -760,6 +765,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "username_label" = "Nom d'utilisateur";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Serveur";
+"watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.migration_error.failed_access_grdb" = "Échec de l'accès à la base de données (GRDB), erreur : %@";
 "watch.config.migration_error.failed_create_new_config" = "Échec de l'enregistrement de la configuration initiale de la montre, erreur : %@";
 "watch.config.migration_error.failed_migrate_actions" = "Échec de la migration des actions vers la configuration de surveillance, erreur : %@";
