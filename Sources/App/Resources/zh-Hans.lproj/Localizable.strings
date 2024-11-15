@@ -182,9 +182,9 @@
 "debug_section_label" = "调试";
 "delete" = "删除";
 "done_label" = "完成";
-"download_manager.downloading.title" = "Downloading";
-"download_manager.failed.title" = "Failed to download file, error: %@";
-"download_manager.finished.title" = "Download finished";
+"download_manager.downloading.title" = "正在下载";
+"download_manager.failed.title" = "下载文件失败，错误：%@";
+"download_manager.finished.title" = "下载已完成";
 "error_label" = "错误";
 "extensions.map.location.new" = "新位置";
 "extensions.map.location.original" = "原位置";
