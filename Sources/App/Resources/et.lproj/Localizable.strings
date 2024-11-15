@@ -182,9 +182,9 @@
 "debug_section_label" = "Silumine";
 "delete" = "Kustuta";
 "done_label" = "Valmis";
-"download_manager.downloading.title" = "Downloading";
-"download_manager.failed.title" = "Failed to download file, error: %@";
-"download_manager.finished.title" = "Download finished";
+"download_manager.downloading.title" = "Allalaadimine";
+"download_manager.failed.title" = "Faili allalaadimine nurjus, tõrge: %@";
+"download_manager.finished.title" = "Allalaadimine on lõpetatud";
 "error_label" = "Viga";
 "extensions.map.location.new" = "Uus asukoht";
 "extensions.map.location.original" = "Algne asukoht";

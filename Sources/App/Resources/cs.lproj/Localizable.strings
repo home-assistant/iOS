@@ -182,9 +182,9 @@
 "debug_section_label" = "Ladění";
 "delete" = "Smazat";
 "done_label" = "Hotovo";
-"download_manager.downloading.title" = "Downloading";
-"download_manager.failed.title" = "Failed to download file, error: %@";
-"download_manager.finished.title" = "Download finished";
+"download_manager.downloading.title" = "Stahování";
+"download_manager.failed.title" = "Stažení souboru se nezdařilo, chyba: %@";
+"download_manager.finished.title" = "Stahování bylo dokončeno";
 "error_label" = "Chyba";
 "extensions.map.location.new" = "Nová poloha";
 "extensions.map.location.original" = "Původní poloha";

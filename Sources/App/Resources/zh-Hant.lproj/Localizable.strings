@@ -182,9 +182,9 @@
 "debug_section_label" = "回報錯誤";
 "delete" = "刪除";
 "done_label" = "完成";
-"download_manager.downloading.title" = "Downloading";
-"download_manager.failed.title" = "Failed to download file, error: %@";
-"download_manager.finished.title" = "Download finished";
+"download_manager.downloading.title" = "下載中";
+"download_manager.failed.title" = "下載檔案失敗、錯誤：%@";
+"download_manager.finished.title" = "下載完成";
 "error_label" = "錯誤";
 "extensions.map.location.new" = "新座標";
 "extensions.map.location.original" = "原座標";
