@@ -94,7 +94,9 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         }
 
         firstly {
-            Current.api(for: server).CreateEvent(eventType: intent.eventName!, eventData: eventDataDict)
+            Current.api(for: server)?
+                .CreateEvent(eventType: intent.eventName!, eventData: eventDataDict) ??
+                .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")
             let resp = FireEventIntentResponse(code: .success, userActivity: nil)

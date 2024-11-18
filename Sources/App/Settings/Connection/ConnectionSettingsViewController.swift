@@ -34,7 +34,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             self?.title = info.name
         })
 
-        let connection = Current.api(for: server).connection
+        let connection = Current.api(for: server)?.connection
 
         if Current.servers.all.count > 1 {
             form +++ Section(footer: L10n.Settings.ConnectionSection.activateSwipeHint) {
@@ -107,10 +107,12 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             <<< LabelRow { row in
                 row.title = L10n.Settings.ConnectionSection.loggedInAs
 
-                tokens.append(connection.caches.user.subscribe { _, user in
-                    row.value = user.name
-                    row.updateCell()
-                })
+                if let connection {
+                    tokens.append(connection.caches.user.subscribe { _, user in
+                        row.value = user.name
+                        row.updateCell()
+                    })
+                }
             }
 
             +++ Section(L10n.Settings.ConnectionSection.details)
@@ -225,7 +227,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }
                 $0.onChange { [server] row in
                     server.info.setSetting(value: row.value, for: .sensorPrivacy)
-                    Current.api(for: server).registerSensors().cauterize()
+                    Current.api(for: server)?.registerSensors().cauterize()
                 }
             }
 
@@ -264,7 +266,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                                 }.then {
                                     waitAtLeast
                                 }.get {
-                                    Current.api(for: server).connection.disconnect()
+                                    Current.api(for: server)?.connection?.disconnect()
                                     Current.servers.remove(identifier: server.identifier)
                                 }.ensure {
                                     hud.hide(animated: true)

@@ -93,7 +93,10 @@ final class CarPlayEntitiesListViewModel {
         firstly { [weak self] () -> Promise<Void> in
             guard let self else { return .init(error: CPEntityError.unknown) }
 
-            let api = Current.api(for: server)
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available to handle CarPlay entity tap")
+                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+            }
 
             if let domain = Domain(rawValue: entity.domain), domain == .lock {
                 templateProvider?.displayLockConfirmation(entity: entity, completion: {

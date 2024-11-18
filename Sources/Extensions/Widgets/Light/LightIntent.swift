@@ -16,7 +16,8 @@ struct LightIntent: SetValueIntent {
     var toggle: Bool
 
     func perform() async throws -> some IntentResult {
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == light.serverId }) else {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == light.serverId }),
+              let connection = Current.api(for: server)?.connection else {
             return .result()
         }
 
@@ -26,7 +27,7 @@ struct LightIntent: SetValueIntent {
         }
 
         let _ = await withCheckedContinuation { continuation in
-            Current.api(for: server).connection.send(.callService(
+            connection.send(.callService(
                 domain: .init(stringLiteral: Domain.light.rawValue),
                 service: .init(stringLiteral: service),
                 data: [

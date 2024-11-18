@@ -98,7 +98,10 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             return
         }
 
-        let api = Current.api(for: server)
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available to handle func didReceive(_ notification: UNNotification)")
+            return
+        }
 
         // we only do it for 'dynamic' or unconfigured existing categories, so we don't stomp old configs
         if catID == "dynamic" || extensionContext?.notificationActions.isEmpty == true {

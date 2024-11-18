@@ -21,6 +21,7 @@ public class HomeAssistantAPI {
         case updateNotPossible
         case mobileAppComponentNotLoaded
         case mustUpgradeHomeAssistant(current: Version, minimum: Version)
+        case noAPIAvailable
         case unknown
     }
 
@@ -31,7 +32,7 @@ public class HomeAssistantAPI {
 
     public let tokenManager: TokenManager
     public var server: Server
-    public internal(set) var connection: HAConnection
+    public internal(set) var connection: HAConnection?
 
     public static var clientVersionDescription: String {
         "\(AppConstants.version) (\(AppConstants.build))"
@@ -65,37 +66,43 @@ public class HomeAssistantAPI {
         self.server = server
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
-        self.connection = HAKit.connection(configuration: .init(
-            connectionInfo: {
-                do {
-                    guard let activeURL = server.info.connection.activeURL() else {
-                        Current.Log.error("activeURL was not available when HAAPI called initializer")
+        if let activeURL = server.info.connection.activeURL() {
+            self.connection = HAKit.connection(configuration: .init(
+                connectionInfo: {
+                    do {
+                        return try .init(
+                            url: activeURL,
+                            userAgent: HomeAssistantAPI.userAgent,
+                            evaluateCertificate: { secTrust, completion in
+                                completion(
+                                    Swift.Result<Void, Error> {
+                                        try server.info.connection.securityExceptions.evaluate(secTrust)
+                                    }
+                                )
+                            }
+                        )
+                    } catch {
+                        Current.Log.error("couldn't create connection info: \(error)")
                         return nil
                     }
-                    return try .init(
-                        url: activeURL,
-                        userAgent: HomeAssistantAPI.userAgent,
-                        evaluateCertificate: { secTrust, completion in
-                            completion(
-                                Swift.Result<Void, Error> {
-                                    try server.info.connection.securityExceptions.evaluate(secTrust)
-                                }
-                            )
-                        }
-                    )
-                } catch {
-                    Current.Log.error("couldn't create connection info: \(error)")
-                    return nil
+                },
+                fetchAuthToken: { completion in
+                    tokenManager.bearerToken.done {
+                        completion(.success($0.0))
+                    }.catch {
+                        completion(.failure($0))
+                    }
                 }
-            },
-            fetchAuthToken: { completion in
-                tokenManager.bearerToken.done {
-                    completion(.success($0.0))
-                }.catch {
-                    completion(.failure($0))
-                }
-            }
-        ))
+            ))
+        } else {
+            Current.clientEventStore.addEvent(.init(
+                text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
+                type: .networkRequest
+            )).cauterize()
+            Current.Log.error("activeURL was not available when HAAPI called initializer")
+            self.connection = nil
+        }
+
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
             interceptor: newInterceptor(),
@@ -180,7 +187,7 @@ public class HomeAssistantAPI {
         Current.Log.info("running connect for \(reason)")
 
         // websocket
-        connection.connect()
+        connection?.connect()
 
         return firstly { () -> Promise<Void> in
             guard !Current.isAppExtension else {
@@ -778,34 +785,36 @@ public class HomeAssistantAPI {
             case .script:
                 let domain = Domain.script.rawValue
                 let service = item.id.replacingOccurrences(of: "\(domain).", with: "")
-                return Current.api(for: server).CallService(
+                return Current.api(for: server)?.CallService(
                     domain: domain,
                     service: service,
                     serviceData: [:],
                     shouldLog: true
-                )
+                ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             case .action:
-                return Current.api(for: server).HandleAction(actionID: item.id, source: .CarPlay)
+                return Current.api(for: server)?
+                    .HandleAction(actionID: item.id, source: .CarPlay) ??
+                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             case .scene:
                 let domain = Domain.scene.rawValue
-                return Current.api(for: server).CallService(
+                return Current.api(for: server)?.CallService(
                     domain: domain,
                     service: "turn_on",
                     serviceData: ["entity_id": item.id],
                     shouldLog: true
-                )
+                ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             case .entity:
                 guard let domain = item.domain else {
                     throw MagicItemError.unknownDomain
                 }
-                return Current.api(for: server).CallService(
+                return Current.api(for: server)?.CallService(
                     domain: domain.rawValue,
                     service: "toggle",
                     serviceData: [
                         "entity_id": item.id,
                     ],
                     shouldLog: true
-                )
+                ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             }
         }.done {
             completion(true)
@@ -958,6 +967,8 @@ extension HomeAssistantAPI.APIError: LocalizedError {
                 current.description,
                 minimum.description
             )
+        case .noAPIAvailable:
+            return L10n.HaApi.ApiError.noAvailableApi
         case .unknown:
             return L10n.HaApi.ApiError.unknown
         }

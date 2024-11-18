@@ -128,7 +128,10 @@ class ZoneManager {
 
         switch event.eventType {
         case let .region(region, state):
-            let api = Current.api(for: server)
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available to fire ZoneManager event, server: \(server)")
+                return
+            }
             let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
             api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).cauterize()
         case .locationChange:

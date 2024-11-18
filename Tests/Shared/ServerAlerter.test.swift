@@ -27,7 +27,7 @@ class ServerAlerterTests: XCTestCase {
         Current.settingsStore.privacy.alerts = true
 
         let mock = HAMockConnection()
-        Current.api(for: servers[0]).connection = mock
+        Current.api(for: servers[0])?.connection = mock
         _ = mock.caches.user.once { _ in }
 
         let request = try XCTUnwrap(mock.pendingRequests.first)

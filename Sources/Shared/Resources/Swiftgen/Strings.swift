@@ -835,6 +835,8 @@ public enum L10n {
       public static func mustUpgradeHomeAssistant(_ p1: Any, _ p2: Any) -> String {
         return L10n.tr("Localizable", "ha_api.api_error.must_upgrade_home_assistant", String(describing: p1), String(describing: p2))
       }
+      /// No API available, double check if internal URL or external URL are available.
+      public static var noAvailableApi: String { return L10n.tr("Localizable", "ha_api.api_error.no_available_api") }
       /// HA API not configured
       public static var notConfigured: String { return L10n.tr("Localizable", "ha_api.api_error.not_configured") }
       /// Unacceptable status code %1$li.

@@ -243,8 +243,9 @@ public class ModelManager: ServerObserver {
         subscribedSubscriptions.removeAll()
         hakitTokens.forEach { $0.cancel() }
         hakitTokens = definitions.flatMap { definition -> [HACancellable] in
-            Current.apis.flatMap { api in
-                definition.subscribe(api.connection, api.server, workQueue, self)
+            Current.apis.filter({ $0.server.info.connection.activeURL() != nil }).flatMap { api in
+                // Since we filtered activeURL, we can force unwrap here
+                definition.subscribe(api.connection!, api.server, workQueue, self)
             }
         }
         subscribedSubscriptions = definitions

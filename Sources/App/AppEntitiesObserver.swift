@@ -29,10 +29,14 @@ enum AppEntitiesObserver {
 
         func start() {
             container = .init { server in
-                .init(
+                guard let connection = Current.api(for: server)?.connection else {
+                    Current.Log.error("No API available to start App Entities Observer")
+                    return .init(HAMockCancellable {})
+                }
+
+                return .init(
                     Current.api(for: server).connection.caches.states.subscribe({ [weak self] _, states in
-                        guard let self,
-                              UIApplication.shared.applicationState == .active else { return }
+                        guard let self, UIApplication.shared.applicationState == .active else { return }
                         let appRelatedEntities = states.all.filter { self.domainsAppUse.contains($0.domain) }
 
                         // Only update database after a minute or if the entities count changed

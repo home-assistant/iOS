@@ -396,7 +396,7 @@ class ModelManagerTests: XCTestCase {
             XCTAssertEqual(handlers2APIs.map(\.1), apis.map(\.server))
             XCTAssertEqual(
                 handlers1APIs.map(\.0).map(ObjectIdentifier.init(_:)),
-                apis.map(\.connection).map(ObjectIdentifier.init(_:))
+                apis.compactMap(\.connection).map(ObjectIdentifier.init(_:))
             )
         }
 
