@@ -889,6 +889,34 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
+
+    func showReAuthPopup(serverId: String, code: Int) {
+        guard serverId == server.identifier.rawValue else {
+            return
+        }
+        var config = swiftMessagesConfig()
+        config.duration = .forever
+        let view = MessageView.viewFromNib(layout: .messageView)
+        view.configureTheme(.warning)
+        view.configureContent(
+            title: L10n.Unauthenticated.Message.title,
+            body: L10n.Unauthenticated.Message.body,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: MaterialDesignIcons.cogIcon.image(
+                ofSize: CGSize(width: 24, height: 24),
+                color: Asset.Colors.haPrimary.color
+            ),
+            buttonTitle: nil,
+            buttonTapHandler: { [weak self] _ in
+                self?.showSettingsViewController()
+            }
+        )
+        view.titleLabel?.numberOfLines = 0
+        view.bodyLabel?.numberOfLines = 0
+
+        SwiftMessages.show(config: config, view: view)
+    }
 }
 
 extension String {

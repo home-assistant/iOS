@@ -2588,6 +2588,15 @@ public enum L10n {
     public static var tokenUnavailable: String { return L10n.tr("Localizable", "token_error.token_unavailable") }
   }
 
+  public enum Unauthenticated {
+    public enum Message {
+      /// This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.
+      public static var body: String { return L10n.tr("Localizable", "unauthenticated.message.body") }
+      /// You are unauthenticated
+      public static var title: String { return L10n.tr("Localizable", "unauthenticated.message.title") }
+    }
+  }
+
   public enum Updater {
     public enum CheckForUpdatesMenu {
       /// Check for Updates…
