@@ -16,11 +16,12 @@ struct SFSymbolEntity: AppEntity {
 
 @available(iOS 16.4, macOS 13.0, watchOS 9.0, *)
 struct IntentSFSymbolAppEntityQuery: EntityQuery, EntityStringQuery {
+    private var prefix = 100
     func entities(for identifiers: [String]) async throws -> [SFSymbolEntity] {
         if identifiers.isEmpty {
-            return symbols()
+            return Array(symbols().prefix(prefix))
         } else {
-            return symbols().filter { identifiers.contains($0.id) }
+            return Array(symbols().filter { identifiers.contains($0.id) }.prefix(prefix))
         }
     }
 
@@ -30,7 +31,7 @@ struct IntentSFSymbolAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<SFSymbolEntity> {
-        .init(items: symbols())
+        .init(items: Array(symbols().prefix(prefix)))
     }
 
     private func symbols() -> [SFSymbolEntity] {
