@@ -36,7 +36,8 @@ enum AppEntitiesObserver {
                         let appRelatedEntities = states.all.filter { self.domainsAppUse.contains($0.domain) }
 
                         // Only update database after a minute or if the entities count changed
-                        if (!checkLastDatabaseUpdateLessThanMinuteAgo() || lastEntitiesCount != appRelatedEntities.count) {
+                        if !checkLastDatabaseUpdateLessThanMinuteAgo() || lastEntitiesCount != appRelatedEntities
+                            .count {
                             lastEntitiesCount = appRelatedEntities.count
                             handle(appRelatedEntities: appRelatedEntities, server: server)
                         }
