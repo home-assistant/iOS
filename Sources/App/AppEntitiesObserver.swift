@@ -16,6 +16,7 @@ enum AppEntitiesObserver {
     final class Observer {
         var container: PerServerContainer<HACancellable>?
         private var lastDatabaseUpdate: Date?
+        private var lastEntitiesCount = 0
 
         let domainsAppUse: [String] = [
             Domain.scene,
@@ -31,10 +32,14 @@ enum AppEntitiesObserver {
                 .init(
                     Current.api(for: server).connection.caches.states.subscribe({ [weak self] _, states in
                         guard let self,
-                              UIApplication.shared.applicationState == .active,
-                              !checkLastDatabaseUpdateLessThanMinuteAgo() else { return }
+                              UIApplication.shared.applicationState == .active else { return }
                         let appRelatedEntities = states.all.filter { self.domainsAppUse.contains($0.domain) }
-                        handle(appRelatedEntities: appRelatedEntities, server: server)
+
+                        // Only update database after a minute or if the entities count changed
+                        if (!checkLastDatabaseUpdateLessThanMinuteAgo() || lastEntitiesCount != appRelatedEntities.count) {
+                            lastEntitiesCount = appRelatedEntities.count
+                            handle(appRelatedEntities: appRelatedEntities, server: server)
+                        }
                     })
                 )
             }
