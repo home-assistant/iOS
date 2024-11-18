@@ -60,7 +60,8 @@
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
-"app_intents.icon.title" = "Icon";
+"app_intents.open_state_icon.title" = "Icon for open state";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.intent.cover.title" = "Control cover";
 "app_intents.intent.light.title" = "Control light";
 "app_intents.intent.switch.title" = "Control switch";
