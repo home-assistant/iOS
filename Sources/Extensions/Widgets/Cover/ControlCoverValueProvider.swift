@@ -78,11 +78,13 @@ struct ControlCoverConfiguration: ControlConfigurationIntent {
     )
     var entity: IntentCoverEntity?
     @Parameter(
-        title: .init("app_intents.open_state_icon.title", defaultValue: "Icon for open state")
+        title: .init("app_intents.open_state_icon.title", defaultValue: "Icon for open state"),
+        default: SFSymbolEntity(id: SFSymbol.curtainsOpen.rawValue)
     )
     var openIcon: SFSymbolEntity?
     @Parameter(
-        title: .init("app_intents.closed_state_icon.title", defaultValue: "Icon for closed state")
+        title: .init("app_intents.closed_state_icon.title", defaultValue: "Icon for closed state"),
+        default: SFSymbolEntity(id: SFSymbol.curtainsClosed.rawValue)
     )
     var closedIcon: SFSymbolEntity?
 }
