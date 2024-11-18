@@ -95,6 +95,10 @@ public class HomeAssistantAPI {
                 }
             ))
         } else {
+            Current.clientEventStore.addEvent(.init(
+                text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
+                type: .networkRequest
+            )).cauterize()
             Current.Log.error("activeURL was not available when HAAPI called initializer")
             self.connection = nil
         }
