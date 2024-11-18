@@ -9,12 +9,12 @@ final class ThreadTransferCredentialToHAViewModel: ThreadCredentialsSharingViewM
     @Published var showOperationSuccess = false
 
     private let threadClient: ThreadClientProtocol
-    private let connection: HAConnection
+    private let connection: HAConnection?
     private var credentialsToImport: [String] = []
 
     init(server: Server, threadClient: ThreadClientProtocol) {
         self.threadClient = threadClient
-        self.connection = Current.api(for: server).connection
+        self.connection = Current.api(for: server)?.connection
     }
 
     @MainActor
@@ -58,7 +58,7 @@ final class ThreadTransferCredentialToHAViewModel: ThreadCredentialsSharingViewM
             "tlv": credential,
             "source": "iOS-app",
         ])
-        connection.send(request).promise.pipe { [weak self] result in
+        connection?.send(request).promise.pipe { [weak self] result in
             guard let self else { return }
             switch result {
             case .fulfilled:

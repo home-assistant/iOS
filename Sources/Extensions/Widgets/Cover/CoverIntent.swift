@@ -16,7 +16,8 @@ struct CoverIntent: SetValueIntent {
     var toggle: Bool
 
     func perform() async throws -> some IntentResult {
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId }) else {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == entity.serverId }),
+              let connection = Current.api(for: server)?.connection else {
             return .result()
         }
 
@@ -26,7 +27,7 @@ struct CoverIntent: SetValueIntent {
         }
 
         let _ = await withCheckedContinuation { continuation in
-            Current.api(for: server).connection.send(.callService(
+            connection.send(.callService(
                 domain: .init(stringLiteral: Domain.cover.rawValue),
                 service: .init(stringLiteral: service),
                 data: [

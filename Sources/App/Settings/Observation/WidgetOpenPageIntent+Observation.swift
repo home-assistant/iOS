@@ -9,7 +9,11 @@ extension WidgetOpenPageIntent {
 
         func start() {
             container = .init { server in
-                let token = Current.api(for: server).connection.caches.panels.subscribe { _, panels in
+                guard let connection = Current.api(for: server)?.connection else {
+                    Current.Log.error("No API available to ibserver open page intent")
+                    return .init(HAMockCancellable({}))
+                }
+                let token = connection.caches.panels.subscribe { _, panels in
                     Self.handle(panels: panels, server: server)
                 }
 

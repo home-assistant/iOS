@@ -54,7 +54,7 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
 
         Current.Log.verbose("Rendering template \(templateStr)")
 
-        Current.api(for: server).connection.subscribe(
+        Current.api(for: server)?.connection?.subscribe(
             to: .renderTemplate(templateStr),
             initiated: { result in
                 if case let .failure(error) = result {

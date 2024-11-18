@@ -43,12 +43,13 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         for intent: Intent,
         with completion: @escaping ([String]?, Error?) -> Void
     ) {
-        guard let server = Current.servers.server(for: intent) else {
+        guard let server = Current.servers.server(for: intent),
+              let connection = Current.api(for: server)?.connection else {
             completion(nil, PickAServerError.error)
             return
         }
 
-        Current.api(for: server).connection.caches.states.once().promise.map(\.all)
+        connection.caches.states.once().promise.map(\.all)
             .filterValues { $0.domain == "camera" }
             .mapValues(\.entityId)
             .sortedValues()
@@ -66,15 +67,19 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
     }
 
     func handle(intent: Intent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
-        guard let server = Current.servers.server(for: intent) else {
-            completion(.failure(error: "no server provided"))
+        guard let server = Current.servers.server(for: intent), let api = Current.api(for: server) else {
+            completion(
+                .failure(
+                    error: "No server provided, active URL: \(String(describing: Current.servers.server(for: intent)?.info.connection.activeURL()?.absoluteString))"
+                )
+            )
             return
         }
 
         if let cameraID = intent.cameraID {
             Current.Log.verbose("Getting camera frame for \(cameraID)")
 
-            Current.api(for: server).GetCameraImage(cameraEntityID: cameraID).done { frame in
+            api.GetCameraImage(cameraEntityID: cameraID).done { frame in
                 Current.Log.verbose("Successfully got camera image during shortcut")
 
                 guard let pngData = frame.pngData() else {

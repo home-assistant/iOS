@@ -131,10 +131,15 @@ public class LocalPushManager {
             // webhookID hasn't changed, so we don't need to reset
             return
         }
-
         subscription?.cancel()
+
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to update subscription")
+            return
+        }
+
         subscription = .init(
-            token: Current.api(for: server).connection.subscribe(
+            token: connection.subscribe(
                 to: .localPush(webhookID: webhookID, serverVersion: server.info.version),
                 initiated: { [weak self] result in
                     self?.handle(initiated: result.map { _ in () })
@@ -166,16 +171,21 @@ public class LocalPushManager {
 
         delegate?.localPushManager(self, didReceiveRemoteNotification: baseContent.userInfo)
 
+        guard let api = Current.api(for: server), let connection = api.connection else {
+            Current.Log.error("No API available to handle local push event")
+            return
+        }
+
         firstly {
-            Current.notificationAttachmentManager.content(from: baseContent, api: Current.api(for: server))
+            Current.notificationAttachmentManager.content(from: baseContent, api: api)
         }.recover { error in
             Current.Log.error("failed to get content, giving default: \(error)")
             return .value(baseContent)
         }.then { [add] content -> Promise<Void> in
             add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
-        }.then { [subscription, server] () -> Promise<Void> in
+        }.then { [subscription] () -> Promise<Void> in
             if let confirmID = event.confirmID, let webhookID = subscription?.webhookID {
-                return Current.api(for: server).connection.send(.localPushConfirm(
+                return connection.send(.localPushConfirm(
                     webhookID: webhookID,
                     confirmID: confirmID
                 )).promise.map { _ in () }

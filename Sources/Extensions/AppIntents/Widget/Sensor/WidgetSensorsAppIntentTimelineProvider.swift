@@ -85,8 +85,13 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         for sensor: IntentSensorsAppEntity,
         server: Server
     ) async throws -> WidgetSensorsEntry.SensorData {
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch sensor data")
+            throw HomeAssistantAPI.APIError.noAPIAvailable
+        }
+
         let result = await withCheckedContinuation { continuation in
-            Current.api(for: server).connection.send(.init(
+            connection.send(.init(
                 type: .rest(.get, "states/\(sensor.entityId)"),
                 shouldRetry: true
             )) { result in

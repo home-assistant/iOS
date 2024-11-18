@@ -124,15 +124,17 @@ public class AppEnvironment {
 
     public var cachedApis = [Identifier<Server>: HomeAssistantAPI]()
 
-    public var apis: [HomeAssistantAPI] { servers.all.map(api(for:)) }
+    public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
 
-    public func api(for server: Server) -> HomeAssistantAPI {
+    public func api(for server: Server) -> HomeAssistantAPI? {
         if let existing = cachedApis[server.identifier] {
             return existing
-        } else {
+        } else if server.info.connection.activeURL() != nil {
             let api = HomeAssistantAPI(server: server, urlConfig: .default)
             cachedApis[server.identifier] = api
             return api
+        } else {
+            return nil
         }
     }
 

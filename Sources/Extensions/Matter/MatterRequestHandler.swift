@@ -66,7 +66,12 @@ class MatterRequestHandler: MatterAddDeviceExtensionRequestHandler {
             throw RequestError.missingServer
         }
 
-        try await Current.api(for: server).connection
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No server available to comission matter device")
+            throw HomeAssistantAPI.APIError.noAPIAvailable
+        }
+
+        try await connection
             .send(.matterCommission(code: onboardingPayload))
             .promise
             .map { _ in () }

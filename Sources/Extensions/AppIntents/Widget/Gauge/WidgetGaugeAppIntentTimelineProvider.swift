@@ -50,11 +50,11 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: WidgetGaugeAppIntent, in context: Context) async throws -> Entry {
-        guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
+        guard let server = configuration.server.getServer() ?? Current.servers.all.first,
+              let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Failed to fetch data for gauge widget: No servers exist")
             throw WidgetGaugeDataError.noServers
         }
-        let api = Current.api(for: server)
 
         let valueTemplate = !configuration.valueTemplate.isEmpty ? configuration.valueTemplate : "0.0"
         let valueLabelTemplate = !configuration.valueLabelTemplate.isEmpty ? configuration.valueLabelTemplate : "?"
@@ -66,7 +66,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         let template = "\(valueTemplate)|\(valueLabelTemplate)|\(maxTemplate)|\(minTemplate)|\(labelTemplate)"
 
         let result = await withCheckedContinuation { continuation in
-            api.connection.send(.init(
+            connection.send(.init(
                 type: .rest(.post, "template"),
                 data: ["template": template],
                 shouldRetry: true

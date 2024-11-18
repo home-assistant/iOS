@@ -64,7 +64,8 @@ extension HAEntity {
             break
         }
         if let request {
-            return api.connection.send(request).promise.map { _ in () }
+            return api.connection?.send(request).promise
+                .map { _ in () } ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         } else {
             return .value
         }
