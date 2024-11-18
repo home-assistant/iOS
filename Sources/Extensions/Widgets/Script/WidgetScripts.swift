@@ -33,7 +33,8 @@ struct WidgetScripts: Widget {
                         ),
                         useCustomColors: false
                     )
-                }
+                },
+                type: .button
             )
         }
         .contentMarginsDisabledIfAvailable()

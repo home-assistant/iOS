@@ -3,12 +3,12 @@ import Foundation
 import Shared
 import SwiftUI
 
-struct WidgetBasicView: View {
+struct WidgetBasicView: WidgetBasicViewInterface {
     @Environment(\.widgetFamily) private var widgetFamily
 
-    private let model: WidgetBasicViewModel
-    private let sizeStyle: WidgetBasicSizeStyle
-    private let tinted: Bool
+    internal let model: WidgetBasicViewModel
+    internal let sizeStyle: WidgetBasicSizeStyle
+    internal let tinted: Bool
 
     init(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle, tinted: Bool) {
         self.model = model

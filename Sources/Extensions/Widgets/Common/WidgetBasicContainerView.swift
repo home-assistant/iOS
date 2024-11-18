@@ -8,10 +8,12 @@ struct WidgetBasicContainerView: View {
 
     let emptyViewGenerator: () -> AnyView
     let contents: [WidgetBasicViewModel]
+    let type: WidgetType
 
-    init(emptyViewGenerator: @escaping () -> AnyView, contents: [WidgetBasicViewModel]) {
+    init(emptyViewGenerator: @escaping () -> AnyView, contents: [WidgetBasicViewModel], type: WidgetType) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
+        self.type = type
 
         // Use the opportunity of widget refresh to also refresh control center controls
         // since those controls dont have a refresh interval
@@ -85,7 +87,11 @@ struct WidgetBasicContainerView: View {
                 return .regular
             }
         }()
-
+        
+        basicView(rows: rows, sizeStyle: sizeStyle)
+    }
+    
+    private func basicView(rows: [Array<WidgetBasicViewModel>], sizeStyle: WidgetBasicSizeStyle) -> some View {
         VStack(alignment: .leading, spacing: Spaces.one) {
             ForEach(rows, id: \.self) { column in
                 HStack(spacing: Spaces.one) {
@@ -93,7 +99,7 @@ struct WidgetBasicContainerView: View {
                         if case let .widgetURL(url) = model.interactionType {
                             Link(destination: url.withWidgetAuthenticity()) {
                                 if #available(iOS 18.0, *) {
-                                    WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle)
+                                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
                                 } else {
                                     WidgetBasicView(model: model, sizeStyle: sizeStyle, tinted: false)
                                 }
@@ -101,7 +107,7 @@ struct WidgetBasicContainerView: View {
                         } else {
                             if #available(iOS 17.0, *), let intent = intent(for: model) {
                                 Button(intent: intent) {
-                                    WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle)
+                                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -110,9 +116,20 @@ struct WidgetBasicContainerView: View {
                 }
             }
         }
-        .padding(models.count == 1 ? 0 : Spaces.one)
+        .padding(sizeStyle == .single ? 0 : Spaces.one)
     }
-
+    
+    @available(iOS 16.0, *)
+    private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
+        switch type {
+        case .button:
+            WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle, viewType: WidgetBasicView.self)
+        case .sensor:
+            // @TODO implement Sensor view
+            WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle, viewType: WidgetBasicView.self)
+        }
+    }
+    
     private func columnify(count: Int, models: [WidgetBasicViewModel]) -> AnyIterator<[WidgetBasicViewModel]> {
         var perActionIterator = models.makeIterator()
         return AnyIterator { () -> [WidgetBasicViewModel]? in
@@ -190,5 +207,10 @@ struct WidgetBasicContainerView: View {
         } else {
             []
         }
+    }
+    
+    enum WidgetType: String {
+        case button
+        case sensor
     }
 }

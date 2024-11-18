@@ -27,7 +27,8 @@ struct WidgetOpenPage: Widget {
                                 iconColor: Color(AppConstants.darkerTintColor)
                             )
                         }
-                    }()
+                    }(),
+                    type: .button
                 )
             }
         )
