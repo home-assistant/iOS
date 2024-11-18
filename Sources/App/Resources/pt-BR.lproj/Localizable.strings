@@ -182,9 +182,9 @@
 "debug_section_label" = "Depurar";
 "delete" = "Excluir";
 "done_label" = "Feito";
-"download_manager.downloading.title" = "Downloading";
-"download_manager.failed.title" = "Failed to download file, error: %@";
-"download_manager.finished.title" = "Download finished";
+"download_manager.downloading.title" = "Baixando";
+"download_manager.failed.title" = "Falha ao baixar o arquivo, erro: %@";
+"download_manager.finished.title" = "Download concluído";
 "error_label" = "Erro";
 "extensions.map.location.new" = "Nova localização";
 "extensions.map.location.original" = "Localização original";

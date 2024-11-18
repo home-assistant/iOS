@@ -104,10 +104,10 @@
 "carPlay.action.intro.item.body" = "Tocca per continuare sul tuo iPhone";
 "carPlay.action.intro.item.title" = "Crea la tua prima azione";
 "carPlay.config.tabs.title" = "Tabs";
-"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
+"carPlay.debug.delete_db.alert.failed.message" = "Impossibile eliminare la configurazione, errore: %@";
 "carPlay.debug.delete_db.alert.title" = "Sei sicuro di voler eliminare la configurazione di CarPlay? Non sarà possibile ripristinarla";
 "carPlay.debug.delete_db.button.title" = "Eliminare la configurazione di CarPlay";
-"carPlay.debug.delete_db.reset.title" = "Reset configuration";
+"carPlay.debug.delete_db.reset.title" = "Ripristina configurazione";
 "carPlay.labels.already_added_server" = "Già aggiunto";
 "carPlay.labels.empty_domain_list" = "Nessun dominio disponibile";
 "carPlay.labels.no_servers_available" = "Nessun server disponibile. Aggiungere un server nell'app.";
@@ -182,9 +182,9 @@
 "debug_section_label" = "";
 "delete" = "Cancella";
 "done_label" = "Fatto";
-"download_manager.downloading.title" = "Downloading";
-"download_manager.failed.title" = "Failed to download file, error: %@";
-"download_manager.finished.title" = "Download finished";
+"download_manager.downloading.title" = "Scaricando";
+"download_manager.failed.title" = "Impossibile scaricare il file, errore: %@";
+"download_manager.finished.title" = "Download completato";
 "error_label" = "Errore";
 "extensions.map.location.new" = "Nuova posizione";
 "extensions.map.location.original" = "Posizione originale";
@@ -765,8 +765,8 @@
 "username_label" = "Nome utente";
 "watch.assist.lack_config.error.title" = "Configura Assist utilizzando l'applicazione complementare iOS";
 "watch.config.assist.select_server" = "Server";
-"watch.config.cache.error.message" = "Failed to load watch config from cache.";
-"watch.config.error.message" = "Failed to load watch config, error: %@";
+"watch.config.cache.error.message" = "Impossibile caricare la configurazione dell'orologio dalla cache.";
+"watch.config.error.message" = "Impossibile caricare la configurazione dell'orologio, errore: %@";
 "watch.config.migration_error.failed_access_grdb" = "Impossibile accedere al database (GRDB), errore: %@";
 "watch.config.migration_error.failed_create_new_config" = "Impossibile salvare la configurazione iniziale dell'orologio, errore: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Impossibile migrare le azioni nella configurazione dell'orologio, errore: %@";

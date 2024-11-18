@@ -182,9 +182,9 @@
 "debug_section_label" = "デバッグ";
 "delete" = "削除";
 "done_label" = "完了";
-"download_manager.downloading.title" = "Downloading";
-"download_manager.failed.title" = "Failed to download file, error: %@";
-"download_manager.finished.title" = "Download finished";
+"download_manager.downloading.title" = "ダウンロード中";
+"download_manager.failed.title" = "ファイルのダウンロードに失敗しました。エラー: %@";
+"download_manager.finished.title" = "ダウンロードが完了しました";
 "error_label" = "エラー";
 "extensions.map.location.new" = "新しい場所";
 "extensions.map.location.original" = "元の場所";
