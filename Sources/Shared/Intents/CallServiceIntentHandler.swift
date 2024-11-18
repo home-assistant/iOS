@@ -53,7 +53,8 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
 
         firstly {
-            Current.api(for: server).connection.send(.getServices()).promise
+            Current.api(for: server)?.connection?.send(.getServices())
+                .promise ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }
         .map(\.all)
         .mapValues(\.domainServicePair)
@@ -122,12 +123,12 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         Current.Log.verbose("Handling call service shortcut \(domain), \(service)")
 
         firstly {
-            Current.api(for: server).CallService(
+            Current.api(for: server)?.CallService(
                 domain: domain,
                 service: service,
                 serviceData: payloadDict,
                 shouldLog: true
-            )
+            ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.done { _ in
             Current.Log.verbose("Successfully called service during shortcut")
             let resp = CallServiceIntentResponse(code: .success, userActivity: nil)

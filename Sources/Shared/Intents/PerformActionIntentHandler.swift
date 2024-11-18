@@ -19,7 +19,9 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         }
 
         firstly {
-            Current.api(for: server).HandleAction(actionID: result.action.ID, source: .SiriShortcut)
+            Current.api(for: server)?
+                .HandleAction(actionID: result.action.ID, source: .SiriShortcut) ??
+                .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.done {
             completion(.success(action: result.updated))
         }.catch { error in

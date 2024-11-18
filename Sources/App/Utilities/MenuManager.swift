@@ -84,7 +84,10 @@ class MenuManager {
         // if we know it's going to change, reset it for now so it doesn't show the old value
         update("")
 
-        let connection = Current.api(for: server).connection
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to update status item title")
+            return nil
+        }
 
         return .init(server: server, template: template, token: connection.subscribe(
             to: .renderTemplate(template),

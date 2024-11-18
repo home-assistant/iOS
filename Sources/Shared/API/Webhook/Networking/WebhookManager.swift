@@ -690,7 +690,9 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         sessionInfo.eventGroup.enter()
 
         Current.backgroundTask(withName: "webhook-invoke") { _ -> Promise<Void> in
-            let api = Current.api(for: server)
+            guard let api = Current.api(for: server) else {
+                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+            }
             let handler = handlerType.init(api: api)
             let handlerPromise = firstly {
                 handler.handle(request: .value(request), result: result)

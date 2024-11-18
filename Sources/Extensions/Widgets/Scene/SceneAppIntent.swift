@@ -42,11 +42,12 @@ final class SceneAppIntent: AppIntent {
         }
 
         let success: Bool = try await withCheckedThrowingContinuation { continuation in
-            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == scene.serverId }) else {
+            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == scene.serverId }),
+                  let api = Current.api(for: server) else {
                 continuation.resume(returning: false)
                 return
             }
-            Current.api(for: server).CallService(
+            api.CallService(
                 domain: Domain.scene.rawValue,
                 service: "turn_on",
                 serviceData: ["entity_id": scene.entityId]

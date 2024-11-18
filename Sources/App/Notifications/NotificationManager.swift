@@ -254,7 +254,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: "handle-push-action") { _ in
-                Current.api(for: server).handlePushAction(for: info)
+                Current.api(for: server)?
+                    .handlePushAction(for: info) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             }.ensure {
                 completionHandler()
             }.catch { err in

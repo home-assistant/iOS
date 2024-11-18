@@ -21,8 +21,11 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
     var timeout: TimeInterval = 30.0
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
+        guard let connection = api.connection else {
+            return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+        }
         let devices = firstly { () -> Promise<[HAData]> in
-            api.connection.send(.init(type: "config/device_registry/list")).promise.map {
+            connection.send(.init(type: "config/device_registry/list")).promise.compactMap {
                 if case let .array(value) = $0 {
                     return value
                 } else {
@@ -34,7 +37,7 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
         }
 
         let timeout: Promise<[RegisteredDevice]> = after(seconds: timeout).then { () -> Promise<[RegisteredDevice]> in
-            switch api.connection.state {
+            switch connection.state {
             case let .disconnected(reason: .waitingToReconnect(lastError: .some(error), atLatest: _, retryCount: _)):
                 throw error
             default:

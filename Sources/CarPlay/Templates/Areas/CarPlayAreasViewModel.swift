@@ -24,10 +24,13 @@ final class CarPlayAreasViewModel {
             return
         }
 
-        let api = Current.api(for: server)
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to update CarPlayAreasViewModel")
+            return
+        }
 
         request?.cancel()
-        request = api.connection.send(HATypedRequest<[HAAreaResponse]>.fetchAreas(), completion: { [weak self] result in
+        request = connection.send(HATypedRequest<[HAAreaResponse]>.fetchAreas(), completion: { [weak self] result in
             switch result {
             case let .success(data):
                 self?.fetchEntitiesForAreas(data, server: server)
@@ -39,10 +42,13 @@ final class CarPlayAreasViewModel {
     }
 
     private func fetchEntitiesForAreas(_ areas: [HAAreaResponse], server: Server) {
-        let api = Current.api(for: server)
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch entities for areas")
+            return
+        }
 
         request?.cancel()
-        request = api.connection.send(
+        request = connection.send(
             HATypedRequest<[HAEntityAreaResponse]>.fetchEntitiesWithAreas(),
             completion: { [weak self] result in
                 switch result {
@@ -61,10 +67,13 @@ final class CarPlayAreasViewModel {
         entitiesWithAreas: [HAEntityAreaResponse],
         server: Server
     ) {
-        let api = Current.api(for: server)
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to fetch devices for areas")
+            return
+        }
 
         request?.cancel()
-        request = api.connection.send(
+        request = connection.send(
             HATypedRequest<[HADeviceAreaResponse]>.fetchDevicesWithAreas(),
             completion: { [weak self] result in
                 switch result {
@@ -111,7 +120,7 @@ final class CarPlayAreasViewModel {
     // swiftlint:enable cyclomatic_complexity
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
-        guard let entitiesCachedStates = Current.api(for: server).connection.caches.states.value else { return }
+        guard let entitiesCachedStates = Current.api(for: server)?.connection?.caches.states.value else { return }
         entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: area.name,
             filterType: .areaId(entityIds: entityIdsForAreaId),

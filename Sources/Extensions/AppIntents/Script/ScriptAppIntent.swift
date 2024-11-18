@@ -43,13 +43,14 @@ final class ScriptAppIntent: AppIntent {
         }
 
         let success: Bool = try await withCheckedThrowingContinuation { continuation in
-            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == script.serverId }) else {
+            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == script.serverId }),
+                  let api = Current.api(for: server) else {
                 continuation.resume(returning: false)
                 return
             }
             let domain = Domain.script.rawValue
             let service = script.entityId.replacingOccurrences(of: "\(domain).", with: "")
-            Current.api(for: server).CallService(domain: domain, service: service, serviceData: [:])
+            api.CallService(domain: domain, service: service, serviceData: [:])
                 .pipe { [weak self] result in
                     switch result {
                     case .fulfilled:
