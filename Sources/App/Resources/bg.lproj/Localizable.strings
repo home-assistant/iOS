@@ -104,8 +104,10 @@
 "carPlay.action.intro.item.body" = "Докоснете, за да продължите на вашия iPhone";
 "carPlay.action.intro.item.title" = "Създайте първото си действие";
 "carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "Вече е добавено";
 "carPlay.labels.empty_domain_list" = "Няма налични домейни";
 "carPlay.labels.no_servers_available" = "Няма налични сървъри. Добавете сървър в приложението.";
@@ -180,6 +182,9 @@
 "debug_section_label" = "Debug";
 "delete" = "Delete";
 "done_label" = "Done";
+"download_manager.downloading.title" = "Downloading";
+"download_manager.failed.title" = "Failed to download file, error: %@";
+"download_manager.finished.title" = "Download finished";
 "error_label" = "Error";
 "extensions.map.location.new" = "New Location";
 "extensions.map.location.original" = "Original Location";
@@ -760,6 +765,8 @@ Home Assistant е безплатен и с отворен код софтуер 
 "username_label" = "Username";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";
+"watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "watch.config.migration_error.failed_create_new_config" = "Failed to save initial watch config, error: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Failed to migrate actions to watch config, error: %@";

@@ -272,6 +272,10 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.refresh_warning.title") }
       }
     }
+    public enum ClosedStateIcon {
+      /// Icon for closed state
+      public static var title: String { return L10n.tr("Localizable", "app_intents.closed_state_icon.title") }
+    }
     public enum Controls {
       public enum Assist {
         /// Assist in app
@@ -289,10 +293,6 @@ public enum L10n {
     public enum HapticConfirmation {
       /// Haptic confirmation
       public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
-    }
-    public enum Icon {
-      /// Icon
-      public static var title: String { return L10n.tr("Localizable", "app_intents.icon.title") }
     }
     public enum Intent {
       public enum Cover {
@@ -321,6 +321,10 @@ public enum L10n {
       public static var description: String { return L10n.tr("Localizable", "app_intents.notify_when_run.description") }
       /// Notify when run
       public static var title: String { return L10n.tr("Localizable", "app_intents.notify_when_run.title") }
+    }
+    public enum OpenStateIcon {
+      /// Icon for open state
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_state_icon.title") }
     }
     public enum PerformAction {
       /// Which action?
@@ -835,6 +839,8 @@ public enum L10n {
       public static func mustUpgradeHomeAssistant(_ p1: Any, _ p2: Any) -> String {
         return L10n.tr("Localizable", "ha_api.api_error.must_upgrade_home_assistant", String(describing: p1), String(describing: p2))
       }
+      /// No API available, double check if internal URL or external URL are available.
+      public static var noAvailableApi: String { return L10n.tr("Localizable", "ha_api.api_error.no_available_api") }
       /// HA API not configured
       public static var notConfigured: String { return L10n.tr("Localizable", "ha_api.api_error.not_configured") }
       /// Unacceptable status code %1$li.

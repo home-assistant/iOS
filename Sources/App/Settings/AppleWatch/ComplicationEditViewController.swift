@@ -54,7 +54,8 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
 
             realm.add(config, update: .all)
         }.then(on: nil) { [server] in
-            Current.api(for: server).updateComplications(passively: false)
+            Current.api(for: server)?
+                .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.cauterize()
 
         onDismissCallback?(self)
@@ -78,7 +79,8 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 realm.reentrantWrite {
                     realm.delete(config)
                 }.then(on: nil) {
-                    Current.api(for: server).updateComplications(passively: false)
+                    Current.api(for: server)?
+                        .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
                 }.cauterize()
 
                 self.onDismissCallback?(self)

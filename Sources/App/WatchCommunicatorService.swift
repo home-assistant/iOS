@@ -127,7 +127,7 @@ final class WatchCommunicatorService {
               let itemId = message.content["itemId"] as? String,
               let serverId = message.content["serverId"] as? String,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
-              let type = MagicItem.ItemType(rawValue: itemType) else {
+              let type = MagicItem.ItemType(rawValue: itemType), let api = Current.api(for: server) else {
             Current.Log.warning("Magic item press did not provide item type or item id")
             message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             return
@@ -136,7 +136,7 @@ final class WatchCommunicatorService {
         switch type {
         case .action:
             firstly {
-                Current.api(for: server).HandleAction(actionID: itemId, source: .Watch)
+                api.HandleAction(actionID: itemId, source: .Watch)
             }.done {
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
             }.catch { err in
@@ -187,9 +187,14 @@ final class WatchCommunicatorService {
         serviceData: [String: String] = [:],
         responseIdentifier: String
     ) {
+        guard let api = Current.api(for: server) else {
+            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            Current.Log.error("No API available to call service")
+            return
+        }
         let domain = domain.rawValue
         let serviceName = serviceName ?? magicItemId.replacingOccurrences(of: "\(domain).", with: "")
-        Current.api(for: server).CallService(
+        api.CallService(
             domain: domain,
             service: serviceName,
             serviceData: serviceData,
@@ -209,14 +214,15 @@ final class WatchCommunicatorService {
         let responseIdentifier = InteractiveImmediateResponses.actionRowPressedResponse.rawValue
         guard let actionID = message.content["ActionID"] as? String,
               let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-              let server = Current.servers.server(for: action) else {
+              let server = Current.servers.server(for: action),
+              let api = Current.api(for: server) else {
             Current.Log.warning("ActionID either does not exist or is not a string in the payload")
             message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
             return
         }
 
         firstly {
-            Current.api(for: server).HandleAction(actionID: actionID, source: .Watch)
+            api.HandleAction(actionID: actionID, source: .Watch)
         }.done {
             message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
         }.catch { err in
@@ -231,10 +237,11 @@ final class WatchCommunicatorService {
         if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
            let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
            let serverIdentifier = message.content["Server"] as? String,
-           let server = Current.servers.server(forServerIdentifier: serverIdentifier) {
+           let server = Current.servers.server(forServerIdentifier: serverIdentifier),
+           let api = Current.api(for: server) {
             Current.backgroundTask(withName: "watch-push-action") { _ in
                 firstly {
-                    Current.api(for: server).handlePushAction(for: info)
+                    api.handlePushAction(for: info)
                 }.ensure {
                     message.reply(.init(identifier: responseIdentifier))
                 }

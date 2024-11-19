@@ -48,12 +48,11 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: WidgetDetailsAppIntent, in context: Context) async throws -> Entry {
-        guard let server = configuration.server.getServer() ?? Current.servers.all.first else {
+        guard let server = configuration.server.getServer() ?? Current.servers.all.first,
+              let connection = Current.api(for: server)?.connection else {
             Current.Log.error("Failed to fetch data for details widget: No servers exist")
             throw WidgetDetailsDataError.noServers
         }
-
-        let api = Current.api(for: server)
 
         let upperTemplate = !configuration.upperTemplate.isEmpty ? configuration.upperTemplate : "?"
         let lowerTemplate = !configuration.lowerTemplate.isEmpty ? configuration.lowerTemplate : "?"
@@ -61,7 +60,7 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let template = "\(upperTemplate)|\(lowerTemplate)|\(detailsTemplate)"
 
         let result = await withCheckedContinuation { continuation in
-            api.connection.send(.init(
+            connection.send(.init(
                 type: .rest(.post, "template"),
                 data: ["template": template],
                 shouldRetry: true

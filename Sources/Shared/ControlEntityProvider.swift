@@ -18,12 +18,12 @@ public final class ControlEntityProvider {
     }
 
     public func currentState(serverId: String, entityId: String) async throws -> String? {
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
+              let connection = Current.api(for: server)?.connection else {
             return nil
         }
-        let api = Current.api(for: server)
         let state: String? = await withCheckedContinuation { continuation in
-            api.connection.send(.init(
+            connection.send(.init(
                 type: .rest(.get, "states/\(entityId)")
             )) { result in
                 switch result {

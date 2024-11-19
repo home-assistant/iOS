@@ -136,7 +136,11 @@ class DynamicNotificationController: WKUserNotificationInterfaceController {
             return
         }
 
-        let api = Current.api(for: server)
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available to handle didReceive(_ notification: UNNotification)")
+            return
+        }
+
         notificationActions = notification.request.content.userInfoActions
 
         if let active = subController(for: notification, api: api) {

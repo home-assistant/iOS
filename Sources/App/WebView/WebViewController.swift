@@ -877,7 +877,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     private func getLatestConfig() {
-        _ = Current.api(for: server).getConfig()
+        _ = Current.api(for: server)?.getConfig()
     }
 
     private func showActionAutomationEditorNotAvailable() {
@@ -932,7 +932,9 @@ extension WebViewController: WKScriptMessageHandler {
             Current.Log.verbose("getExternalAuth called, forced: \(force)")
 
             firstly {
-                Current.api(for: server).tokenManager.authDictionaryForWebView(forceRefresh: force)
+                Current.api(for: server)?.tokenManager
+                    .authDictionaryForWebView(forceRefresh: force) ??
+                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             }.done { dictionary in
                 let jsonData = try? JSONSerialization.data(withJSONObject: dictionary)
                 if let jsonString = String(data: jsonData!, encoding: .utf8) {
@@ -956,7 +958,8 @@ extension WebViewController: WKScriptMessageHandler {
             Current.Log.warning("Revoking access token")
 
             firstly {
-                Current.api(for: server).tokenManager.revokeToken()
+                Current.api(for: server)?.tokenManager
+                    .revokeToken() ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             }.done { [server] _ in
                 Current.servers.remove(identifier: server.identifier)
 

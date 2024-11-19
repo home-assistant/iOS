@@ -328,7 +328,7 @@ extension ExtensionDelegate: UNUserNotificationCenterDelegate {
                 })
             } else {
                 Current.Log.info("sending via local")
-                Current.api(for: server).handlePushAction(for: info)
+                Current.api(for: server)?.handlePushAction(for: info)
                     .pipe(to: seal.resolve)
             }
 

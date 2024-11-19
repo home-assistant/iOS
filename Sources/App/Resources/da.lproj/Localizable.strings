@@ -104,8 +104,10 @@
 "carPlay.action.intro.item.body" = "Tryk for at fortsætte på din iPhone";
 "carPlay.action.intro.item.title" = "Opret din første handling";
 "carPlay.config.tabs.title" = "Tabs";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "Allerede tilføjet";
 "carPlay.labels.empty_domain_list" = "Ingen domæner tilgængelig";
 "carPlay.labels.no_servers_available" = "Ingen servere tilgængelige. Tilføj en server i appen.";
@@ -180,6 +182,9 @@
 "debug_section_label" = "Fejlsøg";
 "delete" = "Slet";
 "done_label" = "Færdig";
+"download_manager.downloading.title" = "Downloading";
+"download_manager.failed.title" = "Failed to download file, error: %@";
+"download_manager.finished.title" = "Download finished";
 "error_label" = "Fejl";
 "extensions.map.location.new" = "Ny lokalitet";
 "extensions.map.location.original" = "Original lokalitet";
@@ -760,6 +765,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "username_label" = "Brugernavn";
 "watch.assist.lack_config.error.title" = "Konfigurer venligst Assist ved hjælp af iOS companion App";
 "watch.config.assist.select_server" = "Server";
+"watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.migration_error.failed_access_grdb" = "Kunne ikke få adgang til databasen (GRDB), fejl: %@";
 "watch.config.migration_error.failed_create_new_config" = "Kunne ikke gemme den oprindelige watch konfiguration, fejl: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Kunne ikke migrere handlinger til watch konfiguration, fejl: %@";

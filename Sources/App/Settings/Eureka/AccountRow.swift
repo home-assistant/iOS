@@ -184,8 +184,10 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        let api = Current.api(for: server)
-        let connection = api.connection
+        guard let api = Current.api(for: server), let connection = api.connection else {
+            Current.Log.error("No API available to fetch avatar")
+            return
+        }
 
         accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
             guard let self else { return }

@@ -189,7 +189,9 @@ class IncomingURLHandler {
                         onto: .value(windowController.window)
                     )
 
-                    return Current.api(for: server).HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
+                    return Current.api(for: server)?
+                        .HandleAction(actionID: shortcutItem.type, source: .AppShortcut) ??
+                        .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
                 } else {
                     return .init(error: HomeAssistantAPI.APIError.notConfigured)
                 }
@@ -413,8 +415,8 @@ extension IncomingURLHandler {
                 title: L10n.UrlHandler.RenderTemplate.Confirm.title,
                 message: L10n.UrlHandler.RenderTemplate.Confirm.message(template),
                 handler: {
-                    if let api = Current.apis.first {
-                        api.connection.subscribe(
+                    if let api = Current.apis.first, let connection = api.connection {
+                        connection.subscribe(
                             to: .renderTemplate(template, variables: variablesDict),
                             initiated: { result in
                                 if case let .failure(error) = result {
@@ -534,7 +536,8 @@ extension IncomingURLHandler {
 
         guard
             let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID),
-            let server = Current.servers.server(for: action) else {
+            let server = Current.servers.server(for: action),
+            let api = Current.api(for: server) else {
             Current.sceneManager.showFullScreenConfirm(
                 icon: .alertCircleIcon,
                 text: L10n.UrlHandler.Error.actionNotFound,
@@ -549,6 +552,6 @@ extension IncomingURLHandler {
             onto: .value(windowController.window)
         )
 
-        Current.api(for: server).HandleAction(actionID: actionID, source: source).cauterize()
+        api.HandleAction(actionID: actionID, source: source).cauterize()
     }
 }

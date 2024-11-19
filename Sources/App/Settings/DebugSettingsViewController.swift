@@ -445,7 +445,7 @@ class DebugSettingsViewController: HAFormViewController {
         }.then {
             waitAtLeast
         }.get {
-            Current.apis.map(\.connection).forEach { $0.disconnect() }
+            Current.apis.compactMap(\.connection).forEach { $0.disconnect() }
             Current.servers.removeAll()
             resetStores()
             setDefaults()

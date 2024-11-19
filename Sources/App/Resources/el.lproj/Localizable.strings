@@ -104,8 +104,10 @@
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
 "carPlay.config.tabs.title" = "Καρτέλες";
+"carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "carPlay.debug.delete_db.alert.title" = "Θέλετε σίγουρα να διαγράψετε τη διαμόρφωση του CarPlay; Αυτό δεν μπορεί να αναιρεθεί";
 "carPlay.debug.delete_db.button.title" = "Διαγραφή διαμόρφωσης CarPlay";
+"carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "Εχει ήδη προστεθεί";
 "carPlay.labels.empty_domain_list" = "Δεν υπάρχουν διαθέσιμα domains";
 "carPlay.labels.no_servers_available" = "Δεν υπάρχουν διαθέσιμοι servers. Προσθέστε έναν server στην εφαρμογή.";
@@ -180,6 +182,9 @@
 "debug_section_label" = "Εντοπισμός σφαλμάτων";
 "delete" = "Διαγραφή";
 "done_label" = "Έγινε!";
+"download_manager.downloading.title" = "Downloading";
+"download_manager.failed.title" = "Failed to download file, error: %@";
+"download_manager.finished.title" = "Download finished";
 "error_label" = "Σφάλμα";
 "extensions.map.location.new" = "Νέα τοποθεσία";
 "extensions.map.location.original" = "Αρχική τοποθεσία";
@@ -760,6 +765,8 @@
 "username_label" = "Όνομα χρήστη";
 "watch.assist.lack_config.error.title" = "Παρακαλώ ρυθμίστε το Assist χρησιμοποιώντας την εφαρμογή iOS companion";
 "watch.config.assist.select_server" = "Διακομιστής";
+"watch.config.cache.error.message" = "Failed to load watch config from cache.";
+"watch.config.error.message" = "Failed to load watch config, error: %@";
 "watch.config.migration_error.failed_access_grdb" = "Αποτυχία πρόσβασης στη βάση δεδομένων (GRDB), σφάλμα: %@";
 "watch.config.migration_error.failed_create_new_config" = "Αποτυχία αποθήκευσης της αρχικής διαμόρφωσης ρολογιού, σφάλμα: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Αποτυχία μετεγκατάστασης ενεργειών στη διαμόρφωση ρολογιού, σφάλμα: %@";

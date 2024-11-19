@@ -20,15 +20,16 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
             ControlEntityProvider.States.open.rawValue,
             ControlEntityProvider.States.opening.rawValue,
         ].contains(state)
-        return item(entity: configuration.entity, value: isOpen, iconName: configuration.icon)
+        let icon = isOpen ? configuration.openIcon : configuration.closedIcon
+        return item(entity: configuration.entity, value: isOpen, iconName: icon)
     }
 
     func placeholder(for configuration: ControlCoverConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.icon)
+        item(entity: configuration.entity, value: nil, iconName: configuration.openIcon)
     }
 
     func previewValue(configuration: ControlCoverConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.icon)
+        item(entity: configuration.entity, value: nil, iconName: configuration.openIcon)
     }
 
     private func item(entity: IntentCoverEntity?, value: Bool?, iconName: SFSymbolEntity?) -> ControlEntityItem {
@@ -77,7 +78,13 @@ struct ControlCoverConfiguration: ControlConfigurationIntent {
     )
     var entity: IntentCoverEntity?
     @Parameter(
-        title: .init("app_intents.icon.title", defaultValue: "Icon")
+        title: .init("app_intents.open_state_icon.title", defaultValue: "Icon for open state"),
+        default: SFSymbolEntity(id: SFSymbol.curtainsOpen.rawValue)
     )
-    var icon: SFSymbolEntity?
+    var openIcon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.closed_state_icon.title", defaultValue: "Icon for closed state"),
+        default: SFSymbolEntity(id: SFSymbol.curtainsClosed.rawValue)
+    )
+    var closedIcon: SFSymbolEntity?
 }

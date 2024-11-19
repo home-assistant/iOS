@@ -101,8 +101,8 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             switch magicItem.type {
             case .entity:
                 guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all
-                    .first,
-                    let item = Current.api(for: server).connection.caches.states.value?.all.first(where: {
+                    .first, let connection = Current.api(for: server)?.connection,
+                    let item = connection.caches.states.value?.all.first(where: {
                         $0.entityId == magicItem.id
                     }) else { return .init(text: "", detailText: "") }
 
@@ -148,12 +148,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem) {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
-        }) else {
+        }), let api = Current.api(for: server) else {
             Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
             displayItemResultIcon(on: item, success: false)
             return
         }
-        Current.api(for: server).executeMagicItem(item: magicItem) { success in
+        api.executeMagicItem(item: magicItem) { success in
             self.displayItemResultIcon(on: item, success: success)
         }
     }
