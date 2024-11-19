@@ -60,7 +60,8 @@
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Cover";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
-"app_intents.icon.title" = "Icon";
+"app_intents.open_state_icon.title" = "Icon for open state";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.intent.cover.title" = "Control cover";
 "app_intents.intent.light.title" = "Control light";
 "app_intents.intent.switch.title" = "Control switch";
@@ -84,6 +85,8 @@
 "app_intents.scripts.failure_message.content" = "Script \"%@\" failed to execute, please check your logs.";
 "app_intents.scripts.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.scripts.icon.title" = "Icon";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
 "app_intents.scripts.requires_confirmation_before_run.description" = "Requires manual confirmation before running the script.";
 "app_intents.scripts.requires_confirmation_before_run.title" = "Confirm before run";
 "app_intents.scripts.script.title" = "Run Script";

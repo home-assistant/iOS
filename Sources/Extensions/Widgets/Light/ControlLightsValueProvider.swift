@@ -27,7 +27,8 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
             throw AppIntentError.restartPerform
         }
         let isOn = state == ControlEntityProvider.States.on.rawValue
-        return item(light: configuration.light, value: isOn, iconName: configuration.icon)
+        let icon = isOn ? configuration.icon : configuration.offStateIcon
+        return item(light: configuration.light, value: isOn, iconName: icon)
     }
 
     func placeholder(for configuration: ControlLightsConfiguration) -> ControlEntityItem {
@@ -81,7 +82,13 @@ struct ControlLightsConfiguration: ControlConfigurationIntent {
     )
     var light: IntentLightEntity?
     @Parameter(
-        title: .init("app_intents.scripts.icon.title", defaultValue: "Icon")
+        title: .init("app_intents.lights.on_state_icon.title", defaultValue: "Icon for on state"),
+        default: SFSymbolEntity(id: SFSymbol.lightbulbFill.rawValue)
     )
     var icon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.lights.off_state_icon.title", defaultValue: "Icon for off state"),
+        default: SFSymbolEntity(id: SFSymbol.lightbulb.rawValue)
+    )
+    var offStateIcon: SFSymbolEntity?
 }
