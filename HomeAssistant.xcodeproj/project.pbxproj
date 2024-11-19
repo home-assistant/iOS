@@ -147,7 +147,7 @@
 		11521BBC25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
 		11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11521BBB25400284009C5C72 /* CrashReporter.swift */; };
 		115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */; };
-		115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicView.swift */; };
+		115560E327010DAB00A8F818 /* WidgetBasicButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicButtonView.swift */; };
 		115560E827011E3300A8F818 /* HAPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E727011E3300A8F818 /* HAPanel.swift */; };
 		115560E927011E3300A8F818 /* HAPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E727011E3300A8F818 /* HAPanel.swift */; };
 		115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560EB27012EE100A8F818 /* WidgetOpenPage.swift */; };
@@ -513,6 +513,8 @@
 		3E4087EB2CD9047B0085DF29 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
 		3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */; };
 		3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */; };
+		3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */; };
+		3E4087F12CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */; };
 		4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */; };
 		403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE9082C2E220200D48147 /* WidgetGauge.swift */; };
 		403AE90E2C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403AE90B2C2E28B200D48147 /* WidgetGaugeAppIntent.swift */; };
@@ -546,7 +548,7 @@
 		420D5AE42C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
 		420E2AE32C4746BB004921D8 /* WidgetBasicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */; };
 		420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */; };
-		420E2AE62C474710004921D8 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicView.swift */; };
+		420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicButtonView.swift */; };
 		420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */; };
 		420E2AE82C47471B004921D8 /* WidgetBasicSizeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */; };
 		420E2AE92C474729004921D8 /* WidgetCircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */; };
@@ -1489,7 +1491,7 @@
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		11521BBB25400284009C5C72 /* CrashReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashReporter.swift; sourceTree = "<group>"; };
 		115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicContainerView.swift; sourceTree = "<group>"; };
-		115560E227010DAB00A8F818 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
+		115560E227010DAB00A8F818 /* WidgetBasicButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicButtonView.swift; sourceTree = "<group>"; };
 		115560E4270116AF00A8F818 /* OpenPageIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageIntentHandler.swift; sourceTree = "<group>"; };
 		115560E727011E3300A8F818 /* HAPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAPanel.swift; sourceTree = "<group>"; };
 		115560EB27012EE100A8F818 /* WidgetOpenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetOpenPage.swift; sourceTree = "<group>"; };
@@ -1799,6 +1801,7 @@
 		3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsAppIntent.swift; sourceTree = "<group>"; };
 		3E02C0EA2CA7FD2A00102131 /* WidgetSensorsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewInterface.swift; sourceTree = "<group>"; };
+		3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSensorView.swift; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCircularView.swift; sourceTree = "<group>"; };
 		403AE9082C2E220200D48147 /* WidgetGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGauge.swift; sourceTree = "<group>"; };
@@ -2785,7 +2788,8 @@
 			children = (
 				115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */,
 				1165705527018C4E003906A7 /* WidgetEmptyView.swift */,
-				115560E227010DAB00A8F818 /* WidgetBasicView.swift */,
+				115560E227010DAB00A8F818 /* WidgetBasicButtonView.swift */,
+				3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */,
 				3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */,
 				424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */,
 				420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */,
@@ -6607,7 +6611,7 @@
 				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
 				115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */,
 				427647202C8F36950027B21F /* ControlLightsValueProvider.swift in Sources */,
-				115560E327010DAB00A8F818 /* WidgetBasicView.swift in Sources */,
+				115560E327010DAB00A8F818 /* WidgetBasicButtonView.swift in Sources */,
 				42D3E4B52C5D2BC200444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
 				4273C48A2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
@@ -6617,6 +6621,7 @@
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
 				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,
 				42F958992BB4684700497981 /* WidgetAssist.swift in Sources */,
+				3E4087F12CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
 				3E02C0F52CA8047000102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,
 				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
@@ -6729,7 +6734,7 @@
 				425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */,
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
 				B616B299227ED68E00828165 /* Bonjour.swift in Sources */,
-				420E2AE62C474710004921D8 /* WidgetBasicView.swift in Sources */,
+				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
@@ -6884,6 +6889,7 @@
 				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
 				421B1C162BD65246001ED18C /* WidgetsSettingsView.swift in Sources */,
+				3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,
 				42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,

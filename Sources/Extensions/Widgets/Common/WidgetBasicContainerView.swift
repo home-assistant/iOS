@@ -87,11 +87,11 @@ struct WidgetBasicContainerView: View {
                 return .regular
             }
         }()
-        
+
         basicView(rows: rows, sizeStyle: sizeStyle)
     }
-    
-    private func basicView(rows: [Array<WidgetBasicViewModel>], sizeStyle: WidgetBasicSizeStyle) -> some View {
+
+    private func basicView(rows: [[WidgetBasicViewModel]], sizeStyle: WidgetBasicSizeStyle) -> some View {
         VStack(alignment: .leading, spacing: Spaces.one) {
             ForEach(rows, id: \.self) { column in
                 HStack(spacing: Spaces.one) {
@@ -101,7 +101,7 @@ struct WidgetBasicContainerView: View {
                                 if #available(iOS 18.0, *) {
                                     tintedWrapperView(model: model, sizeStyle: sizeStyle)
                                 } else {
-                                    WidgetBasicView(model: model, sizeStyle: sizeStyle, tinted: false)
+                                    WidgetBasicButtonView(model: model, sizeStyle: sizeStyle, tinted: false)
                                 }
                             }
                         } else {
@@ -118,18 +118,24 @@ struct WidgetBasicContainerView: View {
         }
         .padding(sizeStyle == .single ? 0 : Spaces.one)
     }
-    
+
     @available(iOS 16.0, *)
     private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        switch type {
-        case .button:
-            WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle, viewType: WidgetBasicView.self)
-        case .sensor:
-            // @TODO implement Sensor view
-            WidgetBasicViewTintedWrapper(model: model, sizeStyle: sizeStyle, viewType: WidgetBasicView.self)
+        if type == .button {
+            return AnyView(WidgetBasicViewTintedWrapper(
+                model: model,
+                sizeStyle: sizeStyle,
+                viewType: WidgetBasicButtonView.self
+            ))
+        } else {
+            return AnyView(WidgetBasicViewTintedWrapper(
+                model: model,
+                sizeStyle: sizeStyle,
+                viewType: WidgetBasicSensorView.self
+            ))
         }
     }
-    
+
     private func columnify(count: Int, models: [WidgetBasicViewModel]) -> AnyIterator<[WidgetBasicViewModel]> {
         var perActionIterator = models.makeIterator()
         return AnyIterator { () -> [WidgetBasicViewModel]? in
@@ -208,7 +214,7 @@ struct WidgetBasicContainerView: View {
             []
         }
     }
-    
+
     enum WidgetType: String {
         case button
         case sensor

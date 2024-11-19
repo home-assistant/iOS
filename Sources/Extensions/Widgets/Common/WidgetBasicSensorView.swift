@@ -3,12 +3,12 @@ import Foundation
 import Shared
 import SwiftUI
 
-struct WidgetBasicView: WidgetBasicViewInterface {
+struct WidgetBasicSensorView: WidgetBasicViewInterface {
     @Environment(\.widgetFamily) private var widgetFamily
 
-    internal let model: WidgetBasicViewModel
-    internal let sizeStyle: WidgetBasicSizeStyle
-    internal let tinted: Bool
+    let model: WidgetBasicViewModel
+    let sizeStyle: WidgetBasicSizeStyle
+    let tinted: Bool
 
     init(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle, tinted: Bool) {
         self.model = model
@@ -37,7 +37,7 @@ struct WidgetBasicView: WidgetBasicViewInterface {
             .fontWeight(.semibold)
             .multilineTextAlignment(.leading)
             .foregroundStyle(model.useCustomColors ? model.textColor : Color(uiColor: .label))
-            .lineLimit(2)
+            .lineLimit(1)
     }
 
     @ViewBuilder
@@ -45,9 +45,9 @@ struct WidgetBasicView: WidgetBasicViewInterface {
         if let subtitle = model.subtitle {
             Text(verbatim: subtitle)
                 .font(sizeStyle.subtextFont)
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
+                .foregroundStyle(model.useCustomColors ? model.textColor : Color(uiColor: .label))
                 .lineLimit(1)
-                .truncationMode(.middle)
+                .truncationMode(.tail)
         }
     }
 
@@ -58,9 +58,6 @@ struct WidgetBasicView: WidgetBasicViewInterface {
                 .foregroundColor(model.iconColor)
                 .fixedSize(horizontal: false, vertical: false)
         }
-        .frame(width: sizeStyle.iconCircleSize.width, height: sizeStyle.iconCircleSize.height)
-        .background(model.iconColor.opacity(0.3))
-        .clipShape(Circle())
     }
 
     private var tileView: some View {
@@ -69,20 +66,22 @@ struct WidgetBasicView: WidgetBasicViewInterface {
                 switch sizeStyle {
                 case .regular, .condensed:
                     HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
-                        icon
                         VStack(alignment: .leading, spacing: .zero) {
-                            text
                             subtext
+                            text
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        icon
+                            .offset(y: -10)
                     }
                     .padding([.leading, .trailing], Spaces.oneAndHalf)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
                         icon
+                            .frame(maxWidth: .infinity, alignment: .trailing)
                         Spacer()
-                        text
                         subtext
+                        text
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
@@ -99,13 +98,10 @@ struct WidgetBasicView: WidgetBasicViewInterface {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background({
-            if tinted {
-                return Color.clear
-            }
             if model.useCustomColors {
                 return model.backgroundColor
             } else {
-                return Color.asset(Asset.Colors.tileBackground)
+                return Color.clear
             }
         }())
         .clipShape(RoundedRectangle(cornerRadius: 14))
