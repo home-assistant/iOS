@@ -128,7 +128,6 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
     private func suggestions() async -> [Server: [HAAppEntity]] {
         await withCheckedContinuation { continuation in
             var entities: [Server: [HAAppEntity]] = [:]
-            var serverCheckedCount = 0
             for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
                 do {
                     let scripts: [HAAppEntity] = try Current.database.read { db in
@@ -141,11 +140,8 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                 } catch {
                     Current.Log.error("Failed to load scripts from database: \(error.localizedDescription)")
                 }
-                serverCheckedCount += 1
-                if serverCheckedCount == Current.servers.all.count {
-                    continuation.resume(returning: entities)
-                }
             }
+            continuation.resume(returning: entities)
         }
     }
 }
