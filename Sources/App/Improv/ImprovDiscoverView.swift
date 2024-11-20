@@ -6,6 +6,7 @@ import SwiftUI
 
 struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     enum ViewState: Equatable {
+        case empty
         case list
         case loading(_ message: String)
         case success
@@ -13,8 +14,9 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     }
 
     @StateObject private var improvManager: Manager
+    private let deviceName: String?
 
-    @State private var state: ViewState = .list
+    @State private var state: ViewState = .empty
 
     @State private var ssid = ""
     @State private var password = ""
@@ -29,8 +31,13 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     private let redirectRequest: (_ urlPath: String) -> Void
 
     // swiftlint: disable force_cast
-    init(improvManager: any ImprovManagerProtocol, redirectRequest: @escaping (_ urlPath: String) -> Void) {
+    init(
+        improvManager: any ImprovManagerProtocol,
+        deviceName: String?,
+        redirectRequest: @escaping (_ urlPath: String) -> Void
+    ) {
         self._improvManager = .init(wrappedValue: improvManager as! Manager)
+        self.deviceName = deviceName
         self.redirectRequest = redirectRequest
     }
 
@@ -99,6 +106,14 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 state = .loading(L10n.Improv.State.connected)
             }
         }
+        .onChange(of: improvManager.foundDevices) { newValue in
+            guard let deviceName, selectedPeripheral == nil else { return }
+            if let device = newValue.first(where: { $0.value.name == deviceName })?.value {
+                selectPeripheral(device)
+            } else if state == .empty {
+                state = .list
+            }
+        }
         .alert(L10n.Improv.Wifi.Alert.title, isPresented: $showWifiAlert) {
             TextField(L10n.Improv.Wifi.Alert.ssidPlaceholder, text: $ssid)
                 .textInputAutocapitalization(.never)
@@ -115,6 +130,9 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     private var content: some View {
         VStack {
             switch state {
+            case .empty:
+                // Nothing visible while auto connecting
+                loadingView("")
             case .list:
                 devicesList
             case let .loading(message):
@@ -132,6 +150,19 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         }
     }
 
+    private func selectPeripheral(_ peripheral: CBPeripheral) {
+        selectedPeripheral = peripheral
+
+        // This only works if location permission is permitted
+        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+            if let ssid = hotspotNetwork?.ssid, self.ssid.isEmpty {
+                self.ssid = ssid
+            }
+        }
+        showWifiAlert = true
+        state = .loading(L10n.Improv.State.connecting)
+    }
+
     @ViewBuilder
     private var devicesList: some View {
         List {
@@ -142,16 +173,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 ForEach(improvManager.foundDevices.keys.sorted(), id: \.self) { peripheralKey in
                     if let peripheral = improvManager.foundDevices[peripheralKey] {
                         Button {
-                            selectedPeripheral = peripheral
-
-                            // This only works if location permission is permitted
-                            NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-                                if let ssid = hotspotNetwork?.ssid, self.ssid.isEmpty {
-                                    self.ssid = ssid
-                                }
-                            }
-                            showWifiAlert = true
-                            state = .loading(L10n.Improv.State.connecting)
+                            selectPeripheral(peripheral)
                         } label: {
                             Text(peripheral.name ?? peripheral.identifier.uuidString)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -226,7 +248,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             improvManager.disconnectFromDevice(selectedPeripheral)
             self.selectedPeripheral = nil
         }
-        state = .list
+        bottomSheetState = .dismiss
     }
 }
 
@@ -235,8 +257,12 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         VStack {}
             .background(.blue)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        ImprovDiscoverView<ImprovManager>(improvManager: ImprovManager.shared, redirectRequest: { _ in })
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        ImprovDiscoverView<ImprovManager>(
+            improvManager: ImprovManager.shared,
+            deviceName: "12345",
+            redirectRequest: { _ in }
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
 }
