@@ -429,29 +429,37 @@ extension WebViewWindowController: OnboardingStateObserver {
                 Current.servers.all.contains(where: { $0.identifier == serverIdentifier })
             })
 
-            if Current.servers.all.isEmpty {
-                let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
-                updateRootViewController(to: controller)
+            switch type {
+            case .error, .logout:
+                if Current.servers.all.isEmpty {
+                    let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
+                    updateRootViewController(to: controller)
 
-                if type.shouldShowError {
-                    let alert = UIAlertController(
-                        title: L10n.Alerts.AuthRequired.title,
-                        message: L10n.Alerts.AuthRequired.message,
-                        preferredStyle: .alert
-                    )
+                    if type.shouldShowError {
+                        let alert = UIAlertController(
+                            title: L10n.Alerts.AuthRequired.title,
+                            message: L10n.Alerts.AuthRequired.message,
+                            preferredStyle: .alert
+                        )
 
-                    alert.addAction(UIAlertAction(
-                        title: L10n.okLabel,
-                        style: .default,
-                        handler: nil
-                    ))
+                        alert.addAction(UIAlertAction(
+                            title: L10n.okLabel,
+                            style: .default,
+                            handler: nil
+                        ))
 
-                    controller.present(alert, animated: true, completion: nil)
+                        controller.present(alert, animated: true, completion: nil)
+                    }
+                } else if let existingServer = webViewControllerPromise.value?.server,
+                          !Current.servers.all.contains(existingServer),
+                          let newServer = Current.servers.all.first {
+                    open(server: newServer)
                 }
-            } else if let existingServer = webViewControllerPromise.value?.server,
-                      !Current.servers.all.contains(existingServer),
-                      let newServer = Current.servers.all.first {
-                open(server: newServer)
+            case let .unauthenticated(serverId, code):
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { controller in
+                        controller.showReAuthPopup(serverId: serverId, code: code)
+                    }
             }
         case .didConnect:
             onboardingPreloadWebViewController = makeWebViewIfNotInCache(

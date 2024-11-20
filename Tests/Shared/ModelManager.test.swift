@@ -389,7 +389,7 @@ class ModelManagerTests: XCTestCase {
             }),
         ]
 
-        manager.subscribe(definitions: definitions)
+        manager.subscribe(definitions: definitions, isAppInForeground: { true })
 
         func verify(apis: [HomeAssistantAPI]) {
             XCTAssertEqual(handlers1APIs.map(\.1), apis.map(\.server))
@@ -411,7 +411,7 @@ class ModelManagerTests: XCTestCase {
         handlers1APIs.removeAll()
         handlers2APIs.removeAll()
 
-        manager.subscribe(definitions: definitions)
+        manager.subscribe(definitions: definitions, isAppInForeground: { true })
 
         XCTAssertTrue(handlers1_1.allSatisfy(\.wasCancelled))
         XCTAssertTrue(handlers2_1.allSatisfy(\.wasCancelled))
