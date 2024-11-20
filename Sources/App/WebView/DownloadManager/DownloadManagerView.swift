@@ -13,45 +13,56 @@ struct DownloadManagerView: View {
 
     var body: some View {
         VStack(spacing: .zero) {
-            HStack {
-                Button(action: {
-                    viewModel.cancelDownload()
-                    viewModel.deleteFile()
-                    dismiss()
-                }, label: {
-                    Image(systemSymbol: .xmarkCircleFill)
-                        .font(.title)
-                        .foregroundStyle(
-                            Color(uiColor: .systemBackground),
-                            .gray.opacity(0.5)
-                        )
-                })
-                .buttonStyle(.plain)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding()
-            }
-            if viewModel.finished {
-                successView
-            } else if viewModel.failed {
-                fileCard
-                failedCard
-            } else {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .scaleEffect(2)
-                    .padding(Spaces.four)
-                Text(L10n.DownloadManager.Downloading.title)
-                    .font(.title.bold())
-                fileCard
-                Text(viewModel.progress)
-                    .animation(.easeInOut(duration: 1), value: viewModel.progress)
-            }
+            closeButton
+            content
             Spacer()
+        }
+        .onDisappear {
+            viewModel.cancelDownload()
+            viewModel.deleteFile()
         }
         .onChange(of: viewModel.finished) { _, newValue in
             if newValue, Current.isCatalyst {
                 UIApplication.shared.open(AppConstants.DownloadsDirectory)
             }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if viewModel.finished {
+            successView
+        } else if viewModel.failed {
+            fileCard
+            failedCard
+        } else {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .scaleEffect(2)
+                .padding(Spaces.four)
+            Text(L10n.DownloadManager.Downloading.title)
+                .font(.title.bold())
+            fileCard
+            Text(viewModel.progress)
+                .animation(.easeInOut(duration: 1), value: viewModel.progress)
+        }
+    }
+
+    private var closeButton: some View {
+        HStack {
+            Button(action: {
+                dismiss()
+            }, label: {
+                Image(systemSymbol: .xmarkCircleFill)
+                    .font(.title)
+                    .foregroundStyle(
+                        Color(uiColor: .systemBackground),
+                        .gray.opacity(0.5)
+                    )
+            })
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding()
         }
     }
 
