@@ -94,10 +94,15 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
     func sceneDidEnterBackground(_ scene: UIScene) {
         DataWidgetsUpdater.update()
+        Current.modelManager.unsubscribe()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         DataWidgetsUpdater.update()
+        Current.modelManager.cleanup().cauterize()
+        Current.modelManager.subscribe(isAppInForeground: {
+            UIApplication.shared.applicationState == .active
+        })
     }
 
     func windowScene(

@@ -398,11 +398,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupModels() {
         // Force Realm migration to happen now
         _ = Realm.live()
-
-        Current.modelManager.cleanup().cauterize()
-        Current.modelManager.subscribe(isAppInForeground: {
-            UIApplication.shared.applicationState == .active
-        })
         Action.setupObserver()
         NotificationCategory.setupObserver()
         WidgetOpenPageIntent.setupObserver()
