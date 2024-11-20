@@ -98,10 +98,13 @@ struct WidgetBasicSensorView: WidgetBasicViewInterface {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background({
+            if tinted {
+                return Color.clear
+            }
             if model.useCustomColors {
                 return model.backgroundColor
             } else {
-                return Color.clear
+                return Color.asset(Asset.Colors.tileBackground)
             }
         }())
         .clipShape(RoundedRectangle(cornerRadius: 14))

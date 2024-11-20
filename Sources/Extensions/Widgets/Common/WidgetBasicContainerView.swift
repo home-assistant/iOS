@@ -101,7 +101,7 @@ struct WidgetBasicContainerView: View {
                                 if #available(iOS 18.0, *) {
                                     tintedWrapperView(model: model, sizeStyle: sizeStyle)
                                 } else {
-                                    WidgetBasicButtonView(model: model, sizeStyle: sizeStyle, tinted: false)
+                                    normalView(model: model, sizeStyle: sizeStyle)
                                 }
                             }
                         } else {
@@ -119,15 +119,33 @@ struct WidgetBasicContainerView: View {
         .padding(sizeStyle == .single ? 0 : Spaces.one)
     }
 
+    private func normalView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
+        switch type {
+        case .button:
+            return AnyView(WidgetBasicButtonView(
+                model: model,
+                sizeStyle: sizeStyle,
+                tinted: false
+            ))
+        case .sensor:
+            return AnyView(WidgetBasicSensorView(
+                model: model,
+                sizeStyle: sizeStyle,
+                tinted: false
+            ))
+        }
+    }
+
     @available(iOS 16.0, *)
     private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        if type == .button {
+        switch type {
+        case .button:
             return AnyView(WidgetBasicViewTintedWrapper(
                 model: model,
                 sizeStyle: sizeStyle,
                 viewType: WidgetBasicButtonView.self
             ))
-        } else {
+        case .sensor:
             return AnyView(WidgetBasicViewTintedWrapper(
                 model: model,
                 sizeStyle: sizeStyle,
