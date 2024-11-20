@@ -222,11 +222,12 @@ public class ModelManager: ServerObserver {
                             }
                             DispatchQueue.main.async {
                                 guard ModelManager.isAppInForeground() else { return }
-                                let entities = value.all.filter { $0.domain == domain }
-                                if entities != lastEntities {
-                                    manager.store(type: type, from: server, sourceModels: entities).cauterize()
-                                    lastEntities = entities
-                                    appEntitiesModel.updateModel(entities, server: server)
+                                appEntitiesModel.updateModel(value.all, server: server)
+
+                                let entitiesForDomain = value.all.filter({ $0.domain == domain })
+                                if entitiesForDomain != lastEntities {
+                                    manager.store(type: type, from: server, sourceModels: entitiesForDomain).cauterize()
+                                    lastEntities = entitiesForDomain
                                 }
                             }
                         }
