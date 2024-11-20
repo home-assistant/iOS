@@ -46,7 +46,6 @@ final class AppEntitiesModel {
         ) }).sorted(by: { $0.id < $1.id })
 
         do {
-            // Avoid opening database often if cache is already in memory
             let cachedEntities = try Current.database.read { db in
                 try HAAppEntity
                     .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
