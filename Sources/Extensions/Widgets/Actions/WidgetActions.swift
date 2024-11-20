@@ -27,7 +27,8 @@ struct WidgetActions: Widget {
                         backgroundColor: .init(hex: action.BackgroundColor),
                         useCustomColors: action.useCustomColors
                     )
-                }
+                },
+                type: .button
             )
         }
         .contentMarginsDisabledIfAvailable()
@@ -60,7 +61,8 @@ struct LegacyWidgetActions: Widget {
                             backgroundColor: .init(hex: action.BackgroundColor),
                             useCustomColors: action.useCustomColors
                         )
-                    }
+                    },
+                    type: .button
                 )
             }
         )

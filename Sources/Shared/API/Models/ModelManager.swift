@@ -220,7 +220,6 @@ public class ModelManager: ServerObserver {
                                 token.cancel()
                                 return
                             }
-
                             DispatchQueue.main.async {
                                 guard ModelManager.isAppInForeground() else { return }
                                 let entities = value.all.filter { $0.domain == domain }
