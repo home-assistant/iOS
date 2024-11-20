@@ -10,10 +10,12 @@ public class ModelManager: ServerObserver {
     private var cleanupDefinitions = [CleanupDefinition]()
 
     public var workQueue: DispatchQueue = .global(qos: .userInitiated)
+    static var isAppInForeground: () -> Bool = { false }
 
     deinit {
         hakitTokens.forEach { $0.cancel() }
         notificationTokens.forEach { $0.invalidate() }
+        NotificationCenter.default.removeObserver(self)
     }
 
     public func observe<T>(
@@ -209,6 +211,7 @@ public class ModelManager: ServerObserver {
                 let someManager = manager
 
                 var lastEntities = Set<HAEntity>()
+                let appEntitiesModel = AppEntitiesModel()
 
                 return [
                     connection.caches.states.subscribe { [weak someManager] token, value in
@@ -218,10 +221,12 @@ public class ModelManager: ServerObserver {
                                 return
                             }
 
+                            guard ModelManager.isAppInForeground() else { return }
                             let entities = value.all.filter { $0.domain == domain }
                             if entities != lastEntities {
                                 manager.store(type: type, from: server, sourceModels: entities).cauterize()
                                 lastEntities = entities
+                                appEntitiesModel.updateModel(entities, server: server)
                             }
                         }
                     },
@@ -236,8 +241,10 @@ public class ModelManager: ServerObserver {
     }
 
     public func subscribe(
-        definitions: [SubscribeDefinition] = SubscribeDefinition.defaults
+        definitions: [SubscribeDefinition] = SubscribeDefinition.defaults,
+        isAppInForeground: @escaping () -> Bool
     ) {
+        ModelManager.isAppInForeground = isAppInForeground
         Current.servers.add(observer: self)
 
         subscribedSubscriptions.removeAll()
@@ -249,6 +256,12 @@ public class ModelManager: ServerObserver {
             }
         }
         subscribedSubscriptions = definitions
+    }
+
+    public func unsubscribe() {
+        subscribedSubscriptions.removeAll()
+        hakitTokens.forEach { $0.cancel() }
+        subscribedSubscriptions = []
     }
 
     public struct FetchDefinition {
@@ -364,7 +377,7 @@ public class ModelManager: ServerObserver {
     }
 
     public func serversDidChange(_ serverManager: ServerManager) {
-        subscribe(definitions: subscribedSubscriptions)
+        subscribe(definitions: subscribedSubscriptions, isAppInForeground: ModelManager.isAppInForeground)
         cleanup(definitions: cleanupDefinitions).cauterize()
     }
 }

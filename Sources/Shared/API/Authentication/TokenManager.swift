@@ -162,6 +162,7 @@ public class TokenManager {
                             ]
                         )
                         Current.clientEventStore.addEvent(event).cauterize()
+                        Current.modelManager.unsubscribe()
                         Current.onboardingObservation.needed(.unauthenticated(
                             server.identifier.rawValue,
                             underlying.asAFError?.responseCode ?? -1

@@ -400,11 +400,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = Realm.live()
 
         Current.modelManager.cleanup().cauterize()
-        Current.modelManager.subscribe()
+        Current.modelManager.subscribe(isAppInForeground: {
+            UIApplication.shared.applicationState == .active
+        })
         Action.setupObserver()
         NotificationCategory.setupObserver()
         WidgetOpenPageIntent.setupObserver()
-        AppEntitiesObserver.setupObserver()
     }
 
     private func setupMenus() {
