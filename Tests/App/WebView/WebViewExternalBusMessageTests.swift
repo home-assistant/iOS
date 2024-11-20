@@ -34,7 +34,8 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanResult.rawValue, "bar_code/scan_result")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanAborted.rawValue, "bar_code/aborted")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.improvDiscoveredDevice.rawValue, "improv/discovered_device")
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.improvDiscoveredDeviceSetupDone.rawValue, "improv/device_setup_done")
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 4)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 5)
     }
 }

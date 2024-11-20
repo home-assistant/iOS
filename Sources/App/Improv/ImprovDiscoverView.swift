@@ -63,6 +63,11 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 improvManager.scan()
             }
         }
+        .onChange(of: state) { _ in
+            if state == .success {
+                notifyFrontend()
+            }
+        }
         .onChange(of: improvManager.deviceState) { newValue in
             switch newValue {
             case .authorizationRequired:
@@ -147,6 +152,14 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     }
                 }
             }
+        }
+    }
+
+    private func notifyFrontend() {
+        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
+            controller.webViewExternalMessageHandler.sendExternalBus(message: .init(
+                command: WebViewExternalBusOutgoingMessage.improvDiscoveredDeviceSetupDone.rawValue
+            ))
         }
     }
 
