@@ -371,7 +371,7 @@ struct WidgetPreviewView: View {
     let action: Action
     var body: some View {
         VStack {
-            WidgetBasicView(
+            WidgetBasicButtonView(
                 model: .init(
                     id: action.ID,
                     title: action.Text,

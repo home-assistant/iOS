@@ -28,7 +28,8 @@ struct WidgetSensors: Widget {
                         ),
                         useCustomColors: false
                     )
-                }
+                },
+                type: .sensor
             )
         }
         .contentMarginsDisabledIfAvailable()
