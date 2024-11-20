@@ -133,6 +133,9 @@ final class WebViewExternalMessageHandler {
                 showAssist(server: webViewController.server, pipeline: "", animated: true)
             case .scanForImprov:
                 scanImprov()
+            case .improvConfigureDevice:
+                let deviceName = incomingMessage.Payload?["name"] as? String
+                presentImprov(deviceName: deviceName)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -362,13 +365,14 @@ final class WebViewExternalMessageHandler {
         improvManager.scan()
     }
 
-    func presentImprov() {
+    func presentImprov(deviceName: String?) {
         improvManager.stopScan()
         improvManager.delegate = nil
 
         improvController =
             UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(
                 improvManager: improvManager,
+                deviceName: deviceName,
                 redirectRequest: { [weak self] redirectUrlPath in
                     self?.webViewController?.navigateToPath(path: redirectUrlPath)
                 }
@@ -386,36 +390,6 @@ final class WebViewExternalMessageHandler {
             improvManager.stopScan()
         }
     }
-
-    @MainActor
-    private func showImprovDeviceSetupNotification() {
-        var config = SwiftMessages.Config()
-        config.presentationContext = .automatic
-        config.duration = .seconds(seconds: 5)
-        config.presentationStyle = .bottom
-        config.dimMode = .gray(interactive: true)
-        config.dimModeAccessibilityLabel = L10n.cancelLabel
-        config.haptic = .warning
-
-        let view = MessageView.viewFromNib(layout: .messageView)
-        view.configureTheme(.info)
-        view.configureContent(
-            title: L10n.Improv.Toast.title,
-            body: "",
-            iconImage: nil,
-            iconText: nil,
-            buttonImage: nil,
-            buttonTitle: L10n.continueLabel,
-            buttonTapHandler: { [weak self] _ in
-                SwiftMessages.hide()
-                self?.presentImprov()
-            }
-        )
-        view.titleLabel?.numberOfLines = 0
-        view.bodyLabel?.numberOfLines = 0
-
-        SwiftMessages.show(config: config, view: view)
-    }
 }
 
 extension WebViewExternalMessageHandler: @preconcurrency ImprovManagerDelegate {
@@ -427,8 +401,13 @@ extension WebViewExternalMessageHandler: @preconcurrency ImprovManagerDelegate {
 
     @MainActor
     func didUpdateFoundDevices(devices: [String: CBPeripheral]) {
-        if !devices.isEmpty {
-            showImprovDeviceSetupNotification()
+        devices.forEach { [weak self] _, value in
+            self?.sendExternalBus(message: .init(
+                command: WebViewExternalBusOutgoingMessage.improvDiscoveredDevice.rawValue,
+                payload: [
+                    "name": value.name ?? "unknown",
+                ]
+            ))
         }
     }
 }

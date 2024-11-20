@@ -766,10 +766,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         showSettingsViewController()
     }
 
-    @objc func openImprovOnboard(_ sender: UIButton) {
-        webViewExternalMessageHandler.presentImprov()
-    }
-
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
     override var preferredStatusBarStyle: UIStatusBarStyle {
         underlyingPreferredStatusBarStyle

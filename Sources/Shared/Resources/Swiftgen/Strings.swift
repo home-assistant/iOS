@@ -293,6 +293,14 @@ public enum L10n {
         /// Light
         public static var title: String { return L10n.tr("Localizable", "app_intents.lights.light.title") }
       }
+      public enum OffStateIcon {
+        /// Icon for off state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.lights.off_state_icon.title") }
+      }
+      public enum OnStateIcon {
+        /// Icon for on state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.lights.on_state_icon.title") }
+      }
     }
     public enum NotifyWhenRun {
       /// Shows notification after executed
