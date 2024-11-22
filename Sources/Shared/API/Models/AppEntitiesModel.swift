@@ -3,7 +3,11 @@ import GRDB
 import HAKit
 import PromiseKit
 
-final class AppEntitiesModel {
+public protocol AppEntitiesModelProtocol {
+    func updateModel(_ entities: Set<HAEntity>, server: Server)
+}
+
+public final class AppEntitiesModel: AppEntitiesModelProtocol {
     private var lastDatabaseUpdate: Date?
     private var lastEntitiesCount = 0
     private let domainsAppUse: [String] = [
@@ -15,15 +19,29 @@ final class AppEntitiesModel {
         Domain.cover,
     ].map(\.rawValue)
 
-    func updateModel(_ entities: Set<HAEntity>, server: Server) {
-        let appRelatedEntities = entities.filter { domainsAppUse.contains($0.domain) }
-
+    public func updateModel(_ entities: Set<HAEntity>, server: Server) {
         // Only update database after a minute or if the entities count changed
-        if !checkLastDatabaseUpdateLessThanMinuteAgo() || lastEntitiesCount != appRelatedEntities
-            .count {
-            lastEntitiesCount = appRelatedEntities.count
+        // First check for time to avoid unecessary filtering to check count
+        if !checkLastDatabaseUpdateLessThanMinuteAgo() {
+            let appRelatedEntities = filterDomains(entities)
+            updateLastUpdate(entitiesCount: appRelatedEntities.count)
             handle(appRelatedEntities: appRelatedEntities, server: server)
+        } else {
+            let appRelatedEntities = filterDomains(entities)
+            if lastEntitiesCount != appRelatedEntities.count {
+                updateLastUpdate(entitiesCount: appRelatedEntities.count)
+                handle(appRelatedEntities: appRelatedEntities, server: server)
+            }
         }
+    }
+
+    private func updateLastUpdate(entitiesCount: Int) {
+        lastEntitiesCount = entitiesCount
+        lastDatabaseUpdate = Date()
+    }
+
+    private func filterDomains(_ entities: Set<HAEntity>) -> Set<HAEntity> {
+        entities.filter { domainsAppUse.contains($0.domain) }
     }
 
     // Avoid updating database too often
