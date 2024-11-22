@@ -748,6 +748,10 @@ public enum L10n {
   }
 
   public enum Debug {
+    public enum Improv {
+      /// Improv setup
+      public static var setup: String { return L10n.tr("Localizable", "debug.improv.setup") }
+    }
     public enum Reset {
       public enum EntitiesDatabase {
         /// Reset app entities database

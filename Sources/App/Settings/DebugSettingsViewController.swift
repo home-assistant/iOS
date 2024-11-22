@@ -1,4 +1,5 @@
 import Eureka
+import Improv_iOS
 import MBProgressHUD
 import PromiseKit
 import RealmSwift
@@ -10,6 +11,7 @@ import XCGLogger
 class DebugSettingsViewController: HAFormViewController {
     private var shakeCount = 0
     private var maxShakeCount = 3
+    private let improvManager = ImprovManager.shared
 
     override init() {
         super.init()
@@ -28,6 +30,7 @@ class DebugSettingsViewController: HAFormViewController {
 
         form.append(contentsOf: [
             logs(),
+            improv(),
             reset(),
             developerOptions(),
         ])
@@ -163,6 +166,48 @@ class DebugSettingsViewController: HAFormViewController {
         }
 
         return section
+    }
+
+    private func improv() -> Eureka.Section {
+        let section = Section()
+        section <<< ButtonRow {
+            $0.title = L10n.Debug.Improv.setup
+        }.onCellSelection { [weak self] _, _ in
+            self?.scanImprov()
+        }
+        return section
+    }
+
+    private func scanImprov() {
+        switch Current.bluetoothPermissionStatus {
+        case .denied, .restricted:
+            break
+        case .allowedAlways:
+            improvManager.delegate = self
+            let improvController = UIHostingController(rootView: ImprovDiscoverView<ImprovManager>(
+                improvManager: improvManager,
+                deviceName: nil,
+                redirectRequest: { redirectUrlPath in
+                    Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { webViewController in
+                        webViewController.navigateToPath(path: redirectUrlPath)
+                    }
+                }
+            ))
+            improvController.modalTransitionStyle = .crossDissolve
+            improvController.modalPresentationStyle = .overFullScreen
+            improvController.view.backgroundColor = .clear
+            present(improvController, animated: true)
+        default:
+            guard (BluetoothPermissionScreenDisplayedCount().value ?? 0) < 2 else {
+                Current.Log
+                    .info(
+                        "Bluetooth permission screen already displayed twice and no decision was made by the user, permission won't be asked again."
+                    )
+                return
+            }
+            let bluetoothPermissionView = UIHostingController(rootView: BluetoothPermissionView())
+            present(bluetoothPermissionView, animated: true)
+        }
     }
 
     private func reset() -> Eureka.Section {
@@ -456,4 +501,8 @@ class DebugSettingsViewController: HAFormViewController {
             Current.onboardingObservation.needed(.logout)
         }.cauterize()
     }
+}
+
+extension DebugSettingsViewController: ImprovManagerDelegate {
+
 }

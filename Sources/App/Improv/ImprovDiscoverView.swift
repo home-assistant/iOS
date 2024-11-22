@@ -112,10 +112,13 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             }
         }
         .onChange(of: improvManager.foundDevices) { newValue in
-            guard let deviceName, selectedPeripheral == nil else { return }
-            if let device = newValue.first(where: { $0.value.name == deviceName })?.value {
-                selectPeripheral(device)
-            } else if state == .empty {
+            if let deviceName, selectedPeripheral == nil {
+                if let device = newValue.first(where: { $0.value.name == deviceName })?.value {
+                    selectPeripheral(device)
+                } else if state == .empty {
+                    state = .list
+                }
+            } else if selectedPeripheral == nil {
                 state = .list
             }
         }
