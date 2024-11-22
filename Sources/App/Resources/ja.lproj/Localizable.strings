@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "パイプライン";
 "app_intents.assist.preferred_pipeline.title" = "優先";
 "app_intents.assist.refresh_warning.title" = "アシストパイプラインが見つかりませんか？アプリでアシストを開き、パイプラインの一覧を更新してください。";
+"app_intents.closed_state_icon.title" = "クローズド状態のアイコン";
 "app_intents.controls.assist.parameter.with_voice" = "音声付き";
 "app_intents.controls.assist.title" = "アプリでアシスト";
 "app_intents.cover.title" = "カバー";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "スイッチの制御";
 "app_intents.lights.light.target" = "ターゲットの状態";
 "app_intents.lights.light.title" = "照明";
+"app_intents.lights.off_state_icon.title" = "オフ状態のアイコン";
+"app_intents.lights.on_state_icon.title" = "オン状態のアイコン";
 "app_intents.notify_when_run.description" = "実行後に通知を表示する";
 "app_intents.notify_when_run.title" = "実行時に通知";
+"app_intents.open_state_icon.title" = "オープン状態のアイコン";
 "app_intents.perform_action.action_parameter_configuration" = "どのアクション？";
 "app_intents.perform_action.action_parameter_confirmation" = "確認しますが、「 %@ 」が必要でしたか?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "%@に一致するオプションは%@あります。";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA APIマネージャーが使用できません。";
 "ha_api.api_error.mobile_app_component_not_loaded" = "mobile_appコンポーネントがロードされていません。設定に追加して、Home Assistantを再起動してから、もう一度やり直してください。";
 "ha_api.api_error.must_upgrade_home_assistant" = "Home Assistantのバージョン (%@)が古すぎます。アプリを使用するには、少なくともバージョン %@ にアップグレードする必要があります。";
+"ha_api.api_error.no_available_api" = "APIが利用できません。内部URLまたは外部URLが利用可能か再度確認してください。";
 "ha_api.api_error.not_configured" = "HA APIが設定されていません";
 "ha_api.api_error.unacceptable_status_code" = "受け入れ不可なステータスコード %1$li。";
 "ha_api.api_error.unexpected_type" = "タイプ %1$@ の結果を含む応答を受け取りましたが、タイプ %2$@ が必要です。";
@@ -734,6 +739,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "token_error.connection_failed" = "接続に失敗しました。";
 "token_error.expired" = "トークンの有効期限が切れています。";
 "token_error.token_unavailable" = "トークンが利用できません。";
+"unauthenticated.message.body" = "プロキシやネットワーク制限に引っかかっている場合は一時的なものかもしれませんが、そうでない場合はサーバーを一旦削除し、再度追加してください。";
+"unauthenticated.message.title" = "あなたは認証されていません";
 "updater.check_for_updates_menu.title" = "アップデートを確認する…";
 "updater.no_updates_available.on_latest_version" = "あなたは最新バージョンを使用しています！";
 "updater.no_updates_available.title" = "アップデートを確認する";

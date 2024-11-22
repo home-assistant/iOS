@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Voog";
 "app_intents.assist.preferred_pipeline.title" = "Eelistatud";
 "app_intents.assist.refresh_warning.title" = "Ei leia oma Assisti voogu? Voogude loendi värskendamiseks ava rakenduses Assist.";
+"app_intents.closed_state_icon.title" = "Suletud oleku ikoon";
 "app_intents.controls.assist.parameter.with_voice" = "Häälega";
 "app_intents.controls.assist.title" = "Assist rakenduses";
 "app_intents.cover.title" = "Avakate";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Juhi lülitit";
 "app_intents.lights.light.target" = "Sihtolek";
 "app_intents.lights.light.title" = "Valgusti";
+"app_intents.lights.off_state_icon.title" = "Väljalülitatud oleku ikoon";
+"app_intents.lights.on_state_icon.title" = "Sisselülitatud oleku ikoon";
 "app_intents.notify_when_run.description" = "Pärast täitmist kuvab teatise";
 "app_intents.notify_when_run.title" = "Käivitamisel teavita";
+"app_intents.open_state_icon.title" = "Avatud oleku ikoon";
 "app_intents.perform_action.action_parameter_configuration" = "Milline toiming?";
 "app_intents.perform_action.action_parameter_confirmation" = "Lihtsalt kinnita, kas sa tahtsid ' %@ '?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "On %@ valikut mis vastavad '%@'.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API haldur pole saadaval";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Komponent mobile_app ei ole laaditud. Palun lisa see oma konfiguratsiooni, taaskäivita Home Assistant ja proovi uuesti.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Home Assistanti versioon (%@) on liiga vana, rakenduse kasutamiseks pead uuendama vähemalt versioonile %@.";
+"ha_api.api_error.no_available_api" = "Liides pole saadaval, kontrolli veelkord kas sisemine URL või väline URL on saadaval.";
 "ha_api.api_error.not_configured" = "HA API pole seadistatud";
 "ha_api.api_error.unacceptable_status_code" = "Kehtetu olekukood %1$li .";
 "ha_api.api_error.unexpected_type" = "Vastus saadi tulemusega, mille tüüp on %1$@ kuid eeldatav tüüp oli %2$@ .";
@@ -734,6 +739,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "token_error.connection_failed" = "Ühendus nurjus.";
 "token_error.expired" = "Token on aegunud.";
 "token_error.token_unavailable" = "Token pole saadaval.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Otsi värskendusi...";
 "updater.no_updates_available.on_latest_version" = "Kasutad uusimat versiooni!";
 "updater.no_updates_available.title" = "Otsi värskendusi";

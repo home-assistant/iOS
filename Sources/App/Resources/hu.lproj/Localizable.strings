@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Csatorna";
 "app_intents.assist.preferred_pipeline.title" = "Preferált";
 "app_intents.assist.refresh_warning.title" = "Nem található az Assist csatorna? Nyissa meg az Assist funkciót az alkalmazásban a csatornalista frissítéséhez.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Hanggal";
 "app_intents.controls.assist.title" = "Assist az alkalmazásban";
 "app_intents.cover.title" = "Árnyékoló";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Kapcsoló vezérlése";
 "app_intents.lights.light.target" = "Célállapot";
 "app_intents.lights.light.title" = "Fény";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Értesítést jelenít meg a végrehajtás után";
 "app_intents.notify_when_run.title" = "Értesítés futtatáskor";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Melyik művelet?";
 "app_intents.perform_action.action_parameter_confirmation" = "Csak megerősítésképp, ezt szeretné: ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "%@ lehetőség található a(z) ‘%@’ kifejezésre.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "A HA API Manager nem elérhető";
 "ha_api.api_error.mobile_app_component_not_loaded" = "A mobile_app komponens nincs betöltve. Kérjük, adja hozzá a konfigurációjához, indítsa újra a Home Assistantot és próbálja meg újra.";
 "ha_api.api_error.must_upgrade_home_assistant" = "A Home Assistant (%@) verziója túl régi, az alkalmazás használatához legalább a %@ verzióra kell frissítenie.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "HA API nincs konfigurálva";
 "ha_api.api_error.unacceptable_status_code" = "Elfogadhatatlan állapotkód %1$li.";
 "ha_api.api_error.unexpected_type" = "%1$@ típusú eredményt érkezett a válaszban, miközben %2$@ típusú eredmény az elvárt.";
@@ -734,6 +739,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "token_error.connection_failed" = "A kapcsolat sikertelen.";
 "token_error.expired" = "A token lejárt.";
 "token_error.token_unavailable" = "A token nem elérhető.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Frissítések keresése…";
 "updater.no_updates_available.on_latest_version" = "Ön a legújabb verziót használja!";
 "updater.no_updates_available.title" = "Frissítések keresése";

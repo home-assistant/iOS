@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "助理設定";
 "app_intents.assist.preferred_pipeline.title" = "首選";
 "app_intents.assist.refresh_warning.title" = "找不到助手設定？於 App 中開啟助力以更新設定列表。";
+"app_intents.closed_state_icon.title" = "關閉狀態的圖示";
 "app_intents.controls.assist.parameter.with_voice" = "使用語音";
 "app_intents.controls.assist.title" = "App 中的助理";
 "app_intents.cover.title" = "門簾";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "控制開關";
 "app_intents.lights.light.target" = "目標狀態";
 "app_intents.lights.light.title" = "燈光";
+"app_intents.lights.off_state_icon.title" = "關閉狀態的圖示";
+"app_intents.lights.on_state_icon.title" = "開啟狀態的圖示";
 "app_intents.notify_when_run.description" = "於執行後顯示通知";
 "app_intents.notify_when_run.title" = "執行時通知";
+"app_intents.open_state_icon.title" = "開啟狀態的圖示";
 "app_intents.perform_action.action_parameter_configuration" = "哪個動作？";
 "app_intents.perform_action.action_parameter_confirmation" = "確認要  ‘%@’？";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "共有 %@ 個選項符合 ‘%@’。";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API 管理員不可用";
 "ha_api.api_error.mobile_app_component_not_loaded" = "mobile_app 元件未載入。請於設定檔加入後，重啟 Home Assistant 然後再試一次。";
 "ha_api.api_error.must_upgrade_home_assistant" = "Home Assistant 版次（%@）太舊，必須更新至最新 %@ 版方能使用應用程式。";
+"ha_api.api_error.no_available_api" = "沒有可用的 API，請再確認是否有可用的內部 URL 或外部 URL。";
 "ha_api.api_error.not_configured" = "HA API 尚未設定";
 "ha_api.api_error.unacceptable_status_code" = "不可接受狀態代碼 %1$li。";
 "ha_api.api_error.unexpected_type" = "接收回應為 %1$@ 類別之結果，但預期為 %2$@ 類別。";
@@ -734,6 +739,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "token_error.connection_failed" = "連線失敗。";
 "token_error.expired" = "權杖已過期。";
 "token_error.token_unavailable" = "權杖不可用。";
+"unauthenticated.message.body" = "如果使用代理伺服器或網路限制、可能為暫時狀態。如果問題持續發生、請移除伺服器並重新添加。";
+"unauthenticated.message.title" = "您未經身份驗證";
 "updater.check_for_updates_menu.title" = "檢查更新…";
 "updater.no_updates_available.on_latest_version" = "已經是最新版本！";
 "updater.no_updates_available.title" = "檢查更新";

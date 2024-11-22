@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Προτιμώμενο";
 "app_intents.assist.refresh_warning.title" = "Δεν μπορείτε να βρείτε το Assist pipeline σας; Ανοίξτε τον Βοηθό στην εφαρμογή για να ανανεώσετε τη λίστα pipelines.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Με φωνή";
 "app_intents.controls.assist.title" = "Βοηθός στην εφαρμογή";
 "app_intents.cover.title" = "Ρολό";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Διακόπτης ελέγχου";
 "app_intents.lights.light.target" = "Κατάσταση-στόχος";
 "app_intents.lights.light.title" = "Φως";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Εμφανίζει ειδοποίηση μετά την εκτέλεση";
 "app_intents.notify_when_run.title" = "Ειδοποίηση κατά την εκτέλεση";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Ποια ενέργεια;";
 "app_intents.perform_action.action_parameter_confirmation" = "Απλώς για επιβεβαίωση, θέλατε ‘%@‘;";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Υπάρχουν %@ επιλογές που ταιριάζουν με το ‘%@‘.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "Το HA API Manager δεν είναι διαθέσιμο";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Το στοιχείο mobile_app δεν έχει φορτωθεί. Προσθέστε το στη διαμόρφωσή σας, κάντε επανεκκίνηση του Home Assistant και δοκιμάστε ξανά.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Η έκδοση του Home Assistant ( %@ ) είναι πολύ παλιά, πρέπει να κάνετε αναβάθμιση σε τουλάχιστον έκδοση %@ για να χρησιμοποιήσετε την εφαρμογή.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "Το HA API δεν έχει διαμορφωθεί";
 "ha_api.api_error.unacceptable_status_code" = "Μη αποδεκτός κωδικός κατάστασης %1$li.";
 "ha_api.api_error.unexpected_type" = "Λήψη απόκρισης με αποτέλεσμα τύπου %1$@ αλλά αναμενόμενο τύπο %2$@.";
@@ -734,6 +739,8 @@
 "token_error.connection_failed" = "Η σύνδεση απέτυχε.";
 "token_error.expired" = "Το διακριτικό έχει λήξει.";
 "token_error.token_unavailable" = "Το διακριτικό δεν είναι διαθέσιμο.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Έλεγχος για ενημερώσεις…";
 "updater.no_updates_available.on_latest_version" = "Βρίσκεστε στην πιο πρόσφατη έκδοση!";
 "updater.no_updates_available.title" = "Έλεγχος για ενημερώσεις";

@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "管道";
 "app_intents.assist.preferred_pipeline.title" = "首选";
 "app_intents.assist.refresh_warning.title" = "找不到您的语音助手管道 ？在应用中打开语音助手，刷新管道列表。";
+"app_intents.closed_state_icon.title" = "关闭状态的图标";
 "app_intents.controls.assist.parameter.with_voice" = "带有语音";
 "app_intents.controls.assist.title" = "应用中语音助手";
 "app_intents.cover.title" = "覆盖";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "控制开关";
 "app_intents.lights.light.target" = "目标状态";
 "app_intents.lights.light.title" = "灯光";
+"app_intents.lights.off_state_icon.title" = "关闭状态的图标";
+"app_intents.lights.on_state_icon.title" = "开启状态的图标";
 "app_intents.notify_when_run.description" = "执行后显示通知";
 "app_intents.notify_when_run.title" = "运行时通知";
+"app_intents.open_state_icon.title" = "打开状态的图标";
 "app_intents.perform_action.action_parameter_configuration" = "那个动作 ？";
 "app_intents.perform_action.action_parameter_confirmation" = "确认一下，你想要“%@” ？";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "有 %@ 个选项匹配“%@” 。";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "Home Assistant API 管理不可用";
 "ha_api.api_error.mobile_app_component_not_loaded" = "未加载“移动应用”组件。请将其添加到您的配置中，然后重新启动 Home Assistant 并重试。";
 "ha_api.api_error.must_upgrade_home_assistant" = "您的Home Assistant 版本 (%@) 已过期, 必须升级到 %@ 才能继续使用。";
+"ha_api.api_error.no_available_api" = "没有可用的 API ，请仔细检查内部网址或外部网址是否可用。";
 "ha_api.api_error.not_configured" = "未配置HA API";
 "ha_api.api_error.unacceptable_status_code" = "状态代码 %1$li 不可接受。";
 "ha_api.api_error.unexpected_type" = "收到的响应类型为%1$@，但预期类型为%2$@ 。";
@@ -732,6 +737,8 @@
 "token_error.connection_failed" = "连接失败。";
 "token_error.expired" = "令牌已过期。";
 "token_error.token_unavailable" = "令牌不可用。";
+"unauthenticated.message.body" = "如果您被代理或网络限制了，这种情况可能是暂时的，如果问题仍然存在，请移除您的服务器并将其重新添加。";
+"unauthenticated.message.title" = "您尚未通过身份验证";
 "updater.check_for_updates_menu.title" = "正在检查更新…";
 "updater.no_updates_available.on_latest_version" = "已是最新版本！";
 "updater.no_updates_available.title" = "检查更新";

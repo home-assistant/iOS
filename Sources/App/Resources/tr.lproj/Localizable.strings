@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "İşlem hattı";
 "app_intents.assist.preferred_pipeline.title" = "Tercih Edilen";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Ses ile";
 "app_intents.controls.assist.title" = "Uygulamada assist";
 "app_intents.cover.title" = "Cover";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
 "app_intents.notify_when_run.title" = "Notify when run";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Hangi eylem?";
 "app_intents.perform_action.action_parameter_confirmation" = "Onaylamak için ' %@ ' mi istediniz?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "' %@ ' ile eşleşen %@ seçenek var.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Yöneticisi kullanılamıyor";
 "ha_api.api_error.mobile_app_component_not_loaded" = "mobile_app bileşeni yüklü değil. Lütfen yapılandırmanıza ekleyin, Home Assistant'ı yeniden başlatın ve tekrar deneyin.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Home Assistant sürümünüz ( %@ ) çok eski, uygulamayı kullanmak için en az %@ sürümüne yükseltmelisiniz.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "HA API yapılandırılmadı";
 "ha_api.api_error.unacceptable_status_code" = "Kabul edilemez durum kodu %1$li .";
 "ha_api.api_error.unexpected_type" = "%1$@ türünden sonuç alınan ancak beklenen tür %2$@.";
@@ -734,6 +739,8 @@
 "token_error.connection_failed" = "Bağlantı kurulamadı.";
 "token_error.expired" = "Anahtar süresi doldu.";
 "token_error.token_unavailable" = "Anahtar kullanılamıyor.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Güncellemeleri kontrol edin…";
 "updater.no_updates_available.on_latest_version" = "En son sürümü kullanıyorsunuz!";
 "updater.no_updates_available.title" = "Güncelleştirmeleri Denetle";

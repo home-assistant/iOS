@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Cover";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
 "app_intents.notify_when_run.title" = "Notify when run";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "Menedżer interfejsu API HA jest niedostępny";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Komponent mobile_app nie jest załadowany. Dodaj go do konfiguracji, uruchom ponownie Home Assistant i spróbuj ponownie.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Twoja wersja Home Assistant (%@) jest za stara, musisz zaktualizować ją do wersji %@ aby móc korzystać z aplikacji.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "Interfejs API HA nie został skonfigurowany";
 "ha_api.api_error.unacceptable_status_code" = "Niedopuszczalny kod błędu %1$li.";
 "ha_api.api_error.unexpected_type" = "Otrzymano odpowiedź z wynikiem typu %1$@, ale oczekiwanym typem %2$@.";
@@ -732,6 +737,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "token_error.connection_failed" = "Połączenie nieudane.";
 "token_error.expired" = "Token wygasł.";
 "token_error.token_unavailable" = "Token jest niedostępny.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Sprawdź aktualizacje…";
 "updater.no_updates_available.on_latest_version" = "Masz najnowszą wersję!";
 "updater.no_updates_available.title" = "Sprawdź aktualizacje";

@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Cover";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
 "app_intents.notify_when_run.title" = "Notify when run";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Which action?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Manager er ikke tilgjengelig";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Komponenten mobile_app er ikke lastet inn. Legg den til i konfigurasjonen din, start Home Assistant på nytt og prøv igjen.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Home Assistant-versjonen (%@) er for gammel, du må oppgradere til minst versjon %@ for å kunne bruke appen.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "HA API er ikke konfigurert";
 "ha_api.api_error.unacceptable_status_code" = "Uakseptabel statuskode %1$li .";
 "ha_api.api_error.unexpected_type" = "Mottatt svar med resultat av type %1$@ men forventet type %2$@ .";
@@ -734,6 +739,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "token_error.connection_failed" = "Tilkoblingen mislyktes.";
 "token_error.expired" = "Token er utløpt.";
 "token_error.token_unavailable" = "Token er ikke tilgjengelig.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Se etter oppdateringer…";
 "updater.no_updates_available.on_latest_version" = "Du er på den siste versjonen!";
 "updater.no_updates_available.title" = "Se etter oppdateringer";

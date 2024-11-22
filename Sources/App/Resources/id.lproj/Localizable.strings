@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Saluran";
 "app_intents.assist.preferred_pipeline.title" = "Diutamakan";
 "app_intents.assist.refresh_warning.title" = "Tidak dapat menemukan saluran Assist Anda? Buka Assist di aplikasi untuk menyegarkan daftar salurannya.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Dengan suara";
 "app_intents.controls.assist.title" = "Assist dalam aplikasi";
 "app_intents.cover.title" = "Penutup";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Kendalikan Sakelar";
 "app_intents.lights.light.target" = "Status target";
 "app_intents.lights.light.title" = "Lampu";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Menampilkan notifikasi setelah dieksekusi";
 "app_intents.notify_when_run.title" = "Beri tahu saat dijalankan";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Aksi yang mana?";
 "app_intents.perform_action.action_parameter_confirmation" = "Sekadar konfirmasi, Anda menginginkan '%@'?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Ada %@ opsi yang cocok dengan '%@'.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "Manajer API Home Assistant tidak tersedia";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Komponen mobile_app tidak dimuat. Tambahkan ke konfigurasi Anda, mulai ulang  Home Assistant, dan coba lagi.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Versi Home Assistant (%@) terlalu lawas, Anda harus memutakhirkan ke setidaknya versi %@ untuk menggunakan aplikasi ini.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "API Home Assistant tidak dikonfigurasi";
 "ha_api.api_error.unacceptable_status_code" = "Kode status tidak dapat diterima %1$li.";
 "ha_api.api_error.unexpected_type" = "Menerima respons dengan hasil dari tipe %1$@, tetapi tipe yang diharapkan %2$@.";
@@ -734,6 +739,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "token_error.connection_failed" = "Koneksi gagal.";
 "token_error.expired" = "Token kedaluwarsa.";
 "token_error.token_unavailable" = "Token tidak tersedia.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Periksa Pembaruan…";
 "updater.no_updates_available.on_latest_version" = "Anda menggunakan versi terbaru!";
 "updater.no_updates_available.title" = "Periksa Pembaruan";

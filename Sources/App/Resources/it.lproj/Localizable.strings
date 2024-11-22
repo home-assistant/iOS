@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferito";
 "app_intents.assist.refresh_warning.title" = "Non riesci a trovare la tua pipeline di Assist? Apri Assist nell'app per aggiornare l'elenco delle pipeline.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Con voce";
 "app_intents.controls.assist.title" = "Assistenza in app";
 "app_intents.cover.title" = "Copertura";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Controllo interruttore";
 "app_intents.lights.light.target" = "Stato target";
 "app_intents.lights.light.title" = "Luce";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Mostra notifica dopo l'esecuzione";
 "app_intents.notify_when_run.title" = "Notifica quando eseguito";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Quale azione?";
 "app_intents.perform_action.action_parameter_confirmation" = "Solo per confermare, volevi '%@'?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Ci sono %@ opzioni che corrispondono a '%@'.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Manager non è disponibile";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Il componente mobile_app non è stato caricato. Si prega di aggiungerlo alla configurazione, riavviare Home Assistant e riprovare.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Il tuo Home Assistant (%@) è troppo vecchio, devi aggiornare almeno alla versione %@ per utilizzare l'App.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "API HA non configurata";
 "ha_api.api_error.unacceptable_status_code" = "Ha ottenuto un codice di stato di errore (%1$li)";
 "ha_api.api_error.unexpected_type" = "Risposta ricevuta con risultato di tipo %1$@ ma tipo previsto %2$@ .";
@@ -734,6 +739,8 @@
 "token_error.connection_failed" = "Connessione fallita.";
 "token_error.expired" = "Il token è scaduto.";
 "token_error.token_unavailable" = "Il Token non è disponibile.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Controllo degli aggiornamenti…";
 "updater.no_updates_available.on_latest_version" = "Sei sull'ultima versione!";
 "updater.no_updates_available.title" = "Controlla gli aggiornamenti";
