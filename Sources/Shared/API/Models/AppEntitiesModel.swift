@@ -24,11 +24,19 @@ public final class AppEntitiesModel: AppEntitiesModelProtocol {
         // First check for time to avoid unecessary filtering to check count
         if !checkLastDatabaseUpdateLessThanMinuteAgo() {
             let appRelatedEntities = filterDomains(entities)
+            Current.Log
+                .verbose(
+                    "Updating App Entities for \(server.info.name) checkLastDatabaseUpdateLessThanMinuteAgo false, lastDatabaseUpdate \(String(describing: lastDatabaseUpdate)) "
+                )
             updateLastUpdate(entitiesCount: appRelatedEntities.count)
             handle(appRelatedEntities: appRelatedEntities, server: server)
         } else {
             let appRelatedEntities = filterDomains(entities)
             if lastEntitiesCount != appRelatedEntities.count {
+                Current.Log
+                    .verbose(
+                        "Updating App Entities for \(server.info.name) entities count diff, count: last \(lastEntitiesCount), new \(appRelatedEntities.count)"
+                    )
                 updateLastUpdate(entitiesCount: appRelatedEntities.count)
                 handle(appRelatedEntities: appRelatedEntities, server: server)
             }
@@ -71,6 +79,10 @@ public final class AppEntitiesModel: AppEntitiesModelProtocol {
                     .fetchAll(db)
             }
             if appEntities != cachedEntities {
+                Current.Log
+                    .verbose(
+                        "Updating App Entities for \(server.info.name), cached entities were different than new entities"
+                    )
                 try Current.database.write { db in
                     try HAAppEntity.deleteAll(db, ids: cachedEntities.map(\.id))
                     for entity in appEntities {
