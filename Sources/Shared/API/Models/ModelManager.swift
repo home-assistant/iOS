@@ -211,7 +211,7 @@ public class ModelManager: ServerObserver {
                 let someManager = manager
 
                 var lastEntities = Set<HAEntity>()
-                let appEntitiesModel = AppEntitiesModel()
+                var lastUpdate: Date?
 
                 return [
                     connection.caches.states.subscribe { [weak someManager] token, value in
@@ -222,12 +222,18 @@ public class ModelManager: ServerObserver {
                             }
                             DispatchQueue.main.async {
                                 guard ModelManager.isAppInForeground() else { return }
-                                appEntitiesModel.updateModel(value.all, server: server)
+                                Current.appEntitiesModel.updateModel(value.all, server: server)
+
+                                if let lastUpdate {
+                                    // Prevent sequential updates in short time
+                                    guard Date().timeIntervalSince(lastUpdate) > 15 else { return }
+                                }
 
                                 let entitiesForDomain = value.all.filter({ $0.domain == domain })
                                 if entitiesForDomain != lastEntities {
                                     manager.store(type: type, from: server, sourceModels: entitiesForDomain).cauterize()
                                     lastEntities = entitiesForDomain
+                                    lastUpdate = Date()
                                 }
                             }
                         }
