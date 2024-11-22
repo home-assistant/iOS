@@ -424,12 +424,14 @@ extension WebViewExternalMessageHandler: @preconcurrency ImprovManagerDelegate {
     @MainActor
     func didUpdateFoundDevices(devices: [String: CBPeripheral]) {
         devices.forEach { [weak self] _, value in
-            self?.sendExternalBus(message: .init(
-                command: WebViewExternalBusOutgoingMessage.improvDiscoveredDevice.rawValue,
-                payload: [
-                    "name": value.name ?? "unknown",
-                ]
-            ))
+            if let name = value.name {
+                self?.sendExternalBus(message: .init(
+                    command: WebViewExternalBusOutgoingMessage.improvDiscoveredDevice.rawValue,
+                    payload: [
+                        "name": name,
+                    ]
+                ))
+            }
         }
     }
 }
