@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Предпочтительный";
 "app_intents.assist.refresh_warning.title" = "Не можете найти свой Assist pipeline? Откройте Assist в приложении, чтобы обновить список pipeline.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "С помощью голоса";
 "app_intents.controls.assist.title" = "Assist в приложении";
 "app_intents.cover.title" = "Шторы";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Целевое состояние";
 "app_intents.lights.light.title" = "Свет";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Показывать уведомление после выполнения";
 "app_intents.notify_when_run.title" = "Уведомлять при запуске";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Какое действие?";
 "app_intents.perform_action.action_parameter_confirmation" = "Just to confirm, you wanted ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Manager недоступен";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Не загружен компонент mobile_app. Для продолжения необходимо добавить его в конфигурацию и перезапустить Home Assistant.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Ваша версия Home Assistant (%@) слишком устарела, вам необходимо обновить приложение по крайней мере до версии %@, чтобы использовать его.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "HA API не настроен";
 "ha_api.api_error.unacceptable_status_code" = "Недопустимый код состояния %1$li.";
 "ha_api.api_error.unexpected_type" = "Получен ответ с результатом типа %1$@, но ожидаемый тип %2$@.";
@@ -734,6 +739,8 @@ Home Assistant - это бесплатное программное обеспе
 "token_error.connection_failed" = "Сбой соединения.";
 "token_error.expired" = "Срок действия токена истёк.";
 "token_error.token_unavailable" = "Токен недоступен.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Проверка наличия обновлений…";
 "updater.no_updates_available.on_latest_version" = "Вы используете последнюю версию!";
 "updater.no_updates_available.title" = "Проверить наличие обновлений";

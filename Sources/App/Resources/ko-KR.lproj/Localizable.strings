@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "선호됨";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Cover";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Shows notification after executed";
 "app_intents.notify_when_run.title" = "Notify when run";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "어떤 동작을 원하시나요?";
 "app_intents.perform_action.action_parameter_confirmation" = "확인하기 위해 '%@' 원하셨나요?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "'%@'와 일치하는 %@ 옵션이 있습니다.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Manager를 사용할 수 없습니다.";
 "ha_api.api_error.mobile_app_component_not_loaded" = "mobile_app 구성 요소가 로드되지 않았습니다. 구성에 추가하고 Home Assistant를 다시 시작한 후 다시 시도하십시오.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Home Assistant 버전(%@)이 너무 오래되었으므로 앱을 사용하려면 버전 %@ 이상으로 업그레이드해야 합니다.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "HA API가 구성되지 않음";
 "ha_api.api_error.unacceptable_status_code" = "허용되지 않는 상태 코드 %1$li.";
 "ha_api.api_error.unexpected_type" = "유형 %1$@의 결과이지만 예상 유형은 %2$@인 응답을 받았습니다.";
@@ -734,6 +739,8 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "token_error.connection_failed" = "연결에 실패했습니다.";
 "token_error.expired" = "토큰이 만료되었습니다.";
 "token_error.token_unavailable" = "토큰을 사용할 수 없습니다.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "업데이트 확인…";
 "updater.no_updates_available.on_latest_version" = "최신 버전을 사용 중입니다!";
 "updater.no_updates_available.title" = "업데이트 확인";

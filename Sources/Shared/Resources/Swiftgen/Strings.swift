@@ -294,6 +294,10 @@ public enum L10n {
       /// Haptic confirmation
       public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
     }
+    public enum Icon {
+      /// Icon
+      public static var title: String { return L10n.tr("Localizable", "app_intents.icon.title") }
+    }
     public enum Intent {
       public enum Cover {
         /// Control cover

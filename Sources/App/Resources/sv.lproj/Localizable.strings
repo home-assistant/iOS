@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Föredragen";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Med rösten";
 "app_intents.controls.assist.title" = "Assistent i appen";
 "app_intents.cover.title" = "Cover";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Kontrollera omkopplare";
 "app_intents.lights.light.target" = "Måltillstånd";
 "app_intents.lights.light.title" = "Belysning";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Visar notifikation när utförd";
 "app_intents.notify_when_run.title" = "Notifiera vid körning";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Vilken åtgärd?";
 "app_intents.perform_action.action_parameter_confirmation" = "Bara för att bekräfta, du ville ‘%@’?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Det finns %@ alternativ som matchar '%@'.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Manager är inte tillgänglig";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Komponenten mobile_app är inte laddad. Lägg till det i din konfiguration, starta om Home Assistant och försök igen.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Din Home Assistant-version (%@) är för gammal, du måste uppgradera till minst version %@ för att kunna använda appen.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "HA API är inte konfigurerat";
 "ha_api.api_error.unacceptable_status_code" = "Ogiltig statuskod %1$li.";
 "ha_api.api_error.unexpected_type" = "Mottog svar med resultat av typ %1$@ men väntade typ %2$@.";
@@ -735,6 +740,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "token_error.connection_failed" = "Anslutningen misslyckades.";
 "token_error.expired" = "Token har upphört att gälla.";
 "token_error.token_unavailable" = "Token är inte tillgänglig.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Sök efter uppdateringar...";
 "updater.no_updates_available.on_latest_version" = "Du har den senaste versionen!";
 "updater.no_updates_available.title" = "Sök efter uppdateringar";

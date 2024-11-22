@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferováno";
 "app_intents.assist.refresh_warning.title" = "Nemůžete najít pipeline Assist? Otevřete Assist v aplikaci a obnovte seznam pipelines.";
+"app_intents.closed_state_icon.title" = "Ikona pro zavřený stav";
 "app_intents.controls.assist.parameter.with_voice" = "S hlasem";
 "app_intents.controls.assist.title" = "Assist v aplikaci";
 "app_intents.cover.title" = "Kryt";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Ovládat spínač";
 "app_intents.lights.light.target" = "Cílový stav";
 "app_intents.lights.light.title" = "Světla";
+"app_intents.lights.off_state_icon.title" = "Ikona pro vypnutý stav";
+"app_intents.lights.on_state_icon.title" = "Ikona pro zapnutý stav";
 "app_intents.notify_when_run.description" = "Zobrazí oznámení po provedení.";
 "app_intents.notify_when_run.title" = "Oznámit při spuštění";
+"app_intents.open_state_icon.title" = "Ikona pro otevřený stav";
 "app_intents.perform_action.action_parameter_configuration" = "Která akce?";
 "app_intents.perform_action.action_parameter_confirmation" = "Jen pro potvrzení, chtěli jste \"%@\"?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Existuje %@ možností odpovídajících \"%@\".";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "API manažer Home Assistanta není dostupný";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Součást mobile_app není načtena. Přidejte ji do nastavení, restartujte Home Assistanta a zkuste to znovu.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Vaše verze Home Assistanta (%@) je příliš stará. Chcete-li aplikaci používat, musíte aktualizovat alespoň na verzi %@.";
+"ha_api.api_error.no_available_api" = "Není k dispozici žádné rozhraní API. Zkontrolujte, zda je k dispozici interní adresa URL nebo externí adresa URL.";
 "ha_api.api_error.not_configured" = "API Home Assistanta není nastaveno";
 "ha_api.api_error.unacceptable_status_code" = "Nepřijatelný stavový kód %1$li.";
 "ha_api.api_error.unexpected_type" = "Přijata odpověď s výsledkem typu %1$@, ale očekával se typ %2$@.";
@@ -734,6 +739,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "token_error.connection_failed" = "Připojení se nezdařilo.";
 "token_error.expired" = "Platnost tokenu vypršela.";
 "token_error.token_unavailable" = "Token není k dispozici.";
+"unauthenticated.message.body" = "To může být dočasné, pokud jste za omezením proxy nebo sítě. V opačném případě a pokud problém přetrvává, odeberte server a přidejte jej zpět.";
+"unauthenticated.message.title" = "Nejste ověřeni";
 "updater.check_for_updates_menu.title" = "Vyhledávání aktualizací…";
 "updater.no_updates_available.on_latest_version" = "Již máte nejnovější verzi!";
 "updater.no_updates_available.title" = "Vyhledat aktualizace";

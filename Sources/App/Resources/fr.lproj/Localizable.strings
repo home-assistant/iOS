@@ -56,6 +56,7 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Préféré";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Avec la voix";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Cover";
@@ -66,8 +67,11 @@
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Statut de la cible";
 "app_intents.lights.light.title" = "Lumière";
+"app_intents.lights.off_state_icon.title" = "Icon for off state";
+"app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Afficher la notification après exécution";
 "app_intents.notify_when_run.title" = "Notify when run";
+"app_intents.open_state_icon.title" = "Icon for open state";
 "app_intents.perform_action.action_parameter_configuration" = "Quelle action ?";
 "app_intents.perform_action.action_parameter_confirmation" = "Juste pour confirmer, vous vouliez '%@' ?";
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "Il y a %@ options correspondant à '%@'.";
@@ -203,6 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Manager n'est pas disponible";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Le composant mobile_app n'est pas chargé ou n'a pas été détecté";
 "ha_api.api_error.must_upgrade_home_assistant" = "Votre version de Home Assistant ( %@ ) est trop ancienne, vous devez effectuer une mise à niveau vers la version minimum %@ pour utiliser l'application.";
+"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
 "ha_api.api_error.not_configured" = "L'API HA n'est pas configurée";
 "ha_api.api_error.unacceptable_status_code" = "Code d'état non recevable %1$li .";
 "ha_api.api_error.unexpected_type" = "Réponse reçue avec résultat de type %1$@ mais type attendu %2$@.";
@@ -734,6 +739,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "token_error.connection_failed" = "La connexion a échoué.";
 "token_error.expired" = "Le jeton a expiré.";
 "token_error.token_unavailable" = "Le jeton n'est pas disponible.";
+"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
+"unauthenticated.message.title" = "You are unauthenticated";
 "updater.check_for_updates_menu.title" = "Rechercher des mises à jour…";
 "updater.no_updates_available.on_latest_version" = "Vous êtes sur la dernière version!";
 "updater.no_updates_available.title" = "Vérifier les mises à jour";
