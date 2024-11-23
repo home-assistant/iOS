@@ -14,6 +14,9 @@ struct WidgetSensorsAppIntent: WidgetConfigurationIntent {
         title: .init("app_intents.choose_sensor.title", defaultValue: "Choose Sensor"),
         size: [
             .systemSmall: 2,
+            .systemMedium: 4,
+            .systemLarge: 10,
+            .systemExtraLarge: 20,
         ]
     )
     var sensors: [IntentSensorsAppEntity]?

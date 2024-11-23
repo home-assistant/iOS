@@ -509,7 +509,6 @@
 		3E02C0F32CA8032500102131 /* WidgetSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */; };
 		3E02C0F52CA8047000102131 /* WidgetSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */; };
 		3E02C0F62CA8049500102131 /* WidgetSensorsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0EA2CA7FD2A00102131 /* WidgetSensorsAppIntentTimelineProvider.swift */; };
-		3E02C0F72CA818A400102131 /* WidgetSensorsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0EA2CA7FD2A00102131 /* WidgetSensorsAppIntentTimelineProvider.swift */; };
 		3E4087EB2CD9047B0085DF29 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
 		3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */; };
 		3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */; };
@@ -6745,7 +6744,6 @@
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
-				3E02C0F72CA818A400102131 /* WidgetSensorsAppIntentTimelineProvider.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,

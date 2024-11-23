@@ -47,5 +47,8 @@ enum WidgetDetailsTableSupportedFamilies {
     @available(iOS 17.0, *)
     static let families: [WidgetFamily] = [
         .systemSmall,
+        .systemMedium,
+        .systemLarge,
+        .systemExtraLarge,
     ]
 }
