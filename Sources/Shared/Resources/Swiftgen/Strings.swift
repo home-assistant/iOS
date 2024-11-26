@@ -710,6 +710,8 @@ public enum L10n {
       public static var notification: String { return L10n.tr("Localizable", "client_events.event_type.notification") }
       /// Service Call
       public static var serviceCall: String { return L10n.tr("Localizable", "client_events.event_type.service_call") }
+      /// Settings
+      public static var settings: String { return L10n.tr("Localizable", "client_events.event_type.settings") }
       /// Unknown
       public static var unknown: String { return L10n.tr("Localizable", "client_events.event_type.unknown") }
       public enum Notification {

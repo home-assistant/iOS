@@ -5,7 +5,7 @@ import RealmSwift
 public struct ClientEventStore {
     public var addEvent: (ClientEvent) -> Promise<Void> = { event in
         let realm = Current.realm()
-        Current.Log.info("\(event.type): \(event.text) \(event.jsonPayload ?? [:])")
+        Current.Log.info("ClientEventStore - \(event.type): \(event.text) \(event.jsonPayload ?? [:])")
         return realm.reentrantWrite {
             realm.add(event)
         }

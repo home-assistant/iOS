@@ -141,6 +141,8 @@ extension ClientEvent.EventType {
             return L10n.ClientEvents.EventType.networkRequest
         case .unknown:
             return L10n.ClientEvents.EventType.unknown
+        case .settings:
+            return L10n.ClientEvents.EventType.settings
         }
     }
 }

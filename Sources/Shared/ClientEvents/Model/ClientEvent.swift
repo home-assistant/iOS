@@ -9,6 +9,7 @@ public class ClientEvent: Object {
         case serviceCall
         case locationUpdate
         case networkRequest
+        case settings
         case unknown
     }
 
