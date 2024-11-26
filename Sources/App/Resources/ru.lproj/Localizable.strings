@@ -207,7 +207,7 @@
 "ha_api.api_error.manager_not_available" = "HA API Manager недоступен";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Не загружен компонент mobile_app. Для продолжения необходимо добавить его в конфигурацию и перезапустить Home Assistant.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Ваша версия Home Assistant (%@) слишком устарела, вам необходимо обновить приложение по крайней мере до версии %@, чтобы использовать его.";
-"ha_api.api_error.no_available_api" = "No API available, double check if internal URL or external URL are available.";
+"ha_api.api_error.no_available_api" = "API недоступен, дважды проверьте, доступен ли внутренний URL-адрес или внешний URL-адрес.";
 "ha_api.api_error.not_configured" = "HA API не настроен";
 "ha_api.api_error.unacceptable_status_code" = "Недопустимый код состояния %1$li.";
 "ha_api.api_error.unexpected_type" = "Получен ответ с результатом типа %1$@, но ожидаемый тип %2$@.";

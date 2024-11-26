@@ -59,10 +59,10 @@
 "app_intents.closed_state_icon.title" = "Icoon voor gesloten stand";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
-"app_intents.cover.title" = "Cover";
+"app_intents.cover.title" = "Raambekleding";
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.icon.title" = "Icoon";
-"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.cover.title" = "Bedien Raambekleding";
 "app_intents.intent.light.title" = "Control light";
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Target state";
@@ -997,9 +997,9 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
-"widgets.controls.cover.description" = "Toggle cover";
-"widgets.controls.cover.placeholder_title" = "Choose cover";
-"widgets.controls.cover.title" = "Cover";
+"widgets.controls.cover.description" = "Raambekleding omschakelen";
+"widgets.controls.cover.placeholder_title" = "Kies Raambekleding";
+"widgets.controls.cover.title" = "Raambekleding";
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Kies licht";
 "widgets.controls.light.title" = "Light";
