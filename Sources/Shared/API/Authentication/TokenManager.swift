@@ -53,7 +53,7 @@ public class TokenManager {
     ) -> Promise<TokenInfo> {
         guard let url = connectionInfo.activeURL() else {
             return Promise { seal in
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL("Unknown - Initial token config"))
             }
         }
 

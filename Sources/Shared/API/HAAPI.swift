@@ -285,7 +285,7 @@ public class HomeAssistantAPI {
 
             if needsAuth {
                 guard let activeURL = server.info.connection.activeURL() else {
-                    seal.reject(ServerConnectionError.noActiveURL)
+                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                     return
                 }
 
@@ -368,7 +368,7 @@ public class HomeAssistantAPI {
         Promise { seal in
             guard let queryUrl = server.info.connection.activeAPIURL()?
                 .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
             _ = manager.request(queryUrl)

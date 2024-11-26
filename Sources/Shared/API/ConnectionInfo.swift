@@ -317,7 +317,7 @@ class ServerRequestAdapter: RequestAdapter {
                 }
             } else {
                 Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
-                completion(.failure(ServerConnectionError.noActiveURL))
+                completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
             }
         }
 

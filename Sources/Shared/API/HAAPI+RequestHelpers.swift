@@ -27,7 +27,7 @@ extension HomeAssistantAPI {
     ) -> Promise<String> {
         Promise { seal in
             guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
             _ = manager.request(
@@ -58,7 +58,7 @@ extension HomeAssistantAPI {
     ) -> Promise<T> {
         Promise { seal in
             guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
@@ -83,7 +83,7 @@ extension HomeAssistantAPI {
     ) -> Promise<[T]> {
         Promise { seal in
             guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
@@ -108,7 +108,7 @@ extension HomeAssistantAPI {
     ) -> Promise<T> {
         Promise { seal in
             guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
@@ -133,7 +133,7 @@ extension HomeAssistantAPI {
     ) -> Promise<T> {
         Promise { seal in
             guard let url = server.info.connection.activeAPIURL()?.appendingPathComponent(path) else {
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
                 return
             }
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
