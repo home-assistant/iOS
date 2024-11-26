@@ -609,6 +609,8 @@
 		425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		425D02572CF61D9F00DE1A01 /* ProgressLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D02562CF61D9F00DE1A01 /* ProgressLiveActivity.swift */; };
+		425D02582CF61EB900DE1A01 /* ProgressLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D02562CF61D9F00DE1A01 /* ProgressLiveActivity.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		426266412C11A63A0081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
@@ -1903,6 +1905,7 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		425D02562CF61D9F00DE1A01 /* ProgressLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressLiveActivity.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
 		426490672C0F1A41002155CC /* WatchAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistView.swift; sourceTree = "<group>"; };
@@ -2939,6 +2942,7 @@
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				110E694524E771AB004AA96D /* Color+Hex.swift */,
 				42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */,
+				425D02562CF61D9F00DE1A01 /* ProgressLiveActivity.swift */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -6659,6 +6663,7 @@
 				403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */,
 				42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */,
+				425D02572CF61D9F00DE1A01 /* ProgressLiveActivity.swift in Sources */,
 				3E4087EB2CD9047B0085DF29 /* ReloadWidgetsAppIntent.swift in Sources */,
 				421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */,
 				42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */,
@@ -6921,6 +6926,7 @@
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
+				425D02582CF61EB900DE1A01 /* ProgressLiveActivity.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,

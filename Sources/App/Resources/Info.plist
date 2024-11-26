@@ -78,14 +78,16 @@
 	<key>NFCReaderUsageDescription</key>
 	<string>Reading and writing NFC tags allows you to trigger events.</string>
 	<key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-        <key>NSAllowsArbitraryLoadsInWebContent</key>
-        <true/>
-        <key>NSAllowsArbitraryLoadsForMedia</key>
-        <true/>
-    </dict>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsForMedia</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+	</dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Used to scan for Improv devices</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_hass-mobile-app._tcp</string>
@@ -131,8 +133,10 @@
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Used to dictate text to Assist.</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Used to scan for Improv devices</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>AssistInAppIntent</string>

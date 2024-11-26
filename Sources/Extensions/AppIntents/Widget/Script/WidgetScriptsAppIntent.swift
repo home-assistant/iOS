@@ -1,4 +1,5 @@
 import AppIntents
+import ActivityKit
 import AudioToolbox
 import Foundation
 import Shared

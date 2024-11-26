@@ -1,4 +1,5 @@
 import Alamofire
+import ActivityKit
 import AVFoundation
 import AVKit
 import CoreLocation
@@ -39,6 +40,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
 
     private var initialURL: URL?
+    private var activity: Any?
 
     /// A view controller presented by a request from the webview
     var overlayAppController: UIViewController?

@@ -1,4 +1,5 @@
 import AppIntents
+import ActivityKit
 import AudioToolbox
 import Foundation
 import PromiseKit
@@ -7,7 +8,7 @@ import Shared
 import SwiftUI
 
 @available(iOS 16.4, *)
-final class ScriptAppIntent: AppIntent {
+final class ScriptAppIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = .init("widgets.script.description.title", defaultValue: "Run Script")
 
     @Parameter(title: LocalizedStringResource("app_intents.scripts.script.title", defaultValue: "Run Script"))
@@ -36,45 +37,32 @@ final class ScriptAppIntent: AppIntent {
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        if hapticConfirmation {
-            // Unfortunately this is the only 'haptics' that work with widgets
-            // ideally in the future this should use CoreHaptics for a better experience
-            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-        }
+        if #available(iOS 18, *) {
+            let attributes = ProgressActivityAttributes(timerId: "1", date: "")
 
-        let success: Bool = try await withCheckedThrowingContinuation { continuation in
-            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == script.serverId }),
-                  let api = Current.api(for: server) else {
-                continuation.resume(returning: false)
-                return
+            let contentState = ProgressActivityAttributes.ContentState(percentageCompleted: 0)
+
+            let content = ActivityContent(
+                state: contentState,
+                staleDate: nil,
+                relevanceScore: 0
+            )
+            do {
+                let activity = try Activity.request(
+                    attributes: attributes,
+                    content: content,
+                    pushType: .token
+                )
+                try await Task.sleep(nanoseconds: 2 * 1_000_000_000)
+                await activity.update(using: .init(percentageCompleted: 1, success: true))
+                try await Task.sleep(nanoseconds: 2 * 1_000_000_000)
+                await activity.end(nil)
+            } catch {
+                fatalError(error.localizedDescription)
             }
-            let domain = Domain.script.rawValue
-            let service = script.entityId.replacingOccurrences(of: "\(domain).", with: "")
-            api.CallService(domain: domain, service: service, serviceData: [:])
-                .pipe { [weak self] result in
-                    switch result {
-                    case .fulfilled:
-                        continuation.resume(returning: true)
-                    case let .rejected(error):
-                        Current.Log
-                            .error(
-                                "Failed to execute script from ScriptAppIntent, name: \(String(describing: self?.script.displayString)), error: \(error.localizedDescription)"
-                            )
-                        continuation.resume(returning: false)
-                    }
-                }
-        }
-        if showConfirmationNotification {
-            LocalNotificationDispatcher().send(.init(
-                id: .scriptAppIntentRun,
-                title: success ? L10n.AppIntents.Scripts.SuccessMessage.content(script.displayString) : L10n.AppIntents
-                    .Scripts.FailureMessage.content(script.displayString)
-            ))
         }
 
-        DataWidgetsUpdater.update()
-
-        return .result(value: success)
+        return .result(value: true)
     }
 }
 
