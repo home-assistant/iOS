@@ -264,6 +264,10 @@ public struct ConnectionInfo: Codable, Equatable {
         return false
     }
 
+    public var hasInternalURLSet: Bool {
+        internalURL != nil
+    }
+
     /// Secret as byte array
     func webhookSecretBytes(version: Version) -> [UInt8]? {
         guard let webhookSecret, webhookSecret.count.isMultiple(of: 2) else {

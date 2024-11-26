@@ -563,6 +563,20 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         }
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        // Log in case user is running with internal URL set but not configured local access
+        for server in Current.servers.all {
+            if server.info.connection.hasInternalURLSet,
+               server.info.connection.internalSSIDs?.isEmpty ?? true,
+               server.info.connection.internalHardwareAddresses?.isEmpty ?? true {
+                let message =
+                    "Server \(server.info.name) - Internal URL set but no internal SSIDs or hardware addresses set"
+                Current.Log.error(message)
+                Current.clientEventStore.addEvent(.init(text: message, type: .settings)).cauterize()
+            }
+        }
+    }
+
     override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
         let row = form[indexPath]
         guard let rowTag = row.tag else { return }
