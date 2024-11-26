@@ -75,19 +75,19 @@ extension Promise where T == Data {
             case 400...:
                 // some other error occurred that we don't want to parse as success
                 let text: String = {
-                    let text = "Webhook failed, server %@, with status code %@ - URL: %@"
+                    let message = "Webhook failed, server %@, with status code %@ - URL: %@"
                     if let requestURL {
                         return String(
-                            format: text,
+                            format: message,
                             server.info.name,
-                            statusCode,
+                            String(statusCode),
                             URLComponents(url: requestURL, resolvingAgainstBaseURL: false)?.host ?? "Unknown"
                         )
                     } else {
                         return String(
-                            format: text,
+                            format: message,
                             server.info.name,
-                            statusCode,
+                            String(statusCode),
                             "Unknown URL"
                         )
                     }
