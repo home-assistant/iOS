@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+@testable import Shared
 import XCTest
 
 @available(iOS 16.4, *)

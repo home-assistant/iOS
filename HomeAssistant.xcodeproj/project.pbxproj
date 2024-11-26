@@ -561,6 +561,8 @@
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
 		421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
+		4214388C2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
+		4214388D2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */; };
 		421B1C162BD65246001ED18C /* WidgetsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C152BD65246001ED18C /* WidgetsSettingsView.swift */; };
 		421B1C182BD6524E001ED18C /* WidgetsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetsSettingsViewModel.swift */; };
@@ -786,7 +788,6 @@
 		42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA622B4D54CB002729BC /* CarPlayTemplateProvider.swift */; };
 		42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */; };
 		42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */; };
-		42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
@@ -6939,7 +6940,6 @@
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				3E02C0F32CA8032500102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				421B1C182BD6524E001ED18C /* WidgetsSettingsViewModel.swift in Sources */,
-				42F5CABC2B10AE1A00409816 /* ServerFixture.swift in Sources */,
 				4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */,
@@ -7019,6 +7019,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				118F046A24CB895B00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
+				4214388D2CF5F1D700E2D44D /* ServerFixture.swift in Sources */,
 				B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				11C4628324B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
@@ -7387,6 +7388,7 @@
 				1168BF302718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				1104FC9125322C1800B8BE34 /* Dictionary+Additions.swift in Sources */,
 				11B7DBFC266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
+				4214388C2CF5F1D700E2D44D /* ServerFixture.swift in Sources */,
 				11B38EE3275C54A200205C7B /* OpenPageIntentHandler.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */,

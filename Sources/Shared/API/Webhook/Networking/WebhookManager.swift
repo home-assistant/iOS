@@ -249,6 +249,7 @@ public class WebhookManager: NSObject {
         }.then { data, response in
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
+                server: server,
                 statusCode: (response as? HTTPURLResponse)?.statusCode,
                 requestURL: response.url,
                 secretGetter: { server.info.connection.webhookSecretBytes(version: server.info.version) }
@@ -271,8 +272,11 @@ public class WebhookManager: NSObject {
 
                 /* If user's cloud subscription expired or account was signed out, retry with activeURL
                  instad of cloud hook */
-                if let self, let error = error as? WebhookError, error == WebhookError.unacceptableStatusCode(503),
-                   overrideURL == nil, let activeURL = server.info.connection.activeURL() {
+                if let self,
+                   let error = error as? WebhookError,
+                   error == WebhookError.unacceptableStatusCode(503),
+                   overrideURL == nil,
+                   let activeURL = server.info.connection.activeURL() {
                     let event = ClientEvent(
                         text: "Retrying with active URL - \(activeURL.absoluteString)",
                         type: .networkRequest
@@ -284,6 +288,10 @@ public class WebhookManager: NSObject {
                         overrideURL: activeURL
                     )
                     promise.cauterize()
+                } else {
+                    Current.Log.error(
+                        "Not retrying with active URL, error: \(error), overrideURL: \(overrideURL?.absoluteString ?? "--"), activeURL: \(server.info.connection.activeURL()?.absoluteString ?? "Unknown")"
+                    )
                 }
             }
         }
@@ -467,6 +475,7 @@ public class WebhookManager: NSObject {
         }.then { data, response in
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
+                server: server,
                 statusCode: (response as? HTTPURLResponse)?.statusCode,
                 requestURL: response.url,
                 secretGetter: { server.info.connection.webhookSecretBytes(version: server.info.version) }
@@ -535,7 +544,7 @@ public class WebhookManager: NSObject {
                 if let url = server.info.connection.webhookURL() {
                     webhookURL = url
                 } else {
-                    seal.resolve(.rejected(ServerConnectionError.noActiveURL))
+                    seal.resolve(.rejected(ServerConnectionError.noActiveURL(server.info.name)))
                     return
                 }
             }
@@ -639,6 +648,7 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
                 seal.resolve(error, data)
             }.webhookJson(
                 on: DispatchQueue.global(qos: .utility),
+                server: server,
                 statusCode: statusCode,
                 requestURL: task.response?.url,
                 secretGetter: { server.info.connection.webhookSecretBytes(version: server.info.version) }

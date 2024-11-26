@@ -32,7 +32,7 @@ class NotificationSubControllerMJPEG: NotificationSubController {
 
         return Promise<Void> { seal in
             guard let apiURL = api.server.info.connection.activeAPIURL() else {
-                seal.reject(ServerConnectionError.noActiveURL)
+                seal.reject(ServerConnectionError.noActiveURL(api.server.info.name))
                 return
             }
             let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)

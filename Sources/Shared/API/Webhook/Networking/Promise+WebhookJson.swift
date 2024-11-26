@@ -12,6 +12,7 @@ enum WebhookJsonParseError: Error, Equatable {
 extension Promise where T == Data? {
     func webhookJson(
         on queue: DispatchQueue? = nil,
+        server: Server,
         statusCode: Int? = nil,
         requestURL: URL?,
         sodium: Sodium = Sodium(),
@@ -22,6 +23,7 @@ extension Promise where T == Data? {
             if let data = optionalData {
                 return Promise<Data>.value(data).definitelyWebhookJson(
                     on: queue,
+                    server: server,
                     statusCode: statusCode,
                     requestURL: requestURL,
                     sodium: sodium,
@@ -38,6 +40,7 @@ extension Promise where T == Data? {
 extension Promise where T == Data {
     func webhookJson(
         on queue: DispatchQueue? = nil,
+        server: Server,
         statusCode: Int? = nil,
         requestURL: URL?,
         sodium: Sodium = Sodium(),
@@ -46,6 +49,7 @@ extension Promise where T == Data {
     ) -> Promise<Any> {
         definitelyWebhookJson(
             on: queue,
+            server: server,
             statusCode: statusCode,
             requestURL: requestURL,
             sodium: sodium,
@@ -57,6 +61,7 @@ extension Promise where T == Data {
     // Exists so that the Data? -> Data one doesn't accidentally refer to itself
     fileprivate func definitelyWebhookJson(
         on queue: DispatchQueue?,
+        server: Server,
         statusCode: Int?,
         requestURL: URL?,
         sodium: Sodium,
@@ -70,10 +75,21 @@ extension Promise where T == Data {
             case 400...:
                 // some other error occurred that we don't want to parse as success
                 let text: String = {
+                    let message = "Webhook failed, server %@, with status code %@ - URL: %@"
                     if let requestURL {
-                        return "Webhook failed with status code \(statusCode) - URL: \(URLComponents(url: requestURL, resolvingAgainstBaseURL: false)?.host ?? "Unknown")"
+                        return String(
+                            format: message,
+                            server.info.name,
+                            String(statusCode),
+                            URLComponents(url: requestURL, resolvingAgainstBaseURL: false)?.host ?? "Unknown"
+                        )
                     } else {
-                        return "Webhook failed with status code \(statusCode) - Unknown URL)"
+                        return String(
+                            format: message,
+                            server.info.name,
+                            String(statusCode),
+                            "Unknown URL"
+                        )
                     }
                 }()
                 Current.clientEventStore.addEvent(ClientEvent(
