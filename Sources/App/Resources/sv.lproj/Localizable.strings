@@ -96,7 +96,7 @@
 "app_intents.scripts.success_message.content" = "Skriptet \" %@ \" har körts.";
 "app_intents.show_confirmation_dialog.description" = "Visar bekräftelsemeddelande efter utförd åtgärd";
 "app_intents.show_confirmation_dialog.title" = "Meddelande om bekräftelse";
-"app_intents.state.target" = "Target state";
+"app_intents.state.target" = "Måltillstånd";
 "app_intents.state.toggle" = "Växla";
 "app_intents.widget_action.actions_parameter_configuration" = "Vilka åtgärder?";
 "assist.error.pipelines_response" = "Misslyckades med att inhämta Assist Pipelines, kontrollera din pipelinekonfiguration.";
@@ -127,7 +127,7 @@
 "carPlay.navigation.tab.actions" = "Åtgärder";
 "carPlay.navigation.tab.areas" = "Områden";
 "carPlay.navigation.tab.domains" = "Kontrollera";
-"carPlay.navigation.tab.quick_access" = "Quick access";
+"carPlay.navigation.tab.quick_access" = "Snabbåtkomst";
 "carPlay.navigation.tab.settings" = "Inställningar";
 "carPlay.no_actions.title" = "Öppna iOS Companion App för att skapa åtgärder för CarPlay.";
 "carPlay.no_entities.title" = "Inga CarPlay-kompatibla enheter tillgängliga.";
@@ -135,7 +135,7 @@
 "carPlay.notification.action.intro.title" = "Skapa iOS-åtgärd";
 "carPlay.notification.quick_access.intro.body" = "Tryck för att skapa din CarPlay-konfiguration.";
 "carPlay.notification.quick_access.intro.title" = "Skapa CarPlay-konfiguration";
-"carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
+"carPlay.quick_access.intro.item.title" = "Skapa din CarPlay-konfiguration";
 "carPlay.state.loading.title" = "Laddar...";
 "carPlay.unlock.confirmation.title" = "Är du säker på att du vill låsa upp %@?";
 "carplay.labels.already_added_server" = "Redan tillagd";
@@ -182,7 +182,7 @@
 "database.problem.delete" = "Radera databasen & stäng appen";
 "database.problem.quit" = "Stäng appen";
 "database.problem.title" = "Databasfel";
-"debug.reset.entities_database.title" = "Reset app entities database";
+"debug.reset.entities_database.title" = "Återställa databasen för appentiteter";
 "debug_section_label" = "Felsökning";
 "delete" = "Ta bort";
 "done_label" = "Klar";
@@ -200,7 +200,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitet '%@' hittades inte!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-flöde ej tillgängligt";
 "extensions.notification_content.error.request.other" = "Fick icke-200 statusskoden (%li)";
-"grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
+"grdb.config.migration_error.failed_access_grdb" = "Det gick inte att komma åt databasen (GRDB), fel: %@";
 "grdb.config.migration_error.failed_to_save" = "Misslyckades med att spara ny konfiguration, fel: %@";
 "ha_api.api_error.cant_build_url" = "Kan inte skapa API-URL";
 "ha_api.api_error.invalid_response" = "Mottog ogiltigt svar från Home Assistant";
