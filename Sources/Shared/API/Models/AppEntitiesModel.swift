@@ -8,8 +8,10 @@ public protocol AppEntitiesModelProtocol {
 }
 
 public final class AppEntitiesModel: AppEntitiesModelProtocol {
-    private var lastDatabaseUpdate: Date?
-    private var lastEntitiesCount = 0
+    /// ServerId: Date
+    private var lastDatabaseUpdate: [String: Date] = [:]
+    /// ServerId: Int
+    private var lastEntitiesCount: [String: Int] = [:]
     private let domainsAppUse: [String] = [
         Domain.scene,
         Domain.script,
@@ -22,30 +24,30 @@ public final class AppEntitiesModel: AppEntitiesModelProtocol {
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {
         // Only update database after a minute or if the entities count changed
         // First check for time to avoid unecessary filtering to check count
-        if !checkLastDatabaseUpdateLessThanMinuteAgo() {
+        if !checkLastDatabaseUpdateLessThanMinuteAgo(server: server) {
             let appRelatedEntities = filterDomains(entities)
             Current.Log
                 .verbose(
                     "Updating App Entities for \(server.info.name) checkLastDatabaseUpdateLessThanMinuteAgo false, lastDatabaseUpdate \(String(describing: lastDatabaseUpdate)) "
                 )
-            updateLastUpdate(entitiesCount: appRelatedEntities.count)
+            updateLastUpdate(entitiesCount: appRelatedEntities.count, server: server)
             handle(appRelatedEntities: appRelatedEntities, server: server)
         } else {
             let appRelatedEntities = filterDomains(entities)
-            if lastEntitiesCount != appRelatedEntities.count {
+            if lastEntitiesCount[server.identifier.rawValue] != appRelatedEntities.count {
                 Current.Log
                     .verbose(
                         "Updating App Entities for \(server.info.name) entities count diff, count: last \(lastEntitiesCount), new \(appRelatedEntities.count)"
                     )
-                updateLastUpdate(entitiesCount: appRelatedEntities.count)
+                updateLastUpdate(entitiesCount: appRelatedEntities.count, server: server)
                 handle(appRelatedEntities: appRelatedEntities, server: server)
             }
         }
     }
 
-    private func updateLastUpdate(entitiesCount: Int) {
-        lastEntitiesCount = entitiesCount
-        lastDatabaseUpdate = Date()
+    private func updateLastUpdate(entitiesCount: Int, server: Server) {
+        lastEntitiesCount[server.identifier.rawValue] = entitiesCount
+        lastDatabaseUpdate[server.identifier.rawValue] = Date()
     }
 
     private func filterDomains(_ entities: Set<HAEntity>) -> Set<HAEntity> {
@@ -53,12 +55,9 @@ public final class AppEntitiesModel: AppEntitiesModelProtocol {
     }
 
     // Avoid updating database too often
-    private func checkLastDatabaseUpdateLessThanMinuteAgo() -> Bool {
-        if let lastDatabaseUpdate {
-            return Date().timeIntervalSince(lastDatabaseUpdate) < 60
-        } else {
-            return false
-        }
+    private func checkLastDatabaseUpdateLessThanMinuteAgo(server: Server) -> Bool {
+        guard let lastDate = lastDatabaseUpdate[server.identifier.rawValue] else { return false }
+        return Date().timeIntervalSince(lastDate) < 60
     }
 
     private func handle(appRelatedEntities: Set<HAEntity>, server: Server) {
