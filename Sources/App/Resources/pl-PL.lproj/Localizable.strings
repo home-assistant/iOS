@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Powiadomienie";
 "client_events.event_type.notification.title" = "Otrzymano powiadomienie push: %@";
 "client_events.event_type.service_call" = "Wywołaj usługę";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Nieznany";
 "client_events.view.clear" = "Wyczyść";
 "client_events.view.clear_confirm.message" = "Tego nie można cofnąć.";

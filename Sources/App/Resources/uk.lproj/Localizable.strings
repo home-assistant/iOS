@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Сповіщення";
 "client_events.event_type.notification.title" = "Отримано push-сповіщення: %@";
 "client_events.event_type.service_call" = "Виклик сервісу";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Невідомо";
 "client_events.view.clear" = "Очистити";
 "client_events.view.clear_confirm.message" = "Це не можна скасовувати.";

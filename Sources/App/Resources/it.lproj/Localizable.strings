@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Notifica";
 "client_events.event_type.notification.title" = "Ricevuta una notifica push: %@";
 "client_events.event_type.service_call" = "Chiamata di servizio";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Sconosciuto";
 "client_events.view.clear" = "Pulisci";
 "client_events.view.clear_confirm.message" = "Questo non può essere annullato.";

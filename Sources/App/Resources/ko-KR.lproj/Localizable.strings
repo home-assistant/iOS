@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "알림";
 "client_events.event_type.notification.title" = "푸시 알림을 받았습니다: %@";
 "client_events.event_type.service_call" = "서비스 호출";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "알 수 없음";
 "client_events.view.clear" = "지우기";
 "client_events.view.clear_confirm.message" = "이 작업은 취소할 수 없습니다.";

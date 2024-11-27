@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "התראה";
 "client_events.event_type.notification.title" = "Received a Push Notification: %@";
 "client_events.event_type.service_call" = "הפעלת שרות";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "לא ידוע";
 "client_events.view.clear" = "נקה";
 "client_events.view.clear_confirm.message" = "This cannot be undone.";

@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Notificação";
 "client_events.event_type.notification.title" = "Recebeu uma notificação push: %@";
 "client_events.event_type.service_call" = "Chamada de serviço";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Desconhecido";
 "client_events.view.clear" = "Limpar";
 "client_events.view.clear_confirm.message" = "Isto não pode ser desfeito.";
@@ -739,8 +740,8 @@
 "token_error.connection_failed" = "Falha na conexão.";
 "token_error.expired" = "O token expirou.";
 "token_error.token_unavailable" = "O token não está disponível.";
-"unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
-"unauthenticated.message.title" = "You are unauthenticated";
+"unauthenticated.message.body" = "Isso pode ser temporário se você estiver atrás de um proxy ou restrição de rede. Caso contrário, se persistir, remova seu servidor e adicione-o novamente.";
+"unauthenticated.message.title" = "Você não está autenticado";
 "updater.check_for_updates_menu.title" = "Verifique se há atualizações...";
 "updater.no_updates_available.on_latest_version" = "Você está na versão mais recente!";
 "updater.no_updates_available.title" = "Verificar atualizações";

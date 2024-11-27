@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "通知";
 "client_events.event_type.notification.title" = "プッシュ通知を受信しました: %@";
 "client_events.event_type.service_call" = "サービスコール";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "不明";
 "client_events.view.clear" = "クリア";
 "client_events.view.clear_confirm.message" = "これは、元に戻すことはできません。";
