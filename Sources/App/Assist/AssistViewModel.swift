@@ -18,7 +18,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     private var audioPlayer: AudioPlayerProtocol
     private var assistService: AssistServiceProtocol
     private(set) var autoStartRecording: Bool
-    private(set) var audioTask: Task<Void, Error>?
 
     private(set) var canSendAudioData = false
 
@@ -64,7 +63,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     func onDisappear() {
         audioRecorder.stopRecording()
         audioPlayer.pause()
-        audioTask?.cancel()
     }
 
     func assistWithText() {
