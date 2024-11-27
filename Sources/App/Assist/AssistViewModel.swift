@@ -11,6 +11,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var inputText = ""
     @Published var isRecording = false
     @Published var showError = false
+    @Published var focusOnInput = false
     @Published var errorMessage = ""
 
     private var server: Server
@@ -158,6 +159,8 @@ final class AssistViewModel: NSObject, ObservableObject {
             Current.Log.info("Auto start recording triggered in Assist")
             autoStartRecording = false
             assistWithAudio()
+        } else if Current.isCatalyst {
+            focusOnInput = true
         }
     }
 

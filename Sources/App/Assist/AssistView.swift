@@ -46,6 +46,11 @@ struct AssistView: View {
             assistSession.inProgress = true
             viewModel.initialRoutine()
         }
+        .onChange(of: viewModel.focusOnInput) { newValue in
+            if newValue {
+                isFirstResponder = true
+            }
+        }
         .onDisappear {
             assistSession.inProgress = false
             viewModel.onDisappear()
@@ -113,26 +118,20 @@ struct AssistView: View {
     }
 
     private var chatList: some View {
-        ZStack(alignment: .bottom) {
-            ZStack(alignment: .top) {
-                ScrollView {
-                    ScrollViewReader { proxy in
-                        VStack {
-                            ForEach(viewModel.chatItems, id: \.id) { item in
-                                makeChatBubble(item: item)
-                                    .id(item.id)
-                                    .padding(.bottom)
-                            }
-                        }
-                        .padding()
-                        .onChange(of: viewModel.chatItems) { _ in
-                            proxy.scrollTo(viewModel.chatItems.last?.id)
-                        }
+        ScrollView {
+            ScrollViewReader { proxy in
+                VStack {
+                    ForEach(viewModel.chatItems, id: \.id) { item in
+                        makeChatBubble(item: item)
+                            .id(item.id)
+                            .padding(.bottom)
                     }
                 }
-                linearGradientDivider(position: .top)
+                .padding()
+                .onChange(of: viewModel.chatItems) { _ in
+                    proxy.scrollTo(viewModel.chatItems.last?.id)
+                }
             }
-            linearGradientDivider(position: .bottom)
         }
     }
 
