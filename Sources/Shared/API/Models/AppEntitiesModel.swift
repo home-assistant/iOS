@@ -22,9 +22,9 @@ public final class AppEntitiesModel: AppEntitiesModelProtocol {
     ].map(\.rawValue)
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {
-        // Only update database after a minute or if the entities count changed
+        // Only update database after a few seconds or if the entities count changed
         // First check for time to avoid unecessary filtering to check count
-        if !checkLastDatabaseUpdateLessThanMinuteAgo(server: server) {
+        if !checkLastDatabaseUpdateRecently(server: server) {
             let appRelatedEntities = filterDomains(entities)
             Current.Log
                 .verbose(
@@ -55,9 +55,9 @@ public final class AppEntitiesModel: AppEntitiesModelProtocol {
     }
 
     // Avoid updating database too often
-    private func checkLastDatabaseUpdateLessThanMinuteAgo(server: Server) -> Bool {
+    private func checkLastDatabaseUpdateRecently(server: Server) -> Bool {
         guard let lastDate = lastDatabaseUpdate[server.identifier.rawValue] else { return false }
-        return Date().timeIntervalSince(lastDate) < 60
+        return Date().timeIntervalSince(lastDate) < 15
     }
 
     private func handle(appRelatedEntities: Set<HAEntity>, server: Server) {
