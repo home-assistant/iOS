@@ -132,19 +132,16 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             guard let self else { return }
             if Communicator.shared.currentReachability == .immediatelyReachable {
                 executeMagicItemUsingiPhone(magicItem: magicItem) { success in
+                    // Avoid haptics in background
+                    guard self.isLessThan30Seconds(from: timeTriggered) else {
+                        completion(.tookLonger)
+                        return
+                    }
                     if success {
                         self.cancelTimeout()
                         completion(success ? .success : .failed)
                     } else {
-                        // Avoid triggering item twice when a fluke happens and iPhone has executed the item
-                        // while informing the watch that it failed or timeout
-                        guard self.isLessThan30Seconds(from: timeTriggered) else {
-                            return
-                        }
-                        self.executeMagicItemUsingAPI(magicItem: magicItem) { success in
-                            self.cancelTimeout()
-                            completion(success ? .success : .failed)
-                        }
+                        completion(.failed)
                     }
                 }
             } else {
