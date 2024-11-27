@@ -113,10 +113,10 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.bssid?.State as? String, "Not Connected")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-off")
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "No Connection")
-        XCTAssertEqual(s.connection?.Icon, "mdi:sim-off")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "No Connection")
+        XCTAssertEqual(s.connection.Icon, "mdi:sim-off")
 
         XCTAssertEqual(s.sims.count, 0)
     }
@@ -139,10 +139,10 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:aa")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "Wi-Fi")
-        XCTAssertEqual(s.connection?.Icon, "mdi:wifi")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "Wi-Fi")
+        XCTAssertEqual(s.connection.Icon, "mdi:wifi")
 
         XCTAssertEqual(s.sims.count, 0)
     }
@@ -166,10 +166,10 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:aa")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "Wi-Fi")
-        XCTAssertEqual(s.connection?.Icon, "mdi:wifi")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "Wi-Fi")
+        XCTAssertEqual(s.connection.Icon, "mdi:wifi")
 
         XCTAssertEqual(s.sims.count, 1)
         XCTAssertEqual(s.sims[0].UniqueID, "connectivity_sim_1")
@@ -231,10 +231,10 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:aa")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "Wi-Fi")
-        XCTAssertEqual(s.connection?.Icon, "mdi:wifi")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "Wi-Fi")
+        XCTAssertEqual(s.connection.Icon, "mdi:wifi")
 
         XCTAssertEqual(s.sims.count, 2)
         XCTAssertEqual(s.sims[0].UniqueID, "connectivity_sim_1")
@@ -270,11 +270,11 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.bssid?.State as? String, "Not Connected")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-off")
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "Cellular")
-        XCTAssertEqual(s.connection?.Icon, "mdi:signal")
-        XCTAssertEqual(s.connection?.Attributes?["Cellular Technology"] as? String, "4G")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "Cellular")
+        XCTAssertEqual(s.connection.Icon, "mdi:signal")
+        XCTAssertEqual(s.connection.Attributes?["Cellular Technology"] as? String, "4G")
 
         XCTAssertEqual(s.sims.count, 1)
         XCTAssertEqual(s.sims[0].UniqueID, "connectivity_sim_1")
@@ -298,11 +298,11 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertNil(s.ssid)
         XCTAssertNil(s.bssid)
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "Ethernet")
-        XCTAssertEqual(s.connection?.Icon, "mdi:ethernet")
-        XCTAssertEqual(s.connection?.Attributes?["key"] as? String, "value")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "Ethernet")
+        XCTAssertEqual(s.connection.Icon, "mdi:ethernet")
+        XCTAssertEqual(s.connection.Attributes?["key"] as? String, "value")
 
         XCTAssertTrue(s.sims.isEmpty)
     }
@@ -328,11 +328,11 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.bssid?.State as? String, "Not Connected")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-off")
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "Ethernet")
-        XCTAssertEqual(s.connection?.Icon, "mdi:ethernet")
-        XCTAssertEqual(s.connection?.Attributes?["key"] as? String, "value")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "Ethernet")
+        XCTAssertEqual(s.connection.Icon, "mdi:ethernet")
+        XCTAssertEqual(s.connection.Attributes?["key"] as? String, "value")
 
         XCTAssertTrue(s.sims.isEmpty)
     }
@@ -358,11 +358,11 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:aa")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
 
-        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
-        XCTAssertEqual(s.connection?.Name, "Connection Type")
-        XCTAssertEqual(s.connection?.State as? String, "Ethernet")
-        XCTAssertEqual(s.connection?.Icon, "mdi:ethernet")
-        XCTAssertEqual(s.connection?.Attributes?["key"] as? String, "value")
+        XCTAssertEqual(s.connection.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection.Name, "Connection Type")
+        XCTAssertEqual(s.connection.State as? String, "Ethernet")
+        XCTAssertEqual(s.connection.Icon, "mdi:ethernet")
+        XCTAssertEqual(s.connection.Attributes?["key"] as? String, "value")
 
         XCTAssertTrue(s.sims.isEmpty)
     }

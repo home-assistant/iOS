@@ -101,7 +101,7 @@ class CarPlaySceneDelegate: UIResponder {
     private func subscribeToEntitiesChanges() {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else { return }
         entitiesSubscriptionToken?.cancel()
-        entitiesSubscriptionToken = Current.api(for: server)?.connection?.caches.states
+        entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states
             .subscribe { [weak self] _, states in
                 self?.allTemplates.forEach {
                     $0.entitiesStateChange(entities: states)

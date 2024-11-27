@@ -171,7 +171,7 @@ public class LocalPushManager {
 
         delegate?.localPushManager(self, didReceiveRemoteNotification: baseContent.userInfo)
 
-        guard let api = Current.api(for: server), let connection = api.connection else {
+        guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to handle local push event")
             return
         }
@@ -185,7 +185,7 @@ public class LocalPushManager {
             add(UNNotificationRequest(identifier: event.identifier, content: content, trigger: nil))
         }.then { [subscription] () -> Promise<Void> in
             if let confirmID = event.confirmID, let webhookID = subscription?.webhookID {
-                return connection.send(.localPushConfirm(
+                return api.connection.send(.localPushConfirm(
                     webhookID: webhookID,
                     confirmID: confirmID
                 )).promise.map { _ in () }

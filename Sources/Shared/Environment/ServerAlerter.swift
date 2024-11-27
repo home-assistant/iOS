@@ -123,7 +123,7 @@ public class ServerAlerter {
             when(
                 fulfilled:
                 URLSession.shared.dataTask(.promise, with: apiUrl).map(\.data),
-                when(fulfilled: Current.apis.compactMap(\.connection?.caches.user).map { $0.once().promise })
+                when(fulfilled: Current.apis.compactMap(\.connection.caches.user).map { $0.once().promise })
             )
         }.map { [self] data, users -> [ServerAlert] in
             // allows individual alerts to fail to parse, in case e.g. somebody typos something

@@ -332,7 +332,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        when(fulfilled: Current.apis.compactMap { $0.connection?.caches.user.once().promise })
+        when(fulfilled: Current.apis.compactMap { $0.connection.caches.user.once().promise })
             .done { [sceneManager] users in
                 guard users.contains(where: \.isAdmin) else {
                     Current.Log.info("not showing because not an admin anywhere")
