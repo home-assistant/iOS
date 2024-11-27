@@ -25,16 +25,6 @@ strings:
         publicAccess: true
         lookupFunction: Current.localized.string
         enumName: FrontendStrings
-ib:
-  inputs:
-    - Sources/App/ClientEvents/ClientEvents.storyboard
-  outputs:
-    - templateName: scenes-swift5
-      output: Sources/App/Resources/Scenes.swift
-      params:
-        module: HomeAssistant
-    - templateName: segues-swift5
-      output: Sources/App/Resources/Segues.swift
 xcassets:
   inputs:
     - Sources/Shared/Assets/SharedAssets.xcassets
