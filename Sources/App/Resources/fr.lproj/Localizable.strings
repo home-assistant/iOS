@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Notification";
 "client_events.event_type.notification.title" = "Réception d'une notification push : %@";
 "client_events.event_type.service_call" = "Appel d'un service";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Inconnu";
 "client_events.view.clear" = "Nettoyer";
 "client_events.view.clear_confirm.message" = "Êtes-vous sûr ? Cette action est définitive.";

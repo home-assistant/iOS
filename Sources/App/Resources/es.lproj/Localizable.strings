@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Notificación";
 "client_events.event_type.notification.title" = "Recibió una Notificación Push: %@";
 "client_events.event_type.service_call" = "Llamada de servicio";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Desconocido";
 "client_events.view.clear" = "Limpiar";
 "client_events.view.clear_confirm.message" = "Esto no se puede deshacer.";

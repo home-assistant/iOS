@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Értesítés";
 "client_events.event_type.notification.title" = "Push értesítés: %@";
 "client_events.event_type.service_call" = "Szolgáltatás meghívása";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Ismeretlen";
 "client_events.view.clear" = "Törlés";
 "client_events.view.clear_confirm.message" = "Ezt nem lehet visszavonni.";

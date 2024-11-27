@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Bildirim";
 "client_events.event_type.notification.title" = "Bir Push Bildirimi aldı: %@";
 "client_events.event_type.service_call" = "Servis Çağrısı";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Bilinmeyen";
 "client_events.view.clear" = "Temizle";
 "client_events.view.clear_confirm.message" = "Bu geri alınamaz.";

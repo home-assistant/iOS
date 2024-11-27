@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Hysbysiad";
 "client_events.event_type.notification.title" = "Wedi derbyn Hysbysiad Gwthio: %@";
 "client_events.event_type.service_call" = "Galwad Gwasanaeth";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Anhysbys";
 "client_events.view.clear" = "Dileu";
 "client_events.view.clear_confirm.message" = "Ni ellir dadwneud hyn.";

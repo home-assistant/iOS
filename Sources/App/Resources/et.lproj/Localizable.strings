@@ -170,6 +170,7 @@
 "client_events.event_type.notification" = "Teavitus";
 "client_events.event_type.notification.title" = "Saadi tõukemärguanne: %@";
 "client_events.event_type.service_call" = "Teenuspäring";
+"client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Teadmata";
 "client_events.view.clear" = "Kustuta";
 "client_events.view.clear_confirm.message" = "Seda ei saa tagasi võtta.";
