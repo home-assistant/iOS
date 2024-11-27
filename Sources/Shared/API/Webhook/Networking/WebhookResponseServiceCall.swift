@@ -28,7 +28,7 @@ struct WebhookResponseServiceCall: WebhookResponseHandler {
 
             let domain = requestDictionary["domain"] as? String ?? "(unknown)"
             let service = requestDictionary["service"] as? String ?? "(unknown)"
-            let payload = requestDictionary["service_data"] as? [String: Any] ?? [:]
+            let payload = requestDictionary["service_data"] as? [String: AnyCodable] ?? [:]
 
             let event = ClientEvent(
                 text: "Called service: \(domain).\(service)",
@@ -36,7 +36,8 @@ struct WebhookResponseServiceCall: WebhookResponseHandler {
                 payload: payload
             )
 
-            return Current.clientEventStore.addEvent(event)
+            Current.clientEventStore.addEvent(event)
+            return .value(())
         }.then {
             Guarantee.value(WebhookResponseHandlerResult.default)
         }.recover { _ in

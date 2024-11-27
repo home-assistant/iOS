@@ -6,6 +6,7 @@ public enum GRDBDatabaseTable: String {
     case watchConfig
     case assistPipelines
     case carPlayConfig
+    case clientEvent
 }
 
 public enum DatabaseTables {
@@ -36,6 +37,15 @@ public enum DatabaseTables {
         case id
         case tabs
         case quickAccessItems
+    }
+
+    // Client events
+    public enum ClientEvent: String {
+        case id
+        case text
+        case type
+        case jsonPayload
+        case date
     }
 }
 
@@ -74,11 +84,13 @@ public extension DatabaseQueue {
             var shouldCreateAssistPipelines: Bool = false
             var shouldCreateWatchConfig: Bool = false
             var shouldCreateCarPlayConfig: Bool = false
+            var shouldCreateClientEvent: Bool = false
             try database.read { db in
                 shouldCreateHAppEntity = try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue)
                 shouldCreateWatchConfig = try !db.tableExists(GRDBDatabaseTable.watchConfig.rawValue)
                 shouldCreateCarPlayConfig = try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue)
                 shouldCreateAssistPipelines = try !db.tableExists(GRDBDatabaseTable.assistPipelines.rawValue)
+                shouldCreateClientEvent = try !db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
             }
 
             // HAAppEntity - App used domain entities
@@ -123,6 +135,18 @@ public extension DatabaseQueue {
                         t.primaryKey(DatabaseTables.AssistPipelines.serverId.rawValue, .text).notNull()
                         t.column(DatabaseTables.AssistPipelines.preferredPipeline.rawValue, .text).notNull()
                         t.column(DatabaseTables.AssistPipelines.pipelines.rawValue, .jsonText).notNull()
+                    }
+                }
+            }
+            // Client Event
+            if shouldCreateClientEvent {
+                try database.write { db in
+                    try db.create(table: GRDBDatabaseTable.clientEvent.rawValue) { t in
+                        t.primaryKey(DatabaseTables.ClientEvent.id.rawValue, .text).notNull()
+                        t.column(DatabaseTables.ClientEvent.text.rawValue, .text).notNull()
+                        t.column(DatabaseTables.ClientEvent.type.rawValue, .text).notNull()
+                        t.column(DatabaseTables.ClientEvent.jsonPayload.rawValue, .jsonText).notNull()
+                        t.column(DatabaseTables.ClientEvent.date.rawValue, .date).notNull()
                     }
                 }
             }

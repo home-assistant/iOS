@@ -10,13 +10,10 @@ public class ClientEventTableViewController: UITableViewController, UISearchResu
         return formatter
     }()
 
-    private var results: AnyRealmCollection<ClientEvent> = AnyRealmCollection(List<ClientEvent>()) {
+    private var results: [ClientEvent] = [] {
         didSet {
             tableView.reloadData()
             notificationToken?.invalidate()
-            notificationToken = results.observe { [tableView] changes in
-                tableView?.applyChanges(changes: changes)
-            }
         }
     }
 
