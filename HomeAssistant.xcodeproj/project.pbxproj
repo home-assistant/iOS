@@ -609,6 +609,7 @@
 		425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		426266412C11A63A0081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
@@ -1903,6 +1904,7 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
 		426490672C0F1A41002155CC /* WatchAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistView.swift; sourceTree = "<group>"; };
@@ -3772,6 +3774,14 @@
 			path = Domains;
 			sourceTree = "<group>";
 		};
+		425C5A052CF756CF00206B5B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		426266432C11B0070081A818 /* Watch */ = {
 			isa = PBXGroup;
 			children = (
@@ -4002,6 +4012,7 @@
 		42B94BD92B9606CD00DEE060 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				425C5A052CF756CF00206B5B /* Views */,
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
 				42B94BDC2B9606CD00DEE060 /* AssistView.swift */,
@@ -6801,6 +6812,7 @@
 				42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
+				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
