@@ -53,7 +53,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
 
         firstly {
-            Current.api(for: server)?.connection?.send(.getServices())
+            Current.api(for: server)?.connection.send(.getServices())
                 .promise ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }
         .map(\.all)

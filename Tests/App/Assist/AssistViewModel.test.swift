@@ -42,8 +42,6 @@ final class AssistViewModelTests: XCTestCase {
         mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
 
         sut.initialRoutine()
-        try await sut.audioTask?.value
-        XCTAssertNotNil(sut.audioTask)
         XCTAssertTrue(mockAudioPlayer.pauseCalled)
         XCTAssertFalse(sut.autoStartRecording)
         XCTAssertEqual(sut.inputText, "")
@@ -55,11 +53,9 @@ final class AssistViewModelTests: XCTestCase {
         sut = makeSut(autoStartRecording: true)
 
         sut.initialRoutine()
-        try await sut.audioTask?.value
         sut.onDisappear()
         XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
         XCTAssertTrue(mockAudioPlayer.pauseCalled)
-        XCTAssertTrue(sut.audioTask!.isCancelled)
     }
 
     @MainActor

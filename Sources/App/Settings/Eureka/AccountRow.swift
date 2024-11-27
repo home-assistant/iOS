@@ -184,12 +184,12 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        guard let api = Current.api(for: server), let connection = api.connection else {
+        guard let api = Current.api(for: server) else {
             Current.Log.error("No API available to fetch avatar")
             return
         }
 
-        accountSubscription = connection.caches.user.subscribe { [weak self] _, user in
+        accountSubscription = api.connection.caches.user.subscribe { [weak self] _, user in
             guard let self else { return }
             Current.Log.verbose("got user from user \(user)")
             cachedUserName = user.name
@@ -202,7 +202,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                 }
             }
 
-            avatarSubscription = connection.caches.states.subscribe { [weak self] _, states in
+            avatarSubscription = api.connection.caches.states.subscribe { [weak self] _, states in
                 firstly { () -> Guarantee<Set<HAEntity>> in
                     Guarantee.value(states.all)
                 }.map { states throws -> HAEntity in

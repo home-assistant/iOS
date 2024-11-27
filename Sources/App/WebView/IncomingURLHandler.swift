@@ -415,8 +415,8 @@ extension IncomingURLHandler {
                 title: L10n.UrlHandler.RenderTemplate.Confirm.title,
                 message: L10n.UrlHandler.RenderTemplate.Confirm.message(template),
                 handler: {
-                    if let api = Current.apis.first, let connection = api.connection {
-                        connection.subscribe(
+                    if let api = Current.apis.first {
+                        api.connection.subscribe(
                             to: .renderTemplate(template, variables: variablesDict),
                             initiated: { result in
                                 if case let .failure(error) = result {

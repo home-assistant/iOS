@@ -185,7 +185,7 @@ class OnboardingAuth {
         return firstly {
             when(resolved: api.tokenManager.revokeToken()).asVoid()
         }.done {
-            api.connection?.disconnect()
+            api.connection.disconnect()
             Current.servers.remove(identifier: api.server.identifier)
         }
     }
