@@ -80,7 +80,7 @@ final class ThreadCredentialsManagementViewModel: ObservableObject {
         ])
 
         for server in Current.servers.all {
-            Current.api(for: server)?.connection?.send(request).promise.pipe { result in
+            Current.api(for: server)?.connection.send(request).promise.pipe { result in
                 switch result {
                 case .fulfilled:
                     successCount += 1

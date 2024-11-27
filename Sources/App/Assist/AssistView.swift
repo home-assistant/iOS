@@ -46,6 +46,11 @@ struct AssistView: View {
             assistSession.inProgress = true
             viewModel.initialRoutine()
         }
+        .onChange(of: viewModel.focusOnInput) { newValue in
+            if newValue {
+                isFirstResponder = true
+            }
+        }
         .onDisappear {
             assistSession.inProgress = false
             viewModel.onDisappear()
@@ -113,26 +118,20 @@ struct AssistView: View {
     }
 
     private var chatList: some View {
-        ZStack(alignment: .bottom) {
-            ZStack(alignment: .top) {
-                ScrollView {
-                    ScrollViewReader { proxy in
-                        VStack {
-                            ForEach(viewModel.chatItems, id: \.id) { item in
-                                makeChatBubble(item: item)
-                                    .id(item.id)
-                                    .padding(.bottom)
-                            }
-                        }
-                        .padding()
-                        .onChange(of: viewModel.chatItems) { _ in
-                            proxy.scrollTo(viewModel.chatItems.last?.id)
-                        }
+        ScrollView {
+            ScrollViewReader { proxy in
+                VStack {
+                    ForEach(viewModel.chatItems, id: \.id) { item in
+                        makeChatBubble(item: item)
+                            .id(item.id)
+                            .padding(.bottom)
                     }
                 }
-                linearGradientDivider(position: .top)
+                .padding()
+                .onChange(of: viewModel.chatItems) { _ in
+                    proxy.scrollTo(viewModel.chatItems.last?.id)
+                }
             }
-            linearGradientDivider(position: .bottom)
         }
     }
 
@@ -148,33 +147,45 @@ struct AssistView: View {
     }
 
     private var bottomBar: some View {
-        HStack(spacing: Spaces.two) {
-            TextField("", text: $viewModel.inputText)
-                .textFieldStyle(.plain)
-                .focused($isFirstResponder)
-                .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
-                .frame(height: 45)
-                .padding(.horizontal, viewModel.isRecording ? .zero : Spaces.two)
-                .overlay(content: {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.gray)
-                })
-                .opacity(viewModel.isRecording ? 0 : 1)
-                .animation(.smooth, value: viewModel.isRecording)
-                .onSubmit {
-                    viewModel.assistWithText()
+        ZStack {
+            HStack(spacing: Spaces.two) {
+                TextField("", text: $viewModel.inputText)
+                    .textFieldStyle(.plain)
+                    .focused($isFirstResponder)
+                    .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
+                    .frame(height: 45)
+                    .padding(.horizontal, viewModel.isRecording ? .zero : Spaces.two)
+                    .overlay(content: {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(.gray)
+                    })
+                    .opacity(viewModel.isRecording ? 0 : 1)
+                    .animation(.smooth, value: viewModel.isRecording)
+                    .onSubmit {
+                        viewModel.assistWithText()
+                    }
+                if viewModel.inputText.isEmpty {
+                    assistMicButton
+                } else {
+                    assistSendTextButton
                 }
-            if viewModel.inputText.isEmpty {
-                assistMicButton
-            } else {
-                assistSendTextButton
             }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, Spaces.two)
+            .padding(.vertical)
+            .padding(.bottom, isIpad ? Spaces.two : Spaces.half)
+            .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
+            .opacity(viewModel.isRecording ? 0 : 1)
+            Button {
+                feedbackGenerator.notificationOccurred(.warning)
+                viewModel.stopStreaming()
+            } label: {
+                AssistMicAnimationView()
+                    .opacity(viewModel.isRecording ? 1 : 0)
+                    .frame(maxWidth: viewModel.isRecording ? .infinity : 0)
+            }
+            .buttonStyle(.plain)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, Spaces.two)
-        .padding(.vertical)
-        .padding(.bottom, isIpad ? Spaces.two : Spaces.half)
-        .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
     }
 
     private var assistSendTextButton: some View {
@@ -192,59 +203,25 @@ struct AssistView: View {
         .keyboardShortcut(.defaultAction)
     }
 
+    @ViewBuilder
     private var assistMicButton: some View {
         Button(action: {
+            feedbackGenerator.notificationOccurred(.success)
             isFirstResponder = false
-            feedbackGenerator.notificationOccurred(.warning)
-            if viewModel.isRecording {
-                viewModel.stopStreaming()
-            } else {
-                viewModel.assistWithAudio()
-            }
+            viewModel.assistWithAudio()
         }, label: {
-            micIcon
+            Image(uiImage: MaterialDesignIcons.microphoneIcon.image(ofSize: iconSize, color: iconColor))
         })
         .buttonStyle(.plain)
-        .font(.system(size: viewModel.isRecording ? 70 : iconSize.width))
-        .padding(viewModel.isRecording ? [] : .trailing)
+        .font(.system(size: iconSize.width))
+        .padding(.trailing)
         .animation(.smooth, value: viewModel.isRecording)
-        .onChange(of: viewModel.isRecording) { newValue in
-            if !newValue {
-                feedbackGenerator.notificationOccurred(.success)
-            }
-        }
     }
 
     private var sendIcon: some View {
         Image(uiImage: MaterialDesignIcons.sendIcon.image(ofSize: iconSize, color: iconColor))
             .symbolRenderingMode(.palette)
             .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
-    }
-
-    @ViewBuilder
-    private var micIcon: some View {
-        let icon = MaterialDesignIcons.microphoneIcon.image(ofSize: iconSize, color: iconColor)
-        if #available(iOS 17.0, *) {
-            ZStack {
-                Image(systemName: "waveform.circle.fill")
-                    .symbolEffect(
-                        .variableColor.cumulative.dimInactiveLayers.nonReversing,
-                        options: .repeating,
-                        value: viewModel.isRecording
-                    )
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
-                    .opacity(viewModel.isRecording ? 1 : 0)
-                Image(uiImage: icon)
-                    .opacity(viewModel.isRecording ? 0 : 1)
-            }
-        } else {
-            if viewModel.isRecording {
-                Image(systemName: "stop.circle")
-            } else {
-                Image(uiImage: icon)
-            }
-        }
     }
 
     private func backgroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {

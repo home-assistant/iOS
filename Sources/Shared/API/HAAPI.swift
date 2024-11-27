@@ -32,7 +32,7 @@ public class HomeAssistantAPI {
 
     public let tokenManager: TokenManager
     public var server: Server
-    public internal(set) var connection: HAConnection?
+    public internal(set) var connection: HAConnection
 
     public static var clientVersionDescription: String {
         "\(AppConstants.version) (\(AppConstants.build))"
@@ -66,10 +66,10 @@ public class HomeAssistantAPI {
         self.server = server
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
-        if let activeURL = server.info.connection.activeURL() {
-            self.connection = HAKit.connection(configuration: .init(
-                connectionInfo: {
-                    do {
+        self.connection = HAKit.connection(configuration: .init(
+            connectionInfo: {
+                do {
+                    if let activeURL = server.info.connection.activeURL() {
                         return try .init(
                             url: activeURL,
                             userAgent: HomeAssistantAPI.userAgent,
@@ -81,27 +81,27 @@ public class HomeAssistantAPI {
                                 )
                             }
                         )
-                    } catch {
-                        Current.Log.error("couldn't create connection info: \(error)")
+                    } else {
+                        Current.clientEventStore.addEvent(.init(
+                            text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
+                            type: .networkRequest
+                        )).cauterize()
+                        Current.Log.error("activeURL was not available when HAAPI called initializer")
                         return nil
                     }
-                },
-                fetchAuthToken: { completion in
-                    tokenManager.bearerToken.done {
-                        completion(.success($0.0))
-                    }.catch {
-                        completion(.failure($0))
-                    }
+                } catch {
+                    Current.Log.error("couldn't create connection info: \(error)")
+                    return nil
                 }
-            ))
-        } else {
-            Current.clientEventStore.addEvent(.init(
-                text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
-                type: .networkRequest
-            )).cauterize()
-            Current.Log.error("activeURL was not available when HAAPI called initializer")
-            self.connection = nil
-        }
+            },
+            fetchAuthToken: { completion in
+                tokenManager.bearerToken.done {
+                    completion(.success($0.0))
+                }.catch {
+                    completion(.failure($0))
+                }
+            }
+        ))
 
         let manager = HomeAssistantAPI.configureSessionManager(
             urlConfig: urlConfig,
@@ -187,7 +187,7 @@ public class HomeAssistantAPI {
         Current.Log.info("running connect for \(reason)")
 
         // websocket
-        connection?.connect()
+        connection.connect()
 
         return firstly { () -> Promise<Void> in
             guard !Current.isAppExtension else {

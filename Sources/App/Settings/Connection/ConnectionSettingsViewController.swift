@@ -266,7 +266,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                                 }.then {
                                     waitAtLeast
                                 }.get {
-                                    Current.api(for: server)?.connection?.disconnect()
+                                    Current.api(for: server)?.connection.disconnect()
                                     Current.servers.remove(identifier: server.identifier)
                                 }.ensure {
                                     hud.hide(animated: true)

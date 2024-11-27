@@ -449,6 +449,12 @@ public enum L10n {
   }
 
   public enum Assist {
+    public enum Button {
+      public enum Listening {
+        /// Listening...
+        public static var title: String { return L10n.tr("Localizable", "assist.button.listening.title") }
+      }
+    }
     public enum Error {
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
