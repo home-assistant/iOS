@@ -125,6 +125,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     private func executeMagicItem(completion: @escaping (MagicItemResponse) -> Void) {
+        let timeTriggered = Date()
         let magicItem = item
         Current.Log.verbose("Selected magic item id: \(magicItem.id)")
         fetchNetworkInfo { [weak self] in
@@ -135,6 +136,11 @@ final class WatchMagicViewRowViewModel: ObservableObject {
                         self.cancelTimeout()
                         completion(success ? .success : .failed)
                     } else {
+                        // Avoid triggering item twice when a fluke happens and iPhone has executed the item
+                        // while informing the watch that it failed or timeout
+                        guard self.isLessThan30Seconds(from: timeTriggered) else {
+                            return
+                        }
                         self.executeMagicItemUsingAPI(magicItem: magicItem) { success in
                             self.cancelTimeout()
                             completion(success ? .success : .failed)
@@ -149,6 +155,11 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             }
             startTimeoutTimerWhichResetsState(completion: completion)
         }
+    }
+
+    // Given date returns if is less than 30 seconds from now
+    private func isLessThan30Seconds(from date: Date) -> Bool {
+        Date().timeIntervalSince(date) < 30
     }
 
     private func startTimeoutTimerWhichResetsState(completion: @escaping (MagicItemResponse) -> Void) {
