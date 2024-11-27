@@ -38,8 +38,6 @@ public enum AssistSource: Equatable {
 
 public final class AssistService: AssistServiceProtocol {
     public weak var delegate: AssistServiceDelegate?
-
-    private var connection: HAConnection?
     private var server: Server
 
     private var cancellable: HACancellable?
@@ -60,7 +58,6 @@ public final class AssistService: AssistServiceProtocol {
         server: Server
     ) {
         self.server = server
-        self.connection = Current.api(for: server)?.connection
     }
 
     deinit {
@@ -69,7 +66,6 @@ public final class AssistService: AssistServiceProtocol {
 
     public func replaceServer(server: Server) {
         self.server = server
-        connection = Current.api(for: server)?.connection
     }
 
     public func assist(source: AssistSource) {
@@ -82,7 +78,7 @@ public final class AssistService: AssistServiceProtocol {
     }
 
     public func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
-        connection?.send(AssistRequests.fetchPipelinesTypedRequest) { [weak self] result in
+        Current.api(for: server)?.connection.send(AssistRequests.fetchPipelinesTypedRequest) { [weak self] result in
             switch result {
             case let .success(response):
                 self?.saveInDatabase(response)
@@ -96,7 +92,7 @@ public final class AssistService: AssistServiceProtocol {
 
     public func sendAudioData(_ data: Data) {
         guard let sttBinaryHandlerId else { return }
-        _ = connection?.send(.init(
+        _ = Current.api(for: server)?.connection.send(.init(
             type: .sttData(.init(rawValue: sttBinaryHandlerId)),
             data: ["audioData": data.base64EncodedString()]
         ))
@@ -104,7 +100,7 @@ public final class AssistService: AssistServiceProtocol {
 
     public func finishSendingAudio() {
         guard let sttBinaryHandlerId else { return }
-        _ = connection?.send(.init(type: .sttData(.init(rawValue: sttBinaryHandlerId))))
+        _ = Current.api(for: server)?.connection.send(.init(type: .sttData(.init(rawValue: sttBinaryHandlerId))))
     }
 
     private func saveInDatabase(_ response: PipelineResponse) {
@@ -123,7 +119,7 @@ public final class AssistService: AssistServiceProtocol {
 
     private func assistWithAudio(pipelineId: String?, audioSampleRate: Double) {
         lastPipelineIdUsed = pipelineId
-        connection?.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
+        Current.api(for: server)?.connection.subscribe(to: AssistRequests.assistByVoiceTypedSubscription(
             preferredPipelineId: pipelineId,
             audioSampleRate: audioSampleRate,
             conversationId: conversationId,
@@ -137,7 +133,7 @@ public final class AssistService: AssistServiceProtocol {
 
     private func assistWithText(input: String, pipelineId: String?) {
         lastPipelineIdUsed = pipelineId
-        connection?.subscribe(to: AssistRequests.assistByTextTypedSubscription(
+        Current.api(for: server)?.connection.subscribe(to: AssistRequests.assistByTextTypedSubscription(
             preferredPipelineId: pipelineId,
             inputText: input,
             conversationId: conversationId,
