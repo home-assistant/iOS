@@ -247,25 +247,3 @@ extension AssistViewModel: AssistSessionDelegate {
         }
     }
 }
-
-// Print all changes to a region.
-class Observer: TransactionObserver {
-    let observedRegion: DatabaseRegion
-
-    init(observedRegion: DatabaseRegion) {
-        self.observedRegion = observedRegion
-    }
-
-    func observes(eventsOfKind eventKind: DatabaseEventKind) -> Bool {
-        observedRegion.isModified(byEventsOfKind: eventKind)
-    }
-
-    func databaseDidChange(with event: DatabaseEvent) {
-        if observedRegion.isModified(by: event) {
-            print(event)
-        }
-    }
-
-    func databaseDidCommit(_ db: Database) {}
-    func databaseDidRollback(_ db: Database) {}
-}
