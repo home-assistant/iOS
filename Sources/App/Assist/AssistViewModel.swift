@@ -8,7 +8,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
     @Published var pipelines: [Pipeline] = []
     @Published var preferredPipelineId: String = ""
-    @Published var showScreenLoader = false
     @Published var inputText = ""
     @Published var isRecording = false
     @Published var showError = false
@@ -42,16 +41,24 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioRecorder.delegate = self
         self.assistService.delegate = self
 
-        if preferredPipelineId == "last_used" {
+        if ["last_used", "preferred"].contains(preferredPipelineId) {
             self.preferredPipelineId = ""
         }
     }
 
-    @MainActor
     func initialRoutine() {
         AssistSession.shared.delegate = self
-        fetchPipelines()
-        checkForAutoRecordingAndStart()
+
+        loadCachedPipelines()
+
+        if pipelines.isEmpty {
+            fetchPipelines { [weak self] in
+                self?.checkForAutoRecordingAndStart()
+            }
+        } else {
+            checkForAutoRecordingAndStart()
+            fetchPipelines()
+        }
     }
 
     func onDisappear() {
@@ -60,7 +67,6 @@ final class AssistViewModel: NSObject, ObservableObject {
         audioTask?.cancel()
     }
 
-    @MainActor
     func assistWithText() {
         audioPlayer.pause()
         stopStreaming()
@@ -69,7 +75,6 @@ final class AssistViewModel: NSObject, ObservableObject {
         inputText = ""
     }
 
-    @MainActor
     func assistWithAudio() {
         audioPlayer.pause()
 
@@ -88,7 +93,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     private func startAssistAudioPipeline(audioSampleRate: Double) {
         assistService.assist(
             source: .audio(
-                pipelineId: preferredPipelineId,
+                pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
                 audioSampleRate: audioSampleRate
             )
         )
@@ -99,28 +104,24 @@ final class AssistViewModel: NSObject, ObservableObject {
         assistService.delegate = self
     }
 
-    @MainActor
     private func appendToChat(_ item: AssistChatItem) {
         chatItems.append(item)
     }
 
-    @MainActor
-    private func fetchPipelines() {
-        showScreenLoader = true
-
-        loadCachedPipelines()
-
+    private func fetchPipelines(completion: (() -> Void)? = nil) {
         assistService.fetchPipelines { [weak self] _ in
-            self?.showScreenLoader = false
             guard let self else {
                 self?.showError(message: L10n.Assist.Error.pipelinesResponse)
                 return
             }
+
+            // Fetch pipelines method already saves new values in database
+            // loading cache now
             loadCachedPipelines()
+            completion?()
         }
     }
 
-    @MainActor
     private func loadCachedPipelines() {
         do {
             if let cachedPipelineConfig = try Current.database.read({ db in
@@ -129,7 +130,7 @@ final class AssistViewModel: NSObject, ObservableObject {
                     .fetchOne(db)
             }) {
                 if preferredPipelineId.isEmpty {
-                    preferredPipelineId = cachedPipelineConfig.preferredPipeline
+                    setPreferredPipelineId(cachedPipelineConfig.preferredPipeline)
                 }
                 pipelines = cachedPipelineConfig.pipelines
             } else {
@@ -137,6 +138,12 @@ final class AssistViewModel: NSObject, ObservableObject {
             }
         } catch {
             Current.Log.error("Error loading cached pipelines: \(error)")
+        }
+    }
+
+    private func setPreferredPipelineId(_ pipelineId: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.preferredPipelineId = pipelineId
         }
     }
 
@@ -150,10 +157,9 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private func checkForAutoRecordingAndStart() {
         if autoStartRecording {
+            Current.Log.info("Auto start recording triggered in Assist")
             autoStartRecording = false
-            audioTask = Task {
-                await assistWithAudio()
-            }
+            assistWithAudio()
         }
     }
 
@@ -204,12 +210,10 @@ extension AssistViewModel: AssistServiceDelegate {
         }
     }
 
-    @MainActor
     func didReceiveSttContent(_ content: String) {
         appendToChat(.init(content: content, itemType: .input))
     }
 
-    @MainActor
     func didReceiveIntentEndContent(_ content: String) {
         appendToChat(.init(content: content, itemType: .output))
     }
@@ -222,7 +226,6 @@ extension AssistViewModel: AssistServiceDelegate {
         audioPlayer.play(url: mediaUrl)
     }
 
-    @MainActor
     func didReceiveError(code: String, message: String) {
         Current.Log.error("Assist error: \(code)")
         appendToChat(.init(content: message, itemType: .error))
