@@ -27,7 +27,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
                         icon: sensor.icon
                     )
                 }
-            }.prefix(WidgetFamilySizes.size(for: context.family)))
+            }.prefix(WidgetFamilySizes.sizeForPreview(for: context.family)))
             return try await entry(for: configuration, in: context)
         } catch {
             Current.Log.error("Using placeholder for sensor widget snapshot")
