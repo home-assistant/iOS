@@ -46,7 +46,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
 
     func getSnapshot(for configuration: Intent, in context: Context, completion: @escaping (Entry) -> Void) {
         panels(for: context, updating: configuration.pages ?? []) { panels in
-            completion(Entry(pages: panels))
+            completion(Entry(pages: Array(panels.prefix(WidgetFamilySizes.sizeForPreview(for: context.family)))))
         }
     }
 
