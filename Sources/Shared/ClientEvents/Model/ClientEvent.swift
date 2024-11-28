@@ -1,6 +1,6 @@
 import Foundation
-import RealmSwift
 import GRDB
+import RealmSwift
 
 public struct ClientEvent: Codable, FetchableRecord, PersistableRecord {
     public var id: String = UUID().uuidString
@@ -9,19 +9,18 @@ public struct ClientEvent: Codable, FetchableRecord, PersistableRecord {
     public var jsonPayload: [String: AnyCodable] = [:]
     public var date: Date = Current.date()
 
-    public enum EventType: String, Codable {
+    public enum EventType: String, Codable, CaseIterable {
         case notification
         case serviceCall
         case locationUpdate
         case networkRequest
         case settings
+        case database
         case unknown
     }
 
-    private var jsonData: Data?
-
     public var jsonPayloadDescription: String? {
-        jsonData.flatMap { String(data: $0, encoding: .utf8) }
+        jsonData().flatMap { String(data: $0, encoding: .utf8) }
     }
 
     public init(
@@ -33,12 +32,15 @@ public struct ClientEvent: Codable, FetchableRecord, PersistableRecord {
         self.text = text
         self.type = type
         self.jsonPayload = ClientEvent.convertToAnyCodable(payload ?? [:])
+    }
 
+    private func jsonData() -> Data? {
         do {
             let writeOptions: JSONSerialization.WritingOptions = [.prettyPrinted, .withoutEscapingSlashes]
-            jsonData = try JSONSerialization.data(withJSONObject: payload ?? [:], options: writeOptions)
+            return try JSONSerialization.data(withJSONObject: jsonPayloadJSONObject(), options: writeOptions)
         } catch {
             Current.Log.error("Error serializing json payload: \(error)")
+            return nil
         }
     }
 
@@ -50,6 +52,14 @@ public struct ClientEvent: Codable, FetchableRecord, PersistableRecord {
             } else {
                 newDictionary[key] = AnyCodable(value)
             }
+        }
+        return newDictionary
+    }
+
+    private func jsonPayloadJSONObject() -> [String: Any] {
+        var newDictionary: [String: Any] = [:]
+        for (key, value) in jsonPayload {
+            newDictionary[key] = value.value
         }
         return newDictionary
     }
@@ -65,19 +75,22 @@ public struct AnyCodable: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let bool = try? container.decode(Bool.self) {
-            value = bool
+            self.value = bool
         } else if let int = try? container.decode(Int.self) {
-            value = int
+            self.value = int
         } else if let double = try? container.decode(Double.self) {
-            value = double
+            self.value = double
         } else if let string = try? container.decode(String.self) {
-            value = string
+            self.value = string
         } else if let array = try? container.decode([AnyCodable].self) {
-            value = array.map { $0.value }
+            self.value = array.map(\.value)
         } else if let dictionary = try? container.decode([String: AnyCodable].self) {
-            value = dictionary.mapValues { $0.value }
+            self.value = dictionary.mapValues { $0.value }
         } else {
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "AnyCodable value cannot be decoded")
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "AnyCodable value cannot be decoded"
+            )
         }
     }
 
@@ -97,12 +110,18 @@ public struct AnyCodable: Codable {
         case let dictionary as [String: Any]:
             try container.encode(dictionary.mapValues(AnyCodable.init))
         default:
-            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: container.codingPath, debugDescription: "AnyCodable value cannot be encoded"))
+            throw EncodingError.invalidValue(
+                value,
+                EncodingError.Context(
+                    codingPath: container.codingPath,
+                    debugDescription: "AnyCodable value cannot be encoded"
+                )
+            )
         }
     }
 }
 
-extension ClientEvent.EventType {
+public extension ClientEvent.EventType {
     var displayText: String {
         switch self {
         case .notification:
@@ -117,6 +136,8 @@ extension ClientEvent.EventType {
             return L10n.ClientEvents.EventType.unknown
         case .settings:
             return L10n.ClientEvents.EventType.settings
+        case .database:
+            return L10n.ClientEvents.EventType.database
         }
     }
 }

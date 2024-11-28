@@ -146,7 +146,7 @@ class DebugSettingsViewController: HAFormViewController {
             $0.title = L10n.Settings.EventLog.title
             $0.onCellSelection { [weak self] _, _ in
                 let controller = UIHostingController(rootView: ClientEventsLogView())
-                self?.present(controller, animated: true)
+                self?.navigationController?.pushViewController(controller, animated: true)
             }
         }
 

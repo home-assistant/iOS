@@ -707,7 +707,13 @@ public enum L10n {
   }
 
   public enum ClientEvents {
+    /// No events
+    public static var noEvents: String { return L10n.tr("Localizable", "client_events.no_events") }
     public enum EventType {
+      /// All
+      public static var all: String { return L10n.tr("Localizable", "client_events.event_type.all") }
+      /// Database
+      public static var database: String { return L10n.tr("Localizable", "client_events.event_type.database") }
       /// Location Update
       public static var locationUpdate: String { return L10n.tr("Localizable", "client_events.event_type.location_update") }
       /// Network Request

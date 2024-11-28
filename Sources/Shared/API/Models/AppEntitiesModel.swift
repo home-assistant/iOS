@@ -88,9 +88,19 @@ public final class AppEntitiesModel: AppEntitiesModelProtocol {
                         try entity.insert(db)
                     }
                 }
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Updated database App Entities for \(server.info.name)",
+                    type: .database,
+                    payload: ["entities_count": appEntities.count]
+                )).cauterize()
             }
         } catch {
             Current.Log.error("Failed to get cache for App Entities, error: \(error.localizedDescription)")
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Updated database App Entities for \(server.info.name)",
+                type: .database,
+                payload: ["entities_count": appEntities.count]
+            )).cauterize()
         }
     }
 }

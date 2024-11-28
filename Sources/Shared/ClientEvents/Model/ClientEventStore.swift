@@ -1,10 +1,10 @@
 import Foundation
-import PromiseKit
 import GRDB
+import PromiseKit
 
 public struct ClientEventStore {
-    
     public func addEvent(_ event: ClientEvent) -> Promise<Void> {
+        Current.Log.verbose("Adding client event: \(event)")
         do {
             try Current.database.write { db in
                 try event.save(db)
@@ -31,11 +31,11 @@ public struct ClientEventStore {
         }
     }
 
-    public func getEvents(filter: String? = nil) -> [ClientEvent] {
+    public func getEvents() -> [ClientEvent] {
         do {
             return try Current.database.read { db in
                 try ClientEvent
-                    .filter(Column("text") == filter)
+                    .order(Column(DatabaseTables.ClientEvent.date.rawValue).desc)
                     .fetchAll(db)
             }
         } catch {
