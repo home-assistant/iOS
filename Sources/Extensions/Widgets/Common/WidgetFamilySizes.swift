@@ -18,6 +18,20 @@ enum WidgetFamilySizes {
         }
     }
 
+    // While previewing we want to display tile card style (with padding and border)
+    // To do that we can't display the maximum amount of items otherwise we will show 'compressed' size style
+    static func sizeForPreview(for family: WidgetFamily) -> Int {
+        switch family {
+        case .systemSmall: return WidgetFamilySizes.size(for: .systemSmall) - 1
+        case .systemMedium, .systemLarge: return WidgetFamilySizes.size(for: .systemMedium) - 2
+        case .systemExtraLarge: return 20
+        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
+            return 1
+        @unknown default:
+            return 1
+        }
+    }
+
     @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
     // Unfortunately duplicating the numbers here is necessary due to 'Expect a compile-time constant literal' error
     static func intentCollectionSize(for family: WidgetFamily) -> IntentCollectionSize {

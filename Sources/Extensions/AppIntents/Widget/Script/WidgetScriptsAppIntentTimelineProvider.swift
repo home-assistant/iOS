@@ -43,7 +43,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                     icon: script.icon ?? ""
                 )
             }
-        }.prefix(WidgetFamilySizes.size(for: context.family)))
+        }.prefix(WidgetFamilySizes.sizeForPreview(for: context.family)))
 
         return .init(
             date: Date(),
@@ -88,7 +88,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                             icon: script.icon ?? ""
                         )
                     }
-                }.prefix(WidgetFamilySizes.size(for: context.family))
+                }.prefix(WidgetFamilySizes.sizeForPreview(for: context.family))
                 return Entry(
                     date: Date(),
                     scripts: Array(entries),
