@@ -13,7 +13,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
     typealias Entry = WidgetOpenPageEntry
 
     func placeholder(in context: Context) -> WidgetOpenPageEntry {
-        let count = WidgetBasicContainerView.maximumCount(family: context.family)
+        let count = WidgetFamilySizes.size(for: context.family)
         let pages = stride(from: 0, to: count, by: 1).map { idx in
             with(IntentPanel(identifier: "redacted\(idx)", display: "Redacted Text")) {
                 $0.icon = MaterialDesignIcons.bedEmptyIcon.name
@@ -40,7 +40,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
                     }
                 }
             }
-            completion(Array(intentsToDisplay.prefix(WidgetBasicContainerView.maximumCount(family: context.family))))
+            completion(Array(intentsToDisplay.prefix(WidgetFamilySizes.size(for: context.family))))
         }
     }
 

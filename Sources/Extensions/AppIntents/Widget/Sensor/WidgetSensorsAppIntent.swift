@@ -10,12 +10,14 @@ struct WidgetSensorsAppIntent: WidgetConfigurationIntent {
         .init("widgets.sensors.title", defaultValue: "Show sensor state.")
     )
 
+    // ATTENTION: Unfortunately these sizes below can't be retrieved dynamically from widget family sizes.
+    // Check ``WidgetFamilySizes.swift`` as source of truth
     @Parameter(
         title: .init("app_intents.choose_sensor.title", defaultValue: "Choose Sensor"),
         size: [
-            .systemSmall: 2,
-            .systemMedium: 4,
-            .systemLarge: 10,
+            .systemSmall: 3,
+            .systemMedium: 6,
+            .systemLarge: 12,
             .systemExtraLarge: 20,
         ]
     )

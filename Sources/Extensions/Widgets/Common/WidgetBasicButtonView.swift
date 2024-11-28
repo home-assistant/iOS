@@ -67,7 +67,7 @@ struct WidgetBasicButtonView: WidgetBasicViewInterface {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .condensed:
+                case .regular, .condensed, .compressed:
                     HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
                         icon
                         VStack(alignment: .leading, spacing: .zero) {
@@ -108,9 +108,9 @@ struct WidgetBasicButtonView: WidgetBasicViewInterface {
                 return Color.asset(Asset.Colors.tileBackground)
             }
         }())
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .clipShape(RoundedRectangle(cornerRadius: sizeStyle == .compressed ? .zero : 14))
         .overlay {
-            RoundedRectangle(cornerRadius: 14)
+            RoundedRectangle(cornerRadius: sizeStyle == .compressed ? .zero : 14)
                 .stroke(Color.asset(Asset.Colors.tileBorder), lineWidth: sizeStyle == .single ? 0 : 1)
                 .modify { view in
                     if #available(iOS 18, *) {
