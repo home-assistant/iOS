@@ -986,8 +986,6 @@
 		B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */; };
 		B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */; };
 		B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */; };
-		B648AE252275918F006972AF /* Segues.swift in Sources */ = {isa = PBXBuildFile; fileRef = B648AE232275918E006972AF /* Segues.swift */; };
-		B648AE262275918F006972AF /* Scenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B648AE242275918E006972AF /* Scenes.swift */; };
 		B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64BB3A71E9C6551001E8B46 /* WebViewController.swift */; };
 		B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
@@ -2337,8 +2335,6 @@
 		B646B05024D10A5400093E6A /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Intents.strings; sourceTree = "<group>"; };
 		B646B05224D10A5400093E6A /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B646B05324D10A5400093E6A /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
-		B648AE232275918E006972AF /* Segues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Segues.swift; sourceTree = "<group>"; };
-		B648AE242275918E006972AF /* Scenes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenes.swift; sourceTree = "<group>"; };
 		B64BB3A71E9C6551001E8B46 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		B64C5B2924DCB5390038AB3D /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Intents.strings; sourceTree = "<group>"; };
 		B64C5B2B24DCB5390038AB3D /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -4767,8 +4763,6 @@
 				B661FC74226C792000E541DD /* Lottie Files */,
 				1158D6272511DA67008C0C9F /* ManualPodLicenses.plist */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
-				B648AE242275918E006972AF /* Scenes.swift */,
-				B648AE232275918E006972AF /* Segues.swift */,
 				B60614B31D1F116D00249C11 /* Sounds */,
 				B661FB67226B961400E541DD /* WebSocketBridge.js */,
 			);
@@ -6737,7 +6731,6 @@
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
-				B648AE262275918F006972AF /* Scenes.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
 				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
@@ -6880,7 +6873,6 @@
 				42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */,
 				420FE8492B556A0200878E06 /* CarPlayQuickAccessViewModel.swift in Sources */,
 				4273C48E2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
-				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
