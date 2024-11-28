@@ -2,17 +2,19 @@ import Foundation
 import Shared
 import SwiftUI
 
-enum WidgetBasicSizeStyle {
+public enum WidgetBasicSizeStyle {
     case single
     case expanded
     case condensed
+    /// Minimum size possible for widget, removing padding and borders as well
+    case compressed
     case regular
 
     var textFont: Font {
         switch self {
         case .single, .expanded:
             return .subheadline
-        case .condensed, .regular:
+        case .condensed, .regular, .compressed:
             return .footnote
         }
     }
@@ -21,7 +23,7 @@ enum WidgetBasicSizeStyle {
         switch self {
         case .single, .expanded:
             return .footnote
-        case .regular, .condensed:
+        case .regular, .condensed, .compressed:
             return .system(size: 12)
         }
     }
@@ -36,7 +38,7 @@ enum WidgetBasicSizeStyle {
             size = 28
         case .regular:
             size = 20
-        case .condensed:
+        case .condensed, .compressed:
             size = 14
         }
 
@@ -50,7 +52,7 @@ enum WidgetBasicSizeStyle {
             return .init(width: 48, height: 48)
         case .expanded:
             return .init(width: 42, height: 42)
-        case .regular, .condensed:
+        case .regular, .condensed, .compressed:
             return .init(width: 38, height: 38)
         }
     }

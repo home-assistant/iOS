@@ -32,7 +32,7 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     func placeholder(in context: Context) -> WidgetActionsEntry {
-        let count = WidgetBasicContainerView.maximumCount(family: context.family)
+        let count = WidgetFamilySizes.size(for: context.family)
         let actions = stride(from: 0, to: count, by: 1).map { _ in
             with(Action()) {
                 $0.Text = "Redacted Text"
@@ -65,7 +65,7 @@ struct WidgetActionsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     private static func defaultActions(in context: Context, completion: @escaping ([Action]) -> Void) {
         WidgetActionsDataSource.actions { allActions in
-            let maxCount = WidgetBasicContainerView.maximumCount(family: context.family)
+            let maxCount = WidgetFamilySizes.size(for: context.family)
             switch allActions.count {
             case 0:
                 completion([])

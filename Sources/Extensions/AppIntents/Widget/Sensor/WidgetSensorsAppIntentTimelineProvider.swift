@@ -17,7 +17,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
     ) async -> WidgetSensorsEntry {
         do {
             let suggestions = await suggestions()
-            configuration.sensors = await Array(suggestions.flatMap { key, value in
+            configuration.sensors = Array(suggestions.flatMap { key, value in
                 value.map { sensor in
                     IntentSensorsAppEntity(
                         id: sensor.id,
@@ -27,7 +27,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
                         icon: sensor.icon
                     )
                 }
-            }.prefix(WidgetBasicContainerView.maximumCount(family: context.family)))
+            }.prefix(WidgetFamilySizes.size(for: context.family)))
             return try await entry(for: configuration, in: context)
         } catch {
             Current.Log.error("Using placeholder for sensor widget snapshot")

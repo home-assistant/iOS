@@ -32,7 +32,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func snapshot(for configuration: WidgetScriptsAppIntent, in context: Context) async -> Entry {
         let suggestions = await suggestions()
-        let placeholder: [WidgetScriptsEntry.ScriptServer] = await Array(suggestions.flatMap { serverCollection in
+        let placeholder: [WidgetScriptsEntry.ScriptServer] = Array(suggestions.flatMap { serverCollection in
             serverCollection.value.map { script in
                 WidgetScriptsEntry.ScriptServer(
                     id: script.id,
@@ -43,7 +43,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                     icon: script.icon ?? ""
                 )
             }
-        }.prefix(WidgetBasicContainerView.maximumCount(family: context.family)))
+        }.prefix(WidgetFamilySizes.size(for: context.family)))
 
         return .init(
             date: Date(),
@@ -64,8 +64,8 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
         let entry: Entry = await {
-            if let configurationScripts = await configuration.scripts?
-                .prefix(WidgetBasicContainerView.maximumCount(family: context.family)) {
+            if let configurationScripts = configuration.scripts?
+                .prefix(WidgetFamilySizes.size(for: context.family)) {
                 return Entry(date: Date(), scripts: configurationScripts.compactMap({ intentScriptEntity in
                     .init(
                         id: intentScriptEntity.id,
@@ -88,7 +88,7 @@ struct WidgetScriptsAppIntentTimelineProvider: AppIntentTimelineProvider {
                             icon: script.icon ?? ""
                         )
                     }
-                }.prefix(WidgetBasicContainerView.maximumCount(family: context.family))
+                }.prefix(WidgetFamilySizes.size(for: context.family))
                 return Entry(
                     date: Date(),
                     scripts: Array(entries),

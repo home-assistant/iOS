@@ -64,7 +64,7 @@ struct WidgetBasicSensorView: WidgetBasicViewInterface {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .condensed:
+                case .regular, .condensed, .compressed:
                     HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
                         VStack(alignment: .leading, spacing: .zero) {
                             subtext

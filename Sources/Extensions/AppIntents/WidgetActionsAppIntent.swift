@@ -11,12 +11,14 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
         .init("widgets.actions.description", defaultValue: "Perform Home Assistant actions.")
     )
 
+    // ATTENTION: Unfortunately these sizes below can't be retrieved dynamically from widget family sizes.
+    // Check ``WidgetFamilySizes.swift`` as source of truth
     @Parameter(
         title: .init("widgets.actions.parameters.action", defaultValue: "Action"),
         size: [
-            .systemSmall: 2,
-            .systemMedium: 4,
-            .systemLarge: 10,
+            .systemSmall: 3,
+            .systemMedium: 6,
+            .systemLarge: 12,
             .systemExtraLarge: 20,
             .accessoryInline: 1,
             .accessoryCorner: 1,
