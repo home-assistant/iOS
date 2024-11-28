@@ -3,13 +3,13 @@ import GRDB
 import PromiseKit
 
 public struct ClientEventStore {
-    public func addEvent(_ event: ClientEvent) -> Promise<Void> {
+    public var addEvent: ((_ event: ClientEvent) -> Promise<Void>) = { event in
         Current.Log.verbose("Adding client event: \(event)")
         do {
             try Current.database.write { db in
                 try event.save(db)
             }
-            cleanup()
+            Current.clientEventStore.cleanup()
         } catch {
             Current.Log.error("Failed to save client event: \(error)")
         }

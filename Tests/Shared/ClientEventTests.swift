@@ -8,14 +8,14 @@ class ClientEventTests: XCTestCase {
     var store: ClientEventStore!
     override func setUp() {
         super.setUp()
-        Current.realm = Realm.mock
+        do {
+            _ = try Current.database.write { db in
+                try ClientEvent.deleteAll(db)
+            }
+        } catch {
+            XCTFail("Error setting up database: \(error)")
+        }
         store = ClientEventStore()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
     }
 
     func testStartsEmpty() {
@@ -66,7 +66,7 @@ class ClientEventTests: XCTestCase {
         let retrieved = store.getEvents().first
         XCTAssertEqual(retrieved?.text, "Yo")
         XCTAssertEqual(retrieved?.type, .notification)
-        XCTAssertEqual(retrieved?.date, date)
+        XCTAssertEqual(retrieved?.date.ISO8601Format(), date.ISO8601Format())
     }
 
     func testCanClearEvents() throws {

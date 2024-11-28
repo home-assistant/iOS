@@ -55,7 +55,7 @@ public struct ClientEvent: Codable, FetchableRecord, PersistableRecord {
         return newDictionary
     }
 
-    private func jsonPayloadJSONObject() -> [String: Any] {
+    public func jsonPayloadJSONObject() -> [String: Any] {
         var newDictionary: [String: Any] = [:]
         for (key, value) in jsonPayload {
             newDictionary[key] = value.value
