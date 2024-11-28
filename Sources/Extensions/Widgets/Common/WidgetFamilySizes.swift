@@ -22,8 +22,8 @@ enum WidgetFamilySizes {
     // To do that we can't display the maximum amount of items otherwise we will show 'compressed' size style
     static func sizeForPreview(for family: WidgetFamily) -> Int {
         switch family {
-        case .systemSmall: return WidgetFamilySizes.size(for: .systemSmall) - 1
-        case .systemMedium, .systemLarge: return WidgetFamilySizes.size(for: .systemMedium) - 2
+        case .systemSmall: return WidgetFamilySizes.size(for: family) - 1
+        case .systemMedium, .systemLarge: return WidgetFamilySizes.size(for: family) - 2
         case .systemExtraLarge: return 20
         case .accessoryRectangular, .accessoryCircular, .accessoryInline:
             return 1
