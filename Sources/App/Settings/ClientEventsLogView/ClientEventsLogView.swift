@@ -38,7 +38,7 @@ struct ClientEventsLogView: View {
             }
         }
         .onAppear {
-            viewModel.fetchEvents()
+            viewModel.subscribeEvents()
         }
     }
 
