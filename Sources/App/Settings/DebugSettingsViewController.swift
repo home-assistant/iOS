@@ -144,15 +144,10 @@ class DebugSettingsViewController: HAFormViewController {
 
         section <<< SettingsButtonRow {
             $0.title = L10n.Settings.EventLog.title
-
-            let scene = StoryboardScene.ClientEvents.self
-            $0.presentationMode = .show(controllerProvider: .storyBoard(
-                storyboardId: scene.clientEventsList.identifier,
-                storyboardName: scene.storyboardName,
-                bundle: Bundle.main
-            ), onDismiss: { vc in
-                _ = vc.navigationController?.popViewController(animated: true)
-            })
+            $0.onCellSelection { [weak self] _, _ in
+                let controller = UIHostingController(rootView: ClientEventsLogView())
+                self?.navigationController?.pushViewController(controller, animated: true)
+            }
         }
 
         section <<< SettingsButtonRow {

@@ -106,10 +106,6 @@ public class ModelManager: ServerObserver {
                 model: LocationError.self,
                 createdKey: #keyPath(LocationError.CreatedAt)
             ),
-            CleanupDefinition(
-                model: ClientEvent.self,
-                createdKey: #keyPath(ClientEvent.date)
-            ),
             CleanupDefinition(orphansOf: RLMScene.self),
             CleanupDefinition(orphansOf: RLMZone.self),
             CleanupDefinition(orphansOf: Action.self),

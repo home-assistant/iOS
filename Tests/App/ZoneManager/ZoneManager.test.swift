@@ -437,8 +437,8 @@ class ZoneManagerTests: XCTestCase {
 
         XCTAssertTrue(loggedEvent.type == .locationUpdate)
         XCTAssertTrue(loggedEvent.text.contains("Didn't update"))
-        XCTAssertEqual(loggedEvent.jsonPayload?["start_ssid"] as? String, "wifi_name")
-        XCTAssertEqual(loggedEvent.jsonPayload?["event"] as? String, event.description)
+        XCTAssertEqual(loggedEvent.jsonPayloadJSONObject()["start_ssid"] as? String, "wifi_name")
+        XCTAssertEqual(loggedEvent.jsonPayloadJSONObject()["event"] as? String, event.description)
     }
 
     func testCollectorCollectsEventAndProcessorSucceeds() {
@@ -471,8 +471,8 @@ class ZoneManagerTests: XCTestCase {
 
         XCTAssertTrue(loggedEvent.type == .locationUpdate)
         XCTAssertTrue(loggedEvent.text.contains("Updated location"))
-        XCTAssertEqual(loggedEvent.jsonPayload?["start_ssid"] as? String, "wifi_name")
-        XCTAssertEqual(loggedEvent.jsonPayload?["event"] as? String, event.description)
+        XCTAssertEqual(loggedEvent.jsonPayloadJSONObject()["start_ssid"] as? String, "wifi_name")
+        XCTAssertEqual(loggedEvent.jsonPayloadJSONObject()["event"] as? String, event.description)
     }
 }
 
