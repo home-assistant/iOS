@@ -1,6 +1,5 @@
 import Foundation
 import GRDB
-import RealmSwift
 
 public struct ClientEvent: Codable, FetchableRecord, PersistableRecord {
     public var id: String = UUID().uuidString
