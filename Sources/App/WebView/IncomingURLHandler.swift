@@ -171,7 +171,8 @@ class IncomingURLHandler {
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
         Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
-            if shortcutItem.type == "sendLocation" {
+            switch shortcutItem.type {
+            case HAApplicationShortcutItem.sendLocation.rawValue:
                 return firstly {
                     Current.location.oneShotLocation(.AppShortcut, remaining)
                 }.then { location in
@@ -179,7 +180,22 @@ class IncomingURLHandler {
                         api.SubmitLocation(updateType: .AppShortcut, location: location, zone: nil)
                     })
                 }.asVoid()
-            } else {
+            case HAApplicationShortcutItem.openSettings.rawValue:
+                if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
+                    // Close window to avoid empty window left behind
+                    for window in UIApplication.shared.windows {
+                        if let scene = window.windowScene {
+                            UIApplication.shared.requestSceneSessionDestruction(
+                                scene.session,
+                                options: nil,
+                                errorHandler: nil
+                            )
+                        }
+                    }
+                }
+                Current.sceneManager.activateAnyScene(for: .settings)
+                return .value(())
+            default:
                 if
                     let action = Current.realm().object(ofType: Action.self, forPrimaryKey: shortcutItem.type),
                     let server = Current.servers.server(for: action) {

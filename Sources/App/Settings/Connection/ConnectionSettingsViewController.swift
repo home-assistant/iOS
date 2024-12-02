@@ -42,8 +42,14 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             } <<< ButtonRow {
                 $0.title = L10n.Settings.ConnectionSection.activateServer
                 $0.onCellSelection { [server] _, _ in
-                    Current.sceneManager.webViewWindowControllerPromise.done {
-                        $0.open(server: server)
+                    if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
+                        if let url = server.info.connection.activeURL() {
+                            UIApplication.shared.open(url)
+                        }
+                    } else {
+                        Current.sceneManager.webViewWindowControllerPromise.done {
+                            $0.open(server: server)
+                        }
                     }
                 }
             }

@@ -102,6 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
         setupWatchCommunicator()
+        setupUIApplicationShortcutItems()
 
         return true
     }
@@ -414,6 +415,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
         UIMenuSystem.main.setNeedsRebuild()
+    }
+
+    private func setupUIApplicationShortcutItems() {
+        if Current.isCatalyst {
+            UIApplication.shared.shortcutItems = [.init(
+                type: HAApplicationShortcutItem.openSettings.rawValue,
+                localizedTitle: L10n.ShortcutItem.OpenSettings.title,
+                localizedSubtitle: nil,
+                icon: .init(systemSymbol: .gear)
+            )]
+        }
     }
 
     // swiftlint:disable:next file_length

@@ -21,7 +21,9 @@ extension Action {
             }
 
             let updateShortcuts = Promise<Void> { seal in
-                UIApplication.shared.shortcutItems = collection.map(\.uiShortcut)
+                if !Current.isCatalyst {
+                    UIApplication.shared.shortcutItems = collection.map(\.uiShortcut)
+                }
                 seal.fulfill(())
             }
 
