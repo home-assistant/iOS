@@ -1156,6 +1156,17 @@ public enum L10n {
     public static var close: String { return L10n.tr("Localizable", "navBar.close") }
   }
 
+  public enum Network {
+    public enum Error {
+      public enum NoActiveUrl {
+        /// Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.
+        public static var body: String { return L10n.tr("Localizable", "network.error.no_active_url.body") }
+        /// No URL available to load
+        public static var title: String { return L10n.tr("Localizable", "network.error.no_active_url.title") }
+      }
+    }
+  }
+
   public enum Nfc {
     /// Tag Read
     public static var genericTagRead: String { return L10n.tr("Localizable", "nfc.generic_tag_read") }
