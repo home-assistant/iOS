@@ -114,7 +114,9 @@ public class AppEnvironment {
         MagicItemProvider()
     }
 
-    public var appEntitiesModel: AppEntitiesModelProtocol = AppEntitiesModel()
+    public var appEntitiesModel: () -> AppEntitiesModelProtocol = {
+        AppEntitiesModel.shared
+    }
 
     #if os(iOS)
     public var realmFatalPresentation: ((UIViewController) -> Void)?
