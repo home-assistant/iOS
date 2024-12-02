@@ -8,6 +8,7 @@ public protocol AppEntitiesModelProtocol {
 }
 
 public final class AppEntitiesModel: AppEntitiesModelProtocol {
+    static var shared = AppEntitiesModel()
     /// ServerId: Date
     private var lastDatabaseUpdate: [String: Date] = [:]
     /// ServerId: Int

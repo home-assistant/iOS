@@ -218,7 +218,7 @@ public class ModelManager: ServerObserver {
                             }
                             DispatchQueue.main.async {
                                 guard ModelManager.isAppInForeground() else { return }
-                                Current.appEntitiesModel.updateModel(value.all, server: server)
+                                Current.appEntitiesModel().updateModel(value.all, server: server)
 
                                 if let lastUpdate {
                                     // Prevent sequential updates in short time
