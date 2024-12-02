@@ -99,8 +99,8 @@
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
-"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.button.listening.title" = "Listening...";
+"assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tap to ";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
@@ -166,19 +166,19 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location will deliver events but they may be delayed.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location could not initialize the region monitoring feature immediately.";
 "cl_error.description.unknown" = "Unknown Core Location error";
+"client_events.event_type.all" = "All";
+"client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Location Update";
 "client_events.event_type.networkRequest" = "Network Request";
 "client_events.event_type.notification" = "Notification";
-"client_events.event_type.database" = "Database";
-"client_events.event_type.all" = "All";
 "client_events.event_type.notification.title" = "Received a Push Notification: %@";
 "client_events.event_type.service_call" = "Service Call";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Unknown";
+"client_events.no_events" = "No events";
 "client_events.view.clear" = "Clear";
 "client_events.view.clear_confirm.message" = "This cannot be undone.";
 "client_events.view.clear_confirm.title" = "Are you sure you want to clear all events?";
-"client_events.no_events" = "No events";
 "close_label" = "Close";
 "component.collapsible_view.collapse" = "Collapse";
 "component.collapsible_view.expand" = "Expand";
@@ -1055,4 +1055,3 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
-"client_events.no_events" = "No events";

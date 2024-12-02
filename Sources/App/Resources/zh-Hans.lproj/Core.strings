@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "已禁用";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "已连接";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "已断开";
-"component::hue::entity::switch::automation::state::off" = "已禁用";
-"component::hue::entity::switch::automation::state::on" = "已启用";
 "component::humidifier::entity_component::_::state::off" = "关闭";
 "component::humidifier::entity_component::_::state::on" = "开启";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "空闲";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "关闭";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "在家";
 "component::improv_ble::config::abort::already_configured" = "设备已配置";
-"component::improv_ble::config::abort::already_provisioned" = "设备已连接到无线网络。如果您想要将其连接到其他网络，请先尝试恢复出厂设置。";
 "component::improv_ble::config::abort::cannot_connect" = "连接失败";
 "component::improv_ble::config::abort::characteristic_missing" = "设备已连接到无线网络，或者无法再连接到无线网络。如果您想要将其连接到其他网络，请先尝试恢复出厂设置。";
 "component::improv_ble::config::abort::no_devices_found" = "网络上未找到任何设备";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "关闭";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "空闲";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "已暂停";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "空闲";
 "component::remote::entity_component::_::state::off" = "关闭";
 "component::remote::entity_component::_::state::on" = "开启";
 "component::renson::entity::sensor::breeze_level::state::off" = "关闭";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "已关闭";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "待机";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "待机";
-"component::tuya::entity::sensor::status::state::standby" = "待机";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "关闭";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "关闭";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "开启";

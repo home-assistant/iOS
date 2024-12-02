@@ -2,7 +2,7 @@
 "2KWKqM" = "Misslyckades: Home Assistant är inte tillgänglig";
 "2LIxe4" = "Misslyckades: ${error}";
 "2b0Uo4" = "Tjänst";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Vilken pipeline vill du använda?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Uppdaterad";
 "4tpAXn" = "För att bekräfta, du väljer ‘${server}’?";
@@ -19,7 +19,7 @@
 "B28HAk" = "Assistera";
 "B4bXyc" = "Klart";
 "BafuI1" = "Språk";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Vilken pipeline?";
 "BwZv3u" = "Vilken server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Öppna ${page}";

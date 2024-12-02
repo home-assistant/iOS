@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Quines accions?";
+"assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tap to ";
@@ -165,6 +166,8 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location lliurarà els esdeveniments, però és possible que es retrassin.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location no ha pogut inicialitzar la funció de supervisió de la regió immediatament.";
 "cl_error.description.unknown" = "Error Core Location desconegut";
+"client_events.event_type.all" = "All";
+"client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Actualització d'ubicació";
 "client_events.event_type.networkRequest" = "Sol·licitud de xarxa";
 "client_events.event_type.notification" = "Notificació";
@@ -172,6 +175,7 @@
 "client_events.event_type.service_call" = "Crida servei";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Desconegut";
+"client_events.no_events" = "No events";
 "client_events.view.clear" = "Esborrar";
 "client_events.view.clear_confirm.message" = "Això no es pot desfer.";
 "client_events.view.clear_confirm.title" = "Esteu segur que voleu esborrar tots els esdeveniments?";

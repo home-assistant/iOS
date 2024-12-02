@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Отключено";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "Подключено";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "Отключено";
-"component::hue::entity::switch::automation::state::off" = "Отключено";
-"component::hue::entity::switch::automation::state::on" = "Включено";
 "component::humidifier::entity_component::_::state::off" = "Выключено";
 "component::humidifier::entity_component::_::state::on" = "Включено";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Бездействие";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Выключено";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Дома";
 "component::improv_ble::config::abort::already_configured" = "Это устройство уже добавлено в Home Assistant";
-"component::improv_ble::config::abort::already_provisioned" = "Устройство уже подключено к Wi-Fi. Если вы хотите подключить его к другой сети, сначала попробуйте выполнить сброс настроек к заводским.";
 "component::improv_ble::config::abort::cannot_connect" = "Не удалось подключиться";
 "component::improv_ble::config::abort::characteristic_missing" = "Устройство либо уже подключено к Wi-Fi, либо больше не может подключиться к Wi-Fi. Если вы хотите подключить его к другой сети, сначала попробуйте выполнить сброс настроек к заводским.";
 "component::improv_ble::config::abort::no_devices_found" = "Устройства не найдены в сети";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "Выключено";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "Бездействие";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "Пауза";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "Бездействие";
 "component::remote::entity_component::_::state::off" = "Выключено";
 "component::remote::entity_component::_::state::on" = "Включено";
 "component::renson::entity::sensor::breeze_level::state::off" = "Выключено";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "Закрыто";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "Ожидание";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "Ожидание";
-"component::tuya::entity::sensor::status::state::standby" = "Ожидание";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "Выключено";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "Выключено";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "Включено";

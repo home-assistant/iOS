@@ -99,6 +99,7 @@
 "app_intents.state.target" = "目標狀態";
 "app_intents.state.toggle" = "開關";
 "app_intents.widget_action.actions_parameter_configuration" = "哪個動作？";
+"assist.button.listening.title" = "聆聽中...";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";
 "assist.pipelines_picker.title" = "助理細部設定";
 "assist.watch.mic_button.title" = "點擊";
@@ -165,13 +166,16 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location 將會啟動事件，但可能稍微延遲。";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location 無法立即初始區域監控功能。";
 "cl_error.description.unknown" = "未知核心座標錯誤";
+"client_events.event_type.all" = "全部";
+"client_events.event_type.database" = "資料庫";
 "client_events.event_type.location_update" = "座標更新";
 "client_events.event_type.networkRequest" = "網路請求";
 "client_events.event_type.notification" = "通知訊息";
 "client_events.event_type.notification.title" = "收到推播通知：%@";
 "client_events.event_type.service_call" = "服務執行";
-"client_events.event_type.settings" = "Settings";
+"client_events.event_type.settings" = "設定";
 "client_events.event_type.unknown" = "未知";
+"client_events.no_events" = "沒有事件";
 "client_events.view.clear" = "清除";
 "client_events.view.clear_confirm.message" = "此動作無法復原。";
 "client_events.view.clear_confirm.title" = "確定要清除所有事件？";

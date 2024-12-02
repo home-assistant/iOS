@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Estado alvo";
 "app_intents.state.toggle" = "Alternar";
 "app_intents.widget_action.actions_parameter_configuration" = "Quais ações?";
+"assist.button.listening.title" = "Ouvindo...";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Toque para";
@@ -165,13 +166,16 @@
 "cl_error.description.region_monitoring_response_delayed" = "A Localização do Núcleo entregará eventos, mas eles podem sofrer atrasos.";
 "cl_error.description.region_monitoring_setup_delayed" = "A Localização do Núcleo não pôde inicializar o recurso de monitoramento da região imediatamente.";
 "cl_error.description.unknown" = "Erro de localização do núcleo desconhecido";
+"client_events.event_type.all" = "Todos";
+"client_events.event_type.database" = "Banco de dados";
 "client_events.event_type.location_update" = "Atualização de localização";
 "client_events.event_type.networkRequest" = "Solicitação de rede";
 "client_events.event_type.notification" = "Notificação";
 "client_events.event_type.notification.title" = "Recebeu uma notificação push: %@";
 "client_events.event_type.service_call" = "Chamada de serviço";
-"client_events.event_type.settings" = "Settings";
+"client_events.event_type.settings" = "Configurações";
 "client_events.event_type.unknown" = "Desconhecido";
+"client_events.no_events" = "Nenhum evento";
 "client_events.view.clear" = "Limpar";
 "client_events.view.clear_confirm.message" = "Isto não pode ser desfeito.";
 "client_events.view.clear_confirm.title" = "Tem certeza de que deseja limpar todos os eventos?";

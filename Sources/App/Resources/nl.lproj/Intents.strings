@@ -2,7 +2,7 @@
 "2KWKqM" = "Mislukt: Home Assistant is momenteel niet bereikbaar";
 "2LIxe4" = "Fout: ${error}";
 "2b0Uo4" = "Service";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Welke pijplijn wil je gebruiken?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Bijgewerkt";
 "4tpAXn" = "Ter bevestiging, je wilde ' ${server} '?";
@@ -15,11 +15,11 @@
 "8BMgur" = "Klaar";
 "8skKro" = "Welke acties?";
 "A1pokw" = "Vraag om hulp";
-"Asg4pN" = "With Voice";
+"Asg4pN" = "Met stem";
 "B28HAk" = "Helpen";
 "B4bXyc" = "Klaar";
 "BafuI1" = "Taal";
-"Bw6Ucn" = "Which pipeline?";
+"Bw6Ucn" = "Welke pijplijn?";
 "BwZv3u" = "Welke server?";
 "CmlkE4" = "shortcut_event";
 "DFWJB8" = "Open ${page}";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Acties";
 "J3qct4" = "Server";
 "JBMp1T" = "Ter bevestiging, je wilde ' ${server} '?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Even ter bevestiging, je wilde ’${pipeline}’?";
 "K4xrvF" = "Fout";
 "KHH48D" = "Mislukt: Home Assistant is momenteel niet bereikbaar";
 "KJS2jk" = "Mislukt: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Welke taal?";
 "QVD2lM" = "Servicegegevens";
 "QmGpOH" = "Fout";
-"R2PmrD" = "Do you want assistance using voice?";
+"R2PmrD" = "Wil je hulp bij het gebruik van spraak?";
 "RCQAlr" = "Haal camerabeeld op van ${cameraID}";
 "RMQY3r" = "Stuur locatie naar Home Assistant";
 "RsOw3P" = "Sjabloon is gerenderd";
@@ -73,7 +73,7 @@
 "YNQXwq" = "Fout";
 "YxAau3" = "Er zijn ${count} opties die overeenkomen met ' ${server} '.";
 "ZApPxB" = "Servicenaam";
-"ZG5nuL" = "Assist In App";
+"ZG5nuL" = "Assist in App";
 "ZRPVYO" = "Open een pagina in de frontend";
 "ZT9Mld" = "Gebeurtenisnaam";
 "ZmUm9Q" = "Welk sjabloon wilt u weergeven?";
@@ -87,7 +87,7 @@
 "dFHPYK" = "${action} uitgevoerd";
 "eObn2i" = "Pagina";
 "f1KX0Q" = "Bekijk en voer acties uit";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Er zijn ${count} opties die overeenkomen met ’${pipeline}’";
 "fkQXDn" = "Er zijn ${count} opties die overeenkomen met '${action} '.";
 "flUgtx" = "Welke actie?";
 "fnz838" = "Sensoren bijgewerkt.";
@@ -110,7 +110,7 @@
 "jWGtvO" = "Er zijn ${count} opties die overeenkomen met ' ${server} '.";
 "jtqxOg" = "Ter bevestiging, u wilde '${action}'?";
 "kGB23u" = "Actie uitvoeren";
-"kPqT8T" = "Pipeline";
+"kPqT8T" = "Pijplijn";
 "l2coEc" = "Welke server?";
 "lGqSSG" = "De sensoren konden niet worden bijgewerkt.";
 "lNmaCR" = "Sjabloon";
@@ -135,10 +135,10 @@
 "rFSNpu" = "Klaar";
 "rOlW1x" = "Welke locatie wilt u verzenden?";
 "rU3vhT" = "Serveridentiteit";
-"s9Gk3c" = "Assist In App";
+"s9Gk3c" = "Assist in App";
 "sNFoWe" = "Welke camera?";
 "sQJAJS" = "Fout";
-"sbjA6e" = "Ask for Assistance in App";
+"sbjA6e" = "Vraag om assistentie in App";
 "sfDGvk" = "Gerenderde Sjabloon";
 "txfcnn" = "Tekst";
 "tycImk" = "Voert een actie uit die in de app is gedefinieerd";

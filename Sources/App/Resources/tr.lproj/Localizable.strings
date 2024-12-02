@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Hangi eylemler?";
+"assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Assist ardışık düzenleri alınamadı. Lütfen ardışık düzen yapılandırmanızı kontrol edin.";
 "assist.pipelines_picker.title" = "Yardımcı Hatlar";
 "assist.watch.mic_button.title" = "Dokunun";
@@ -165,6 +166,8 @@
 "cl_error.description.region_monitoring_response_delayed" = "Çekirdek Konum olayları teslim edecektir, ancak bunlar gecikebilir.";
 "cl_error.description.region_monitoring_setup_delayed" = "Çekirdek Konum, bölge izleme özelliğini hemen başlatamadı.";
 "cl_error.description.unknown" = "Bilinmeyen Çekirdek Konumu hatası";
+"client_events.event_type.all" = "All";
+"client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Konum Güncelleme";
 "client_events.event_type.networkRequest" = "Ağ İsteği";
 "client_events.event_type.notification" = "Bildirim";
@@ -172,6 +175,7 @@
 "client_events.event_type.service_call" = "Servis Çağrısı";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Bilinmeyen";
+"client_events.no_events" = "No events";
 "client_events.view.clear" = "Temizle";
 "client_events.view.clear_confirm.message" = "Bu geri alınamaz.";
 "client_events.view.clear_confirm.title" = "Tüm olayları temizlemek istediğinizden emin misiniz?";

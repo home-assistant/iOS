@@ -188,10 +188,6 @@ public enum CoreStrings {
   public static var componentHueEntitySensorZigbeeConnectivityStateConnected: String { return CoreStrings.tr("Core", "component::hue::entity::sensor::zigbee_connectivity::state::connected") }
   /// Disconnected
   public static var componentHueEntitySensorZigbeeConnectivityStateDisconnected: String { return CoreStrings.tr("Core", "component::hue::entity::sensor::zigbee_connectivity::state::disconnected") }
-  /// Disabled
-  public static var componentHueEntitySwitchAutomationStateOff: String { return CoreStrings.tr("Core", "component::hue::entity::switch::automation::state::off") }
-  /// Enabled
-  public static var componentHueEntitySwitchAutomationStateOn: String { return CoreStrings.tr("Core", "component::hue::entity::switch::automation::state::on") }
   /// Off
   public static var componentHumidifierEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::humidifier::entity_component::_::state::off") }
   /// On
@@ -204,8 +200,6 @@ public enum CoreStrings {
   public static var componentHumidifierEntityComponentStateAttributesModeStateHome: String { return CoreStrings.tr("Core", "component::humidifier::entity_component::_::state_attributes::mode::state::home") }
   /// Device is already configured
   public static var componentImprovBleConfigAbortAlreadyConfigured: String { return CoreStrings.tr("Core", "component::improv_ble::config::abort::already_configured") }
-  /// The device is already connected to Wi-Fi. If you want to connect it to another network, try factory resetting it first.
-  public static var componentImprovBleConfigAbortAlreadyProvisioned: String { return CoreStrings.tr("Core", "component::improv_ble::config::abort::already_provisioned") }
   /// Failed to connect
   public static var componentImprovBleConfigAbortCannotConnect: String { return CoreStrings.tr("Core", "component::improv_ble::config::abort::cannot_connect") }
   /// The device is either already connected to Wi-Fi, or no longer able to connect to Wi-Fi. If you want to connect it to another network, try factory resetting it first.
@@ -362,8 +356,6 @@ public enum CoreStrings {
   public static var componentPrusalinkEntitySensorPrinterStateStateIdle: String { return CoreStrings.tr("Core", "component::prusalink::entity::sensor::printer_state::state::idle") }
   /// Paused
   public static var componentPrusalinkEntitySensorPrinterStateStatePaused: String { return CoreStrings.tr("Core", "component::prusalink::entity::sensor::printer_state::state::paused") }
-  /// Idle
-  public static var componentQbittorrentEntitySensorTransmissionStatusStateIdle: String { return CoreStrings.tr("Core", "component::qbittorrent::entity::sensor::transmission_status::state::idle") }
   /// Off
   public static var componentRemoteEntityComponentStateOff: String { return CoreStrings.tr("Core", "component::remote::entity_component::_::state::off") }
   /// On
@@ -520,8 +512,6 @@ public enum CoreStrings {
   public static var componentTuyaEntitySelectVacuumModeStateStandby: String { return CoreStrings.tr("Core", "component::tuya::entity::select::vacuum_mode::state::standby") }
   /// Standby
   public static var componentTuyaEntitySensorSousVideStatusStateStandby: String { return CoreStrings.tr("Core", "component::tuya::entity::sensor::sous_vide_status::state::standby") }
-  /// Standby
-  public static var componentTuyaEntitySensorStatusStateStandby: String { return CoreStrings.tr("Core", "component::tuya::entity::sensor::status::state::standby") }
   /// Off
   public static var componentTuyaPlatformSelectStateTuyaLightModeNone: String { return CoreStrings.tr("Core", "component::tuya::platform::select::state::tuya__light_mode::none") }
   /// Off

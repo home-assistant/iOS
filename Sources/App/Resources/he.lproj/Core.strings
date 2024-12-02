@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "מושבת";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "מחובר";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "מנותק";
-"component::hue::entity::switch::automation::state::off" = "מושבת";
-"component::hue::entity::switch::automation::state::on" = "מופעל";
 "component::humidifier::entity_component::_::state::off" = "כבוי";
 "component::humidifier::entity_component::_::state::on" = "מופעל";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "ממתין";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "כבוי";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "בבית";
 "component::improv_ble::config::abort::already_configured" = "תצורת ההתקן כבר נקבעה";
-"component::improv_ble::config::abort::already_provisioned" = "ההתקן כבר מחובר ל-Wi-Fi. אם ברצונך לחבר אותו לרשת אחרת, כדאי לנסות לאפס אותו להגדרות היצרן.";
 "component::improv_ble::config::abort::cannot_connect" = "ההתחברות נכשלה";
 "component::improv_ble::config::abort::characteristic_missing" = "ההתקן כבר מחובר ל-Wi-Fi, או שאינו מסוגל יותר להתחבר ל-Wi-Fi. אם ברצונך לחבר אותו לרשת אחרת, כדאי לנסות לאפס אותו להגדרות היצרן.";
 "component::improv_ble::config::abort::no_devices_found" = "לא נמצאו התקנים ברשת";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "כבוי";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "ממתין";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "מושהה";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "ממתין";
 "component::remote::entity_component::_::state::off" = "כבוי";
 "component::remote::entity_component::_::state::on" = "מופעל";
 "component::renson::entity::sensor::breeze_level::state::off" = "כבוי";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "נסגר";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "בהמתנה";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "בהמתנה";
-"component::tuya::entity::sensor::status::state::standby" = "בהמתנה";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "כבוי";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "כבוי";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "מופעל";

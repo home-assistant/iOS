@@ -99,6 +99,7 @@
 "app_intents.state.target" = "ターゲットの状態";
 "app_intents.state.toggle" = "トグル";
 "app_intents.widget_action.actions_parameter_configuration" = "どのアクション？";
+"assist.button.listening.title" = "リスニング...";
 "assist.error.pipelines_response" = "アシスト パイプラインを取得できませんでした。パイプラインの構成を確認してください。";
 "assist.pipelines_picker.title" = "アシストパイプライン";
 "assist.watch.mic_button.title" = "タップする";
@@ -165,13 +166,16 @@
 "cl_error.description.region_monitoring_response_delayed" = "コアロケーションはイベントを配信しますが、遅延する可能性があります。";
 "cl_error.description.region_monitoring_setup_delayed" = "コアロケーションは、リージョン監視機能をすぐに初期化できませんでした。";
 "cl_error.description.unknown" = "不明なコアロケーションエラー";
+"client_events.event_type.all" = "すべて";
+"client_events.event_type.database" = "データベース";
 "client_events.event_type.location_update" = "ロケーションの更新";
 "client_events.event_type.networkRequest" = "ネットワークリクエスト";
 "client_events.event_type.notification" = "通知";
 "client_events.event_type.notification.title" = "プッシュ通知を受信しました: %@";
 "client_events.event_type.service_call" = "サービスコール";
-"client_events.event_type.settings" = "Settings";
+"client_events.event_type.settings" = "設定";
 "client_events.event_type.unknown" = "不明";
+"client_events.no_events" = "イベントなし";
 "client_events.view.clear" = "クリア";
 "client_events.view.clear_confirm.message" = "これは、元に戻すことはできません。";
 "client_events.view.clear_confirm.title" = "すべてのイベントをクリアしてもよろしいですか？";
