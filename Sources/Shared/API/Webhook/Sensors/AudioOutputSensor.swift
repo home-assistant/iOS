@@ -1,8 +1,20 @@
 import AVFoundation
+import Combine
 import Foundation
 import HAKit
 import Intents
 import PromiseKit
+
+final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler {
+    private var cancellables: Set<AnyCancellable> = []
+    init(signal: @escaping () -> Void) {
+        NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)
+            .sink { _ in
+                signal()
+            }
+            .store(in: &cancellables)
+    }
+}
 
 /// iOS AudioOutputSensor
 final class AudioOutputSensor: SensorProvider {
@@ -28,6 +40,10 @@ final class AudioOutputSensor: SensorProvider {
     #if os(iOS)
     private func getAudioOutput() -> [AudioOutput] {
         let outputs = AVAudioSession.sharedInstance().currentRoute.outputs
+
+        // Set up our observer
+        let _: iOSAudioOutputSensorUpdateSignaler = request.dependencies.updateSignaler(for: self)
+
         return outputs.map { output in
             let type = output.portType
             var audioOutput = AudioOutput(identifier: nil, display: "\(output.portName)")
