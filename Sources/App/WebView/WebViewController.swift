@@ -607,7 +607,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             body: L10n.Network.Error.NoActiveUrl.body,
             iconImage: nil,
             iconText: nil,
-            buttonImage: MaterialDesignIcons.cogIcon.image(ofSize: CGSize(width: 30, height: 30), color: Asset.Colors.haPrimary.color),
+            buttonImage: MaterialDesignIcons.cogIcon.image(
+                ofSize: CGSize(width: 30, height: 30),
+                color: Asset.Colors.haPrimary.color
+            ),
             buttonTitle: nil,
             buttonTapHandler: { [weak self] _ in
                 self?.showSettingsViewController()
