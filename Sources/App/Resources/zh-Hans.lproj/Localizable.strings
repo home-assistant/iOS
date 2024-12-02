@@ -99,6 +99,7 @@
 "app_intents.state.target" = "目标状态";
 "app_intents.state.toggle" = "切换";
 "app_intents.widget_action.actions_parameter_configuration" = "哪些动作 ？";
+"assist.button.listening.title" = "正在监听...";
 "assist.error.pipelines_response" = "无法获取语音助手管道，请检查您的管道配置。";
 "assist.pipelines_picker.title" = "语音助手管道";
 "assist.watch.mic_button.title" = "点按";
@@ -165,13 +166,16 @@
 "cl_error.description.region_monitoring_response_delayed" = "核心位置将提供事件, 但可能会延迟。";
 "cl_error.description.region_monitoring_setup_delayed" = "核心位置无法立即初始化区域监控功能。";
 "cl_error.description.unknown" = "未知的核心位置错误";
+"client_events.event_type.all" = "全部";
+"client_events.event_type.database" = "数据库";
 "client_events.event_type.location_update" = "位置更新";
 "client_events.event_type.networkRequest" = "网络请求";
 "client_events.event_type.notification" = "位置通知";
 "client_events.event_type.notification.title" = "收到通知：%@";
 "client_events.event_type.service_call" = "服务调用";
-"client_events.event_type.settings" = "Settings";
+"client_events.event_type.settings" = "设置";
 "client_events.event_type.unknown" = "未知";
+"client_events.no_events" = "没有事件";
 "client_events.view.clear" = "清除";
 "client_events.view.clear_confirm.message" = "操作无法撤消。";
 "client_events.view.clear_confirm.title" = "您确定要清除所有事件吗 ？";

@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Devre dışı";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "Bağlandı";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "Bağlantı kesildi";
-"component::hue::entity::switch::automation::state::off" = "Devre dışı";
-"component::hue::entity::switch::automation::state::on" = "Etkin";
 "component::humidifier::entity_component::_::state::off" = "Kapalı";
 "component::humidifier::entity_component::_::state::on" = "Açık";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Boşta";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Kapalı";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Evde";
 "component::improv_ble::config::abort::already_configured" = "Cihaz zaten yapılandırılmış";
-"component::improv_ble::config::abort::already_provisioned" = "Cihaz zaten Wi-Fi'ye bağlı. Başka bir ağa bağlamak istiyorsanız önce fabrika ayarlarına sıfırlamayı deneyin.";
 "component::improv_ble::config::abort::cannot_connect" = "Bağlanma hatası";
 "component::improv_ble::config::abort::characteristic_missing" = "Cihaz ya zaten Wi-Fi'ye bağlı ya da artık Wi-Fi'ye bağlanamıyor. Başka bir ağa bağlamak istiyorsanız önce fabrika ayarlarına sıfırlamayı deneyin.";
 "component::improv_ble::config::abort::no_devices_found" = "Ağda cihaz bulunamadı";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "Kapalı";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "Boşta";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "Durduruldu";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "Boşta";
 "component::remote::entity_component::_::state::off" = "Kapalı";
 "component::remote::entity_component::_::state::on" = "Açık";
 "component::renson::entity::sensor::breeze_level::state::off" = "Kapalı";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "Kapalı";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "Bekleme modu";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "Bekleme modu";
-"component::tuya::entity::sensor::status::state::standby" = "Bekleme modu";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "Kapalı";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "Kapalı";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "Açık";

@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "無効";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "接続済み";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "切断";
-"component::hue::entity::switch::automation::state::off" = "無効";
-"component::hue::entity::switch::automation::state::on" = "有効";
 "component::humidifier::entity_component::_::state::off" = "オフ";
 "component::humidifier::entity_component::_::state::on" = "オン";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "待機中";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "オフ";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "在宅";
 "component::improv_ble::config::abort::already_configured" = "デバイスはすでに設定されています";
-"component::improv_ble::config::abort::already_provisioned" = "デバイスはすでに Wi-Fi に接続されています。別のネットワークに接続する場合は、まず出荷時設定にリセットしてみてください。";
 "component::improv_ble::config::abort::cannot_connect" = "接続に失敗しました";
 "component::improv_ble::config::abort::characteristic_missing" = "デバイスはすでに Wi-Fi に接続されているか、Wi-Fi に接続できなくなっています。別のネットワークに接続する場合は、まず出荷時設定にリセットしてみてください。";
 "component::improv_ble::config::abort::no_devices_found" = "ネットワーク上にデバイスが見つかりません";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "オフ";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "待機中";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "一時停止";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "待機中";
 "component::remote::entity_component::_::state::off" = "オフ";
 "component::remote::entity_component::_::state::on" = "オン";
 "component::renson::entity::sensor::breeze_level::state::off" = "オフ";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "閉";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "スタンバイ";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "スタンバイ";
-"component::tuya::entity::sensor::status::state::standby" = "スタンバイ";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "オフ";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "オフ";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "オン";

@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "어떤 동작을 원하시나요?";
+"assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tap to ";
@@ -165,6 +166,8 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location은 이벤트를 제공하지만 지연될 수 있습니다.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location가 지역 모니터링 기능을 즉시 초기화할 수 없습니다.";
 "cl_error.description.unknown" = "알 수 없는 Core Location 오류";
+"client_events.event_type.all" = "All";
+"client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "위치 업데이트";
 "client_events.event_type.networkRequest" = "네트워크 요청";
 "client_events.event_type.notification" = "알림";
@@ -172,6 +175,7 @@
 "client_events.event_type.service_call" = "서비스 호출";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "알 수 없음";
+"client_events.no_events" = "No events";
 "client_events.view.clear" = "지우기";
 "client_events.view.clear_confirm.message" = "이 작업은 취소할 수 없습니다.";
 "client_events.view.clear_confirm.title" = "모든 이벤트를 지우시겠습니까?";

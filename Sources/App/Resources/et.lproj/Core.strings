@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Keelatud";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "Ühendatud";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "Lahti ühendatud";
-"component::hue::entity::switch::automation::state::off" = "Keelatud";
-"component::hue::entity::switch::automation::state::on" = "Lubatud";
 "component::humidifier::entity_component::_::state::off" = "Väljas";
 "component::humidifier::entity_component::_::state::on" = "Sees";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Ootel";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Väljas";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Kodus";
 "component::improv_ble::config::abort::already_configured" = "Seade on juba häälestatud";
-"component::improv_ble::config::abort::already_provisioned" = "Seade on juba Wi-Fi-ga ühendatud. Kui soovid selle teise võrguga ühendada, proovi see esmalt tehaseseadetele lähtestada.";
 "component::improv_ble::config::abort::cannot_connect" = "Ühendamine nurjus";
 "component::improv_ble::config::abort::characteristic_missing" = "Seade on juba Wi-Fi-ga ühendatud või ei saa enam Wi-Fi-ga ühendust luua. Kui soovid selle teise võrguga ühendada, proovi see esmalt tehaseseadetele lähtestada.";
 "component::improv_ble::config::abort::no_devices_found" = "Võrgust ei leitud ühtegi seadet";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "Väljas";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "Ootel";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "Peatatud";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "Ootel";
 "component::remote::entity_component::_::state::off" = "Väljas";
 "component::remote::entity_component::_::state::on" = "Sees";
 "component::renson::entity::sensor::breeze_level::state::off" = "Väljas";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "Suletud";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "Unerežiimil";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "Unerežiimil";
-"component::tuya::entity::sensor::status::state::standby" = "Unerežiimil";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "Väljas";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "Väljas";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "Sees";

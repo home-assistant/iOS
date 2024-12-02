@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Welche Aktionen?";
+"assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";
 "assist.pipelines_picker.title" = "Assist-Pipelines";
 "assist.watch.mic_button.title" = "Tippe zum";
@@ -165,6 +166,8 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location liefert Ereignisse, diese können sich jedoch verzögern.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location konnte die Regionsüberwachungsfunktion nicht sofort initialisieren.";
 "cl_error.description.unknown" = "Unbekannter Core Location-Fehler";
+"client_events.event_type.all" = "All";
+"client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Standortaktualisierung";
 "client_events.event_type.networkRequest" = "Netzwerkanfrage";
 "client_events.event_type.notification" = "Benachrichtigung";
@@ -172,6 +175,7 @@
 "client_events.event_type.service_call" = "Service-Aufruf";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Unbekannt";
+"client_events.no_events" = "No events";
 "client_events.view.clear" = "Leeren";
 "client_events.view.clear_confirm.message" = "Dies kann nicht rückgängig gemacht werden.";
 "client_events.view.clear_confirm.title" = "Bist du sicher, dass du alle Ereignisse löschen willst?";

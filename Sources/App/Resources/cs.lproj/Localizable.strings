@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Cílový stav";
 "app_intents.state.toggle" = "Přepnout";
 "app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
+"assist.button.listening.title" = "Poslouchání...";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
 "assist.pipelines_picker.title" = "Pipeline Assist";
 "assist.watch.mic_button.title" = "Klepněte pro:";
@@ -165,13 +166,16 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location bude doručovat události, ale mohou být zpožděny.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location nemohlo okamžitě inicializovat funkci sledování oblasti.";
 "cl_error.description.unknown" = "Neznámá chyba Core Location";
+"client_events.event_type.all" = "Vše";
+"client_events.event_type.database" = "Databáze";
 "client_events.event_type.location_update" = "Aktualizace polohy";
 "client_events.event_type.networkRequest" = "Síťový požadavek";
 "client_events.event_type.notification" = "Oznámení";
 "client_events.event_type.notification.title" = "Bylo přijato uznámení push: %@";
 "client_events.event_type.service_call" = "Volat službu";
-"client_events.event_type.settings" = "Settings";
+"client_events.event_type.settings" = "Nastavení";
 "client_events.event_type.unknown" = "Neznámý";
+"client_events.no_events" = "Žádné události";
 "client_events.view.clear" = "Vymazat";
 "client_events.view.clear_confirm.message" = "Toto nelze vrátit zpět.";
 "client_events.view.clear_confirm.title" = "Opravdu chcete vymazat všechny události?";

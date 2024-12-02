@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Letiltva";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "Kapcsolódva";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "Leválasztva";
-"component::hue::entity::switch::automation::state::off" = "Letiltva";
-"component::hue::entity::switch::automation::state::on" = "Engedélyezve";
 "component::humidifier::entity_component::_::state::off" = "Ki";
 "component::humidifier::entity_component::_::state::on" = "Be";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Tétlen";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Ki";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Otthon";
 "component::improv_ble::config::abort::already_configured" = "Az eszköz már konfigurálva van";
-"component::improv_ble::config::abort::already_provisioned" = "Az eszköz már csatlakozik a Wi-Fi-hez. Ha másik hálózathoz szeretné csatlakoztatni, először próbálja meg visszaállítani a gyári beállításokat.";
 "component::improv_ble::config::abort::cannot_connect" = "Sikertelen csatlakozás";
 "component::improv_ble::config::abort::characteristic_missing" = "Az eszköz vagy már csatlakozik a Wi-Fi-hez, vagy már nem tud csatlakozni a Wi-Fi-hez. Ha másik hálózathoz szeretné csatlakoztatni, először próbálja meg visszaállítani a gyári beállításokat.";
 "component::improv_ble::config::abort::no_devices_found" = "Nem található eszköz a hálózaton";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "Ki";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "Tétlen";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "Szünetel";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "Tétlen";
 "component::remote::entity_component::_::state::off" = "Ki";
 "component::remote::entity_component::_::state::on" = "Be";
 "component::renson::entity::sensor::breeze_level::state::off" = "Ki";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "Zárva";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "Készenlétben";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "Készenlétben";
-"component::tuya::entity::sensor::status::state::standby" = "Készenlétben";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "Ki";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "Ki";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "Be";

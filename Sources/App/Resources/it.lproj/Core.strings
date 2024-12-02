@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Disabilitato";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "Connesso";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "Disconnesso";
-"component::hue::entity::switch::automation::state::off" = "Disabilitato";
-"component::hue::entity::switch::automation::state::on" = "Abilitato";
 "component::humidifier::entity_component::_::state::off" = "Spento/a";
 "component::humidifier::entity_component::_::state::on" = "Acceso/a";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Inattivo";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Spento/a";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "In casa";
 "component::improv_ble::config::abort::already_configured" = "Il dispositivo è già configurato";
-"component::improv_ble::config::abort::already_provisioned" = "Il dispositivo è già connesso al Wi-Fi. Se desideri collegarlo a un'altra rete, prova prima a ripristinarlo alle impostazioni di fabbrica.";
 "component::improv_ble::config::abort::cannot_connect" = "Impossibile connettersi";
 "component::improv_ble::config::abort::characteristic_missing" = "Il dispositivo è già connesso al Wi-Fi o non è più in grado di connettersi al Wi-Fi. Se desideri collegarlo a un'altra rete, prova prima a ripristinarlo alle impostazioni di fabbrica.";
 "component::improv_ble::config::abort::no_devices_found" = "Nessun dispositivo trovato sulla rete";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "Spento/a";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "Inattivo";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "In pausa";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "Inattivo";
 "component::remote::entity_component::_::state::off" = "Spento/a";
 "component::remote::entity_component::_::state::on" = "Acceso/a";
 "component::renson::entity::sensor::breeze_level::state::off" = "Spento/a";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "Chiuso/a";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "In attesa";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "In attesa";
-"component::tuya::entity::sensor::status::state::standby" = "In attesa";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "Spento/a";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "Spento/a";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "Acceso/a";

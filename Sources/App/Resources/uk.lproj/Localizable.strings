@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tap to ";
@@ -165,6 +166,8 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location доставлятиме події, але вони можуть надходити із затримкою.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location не вдалося негайно ініціалізувати функцію моніторингу регіону.";
 "cl_error.description.unknown" = "Невідома помилка розташування";
+"client_events.event_type.all" = "All";
+"client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Оновлення розташування";
 "client_events.event_type.networkRequest" = "Мережевий запит";
 "client_events.event_type.notification" = "Сповіщення";
@@ -172,6 +175,7 @@
 "client_events.event_type.service_call" = "Виклик сервісу";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Невідомо";
+"client_events.no_events" = "No events";
 "client_events.view.clear" = "Очистити";
 "client_events.view.clear_confirm.message" = "Це не можна скасовувати.";
 "client_events.view.clear_confirm.title" = "Ви впевнені, що хочете очистити всі події?";

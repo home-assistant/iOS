@@ -87,15 +87,12 @@
 "component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Απενεργοποιημένο";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "Συνδεδεμένο";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "Αποσυνδεδεμένο";
-"component::hue::entity::switch::automation::state::off" = "Απενεργοποιημένο";
-"component::hue::entity::switch::automation::state::on" = "Ενεργοποιημένο";
 "component::humidifier::entity_component::_::state::off" = "Ανενεργό";
 "component::humidifier::entity_component::_::state::on" = "Ενεργό";
 "component::humidifier::entity_component::_::state_attributes::action::state::idle" = "Σε αδράνεια";
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Ανενεργό";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Σπίτι";
 "component::improv_ble::config::abort::already_configured" = "Η συσκευή έχει ήδη διαμορφωθεί";
-"component::improv_ble::config::abort::already_provisioned" = "Η συσκευή είναι ήδη συνδεδεμένη στο Wi-Fi. Αν θέλετε να τη συνδέσετε σε άλλο δίκτυο, δοκιμάστε πρώτα την επαναφορά εργοστασιακών ρυθμίσεων.";
 "component::improv_ble::config::abort::cannot_connect" = "Αποτυχία σύνδεσης";
 "component::improv_ble::config::abort::characteristic_missing" = "Η συσκευή είτε είναι ήδη συνδεδεμένη στο Wi-Fi είτε δεν μπορεί πλέον να συνδεθεί στο Wi-Fi. Αν θέλετε να τη συνδέσετε σε άλλο δίκτυο, δοκιμάστε πρώτα την επαναφορά εργοστασιακών ρυθμίσεων.";
 "component::improv_ble::config::abort::no_devices_found" = "Δεν βρέθηκαν συσκευές στο δίκτυο";
@@ -175,7 +172,6 @@
 "component::plugwise::entity::select::regulation_mode::state::off" = "Ανενεργό";
 "component::prusalink::entity::sensor::printer_state::state::idle" = "Σε αδράνεια";
 "component::prusalink::entity::sensor::printer_state::state::paused" = "Σε παύση";
-"component::qbittorrent::entity::sensor::transmission_status::state::idle" = "Σε αδράνεια";
 "component::remote::entity_component::_::state::off" = "Ανενεργό";
 "component::remote::entity_component::_::state::on" = "Ενεργό";
 "component::renson::entity::sensor::breeze_level::state::off" = "Ανενεργό";
@@ -254,7 +250,6 @@
 "component::tuya::entity::select::vacuum_cistern::state::closed" = "Κλειστό";
 "component::tuya::entity::select::vacuum_mode::state::standby" = "Αναμονή";
 "component::tuya::entity::sensor::sous_vide_status::state::standby" = "Αναμονή";
-"component::tuya::entity::sensor::status::state::standby" = "Αναμονή";
 "component::tuya::platform::select::state::tuya__light_mode::none" = "Ανενεργό";
 "component::tuya::platform::select::state::tuya__relay_status::off" = "Ανενεργό";
 "component::tuya::platform::select::state::tuya__relay_status::on" = "Ενεργό";

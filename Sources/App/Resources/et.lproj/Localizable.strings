@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Sihtolek";
 "app_intents.state.toggle" = "Muuda olekut";
 "app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
+"assist.button.listening.title" = "Kuulan...";
 "assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";
 "assist.pipelines_picker.title" = "Abilise kanalid";
 "assist.watch.mic_button.title" = "Puuduta, et";
@@ -165,13 +166,16 @@
 "cl_error.description.region_monitoring_response_delayed" = "Põhiasukoht edastab sündmusi, kuid need võivad viibida.";
 "cl_error.description.region_monitoring_setup_delayed" = "Põhiasukoht ei saanud piirkonna jälgimise funktsiooni kohe käivitada.";
 "cl_error.description.unknown" = "Tundmatu põhiasukoha viga";
+"client_events.event_type.all" = "Kõik";
+"client_events.event_type.database" = "Andmebaas";
 "client_events.event_type.location_update" = "Asukoha värskendus";
 "client_events.event_type.networkRequest" = "Võrgutaotlus";
 "client_events.event_type.notification" = "Teavitus";
 "client_events.event_type.notification.title" = "Saadi tõukemärguanne: %@";
 "client_events.event_type.service_call" = "Teenuspäring";
-"client_events.event_type.settings" = "Settings";
+"client_events.event_type.settings" = "Seaded";
 "client_events.event_type.unknown" = "Teadmata";
+"client_events.no_events" = "Sündmused puuduvad";
 "client_events.view.clear" = "Kustuta";
 "client_events.view.clear_confirm.message" = "Seda ei saa tagasi võtta.";
 "client_events.view.clear_confirm.title" = "Kas soovid kindlasti kõik sündmused kustutada?";

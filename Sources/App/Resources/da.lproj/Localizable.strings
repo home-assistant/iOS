@@ -99,6 +99,7 @@
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Toggle";
 "app_intents.widget_action.actions_parameter_configuration" = "Hvilke handlinger?";
+"assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Kunne ikke hente Assist-pipelines. Tjek venligst din pipelines-konfiguration.";
 "assist.pipelines_picker.title" = "Assist-pipelines";
 "assist.watch.mic_button.title" = "Tryk for";
@@ -165,6 +166,8 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location leverer hændelser, men de kan være forsinkede.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location kunne ikke initialisere områdeovervågningsfunktionen med det samme.";
 "cl_error.description.unknown" = "Ukendt Core Location-fejl";
+"client_events.event_type.all" = "All";
+"client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Lokalitetsopdatering";
 "client_events.event_type.networkRequest" = "Netværksanmodning";
 "client_events.event_type.notification" = "Notifikation";
@@ -172,6 +175,7 @@
 "client_events.event_type.service_call" = "Tjenestekald";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Ukendt";
+"client_events.no_events" = "No events";
 "client_events.view.clear" = "Ryd";
 "client_events.view.clear_confirm.message" = "Dette kan ikke fortrydes.";
 "client_events.view.clear_confirm.title" = "Er du sikker på, at du vil rydde alle hændelser?";
