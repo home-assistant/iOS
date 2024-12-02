@@ -598,6 +598,26 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         sidebarGestureRecognizer.isEnabled = server.info.version >= .externalBusCommandSidebar
     }
 
+    private func showNoActiveURLError() {
+        Current.Log.info("Showing noActiveURLError")
+        var config = swiftMessagesConfig()
+        let view = MessageView.viewFromNib(layout: .messageView)
+        view.configureContent(
+            title: L10n.Network.Error.NoActiveUrl.title,
+            body: L10n.Network.Error.NoActiveUrl.body,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: MaterialDesignIcons.cogIcon.image(ofSize: CGSize(width: 30, height: 30), color: Asset.Colors.haPrimary.color),
+            buttonTitle: nil,
+            buttonTapHandler: { [weak self] _ in
+                self?.showSettingsViewController()
+                SwiftMessages.hide()
+            }
+        )
+
+        SwiftMessages.show(config: config, view: view)
+    }
+
     @objc private func connectionInfoDidChange() {
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
@@ -608,6 +628,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     @objc private func loadActiveURLIfNeeded() {
         guard let webviewURL = server.info.connection.webviewURL() else {
             Current.Log.info("not loading, no url")
+            showNoActiveURLError()
             return
         }
 
@@ -645,6 +666,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             } else {
                 webView.load(URLRequest(url: webviewURL))
             }
+        } else {
+            showNoActiveURLError()
         }
     }
 
