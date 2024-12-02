@@ -782,6 +782,8 @@
 		42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C542CA44FC90010ECE3 /* SafariWebView.swift */; };
 		42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */; };
 		42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ActivityView.swift */; };
+		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
+		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42EB03062C6E42F900A184A6 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03052C6E42F900A184A6 /* WatchHomeView.swift */; };
 		42EB03082C6E430300A184A6 /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
@@ -2072,6 +2074,7 @@
 		42E95C542CA44FC90010ECE3 /* SafariWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebView.swift; sourceTree = "<group>"; };
 		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
 		42E95C582CA46AD50010ECE3 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
 		42EB03052C6E42F900A184A6 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
@@ -3217,6 +3220,7 @@
 			isa = PBXGroup;
 			children = (
 				B6D3B4EB225B26300082BB4F /* SensorContainer.swift */,
+				42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */,
 				11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */,
 				11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */,
 				11AF4D1E249C8AF0006C74C0 /* ConnectivitySensor.swift */,
@@ -7145,6 +7149,7 @@
 				11B38EF1275C54A300205C7B /* SendLocationIntentHandler.swift in Sources */,
 				1120C580274638330046C38B /* PerServerContainer.swift in Sources */,
 				427647262C8F38590027B21F /* HAAreaResponse.swift in Sources */,
+				42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				4251AAC22C6CE9CB004CCC9D /* WatchConfig.swift in Sources */,
 				4251AABF2C6CE376004CCC9D /* MagicItem.swift in Sources */,
@@ -7493,6 +7498,7 @@
 				118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
 				42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
+				42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,
