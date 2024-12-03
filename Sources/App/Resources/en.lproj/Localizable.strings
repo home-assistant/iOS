@@ -699,6 +699,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.updates.check_for_updates.title" = "Automatically Check for Updates";
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.widgets.reload_all.title" = "Reload all widgets";
 "settings_sensors.detail.attributes" = "Attributes";
 "settings_sensors.detail.device_class" = "Device Class";
