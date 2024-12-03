@@ -236,20 +236,20 @@ public class ModelManager: ServerObserver {
             .init(subscribe: { connection, server, queue, manager in
                 // working around a swift compiler crash, xcode 12.4
                 let someManager = manager
-
+                var filter: [String: Any] = [:]
                 var lastEntities = Set<HAEntity>()
                 var lastUpdate: Date?
 
+                if server.info.version > .canSubscribeEntitiesChangesWithFilter  {
+                    filter = [
+                        "include": [
+                            "domains": ModelManager.includedDomains.map(\.rawValue),
+                        ],
+                    ]
+                }
+
                 return [
-                    // Since here is where the app first initializes the cache, we need to make sure
-                    // we define the correct domains to include in the subscription
-                    connection.caches.states(
-                        [
-                            "include": [
-                                "domains": ModelManager.includedDomains.map(\.rawValue),
-                            ],
-                        ]
-                    ).subscribe { [weak someManager] token, value in
+                    connection.caches.states(filter).subscribe { [weak someManager] token, value in
                         queue.async {
                             guard let manager = someManager else {
                                 token.cancel()
