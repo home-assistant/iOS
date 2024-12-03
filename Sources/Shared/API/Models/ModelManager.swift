@@ -9,6 +9,37 @@ public class ModelManager: ServerObserver {
     private var subscribedSubscriptions = [SubscribeDefinition]()
     private var cleanupDefinitions = [CleanupDefinition]()
 
+    private static var includedDomains: [Domain] = {
+        // Mac does not need all domains given it does not have all features as iOS (CarPlay, Watch)
+        #if targetEnvironment(macCatalyst)
+        [
+            .cover,
+            .light,
+            .scene,
+            .script,
+            .switch,
+            .sensor,
+            .binarySensor,
+            .zone,
+        ]
+        #else
+        [
+            .button,
+            .cover,
+            .inputBoolean,
+            .inputButton,
+            .light,
+            .lock,
+            .scene,
+            .script,
+            .switch,
+            .sensor,
+            .binarySensor,
+            .zone,
+        ]
+        #endif
+    }()
+
     public var workQueue: DispatchQueue = .global(qos: .userInitiated)
     static var isAppInForeground: () -> Bool = { false }
 
@@ -205,12 +236,20 @@ public class ModelManager: ServerObserver {
             .init(subscribe: { connection, server, queue, manager in
                 // working around a swift compiler crash, xcode 12.4
                 let someManager = manager
-
+                var filter: [String: Any] = [:]
                 var lastEntities = Set<HAEntity>()
                 var lastUpdate: Date?
 
+                if server.info.version > .canSubscribeEntitiesChangesWithFilter {
+                    filter = [
+                        "include": [
+                            "domains": ModelManager.includedDomains.map(\.rawValue),
+                        ],
+                    ]
+                }
+
                 return [
-                    connection.caches.states.subscribe { [weak someManager] token, value in
+                    connection.caches.states(filter).subscribe { [weak someManager] token, value in
                         queue.async {
                             guard let manager = someManager else {
                                 token.cancel()

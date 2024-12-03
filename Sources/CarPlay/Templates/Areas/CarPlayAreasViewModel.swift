@@ -120,7 +120,7 @@ final class CarPlayAreasViewModel {
     // swiftlint:enable cyclomatic_complexity
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
-        guard let entitiesCachedStates = Current.api(for: server)?.connection.caches.states.value else { return }
+        guard let entitiesCachedStates = Current.api(for: server)?.connection.caches.states().value else { return }
         entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: area.name,
             filterType: .areaId(entityIds: entityIdsForAreaId),

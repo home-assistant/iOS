@@ -102,7 +102,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             case .entity:
                 guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all
                     .first, let connection = Current.api(for: server)?.connection,
-                    let item = connection.caches.states.value?.all.first(where: {
+                    let item = connection.caches.states().value?.all.first(where: {
                         $0.entityId == magicItem.id
                     }) else { return .init(text: "", detailText: "") }
 
