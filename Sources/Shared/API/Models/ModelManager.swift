@@ -240,7 +240,7 @@ public class ModelManager: ServerObserver {
                 var lastEntities = Set<HAEntity>()
                 var lastUpdate: Date?
 
-                if server.info.version > .canSubscribeEntitiesChangesWithFilter  {
+                if server.info.version > .canSubscribeEntitiesChangesWithFilter {
                     filter = [
                         "include": [
                             "domains": ModelManager.includedDomains.map(\.rawValue),

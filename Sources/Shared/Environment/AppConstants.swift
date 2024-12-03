@@ -191,7 +191,8 @@ public extension Version {
     static let externalBusCommandSidebar: Version = .init(major: 2023, minor: 4, prerelease: "b3")
     static let externalBusCommandAutomationEditor: Version = .init(major: 2024, minor: 2, prerelease: "any0")
     static let canUseAppThemeForStatusBar: Version = .init(major: 2024, minor: 7)
-    /// The version where the app can subscribe to entities changes with a filter (e.g. only state changes from sensor domain)
+    /// The version where the app can subscribe to entities changes with a filter (e.g. only state changes from sensor
+    /// domain)
     static let canSubscribeEntitiesChangesWithFilter: Version = .init(major: 2024, minor: 11)
 
     var coreRequiredString: String {
