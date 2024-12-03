@@ -54,15 +54,15 @@ PODS:
   - GRDB.swift (6.29.3):
     - GRDB.swift/standard (= 6.29.3)
   - GRDB.swift/standard (6.29.3)
-  - HAKit (0.4.2):
-    - HAKit/Core (= 0.4.2)
-  - HAKit/Core (0.4.2):
+  - HAKit (0.4.3):
+    - HAKit/Core (= 0.4.3)
+  - HAKit/Core (0.4.3):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.4.2):
+  - HAKit/Mocks (0.4.3):
     - HAKit/Core
-  - HAKit/PromiseKit (0.4.2):
+  - HAKit/PromiseKit (0.4.3):
     - HAKit/Core
-    - PromiseKit (~> 6.13)
+    - PromiseKit (~> 8.1.1)
   - Improv-iOS (0.0.6)
   - KeychainAccess (4.2.2)
   - MBProgressHUD (1.2.0)
@@ -88,14 +88,14 @@ PODS:
   - OHHTTPStubs/OHPathHelpers (9.1.0)
   - OHHTTPStubs/Swift (9.1.0):
     - OHHTTPStubs/Default
-  - PromiseKit (6.18.1):
-    - PromiseKit/CorePromise (= 6.18.1)
-    - PromiseKit/Foundation (= 6.18.1)
-    - PromiseKit/UIKit (= 6.18.1)
-  - PromiseKit/CorePromise (6.18.1)
-  - PromiseKit/Foundation (6.18.1):
+  - PromiseKit (8.1.2):
+    - PromiseKit/CorePromise (= 8.1.2)
+    - PromiseKit/Foundation (= 8.1.2)
+    - PromiseKit/UIKit (= 8.1.2)
+  - PromiseKit/CorePromise (8.1.2)
+  - PromiseKit/Foundation (8.1.2):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (6.18.1):
+  - PromiseKit/UIKit (8.1.2):
     - PromiseKit/CorePromise
   - PromisesObjC (2.1.1)
   - ReachabilitySwift (5.0.0)
@@ -133,15 +133,15 @@ DEPENDENCIES:
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
   - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v6.29.3`)
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.2`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.3`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.3`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.3`)
   - Improv-iOS (~> 0.0.6)
   - KeychainAccess
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - OHHTTPStubs/Swift
-  - PromiseKit
+  - PromiseKit (~> 8.1.1)
   - ReachabilitySwift
   - RealmSwift
   - SFSafeSymbols (~> 5.3)
@@ -209,7 +209,7 @@ EXTERNAL SOURCES:
     :tag: v6.29.3
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.2
+    :tag: 0.4.3
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -244,7 +244,7 @@ CHECKOUT OPTIONS:
     :tag: v6.29.3
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.2
+    :tag: 0.4.3
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -273,7 +273,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   GRDB.swift: 764235dee4a4fbe3ddcb4f85c61752e8d8da9ad0
-  HAKit: 92e9bd30717270df15025184b608b7902a773286
+  HAKit: 28aad2aa3691fc0a51b039e5f960036edba6baf6
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -281,7 +281,7 @@ SPEC CHECKSUMS:
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
-  PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
+  PromiseKit: e057b5b3c0ce9a0145674d633930924234104ee3
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
@@ -299,6 +299,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 30b5c6369c33ce4a4fa8239d093141d7b7cba3f0
+PODFILE CHECKSUM: 51870af5d4e6bda2dc7a4ef9bd4e81df4d169ac7
 
 COCOAPODS: 1.15.2
