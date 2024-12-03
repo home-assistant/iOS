@@ -153,7 +153,6 @@ public extension DatabaseQueue {
         } catch {
             let errorMessage = "Failed to create GRDB tables, error: \(error.localizedDescription)"
             Current.Log.error(errorMessage)
-            fatalError(errorMessage)
         }
     }
 }
