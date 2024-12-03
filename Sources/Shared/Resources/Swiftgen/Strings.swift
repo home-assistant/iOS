@@ -2523,6 +2523,13 @@ public enum L10n {
     }
   }
 
+  public enum ShortcutItem {
+    public enum OpenSettings {
+      /// Open Settings
+      public static var title: String { return L10n.tr("Localizable", "shortcut_item.open_settings.title") }
+    }
+  }
+
   public enum Thread {
     public enum ActiveOperationalDataSet {
       /// Active operational data set

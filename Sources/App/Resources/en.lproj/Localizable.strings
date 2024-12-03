@@ -1056,4 +1056,5 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.title" = "Sensors";
 "network.error.no_active_url.title" = "No URL available to load";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
+"shortcut_item.open_settings.title" = "Open Settings";
 "yes_label" = "Yes";

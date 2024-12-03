@@ -188,6 +188,15 @@ public class SettingsStore {
         }
     }
 
+    public var macNativeFeaturesOnly: Bool {
+        get {
+            prefs.bool(forKey: "macNativeFeaturesOnly")
+        }
+        set {
+            prefs.set(newValue, forKey: "macNativeFeaturesOnly")
+        }
+    }
+
     public var periodicUpdateInterval: TimeInterval? {
         get {
             if prefs.object(forKey: "periodicUpdateInterval") == nil {

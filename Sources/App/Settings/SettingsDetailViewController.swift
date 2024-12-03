@@ -176,6 +176,20 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     })
                 }
 
+                +++
+                Section(
+                    footer: "This will open Safari instead of the App webview, while keeping the native features such as widgets working."
+                ) {
+                    $0.hidden = .function([], { _ in !Current.isCatalyst })
+                }
+                <<< SwitchRow("macNativeFeaturesOnly") {
+                    $0.title = "Native Features Only (Experimental)"
+                    $0.value = Current.settingsStore.macNativeFeaturesOnly
+                    $0.onChange { row in
+                        Current.settingsStore.macNativeFeaturesOnly = row.value ?? false
+                    }
+                }
+
                 +++ Section {
                     $0.hidden = .function([], { _ in !Current.updater.isSupported })
                 }
