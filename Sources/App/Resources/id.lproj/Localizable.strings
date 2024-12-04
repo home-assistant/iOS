@@ -99,7 +99,7 @@
 "app_intents.state.target" = "Status target";
 "app_intents.state.toggle" = "Alihkan";
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
-"assist.button.listening.title" = "Listening...";
+"assist.button.listening.title" = "Mendengarkan...";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
 "assist.pipelines_picker.title" = "Saluran Assist";
 "assist.watch.mic_button.title" = "Ketuk untuk";
@@ -166,16 +166,16 @@
 "cl_error.description.region_monitoring_response_delayed" = "Core Location akan mengirimkan event tetapi mungkin tertunda.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location tidak dapat segera menginisialisasi fitur pemantauan wilayah.";
 "cl_error.description.unknown" = "Kesalahan Core Location yang Tidak Diketahui";
-"client_events.event_type.all" = "All";
+"client_events.event_type.all" = "Semua";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Pembaruan Lokasi";
 "client_events.event_type.networkRequest" = "Permintaan Jaringan";
 "client_events.event_type.notification" = "Notifikasi";
 "client_events.event_type.notification.title" = "Notifikasi Push Diterima: %@";
 "client_events.event_type.service_call" = "Pemanggilan Layanan";
-"client_events.event_type.settings" = "Settings";
+"client_events.event_type.settings" = "Pengaturan";
 "client_events.event_type.unknown" = "Tidak Dikenal";
-"client_events.no_events" = "No events";
+"client_events.no_events" = "Tidak ada peristiwa";
 "client_events.view.clear" = "Hapus";
 "client_events.view.clear_confirm.message" = "Ini tidak dapat diurungkan.";
 "client_events.view.clear_confirm.title" = "Yakin ingin menghapus semua peristiwa?";
@@ -286,6 +286,8 @@
 "menu.status_item.toggle" = "Aktifkan/Nonaktifkan %1$@";
 "menu.view.reload_page" = "Muat Ulang Halaman";
 "navBar.close" = "Tutup";
+"network.error.no_active_url.body" = "Buka pengaturan aplikasi pendamping dan periksa pengaturan server Anda, URL internal hanya akan digunakan jika jaringan lokal ditentukan (menggunakan pengenal SSID Wi-Fi),. Jika Anda menggunakan VPN, coba atur URL eksternal agar sama dengan URL internal.";
+"network.error.no_active_url.title" = "Tidak ada URL yang tersedia untuk dimuat";
 "nfc.detail.copy" = "Salin ke Pasteboard";
 "nfc.detail.duplicate" = "Buat Duplikat";
 "nfc.detail.example_trigger" = "Contoh Pemicu";
@@ -632,6 +634,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.location.zones.location.title" = "Lokasi";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radius";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Setel ulang lencana ke 0 setiap kali aplikasi diluncurkan.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Otomatis";
 "settings_details.notifications.badge_section.button.title" = "Setel Ulang Lencana";
@@ -718,6 +722,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_sensors.title" = "Sensor";
 "share_extension.entered_placeholder" = "peristiwa 'masuk'";
 "share_extension.error.title" = "Tidak Dapat Mengirim";
+"shortcut_item.open_settings.title" = "Open Settings";
 "success_label" = "Sukses";
 "thread.active_operational_data_set.title" = "Himpunan data operasional aktif";
 "thread.border_agent_id.title" = "ID Agen Perbatasan";

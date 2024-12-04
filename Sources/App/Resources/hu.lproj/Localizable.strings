@@ -286,6 +286,8 @@
 "menu.status_item.toggle" = "%1$@ kapcsolása";
 "menu.view.reload_page" = "Oldal újratöltése";
 "navBar.close" = "Bezárás";
+"network.error.no_active_url.body" = "Nyissa meg a mobilalkalmazás beállításait és ellenőrizze a kiszolgáló beállításait! A belső URL csak akkor lesz használva, ha a helyi hálózat meg van határozva (SSID). Amennyiben VPN-t használ, állítsa a külső URL-t ugyanarra, mint a belső URL-t.";
+"network.error.no_active_url.title" = "Nincs betölthető URL";
 "nfc.detail.copy" = "Másolás a beillesztőtáblára";
 "nfc.detail.duplicate" = "Hozzon létre egy másolatot";
 "nfc.detail.example_trigger" = "Példa eseményindító";
@@ -632,6 +634,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.location.zones.location.title" = "Helymeghatározás";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Sugár";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Minden alkalommal, amikor elindítja az alkalmazást, visszaállítja a jelvényt 0-ra.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatikusan";
 "settings_details.notifications.badge_section.button.title" = "Jelvény visszaállítása";
@@ -718,6 +722,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_sensors.title" = "Érzékelők";
 "share_extension.entered_placeholder" = "'entered' az eseményben";
 "share_extension.error.title" = "Nem sikerült elküldeni";
+"shortcut_item.open_settings.title" = "Open Settings";
 "success_label" = "Sikerült";
 "thread.active_operational_data_set.title" = "Aktív működési adatkészlet";
 "thread.border_agent_id.title" = "Border Agent azonosító";

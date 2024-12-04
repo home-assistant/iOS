@@ -59,10 +59,10 @@
 "app_intents.closed_state_icon.title" = "Ikona pro zavřený stav";
 "app_intents.controls.assist.parameter.with_voice" = "S hlasem";
 "app_intents.controls.assist.title" = "Assist v aplikaci";
-"app_intents.cover.title" = "Kryt";
+"app_intents.cover.title" = "Překryt";
 "app_intents.haptic_confirmation.title" = "Haptické potvrzení";
 "app_intents.icon.title" = "Ikona";
-"app_intents.intent.cover.title" = "Ovládat kryt";
+"app_intents.intent.cover.title" = "Ovládat překryt";
 "app_intents.intent.light.title" = "Ovládat světlo";
 "app_intents.intent.switch.title" = "Ovládat spínač";
 "app_intents.lights.light.target" = "Cílový stav";
@@ -193,7 +193,7 @@
 "done_label" = "Hotovo";
 "download_manager.downloading.title" = "Stahování";
 "download_manager.failed.title" = "Stažení souboru se nezdařilo, chyba: %@";
-"download_manager.finished.title" = "Stahování bylo dokončeno";
+"download_manager.finished.title" = "Stahování dokončeno";
 "error_label" = "Chyba";
 "extensions.map.location.new" = "Nová poloha";
 "extensions.map.location.original" = "Původní poloha";
@@ -286,6 +286,8 @@
 "menu.status_item.toggle" = "Přepnout %1$@";
 "menu.view.reload_page" = "Znovu načíst stránku";
 "navBar.close" = "Zavřít";
+"network.error.no_active_url.body" = "Otevřete nastavení doprovodné aplikace a zkontrolujte nastavení serveru; interní URL se použije jen v případě, že je definována místní síť (SSID). Pokud používáte VPN, zkuste nastavit externí URL stejnou jako interní URL.";
+"network.error.no_active_url.title" = "Není k dispozici žádná adresa URL k načtení";
 "nfc.detail.copy" = "Kopírovat do schránky";
 "nfc.detail.duplicate" = "Vytvořit duplikát";
 "nfc.detail.example_trigger" = "Příklad spouštěče";
@@ -632,6 +634,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.location.zones.location.title" = "Poloha";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Poloměr";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Při každém spuštění aplikace resetuje odznak na hodnotu 0.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticky";
 "settings_details.notifications.badge_section.button.title" = "Resetovat odznak";
@@ -718,6 +722,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_sensors.title" = "Senzory";
 "share_extension.entered_placeholder" = "\"entered\" v události";
 "share_extension.error.title" = "Nelze odeslat";
+"shortcut_item.open_settings.title" = "Open Settings";
 "success_label" = "Úspěch";
 "thread.active_operational_data_set.title" = "Aktivní soubor provozních dat";
 "thread.border_agent_id.title" = "ID hraničního agenta";
@@ -1002,9 +1007,9 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.assist.description" = "Otevře Assist v aplikaci Home Assistant.";
 "widgets.controls.assist.pipeline.placeholder" = "Vybrat pipeline";
 "widgets.controls.assist.title" = "Assist";
-"widgets.controls.cover.description" = "Přepnout kryt";
-"widgets.controls.cover.placeholder_title" = "Vybrat kryt";
-"widgets.controls.cover.title" = "Kryt";
+"widgets.controls.cover.description" = "Přepnout překryt";
+"widgets.controls.cover.placeholder_title" = "Vybrat překryt";
+"widgets.controls.cover.title" = "Překryt";
 "widgets.controls.light.description" = "Zapne/Vypne světlo.";
 "widgets.controls.light.placeholder_title" = "Vybrat světlo";
 "widgets.controls.light.title" = "Světlo";
