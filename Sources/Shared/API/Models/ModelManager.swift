@@ -21,6 +21,7 @@ public class ModelManager: ServerObserver {
             .sensor,
             .binarySensor,
             .zone,
+            .person,
         ]
         #else
         [
@@ -36,6 +37,7 @@ public class ModelManager: ServerObserver {
             .sensor,
             .binarySensor,
             .zone,
+            .person,
         ]
         #endif
     }()
