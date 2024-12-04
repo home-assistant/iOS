@@ -14,6 +14,7 @@ public enum Domain: String, CaseIterable {
     case sensor
     case binarySensor = "binary_sensor"
     case zone
+    case person
     // TODO: Map more domains
 
     public enum State: String {
@@ -81,6 +82,8 @@ public enum Domain: String, CaseIterable {
             image = MaterialDesignIcons.eyeIcon
         case .zone:
             image = MaterialDesignIcons.mapIcon
+        case .person:
+            image = MaterialDesignIcons.accountIcon
         }
         return image
     }

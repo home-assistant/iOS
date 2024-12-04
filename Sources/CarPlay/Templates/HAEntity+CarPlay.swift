@@ -60,12 +60,12 @@ extension HAEntity {
             default:
                 break
             }
-        case .none, .sensor, .binarySensor, .zone:
+        case .none, .sensor, .binarySensor, .zone, .person:
             break
         }
         if let request {
             return api.connection.send(request).promise
-                .map { _ in () } ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+                .map { _ in () }
         } else {
             return .value
         }
@@ -104,6 +104,8 @@ extension HAEntity {
                 image = MaterialDesignIcons.eyeIcon
             case .zone:
                 image = MaterialDesignIcons.mapIcon
+            case .person:
+                image = MaterialDesignIcons.accountIcon
             }
         }
 
