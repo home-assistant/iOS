@@ -286,6 +286,8 @@
 "menu.status_item.toggle" = "切换%1$@";
 "menu.view.reload_page" = "重新加载页面";
 "navBar.close" = "关闭";
+"network.error.no_active_url.body" = "打开配套应用的设置并检查您的服务器设置，仅当定义了本地网络（SSID）时才会使用内部网址，如果您使用 VPN ，请尝试将您的外部网址设置为与内部网址相同。";
+"network.error.no_active_url.title" = "没有可加载的网址";
 "nfc.detail.copy" = "复制到粘贴板";
 "nfc.detail.duplicate" = "创建一个副本";
 "nfc.detail.example_trigger" = "示例触发器";
@@ -630,6 +632,8 @@
 "settings_details.location.zones.location.title" = "位置";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "半径";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "每次启动应用程序时自动重置标记。";
 "settings_details.notifications.badge_section.automatic_setting.title" = "自动重置";
 "settings_details.notifications.badge_section.button.title" = "重置标记";
@@ -716,6 +720,7 @@
 "settings_sensors.title" = "传感器";
 "share_extension.entered_placeholder" = "“进入”事件";
 "share_extension.error.title" = "无法发送";
+"shortcut_item.open_settings.title" = "Open Settings";
 "success_label" = "成功";
 "thread.active_operational_data_set.title" = "活动操作数据集";
 "thread.border_agent_id.title" = "边界代理 ID";

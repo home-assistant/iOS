@@ -286,6 +286,8 @@
 "menu.status_item.toggle" = "Geçiş %1$@";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";
 "navBar.close" = "Kapat";
+"network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
+"network.error.no_active_url.title" = "No URL available to load";
 "nfc.detail.copy" = "Panoya kopyala";
 "nfc.detail.duplicate" = "Kopya Oluştur";
 "nfc.detail.example_trigger" = "Örnek Tetikleyici";
@@ -632,6 +634,8 @@
 "settings_details.location.zones.location.title" = "Konum";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Yarıçap";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Uygulamayı her başlattığınızda rozeti 0'a sıfırlar.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Otomatik";
 "settings_details.notifications.badge_section.button.title" = "Rozeti 0'a sıfırla";
@@ -718,6 +722,7 @@
 "settings_sensors.title" = "Sensörler";
 "share_extension.entered_placeholder" = "Etkinliğe 'girildi'";
 "share_extension.error.title" = "Gönderilemedi";
+"shortcut_item.open_settings.title" = "Open Settings";
 "success_label" = "Başarılı!";
 "thread.active_operational_data_set.title" = "Aktif operasyonel veri seti";
 "thread.border_agent_id.title" = "Sınır Ajanı Kimliği";

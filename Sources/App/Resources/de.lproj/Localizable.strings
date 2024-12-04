@@ -286,6 +286,8 @@
 "menu.status_item.toggle" = "Schalte %1$@ um";
 "menu.view.reload_page" = "Seite neuladen";
 "navBar.close" = "Schließen";
+"network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
+"network.error.no_active_url.title" = "No URL available to load";
 "nfc.detail.copy" = "In die Zwischenablage kopieren";
 "nfc.detail.duplicate" = "Duplikat erstellen";
 "nfc.detail.example_trigger" = "Beispiel Auslöser";
@@ -632,6 +634,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.location.zones.location.title" = "Standort";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radius";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Setzt das Kennzeichen bei jedem Start der App auf 0 zurück.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisch";
 "settings_details.notifications.badge_section.button.title" = "Badge zurücksetzen";
@@ -718,6 +722,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_sensors.title" = "Sensoren";
 "share_extension.entered_placeholder" = "'entered' im Event";
 "share_extension.error.title" = "Konnte nicht gesendet werden";
+"shortcut_item.open_settings.title" = "Open Settings";
 "success_label" = "Erfolgreich!";
 "thread.active_operational_data_set.title" = "Aktiver Betriebsdatensatz";
 "thread.border_agent_id.title" = "Border-Agent-ID";

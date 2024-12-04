@@ -286,6 +286,8 @@
 "menu.status_item.toggle" = "Växla %1$@";
 "menu.view.reload_page" = "Ladda om sida";
 "navBar.close" = "Stäng";
+"network.error.no_active_url.body" = "Öppna inställningarna för Companion-appen och kontrollera serverinställningarna. Den interna webbadressen används endast om det lokala nätverket är definierat (SSID). Om du använder VPN kan du försöka ställa in den externa webbadressen som samma som den interna webbadressen.";
+"network.error.no_active_url.title" = "Ingen URL tillgänglig att ladda";
 "nfc.detail.copy" = "Kopiera till klippbord";
 "nfc.detail.duplicate" = "Skapa kopia";
 "nfc.detail.example_trigger" = "Exempel-utlösare";
@@ -632,6 +634,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.location.zones.location.title" = "Position";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radie";
+"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
+"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Återställer brickan till 0 varje gång appen startas.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatiskt";
 "settings_details.notifications.badge_section.button.title" = "Nollställ brickan";
@@ -719,6 +723,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_sensors.title" = "Sensorer";
 "share_extension.entered_placeholder" = "'inlagt' i händelse";
 "share_extension.error.title" = "Kunde inte skicka";
+"shortcut_item.open_settings.title" = "Open Settings";
 "success_label" = "Lyckades";
 "thread.active_operational_data_set.title" = "Aktiv operativ datauppsättning";
 "thread.border_agent_id.title" = "Gränsvakts-ID";
