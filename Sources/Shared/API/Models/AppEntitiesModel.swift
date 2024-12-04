@@ -7,7 +7,7 @@ public protocol AppEntitiesModelProtocol {
     func updateModel(_ entities: Set<HAEntity>, server: Server)
 }
 
-public final class AppEntitiesModel: AppEntitiesModelProtocol {
+final class AppEntitiesModel: AppEntitiesModelProtocol {
     static var shared = AppEntitiesModel()
     /// ServerId: Date
     private var lastDatabaseUpdate: [String: Date] = [:]

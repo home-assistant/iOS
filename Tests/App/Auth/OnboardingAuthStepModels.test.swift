@@ -56,7 +56,7 @@ private enum TestError: Error {
     case any
 }
 
-private class FakeModelManager: ModelManager {
+private class FakeModelManager: LegacyModelManager {
     var fetchResult: Promise<Void> = .value(())
     var expectedApis: [HomeAssistantAPI] = []
 

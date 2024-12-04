@@ -427,8 +427,8 @@
 		11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED439F27279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift */; };
 		11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
 		11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
-		11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4824C5116F00404AF8 /* ModelManager.swift */; };
-		11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4824C5116F00404AF8 /* ModelManager.swift */; };
+		11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4824C5116F00404AF8 /* LegacyModelManager.swift */; };
+		11EE9B4A24C5116F00404AF8 /* LegacyModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4824C5116F00404AF8 /* LegacyModelManager.swift */; };
 		11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */; };
 		11EE9B4E24C6089800404AF8 /* RealmPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */; };
 		11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */; };
@@ -570,6 +570,8 @@
 		421B1C182BD6524E001ED18C /* WidgetsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetsSettingsViewModel.swift */; };
 		421B1C1A2BD65255001ED18C /* WidgetsSettingsView+build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C192BD65255001ED18C /* WidgetsSettingsView+build.swift */; };
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
+		4221ED352D009EF700BAE3EB /* PeriodicAppEntitiesModelUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* PeriodicAppEntitiesModelUpdater.swift */; };
+		4221ED362D009EF700BAE3EB /* PeriodicAppEntitiesModelUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* PeriodicAppEntitiesModelUpdater.swift */; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
@@ -1742,7 +1744,7 @@
 		11ED439B2726600000B5FD45 /* OnboardingAuthStepSensors.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepSensors.test.swift; sourceTree = "<group>"; };
 		11ED439F27279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthLoginImpl.test.swift; sourceTree = "<group>"; };
 		11EE9B4524C4E01500404AF8 /* SharedPlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPlist.swift; sourceTree = "<group>"; };
-		11EE9B4824C5116F00404AF8 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
+		11EE9B4824C5116F00404AF8 /* LegacyModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModelManager.swift; sourceTree = "<group>"; };
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
 		11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmPersistable.swift; sourceTree = "<group>"; };
 		11EE9B5324C62EB300404AF8 /* RealmScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmScene.swift; sourceTree = "<group>"; };
@@ -1845,6 +1847,7 @@
 		421B1C172BD6524E001ED18C /* WidgetsSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsSettingsViewModel.swift; sourceTree = "<group>"; };
 		421B1C192BD65255001ED18C /* WidgetsSettingsView+build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetsSettingsView+build.swift"; sourceTree = "<group>"; };
 		421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifier.swift"; sourceTree = "<group>"; };
+		4221ED332D009BD000BAE3EB /* PeriodicAppEntitiesModelUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodicAppEntitiesModelUpdater.swift; sourceTree = "<group>"; };
 		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
@@ -4852,6 +4855,7 @@
 			isa = PBXGroup;
 			children = (
 				D00302BD20D4BEDB004C2CA9 /* Environment.swift */,
+				4221ED332D009BD000BAE3EB /* PeriodicAppEntitiesModelUpdater.swift */,
 				D03D893A20E0B2E300D4F28D /* AppConstants.swift */,
 				1101568624D7712F009424C9 /* TagManagerProtocol.swift */,
 				11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */,
@@ -5029,7 +5033,7 @@
 				B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */,
 				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 				4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */,
-				11EE9B4824C5116F00404AF8 /* ModelManager.swift */,
+				11EE9B4824C5116F00404AF8 /* LegacyModelManager.swift */,
 				11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */,
 				11EE9B5324C62EB300404AF8 /* RealmScene.swift */,
 				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
@@ -7099,7 +7103,7 @@
 				11AF4D1D249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */,
 				11AF4D26249D1931006C74C0 /* LastUpdateSensor.swift in Sources */,
-				11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */,
+				11EE9B4A24C5116F00404AF8 /* LegacyModelManager.swift in Sources */,
 				119A7E0E2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				42DEDA9B2C5B926400E9D29D /* AppVersionSensor.swift in Sources */,
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
@@ -7116,6 +7120,7 @@
 				424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */,
+				4221ED362D009EF700BAE3EB /* PeriodicAppEntitiesModelUpdater.swift in Sources */,
 				424151FA2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */,
 				42070EED2BAC523F0031E96F /* AssistService.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -7351,7 +7356,7 @@
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
-				11EE9B4924C5116F00404AF8 /* ModelManager.swift in Sources */,
+				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,
 				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
@@ -7404,6 +7409,7 @@
 				113E73102518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				11B38EE5275C54A200205C7B /* SendLocationIntentHandler.swift in Sources */,
+				4221ED352D009EF700BAE3EB /* PeriodicAppEntitiesModelUpdater.swift in Sources */,
 				1120C57F274638330046C38B /* PerServerContainer.swift in Sources */,
 				42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */,
 				426D9C742C9C60B000F278AF /* ControlEntityProvider.swift in Sources */,

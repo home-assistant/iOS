@@ -1,5 +1,6 @@
 import Communicator
 import Eureka
+import HAKit
 import PromiseKit
 import Shared
 
@@ -154,6 +155,11 @@ class SettingsViewController: HAFormViewController {
 
         form +++ Section()
             <<< SettingsRootDataSource.Row.whatsNew.row
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Current.periodicAppEntitiesUpdater().updateAppEntities()
     }
 
     @objc func openAbout(_ sender: UIButton) {
