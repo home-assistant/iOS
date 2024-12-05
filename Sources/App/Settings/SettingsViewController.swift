@@ -109,6 +109,7 @@ class SettingsViewController: HAFormViewController {
         if contentSections.contains(.general) {
             form +++ Section()
                 <<< SettingsRootDataSource.Row.general.row
+                <<< SettingsRootDataSource.Row.gestures.row
                 <<< SettingsRootDataSource.Row.location.row
                 <<< SettingsRootDataSource.Row.notifications.row
         }

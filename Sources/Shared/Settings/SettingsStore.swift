@@ -413,6 +413,27 @@ public class SettingsStore {
         }
     }
 
+    #if os(iOS)
+    public var gestures: [HAGesture: HAGestureAction] {
+        get {
+            guard let data = prefs.data(forKey: "gesturesSettings"),
+                  let decodedGestures = try? JSONDecoder().decode([HAGesture: HAGestureAction].self, from: data) else {
+                Current.Log.error("Failed to decode gestures from settings")
+                return .defaultGestures
+            }
+            return decodedGestures
+        }
+        set {
+            do {
+                let encoded = try JSONEncoder().encode(newValue)
+                prefs.set(encoded, forKey: "gesturesSettings")
+            } catch {
+                Current.Log.error("Failed to encode gestures for settings, error \(error.localizedDescription)")
+            }
+        }
+    }
+    #endif
+
     // MARK: - Private helpers
 
     private var defaultDeviceID: String {

@@ -20,6 +20,7 @@ enum SettingsRootDataSource {
 
     enum Row: String, CaseIterable {
         case general
+        case gestures
         case servers
         case location
         case notifications
@@ -41,6 +42,7 @@ enum SettingsRootDataSource {
                 switch self {
                 case .servers: return SettingsRootDataSource.servers()
                 case .general: return SettingsRootDataSource.general()
+                case .gestures: return SettingsRootDataSource.gestures()
                 case .location: return SettingsRootDataSource.location()
                 case .notifications: return SettingsRootDataSource.notifications()
                 case .thread: return SettingsRootDataSource.thread()
@@ -80,6 +82,17 @@ enum SettingsRootDataSource {
                 let view = SettingsDetailViewController()
                 view.detailGroup = .general
                 return view
+            }, onDismiss: nil)
+        }
+    }
+
+    private static func gestures() -> SettingsButtonRow {
+        SettingsButtonRow {
+            $0.title = L10n.Gestures.Screen.title
+            $0.icon = .gestureIcon
+            $0.isAvailableForMac = false
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                UIHostingController(rootView: GesturesSetupView())
             }, onDismiss: nil)
         }
     }
