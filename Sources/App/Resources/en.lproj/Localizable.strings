@@ -1078,7 +1078,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "gestures.value.option.next_server" = "Next server";
 "gestures.value.option.previous_server" = "Previous server";
 "gestures.value.option.show_settings" = "Open App settings";
-"gestures.disabled.footer" = "Some gestures are not configurable at the moment, in the future they may become configurable.";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
 "gestures.screen.title" = "Gestures";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";

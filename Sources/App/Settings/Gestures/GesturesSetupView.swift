@@ -14,7 +14,7 @@ struct GesturesSetupView: View {
                 title: L10n.Gestures.Screen.title,
                 subtitle: L10n.Gestures.Screen.body
             )
-            Section(footer: Text(L10n.Gestures.Disabled.footer)) {
+            Section {
                 ForEach(
                     HAGesture.allCases.sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
                     id: \.self
