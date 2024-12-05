@@ -869,10 +869,6 @@ public enum L10n {
       /// 3 👆 swipe up
       public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_up.title") }
     }
-    public enum Disabled {
-      /// Some gestures are not configurable at the moment, in the future they may become configurable.
-      public static var footer: String { return L10n.tr("Localizable", "gestures.disabled.footer") }
-    }
     public enum Footer {
       /// Customize gestures to be used on the frontend.
       public static var title: String { return L10n.tr("Localizable", "gestures.footer.title") }

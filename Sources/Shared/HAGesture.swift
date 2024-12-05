@@ -37,11 +37,11 @@ public enum HAGesture: CaseIterable, Codable {
     case swipeRight
     case swipeLeft
     case _3FingersSwipeUp
-    case _3FingersSwipeDown
+    //    case _3FingersSwipeDown
     case _3FingersSwipeLeft
     case _3FingersSwipeRight
-    case _2FingersSwipeUp
-    case _2FingersSwipeDown
+    //    case _2FingersSwipeUp
+    //    case _2FingersSwipeDown
     case _2FingersSwipeLeft
     case _2FingersSwipeRight
 
@@ -53,16 +53,16 @@ public enum HAGesture: CaseIterable, Codable {
             return L10n.Gestures.SwipeLeft.title
         case ._3FingersSwipeUp:
             return L10n.Gestures._3FingersSwipeUp.title
-        case ._3FingersSwipeDown:
-            return L10n.Gestures._3FingersSwipeDown.title
+        //        case ._3FingersSwipeDown:
+        //            return L10n.Gestures._3FingersSwipeDown.title
         case ._3FingersSwipeLeft:
             return L10n.Gestures._3FingersSwipeLeft.title
         case ._3FingersSwipeRight:
             return L10n.Gestures._3FingersSwipeRight.title
-        case ._2FingersSwipeUp:
-            return L10n.Gestures._2FingersSwipeUp.title
-        case ._2FingersSwipeDown:
-            return L10n.Gestures._2FingersSwipeDown.title
+        //        case ._2FingersSwipeUp:
+        //            return L10n.Gestures._2FingersSwipeUp.title
+        //        case ._2FingersSwipeDown:
+        //            return L10n.Gestures._2FingersSwipeDown.title
         case ._2FingersSwipeLeft:
             return L10n.Gestures._2FingersSwipeLeft.title
         case ._2FingersSwipeRight:
@@ -76,18 +76,18 @@ public enum HAGesture: CaseIterable, Codable {
             0
         case .swipeLeft:
             1
-        case ._2FingersSwipeUp:
-            2
-        case ._2FingersSwipeDown:
-            3
+        //        case ._2FingersSwipeUp:
+        //            2
+        //        case ._2FingersSwipeDown:
+        //            3
         case ._2FingersSwipeRight:
             4
         case ._2FingersSwipeLeft:
             5
         case ._3FingersSwipeUp:
             6
-        case ._3FingersSwipeDown:
-            7
+        //        case ._3FingersSwipeDown:
+        //            7
         case ._3FingersSwipeRight:
             8
         case ._3FingersSwipeLeft:
@@ -105,7 +105,7 @@ public extension [HAGesture: HAGestureAction] {
             ._3FingersSwipeUp: .showServersList,
             ._3FingersSwipeRight: .nextServer,
             ._3FingersSwipeLeft: .previousServer,
-            ._3FingersSwipeDown: .showSettings,
+            //            ._3FingersSwipeDown: .showSettings,
         ]
     }
 
@@ -115,10 +115,10 @@ public extension [HAGesture: HAGestureAction] {
             switch numberOfTouches {
             case 1:
                 return .none
-            case 2:
-                return Current.settingsStore.gestures[._2FingersSwipeDown] ?? .none
-            case 3:
-                return Current.settingsStore.gestures[._3FingersSwipeDown] ?? .none
+            //            case 2:
+            //                return Current.settingsStore.gestures[._2FingersSwipeDown] ?? .none
+            //            case 3:
+            //                return Current.settingsStore.gestures[._3FingersSwipeDown] ?? .none
             default:
                 return .none
             }
@@ -149,8 +149,8 @@ public extension [HAGesture: HAGestureAction] {
             switch numberOfTouches {
             case 1:
                 return .none
-            case 2:
-                return Current.settingsStore.gestures[._2FingersSwipeUp] ?? .none
+            //            case 2:
+            //                return Current.settingsStore.gestures[._2FingersSwipeUp] ?? .none
             case 3:
                 return Current.settingsStore.gestures[._3FingersSwipeUp] ?? .none
             default:
