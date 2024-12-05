@@ -50,35 +50,36 @@ final class AudioOutputSensor: SensorProvider {
 
             switch type {
             case .airPlay:
-                audioOutput.type = "airplay"
+                audioOutput.type = "AirPlay"
             case .bluetoothA2DP:
-                audioOutput.type = "bluetoothA2DP"
+                audioOutput.type = "Bluetooth A2DP"
             case .bluetoothHFP:
-                audioOutput.type = "bluetoothHFP"
+                audioOutput.type = "Bluetooth HFP"
             case .bluetoothLE:
-                audioOutput.type = "bluetoothLE"
+                audioOutput.type = "Bluetooth LE"
             case .builtInMic:
-                audioOutput.type = "builtInMic"
+                audioOutput.type = "Built-in Mic"
             case .builtInReceiver:
-                audioOutput.type = "builtInReceiver"
+                audioOutput.type = "Built-in Receiver"
             case .builtInSpeaker:
-                audioOutput.type = "builtInSpeaker"
+                audioOutput.type = "Built-in Speaker"
             case .carAudio:
-                audioOutput.type = "carAudio"
+                // Car Audio is always CarPlay https://bignerdranch.com/blog/detecting-caraudio/
+                audioOutput.type = "CarPlay"
             case .HDMI:
                 audioOutput.type = "HDMI"
             case .headphones:
-                audioOutput.type = "headphones"
+                audioOutput.type = "Headphones"
             case .headsetMic:
-                audioOutput.type = "headsetMic"
+                audioOutput.type = "Headset Mic"
             case .lineIn:
-                audioOutput.type = "lineIn"
+                audioOutput.type = "Line In"
             case .lineOut:
-                audioOutput.type = "lineOut"
+                audioOutput.type = "Line Out"
             case .usbAudio:
-                audioOutput.type = "usbAudio"
+                audioOutput.type = "Usb Audio"
             default:
-                audioOutput.type = "unknown"
+                audioOutput.type = "Unknown"
             }
             return audioOutput
         }
