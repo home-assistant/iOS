@@ -634,8 +634,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.location.zones.location.title" = "Asukoht";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Raadius";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "See avab rakenduse veebivaate asemel Safari, hoides samal ajal kohalikud funktsioonid, näiteks vidinad, töös.";
+"settings_details.mac_native_features.title" = "Ainult kohalikud funktsioonid (katseline)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Lähtestab märgi väärtusele 0 iga kord kui rakenduse käivitub.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaatselt";
 "settings_details.notifications.badge_section.button.title" = "Lähtesta märk";
@@ -722,7 +722,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_sensors.title" = "Andurid";
 "share_extension.entered_placeholder" = "'alustati' sündmusest";
 "share_extension.error.title" = "Edastamine nurjus";
-"shortcut_item.open_settings.title" = "Open Settings";
+"shortcut_item.open_settings.title" = "Ava seaded";
 "success_label" = "Õnnestus";
 "thread.active_operational_data_set.title" = "Aktiivne tööandmete kogum";
 "thread.border_agent_id.title" = "Ääreseadme agendi ID";

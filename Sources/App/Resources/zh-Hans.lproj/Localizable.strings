@@ -632,8 +632,8 @@
 "settings_details.location.zones.location.title" = "位置";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "半径";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "这将打开 Safari 而不是 App webview，同时保持小部件等本机功能的运行。";
+"settings_details.mac_native_features.title" = "仅限本机功能（实验性）";
 "settings_details.notifications.badge_section.automatic_setting.description" = "每次启动应用程序时自动重置标记。";
 "settings_details.notifications.badge_section.automatic_setting.title" = "自动重置";
 "settings_details.notifications.badge_section.button.title" = "重置标记";
@@ -720,7 +720,7 @@
 "settings_sensors.title" = "传感器";
 "share_extension.entered_placeholder" = "“进入”事件";
 "share_extension.error.title" = "无法发送";
-"shortcut_item.open_settings.title" = "Open Settings";
+"shortcut_item.open_settings.title" = "打开设置";
 "success_label" = "成功";
 "thread.active_operational_data_set.title" = "活动操作数据集";
 "thread.border_agent_id.title" = "边界代理 ID";

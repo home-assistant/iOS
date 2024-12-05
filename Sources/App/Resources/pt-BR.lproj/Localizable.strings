@@ -286,8 +286,8 @@
 "menu.status_item.toggle" = "Alternar %1$@";
 "menu.view.reload_page" = "Recarregar página";
 "navBar.close" = "Fechar";
-"network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
-"network.error.no_active_url.title" = "No URL available to load";
+"network.error.no_active_url.body" = "Abra as configurações do aplicativo complementar e verifique as configurações do seu servidor. A URL interna só será usada se a rede local estiver definida (SSID). Se você estiver usando VPN, tente definir sua URL externa como a mesma que a URL interna.";
+"network.error.no_active_url.title" = "Nenhuma URL disponível para carregar";
 "nfc.detail.copy" = "Copiar para o Pasteboard";
 "nfc.detail.duplicate" = "Criar uma cópia";
 "nfc.detail.example_trigger" = "Exemplo de gatilho";
@@ -634,8 +634,8 @@
 "settings_details.location.zones.location.title" = "Localização";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Raio";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "Isso abrirá o Safari em vez do aplicativo webview, mantendo os recursos nativos, como widgets, funcionando.";
+"settings_details.mac_native_features.title" = "Somente recursos nativos (experimental)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Redefine o selo para 0 toda vez que você inicia o aplicativo.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticamente";
 "settings_details.notifications.badge_section.button.title" = "Redefinir emblema";
@@ -722,7 +722,7 @@
 "settings_sensors.title" = "Sensores";
 "share_extension.entered_placeholder" = "'entrou' no evento";
 "share_extension.error.title" = "Não foi possível enviar";
-"shortcut_item.open_settings.title" = "Open Settings";
+"shortcut_item.open_settings.title" = "Abrir Configurações";
 "success_label" = "Sucesso";
 "thread.active_operational_data_set.title" = "Conjunto de dados operacionais ativos";
 "thread.border_agent_id.title" = "ID do agente de borda";
