@@ -54,13 +54,13 @@ PODS:
   - GRDB.swift (6.29.3):
     - GRDB.swift/standard (= 6.29.3)
   - GRDB.swift/standard (6.29.3)
-  - HAKit (0.4.3):
-    - HAKit/Core (= 0.4.3)
-  - HAKit/Core (0.4.3):
+  - HAKit (0.4.4):
+    - HAKit/Core (= 0.4.4)
+  - HAKit/Core (0.4.4):
     - Starscream (~> 4.0.4)
-  - HAKit/Mocks (0.4.3):
+  - HAKit/Mocks (0.4.4):
     - HAKit/Core
-  - HAKit/PromiseKit (0.4.3):
+  - HAKit/PromiseKit (0.4.4):
     - HAKit/Core
     - PromiseKit (~> 8.1.1)
   - Improv-iOS (0.0.6)
@@ -133,9 +133,9 @@ DEPENDENCIES:
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
   - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v6.29.3`)
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.3`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.3`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.3`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.4`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.4`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.4`)
   - Improv-iOS (~> 0.0.6)
   - KeychainAccess
   - MBProgressHUD (~> 1.2.0)
@@ -209,7 +209,7 @@ EXTERNAL SOURCES:
     :tag: v6.29.3
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.3
+    :tag: 0.4.4
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -244,7 +244,7 @@ CHECKOUT OPTIONS:
     :tag: v6.29.3
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
-    :tag: 0.4.3
+    :tag: 0.4.4
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -273,7 +273,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   GRDB.swift: 764235dee4a4fbe3ddcb4f85c61752e8d8da9ad0
-  HAKit: 28aad2aa3691fc0a51b039e5f960036edba6baf6
+  HAKit: d5c0028afd8c5053537fcbc4b0ed2e6e27d3bc2b
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
@@ -299,6 +299,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 51870af5d4e6bda2dc7a4ef9bd4e81df4d169ac7
+PODFILE CHECKSUM: 9bace27ccfcc32ab1a602221366738bacf658272
 
 COCOAPODS: 1.15.2
