@@ -3,44 +3,15 @@ import HAKit
 import PromiseKit
 import RealmSwift
 
-public class ModelManager: ServerObserver {
+// Legacy manager which was previously used to handle all model updates and cleanup.
+// Now it is used just for zones and legacy iOS Actions
+public class LegacyModelManager: ServerObserver {
     private var notificationTokens = [NotificationToken]()
     private var hakitTokens = [HACancellable]()
     private var subscribedSubscriptions = [SubscribeDefinition]()
     private var cleanupDefinitions = [CleanupDefinition]()
 
-    private static var includedDomains: [Domain] = {
-        // Mac does not need all domains given it does not have all features as iOS (CarPlay, Watch)
-        #if targetEnvironment(macCatalyst)
-        [
-            .cover,
-            .light,
-            .scene,
-            .script,
-            .switch,
-            .sensor,
-            .binarySensor,
-            .zone,
-            .person,
-        ]
-        #else
-        [
-            .button,
-            .cover,
-            .inputBoolean,
-            .inputButton,
-            .light,
-            .lock,
-            .scene,
-            .script,
-            .switch,
-            .sensor,
-            .binarySensor,
-            .zone,
-            .person,
-        ]
-        #endif
-    }()
+    private static var includedDomains: [Domain] = [.zone, .scene, .person]
 
     public var workQueue: DispatchQueue = .global(qos: .userInitiated)
     static var isAppInForeground: () -> Bool = { false }
@@ -226,7 +197,7 @@ public class ModelManager: ServerObserver {
             _ connection: HAConnection,
             _ server: Server,
             _ queue: DispatchQueue,
-            _ modelManager: ModelManager
+            _ modelManager: LegacyModelManager
         ) -> [HACancellable]
 
         static func states<
@@ -245,7 +216,7 @@ public class ModelManager: ServerObserver {
                 if server.info.version > .canSubscribeEntitiesChangesWithFilter {
                     filter = [
                         "include": [
-                            "domains": ModelManager.includedDomains.map(\.rawValue),
+                            "domains": LegacyModelManager.includedDomains.map(\.rawValue),
                         ],
                     ]
                 }
@@ -258,9 +229,7 @@ public class ModelManager: ServerObserver {
                                 return
                             }
                             DispatchQueue.main.async {
-                                guard ModelManager.isAppInForeground() else { return }
-                                Current.appEntitiesModel().updateModel(value.all, server: server)
-
+                                guard LegacyModelManager.isAppInForeground() else { return }
                                 if let lastUpdate {
                                     // Prevent sequential updates in short time
                                     guard Date().timeIntervalSince(lastUpdate) > 15 else { return }
@@ -289,7 +258,7 @@ public class ModelManager: ServerObserver {
         definitions: [SubscribeDefinition] = SubscribeDefinition.defaults,
         isAppInForeground: @escaping () -> Bool
     ) {
-        ModelManager.isAppInForeground = isAppInForeground
+        LegacyModelManager.isAppInForeground = isAppInForeground
         Current.servers.add(observer: self)
 
         subscribedSubscriptions.removeAll()
@@ -312,7 +281,7 @@ public class ModelManager: ServerObserver {
         public var update: (
             _ api: HomeAssistantAPI,
             _ queue: DispatchQueue,
-            _ modelManager: ModelManager
+            _ modelManager: LegacyModelManager
         ) -> Promise<Void>
 
         public static let defaults: [Self] = [
@@ -421,7 +390,7 @@ public class ModelManager: ServerObserver {
     }
 
     public func serversDidChange(_ serverManager: ServerManager) {
-        subscribe(definitions: subscribedSubscriptions, isAppInForeground: ModelManager.isAppInForeground)
+        subscribe(definitions: subscribedSubscriptions, isAppInForeground: LegacyModelManager.isAppInForeground)
         cleanup(definitions: cleanupDefinitions).cauterize()
     }
 }

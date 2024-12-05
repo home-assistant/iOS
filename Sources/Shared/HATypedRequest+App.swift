@@ -108,4 +108,10 @@ public extension HATypedRequest {
             type: "config/device_registry/list"
         ))
     }
+
+    static func fetchStates() -> HATypedRequest<[HAEntity]> {
+        HATypedRequest<[HAEntity]>(request: .init(
+            type: .rest(.get, "states")
+        ))
+    }
 }

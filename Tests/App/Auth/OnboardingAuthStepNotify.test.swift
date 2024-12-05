@@ -68,7 +68,7 @@ private class FakeOnboardingStateObserver: OnboardingStateObserver {
     }
 }
 
-private class FakeModelManager: ModelManager {
+private class FakeModelManager: LegacyModelManager {
     var fetchResult: Promise<Void> = .value(())
 
     override func fetch(

@@ -118,6 +118,10 @@ public class AppEnvironment {
         AppEntitiesModel.shared
     }
 
+    public var periodicAppEntitiesUpdater: () -> PeriodicAppEntitiesModelUpdaterProtocol = {
+        PeriodicAppEntitiesModelUpdater.shared
+    }
+
     #if os(iOS)
     public var realmFatalPresentation: ((UIViewController) -> Void)?
     #endif
@@ -132,7 +136,7 @@ public class AppEnvironment {
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()
     public func api(for server: Server) -> HomeAssistantAPI? {
-        guard let activeURL = server.info.connection.activeURL() else {
+        guard server.info.connection.activeURL() != nil else {
             return nil
         }
 
@@ -147,7 +151,7 @@ public class AppEnvironment {
 
     private var underlyingAPI: Promise<HomeAssistantAPI>?
 
-    public var modelManager = ModelManager()
+    public var modelManager = LegacyModelManager()
 
     public var settingsStore = SettingsStore()
 
