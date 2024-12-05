@@ -634,8 +634,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.location.zones.location.title" = "Locatie";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radius";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "Hierdoor wordt Safari geopend in plaats van de webview van de app, terwijl de native functies zoals widgets blijven werken.";
+"settings_details.mac_native_features.title" = "Alleen native functies (Experimenteel)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Zet de badge elke keer op 0 als je de app start.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatisch";
 "settings_details.notifications.badge_section.button.title" = "Reset Badge";
@@ -722,7 +722,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_sensors.title" = "Sensoren";
 "share_extension.entered_placeholder" = "'ingevoerd' in gebeurtenis";
 "share_extension.error.title" = "Verzenden niet gelukt";
-"shortcut_item.open_settings.title" = "Open Settings";
+"shortcut_item.open_settings.title" = "Open instellingen";
 "success_label" = "Gelukt!";
 "thread.active_operational_data_set.title" = "Actieve operationele dataset";
 "thread.border_agent_id.title" = "Border Agent ID";

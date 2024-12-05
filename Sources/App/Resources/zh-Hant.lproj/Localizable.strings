@@ -634,8 +634,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.location.zones.location.title" = "座標";
 "settings_details.location.zones.radius.label" = "%li 公尺";
 "settings_details.location.zones.radius.title" = "半徑";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "將使用 Safari 而非 App 網頁、並保持小工具等原生功能的運作。";
+"settings_details.mac_native_features.title" = "使用原生功能（實驗功能）";
 "settings_details.notifications.badge_section.automatic_setting.description" = "每次啟動 App 時即重置標記。";
 "settings_details.notifications.badge_section.automatic_setting.title" = "自動化";
 "settings_details.notifications.badge_section.button.title" = "重置標記";
@@ -722,7 +722,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_sensors.title" = "感測器";
 "share_extension.entered_placeholder" = "事件中的 'entered'";
 "share_extension.error.title" = "無法傳送";
-"shortcut_item.open_settings.title" = "Open Settings";
+"shortcut_item.open_settings.title" = "開啟設定";
 "success_label" = "成功";
 "thread.active_operational_data_set.title" = "啟用操作型資料組";
 "thread.border_agent_id.title" = "Border Agent ID";

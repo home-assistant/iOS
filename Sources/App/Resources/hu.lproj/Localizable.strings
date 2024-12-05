@@ -634,8 +634,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.location.zones.location.title" = "Helymeghatározás";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Sugár";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "Ez megnyitja a Safarit az alkalmazás webnézete helyett, miközben a natív funkciók, például a widgetek, továbbra is működnek.";
+"settings_details.mac_native_features.title" = "Csak natív funkciók (kísérleti)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Minden alkalommal, amikor elindítja az alkalmazást, visszaállítja a jelvényt 0-ra.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatikusan";
 "settings_details.notifications.badge_section.button.title" = "Jelvény visszaállítása";
@@ -722,7 +722,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_sensors.title" = "Érzékelők";
 "share_extension.entered_placeholder" = "'entered' az eseményben";
 "share_extension.error.title" = "Nem sikerült elküldeni";
-"shortcut_item.open_settings.title" = "Open Settings";
+"shortcut_item.open_settings.title" = "Beállítások megnyitása";
 "success_label" = "Sikerült";
 "thread.active_operational_data_set.title" = "Aktív működési adatkészlet";
 "thread.border_agent_id.title" = "Border Agent azonosító";

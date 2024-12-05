@@ -634,8 +634,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.location.zones.location.title" = "Poloha";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Poloměr";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "Tím se místo webového zobrazení aplikace otevře Safari, přičemž nativní funkce, jako jsou widgety, zůstanou funkční.";
+"settings_details.mac_native_features.title" = "Jen nativní funkce (experimentální)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Při každém spuštění aplikace resetuje odznak na hodnotu 0.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automaticky";
 "settings_details.notifications.badge_section.button.title" = "Resetovat odznak";
@@ -722,7 +722,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_sensors.title" = "Senzory";
 "share_extension.entered_placeholder" = "\"entered\" v události";
 "share_extension.error.title" = "Nelze odeslat";
-"shortcut_item.open_settings.title" = "Open Settings";
+"shortcut_item.open_settings.title" = "Otevřít Nastavení";
 "success_label" = "Úspěch";
 "thread.active_operational_data_set.title" = "Aktivní soubor provozních dat";
 "thread.border_agent_id.title" = "ID hraničního agenta";
