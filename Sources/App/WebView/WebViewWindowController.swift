@@ -171,7 +171,7 @@ final class WebViewWindowController {
         }
     }
 
-    private func selectServer(prompt: String? = nil, includeSettings: Bool = false) -> Promise<Server?> {
+    func selectServer(prompt: String? = nil, includeSettings: Bool = false) -> Promise<Server?> {
         let select = ServerSelectViewController()
         if let prompt {
             select.prompt = prompt
@@ -333,11 +333,11 @@ final class WebViewWindowController {
 
         var delegate = InlineDelegate()
 
-        return [.left, .right, .up].map { (direction: UISwipeGestureRecognizer.Direction) in
+        return [.left, .right, .up, .down].map { (direction: UISwipeGestureRecognizer.Direction) in
             with(UISwipeGestureRecognizer()) {
                 $0.numberOfTouchesRequired = 3
                 $0.direction = direction
-                $0.addTarget(self, action: #selector(serverChangeGestureDidChange(_:)))
+                $0.addTarget(self, action: #selector(gestureHandler(_:)))
                 $0.delegate = delegate
 
                 after(life: $0).done {
@@ -363,55 +363,14 @@ final class WebViewWindowController {
         })
     }
 
-    @objc private func serverChangeGestureDidChange(_ gesture: UISwipeGestureRecognizer) {
+    @objc private func gestureHandler(_ gesture: UISwipeGestureRecognizer) {
         guard gesture.state == .ended else {
             return
         }
-
-        if gesture.direction == .up {
-            with(webViewControllerPromise.value?.webView.scrollView.panGestureRecognizer) {
-                $0?.isEnabled = false
-                $0?.isEnabled = true
-            }
-
-            selectServer(includeSettings: true).done { [self] server in
-                if let server {
-                    open(server: server)
-                }
-            }.catch { error in
-                Current.Log.error("failed to select server: \(error)")
-            }
-            return
-        }
-
-        let servers = Current.servers.all
-
-        guard servers.count > 1,
-              let current = webViewControllerPromise.value?.server,
-              let startIndex = servers.firstIndex(of: current) else {
-            return
-        }
-
-        // swiping "right" visually goes left, which is down in index
-        let nextIndex = gesture.direction == .right ? startIndex - 1 : startIndex + 1
-
-        let server: Server
-
-        if nextIndex < servers.startIndex {
-            server = servers[servers.endIndex - 1]
-        } else if nextIndex >= servers.endIndex {
-            server = servers[servers.startIndex]
-        } else {
-            server = servers[nextIndex]
-        }
-
-        open(server: server).done { controller in
-            let hud = MBProgressHUD.showAdded(to: controller.view, animated: true)
-            hud.isUserInteractionEnabled = false
-            hud.mode = .text
-            hud.label.text = server.info.name
-            hud.hide(animated: true, afterDelay: 1.0)
-        }
+        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: 3)
+        webViewControllerPromise.done({ controller in
+            controller.handleGestureAction(action)
+        })
     }
 }
 

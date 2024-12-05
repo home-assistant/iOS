@@ -36,6 +36,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private let refreshControl = UIRefreshControl()
     private let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
+    private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
     let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
 
     private var initialURL: URL?
@@ -143,7 +144,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.isOpaque = false
         view!.addSubview(webView)
 
-        for direction: UISwipeGestureRecognizer.Direction in [.left, .right] {
+        for direction: UISwipeGestureRecognizer.Direction in [.left, .right, .up, .down] {
             webView.addGestureRecognizer(with(UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))) {
                 $0.numberOfTouchesRequired = 2
                 $0.direction = direction
@@ -151,6 +152,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         webView.addGestureRecognizer(sidebarGestureRecognizer)
+        webView.addGestureRecognizer(rightEdgeGestureRecognizer)
 
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
             guard let self else { return }
@@ -209,7 +211,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         updateWebViewSettings(reason: .initial)
 
         styleUI()
-        updateWebViewForServerValues()
         getLatestConfig()
 
         if #available(iOS 16.4, *) {
@@ -295,6 +296,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         self.sidebarGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
+        self.rightEdgeGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
+            $0.edges = .right
+        }
 
         super.init(nibName: nil, bundle: nil)
 
@@ -302,7 +306,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             $0.isEligibleForHandoff = true
         }
 
-        sidebarGestureRecognizer.addTarget(self, action: #selector(showSidebar(_:)))
+        sidebarGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
+        rightEdgeGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
 
         if shouldLoadImmediately {
             loadViewIfNeeded()
@@ -594,13 +599,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         decisionHandler(.grant)
     }
 
-    private func updateWebViewForServerValues() {
-        sidebarGestureRecognizer.isEnabled = server.info.version >= .externalBusCommandSidebar
-    }
-
     private func showNoActiveURLError() {
         Current.Log.info("Showing noActiveURLError")
-        var config = swiftMessagesConfig()
+        let config = swiftMessagesConfig()
         let view = MessageView.viewFromNib(layout: .messageView)
         view.configureContent(
             title: L10n.Network.Error.NoActiveUrl.title,
@@ -624,7 +625,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     @objc private func connectionInfoDidChange() {
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
-            updateWebViewForServerValues()
         }
     }
 
@@ -675,35 +675,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     @objc private func swipe(_ gesture: UISwipeGestureRecognizer) {
-        let icon: MaterialDesignIcons
-
-        if gesture.direction == .left, webView.canGoForward {
-            _ = webView.goForward()
-            icon = .arrowRightIcon
-        } else if gesture.direction == .right, webView.canGoBack {
-            _ = webView.goBack()
-            icon = .arrowLeftIcon
-        } else {
-            // the returned WKNavigation doesn't appear to be nil/non-nil based on whether forward/back occurred
-            return
-        }
-
-        let hud = MBProgressHUD.showAdded(to: view, animated: true)
-        hud.isUserInteractionEnabled = false
-        hud.customView = with(IconImageView(frame: CGRect(x: 0, y: 0, width: 37, height: 37))) {
-            $0.iconDrawable = icon
-        }
-        hud.mode = .customView
-        hud.hide(animated: true, afterDelay: 1.0)
+        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: 2)
+        handleGestureAction(action)
     }
 
-    @objc private func showSidebar(_ gesture: UIScreenEdgePanGestureRecognizer) {
-        switch gesture.state {
-        case .began:
-            webViewExternalMessageHandler.sendExternalBus(message: .init(command: "sidebar/show"))
-        default:
-            break
-        }
+    @objc private func screenEdgeGestureRecognizerAction(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        let gesture: HAGesture = gesture.edges == .left ? .swipeLeft : .swipeRight
+        let action = Current.settingsStore.gestures[gesture] ?? .none
+        handleGestureAction(action)
     }
 
     @objc private func updateSensors() {
@@ -1154,5 +1133,88 @@ extension WebViewController: WebViewControllerProtocol {
 
     func reload() {
         webView.reload()
+    }
+}
+
+// MARK: - Gestures
+
+extension WebViewController {
+    func handleGestureAction(_ action: HAGestureAction) {
+        switch action {
+        case .showSidebar:
+            webViewExternalMessageHandler.sendExternalBus(message: .init(command: "sidebar/show"))
+        case .backPage:
+            if webView.canGoBack {
+                webView.goBack()
+            }
+        case .nextPage:
+            if webView.canGoForward {
+                webView.goForward()
+            }
+        case .showServersList:
+            Current.sceneManager.webViewWindowControllerPromise.done { controller in
+                controller.selectServer(includeSettings: true).done { server in
+                    if let server {
+                        controller.open(server: server)
+                    }
+                }.catch { error in
+                    Current.Log.error("failed to select server: \(error)")
+                }
+            }
+        case .nextServer:
+            moveToServer(next: true)
+            displayChangeServerHUD(next: true)
+        case .previousServer:
+            moveToServer(next: false)
+            displayChangeServerHUD(next: false)
+        case .showSettings:
+            showSettingsViewController()
+        case .none:
+            /* no-op */
+            break
+        }
+    }
+
+    private func moveToServer(next: Bool) {
+        let servers = Current.servers.all
+        let current = server
+
+        Current.sceneManager.webViewWindowControllerPromise.done { controller in
+            guard servers.count > 1,
+                  let startIndex = servers.firstIndex(of: current) else {
+                return
+            }
+
+            let nextIndex = next ? startIndex - 1 : startIndex + 1
+
+            let server: Server
+
+            if nextIndex < servers.startIndex {
+                server = servers[servers.endIndex - 1]
+            } else if nextIndex >= servers.endIndex {
+                server = servers[servers.startIndex]
+            } else {
+                server = servers[nextIndex]
+            }
+
+            controller.open(server: server).done { controller in
+                let hud = MBProgressHUD.showAdded(to: controller.view, animated: true)
+                hud.isUserInteractionEnabled = false
+                hud.mode = .text
+                hud.label.text = server.info.name
+                hud.hide(animated: true, afterDelay: 1.0)
+            }
+        }
+    }
+
+    private func displayChangeServerHUD(next: Bool) {
+        let icon: MaterialDesignIcons = next ? .arrowRightIcon : .arrowLeftIcon
+        let hud = MBProgressHUD.showAdded(to: view, animated: true)
+        hud.isUserInteractionEnabled = false
+        hud.customView = with(IconImageView(frame: CGRect(x: 0, y: 0, width: 37, height: 37))) {
+            $0.iconDrawable = icon
+        }
+        hud.mode = .customView
+        hud.hide(animated: true, afterDelay: 1.0)
     }
 }

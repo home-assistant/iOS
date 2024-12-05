@@ -836,6 +836,83 @@ public enum L10n {
     }
   }
 
+  public enum Gestures {
+    public enum _2FingersSwipeDown {
+      /// 2 👆 swipe down
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_down.title") }
+    }
+    public enum _2FingersSwipeLeft {
+      /// 2 👆 swipe left
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_left.title") }
+    }
+    public enum _2FingersSwipeRight {
+      /// 2 👆 swipe right
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_right.title") }
+    }
+    public enum _2FingersSwipeUp {
+      /// 2 👆 swipe up
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_up.title") }
+    }
+    public enum _3FingersSwipeDown {
+      /// 3 👆 swipe down
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_down.title") }
+    }
+    public enum _3FingersSwipeLeft {
+      /// 3 👆 swipe left
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_left.title") }
+    }
+    public enum _3FingersSwipeRight {
+      /// 3 👆 swipe right
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_right.title") }
+    }
+    public enum _3FingersSwipeUp {
+      /// 3 👆 swipe up
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_up.title") }
+    }
+    public enum Disabled {
+      /// Some gestures are not configurable at the moment, in the future they may become configurable.
+      public static var footer: String { return L10n.tr("Localizable", "gestures.disabled.footer") }
+    }
+    public enum Footer {
+      /// Customize gestures to be used on the frontend.
+      public static var title: String { return L10n.tr("Localizable", "gestures.footer.title") }
+    }
+    public enum Screen {
+      /// Gestures below will be applied whenever you are using Home Assistant main UI.
+      public static var body: String { return L10n.tr("Localizable", "gestures.screen.body") }
+      /// Gestures
+      public static var title: String { return L10n.tr("Localizable", "gestures.screen.title") }
+    }
+    public enum SwipeLeft {
+      /// Swipe Left
+      public static var title: String { return L10n.tr("Localizable", "gestures.swipe_left.title") }
+    }
+    public enum SwipeRight {
+      /// Swipe Right
+      public static var title: String { return L10n.tr("Localizable", "gestures.swipe_right.title") }
+    }
+    public enum Value {
+      public enum Option {
+        /// Back to previous page
+        public static var backPage: String { return L10n.tr("Localizable", "gestures.value.option.back_page") }
+        /// Go to next page
+        public static var nextPage: String { return L10n.tr("Localizable", "gestures.value.option.next_page") }
+        /// Next server
+        public static var nextServer: String { return L10n.tr("Localizable", "gestures.value.option.next_server") }
+        /// None
+        public static var `none`: String { return L10n.tr("Localizable", "gestures.value.option.none") }
+        /// Previous server
+        public static var previousServer: String { return L10n.tr("Localizable", "gestures.value.option.previous_server") }
+        /// Servers list
+        public static var serversList: String { return L10n.tr("Localizable", "gestures.value.option.servers_list") }
+        /// Open App settings
+        public static var showSettings: String { return L10n.tr("Localizable", "gestures.value.option.show_settings") }
+        /// Show sidebar
+        public static var showSidebar: String { return L10n.tr("Localizable", "gestures.value.option.show_sidebar") }
+      }
+    }
+  }
+
   public enum Grdb {
     public enum Config {
       public enum MigrationError {
