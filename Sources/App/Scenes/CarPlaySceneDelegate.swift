@@ -20,6 +20,17 @@ class CarPlaySceneDelegate: UIResponder {
     private var serversListTemplate: (any CarPlayTemplateProvider)?
     private var quickAccessListTemplate: (any CarPlayTemplateProvider)?
     private var areasZonesListTemplate: (any CarPlayTemplateProvider)?
+    private var includedDomains: [Domain] = [
+        .light,
+        .button,
+        .cover,
+        .inputBoolean,
+        .inputButton,
+        .lock,
+        .scene,
+        .script,
+        .switch,
+    ]
 
     private var allTemplates: [any CarPlayTemplateProvider] {
         [
@@ -101,7 +112,16 @@ class CarPlaySceneDelegate: UIResponder {
     private func subscribeToEntitiesChanges() {
         guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else { return }
         entitiesSubscriptionToken?.cancel()
-        entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states()
+
+        var filter: [String: Any] = [:]
+        if server.info.version > .canSubscribeEntitiesChangesWithFilter {
+            filter = [
+                "include": [
+                    "domains": includedDomains.map(\.rawValue),
+                ],
+            ]
+        }
+        entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states(filter)
             .subscribe { [weak self] _, states in
                 self?.allTemplates.forEach {
                     $0.entitiesStateChange(entities: states)

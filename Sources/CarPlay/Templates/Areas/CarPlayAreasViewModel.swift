@@ -9,6 +9,7 @@ final class CarPlayAreasViewModel {
     weak var templateProvider: CarPlayAreasZonesTemplate?
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
+    private var entities: HACachedStates?
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
@@ -39,6 +40,11 @@ final class CarPlayAreasViewModel {
                 Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
             }
         })
+    }
+
+    func entitiesStateChange(entities: HACachedStates) {
+        self.entities = entities
+        entitiesListTemplate?.entitiesStateChange(entities: entities)
     }
 
     private func fetchEntitiesForAreas(_ areas: [HAAreaResponse], server: Server) {
@@ -120,12 +126,12 @@ final class CarPlayAreasViewModel {
     // swiftlint:enable cyclomatic_complexity
 
     private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
-        guard let entitiesCachedStates = Current.api(for: server)?.connection.caches.states().value else { return }
+        guard let entities else { return }
         entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: area.name,
             filterType: .areaId(entityIds: entityIdsForAreaId),
             server: server,
-            entitiesCachedStates: entitiesCachedStates
+            entitiesCachedStates: entities
         )
         guard let entitiesListTemplate else { return }
         templateProvider?.presentEntitiesList(template: entitiesListTemplate)
