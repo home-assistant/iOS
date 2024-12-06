@@ -15,8 +15,8 @@ final class NotificationRateLimitSensor: SensorProvider {
             if let pushID = Current.settingsStore.pushID {
                 NotificationRateLimitsAPI.rateLimits(pushID: pushID).done { response in
                     resolver.fulfill([.init(
-                        name: "Notification Rate Limit",
-                        uniqueID: "notification-rate-limit",
+                        name: "Notification Rate Limit Remaining",
+                        uniqueID: "notification-rate-limit-remaining",
                         icon: "mdi:message-badge-outline",
                         state: response.rateLimits.remaining
                     )])
