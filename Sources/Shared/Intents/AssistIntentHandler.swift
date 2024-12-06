@@ -5,6 +5,9 @@ import PromiseKit
 class AssistIntentHandler: NSObject, AssistIntentHandling {
     typealias Intent = AssistIntent
 
+    private var intentCompletion: ((AssistIntentResponse) -> Void)?
+    private var assistService: AssistService?
+
     func resolveServer(for intent: Intent, with completion: @escaping (IntentServerResolutionResult) -> Void) {
         if let server = Current.servers.server(for: intent) {
             completion(.success(with: .init(server: server)))
@@ -24,24 +27,6 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         completion(.init(items: IntentServer.all), nil)
     }
 
-    func defaultLanguage(for intent: AssistIntent) -> IntentLanguage? {
-        Locale.current.asIntentLanguage
-    }
-
-    func provideLanguageOptions(
-        for intent: AssistIntent,
-        with completion: @escaping ([IntentLanguage]?, Error?) -> Void
-    ) {
-        completion(Locale.current.intentLanguages, nil)
-    }
-
-    func provideLanguageOptionsCollection(
-        for intent: AssistIntent,
-        with completion: @escaping (INObjectCollection<IntentLanguage>?, Error?) -> Void
-    ) {
-        completion(.init(items: Locale.current.intentLanguages), nil)
-    }
-
     func handle(intent: AssistIntent, completion: @escaping (AssistIntentResponse) -> Void) {
         guard let server = Current.servers.server(for: intent) else {
             completion(.failure(error: "no server provided"))
@@ -56,34 +41,79 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
             return
         }
 
-        struct ConversationResponse: ImmutableMappable {
-            var speech: String
+        intentCompletion = completion
+        assistService = AssistService(server: server)
+        assistService?.delegate = self
+        assistService?.assist(source: .text(input: intent.text ?? "", pipelineId: intent.pipeline?.identifier ?? nil))
+    }
 
-            init(map: Map) throws {
-                self.speech = try map.value("response.speech.plain.speech")
+    func resolvePipeline(
+        for intent: AssistIntent,
+        with completion: @escaping (IntentAssistPipelineResolutionResult) -> Void
+    ) {
+        guard let server = Current.servers.server(for: intent) else {
+            completion(.needsValue())
+            return
+        }
+
+        AssistService(server: server).fetchPipelines { response in
+            guard let pipelines = response?.pipelines else {
+                completion(.needsValue())
+                return
             }
+            guard let result = pipelines.first(where: { pipeline in
+                pipeline.id == intent.pipeline?.identifier
+            }) else {
+                completion(.needsValue())
+                return
+            }
+            completion(.success(with: .init(identifier: result.id, display: result.name)))
+        }
+    }
+
+    func providePipelineOptionsCollection(
+        for intent: AssistIntent,
+        with completion: @escaping (INObjectCollection<IntentAssistPipeline>?, (any Error)?) -> Void
+    ) {
+        guard let server = Current.servers.server(for: intent) else {
+            completion(.init(items: []), nil)
+            return
         }
 
-        Current.webhooks.sendEphemeral(
-            server: server,
-            request: .init(
-                type: "conversation_process",
-                data: [
-                    "text": intent.text,
-                    "language": intent.language?.identifier ?? Locale.current.identifier,
-                ]
-            )
-        ).map { (original: [String: Any]) -> (ConversationResponse, [String: Any]) in
-            let object: ConversationResponse = try Mapper().map(JSONObject: original)
-            return (object, original)
-        }.done { object, original in
-            Current.Log.info("finishing with \(object)")
-            let value = IntentAssistResult(identifier: nil, display: object.speech)
-            value.json = try String(decoding: JSONSerialization.data(withJSONObject: original), as: UTF8.self)
-            completion(.success(result: value))
-        }.catch { error in
-            Current.Log.error("erroring with \(error)")
-            completion(.failure(error: error.localizedDescription))
+        AssistService(server: server).fetchPipelines { response in
+            guard let pipelines = response?.pipelines else {
+                completion(.init(items: []), nil)
+                return
+            }
+            completion(.init(items: pipelines.map({ pipeline in
+                IntentAssistPipeline(identifier: pipeline.id, display: pipeline.name)
+            })), nil)
         }
+    }
+}
+
+extension AssistIntentHandler: AssistServiceDelegate {
+    func didReceiveEvent(_ event: AssistEvent) {
+        /* no-op */
+    }
+
+    func didReceiveSttContent(_ content: String) {
+        /* no-op */
+    }
+
+    func didReceiveIntentEndContent(_ content: String) {
+        intentCompletion?(.success(result: .init(identifier: nil, display: content)))
+    }
+
+    func didReceiveGreenLightForAudioInput() {
+        /* no-op */
+    }
+
+    func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
+        /* no-op */
+    }
+
+    func didReceiveError(code: String, message: String) {
+        intentCompletion?(.failure(error: "\(code) - \(message)"))
     }
 }
