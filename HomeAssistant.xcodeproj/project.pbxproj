@@ -380,7 +380,6 @@
 		11C4628F24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */; };
 		11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */; };
 		11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */; };
-		11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */; };
 		11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */; };
 		11C4629724B19FC800031902 /* URLSessionTask+WebhookPersisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */; };
 		11C590ED24A832CA0066085D /* YamlSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C590EC24A832CA0066085D /* YamlSection.swift */; };
@@ -580,6 +579,10 @@
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
 		4235075D2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
 		4235075E2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
+		4237CD302D0322F800424EF6 /* NotificationRateLimitSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4237CD2F2D0322F800424EF6 /* NotificationRateLimitSensor.swift */; };
+		4237CD312D0322F800424EF6 /* NotificationRateLimitSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4237CD2F2D0322F800424EF6 /* NotificationRateLimitSensor.swift */; };
+		4237CD322D03240100424EF6 /* NotificationRateLimitsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */; };
+		4237CD332D03240100424EF6 /* NotificationRateLimitsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */; };
 		4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */; };
 		423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44EF2C17238200766A99 /* ChatBubbleView.swift */; };
 		423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */; };
@@ -1858,6 +1861,7 @@
 		422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.test.swift; sourceTree = "<group>"; };
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
+		4237CD2F2D0322F800424EF6 /* NotificationRateLimitSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRateLimitSensor.swift; sourceTree = "<group>"; };
 		4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUserDefaults.swift; sourceTree = "<group>"; };
 		423F44EF2C17238200766A99 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -3141,7 +3145,6 @@
 				B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */,
 				B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */,
 				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
-				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
 				11F55EBB25D3A2A3003977AC /* NotificationCategoryListViewController.swift */,
 				11F55ECC25D3A364003977AC /* NotificationRateLimitViewController.swift */,
 				11F55EEC25D3B088003977AC /* NotificationDebugNotificationsViewController.swift */,
@@ -3234,6 +3237,7 @@
 			children = (
 				B6D3B4EB225B26300082BB4F /* SensorContainer.swift */,
 				42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */,
+				4237CD2F2D0322F800424EF6 /* NotificationRateLimitSensor.swift */,
 				11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */,
 				11AF4D1B249C8AA0006C74C0 /* BatterySensor.swift */,
 				11AF4D1E249C8AF0006C74C0 /* ConnectivitySensor.swift */,
@@ -4926,6 +4930,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
 				4278CB822D01F09400CFAAC9 /* HAGesture.swift */,
 				424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
@@ -6843,7 +6848,6 @@
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
-				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */,
@@ -7081,6 +7085,7 @@
 				42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */,
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
 				11C9E43C2505B04E00492A88 /* HACoreAudioObjectSystem.swift in Sources */,
+				4237CD312D0322F800424EF6 /* NotificationRateLimitSensor.swift in Sources */,
 				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */,
@@ -7203,6 +7208,7 @@
 				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11CFD78227364F450082D557 /* Identifier.swift in Sources */,
+				4237CD332D03240100424EF6 /* NotificationRateLimitsAPI.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
 				1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
@@ -7379,6 +7385,7 @@
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
+				4237CD322D03240100424EF6 /* NotificationRateLimitsAPI.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,
 				42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
@@ -7533,6 +7540,7 @@
 				42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,
+				4237CD302D0322F800424EF6 /* NotificationRateLimitSensor.swift in Sources */,
 				1141182624AF9A0500E6525C /* WebhookManager.swift in Sources */,
 				119A7E0F2529769A00D7000D /* UIImageView+UIActivityIndicator.swift in Sources */,
 				111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */,

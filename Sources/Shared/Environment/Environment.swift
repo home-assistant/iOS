@@ -180,6 +180,7 @@ public class AppEnvironment {
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
+        $0.register(provider: NotificationRateLimitSensor.self)
     }
 
     public var localized = LocalizedManager()
