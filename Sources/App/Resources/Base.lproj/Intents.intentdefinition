@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>24B5070a</string>
+	<string>24C5089c</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>16A242d</string>
+	<string>16B40</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>16.0</string>
+	<string>16.1</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -1861,10 +1861,17 @@
 			<key>INIntentKeyParameter</key>
 			<string>text</string>
 			<key>INIntentLastParameterTag</key>
-			<integer>5</integer>
+			<integer>7</integer>
 			<key>INIntentManagedParameterCombinations</key>
 			<dict>
-				<key>text,server,language</key>
+				<key>server,text,language</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+				<key>text,server,language,pipeline</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
@@ -1890,6 +1897,17 @@
 					<string>Assist with "${text}"</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>uqeIcc</string>
+				</dict>
+				<key>text,server,language,pipeline</key>
+				<dict>
+					<key>INIntentParameterCombinationIsLinked</key>
+					<true/>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Assist with "${text}"</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>5b3s58</string>
 				</dict>
 			</dict>
 			<key>INIntentParameters</key>
@@ -1962,12 +1980,88 @@
 				<dict>
 					<key>INIntentParameterConfigurable</key>
 					<true/>
+					<key>INIntentParameterCustomDisambiguation</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
+					<string>Pipeline</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>Nj6GCk</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>2</integer>
+					<key>INIntentParameterName</key>
+					<string>pipeline</string>
+					<key>INIntentParameterObjectType</key>
+					<string>IntentAssistPipeline</string>
+					<key>INIntentParameterObjectTypeNamespace</key>
+					<string>sI7YSe</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which pipeline?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>qKFbLL</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which ${pipeline}?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>6wJumM</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>There are ${count} options matching ‘${pipeline}’.</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>wAhZcM</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationIntroduction</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Just to confirm, you wanted ‘${pipeline}’?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>K6M7Jv</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Confirmation</string>
+						</dict>
+					</array>
+					<key>INIntentParameterRelationship</key>
+					<dict>
+						<key>INIntentParameterRelationshipParentName</key>
+						<string>server</string>
+						<key>INIntentParameterRelationshipPredicateName</key>
+						<string>HasAnyValue</string>
+					</dict>
+					<key>INIntentParameterSupportsDynamicEnumeration</key>
+					<true/>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
+					<key>INIntentParameterTag</key>
+					<integer>7</integer>
+					<key>INIntentParameterType</key>
+					<string>Object</string>
+				</dict>
+				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterDisplayName</key>
 					<string>Text</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>txfcnn</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>2</integer>
+					<integer>3</integer>
 					<key>INIntentParameterMetadata</key>
 					<dict>
 						<key>INIntentParameterMetadataCapitalization</key>
@@ -2005,7 +2099,7 @@
 					<key>INIntentParameterDisplayNameID</key>
 					<string>BafuI1</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>3</integer>
+					<integer>4</integer>
 					<key>INIntentParameterName</key>
 					<string>language</string>
 					<key>INIntentParameterObjectType</key>
