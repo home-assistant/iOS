@@ -27,24 +27,6 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
         completion(.init(items: IntentServer.all), nil)
     }
 
-    func defaultLanguage(for intent: AssistIntent) -> IntentLanguage? {
-        Locale.current.asIntentLanguage
-    }
-
-    func provideLanguageOptions(
-        for intent: AssistIntent,
-        with completion: @escaping ([IntentLanguage]?, Error?) -> Void
-    ) {
-        completion(Locale.current.intentLanguages, nil)
-    }
-
-    func provideLanguageOptionsCollection(
-        for intent: AssistIntent,
-        with completion: @escaping (INObjectCollection<IntentLanguage>?, Error?) -> Void
-    ) {
-        completion(.init(items: Locale.current.intentLanguages), nil)
-    }
-
     func handle(intent: AssistIntent, completion: @escaping (AssistIntentResponse) -> Void) {
         guard let server = Current.servers.server(for: intent) else {
             completion(.failure(error: "no server provided"))

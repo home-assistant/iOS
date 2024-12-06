@@ -1864,14 +1864,14 @@
 			<integer>7</integer>
 			<key>INIntentManagedParameterCombinations</key>
 			<dict>
-				<key>server,text,language</key>
+				<key>server,text</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
 					<true/>
 				</dict>
-				<key>text,server,language,pipeline</key>
+				<key>text,server,pipeline</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
@@ -1887,7 +1887,7 @@
 			<string>Assist</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key>text,server,language</key>
+				<key>text,server</key>
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
@@ -1898,7 +1898,7 @@
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>uqeIcc</string>
 				</dict>
-				<key>text,server,language,pipeline</key>
+				<key>text,server,pipeline</key>
 				<dict>
 					<key>INIntentParameterCombinationIsLinked</key>
 					<true/>
@@ -2090,47 +2090,6 @@
 					<integer>1</integer>
 					<key>INIntentParameterType</key>
 					<string>String</string>
-				</dict>
-				<dict>
-					<key>INIntentParameterConfigurable</key>
-					<true/>
-					<key>INIntentParameterDisplayName</key>
-					<string>Language</string>
-					<key>INIntentParameterDisplayNameID</key>
-					<string>BafuI1</string>
-					<key>INIntentParameterDisplayPriority</key>
-					<integer>4</integer>
-					<key>INIntentParameterName</key>
-					<string>language</string>
-					<key>INIntentParameterObjectType</key>
-					<string>IntentLanguage</string>
-					<key>INIntentParameterObjectTypeNamespace</key>
-					<string>sI7YSe</string>
-					<key>INIntentParameterPromptDialogs</key>
-					<array>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Which language?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>QCGKRz</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Configuration</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Primary</string>
-						</dict>
-					</array>
-					<key>INIntentParameterSupportsDynamicEnumeration</key>
-					<true/>
-					<key>INIntentParameterTag</key>
-					<integer>5</integer>
-					<key>INIntentParameterType</key>
-					<string>Object</string>
 				</dict>
 			</array>
 			<key>INIntentResponse</key>
