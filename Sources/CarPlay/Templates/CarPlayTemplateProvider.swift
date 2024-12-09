@@ -8,6 +8,6 @@ protocol CarPlayTemplateProvider {
     var interfaceController: CPInterfaceController? { get set }
     func templateWillDisappear(template: CPTemplate)
     func templateWillAppear(template: CPTemplate)
-    func entitiesStateChange(entities: HACachedStates)
+    func entitiesStateChange(serverId: String, entities: HACachedStates)
     func update()
 }

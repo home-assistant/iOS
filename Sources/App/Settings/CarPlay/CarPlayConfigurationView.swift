@@ -54,17 +54,15 @@ struct CarPlayConfigurationView: View {
                 }
         }
         .preferredColorScheme(.dark)
+        .navigationViewStyle(.stack)
     }
 
     private var content: some View {
-        VStack {
+        List {
             carPlayLogo
-                .padding()
-            List {
-                tabsSection
-                itemsSection
-                resetView
-            }
+            tabsSection
+            itemsSection
+            resetView
         }
     }
 
@@ -145,7 +143,11 @@ struct CarPlayConfigurationView: View {
     private var carPlayLogo: some View {
         Image("carplay-logo")
             .resizable()
-            .frame(width: 150, height: 150)
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .frame(height: 150)
+            .padding()
+            .listRowBackground(Color.clear)
     }
 
     private var tabsSection: some View {

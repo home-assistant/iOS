@@ -72,7 +72,7 @@ final class CarPlayEntitiesListViewModel {
 
     func update() {
         entityProviders = sortedEntities.map { entity in
-            CarPlayEntityListItem(entity: entity)
+            CarPlayEntityListItem(serverId: server.identifier.rawValue, entity: entity)
         }
 
         templateProvider?.updateItems(entityProviders: entityProviders)
@@ -85,7 +85,7 @@ final class CarPlayEntitiesListViewModel {
         entityProviders.forEach { item in
             guard let updatedEntity = sortedEntities.first(where: { $0.entityId == item.entity.entityId }),
                   item.entity.state != updatedEntity.state else { return }
-            item.update(entity: updatedEntity)
+            item.update(serverId: server.identifier.rawValue, entity: updatedEntity)
         }
     }
 

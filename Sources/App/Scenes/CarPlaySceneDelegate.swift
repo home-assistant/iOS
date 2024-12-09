@@ -15,6 +15,7 @@ public protocol EntitiesStateSubscription {
 class CarPlaySceneDelegate: UIResponder {
     private var interfaceController: CPInterfaceController?
     private var entitiesSubscriptionToken: HACancellable?
+    private var quickAccessEntitiesSubscriptionTokens: [HACancellable?] = []
 
     private var domainsListTemplate: (any CarPlayTemplateProvider)?
     private var serversListTemplate: (any CarPlayTemplateProvider)?
@@ -43,9 +44,15 @@ class CarPlaySceneDelegate: UIResponder {
 
     private var cachedConfig: CarPlayConfig?
     private var configObservation: AnyDatabaseCancellable?
+    private var latestStates: HACachedStates?
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
+    }
+
+    deinit {
+        entitiesSubscriptionToken?.cancel()
+        quickAccessEntitiesSubscriptionTokens.forEach({ $0?.cancel() })
     }
 
     func setup() {
@@ -58,6 +65,7 @@ class CarPlaySceneDelegate: UIResponder {
         if let config {
             guard config != cachedConfig else { return }
             cachedConfig = config
+            subscribeToQuickAccessEntitiesChanges(configEntities: cachedConfig?.quickAccessItems ?? [])
             visibleTemplates = config.tabs.compactMap {
                 switch $0 {
                 case .quickAccess:
@@ -124,9 +132,44 @@ class CarPlaySceneDelegate: UIResponder {
         entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states(filter)
             .subscribe { [weak self] _, states in
                 self?.allTemplates.forEach {
-                    $0.entitiesStateChange(entities: states)
+                    self?.latestStates = states
+                    $0.entitiesStateChange(serverId: server.identifier.rawValue, entities: states)
                 }
             }
+    }
+
+    // Quick access entities may not be from the same server that is selected as default in CarPlay
+    private func subscribeToQuickAccessEntitiesChanges(configEntities: [MagicItem]) {
+        quickAccessEntitiesSubscriptionTokens.forEach({ $0?.cancel() })
+        let entityItems = configEntities.filter({ $0.type == .entity })
+        guard !entityItems.isEmpty else {
+            Current.Log.info("No quick access entities to subscribe to")
+            return
+        }
+
+        let servers = entityItems.map(\.serverId)
+
+        servers.forEach { serverId in
+            guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { return }
+            var filter: [String: Any] = [:]
+            if server.info.version > .canSubscribeEntitiesChangesWithFilter {
+                filter = [
+                    "include": [
+                        "entities": entityItems.filter({ $0.serverId == serverId }).map(\.id),
+                    ],
+                ]
+            }
+
+            quickAccessEntitiesSubscriptionTokens.append(
+                Current.api(for: server)?.connection.caches.states(filter)
+                    .subscribe { [weak self] _, states in
+                        self?.quickAccessListTemplate?.entitiesStateChange(
+                            serverId: serverId,
+                            entities: states
+                        )
+                    }
+            )
+        }
     }
 
     private func observeCarPlayConfigChanges() {

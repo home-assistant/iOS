@@ -19,6 +19,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private var magicItemProvider: MagicItemProviderProtocol = Current.magicItemProvider()
     weak var interfaceController: CPInterfaceController?
     private var entityProviders: [CarPlayEntityListItem] = []
+    private var entitiesPerServer: [String: HACachedStates] = [:]
 
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
@@ -64,10 +65,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func entitiesStateChange(entities: HACachedStates) {
+    func entitiesStateChange(serverId: String, entities: HACachedStates) {
+        entitiesPerServer[serverId] = entities
         entityProviders.forEach { item in
+            guard serverId == item.serverId else { return }
             guard let entity = entities.all.filter({ $0.entityId == item.entity.entityId }).first else { return }
-            item.update(entity: entity)
+            item.update(serverId: serverId, entity: entity)
         }
     }
 
@@ -100,13 +103,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             )
             switch magicItem.type {
             case .entity:
-                guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all
-                    .first, let connection = Current.api(for: server)?.connection,
-                    let item = connection.caches.states().value?.all.first(where: {
-                        $0.entityId == magicItem.id
-                    }) else { return .init(text: "", detailText: "") }
-
-                let entityProvider = CarPlayEntityListItem(entity: item)
+                guard let placeholderItem = entitiesPerServer[magicItem.serverId]?.all
+                    .first(where: { $0.entityId == magicItem.id }) ?? placeholderEntity(id: magicItem.id) else {
+                    Current.Log.error("Failed to create placeholder entity for magic item id: \(magicItem.id)")
+                    return .init(text: "", detailText: "")
+                }
+                let entityProvider = CarPlayEntityListItem(serverId: magicItem.serverId, entity: placeholderItem)
                 let listItem = entityProvider.template
                 listItem.handler = { [weak self] _, _ in
                     self?.itemTap(magicItem: magicItem, info: info, item: listItem)
@@ -129,6 +131,17 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
 
         return items.compactMap({ $0 })
+    }
+
+    private func placeholderEntity(id: String) -> HAEntity? {
+        try? HAEntity(
+            entityId: id,
+            state: "",
+            lastChanged: Date(),
+            lastUpdated: Date(),
+            attributes: [:],
+            context: .init(id: "", userId: "", parentId: "")
+        )
     }
 
     private func itemTap(

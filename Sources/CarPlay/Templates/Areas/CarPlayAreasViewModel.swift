@@ -42,9 +42,9 @@ final class CarPlayAreasViewModel {
         })
     }
 
-    func entitiesStateChange(entities: HACachedStates) {
+    func entitiesStateChange(serverId: String, entities: HACachedStates) {
         self.entities = entities
-        entitiesListTemplate?.entitiesStateChange(entities: entities)
+        entitiesListTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
     }
 
     private func fetchEntitiesForAreas(_ areas: [HAAreaResponse], server: Server) {

@@ -35,7 +35,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func entitiesStateChange(entities: HACachedStates) {
+    func entitiesStateChange(serverId: String, entities: HACachedStates) {
         viewModel.updateStates(entities: entities)
     }
 
