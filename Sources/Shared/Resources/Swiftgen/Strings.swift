@@ -564,8 +564,6 @@ public enum L10n {
         public static var previous: String { return L10n.tr("Localizable", "carPlay.navigation.button.previous") }
       }
       public enum Tab {
-        /// Actions
-        public static var actions: String { return L10n.tr("Localizable", "carPlay.navigation.tab.actions") }
         /// Areas
         public static var areas: String { return L10n.tr("Localizable", "carPlay.navigation.tab.areas") }
         /// Control
@@ -1997,8 +1995,6 @@ public enum L10n {
       public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.footer") }
       /// Actions are used in the application menu and widgets.
       public static var footerMac: String { return L10n.tr("Localizable", "settings_details.actions.footer_mac") }
-      /// Actions
-      public static var title: String { return L10n.tr("Localizable", "settings_details.actions.title") }
       public enum ActionsSynced {
         /// No Synced Actions
         public static var empty: String { return L10n.tr("Localizable", "settings_details.actions.actions_synced.empty") }
@@ -2179,6 +2175,10 @@ public enum L10n {
           public static var menuBar: String { return L10n.tr("Localizable", "settings_details.general.visibility.options.menu_bar") }
         }
       }
+    }
+    public enum LegacyActions {
+      /// (Legacy) iOS Actions
+      public static var title: String { return L10n.tr("Localizable", "settings_details.legacy_actions.title") }
     }
     public enum Location {
       /// Location

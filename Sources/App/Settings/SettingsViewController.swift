@@ -15,7 +15,8 @@ class SettingsViewController: HAFormViewController {
         static let integrations: ContentSection = 0b11
         static let watch: ContentSection = 0b100
         static let carPlay: ContentSection = 0b101
-        static let help: ContentSection = 0b110
+        static let legacy: ContentSection = 0b110
+        static let help: ContentSection = 0b111
         static let all = ContentSection(rawValue: ~0b0)
     }
 
@@ -116,7 +117,6 @@ class SettingsViewController: HAFormViewController {
 
         if contentSections.contains(.integrations) {
             form +++ Section()
-                <<< SettingsRootDataSource.Row.actions.row
                 <<< SettingsRootDataSource.Row.sensors.row
                 <<< SettingsRootDataSource.Row.nfc.row
                 <<< SettingsRootDataSource.Row.widgets.row
@@ -147,6 +147,10 @@ class SettingsViewController: HAFormViewController {
             }
         }
 
+        if contentSections.contains(.legacy) {
+            form +++ Section()
+                <<< SettingsRootDataSource.Row.actions.row
+        }
         if contentSections.contains(.help) {
             form +++ Section()
                 <<< SettingsRootDataSource.Row.help.row

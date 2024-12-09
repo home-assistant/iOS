@@ -133,7 +133,7 @@ enum SettingsRootDataSource {
 
     private static func actions() -> SettingsButtonRow {
         SettingsButtonRow {
-            $0.title = L10n.SettingsDetails.Actions.title
+            $0.title = L10n.SettingsDetails.LegacyActions.title
             $0.icon = .gamepadVariantOutlineIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()

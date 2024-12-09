@@ -412,7 +412,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             }
 
         case .actions:
-            title = L10n.SettingsDetails.Actions.title
+            title = L10n.SettingsDetails.LegacyActions.title
             let actions = realm.objects(Action.self)
                 .sorted(byKeyPath: "Position")
                 .filter("Scene == nil")
