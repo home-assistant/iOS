@@ -54,17 +54,16 @@ struct CarPlayConfigurationView: View {
                 }
         }
         .preferredColorScheme(.dark)
+        .navigationViewStyle(.stack)
     }
 
     private var content: some View {
-        VStack {
+        List {
             carPlayLogo
                 .padding()
-            List {
-                tabsSection
-                itemsSection
-                resetView
-            }
+            tabsSection
+            itemsSection
+            resetView
         }
     }
 
