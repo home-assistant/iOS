@@ -104,7 +104,13 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func appendToChat(_ item: AssistChatItem) {
+        if chatItems.last?.itemType == .typing {
+            chatItems.removeLast()
+        }
         chatItems.append(item)
+        if item.itemType == .input {
+            chatItems.append(.init(content: "", itemType: .typing))
+        }
     }
 
     private func fetchPipelines(completion: (() -> Void)? = nil) {

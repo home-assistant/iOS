@@ -14,6 +14,7 @@ public struct AssistChatItem: Equatable {
     public enum ItemType {
         case input
         case output
+        case typing
         case error
         case info
     }

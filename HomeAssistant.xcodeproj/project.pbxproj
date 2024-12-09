@@ -809,6 +809,7 @@
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
 		42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589D2BB4705E00497981 /* WidgetAssistView.swift */; };
+		42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */; };
 		42FCCFA82B9A05400057783F /* View+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */; };
 		42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */; };
 		42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD72B9B19F70057783F /* ThreadClientService.swift */; };
@@ -2109,6 +2110,7 @@
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
 		42F9589D2BB4705E00497981 /* WidgetAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistView.swift; sourceTree = "<group>"; };
+		42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistTypingIndicator.swift; sourceTree = "<group>"; };
 		42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+RoundedCorner.swift"; sourceTree = "<group>"; };
 		42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Image+SharedAssets.swift"; sourceTree = "<group>"; };
 		42FCCFD72B9B19F70057783F /* ThreadClientService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
@@ -4049,6 +4051,7 @@
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
 				42B94BDC2B9606CD00DEE060 /* AssistView.swift */,
+				42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */,
 				429106882BA9D5F700D452F9 /* AssistView+Build.swift */,
 				42070EE72BAC43240031E96F /* AssistSession.swift */,
 			);
@@ -6859,6 +6862,7 @@
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
+				42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */,
 				119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */,
 				11B7ECDB274DA531009AD634 /* ServerSelectViewController.swift in Sources */,
 				113199DC28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift in Sources */,
