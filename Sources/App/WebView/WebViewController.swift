@@ -601,7 +601,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private func showNoActiveURLError() {
         Current.Log.info("Showing noActiveURLError")
-        let config = swiftMessagesConfig()
+        var config = swiftMessagesConfig()
+        config.duration = .seconds(seconds: 15)
         let view = MessageView.viewFromNib(layout: .messageView)
         view.configureContent(
             title: L10n.Network.Error.NoActiveUrl.title,
