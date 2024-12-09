@@ -64,9 +64,9 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         childTemplateProvider?.templateWillAppear(template: template)
     }
 
-    func entitiesStateChange(entities: HACachedStates) {
+    func entitiesStateChange(serverId: String, entities: HACachedStates) {
         viewModel.update(entities: entities)
-        viewModel.entitiesListTemplate?.entitiesStateChange(entities: entities)
+        viewModel.entitiesListTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
     }
 
     func presentEntitiesList(template: CarPlayEntitiesListTemplate) {

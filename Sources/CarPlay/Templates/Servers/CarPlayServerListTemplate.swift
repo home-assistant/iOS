@@ -39,7 +39,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         }
     }
 
-    func entitiesStateChange(entities: HACachedStates) {
+    func entitiesStateChange(serverId: String, entities: HACachedStates) {
         /* no-op */
     }
 
