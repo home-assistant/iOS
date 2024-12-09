@@ -49,7 +49,6 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         template.tabSystemItem = .more
 
         self.viewModel.templateProvider = self
-        template.emptyViewSubtitleVariants = [L10n.SettingsDetails.Actions.title]
         presentIntroductionItem()
     }
 
