@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -107,14 +108,21 @@ struct AssistView: View {
     }
 
     private func makeChatBubble(item: AssistChatItem) -> some View {
-        Text(item.content)
-            .padding(8)
-            .padding(.horizontal, 8)
-            .background(backgroundForChatItemType(item.itemType))
-            .roundedCorner(10, corners: roundedCornersForChatItemType(item.itemType))
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
-            .textSelection(.enabled)
+        VStack {
+            if item.itemType == .typing {
+                AssistTypingIndicator()
+                    .padding(.vertical, Spaces.half)
+            } else {
+                Text(item.content)
+            }
+        }
+        .padding(8)
+        .padding(.horizontal, 8)
+        .background(backgroundForChatItemType(item.itemType))
+        .roundedCorner(10, corners: roundedCornersForChatItemType(item.itemType))
+        .foregroundColor(.white)
+        .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
+        .textSelection(.enabled)
     }
 
     private var chatList: some View {
@@ -181,10 +189,10 @@ struct AssistView: View {
                 viewModel.stopStreaming()
             } label: {
                 AssistMicAnimationView()
-                    .opacity(viewModel.isRecording ? 1 : 0)
                     .frame(maxWidth: viewModel.isRecording ? .infinity : 0)
             }
             .buttonStyle(.plain)
+            .opacity(viewModel.isRecording ? 1 : 0)
         }
     }
 
@@ -232,7 +240,7 @@ struct AssistView: View {
             .gray
         case .error:
             .red
-        case .info:
+        case .info, .typing:
             .gray.opacity(0.5)
         }
     }
@@ -241,7 +249,7 @@ struct AssistView: View {
         switch itemType {
         case .input:
             .trailing
-        case .output:
+        case .output, .typing:
             .leading
         case .error, .info:
             .center
@@ -252,7 +260,7 @@ struct AssistView: View {
         switch itemType {
         case .input:
             [.topLeft, .topRight, .bottomLeft]
-        case .output:
+        case .output, .typing:
             [.topLeft, .topRight, .bottomRight]
         case .error, .info:
             [.allCorners]

@@ -104,7 +104,13 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func appendToChat(_ item: AssistChatItem) {
+        if chatItems.last?.itemType == .typing {
+            chatItems.removeLast()
+        }
         chatItems.append(item)
+        if item.itemType == .input {
+            chatItems.append(.init(content: "", itemType: .typing))
+        }
     }
 
     private func fetchPipelines(completion: (() -> Void)? = nil) {
@@ -206,7 +212,7 @@ extension AssistViewModel: AudioRecorderDelegate {
 
 extension AssistViewModel: AssistServiceDelegate {
     func didReceiveEvent(_ event: AssistEvent) {
-        if event == .runEnd, isRecording {
+        if [.sttEnd, .runEnd].contains(event), isRecording {
             stopStreaming()
         }
     }

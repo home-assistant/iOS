@@ -20,7 +20,7 @@ struct ChatBubbleView: View {
         switch itemType {
         case .input:
             .asset(Asset.Colors.haPrimary)
-        case .output:
+        case .output, .typing:
             .gray
         case .error:
             .red
@@ -33,7 +33,7 @@ struct ChatBubbleView: View {
         switch itemType {
         case .input:
             .trailing
-        case .output:
+        case .output, .typing:
             .leading
         case .error, .info:
             .center
@@ -44,7 +44,7 @@ struct ChatBubbleView: View {
         switch itemType {
         case .input:
             [.topLeft, .topRight, .bottomLeft]
-        case .output:
+        case .output, .typing:
             [.topLeft, .topRight, .bottomRight]
         case .error, .info:
             [.allCorners]
