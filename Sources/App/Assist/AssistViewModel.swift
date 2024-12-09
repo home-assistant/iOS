@@ -212,7 +212,7 @@ extension AssistViewModel: AudioRecorderDelegate {
 
 extension AssistViewModel: AssistServiceDelegate {
     func didReceiveEvent(_ event: AssistEvent) {
-        if event == .runEnd, isRecording {
+        if [.sttEnd, .runEnd].contains(event), isRecording {
             stopStreaming()
         }
     }

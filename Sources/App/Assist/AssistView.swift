@@ -189,10 +189,10 @@ struct AssistView: View {
                 viewModel.stopStreaming()
             } label: {
                 AssistMicAnimationView()
-                    .opacity(viewModel.isRecording ? 1 : 0)
                     .frame(maxWidth: viewModel.isRecording ? .infinity : 0)
             }
             .buttonStyle(.plain)
+            .opacity(viewModel.isRecording ? 1 : 0)
         }
     }
 
