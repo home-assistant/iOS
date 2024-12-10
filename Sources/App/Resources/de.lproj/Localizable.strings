@@ -83,7 +83,7 @@
 "app_intents.scenes.requires_confirmation_before_run.description" = "Erfordert eine manuelle Bestätigung vor dem Ausführen der Szene.";
 "app_intents.scenes.requires_confirmation_before_run.title" = "Vor dem Ausführen bestätigen";
 "app_intents.scenes.scene.title" = "Szene";
-"app_intents.scenes.success_message.content" = "Szene \"%@\" ausgeführt.";
+"app_intents.scenes.success_message.content" = "Szene „%@“ ausgeführt.";
 "app_intents.scenes.title" = "Szene ausführen";
 "app_intents.scripts.failure_message.content" = "Das Skript „%@“ konnte nicht ausgeführt werden, bitte überprüfe deine Protokolle.";
 "app_intents.scripts.haptic_confirmation.title" = "Haptische Bestätigung";
@@ -266,15 +266,15 @@
 "location_change_notification.beacon_region_enter.body" = "%@ über iBeacon betreten";
 "location_change_notification.beacon_region_exit.body" = "%@ über iBeacon verlassen";
 "location_change_notification.launch.body" = "Standort bei App-Start aktualisiert";
-"location_change_notification.manual.body" = "Standortaktualisierung: Manuelle Aktualisierung";
+"location_change_notification.manual.body" = "Standortaktualisierung durch Nutzer ausgelöst";
 "location_change_notification.periodic.body" = "Standort durch regelmäßige Aktualisierung aktualisiert";
 "location_change_notification.push_notification.body" = "Standort über Push-Benachrichtigung aktualisiert";
 "location_change_notification.region_enter.body" = "%@ betreten";
 "location_change_notification.region_exit.body" = "%@ verlassen";
 "location_change_notification.signaled.body" = "Standort durch Update-Signal aktualisiert";
-"location_change_notification.significant_location_update.body" = "Standortaktualisierung: Erhebliche Standortänderung";
+"location_change_notification.significant_location_update.body" = "Erhebliche Standortänderung erkannt";
 "location_change_notification.siri.body" = "Standortaktualisierung durch Siri ausgelöst";
-"location_change_notification.title" = "Standortwechsel";
+"location_change_notification.title" = "Standortänderung";
 "location_change_notification.unknown.body" = "Standort über unbekannte Methode aktualisiert";
 "location_change_notification.url_scheme.body" = "Standort über URL-Schema aktualisiert";
 "location_change_notification.visit.body" = "Standort über Besuch aktualisiert";
@@ -292,8 +292,8 @@
 "magic_item.item_type.script.list.title" = "Skripte";
 "magic_item.item_type.selection.list.title" = "Eintragsart";
 "magic_item.name.title" = "Name";
-"magic_item.name_and_icon.footer" = "Bearbeite den Skriptnamen und das Icon im Frontend unter \"Einstellungen\" > \"Automatisierungen & Szenen\" > \"Skripte\".";
-"magic_item.name_and_icon.footer.scenes" = "Bearbeite den Szenennamen und das Icon im Frontend unter \"Einstellungen\" > \"Automatisierungen & Szenen\" > \"Szenen\".";
+"magic_item.name_and_icon.footer" = "Bearbeite den Skriptnamen und das Symbol im Frontend unter Einstellungen > Automatisierungen & Szenen > Skripte.";
+"magic_item.name_and_icon.footer.scenes" = "Bearbeite den Szenennamen und das Symbol im Frontend unter Einstellungen > Automatisierungen & Szenen > Szenen.";
 "magic_item.require_confirmation.title" = "Bestätigung verlangen";
 "magic_item.text_color.title" = "Textfarbe";
 "magic_item.use_custom_colors.title" = "Benutzerdefinierte Farben verwenden";
@@ -343,8 +343,8 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "no_label" = "Nein";
 "notification_service.failed_to_load" = "Fehler beim Laden des Anhangs";
 "notification_service.loading_dynamic_actions" = "Aktionen werden geladen …";
-"notification_service.parser.camera.invalid_entity" = "Gegebene entity_id ist falsch.";
-"notification_service.parser.url.invalid_url" = "Die angegebene URL ist falsch.";
+"notification_service.parser.camera.invalid_entity" = "Gegebene entity_id ist ungültig.";
+"notification_service.parser.url.invalid_url" = "Die angegebene URL ist ungültig.";
 "notification_service.parser.url.no_url" = "Es wurde keine URL angegeben.";
 "notifications_configurator.action.rows.authentication_required.footer" = "Bei aktivierter Option wird der Benutzer nach Auswahl einer Benachrichtigungs-Aktion vom System aufgefordert das Gerät zu entsperren. Die Aktionswahl wird erst nach erfolgreicher Authentifizierung an Home Assistant weitergegeben.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authentifizierung erforderlich";
@@ -389,7 +389,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.connection_test_result.certificate_error.title" = "Sichere Verbindung fehlgeschlagen";
 "onboarding.connection_test_result.client_certificate.description" = "Die Client-Zertifikatauthentifizierung wird nicht unterstützt.";
 "onboarding.connection_test_result.error_code" = "Fehlercode:";
-"onboarding.connection_test_result.local_network_permission.description" = "Die Datenschutzgenehmigung \"Lokales Netzwerk\" wurde möglicherweise verweigert. Du kannst dies in der App \"Einstellungen\" ändern.";
+"onboarding.connection_test_result.local_network_permission.description" = "Die Datenschutzgenehmigung „Lokales Netzwerk“ wurde möglicherweise verweigert. Du kannst dies in der App „Einstellungen“ ändern.";
 "onboarding.device_name_check.error.prompt" = "Welcher Gerätename sollte stattdessen verwendet werden?";
 "onboarding.device_name_check.error.rename_action" = "Umbenennen";
 "onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen '%1$@' existiert bereits";
@@ -406,7 +406,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.focus.bullet.automations" = "Fokusbasierte Automatisierungen";
 "onboarding.permissions.focus.bullet.instant" = "Sofortige Aktualisierung, wenn sich der Status ändert";
 "onboarding.permissions.focus.description" = "Erlauben, dass der verwendete Fokusmodus an Home Assistant gesendet werden darf";
-"onboarding.permissions.focus.grant_description" = "Erteile diese Focusbererechtigung, um Sensoren für deinen aktuell verwendeten Fokus zu erstellen (z.B. \"Nicht stören\").";
+"onboarding.permissions.focus.grant_description" = "Erteile die Fokusberechtigung, um Sensoren für deinen aktuellen Fokus-Status zu erstellen, auch bekannt als „Nicht stören“.";
 "onboarding.permissions.focus.title" = "Fokus";
 "onboarding.permissions.location.bullet.automations" = "Anwesenheitsbasierte Automatisierungen";
 "onboarding.permissions.location.bullet.history" = "Standortverlauf verfolgen";
@@ -429,7 +429,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.scanning.discovered_announcement" = "Entdeckt: %@";
 "onboarding.scanning.manual" = "Adresse manuell eingeben";
 "onboarding.scanning.manual_hint" = "Wird dein Server nicht gefunden?";
-"onboarding.scanning.title" = "Sucht nach Servern";
+"onboarding.scanning.title" = "Server werden gesucht";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
 Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
@@ -468,7 +468,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Neue Hardwareadresse hinzufügen";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Interne URL wird verwendet, wenn die primäre Netzwerkschnittstelle dieselbe Hardwareadresse wie eine der gegebenen Adressen hat.";
 "settings.connection_section.internal_url_hardware_addresses.header" = "Hardwareadressen";
-"settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardwareadressen müssen wie folgt aussehen: aa: bb: cc: dd: ee: ff";
+"settings.connection_section.internal_url_hardware_addresses.invalid" = "Hardwareadressen müssen wie folgt aussehen: aa:bb:cc:dd:ee:ff";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Neue SSID hinzufügen";
 "settings.connection_section.internal_url_ssids.footer" = "Die interne URL wird verwendet, wenn eine Verbindung zu den aufgeführten SSIDs hergestellt wird";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
@@ -485,8 +485,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings.connection_section.sensor_send_type.setting.none" = "Keine";
 "settings.connection_section.sensor_send_type.title" = "Sensorinformationen gesendet";
 "settings.connection_section.servers" = "Server";
-"settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung \"Immer\" und die Standortgenauigkeit \"Vollständig\" erforderlich. Tippe hier, um deine Einstellungen zu ändern.";
-"settings.connection_section.ssid_permission_message" = "Zugriff auf SSIDs im Hintergrund erfordern die Standortberechtigung \"Immer\". Tippe hier, um die Einstellung zu ändern.";
+"settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung „Immer“ und die Standortgenauigkeit „Vollständig“ erforderlich. Tippe hier, um deine Einstellungen zu ändern.";
+"settings.connection_section.ssid_permission_message" = "Zugriff auf SSIDs im Hintergrund erfordern die Standortberechtigung „Immer“. Tippe hier, um die Einstellung zu ändern.";
 "settings.connection_section.validate_error.edit_url" = "URL bearbeiten";
 "settings.connection_section.validate_error.title" = "Fehler beim Speichern der URL";
 "settings.connection_section.validate_error.use_anyway" = "Trotzdem verwenden";
@@ -532,7 +532,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings.navigation_bar.about_button.title" = "Über";
 "settings.navigation_bar.title" = "Einstellungen";
 "settings.reset_section.reset_alert.message" = "Die Einstellungen werden zurückgesetzt und es werden sowohl die Benachrichtigungen nicht mehr abonniert als auch die Konfiguration aus Home Assistant entfernt.";
-"settings.reset_section.reset_alert.progress_message" = "Zurücksetzen…";
+"settings.reset_section.reset_alert.progress_message" = "Wird zurückgesetzt …";
 "settings.reset_section.reset_alert.title" = "Zurücksetzen";
 "settings.reset_section.reset_row.title" = "Zurücksetzen";
 "settings.reset_section.reset_web_cache.title" = "Frontend-Cache zurücksetzen";
@@ -606,13 +606,14 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.general.open_in_private_tab.title" = "In privatem Tab öffnen";
 "settings_details.general.page_zoom.default" = "%@ (Standard)";
 "settings_details.general.page_zoom.title" = "Seitenzoom";
-"settings_details.general.pinch_to_zoom.title" = "Zum Zoomen mit 2 Fingern auseinander wischen";
+"settings_details.general.pinch_to_zoom.title" = "2-Finger-Zoom";
 "settings_details.general.restoration.title" = "Letzte Seite merken";
 "settings_details.general.title" = "Allgemein";
 "settings_details.general.visibility.options.dock" = "Dock";
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock und Menüleiste";
 "settings_details.general.visibility.options.menu_bar" = "Menüleiste";
 "settings_details.general.visibility.title" = "App anzeigen in …";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Deaktiviert";
 "settings_details.location.background_refresh.enabled" = "Aktiviert";
 "settings_details.location.background_refresh.title" = "Hintergrund-Aktualisierung";
@@ -638,7 +639,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.location.notifications.push_notification.title" = "Anfrage via Push";
 "settings_details.location.notifications.url_scheme.title" = "URL-Schema Standortaktualisierung";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Standortbenachrichtigungen";
-"settings_details.location.title" = "Standorteinstellungen";
+"settings_details.location.title" = "Standort";
 "settings_details.location.update_location" = "Standort aktualisieren";
 "settings_details.location.updates.background.title" = "Hintergrundaktualisierung";
 "settings_details.location.updates.footer" = "Manuelle Standortaktualisierungen können immer ausgelöst werden";
@@ -699,7 +700,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.notifications.sounds.footer" = "Integrierte, System-, oder benutzerdefinierte Sounds können in deinen Mitteilungen verwendet werden.";
 "settings_details.notifications.sounds.import_custom" = "Benutzerdefinierte Töne importieren";
 "settings_details.notifications.sounds.import_file_sharing" = "Importiere Töne aus der iTunes-Dateifreigabe";
-"settings_details.notifications.sounds.import_mac_instructions" = "Füge benutzerdefinierte Sounds zu deinem Sound Ordner hinzu, um diese in Mitteilungen zu verwenden. Nutze deren Dateiname als den Sound-Wert im Service-Aufruf.";
+"settings_details.notifications.sounds.import_mac_instructions" = "Füge benutzerdefinierte Sounds zu deinem Sound-Ordner hinzu, um diese in Mitteilungen zu verwenden. Nutze deren Dateiname als den Sound-Wert im Service-Aufruf.";
 "settings_details.notifications.sounds.import_mac_open_folder" = "Ordner im Finder öffnen";
 "settings_details.notifications.sounds.import_system" = "Systemtöne importieren";
 "settings_details.notifications.sounds.imported" = "Importiert";
@@ -864,7 +865,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "watch.debug.delete_db.reset.title" = "Konfiguration zurücksetzen";
 "watch.debug.delete_db.title" = "Watch-Konfiguration löschen";
 "watch.home.cancel_and_use_cache.title" = "Abbrechen und Cache verwenden";
-"watch.home.run.confirmation.title" = "Möchtest du \"%@\" wirklich ausführen?";
+"watch.home.run.confirmation.title" = "Möchtest du „%@“ wirklich ausführen?";
 "watch.labels.complication_group.circular_small.description" = "Verwende kreisförmige kleine Komplikationen, um den Inhalt in den Ecken des Zifferblatts Farben anzuzeigen.";
 "watch.labels.complication_group.circular_small.name" = "Kreisförmig klein";
 "watch.labels.complication_group.extra_large.description" = "Nutze die extra großen Komplikationen, um Inhalte auf den X-Large Zifferblättern anzuzeigen.";
@@ -890,7 +891,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "watch.labels.complication_group_member.graphic_corner.description" = "Ein kleines Quadrat oder ein rechteckiger Bereich, der in den Ziffernblättern Utility, Mickey, Chronograph und Simple verwendet wird.";
 "watch.labels.complication_group_member.graphic_corner.name" = "Grafik-Ecke";
 "watch.labels.complication_group_member.graphic_corner.short_name" = "Ecke";
-"watch.labels.complication_group_member.graphic_rectangular.description" = "Ein kleiner rechteckiger Bereich, der in den Ziffernblättern \"Fotos\", \"Bewegung\" und \"Zeitraffer\" verwendet wird.";
+"watch.labels.complication_group_member.graphic_rectangular.description" = "Ein kleiner rechteckiger Bereich, der in den Ziffernblättern „Fotos“, „Bewegung“ und „Zeitraffer“ verwendet wird.";
 "watch.labels.complication_group_member.graphic_rectangular.name" = "Grafik rechteckig";
 "watch.labels.complication_group_member.graphic_rectangular.short_name" = "Rechteckig";
 "watch.labels.complication_group_member.modular_large.description" = "Ein großer rechteckiger Bereich, der sich über die gesamte Bildschirmbreite der Utility- und Mickey-Zifferblätter erstreckt.";

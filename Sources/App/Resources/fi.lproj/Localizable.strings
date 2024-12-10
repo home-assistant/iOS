@@ -613,6 +613,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock ja valikkorivi";
 "settings_details.general.visibility.options.menu_bar" = "Valikkopalkki";
 "settings_details.general.visibility.title" = "Näytä sovellus…";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Poistettu käytöstä";
 "settings_details.location.background_refresh.enabled" = "Käytössä";
 "settings_details.location.background_refresh.title" = "Taustapäivitys";

@@ -213,7 +213,7 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 свайп влево";
 "gestures.3_fingers_swipe_right.title" = "3 👆 свайп вправо";
 "gestures.3_fingers_swipe_up.title" = "3 👆 свайп вверх";
-"gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.footer.title" = "Настройте жесты для использования в пользовательском интерфейсе.";
 "gestures.screen.body" = "Приведенные ниже жесты будут применяться всякий раз, когда вы используете основной пользовательский интерфейс Home Assistant.";
 "gestures.screen.title" = "Жесты";
 "gestures.swipe_left.title" = "Свайп влево";
@@ -225,7 +225,7 @@
 "gestures.value.option.previous_server" = "Предыдущий сервер";
 "gestures.value.option.servers_list" = "Список серверов";
 "gestures.value.option.show_settings" = "Открытие настроек приложения";
-"gestures.value.option.show_sidebar" = "Show sidebar";
+"gestures.value.option.show_sidebar" = "Показать боковую панель";
 "grdb.config.migration_error.failed_access_grdb" = "Не удалось получить доступ к базе данных (GRDB), ошибка: %@";
 "grdb.config.migration_error.failed_to_save" = "Не удалось сохранить новую конфигурацию, ошибка: %@";
 "ha_api.api_error.cant_build_url" = "Не удается построить URL-адрес API";
@@ -613,6 +613,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
 "settings_details.general.visibility.options.menu_bar" = "Строка меню";
 "settings_details.general.visibility.title" = "Показать приложение в…";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Отключено";
 "settings_details.location.background_refresh.enabled" = "Включено";
 "settings_details.location.background_refresh.title" = "Обновление в фоне";

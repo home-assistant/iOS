@@ -613,6 +613,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock dan Bar Menu";
 "settings_details.general.visibility.options.menu_bar" = "Bar Menu";
 "settings_details.general.visibility.title" = "Tampilkan Aplikasi di…";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Dinonaktifkan";
 "settings_details.location.background_refresh.enabled" = "Diaktifkan";
 "settings_details.location.background_refresh.title" = "Penyegaran Latar Belakang";
