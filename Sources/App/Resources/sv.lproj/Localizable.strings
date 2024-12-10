@@ -613,6 +613,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Docka och menyrad";
 "settings_details.general.visibility.options.menu_bar" = "Menyrad";
 "settings_details.general.visibility.title" = "Visa app i...";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Avaktiverad";
 "settings_details.location.background_refresh.enabled" = "Aktiverad";
 "settings_details.location.background_refresh.title" = "Bakgrundsuppdatering";

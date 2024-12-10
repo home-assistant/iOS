@@ -611,6 +611,7 @@
 "settings_details.general.visibility.options.dock_and_menu_bar" = "扩展坞和菜单栏";
 "settings_details.general.visibility.options.menu_bar" = "菜单栏";
 "settings_details.general.visibility.title" = "显示应用...";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "已禁用";
 "settings_details.location.background_refresh.enabled" = "已启用";
 "settings_details.location.background_refresh.title" = "后台刷新";

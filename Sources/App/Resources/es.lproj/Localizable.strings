@@ -613,6 +613,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Barra de menús y dock";
 "settings_details.general.visibility.options.menu_bar" = "Barra de menús";
 "settings_details.general.visibility.title" = "Mostrar la aplicación a...";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Deshabilitado";
 "settings_details.location.background_refresh.enabled" = "Habilitado";
 "settings_details.location.background_refresh.title" = "Actualización en segundo plano";

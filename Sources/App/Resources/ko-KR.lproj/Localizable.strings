@@ -613,6 +613,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock 및 메뉴바";
 "settings_details.general.visibility.options.menu_bar" = "메뉴바";
 "settings_details.general.visibility.title" = "다음에서 앱 표시하기";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "비활성화됨";
 "settings_details.location.background_refresh.enabled" = "활성화됨";
 "settings_details.location.background_refresh.title" = "백그라운드 새로고침";

@@ -125,6 +125,7 @@
 "carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carPlay.navigation.button.next" = "Next";
 "carPlay.navigation.button.previous" = "Previous";
+"carPlay.navigation.tab.actions" = "Actions";
 "carPlay.navigation.tab.areas" = "Areas";
 "carPlay.navigation.tab.domains" = "Control";
 "carPlay.navigation.tab.quick_access" = "Quick access";
@@ -559,7 +560,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.actions.scenes.select_all" = "Select All";
 "settings_details.actions.scenes.title" = "Scene Actions";
 "settings_details.actions.server_controlled.update.title" = "Update server Actions";
-"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
+"settings_details.actions.title" = "Actions";
 "settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Show in Watch";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -612,6 +613,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
 "settings_details.general.visibility.options.menu_bar" = "Menu Bar";
 "settings_details.general.visibility.title" = "Show App In…";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.location.background_refresh.enabled" = "Enabled";
 "settings_details.location.background_refresh.title" = "Background Refresh";

@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Aktiviere optional das Cross-Site-Tracking, wenn deine Konfiguration dies erfordert.";
 "NSFocusStatusUsageDescription" = "Melde deinen Fokusstatus als Sensor.";
 "NSLocalNetworkUsageDescription" = "Finde und kommuniziere mit deiner Home Assistant Instanz.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Wir empfehlen \"immer erlauben\" auszuwählen für die beste Standortbestimmung. Bei Auswahl von \"Nur bei benutzung der App\" werden iBeacons, Geofences und Hintergrundstandortaktualisierungen sowie akkurates reporting deaktiviert.";
-"NSLocationAlwaysUsageDescription" = "Für Features wie iBeacons, Geofences, Hintergrundstandortaktualisierungen und akkurates Reporting benötigen wir immer Zugriff auf deinen Standort.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Wir empfehlen „Immer erlauben“ auszuwählen für die beste Standortbestimmung. Bei Auswahl von „Nur bei Benutzung der App“ werden iBeacons, Geofences, Hintergrundaktualisierungen des Standorts sowie akkurates Reporting deaktiviert.";
+"NSLocationAlwaysUsageDescription" = "Für Features wie iBeacons, Geofences, Hintergrundaktualisierungen des Standorts und akkurates Reporting benötigen wir immer Zugriff auf deinen Standort.";
 "NSLocationUsageDescription" = "Aktivieren, um deinen Gerätestandort als Device Tracker an deinen Home Assistant Server zu senden.";
-"NSLocationWhenInUseUsageDescription" = "Wenn der Zugriff auf den Standort nur bei Benutzung der App erlaubt ist, werden iBeacons, Geofences, Hintergrundstandortaktualisierungen und akkurates Reporting deaktiviert.";
+"NSLocationWhenInUseUsageDescription" = "Wenn der Zugriff auf den Standort nur bei Benutzung der App erlaubt ist, werden iBeacons, Geofences, Hintergrundaktualisierungen des Standorts sowie akkurates Reporting deaktiviert.";
 "NSMicrophoneUsageDescription" = "Nehme Audio mit deinem Home Assistant Frontend auf.";
 "NSMotionUsageDescription" = "Bewegung wird verwendet, um Standortaktualisierungen mit dem aktuellen Bewegungstyp zu verbessern und grundlegende Pedometerdaten bereitzustellen.";
 "NSPhotoLibraryAddUsageDescription" = "Der Zugriff auf die Fotobibliothek ist erforderlich, um das Speichern von Fotos aus der Webansicht zu ermöglichen.";

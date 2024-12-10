@@ -43,7 +43,7 @@
 "KHH48D" = "Fehler: Home Assistant ist zurzeit nicht verfügbar.";
 "KJS2jk" = "Fehlgeschlagen: ${error}";
 "KM7mXC" = "Aktion";
-"KSmKl0" = "Dienst ${domain}.${service} aufgerufen";
+"KSmKl0" = "${domain}.${service} aufgerufen";
 "KzOHYA" = "Fehlgeschlagen: ${error}";
 "LVEY3e" = "Kamera-ID";
 "Lgymq2" = "Welcher Dienst?";
@@ -83,7 +83,7 @@
 "cK9jdK" = "Fehlgeschlagen: ${error}";
 "cLmTme" = "Aktion";
 "cuflz3" = "Fehler: Home Assistant ist zurzeit nicht verfügbar.";
-"d65H6l" = "Assist mit \"${text}\"";
+"d65H6l" = "Assist mit „${text}“";
 "dFHPYK" = "'${action}' ausgeführt";
 "eObn2i" = "Seite";
 "f1KX0Q" = "Anzeigen und Ausführen von Aktionen";
@@ -142,7 +142,7 @@
 "sfDGvk" = "Gerendertes Template";
 "txfcnn" = "Text";
 "tycImk" = "Führt eine in der App definierte Aktion aus";
-"uqeIcc" = "Assist mit \"${text}\"";
+"uqeIcc" = "Assist mit „${text}“";
 "v7TSD5" = "Standort senden";
 "vAIAF2" = "Eine Sensoraktualisierung an Home Assistant senden";
 "vebd70" = "Server";

@@ -611,6 +611,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock i pasek menu";
 "settings_details.general.visibility.options.menu_bar" = "Pasek menu";
 "settings_details.general.visibility.title" = "Pokaż aplikację w…";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Wyłączony";
 "settings_details.location.background_refresh.enabled" = "Włączony";
 "settings_details.location.background_refresh.title" = "Odświeżanie w tle";
