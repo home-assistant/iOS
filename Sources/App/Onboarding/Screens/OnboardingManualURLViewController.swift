@@ -183,6 +183,11 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
 
             return .init(error: PMKError.cancelled)
         }.then { [self] (url: URL) -> Promise<Server> in
+            Current.Log.verbose("Onboard URL is \(url)")
+            // Removing path such as "/lovelace/home" to avoid wrong redirect after login
+            let url = URL(string: url.absoluteString.replacingOccurrences(of: url.path, with: "")) ?? url
+            Current.Log.verbose("Onboard URL after cleanup is \(url)")
+
             let instance = DiscoveredHomeAssistant(manualURL: url)
             return authentication.authenticate(to: instance, sender: self)
         }.ensure { [self] in
