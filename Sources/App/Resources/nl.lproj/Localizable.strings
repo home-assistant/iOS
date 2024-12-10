@@ -613,6 +613,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock en menubalk";
 "settings_details.general.visibility.options.menu_bar" = "Menubalk";
 "settings_details.general.visibility.title" = "Toon app in...";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Uitgeschakeld";
 "settings_details.location.background_refresh.enabled" = "Ingeschakeld";
 "settings_details.location.background_refresh.title" = "Op de achtergrond vernieuwen";

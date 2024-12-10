@@ -613,6 +613,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
 "settings_details.general.visibility.options.menu_bar" = "Barra de menús";
 "settings_details.general.visibility.title" = "Mostrar l'aplicació a...";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Desactivat";
 "settings_details.location.background_refresh.enabled" = "Habilitat";
 "settings_details.location.background_refresh.title" = "Actualització en segon pla";
