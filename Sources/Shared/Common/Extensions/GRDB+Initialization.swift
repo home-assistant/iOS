@@ -78,13 +78,14 @@ public extension DatabaseQueue {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     private static func createAppConfigTables(database: DatabaseQueue) {
+        var shouldCreateHAppEntity = false
+        var shouldCreateAssistPipelines = false
+        var shouldCreateWatchConfig = false
+        var shouldCreateCarPlayConfig = false
+        var shouldCreateClientEvent = false
         do {
-            var shouldCreateHAppEntity: Bool = false
-            var shouldCreateAssistPipelines: Bool = false
-            var shouldCreateWatchConfig: Bool = false
-            var shouldCreateCarPlayConfig: Bool = false
-            var shouldCreateClientEvent: Bool = false
             try database.read { db in
                 shouldCreateHAppEntity = try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue)
                 shouldCreateWatchConfig = try !db.tableExists(GRDBDatabaseTable.watchConfig.rawValue)
@@ -92,9 +93,14 @@ public extension DatabaseQueue {
                 shouldCreateAssistPipelines = try !db.tableExists(GRDBDatabaseTable.assistPipelines.rawValue)
                 shouldCreateClientEvent = try !db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
             }
+        } catch {
+            let errorMessage = "Failed to check if GRDB tables exist, error: \(error.localizedDescription)"
+            Current.Log.error(errorMessage)
+        }
 
-            // HAAppEntity - App used domain entities
-            if shouldCreateHAppEntity {
+        // HAAppEntity - App used domain entities
+        if shouldCreateHAppEntity {
+            do {
                 try database.write { db in
                     try db.create(table: GRDBDatabaseTable.HAAppEntity.rawValue) { t in
                         t.primaryKey(DatabaseTables.AppEntity.id.rawValue, .text).notNull()
@@ -105,9 +111,14 @@ public extension DatabaseQueue {
                         t.column(DatabaseTables.AppEntity.icon.rawValue, .text)
                     }
                 }
+            } catch {
+                let errorMessage = "Failed to create HAAppEntity GRDB table, error: \(error.localizedDescription)"
+                Current.Log.error(errorMessage)
             }
-            // WatchConfig - Apple Watch configuration
-            if shouldCreateWatchConfig {
+        }
+        // WatchConfig - Apple Watch configuration
+        if shouldCreateWatchConfig {
+            do {
                 try database.write { db in
                     try db.create(table: GRDBDatabaseTable.watchConfig.rawValue) { t in
                         t.primaryKey(DatabaseTables.WatchConfig.id.rawValue, .text).notNull()
@@ -115,9 +126,14 @@ public extension DatabaseQueue {
                         t.column(DatabaseTables.WatchConfig.items.rawValue, .jsonText).notNull()
                     }
                 }
+            } catch {
+                let errorMessage = "Failed to create WatchConfig GRDB table, error: \(error.localizedDescription)"
+                Current.Log.error(errorMessage)
             }
-            // CarPlayConfig - CarPlay configuration
-            if shouldCreateCarPlayConfig {
+        }
+        // CarPlayConfig - CarPlay configuration
+        if shouldCreateCarPlayConfig {
+            do {
                 try database.write { db in
                     if try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue) {
                         try db.create(table: GRDBDatabaseTable.carPlayConfig.rawValue) { t in
@@ -127,9 +143,14 @@ public extension DatabaseQueue {
                         }
                     }
                 }
+            } catch {
+                let errorMessage = "Failed to create CarPlayConfig GRDB table, error: \(error.localizedDescription)"
+                Current.Log.error(errorMessage)
             }
-            // PipelineResponse - Assist pipelines cache
-            if shouldCreateAssistPipelines {
+        }
+        // PipelineResponse - Assist pipelines cache
+        if shouldCreateAssistPipelines {
+            do {
                 try database.write { db in
                     try db.create(table: GRDBDatabaseTable.assistPipelines.rawValue) { t in
                         t.primaryKey(DatabaseTables.AssistPipelines.serverId.rawValue, .text).notNull()
@@ -137,9 +158,14 @@ public extension DatabaseQueue {
                         t.column(DatabaseTables.AssistPipelines.pipelines.rawValue, .jsonText).notNull()
                     }
                 }
+            } catch {
+                let errorMessage = "Failed to create AssistPipelines GRDB table, error: \(error.localizedDescription)"
+                Current.Log.error(errorMessage)
             }
-            // Client Event
-            if shouldCreateClientEvent {
+        }
+        // Client Event
+        if shouldCreateClientEvent {
+            do {
                 try database.write { db in
                     try db.create(table: GRDBDatabaseTable.clientEvent.rawValue) { t in
                         t.primaryKey(DatabaseTables.ClientEvent.id.rawValue, .text).notNull()
@@ -149,10 +175,10 @@ public extension DatabaseQueue {
                         t.column(DatabaseTables.ClientEvent.date.rawValue, .date).notNull()
                     }
                 }
+            } catch {
+                let errorMessage = "Failed to create ClientEvent GRDB table, error: \(error.localizedDescription)"
+                Current.Log.error(errorMessage)
             }
-        } catch {
-            let errorMessage = "Failed to create GRDB tables, error: \(error.localizedDescription)"
-            Current.Log.error(errorMessage)
         }
     }
 }
