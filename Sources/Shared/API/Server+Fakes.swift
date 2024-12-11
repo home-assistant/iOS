@@ -14,7 +14,8 @@ extension ServerInfo {
                 internalSSIDs: ["MyWifi"],
                 internalHardwareAddresses: nil,
                 isLocalPushEnabled: true,
-                securityExceptions: .init()
+                securityExceptions: .init(),
+                alwaysFallbackToInternalURL: false
             ),
             token: .init(
                 accessToken: "FakeAccessToken",

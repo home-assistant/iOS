@@ -13,6 +13,7 @@ public struct ConnectionInfo: Codable, Equatable {
     public var webhookSecret: String?
     public var useCloud: Bool = false
     public var cloudhookURL: URL?
+    public var alwaysFallbackToInternalURL: Bool = false
     public var internalSSIDs: [String]? {
         didSet {
             overrideActiveURLType = nil
@@ -55,7 +56,8 @@ public struct ConnectionInfo: Codable, Equatable {
         internalSSIDs: [String]?,
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
-        securityExceptions: SecurityExceptions
+        securityExceptions: SecurityExceptions,
+        alwaysFallbackToInternalURL: Bool
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -67,6 +69,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
         self.securityExceptions = securityExceptions
+        self.alwaysFallbackToInternalURL = alwaysFallbackToInternalURL
     }
 
     public init(from decoder: Decoder) throws {
@@ -81,6 +84,10 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalHardwareAddresses =
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
+        self.alwaysFallbackToInternalURL = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .alwaysFallbackToInternalURL
+        ) ?? false
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
         self.securityExceptions = try container.decodeIfPresent(
             SecurityExceptions.self,
@@ -189,6 +196,9 @@ public struct ConnectionInfo: Codable, Equatable {
         } else if let externalURL {
             activeURLType = .external
             url = externalURL
+        } else if let internalURL, alwaysFallbackToInternalURL {
+            activeURLType = .internal
+            url = internalURL
         } else {
             activeURLType = .none
             url = nil
