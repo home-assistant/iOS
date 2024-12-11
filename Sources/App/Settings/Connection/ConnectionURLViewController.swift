@@ -64,6 +64,8 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         let givenURL = (form.rowBy(tag: RowTag.url.rawValue) as? URLRow)?.value
         let useCloud = (form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow)?.value
         let localPush = (form.rowBy(tag: RowTag.localPush.rawValue) as? SwitchRow)?.value
+        let alwaysFallbackToInternalURL = (form.rowBy(tag: RowTag.alwaysFallbackToInternalURL.rawValue) as? SwitchRow)?
+            .value
 
         func commit() {
             server.update { info in
@@ -91,6 +93,8 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                         .map { $0.lowercased() }
                         .filter { !$0.isEmpty }
                 }
+
+                info.connection.alwaysFallbackToInternalURL = alwaysFallbackToInternalURL ?? false
             }
 
             onDismissCallback?(self)
@@ -153,6 +157,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         case hardwareAddresses
         case useCloud
         case localPush
+        case alwaysFallbackToInternalURL
     }
 
     private func updateNavigationItems(isChecking: Bool) {
@@ -226,7 +231,8 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
             <<< InfoLabelRow {
                 $0.tag = RowTag.internalURLWarning.rawValue
                 if server.info.connection.internalSSIDs?.isEmpty ?? true,
-                   server.info.connection.internalHardwareAddresses?.isEmpty ?? true {
+                   server.info.connection.internalHardwareAddresses?.isEmpty ?? true,
+                   !server.info.connection.alwaysFallbackToInternalURL {
                     #if targetEnvironment(macCatalyst)
                     $0.title = "‼️" + L10n.Settings.ConnectionSection.InternalBaseUrl.SsidBssidRequired.title
                     #else
@@ -289,6 +295,39 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                 }
             }
         }
+
+        form +++ Section(footer: L10n.Settings.ConnectionSection.AlwaysFallbackInternal.footer)
+            <<< SwitchRow(RowTag.alwaysFallbackToInternalURL.rawValue) {
+                $0.title = L10n.Settings.ConnectionSection.AlwaysFallbackInternal.title
+                $0.value = server.info.connection.alwaysFallbackToInternalURL
+
+                $0.cellUpdate { cell, _ in
+                    cell.switchControl.onTintColor = .red
+                }
+
+                $0.onChange { [weak self] row in
+                    if row.value ?? false {
+                        let alert = UIAlertController(
+                            title: L10n.Settings.ConnectionSection.AlwaysFallbackInternal.Confirmation.title,
+                            message: L10n.Settings.ConnectionSection.AlwaysFallbackInternal.Confirmation.message,
+                            preferredStyle: .actionSheet
+                        )
+                        alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: { _ in
+                            self?.server.info.connection.alwaysFallbackToInternalURL = false
+                            row.value = false
+                            row.cellUpdate { _, row in
+                                row.value = false
+                            }
+                            row.reload()
+                        }))
+                        alert.addAction(UIAlertAction(
+                            title: L10n.Settings.ConnectionSection.AlwaysFallbackInternal.Confirmation.confirmButton,
+                            style: .destructive
+                        ))
+                        self?.present(alert, animated: true)
+                    }
+                }
+            }
     }
 
     private func locationPermissionSection() -> Section {

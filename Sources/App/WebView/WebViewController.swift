@@ -693,8 +693,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 applicationState: UIApplication.shared.applicationState,
                 type: .userRequested
             )
-        }.catch { [weak self] error in
-            self?.showSwiftMessage(error: error)
+        }.catch { error in
+            Current.Log.error("Error when updating sensors from WKWebView reload: \(error)")
         }
     }
 

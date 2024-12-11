@@ -1682,6 +1682,20 @@ public enum L10n {
       public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       /// Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.
       public static var ssidPermissionMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_message") }
+      public enum AlwaysFallbackInternal {
+        /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
+        public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }
+        /// Always fallback to internal URL
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.title") }
+        public enum Confirmation {
+          /// I am sure
+          public static var confirmButton: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.confirm_button") }
+          /// If you have an unsecure connection this can expose your authentication token on public networks.
+          public static var message: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.message") }
+          /// Are you sure?
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.title") }
+        }
+      }
       public enum DeleteServer {
         /// Are you sure you wish to delete this server?
         public static var message: String { return L10n.tr("Localizable", "settings.connection_section.delete_server.message") }
