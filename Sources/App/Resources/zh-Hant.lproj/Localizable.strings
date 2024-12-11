@@ -613,7 +613,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock 與選單列";
 "settings_details.general.visibility.options.menu_bar" = "選單列";
 "settings_details.general.visibility.title" = "顯示 App 於…";
-"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
+"settings_details.legacy_actions.title" = "(舊版) iOS 動作";
 "settings_details.location.background_refresh.disabled" = "已關閉";
 "settings_details.location.background_refresh.enabled" = "已啟用";
 "settings_details.location.background_refresh.title" = "背景更新";
