@@ -613,6 +613,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dok a panel nabídek";
 "settings_details.general.visibility.options.menu_bar" = "Panel nabídek";
 "settings_details.general.visibility.title" = "Zobrazit aplikaci v...";
+"settings_details.legacy_actions.title" = "(Starší) Akce iOS";
 "settings_details.location.background_refresh.disabled" = "Zakázáno";
 "settings_details.location.background_refresh.enabled" = "Povoleno";
 "settings_details.location.background_refresh.title" = "Aktualizace na pozadí";

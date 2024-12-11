@@ -613,6 +613,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Док и лента с менюта";
 "settings_details.general.visibility.options.menu_bar" = "Лента с менюта";
 "settings_details.general.visibility.title" = "Показване на приложението в...";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Деактивирано";
 "settings_details.location.background_refresh.enabled" = "Активирано";
 "settings_details.location.background_refresh.title" = "Обновяване на фона";

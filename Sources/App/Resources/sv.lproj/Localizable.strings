@@ -613,6 +613,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Docka och menyrad";
 "settings_details.general.visibility.options.menu_bar" = "Menyrad";
 "settings_details.general.visibility.title" = "Visa app i...";
+"settings_details.legacy_actions.title" = "(Utfasad) iOS-åtgärder";
 "settings_details.location.background_refresh.disabled" = "Avaktiverad";
 "settings_details.location.background_refresh.enabled" = "Aktiverad";
 "settings_details.location.background_refresh.title" = "Bakgrundsuppdatering";
@@ -655,8 +656,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.location.zones.location.title" = "Position";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radie";
-"settings_details.mac_native_features.footer" = "This will open Safari instead of the App webview, while keeping the native features such as widgets working.";
-"settings_details.mac_native_features.title" = "Native Features Only (Experimental)";
+"settings_details.mac_native_features.footer" = "Detta öppnar Safari istället för App-webbvyn, samtidigt som de inbyggda funktionerna (t.ex. widgets) fungerar.";
+"settings_details.mac_native_features.title" = "Endast inbyggda funktioner (experimentell)";
 "settings_details.notifications.badge_section.automatic_setting.description" = "Återställer brickan till 0 varje gång appen startas.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatiskt";
 "settings_details.notifications.badge_section.button.title" = "Nollställ brickan";

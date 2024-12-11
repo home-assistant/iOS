@@ -490,7 +490,7 @@
 "settings.connection_section.validate_error.edit_url" = "Επεξεργασία διεύθυνσης URL";
 "settings.connection_section.validate_error.title" = "Σφάλμα αποθήκευσης διεύθυνσης URL";
 "settings.connection_section.validate_error.use_anyway" = "Χρήση οπωσδήποτε";
-"settings.connection_section.websocket.status.authenticating" = "Έλεγχος ταυτότητας";
+"settings.connection_section.websocket.status.authenticating" = "Ελεγχος ταυτότητας";
 "settings.connection_section.websocket.status.connected" = "Συνδέθηκε";
 "settings.connection_section.websocket.status.connecting" = "Σύνδεση";
 "settings.connection_section.websocket.status.disconnected.error" = "Σφάλμα: %1$@";
@@ -613,6 +613,7 @@
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Γραμμή σύνδεσης και μενού";
 "settings_details.general.visibility.options.menu_bar" = "Γραμμή μενού";
 "settings_details.general.visibility.title" = "Εμφάνιση εφαρμογής σε...";
+"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Απενεργοποιημένο";
 "settings_details.location.background_refresh.enabled" = "Ενεργοποιημένο";
 "settings_details.location.background_refresh.title" = "Ανανέωση background";
@@ -772,9 +773,9 @@
 "token_error.token_unavailable" = "Το διακριτικό δεν είναι διαθέσιμο.";
 "unauthenticated.message.body" = "Αυτό θα μπορούσε να είναι προσωρινό αν βρίσκεστε πίσω από έναν διακομιστή μεσολάβησης (proxy) ή περιορισμό δικτύου, διαφορετικά αν επιμένει, αφαιρέστε τον διακομιστή σας και προσθέστε τον ξανά.";
 "unauthenticated.message.title" = "Δεν έχει γίνει έλεγχος ταυτότητας";
-"updater.check_for_updates_menu.title" = "Έλεγχος για ενημερώσεις…";
+"updater.check_for_updates_menu.title" = "Ελεγχος για ενημερώσεις…";
 "updater.no_updates_available.on_latest_version" = "Βρίσκεστε στην πιο πρόσφατη έκδοση!";
-"updater.no_updates_available.title" = "Έλεγχος για ενημερώσεις";
+"updater.no_updates_available.title" = "Ελεγχος για ενημερώσεις";
 "updater.update_available.open" = "Προβολή '%@'";
 "updater.update_available.title" = "Διαθέσιμη ενημέρωση";
 "url_handler.call_service.confirm.message" = "Θέλετε να καλέσετε την υπηρεσία %@;";

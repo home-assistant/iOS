@@ -613,6 +613,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.general.visibility.options.dock_and_menu_bar" = "ドックとメニューバー";
 "settings_details.general.visibility.options.menu_bar" = "メニューバー";
 "settings_details.general.visibility.title" = "アプリを表示…";
+"settings_details.legacy_actions.title" = "(レガシー) iOS アクション";
 "settings_details.location.background_refresh.disabled" = "無効";
 "settings_details.location.background_refresh.enabled" = "有効";
 "settings_details.location.background_refresh.title" = "バックグラウンドで更新";

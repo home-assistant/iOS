@@ -613,6 +613,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Salv ja menüüriba";
 "settings_details.general.visibility.options.menu_bar" = "Menüüriba";
 "settings_details.general.visibility.title" = "Kuva rakendus…";
+"settings_details.legacy_actions.title" = "(Pärand) iOS-i toimingud";
 "settings_details.location.background_refresh.disabled" = "Keelatud";
 "settings_details.location.background_refresh.enabled" = "Lubatud";
 "settings_details.location.background_refresh.title" = "Taustal värskendamine";
