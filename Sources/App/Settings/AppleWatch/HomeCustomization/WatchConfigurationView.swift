@@ -1,5 +1,6 @@
 import SFSafeSymbols
 import Shared
+import StoreKit
 import SwiftUI
 
 struct WatchConfigurationView: View {
@@ -26,6 +27,9 @@ struct WatchConfigurationView: View {
                         Button(action: {
                             viewModel.save { success in
                                 if success {
+                                    // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
+                                    // private var requestReview`
+                                    SKStoreReviewController.requestReview()
                                     dismiss()
                                 }
                             }
