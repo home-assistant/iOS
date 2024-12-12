@@ -62,7 +62,7 @@ struct IntentCoverAppEntityQuery: EntityQuery, EntityStringQuery {
 
     private func getCoverEntities(matching string: String? = nil) async -> [(Server, [IntentCoverEntity])] {
         var coverEntities: [(Server, [IntentCoverEntity])] = []
-        let entities = ControlEntityProvider(domain: .cover).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: [.cover]).getEntities(matching: string)
 
         for (server, values) in entities {
             coverEntities.append((server, values.map({ entity in

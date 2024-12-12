@@ -10,7 +10,7 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
         try await ControlRefreshDelay.wait()
         guard let serverId = configuration.entity?.serverId,
               let lightId = configuration.entity?.entityId,
-              let state: String = try await ControlEntityProvider(domain: .cover).currentState(
+              let state: String = try await ControlEntityProvider(domains: [.cover]).currentState(
                   serverId: serverId,
                   entityId: lightId
               ) else {

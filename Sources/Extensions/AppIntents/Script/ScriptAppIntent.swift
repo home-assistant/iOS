@@ -138,7 +138,7 @@ struct IntentScriptAppEntityQuery: EntityQuery, EntityStringQuery {
 
     private func getScriptEntities(matching string: String? = nil) -> [(Server, [IntentScriptEntity])] {
         var scriptEntities: [(Server, [IntentScriptEntity])] = []
-        let entities = ControlEntityProvider(domain: .script).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: [.script]).getEntities(matching: string)
 
         for (server, values) in entities {
             scriptEntities.append((server, values.map({ entity in

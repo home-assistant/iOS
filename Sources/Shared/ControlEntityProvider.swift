@@ -11,10 +11,10 @@ public final class ControlEntityProvider {
         case off
     }
 
-    public let domain: Domain
+    public let domains: [Domain]
 
-    public init(domain: Domain) {
-        self.domain = domain
+    public init(domains: [Domain]) {
+        self.domains = domains
     }
 
     public func currentState(serverId: String, entityId: String) async throws -> String? {
@@ -47,7 +47,7 @@ public final class ControlEntityProvider {
                 var entities: [HAAppEntity] = try Current.database.read { db in
                     try HAAppEntity
                         .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == domain.rawValue)
+                        .filter(domains.map(\.rawValue).contains(Column(DatabaseTables.AppEntity.domain.rawValue)))
                         .fetchAll(db)
                 }
                 if let string {
