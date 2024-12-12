@@ -310,7 +310,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
                         let alert = UIAlertController(
                             title: L10n.Settings.ConnectionSection.AlwaysFallbackInternal.Confirmation.title,
                             message: L10n.Settings.ConnectionSection.AlwaysFallbackInternal.Confirmation.message,
-                            preferredStyle: .actionSheet
+                            preferredStyle: .alert
                         )
                         alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: { _ in
                             self?.server.info.connection.alwaysFallbackToInternalURL = false

@@ -601,26 +601,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private func showNoActiveURLError() {
         Current.Log.info("Showing noActiveURLError")
-        var config = swiftMessagesConfig()
-        config.duration = .seconds(seconds: 15)
-        let view = MessageView.viewFromNib(layout: .messageView)
-        view.configureContent(
-            title: L10n.Network.Error.NoActiveUrl.title,
-            body: L10n.Network.Error.NoActiveUrl.body,
-            iconImage: nil,
-            iconText: nil,
-            buttonImage: MaterialDesignIcons.cogIcon.image(
-                ofSize: CGSize(width: 30, height: 30),
-                color: Asset.Colors.haPrimary.color
-            ),
-            buttonTitle: nil,
-            buttonTapHandler: { [weak self] _ in
-                self?.showSettingsViewController()
-                SwiftMessages.hide()
-            }
-        )
-
-        SwiftMessages.show(config: config, view: view)
+        webView.scrollView.refreshControl?.endRefreshing()
+        guard !(overlayAppController is NoActiveURLViewController) else { return }
+        presentController(NoActiveURLViewController(server: server), animated: true)
     }
 
     @objc private func connectionInfoDidChange() {
@@ -1103,6 +1086,7 @@ extension WebViewController: WebViewControllerProtocol {
             if let overlayAppController {
                 overlayAppController.dismiss(animated: false)
             }
+            overlayAppController = controller
             present(controller, animated: animated)
         }
     }

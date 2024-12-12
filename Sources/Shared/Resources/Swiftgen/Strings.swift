@@ -754,6 +754,33 @@ public enum L10n {
     }
   }
 
+  public enum Connection {
+    public enum Permission {
+      public enum InternalUrl {
+        /// To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').
+        public static var body1: String { return L10n.tr("Localizable", "connection.permission.internal_url.body1") }
+        /// This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.
+        public static var body2: String { return L10n.tr("Localizable", "connection.permission.internal_url.body2") }
+        /// You are always in control if your location is shared with Home Assistant. You can change these settings in the companion app setting screen.
+        public static var body3: String { return L10n.tr("Localizable", "connection.permission.internal_url.body3") }
+        /// Configure local access
+        public static var buttonConfigure: String { return L10n.tr("Localizable", "connection.permission.internal_url.button_configure") }
+        /// I know what I am doing. Allow local connections without permission access.
+        public static var buttonIgnore: String { return L10n.tr("Localizable", "connection.permission.internal_url.button_ignore") }
+        /// If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.
+        public static var footer: String { return L10n.tr("Localizable", "connection.permission.internal_url.footer") }
+        /// Permission access
+        public static var title: String { return L10n.tr("Localizable", "connection.permission.internal_url.title") }
+        public enum Ignore {
+          public enum Alert {
+            /// Are you sure?
+            public static var title: String { return L10n.tr("Localizable", "connection.permission.internal_url.ignore.alert.title") }
+          }
+        }
+      }
+    }
+  }
+
   public enum Database {
     public enum Problem {
       /// Delete Database & Quit App
