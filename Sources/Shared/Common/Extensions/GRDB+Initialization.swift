@@ -7,6 +7,7 @@ public enum GRDBDatabaseTable: String {
     case assistPipelines
     case carPlayConfig
     case clientEvent
+    case appEntityRegistryListForDisplay
 }
 
 public enum DatabaseTables {
@@ -47,6 +48,13 @@ public enum DatabaseTables {
         case jsonPayload
         case date
     }
+
+    public enum AppEntityRegistryListForDisplay: String {
+        case id
+        case serverId
+        case entityId
+        case registry
+    }
 }
 
 public extension DatabaseQueue {
@@ -85,6 +93,8 @@ public extension DatabaseQueue {
         var shouldCreateWatchConfig = false
         var shouldCreateCarPlayConfig = false
         var shouldCreateClientEvent = false
+        var shouldCreateAppEntityRegistryListForDisplay = false
+
         do {
             try database.read { db in
                 shouldCreateHAppEntity = try !db.tableExists(GRDBDatabaseTable.HAAppEntity.rawValue)
@@ -92,6 +102,8 @@ public extension DatabaseQueue {
                 shouldCreateCarPlayConfig = try !db.tableExists(GRDBDatabaseTable.carPlayConfig.rawValue)
                 shouldCreateAssistPipelines = try !db.tableExists(GRDBDatabaseTable.assistPipelines.rawValue)
                 shouldCreateClientEvent = try !db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
+                shouldCreateAppEntityRegistryListForDisplay = try !db
+                    .tableExists(GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue)
             }
         } catch {
             let errorMessage = "Failed to check if GRDB tables exist, error: \(error.localizedDescription)"
@@ -177,6 +189,24 @@ public extension DatabaseQueue {
                 }
             } catch {
                 let errorMessage = "Failed to create ClientEvent GRDB table, error: \(error.localizedDescription)"
+                Current.Log.error(errorMessage)
+            }
+        }
+
+        // AppEntityRegistryListForDisplay
+        if shouldCreateAppEntityRegistryListForDisplay {
+            do {
+                try database.write { db in
+                    try db.create(table: GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue) { t in
+                        t.primaryKey(DatabaseTables.AppEntityRegistryListForDisplay.id.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppEntityRegistryListForDisplay.entityId.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppEntityRegistryListForDisplay.registry.rawValue, .jsonText).notNull()
+                    }
+                }
+            } catch {
+                let errorMessage =
+                    "Failed to create AppEntityRegistryListForDisplay GRDB table, error: \(error.localizedDescription)"
                 Current.Log.error(errorMessage)
             }
         }
