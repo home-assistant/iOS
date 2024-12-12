@@ -141,10 +141,10 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func adjustPrecision(serverId: String, entityId: String, stateValue: String) -> String {
-        guard var stateValueFloat = Float(stateValue) else {
+        guard let stateValueFloat = Float(stateValue) else {
             return stateValue
         }
-        if var decimalPlacesForEntityId: Int = {
+        if let decimalPlacesForEntityId: Int = {
             do {
                 return try Current.database.read { db in
                     try AppEntityRegistryListForDisplay
