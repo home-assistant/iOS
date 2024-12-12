@@ -29,5 +29,5 @@ public struct AppEntityRegistryListForDisplay: Codable, FetchableRecord, Persist
     let id: String
     let serverId: String
     let entityId: String
-    let registry: EntityRegistryListForDisplay.Entity
+    public let registry: EntityRegistryListForDisplay.Entity
 }
