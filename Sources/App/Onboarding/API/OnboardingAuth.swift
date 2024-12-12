@@ -58,7 +58,11 @@ class OnboardingAuth {
                 // not super necessary but prevents making a duplicate connection during this session
                 Current.cachedApis[api.server.identifier] = api
             }.then { server in
-                steps(.complete).map { server }
+                server.update { info in
+                    // Disable fallback to internal URL after onboarding
+                    info.connection.alwaysFallbackToInternalURL = false
+                }
+                return steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
                 when(resolved: undoConfigure(api: api)).then { _ in Promise<Server>(error: error) }
             }
@@ -155,6 +159,9 @@ class OnboardingAuth {
         Current.Log.info()
 
         var connectionInfo = ConnectionInfo(discovered: instance, authDetails: authDetails)
+
+        // During onboarding we need at least one URL available, this is disabled at the end of onboarding
+        connectionInfo.alwaysFallbackToInternalURL = true
 
         return tokenExchange.tokenInfo(
             code: code,

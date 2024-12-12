@@ -24,6 +24,21 @@ public struct HASecondaryButtonStyle: ButtonStyle {
     }
 }
 
+public struct HACriticalButtonStyle: ButtonStyle {
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .multilineTextAlignment(.center)
+            .font(.callout.bold())
+            .foregroundColor(.black)
+            .frame(maxWidth: .infinity)
+            .frame(height: 55)
+            .padding()
+            .background(.red.opacity(0.5))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.red, lineWidth: 1))
+    }
+}
+
 public struct HALinkButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -48,5 +63,11 @@ public extension ButtonStyle where Self == HASecondaryButtonStyle {
 public extension ButtonStyle where Self == HALinkButtonStyle {
     static var linkButton: HALinkButtonStyle {
         HALinkButtonStyle()
+    }
+}
+
+public extension ButtonStyle where Self == HACriticalButtonStyle {
+    static var criticalButton: HACriticalButtonStyle {
+        HACriticalButtonStyle()
     }
 }
