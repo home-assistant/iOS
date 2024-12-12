@@ -681,6 +681,8 @@
 		4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */; };
 		428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
+		428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
+		428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
@@ -1989,6 +1991,7 @@
 		4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSceneEntity.swift; sourceTree = "<group>"; };
 		4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAppIntent.swift; sourceTree = "<group>"; };
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
+		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
 		429106862BA9D22500D452F9 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
@@ -3556,6 +3559,7 @@
 			children = (
 				3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */,
 				3E02C0EA2CA7FD2A00102131 /* WidgetSensorsAppIntentTimelineProvider.swift */,
+				428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */,
 			);
 			path = Sensor;
 			sourceTree = "<group>";
@@ -6709,6 +6713,7 @@
 				42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */,
 				403AE9122C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,
+				428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */,
 				420461692C8F29440062E89F /* ControlLight.swift in Sources */,
@@ -6978,6 +6983,7 @@
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
+				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,

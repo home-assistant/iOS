@@ -20,7 +20,7 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
         try await ControlRefreshDelay.wait()
         guard let serverId = configuration.light?.serverId,
               let lightId = configuration.light?.entityId,
-              let state: String = try await ControlEntityProvider(domain: .light).currentState(
+              let state: String = try await ControlEntityProvider(domains: [.light]).currentState(
                   serverId: serverId,
                   entityId: lightId
               ) else {

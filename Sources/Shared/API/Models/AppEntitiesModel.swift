@@ -19,6 +19,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         Domain.light,
         Domain.switch,
         Domain.sensor,
+        Domain.binarySensor,
         Domain.cover,
         Domain.button,
         Domain.inputBoolean,

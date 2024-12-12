@@ -62,7 +62,7 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
 
     private func getLightEntities(matching string: String? = nil) -> [(Server, [IntentLightEntity])] {
         var lightEntities: [(Server, [IntentLightEntity])] = []
-        let entities = ControlEntityProvider(domain: .light).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: [.light]).getEntities(matching: string)
 
         for (server, values) in entities {
             lightEntities.append((server, values.map({ entity in
