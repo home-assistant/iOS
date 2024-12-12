@@ -60,7 +60,7 @@ struct IntentSceneAppEntityQuery: EntityQuery, EntityStringQuery {
 
     private func getSceneEntities(matching string: String? = nil) -> [(Server, [IntentSceneEntity])] {
         var sceneEntities: [(Server, [IntentSceneEntity])] = []
-        let entities = ControlEntityProvider(domain: .scene).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: [.scene]).getEntities(matching: string)
 
         for (server, values) in entities {
             sceneEntities.append((server, values.map({ entity in

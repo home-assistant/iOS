@@ -55,7 +55,7 @@ struct IntentSensorsAppEntityQuery: EntityQuery {
 
     private func getSensorEntities(matching string: String? = nil) -> [(Server, [IntentSensorsAppEntity])] {
         var sensorEntities: [(Server, [IntentSensorsAppEntity])] = []
-        let entities = ControlEntityProvider(domain: .sensor).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: WidgetSensorsConfig.domains).getEntities(matching: string)
 
         for (server, values) in entities {
             sensorEntities.append((server, values.map({ entity in

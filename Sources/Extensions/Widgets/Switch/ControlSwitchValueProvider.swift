@@ -10,7 +10,7 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
         try await ControlRefreshDelay.wait()
         guard let serverId = configuration.entity?.serverId,
               let switchId = configuration.entity?.entityId,
-              let state = try await ControlEntityProvider(domain: .switch).currentState(
+              let state = try await ControlEntityProvider(domains: [.switch]).currentState(
                   serverId: serverId,
                   entityId: switchId
               ) else {

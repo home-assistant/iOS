@@ -135,24 +135,8 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
-    private func suggestions() async -> [Server: [HAAppEntity]] {
-        await withCheckedContinuation { continuation in
-            var entities: [Server: [HAAppEntity]] = [:]
-            for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
-                do {
-                    let sensors: [HAAppEntity] = try Current.database.read { db in
-                        try HAAppEntity
-                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                            .filter(Column(DatabaseTables.AppEntity.domain.rawValue) == Domain.sensor.rawValue)
-                            .fetchAll(db)
-                    }
-                    entities[server] = sensors
-                } catch {
-                    Current.Log.error("Failed to load sensors from database: \(error.localizedDescription)")
-                }
-            }
-            continuation.resume(returning: entities)
-        }
+    private func suggestions() async -> [(Server, [HAAppEntity])] {
+        ControlEntityProvider(domains: WidgetSensorsConfig.domains).getEntities()
     }
 }
 
