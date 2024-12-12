@@ -200,8 +200,14 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .internal
             url = internalURL
         } else {
-            activeURLType = .none
-            url = nil
+//            activeURLType = .none
+//            url = nil
+
+            // Temporarily allow fallback to internal URL if no URL is available
+            // TODO: Remove this fallback as soonas a better communication is available for this security change.
+            activeURLType = .internal
+            url = internalURL
+
             /*
              No URL that can be used in this context is available
              This can happen when only internal URL is set and

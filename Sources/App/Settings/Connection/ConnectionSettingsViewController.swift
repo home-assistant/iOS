@@ -154,13 +154,13 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
                 row.displayValueFor = { [server] _ in
-                    if server.info.connection.internalSSIDs?.isEmpty ?? true,
-                       server.info.connection.internalHardwareAddresses?.isEmpty ?? true,
-                       !server.info.connection.alwaysFallbackToInternalURL {
-                        return "‼️ \(L10n.Settings.ConnectionSection.InternalBaseUrl.RequiresSetup.title)"
-                    } else {
-                        return server.info.connection.address(for: .internal)?.absoluteString ?? "—"
-                    }
+//                    if server.info.connection.internalSSIDs?.isEmpty ?? true,
+//                       server.info.connection.internalHardwareAddresses?.isEmpty ?? true,
+//                       !server.info.connection.alwaysFallbackToInternalURL {
+//                        return "‼️ \(L10n.Settings.ConnectionSection.InternalBaseUrl.RequiresSetup.title)"
+//                    } else {
+                    server.info.connection.address(for: .internal)?.absoluteString ?? "—"
+//                    }
                 }
                 row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
                     ConnectionURLViewController(server: server, urlType: .internal, row: row)
