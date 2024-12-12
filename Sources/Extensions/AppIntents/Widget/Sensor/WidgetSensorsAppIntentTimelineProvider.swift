@@ -139,8 +139,8 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             icon: sensor.icon
         )
     }
-  
-  private func adjustPrecision(serverId: String, entityId: String, stateValue: String) -> String {
+
+    private func adjustPrecision(serverId: String, entityId: String, stateValue: String) -> String {
         guard let stateValueFloat = Float(stateValue) else {
             return stateValue
         }
