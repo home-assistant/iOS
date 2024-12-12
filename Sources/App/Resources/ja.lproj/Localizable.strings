@@ -449,6 +449,11 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.connection_section.activate_swipe_hint" = "サーバーを表示しているときに、3本指で左右にスワイプすることですばやくアクティブ化できます。";
 "settings.connection_section.add_server" = "サーバーの追加";
 "settings.connection_section.all_servers" = "すべてのサーバー";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "クラウド経由で接続する場合、外部 URL は使用されません。クラウドを無効にする場合を除き、構成する必要はありません。";
 "settings.connection_section.connecting_via" = "～経由で接続";
 "settings.connection_section.delete_server.message" = "このサーバーを削除してもよろしいですか？";

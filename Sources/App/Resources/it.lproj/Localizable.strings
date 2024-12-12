@@ -449,6 +449,11 @@
 "settings.connection_section.activate_swipe_hint" = "Attiva rapidamente utilizzando uno scorrimento a tre dita verso sinistra o destra durante la visualizzazione di un server.";
 "settings.connection_section.add_server" = "Aggiungi server";
 "settings.connection_section.all_servers" = "Tutti i server";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Quando ci si connette tramite Cloud, l'URL esterno non verrà utilizzato. Non è necessario configurarne uno a meno che non si desideri disabilitare Cloud.";
 "settings.connection_section.connecting_via" = "Connesso tramite";
 "settings.connection_section.delete_server.message" = "Sei sicuro di voler eliminare questo server?";

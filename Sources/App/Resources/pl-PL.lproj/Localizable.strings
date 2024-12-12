@@ -447,6 +447,11 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.activate_swipe_hint" = "Szybko aktywuj, przesuwając trzema palcami w lewo lub w prawo podczas przeglądania serwera.";
 "settings.connection_section.add_server" = "Dodaj serwer";
 "settings.connection_section.all_servers" = "Wszystkie serwery";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Podczas łączenia się przez chmurę, \"zewnętrzny adres URL\" nie będzie używany. Nie musisz go konfigurować, chyba że chcesz wyłączyć chmurę.";
 "settings.connection_section.connecting_via" = "Połączony przez";
 "settings.connection_section.delete_server.message" = "Czy aby na pewno chcesz usunąć ten serwer?";

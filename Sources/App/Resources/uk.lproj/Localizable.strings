@@ -449,6 +449,11 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.all_servers" = "All Servers";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "При підключенні через хмару зовнішня URL-адреса не використовуватиметься. Вам не потрібно налаштовувати її, якщо ви не будете користуватись віддаленим доступом.";
 "settings.connection_section.connecting_via" = "Підключено через";
 "settings.connection_section.delete_server.message" = "Are you sure you wish to delete this server?";

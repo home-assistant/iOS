@@ -449,6 +449,11 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.connection_section.activate_swipe_hint" = "ഒരു സെർവർ കാണുമ്പോൾ ഇടത്തോട്ടോ വലത്തോട്ടോ മൂന്ന് വിരലുകളുള്ള സ്വൈപ്പ് ഉപയോഗിച്ച് വേഗത്തിൽ സജീവമാക്കുക.";
 "settings.connection_section.add_server" = "സെർവർ ചേർക്കുക";
 "settings.connection_section.all_servers" = "എല്ലാ സെർവറുകളും";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "settings.connection_section.connecting_via" = "Connected via";
 "settings.connection_section.delete_server.message" = "ഈ സെർവർ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?";

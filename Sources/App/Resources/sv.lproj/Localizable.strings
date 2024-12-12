@@ -449,6 +449,11 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings.connection_section.activate_swipe_hint" = "Svep med tre fingrar åt vänster eller höger för att snabbt aktivera när du visar en server.";
 "settings.connection_section.add_server" = "Lägg till server";
 "settings.connection_section.all_servers" = "Alla servrar";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Vid anslutning via moln-tjänst används inte extern URL. Du behöver inte lägga in någon om du inte vill avaktivera moln-tjänst.";
 "settings.connection_section.connecting_via" = "Ansluten via";
 "settings.connection_section.delete_server.message" = "Är du säker på att du vill radera den här servern?";

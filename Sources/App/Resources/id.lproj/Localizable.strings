@@ -449,6 +449,11 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.connection_section.activate_swipe_hint" = "Aktifkan dengan cepat menggunakan sapuan tiga jari ke kiri atau ke kanan saat melihat server.";
 "settings.connection_section.add_server" = "Tambah Server";
 "settings.connection_section.all_servers" = "Semua Server";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Ketika terhubung lewat Cloud, URL Eksternal tidak akan digunakan. Anda tidak perlu mengonfigurasinya kecuali jika ingin menonaktifkan Cloud.";
 "settings.connection_section.connecting_via" = "Terhubung via";
 "settings.connection_section.delete_server.message" = "Yakin ingin menghapus server ini?";

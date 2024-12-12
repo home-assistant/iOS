@@ -449,6 +449,11 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings.connection_section.activate_swipe_hint" = "Activeu-lo ràpidament fent lliscar tres dits cap a l'esquerra o cap a la dreta quan visualitzeu un servidor.";
 "settings.connection_section.add_server" = "Afegir Servidor";
 "settings.connection_section.all_servers" = "Tots els servidors";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Quan es connecti mitjançant el núvol, no s’utilitzarà la URL externa. No cal configurar-ne una tret que vulgueu desactivar el núvol.";
 "settings.connection_section.connecting_via" = "Connectat a través de";
 "settings.connection_section.delete_server.message" = "Segur que voleu eliminar aquest servidor?";
