@@ -449,6 +449,11 @@
 "settings.connection_section.activate_swipe_hint" = "Ative rapidamente usando um deslize de três dedos para a esquerda ou para a direita ao visualizar um servidor.";
 "settings.connection_section.add_server" = "Adicionar servidor";
 "settings.connection_section.all_servers" = "Todos os servidores";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Ao conectar via Cloud, a URL Externa não será usada. Você não precisa configurar uma, a menos que queira desabilitar a Cloud.";
 "settings.connection_section.connecting_via" = "Conectado por";
 "settings.connection_section.delete_server.message" = "Tem certeza de que deseja excluir este servidor?";
@@ -613,7 +618,7 @@
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock e barra de menu";
 "settings_details.general.visibility.options.menu_bar" = "Barra de menu";
 "settings_details.general.visibility.title" = "Mostrar aplicativo em…";
-"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
+"settings_details.legacy_actions.title" = "Ações do iOS (legado)";
 "settings_details.location.background_refresh.disabled" = "Desativado";
 "settings_details.location.background_refresh.enabled" = "Habilitado";
 "settings_details.location.background_refresh.title" = "Atualização em segundo plano";

@@ -447,6 +447,11 @@
 "settings.connection_section.activate_swipe_hint" = "查看服务器时使用三根手指向左或向右滑动即可快速激活。";
 "settings.connection_section.add_server" = "添加服务器";
 "settings.connection_section.all_servers" = "所有服务器";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "通过云连接时，不会使用外部 URL。除非您想禁用云，否则您不需要配置一个。";
 "settings.connection_section.connecting_via" = "链接方式";
 "settings.connection_section.delete_server.message" = "您确实要删除此服务器吗 ？";
@@ -611,7 +616,7 @@
 "settings_details.general.visibility.options.dock_and_menu_bar" = "扩展坞和菜单栏";
 "settings_details.general.visibility.options.menu_bar" = "菜单栏";
 "settings_details.general.visibility.title" = "显示应用...";
-"settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
+"settings_details.legacy_actions.title" = "（旧版）iOS 操作";
 "settings_details.location.background_refresh.disabled" = "已禁用";
 "settings_details.location.background_refresh.enabled" = "已启用";
 "settings_details.location.background_refresh.title" = "后台刷新";

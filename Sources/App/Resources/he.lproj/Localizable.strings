@@ -449,6 +449,11 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "settings.connection_section.activate_swipe_hint" = "הפעל במהירות באמצעות החלקה בשלוש אצבעות שמאלה או ימינה בעת צפייה בשרת.";
 "settings.connection_section.add_server" = "הוסף שרת";
 "settings.connection_section.all_servers" = "כל השרתים";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "settings.connection_section.connecting_via" = "Connected via";
 "settings.connection_section.delete_server.message" = "האם אתה בטוח שברצונך למחוק שרת זה?";

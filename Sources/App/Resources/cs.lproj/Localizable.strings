@@ -449,6 +449,11 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.connection_section.activate_swipe_hint" = "Při prohlížení serveru rychle aktivujte přejetím třemi prsty doleva nebo doprava.";
 "settings.connection_section.add_server" = "Přidat server";
 "settings.connection_section.all_servers" = "Všechny servery";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Při připojování přes Cloud se externí URL nepoužívá. Není nutné ji nastavovat, pokud nechcete používat Cloud.";
 "settings.connection_section.connecting_via" = "Připojeno přes";
 "settings.connection_section.delete_server.message" = "Opravdu chcete smazat tento server?";

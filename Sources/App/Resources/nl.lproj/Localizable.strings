@@ -449,6 +449,11 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.activate_swipe_hint" = "Snel activeren door met drie vingers naar links of rechts te vegen wanneer je een server bekijkt.";
 "settings.connection_section.add_server" = "Server toevoegen";
 "settings.connection_section.all_servers" = "Alle servers";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Als je verbinding maakt via Cloud, wordt de externe URL niet gebruikt. Je hoeft die dan niet in te stellen, tenzij je Cloud wilt uitschakelen.";
 "settings.connection_section.connecting_via" = "Verbonden via";
 "settings.connection_section.delete_server.message" = "Weet je zeker dat je deze server wilt verwijderen?";

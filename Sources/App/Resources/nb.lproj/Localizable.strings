@@ -449,6 +449,11 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings.connection_section.activate_swipe_hint" = "Aktiver raskt ved hjelp av et sveip med tre fingre mot venstre eller høyre når du viser en server.";
 "settings.connection_section.add_server" = "Legg til server";
 "settings.connection_section.all_servers" = "Alle servere";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
+"settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
+"settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
+"settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Når du kobler til via Cloud, brukes ikke den eksterne URL-en. Du trenger ikke å konfigurere en med mindre du vil deaktivere Cloud.";
 "settings.connection_section.connecting_via" = "Tilkoblet via";
 "settings.connection_section.delete_server.message" = "Er du sikker på at du vil slette denne serveren?";
