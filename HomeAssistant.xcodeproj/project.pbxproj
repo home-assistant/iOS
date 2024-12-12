@@ -576,6 +576,9 @@
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */; };
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
+		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
+		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
+		42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		4235075D2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
 		4235075E2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
 		4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */; };
@@ -1855,6 +1858,7 @@
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
 		422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.test.swift; sourceTree = "<group>"; };
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
+		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
 		4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUserDefaults.swift; sourceTree = "<group>"; };
 		423F44EF2C17238200766A99 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
@@ -4929,6 +4933,7 @@
 				4278CB822D01F09400CFAAC9 /* HAGesture.swift */,
 				424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
+				42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */,
 				42F1DA6F2B4EE2E8002729BC /* HAAreaResponse.swift */,
 				426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */,
 				42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */,
@@ -6977,6 +6982,7 @@
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
+				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
@@ -7203,6 +7209,7 @@
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11CFD78227364F450082D557 /* Identifier.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
+				42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
 				1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
 				426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
@@ -7449,6 +7456,7 @@
 				4251AAC12C6CE9C4004CCC9D /* WatchConfig.swift in Sources */,
 				D03D893620E0AEFA00D4F28D /* Environment.swift in Sources */,
 				D0EEF2CE214D8AE200D1D360 /* RealmZone.swift in Sources */,
+				42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				B6A258452232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				1182620424F9C453000795C6 /* HACoreMediaObjectSystem.swift in Sources */,

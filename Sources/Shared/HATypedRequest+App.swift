@@ -114,4 +114,10 @@ public extension HATypedRequest {
             type: .rest(.get, "states")
         ))
     }
+
+    static func fetchEntityRegistryListForDisplay() -> HATypedRequest<EntityRegistryListForDisplay> {
+        HATypedRequest<EntityRegistryListForDisplay>(request: .init(
+            type: .webSocket("config/entity_registry/list_for_display")
+        ))
+    }
 }

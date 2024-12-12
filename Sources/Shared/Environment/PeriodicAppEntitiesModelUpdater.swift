@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import HAKit
 
 public protocol PeriodicAppEntitiesModelUpdaterProtocol {
@@ -26,6 +27,8 @@ final class PeriodicAppEntitiesModelUpdater: PeriodicAppEntitiesModelUpdaterProt
         cancelOnGoingRequests()
         Current.servers.all.forEach { server in
             guard server.info.connection.activeURL() != nil else { return }
+
+            // Cache entities
             let requestToken = Current.api(for: server)?.connection.send(
                 HATypedRequest<[HAEntity]>.fetchStates(),
                 completion: { result in
@@ -38,6 +41,45 @@ final class PeriodicAppEntitiesModelUpdater: PeriodicAppEntitiesModelUpdaterProt
                 }
             )
             requestTokens.append(requestToken)
+
+            // Cache entities registry list for display
+            let requestToken2 = Current.api(for: server)?.connection.send(
+                HATypedRequest<EntityRegistryListForDisplay>.fetchEntityRegistryListForDisplay(),
+                completion: { [weak self] result in
+                    switch result {
+                    case let .success(response):
+                        self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
+                    case let .failure(error):
+                        Current.Log.error("Failed to fetch states: \(error)")
+                    }
+                }
+            )
+            requestTokens.append(requestToken2)
+        }
+    }
+
+    private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) {
+        let entitiesListForDisplay = response.entities.filter({ $0.decimalPlaces != nil || $0.entityCategory != nil })
+            .map { registry in
+                AppEntityRegistryListForDisplay(
+                    id: ServerEntity.uniqueId(serverId: serverId, entityId: registry.entityId),
+                    serverId: serverId,
+                    entityId: registry.entityId,
+                    registry: registry
+                )
+            }
+        do {
+            try Current.database.write { db in
+                try AppEntityRegistryListForDisplay
+                    .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
+                    .deleteAll(db)
+                for record in entitiesListForDisplay {
+                    try record.save(db)
+                }
+            }
+        } catch {
+            Current.Log
+                .error("Failed to save EntityRegistryListForDisplay in database, error: \(error.localizedDescription)")
         }
     }
 
