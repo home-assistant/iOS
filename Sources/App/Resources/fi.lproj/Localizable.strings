@@ -182,6 +182,14 @@
 "close_label" = "Sulje";
 "component.collapsible_view.collapse" = "Pienennä";
 "component.collapsible_view.expand" = "Laajenna";
+"connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
+"connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
+"connection.permission.internal_url.body3" = "You are always in control if your location is shared with Home Assistant. You can change these settings in the companion app setting screen.";
+"connection.permission.internal_url.button_configure" = "Configure local access";
+"connection.permission.internal_url.button_ignore" = "I know what I am doing. Allow local connections without permission access.";
+"connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
+"connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
+"connection.permission.internal_url.title" = "Permission access";
 "continue_label" = "Jatka";
 "copy_label" = "Kopioi";
 "database.problem.delete" = "Poista tietokanta ja sulje sovellus";

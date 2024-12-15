@@ -182,6 +182,14 @@
 "close_label" = "Fermer";
 "component.collapsible_view.collapse" = "Réduire";
 "component.collapsible_view.expand" = "Développer";
+"connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
+"connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
+"connection.permission.internal_url.body3" = "You are always in control if your location is shared with Home Assistant. You can change these settings in the companion app setting screen.";
+"connection.permission.internal_url.button_configure" = "Configure local access";
+"connection.permission.internal_url.button_ignore" = "I know what I am doing. Allow local connections without permission access.";
+"connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
+"connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
+"connection.permission.internal_url.title" = "Permission access";
 "continue_label" = "Continuer";
 "copy_label" = "Copie";
 "database.problem.delete" = "Supprimer la base de données et quitter l'application";
@@ -449,7 +457,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings.connection_section.activate_swipe_hint" = "Activez rapidement à l'aide d'un balayage à trois doigts vers la gauche ou la droite lors de l'affichage d'un serveur.";
 "settings.connection_section.add_server" = "Ajouter un serveur";
 "settings.connection_section.all_servers" = "Tous les serveurs";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
+"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Je suis sûr";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
 "settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
