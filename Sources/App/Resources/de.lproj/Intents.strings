@@ -56,7 +56,7 @@
 "NsbUTz" = "Kamera-Entität";
 "Q2Qp4a" = "Aktion";
 "QCGKRz" = "Welche Sprache?";
-"QVD2lM" = "Servicedaten";
+"QVD2lM" = "Dienst-Daten";
 "QmGpOH" = "Fehler";
 "R2PmrD" = "Möchtest du Unterstützung per Sprache?";
 "RCQAlr" = "Bild von ${cameraID} abrufen";
@@ -68,11 +68,11 @@
 "VP2XpM" = "Ereignisdaten";
 "Wk7m4V" = "Server";
 "X02YQ2" = "${action}";
-"X4A8Cc" = "Servicedomäne";
+"X4A8Cc" = "Dienst-Domain";
 "Xq7UuD" = "Das bereitgestellte Template rendern";
 "YNQXwq" = "Fehler";
 "YxAau3" = "Es gibt ${count} Optionen, die mit ‘${server}’ übereinstimmen.";
-"ZApPxB" = "Servicename";
+"ZApPxB" = "Dienst-Name";
 "ZG5nuL" = "Assist In-App";
 "ZRPVYO" = "Öffnen einer Seite im Frontend";
 "ZT9Mld" = "Ereignisname";
@@ -95,7 +95,7 @@
 "ftQHJw" = "Welcher Server?";
 "fuRWMi" = "Sende ${location} an Home Assistant";
 "g8g7Af" = "Aktion ausführen";
-"gI3mme" = "Welche Servicedaten möchtest du senden?";
+"gI3mme" = "Welche Dienst-Daten möchtest du senden?";
 "gePUyy" = "Standort";
 "glRCfJ" = "Fehler: Home Assistant ist zurzeit nicht verfügbar.";
 "gv7Gg6" = "Standort";
