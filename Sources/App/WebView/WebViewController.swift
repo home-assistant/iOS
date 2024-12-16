@@ -734,23 +734,26 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     func showSwiftMessage(error: Error, duration: SwiftMessages.Duration = .seconds(seconds: 15)) {
         Current.Log.error(error)
-
-        let nsError = error as NSError
-
         var config = swiftMessagesConfig()
         config.duration = duration
 
         let view = MessageView.viewFromNib(layout: .messageView)
-        view.configureTheme(.error)
         view.configureContent(
-            title: error.localizedDescription,
-            body: "\(nsError.domain) \(nsError.code)",
+            title: L10n.Connection.Error.genericTitle,
+            body: error.localizedDescription,
             iconImage: nil,
             iconText: nil,
-            buttonImage: nil,
-            buttonTitle: L10n.okLabel,
-            buttonTapHandler: { _ in
+            buttonImage: MaterialDesignIcons.helpCircleIcon.image(
+                ofSize: .init(width: 35, height: 35),
+                color: Asset.Colors.haPrimary.color
+            ),
+            buttonTitle: nil,
+            buttonTapHandler: { [weak self] _ in
                 SwiftMessages.hide()
+                self?.presentOverlayController(
+                    controller: UIHostingController(rootView: ConnectionErrorDetailsView(error: error)),
+                    animated: true
+                )
             }
         )
         view.titleLabel?.numberOfLines = 0
