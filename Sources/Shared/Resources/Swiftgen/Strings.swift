@@ -755,6 +755,30 @@ public enum L10n {
   }
 
   public enum Connection {
+    public enum Error {
+      /// Uh oh! Looks like we are unable to establish a connection.
+      public static var genericTitle: String { return L10n.tr("Localizable", "connection.error.generic_title") }
+      public enum Details {
+        /// Connection error
+        public static var title: String { return L10n.tr("Localizable", "connection.error.details.title") }
+        public enum Button {
+          /// Ask in Discord
+          public static var discord: String { return L10n.tr("Localizable", "connection.error.details.button.discord") }
+          /// Read documentation
+          public static var doc: String { return L10n.tr("Localizable", "connection.error.details.button.doc") }
+          /// Report issue in Github
+          public static var github: String { return L10n.tr("Localizable", "connection.error.details.button.github") }
+        }
+        public enum Label {
+          /// Code
+          public static var code: String { return L10n.tr("Localizable", "connection.error.details.label.code") }
+          /// Description
+          public static var description: String { return L10n.tr("Localizable", "connection.error.details.label.description") }
+          /// Domain
+          public static var domain: String { return L10n.tr("Localizable", "connection.error.details.label.domain") }
+        }
+      }
+    }
     public enum Permission {
       public enum InternalUrl {
         /// To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').
