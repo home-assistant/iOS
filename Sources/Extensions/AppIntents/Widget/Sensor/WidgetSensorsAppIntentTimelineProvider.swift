@@ -130,7 +130,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             stateValue: stateValue
         )
         let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
-
+        stateValue = capitalizeFirstLetter(stateValue)
         return WidgetSensorsEntry.SensorData(
             id: sensor.id,
             key: sensor.displayString,
@@ -138,6 +138,10 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             unitOfMeasurement: unitOfMeasurement,
             icon: sensor.icon
         )
+    }
+
+    private func capitalizeFirstLetter(_ text: String) -> String {
+        text.prefix(1).uppercased() + text.dropFirst()
     }
 
     private func adjustPrecision(serverId: String, entityId: String, stateValue: String) -> String {
