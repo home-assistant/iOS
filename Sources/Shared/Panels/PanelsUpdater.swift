@@ -1,6 +1,6 @@
 import Foundation
-import PromiseKit
 import GRDB
+import PromiseKit
 
 public protocol PanelsUpdaterProtocol {
     func update()
