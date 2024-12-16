@@ -81,23 +81,21 @@ struct NoActiveURLView: View {
 
     private var header: some View {
         HStack {
-            Group {
-                Button {
-                    Current.Log.info("Tapped settings button in NoActiveURLView")
-                    showSettings()
-                } label: {
-                    Image(systemSymbol: .gear)
-                }
-                Spacer()
-                Button {
-                    Current.Log.info("Dismissed NoActiveURLView")
-                    dismiss()
-                } label: {
-                    Image(systemSymbol: .xmark)
-                }
+            Button {
+                Current.Log.info("Tapped settings button in NoActiveURLView")
+                showSettings()
+            } label: {
+                Image(systemSymbol: .gear)
             }
             .font(.title2)
             .foregroundStyle(Color(uiColor: .secondaryLabel))
+            Spacer()
+            Button {
+                Current.Log.info("Dismissed NoActiveURLView")
+                dismiss()
+            } label: {
+                Image(systemSymbol: .xmark)
+            }
         }
     }
 
