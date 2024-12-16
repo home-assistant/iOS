@@ -1,5 +1,6 @@
 import Foundation
 import PromiseKit
+import GRDB
 
 public protocol PanelsUpdaterProtocol {
     func update()
@@ -36,6 +37,8 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
 
         do {
             try Current.database.write { db in
+                try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == server.identifier.rawValue)
+                    .deleteAll(db)
                 for panel in appPanels {
                     try panel.save(db)
                 }
