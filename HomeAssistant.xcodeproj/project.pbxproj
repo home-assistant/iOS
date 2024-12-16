@@ -604,6 +604,9 @@
 		4251AAC02C6CE376004CCC9D /* MagicItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCF2C639AB700D9C4E2 /* MagicItem.swift */; };
 		4251AAC12C6CE9C4004CCC9D /* WatchConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */; };
 		4251AAC22C6CE9CB004CCC9D /* WatchConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */; };
+		4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
+		4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4C92D103ABB00245021 /* ExternalLink.swift */; };
+		4254C4CD2D103F7B00245021 /* ExternalLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */; };
 		425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573C62B5572AD00145217 /* CarPlayServerListTemplate+Build.swift */; };
 		425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573C82B5572DB00145217 /* CarPlayServerListViewModel.swift */; };
 		425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573CB2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift */; };
@@ -702,6 +705,8 @@
 		429821172CD0DDCD005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
 		429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
+		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
+		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		42A2AB7C2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
 		42A2AB7D2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
@@ -1914,6 +1919,8 @@
 		4251AA9A2C6B9DBE004CCC9D /* MagicItemEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemEditViewModel.swift; sourceTree = "<group>"; };
 		4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.swift; sourceTree = "<group>"; };
 		4251AABA2C6CE1D0004CCC9D /* MagicItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemProvider.swift; sourceTree = "<group>"; };
+		4254C4C92D103ABB00245021 /* ExternalLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLink.swift; sourceTree = "<group>"; };
+		4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkButton.swift; sourceTree = "<group>"; };
 		425573C62B5572AD00145217 /* CarPlayServerListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayServerListTemplate+Build.swift"; sourceTree = "<group>"; };
 		425573C82B5572DB00145217 /* CarPlayServerListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayServerListViewModel.swift; sourceTree = "<group>"; };
 		425573CB2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayAreasZonesTemplate+Build.swift"; sourceTree = "<group>"; };
@@ -2013,6 +2020,8 @@
 		429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewModel.swift; sourceTree = "<group>"; };
 		429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.swift; sourceTree = "<group>"; };
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
+		429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorDetailsView.swift; sourceTree = "<group>"; };
+		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		42A2AB7B2C806D5D00C5608D /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedPush; sourceTree = "<group>"; };
 		42A2AB7F2C80751E00C5608D /* ControlAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssist.swift; sourceTree = "<group>"; };
@@ -3118,6 +3127,7 @@
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				420C57C62D0A6DE700D2D9AC /* NoActiveURLView.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
 				42A47A8B2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift */,
@@ -4127,10 +4137,12 @@
 		42CA28B12B101D9C0093B31A /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */,
 				42FCD0052B9B1D9E0057783F /* CollapsibleView.swift */,
 				42CA28AF2B101D6B0093B31A /* CardView.swift */,
 				42CA28B52B1022680093B31A /* HAButton.swift */,
 				42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */,
+				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -4979,6 +4991,7 @@
 				420F53E92C4E9D43003C8415 /* Widget */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
 				4235075C2CDB756800A19902 /* HAServices.swift */,
+				4254C4C92D103ABB00245021 /* ExternalLink.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -6920,6 +6933,7 @@
 				4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
 				429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */,
+				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
@@ -7278,6 +7292,7 @@
 				491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				11B38EF2275C54A300205C7B /* CallServiceIntentHandler.swift in Sources */,
 				42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */,
+				4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */,
 				42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */,
 				4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */,
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
@@ -7358,6 +7373,7 @@
 			files = (
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
+				4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */,
 				4297ADA82C89C74A00790812 /* GRDB+Initialization.swift in Sources */,
 				1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
@@ -7476,6 +7492,7 @@
 				4214388C2CF5F1D700E2D44D /* ServerFixture.swift in Sources */,
 				11B38EE3275C54A200205C7B /* OpenPageIntentHandler.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
+				429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */,
 				11ADF940267D34B10040A7E3 /* NotificationsCommandManager.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
@@ -7543,6 +7560,7 @@
 				4251AABC2C6CE224004CCC9D /* MagicItemProvider.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
 				11B38EE6275C54A200205C7B /* CallServiceIntentHandler.swift in Sources */,
+				4254C4CD2D103F7B00245021 /* ExternalLinkButton.swift in Sources */,
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */,
