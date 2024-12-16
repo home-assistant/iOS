@@ -100,7 +100,7 @@
 "app_intents.state.toggle" = "Διακόπτης";
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
 "assist.button.listening.title" = "Ακρόαση...";
-"assist.error.pipelines_response" = "Απέτυχε η λήψη των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
+"assist.error.pipelines_response" = "Αποτυχία λήψης των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
 "assist.watch.mic_button.title" = "Tap to ";
 "assist.watch.not_reachable.title" = "Το Assist απαιτεί συνδεσιμότητα iPhone. Το iPhone σας δεν είναι προσβάσιμο αυτή τη στιγμή.";
@@ -239,7 +239,7 @@
 "ha_api.api_error.cant_build_url" = "Δεν είναι δυνατή η δημιουργία URL API";
 "ha_api.api_error.invalid_response" = "Λάβαμε μη έγκυρη απάντηση από το Home Assistant";
 "ha_api.api_error.manager_not_available" = "Το HA API Manager δεν είναι διαθέσιμο";
-"ha_api.api_error.mobile_app_component_not_loaded" = "Το στοιχείο mobile_app δεν έχει φορτωθεί. Προσθέστε το στη διαμόρφωσή σας, κάντε επανεκκίνηση του Home Assistant και δοκιμάστε ξανά.";
+"ha_api.api_error.mobile_app_component_not_loaded" = "Το στοιχείο mobile_app δεν έχει φορτωθεί. Παρακαλώ προσθέστε το στη διαμόρφωσή σας, κάντε επανεκκίνηση του Home Assistant και δοκιμάστε ξανά.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Η έκδοση του Home Assistant ( %@ ) είναι πολύ παλιά, πρέπει να κάνετε αναβάθμιση σε τουλάχιστον έκδοση %@ για να χρησιμοποιήσετε την εφαρμογή.";
 "ha_api.api_error.no_available_api" = "Δεν υπάρχει διαθέσιμο API, ελέγξτε διπλά αν είναι διαθέσιμο το εσωτερικό URL ή το εξωτερικό URL.";
 "ha_api.api_error.not_configured" = "Το HA API δεν έχει διαμορφωθεί";

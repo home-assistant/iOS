@@ -499,7 +499,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings.connection_section.sensor_send_type.title" = "Sensorinformationen gesendet";
 "settings.connection_section.servers" = "Server";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Für den Zugriff auf SSIDs im Hintergrund sind die Standortberechtigung „Immer“ und die Standortgenauigkeit „Vollständig“ erforderlich. Tippe hier, um deine Einstellungen zu ändern.";
-"settings.connection_section.ssid_permission_message" = "Zugriff auf SSIDs im Hintergrund erfordern die Standortberechtigung „Immer“. Tippe hier, um die Einstellung zu ändern.";
+"settings.connection_section.ssid_permission_message" = "Zugriff auf SSIDs im Hintergrund erfordert die Standortberechtigung „Immer“. Tippe hier, um die Einstellung zu ändern.";
 "settings.connection_section.validate_error.edit_url" = "URL bearbeiten";
 "settings.connection_section.validate_error.title" = "Fehler beim Speichern der URL";
 "settings.connection_section.validate_error.use_anyway" = "Trotzdem verwenden";
@@ -518,8 +518,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings.details_section.watch_row_complications.title" = "Komplikationen";
 "settings.details_section.watch_row_configuration.title" = "Konfiguration";
 "settings.developer.annoying_background_notifications.title" = "Lästige Hintergrundinformation";
-"settings.developer.camera_notification.notification.body" = "Beispiel: Benachrichtigung mit Kamera";
-"settings.developer.camera_notification.title" = "Zeige die Kamerabenachrichtigung";
+"settings.developer.camera_notification.notification.body" = "Aufklappen, um die Kamerainhalt-Erweiterung einzublenden";
+"settings.developer.camera_notification.title" = "Kamerainhalt in Benachrichtigung einblenden";
 "settings.developer.copy_realm.alert.message" = "Bereich von %@ nach %@ kopiert";
 "settings.developer.copy_realm.alert.title" = "Kopierter Bereich";
 "settings.developer.copy_realm.title" = "Kopiere AppGroup/store.realm nach Documents/default.realm";
@@ -533,8 +533,8 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings.developer.export_log_files.title" = "Log-Dateien exportieren";
 "settings.developer.footer" = "Verwende diese nicht, wenn du nicht weißt, was du tust!";
 "settings.developer.header" = "Entwickler";
-"settings.developer.map_notification.notification.body" = "Beispiel: Benachrichtigung mit Karte";
-"settings.developer.map_notification.title" = "Zeige die Kartenbenachrichtigung";
+"settings.developer.map_notification.notification.body" = "Aufklappen, um die Karteninhalt-Erweiterung einzublenden";
+"settings.developer.map_notification.title" = "Karteninhalt in Benachrichtigung einblenden";
 "settings.developer.mock_thread_credentials_sharing.title" = "Teilen von Simulator-Thread-Zugangsdaten";
 "settings.developer.show_log_files.title" = "Log-Dateien in Finder anzeigen";
 "settings.developer.sync_watch_context.title" = "Watch-Kontext synchronisieren";
@@ -713,7 +713,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.notifications.sounds.footer" = "Integrierte, System-, oder benutzerdefinierte Sounds können in deinen Mitteilungen verwendet werden.";
 "settings_details.notifications.sounds.import_custom" = "Benutzerdefinierte Töne importieren";
 "settings_details.notifications.sounds.import_file_sharing" = "Importiere Töne aus der iTunes-Dateifreigabe";
-"settings_details.notifications.sounds.import_mac_instructions" = "Füge benutzerdefinierte Sounds zu deinem Sound-Ordner hinzu, um diese in Benachrichtigungen zu verwenden. Nutze deren Dateiname als den Sound-Wert im Dienst-Aufruf.";
+"settings_details.notifications.sounds.import_mac_instructions" = "Füge benutzerdefinierte Töne zu deinem Sounds-Ordner hinzu, um diese in Benachrichtigungen zu verwenden. Nutze deren Dateiname als den Sound-Wert im Dienst-Aufruf.";
 "settings_details.notifications.sounds.import_mac_open_folder" = "Ordner im Finder öffnen";
 "settings_details.notifications.sounds.import_system" = "Systemtöne importieren";
 "settings_details.notifications.sounds.imported" = "Importiert";
