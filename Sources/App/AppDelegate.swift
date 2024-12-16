@@ -401,7 +401,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = Realm.live()
         Action.setupObserver()
         NotificationCategory.setupObserver()
-        WidgetOpenPageIntent.setupObserver()
     }
 
     private func setupMenus() {
