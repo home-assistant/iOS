@@ -8,6 +8,7 @@ public enum GRDBDatabaseTable: String {
     case carPlayConfig
     case clientEvent
     case appEntityRegistryListForDisplay
+    case appPanel
 }
 
 public enum DatabaseTables {
@@ -55,6 +56,16 @@ public enum DatabaseTables {
         case entityId
         case registry
     }
+
+    public enum AppPanel: String {
+        case id
+        case serverId
+        case icon
+        case title
+        case path
+        case component
+        case showInSidebar
+    }
 }
 
 public extension DatabaseQueue {
@@ -94,6 +105,7 @@ public extension DatabaseQueue {
         var shouldCreateCarPlayConfig = false
         var shouldCreateClientEvent = false
         var shouldCreateAppEntityRegistryListForDisplay = false
+        var shouldCreateAppPanel = false
 
         do {
             try database.read { db in
@@ -104,6 +116,8 @@ public extension DatabaseQueue {
                 shouldCreateClientEvent = try !db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
                 shouldCreateAppEntityRegistryListForDisplay = try !db
                     .tableExists(GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue)
+                shouldCreateAppPanel = try !db
+                    .tableExists(GRDBDatabaseTable.appPanel.rawValue)
             }
         } catch {
             let errorMessage = "Failed to check if GRDB tables exist, error: \(error.localizedDescription)"
@@ -207,6 +221,27 @@ public extension DatabaseQueue {
             } catch {
                 let errorMessage =
                     "Failed to create AppEntityRegistryListForDisplay GRDB table, error: \(error.localizedDescription)"
+                Current.Log.error(errorMessage)
+            }
+        }
+
+        // AppPanel
+        if shouldCreateAppPanel {
+            do {
+                try database.write { db in
+                    try db.create(table: GRDBDatabaseTable.appPanel.rawValue) { t in
+                        t.primaryKey(DatabaseTables.AppPanel.id.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppPanel.serverId.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppPanel.icon.rawValue, .text)
+                        t.column(DatabaseTables.AppPanel.title.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppPanel.path.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppPanel.component.rawValue, .text).notNull()
+                        t.column(DatabaseTables.AppPanel.showInSidebar.rawValue, .boolean).notNull()
+                    }
+                }
+            } catch {
+                let errorMessage =
+                    "Failed to create AppPanel GRDB table, error: \(error.localizedDescription)"
                 Current.Log.error(errorMessage)
             }
         }

@@ -8,29 +8,27 @@ public class OpenPageIntentHandler: NSObject, OpenPageIntentHandling, WidgetOpen
 
     public static func panels(completion: @escaping ([IntentPanel]) -> Void) {
         var intentPanels: [IntentPanel] = []
-        var finishedPipesCount = 0
-        for server in Current.servers.all {
-            (
-                Current.diskCache
-                    .value(
-                        for: OpenPageIntentHandler
-                            .cacheKey(serverIdentifier: server.identifier.rawValue)
-                    ) as Promise<HAPanels>
-            ).pipe { result in
-                switch result {
-                case let .fulfilled(panels):
-                    intentPanels.append(contentsOf: panels.allPanels.map { haPanel in
-                        IntentPanel(panel: haPanel, server: server)
-                    })
-                case let .rejected(error):
-                    Current.Log.error("Failed to retrieve HAPanels, error: \(error.localizedDescription)")
-                }
-                finishedPipesCount += 1
+        do {
+            let panelsPerServer = try AppPanel.panelsPerServer()
 
-                if finishedPipesCount == Current.servers.all.count {
-                    completion(intentPanels)
-                }
+            for (server, panels) in panelsPerServer {
+                intentPanels.append(contentsOf: panels.map { appPanel in
+                    IntentPanel(
+                        panel: .init(
+                            icon: appPanel.icon,
+                            title: appPanel.title,
+                            path: appPanel.path,
+                            component: appPanel.component,
+                            showInSidebar: appPanel.showInSidebar
+                        ),
+                        server: server
+                    )
+                })
             }
+            completion(intentPanels)
+        } catch {
+            Current.Log.error("Widget error fetching panels: \(error)")
+            completion([])
         }
     }
 

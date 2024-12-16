@@ -30,7 +30,11 @@ struct PageAppEntityQuery: EntityQuery, EntityStringQuery {
             panels.filter({ panel in
                 identifiers.contains(id(for: panel, server: server))
             }).compactMap { panel in
-                PageAppEntity(id: id(for: panel, server: server), panel: panel, serverId: server.identifier.rawValue)
+                PageAppEntity(
+                    id: id(for: panel, server: server),
+                    panel: toHAPanel(appPanel: panel),
+                    serverId: server.identifier.rawValue
+                )
             }
         }
     }
@@ -42,7 +46,7 @@ struct PageAppEntityQuery: EntityQuery, EntityStringQuery {
             }).map({ panel in
                 PageAppEntity(
                     id: id(for: panel, server: server),
-                    panel: panel,
+                    panel: toHAPanel(appPanel: panel),
                     serverId: server.identifier.rawValue
                 )
             }))
@@ -54,42 +58,30 @@ struct PageAppEntityQuery: EntityQuery, EntityStringQuery {
             .init(.init(stringLiteral: server.info.name), items: panels.map({ panel in
                 PageAppEntity(
                     id: id(for: panel, server: server),
-                    panel: panel,
+                    panel: toHAPanel(appPanel: panel),
                     serverId: server.identifier.rawValue
                 )
             }))
         }))
     }
 
-    func id(for panel: HAPanel, server: Server) -> String {
+    func id(for panel: AppPanel, server: Server) -> String {
         "\(server.identifier.rawValue)-\(panel.path)"
     }
 
-    private func panels() async throws -> [Server: [HAPanel]] {
-        await withCheckedContinuation { continuation in
-            var panelsPerServer: [Server: [HAPanel]] = [:]
-            var finishedPipesCount = 0
-            for server in Current.servers.all {
-                (
-                    Current.diskCache
-                        .value(
-                            for: OpenPageIntentHandler
-                                .cacheKey(serverIdentifier: server.identifier.rawValue)
-                        ) as Promise<HAPanels>
-                ).pipe { result in
-                    switch result {
-                    case let .fulfilled(panels):
-                        panelsPerServer[server] = panels.allPanels
-                    case let .rejected(error):
-                        Current.Log.error("Failed to retrieve HAPanels, error: \(error.localizedDescription)")
-                    }
-                    finishedPipesCount += 1
+    // Since AppPanels came afterwards we need to keep the same
+    // object as before to not break previously created widgets
+    private func toHAPanel(appPanel: AppPanel) -> HAPanel {
+        .init(
+            icon: appPanel.icon,
+            title: appPanel.title,
+            path: appPanel.path,
+            component: appPanel.component,
+            showInSidebar: appPanel.showInSidebar
+        )
+    }
 
-                    if finishedPipesCount == Current.servers.all.count {
-                        continuation.resume(returning: panelsPerServer)
-                    }
-                }
-            }
-        }
+    private func panels() async throws -> [Server: [AppPanel]] {
+        try AppPanel.panelsPerServer()
     }
 }

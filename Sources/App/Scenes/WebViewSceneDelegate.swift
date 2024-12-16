@@ -120,7 +120,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             UIApplication.shared.applicationState == .active
         })
         Current.periodicAppEntitiesUpdater().setup()
-        Current.periodicAppEntitiesUpdater().updateAppEntities()
+        Current.panelsUpdater().update()
     }
 
     func windowScene(
