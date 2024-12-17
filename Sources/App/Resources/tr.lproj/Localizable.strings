@@ -182,6 +182,14 @@
 "close_label" = "Kapat";
 "component.collapsible_view.collapse" = "Daralt";
 "component.collapsible_view.expand" = "Genişlet";
+"connection.error.details.button.discord" = "Ask in Discord";
+"connection.error.details.button.doc" = "Read documentation";
+"connection.error.details.button.github" = "Report issue in Github";
+"connection.error.details.label.code" = "Code";
+"connection.error.details.label.description" = "Description";
+"connection.error.details.label.domain" = "Domain";
+"connection.error.details.title" = "Connection error";
+"connection.error.generic_title" = "Uh oh! Looks like we are unable to establish a connection.";
 "connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
 "connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
 "connection.permission.internal_url.body3" = "You are always in control if your location is shared with Home Assistant. You can change these settings in the companion app setting screen.";
