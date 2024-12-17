@@ -163,7 +163,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
 
     enum FetchAvatarError: Error, CancellableError {
         case missingPerson
-        case missingURL
+        case missingURLForUserEntityPicture
         case alreadySet
         case couldntDecode
 
@@ -189,7 +189,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
             return
         }
 
-        accountSubscription = api.connection.caches.user.subscribe { [weak self] _, user in
+        accountSubscription = api.connection.caches.user.once { [weak self] user in
             guard let self else { return }
             Current.Log.verbose("got user from user \(user)")
             cachedUserName = user.name
@@ -202,7 +202,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                 }
             }
 
-            avatarSubscription = api.connection.caches.states().subscribe { [weak self] _, states in
+            avatarSubscription = api.connection.caches.states().once { [weak self] states in
                 firstly { () -> Guarantee<Set<HAEntity>> in
                     Guarantee.value(states.all)
                 }.map { states throws -> HAEntity in
@@ -215,7 +215,7 @@ final class HomeAssistantAccountRow: Row<AccountCell>, RowType {
                     if let urlString = entity.attributes["entity_picture"] as? String {
                         return urlString
                     } else {
-                        throw FetchAvatarError.missingURL
+                        throw FetchAvatarError.missingURLForUserEntityPicture
                     }
                 }.map { path throws -> URL in
                     guard let url = server.info.connection.activeURL()?.appendingPathComponent(path) else {
