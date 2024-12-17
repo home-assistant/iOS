@@ -103,9 +103,9 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         } catch {
             Current.Log.error("Failed to get cache for App Entities, error: \(error.localizedDescription)")
             Current.clientEventStore.addEvent(ClientEvent(
-                text: "Updated database App Entities for \(server.info.name)",
+                text: "Update database App Entities FAILED for \(server.info.name)",
                 type: .database,
-                payload: ["entities_count": appEntities.count]
+                payload: ["error": error.localizedDescription]
             )).cauterize()
         }
     }

@@ -37,6 +37,13 @@ final class PeriodicAppEntitiesModelUpdater: PeriodicAppEntitiesModelUpdaterProt
                         Current.appEntitiesModel().updateModel(Set(entities), server: server)
                     case let .failure(error):
                         Current.Log.error("Failed to fetch states: \(error)")
+                        Current.clientEventStore.addEvent(.init(
+                            text: "Failed to fetch states on server \(server.info.name)",
+                            type: .networkRequest,
+                            payload: [
+                                "error": error.localizedDescription,
+                            ]
+                        )).cauterize()
                     }
                 }
             )
@@ -50,7 +57,14 @@ final class PeriodicAppEntitiesModelUpdater: PeriodicAppEntitiesModelUpdaterProt
                     case let .success(response):
                         self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
                     case let .failure(error):
-                        Current.Log.error("Failed to fetch states: \(error)")
+                        Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")
+                        Current.clientEventStore.addEvent(.init(
+                            text: "Failed to fetch EntityRegistryListForDisplay on server \(server.info.name)",
+                            type: .networkRequest,
+                            payload: [
+                                "error": error.localizedDescription,
+                            ]
+                        )).cauterize()
                     }
                 }
             )
@@ -80,6 +94,13 @@ final class PeriodicAppEntitiesModelUpdater: PeriodicAppEntitiesModelUpdaterProt
         } catch {
             Current.Log
                 .error("Failed to save EntityRegistryListForDisplay in database, error: \(error.localizedDescription)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to save EntityRegistryListForDisplay in database, error on serverId \(serverId)",
+                type: .database,
+                payload: [
+                    "error": error.localizedDescription,
+                ]
+            )).cauterize()
         }
     }
 
