@@ -184,7 +184,7 @@
 "component.collapsible_view.expand" = "Laajenna";
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Read documentation";
-"connection.error.details.button.github" = "Report issue in Github";
+"connection.error.details.button.github" = "Report issue in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
