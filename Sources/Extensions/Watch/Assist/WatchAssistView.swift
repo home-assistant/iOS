@@ -103,7 +103,7 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var micButton: some View {
         if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
-            HStack(spacing: .zero) {
+            HStack(spacing: Spaces.one) {
                 if viewModel.assistService.deviceReachable {
                     Text(L10n.Assist.Watch.MicButton.title)
                     Image(systemName: "mic.fill")
