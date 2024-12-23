@@ -184,7 +184,7 @@
 "component.collapsible_view.expand" = "Genişlet";
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Belgeleri okuyun";
-"connection.error.details.button.github" = "Report issue in Github";
+"connection.error.details.button.github" = "Report issue in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Açıklama";
 "connection.error.details.label.domain" = "Domain";

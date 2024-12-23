@@ -766,7 +766,7 @@ public enum L10n {
           public static var discord: String { return L10n.tr("Localizable", "connection.error.details.button.discord") }
           /// Read documentation
           public static var doc: String { return L10n.tr("Localizable", "connection.error.details.button.doc") }
-          /// Report issue in Github
+          /// Report issue in GitHub
           public static var github: String { return L10n.tr("Localizable", "connection.error.details.button.github") }
         }
         public enum Label {
