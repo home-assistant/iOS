@@ -6,6 +6,7 @@ struct DownloadManagerView: View {
     @Environment(\.dismiss) private var dismiss
 
     @StateObject var viewModel: DownloadManagerViewModel
+    @State private var shareWrapper: ShareWrapper?
 
     init(viewModel: DownloadManagerViewModel) {
         self._viewModel = .init(wrappedValue: viewModel)
@@ -91,6 +92,12 @@ struct DownloadManagerView: View {
                         .background(Color.asset(Asset.Colors.haPrimary))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .padding()
+                        .onAppear(perform: {
+                            shareWrapper = .init(url: url)
+                        })
+                        .sheet(item: $shareWrapper, onDismiss: {}, content: { data in
+                            ActivityViewController(shareWrapper: data)
+                        })
                 }
             }
         }
@@ -125,4 +132,18 @@ struct DownloadManagerView: View {
     } else {
         Text("Hey there")
     }
+}
+
+struct ShareWrapper: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+struct ActivityViewController: UIViewControllerRepresentable {
+    let shareWrapper: ShareWrapper
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: [shareWrapper.url], applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
