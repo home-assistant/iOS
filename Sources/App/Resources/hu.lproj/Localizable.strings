@@ -184,7 +184,7 @@
 "component.collapsible_view.expand" = "Kibővít";
 "connection.error.details.button.discord" = "Kérdezzen a Discordon";
 "connection.error.details.button.doc" = "Olvassa el a dokumentációt";
-"connection.error.details.button.github" = "Jelentse a problémát a Githubon";
+"connection.error.details.button.github" = "Jelentse a problémát a GitHubon";
 "connection.error.details.label.code" = "Kód";
 "connection.error.details.label.description" = "Leírás";
 "connection.error.details.label.domain" = "Tartomány";

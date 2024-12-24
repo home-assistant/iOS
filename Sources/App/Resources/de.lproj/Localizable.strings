@@ -184,7 +184,7 @@
 "component.collapsible_view.expand" = "Erweitern";
 "connection.error.details.button.discord" = "In Discord fragen";
 "connection.error.details.button.doc" = "Dokumentation lesen";
-"connection.error.details.button.github" = "Problem in Github melden";
+"connection.error.details.button.github" = "Problem in GitHub melden";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Beschreibung";
 "connection.error.details.label.domain" = "Domain";
