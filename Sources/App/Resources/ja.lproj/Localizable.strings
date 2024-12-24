@@ -102,7 +102,7 @@
 "assist.button.listening.title" = "リスニング...";
 "assist.error.pipelines_response" = "アシスト パイプラインを取得できませんでした。パイプラインの構成を確認してください。";
 "assist.pipelines_picker.title" = "アシストパイプライン";
-"assist.watch.mic_button.title" = "タップする";
+"assist.watch.mic_button.title" = "タップして";
 "assist.watch.not_reachable.title" = "アシストには iPhone の接続が必要です。現在、iPhone にアクセスできません。";
 "assist.watch.volume.title" = "音量調節";
 "cancel_label" = "キャンセル";
@@ -184,7 +184,7 @@
 "component.collapsible_view.expand" = "展開";
 "connection.error.details.button.discord" = "Discordで質問する";
 "connection.error.details.button.doc" = "ドキュメントを読む";
-"connection.error.details.button.github" = "Githubで問題を報告する";
+"connection.error.details.button.github" = "GitHubで問題を報告する";
 "connection.error.details.label.code" = "コード";
 "connection.error.details.label.description" = "説明";
 "connection.error.details.label.domain" = "ドメイン";
