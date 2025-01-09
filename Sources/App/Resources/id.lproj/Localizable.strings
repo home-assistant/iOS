@@ -11,7 +11,7 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant di Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant di Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Bangkitkan Rumah Anda";
+"about.logo.tagline" = "Percanggih Rumah Anda";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Tinggalkan ulasan";
 "about.title" = "Tentang";
@@ -184,7 +184,7 @@
 "component.collapsible_view.expand" = "Bentangkan";
 "connection.error.details.button.discord" = "Tanyakan di Discord";
 "connection.error.details.button.doc" = "Baca dokumentasi";
-"connection.error.details.button.github" = "Laporkan masalah di Github";
+"connection.error.details.button.github" = "Laporkan masalah di GitHub";
 "connection.error.details.label.code" = "Kode";
 "connection.error.details.label.description" = "Deskripsi";
 "connection.error.details.label.domain" = "Domain";

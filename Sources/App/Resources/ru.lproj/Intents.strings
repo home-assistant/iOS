@@ -49,7 +49,7 @@
 "Lgymq2" = "Какая служба?";
 "LsEMMg" = "Значок";
 "MTPojJ" = "Как называется событие?";
-"MwEpGz" = "Done";
+"MwEpGz" = "Готово";
 "N9iJpK" = "Получить изображение с камеры";
 "NUF0Pa" = "${result}";
 "NdG9Jz" = "Интерпретирует шаблон Home Assistant";
@@ -84,17 +84,17 @@
 "cLmTme" = "Действие";
 "cuflz3" = "Ошибка: Home Assistant в настоящее время недоступен";
 "d65H6l" = "Assist с \"${text}\"";
-"dFHPYK" = "Performed ${action}";
+"dFHPYK" = "Выполнено ${action}";
 "eObn2i" = "Страница";
-"f1KX0Q" = "View and run actions";
+"f1KX0Q" = "Посмотреть и запустить действия";
 "fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
-"fkQXDn" = "There are ${count} options matching ‘${action}’.";
+"fkQXDn" = "Есть ${count} вариантов, соответствующих \"${action}\".";
 "flUgtx" = "Какое действие?";
 "fnz838" = "Датчики обновлены";
 "foI0Fv" = "Ошибка: Home Assistant в настоящее время недоступен";
 "ftQHJw" = "Какой сервер?";
 "fuRWMi" = "Отправить ${location} в Home Assistant";
-"g8g7Af" = "Perform the action";
+"g8g7Af" = "Выполнить действие";
 "gI3mme" = "Какие данные службы вы хотите отправить?";
 "gePUyy" = "Местоположение";
 "glRCfJ" = "Ошибка: Home Assistant в настоящее время недоступен";
@@ -108,7 +108,7 @@
 "hsrlTY" = "Получить один стоп-кадр с камеры";
 "iMvUhs" = "Открыть страницу";
 "jWGtvO" = "Есть ${count} вариантов, соответствующих '${server} '.";
-"jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
+"jtqxOg" = "Подтвердите, вы имели в виду \"${action}\"?";
 "kGB23u" = "Выполнить действие";
 "kPqT8T" = "Pipeline";
 "l2coEc" = "Какой сервер?";
@@ -121,7 +121,7 @@
 "mi6B62" = "Какие данные вы хотите отправить вместе с событием?";
 "ni0OSe" = "Просто, чтобы подтвердить, вы хотели ‘${server}’?";
 "ns9RRU" = "Открыть страницу";
-"nzqmFA" = "Done";
+"nzqmFA" = "Готово";
 "oHn0vD" = "Страницы";
 "oIWFyR" = "Сбой: ${error}";
 "onq5yE" = "Не удалось вызвать службу из-за ошибки: ${error}";
@@ -131,7 +131,7 @@
 "qayMH6" = "Вызвать службу";
 "qzje4k" = "Сбой: ${error}";
 "r32M7N" = "Сбой: ${error}";
-"r6LXFe" = "Failed";
+"r6LXFe" = "Сбой";
 "rFSNpu" = "Готово";
 "rOlW1x" = "Какое местоположение вы хотите отправить?";
 "rU3vhT" = "Идентификатор сервера";
@@ -149,7 +149,7 @@
 "wfPQQQ" = "Запуск события в шину событий Home Assistant";
 "xN51te" = "Результат";
 "xfXG6b" = "Какой сервер?";
-"xhwpj4" = "Done";
+"xhwpj4" = "Готово";
 "ypnPyU" = "Выполнить ${action}";
 "yyjTxO" = "Ошибка";
 "zIiPij" = "${result}";
