@@ -102,7 +102,7 @@
 "assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
-"assist.watch.mic_button.title" = "Tap to ";
+"assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
 "assist.watch.volume.title" = "Volume control";
 "cancel_label" = "Cancel";
@@ -229,7 +229,7 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
 "gestures.3_fingers_swipe_up.title" = "3 👆 swipe up";
-"gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.footer.title" = "Customise gestures to be used on the frontend.";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
 "gestures.swipe_left.title" = "Swipe Left";
@@ -258,10 +258,10 @@
 "help_label" = "Help";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
-"improv.connection_state.autorization_required" = "Please authorize your device to continue";
+"improv.connection_state.autorization_required" = "Please authorise your device to continue";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";
 "improv.error_state.invalid_rpc_packet" = "Invalid RPC Packet";
-"improv.error_state.not_authorized" = "Not authorized";
+"improv.error_state.not_authorized" = "Not authorised";
 "improv.error_state.unable_to_connect" = "Unable to connect";
 "improv.error_state.unknown" = "Unknown error, please try again.";
 "improv.error_state.unknown_command" = "Unknown command";

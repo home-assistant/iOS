@@ -184,7 +184,7 @@
 "component.collapsible_view.expand" = "展開";
 "connection.error.details.button.discord" = "於 Discord 上詢問";
 "connection.error.details.button.doc" = "閱讀文件";
-"connection.error.details.button.github" = "於 Github 回報問題";
+"connection.error.details.button.github" = "於 GitHub 回報問題";
 "connection.error.details.label.code" = "錯誤碼";
 "connection.error.details.label.description" = "說明";
 "connection.error.details.label.domain" = "實體類群";

@@ -102,7 +102,7 @@
 "assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
-"assist.watch.mic_button.title" = "Tap to ";
+"assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
 "assist.watch.volume.title" = "음량 조절";
 "cancel_label" = "취소";

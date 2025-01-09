@@ -191,7 +191,7 @@
 "component::schedule::entity_component::_::state_attributes::editable::state::true" = "כן";
 "component::script::entity_component::_::state::off" = "כבוי";
 "component::script::entity_component::_::state::on" = "מופעל";
-"component::script::title" = "סקריפט";
+"component::script::title" = "תסריט";
 "component::sensibo::entity::climate::climate_device::state_attributes::swing_mode::state::stopped" = "כבוי";
 "component::sensibo::entity::select::horizontalswing::state::stopped" = "כבוי";
 "component::sensibo::entity::select::light::state::off" = "כבוי";

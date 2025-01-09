@@ -62,7 +62,7 @@
 "component::demo::entity::climate::ubercool::state_attributes::swing_mode::state::off" = "Aus";
 "component::demo::entity::sensor::thermostat_mode::state::away" = "Abwesend";
 "component::device_tracker::entity_component::_::state::home" = "Zuhause";
-"component::device_tracker::entity_component::_::state::not_home" = "Außerhalb";
+"component::device_tracker::entity_component::_::state::not_home" = "Abwesend";
 "component::ecoforest::entity::sensor::status::state::off" = "Aus";
 "component::ecoforest::entity::sensor::status::state::on" = "Ein";
 "component::ecoforest::entity::sensor::status::state::stand_by" = "Standby";

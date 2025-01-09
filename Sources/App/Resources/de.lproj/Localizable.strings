@@ -16,7 +16,7 @@
 "about.review.title" = "Bewerte diese App";
 "about.title" = "Über";
 "about.website.title" = "Webseite";
-"actions_configurator.action.create_automation" = "Automatisierung erstellen";
+"actions_configurator.action.create_automation" = "Automation erstellen";
 "actions_configurator.action.footer" = "Definiere, was ausgeführt wird, wenn eine Aktion ausgeführt wird. Alternativ kannst du den folgenden Beispielauslöser manuell verwenden.";
 "actions_configurator.action.title" = "Ausführen";
 "actions_configurator.rows.background_color.title" = "Hintergrundfarbe";
@@ -32,7 +32,7 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Du kannst diese auch ändern, indem du die Szenenattribute anpasst: %@";
 "actions_configurator.visual_section.server_defined" = "Das Aussehen dieser Aktion wird durch die Server Konfiguration gesteuert.";
 "addButtonLabel" = "Hinzufügen";
-"alerts.action_automation_editor.unavailable.body" = "Um automatisch eine Automatisierung für eine Aktion zu erstellen, aktualisiere bitte dein Home Assistant auf mindestens Version 2024.2";
+"alerts.action_automation_editor.unavailable.body" = "Um automatisch eine Automation für eine Aktion zu erstellen, aktualisiere bitte deinen Home Assistant auf mindestens Version 2024.2";
 "alerts.action_automation_editor.unavailable.title" = "Bitte Home Assistant aktualisieren";
 "alerts.alert.ok" = "OK";
 "alerts.auth_required.message" = "Der Server hat deine Anmeldeinformationen abgelehnt und du musst dich erneut anmelden, um fortzufahren.";
@@ -182,9 +182,9 @@
 "close_label" = "Schließen";
 "component.collapsible_view.collapse" = "Reduzieren";
 "component.collapsible_view.expand" = "Erweitern";
-"connection.error.details.button.discord" = "In Discord fragen";
+"connection.error.details.button.discord" = "Auf Discord fragen";
 "connection.error.details.button.doc" = "Dokumentation lesen";
-"connection.error.details.button.github" = "Problem in Github melden";
+"connection.error.details.button.github" = "Problem auf GitHub melden";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Beschreibung";
 "connection.error.details.label.domain" = "Domain";
@@ -207,13 +207,13 @@
 "debug_section_label" = "Debuggen";
 "delete" = "Löschen";
 "done_label" = "Erledigt";
-"download_manager.downloading.title" = "Wird herunterladen";
+"download_manager.downloading.title" = "Wird heruntergeladen";
 "download_manager.failed.title" = "Herunterladen der Datei fehlgeschlagen, Fehler: %@";
 "download_manager.finished.title" = "Download abgeschlossen";
 "error_label" = "Fehler";
 "extensions.map.location.new" = "Neuer Standort";
 "extensions.map.location.original" = "Ursprünglicher Standort";
-"extensions.map.payload_missing_homeassistant.message" = "Payload enthielt kein Home Assistant Wörterbuch!";
+"extensions.map.payload_missing_homeassistant.message" = "Payload enthielt kein Home Assistant Dictionary!";
 "extensions.map.value_missing_or_uncastable.latitude.message" = "Breitengrad wurde nicht gefunden oder konnte nicht in eine Zeichenfolge (String) übersetzt werden!";
 "extensions.map.value_missing_or_uncastable.longitude.message" = "Längengrad wurde nicht gefunden oder konnte nicht in eine Zeichenfolge (String) übersetzt werden!";
 "extensions.notification_content.error.no_entity_id" = "Keine entity_id in der Payload gefunden!";
@@ -308,8 +308,8 @@
 "magic_item.item_type.script.list.title" = "Skripte";
 "magic_item.item_type.selection.list.title" = "Eintragsart";
 "magic_item.name.title" = "Name";
-"magic_item.name_and_icon.footer" = "Bearbeite den Skriptnamen und das Symbol im Frontend unter Einstellungen > Automatisierungen & Szenen > Skripte.";
-"magic_item.name_and_icon.footer.scenes" = "Bearbeite den Szenennamen und das Symbol im Frontend unter Einstellungen > Automatisierungen & Szenen > Szenen.";
+"magic_item.name_and_icon.footer" = "Bearbeite den Skriptnamen und das Symbol im Frontend unter Einstellungen > Automationen & Szenen > Skripte.";
+"magic_item.name_and_icon.footer.scenes" = "Bearbeite den Szenennamen und das Symbol im Frontend unter Einstellungen > Automationen & Szenen > Szenen.";
 "magic_item.require_confirmation.title" = "Bestätigung verlangen";
 "magic_item.text_color.title" = "Textfarbe";
 "magic_item.use_custom_colors.title" = "Benutzerdefinierte Farben verwenden";
@@ -323,7 +323,7 @@
 "menu.status_item.toggle" = "Schalte %1$@ um";
 "menu.view.reload_page" = "Seite neu laden";
 "navBar.close" = "Schließen";
-"network.error.no_active_url.body" = "Öffne die Einstellungen der Companion-App und überprüfen deine Servereinstellungen. Die interne URL wird nur verwendet, wenn ein lokales Netzwerk definiert ist (SSID). Wenn du ein VPN verwendest, versuche, deine externe URL auf den gleichen Wert wie die interne URL einzustellen.";
+"network.error.no_active_url.body" = "Öffne die Einstellungen der Companion-App und überprüfe deine Servereinstellungen. Die interne URL wird nur verwendet, wenn ein lokales Netzwerk definiert ist (SSID). Wenn du ein VPN verwendest, versuche, deine externe URL auf den gleichen Wert wie die interne URL einzustellen.";
 "network.error.no_active_url.title" = "Keine URL zum Laden verfügbar";
 "nfc.detail.copy" = "In die Zwischenablage kopieren";
 "nfc.detail.duplicate" = "Duplikat erstellen";
@@ -419,15 +419,15 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.allow" = "Erlauben";
 "onboarding.permissions.allowed" = "Beendet";
 "onboarding.permissions.change_later_note" = "Diese Berechtigung kann später in den Einstellungen geändert werden";
-"onboarding.permissions.focus.bullet.automations" = "Fokusbasierte Automatisierungen";
+"onboarding.permissions.focus.bullet.automations" = "Fokusbasierte Automationen";
 "onboarding.permissions.focus.bullet.instant" = "Sofortige Aktualisierung, wenn sich der Status ändert";
 "onboarding.permissions.focus.description" = "Erlauben, dass der verwendete Fokusmodus an Home Assistant gesendet werden darf";
 "onboarding.permissions.focus.grant_description" = "Erteile die Fokusberechtigung, um Sensoren für deinen aktuellen Fokus-Status zu erstellen, auch bekannt als „Nicht stören“.";
 "onboarding.permissions.focus.title" = "Fokus";
-"onboarding.permissions.location.bullet.automations" = "Anwesenheitsbasierte Automatisierungen";
+"onboarding.permissions.location.bullet.automations" = "Anwesenheitsbasierte Automationen";
 "onboarding.permissions.location.bullet.history" = "Standortverlauf verfolgen";
 "onboarding.permissions.location.bullet.wifi" = "Interne URL zu Hause";
-"onboarding.permissions.location.description" = "Aktiviere die Standortdienste, um die automatische Anwesenheitserkennung für Automatisierungen zu ermöglichen.";
+"onboarding.permissions.location.description" = "Aktiviere die Standortdienste, um die automatische Anwesenheitserkennung für Automationen zu ermöglichen.";
 "onboarding.permissions.location.grant_description" = "Erteile die Standortberechtigung, um einen device_tracker für dein Gerät zu erstellen.";
 "onboarding.permissions.location.title" = "Standort";
 "onboarding.permissions.motion.bullet.activity" = "Sensor für aktuellen Aktivitätstyp";
@@ -448,7 +448,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.scanning.title" = "Server werden gesucht";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
-Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
+Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
 "onboarding.welcome.learn_more" = "Mehr erfahren";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";
@@ -500,7 +500,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings.connection_section.location_send_type.setting.zone_only" = "Nur Zonennamen";
 "settings.connection_section.location_send_type.title" = "Standort senden";
 "settings.connection_section.logged_in_as" = "Angemeldet als";
-"settings.connection_section.no_base_url.title" = "Kein URL";
+"settings.connection_section.no_base_url.title" = "Keine URL";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "settings.connection_section.sensor_send_type.setting.all" = "Alle";
 "settings.connection_section.sensor_send_type.setting.none" = "Keine";
@@ -595,7 +595,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "settings_details.general.app_icon.enum.electric_violet" = "Elektrisches Violett";
 "settings_details.general.app_icon.enum.fire_orange" = "Feuer-Orange";
 "settings_details.general.app_icon.enum.green" = "Grün";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blau";
+"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blue";
 "settings_details.general.app_icon.enum.old_beta" = "Alte Beta";
 "settings_details.general.app_icon.enum.old_dev" = "Alte Dev";
 "settings_details.general.app_icon.enum.old_release" = "Altes Release";
@@ -1077,7 +1077,7 @@ Home Assistant ist eine kostenlose und Open-Source Hausautomatisierungssoftware 
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Template unterer Text";
 "widgets.details.title" = "Details";
-"widgets.gauge.description" = "Numerische Zustände vom Home Assistant in einer Analoganzeige darstellen";
+"widgets.gauge.description" = "Numerische Zustände von Home Assistant in einer Analoganzeige darstellen";
 "widgets.gauge.parameters.action" = "Aktion";
 "widgets.gauge.parameters.gauge_type" = "Analoganzeigentyp";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapazität";
