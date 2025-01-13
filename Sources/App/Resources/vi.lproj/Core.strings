@@ -37,7 +37,7 @@
 "component::binary_sensor::entity_component::presence::state::on" = "Ở nhà";
 "component::binary_sensor::entity_component::window::state::off" = "Đóng";
 "component::binary_sensor::entity_component::window::state::on" = "Mở";
-"component::button::title" = "Button";
+"component::button::title" = "Nút bấm";
 "component::calendar::entity_component::_::state::off" = "Tắt";
 "component::calendar::entity_component::_::state::on" = "Bật";
 "component::calendar::entity_component::_::state_attributes::all_day::state::false" = "Không";
