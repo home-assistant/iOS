@@ -560,6 +560,8 @@
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
+		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
+		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		4214388C2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		4214388D2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
@@ -1858,6 +1860,8 @@
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
 		420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayEntitiesListTemplate+Build.swift"; sourceTree = "<group>"; };
+		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
+		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistViewTintedWrapper.swift; sourceTree = "<group>"; };
 		421B1C152BD65246001ED18C /* WidgetsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsSettingsView.swift; sourceTree = "<group>"; };
 		421B1C172BD6524E001ED18C /* WidgetsSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -3702,6 +3706,14 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
+		4211551F2D3525E800A71630 /* AppIcon */ = {
+			isa = PBXGroup;
+			children = (
+				421155202D3525F500A71630 /* AppIconSelectorView.swift */,
+			);
+			path = AppIcon;
+			sourceTree = "<group>";
+		};
 		421B1C142BD65238001ED18C /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -4725,6 +4737,7 @@
 		B661FB6B226BCC8500E541DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				4211551F2D3525E800A71630 /* AppIcon */,
 				4278CB862D01F0BE00CFAAC9 /* Gestures */,
 				42EFFAEA2C8882CC002F10FC /* CarPlay */,
 				4251AAC32C6CF5D6004CCC9D /* MagicItem */,
@@ -4737,6 +4750,7 @@
 				11AD2E542528FE1300FBC437 /* Notifications */,
 				421B1C142BD65238001ED18C /* Widgets */,
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
+				421155222D354F3F00A71630 /* AppIcon.swift */,
 				B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */,
 				B661FB69226BBDA900E541DD /* SettingsViewController.swift */,
 				B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */,
@@ -6838,6 +6852,7 @@
 				420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */,
+				421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */,
 				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
@@ -6860,6 +6875,7 @@
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
+				421155232D354F3F00A71630 /* AppIcon.swift in Sources */,
 				42FCD0142B9B29740057783F /* ThreadCredentialDetailsView.swift in Sources */,
 				42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */,
 				42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */,
