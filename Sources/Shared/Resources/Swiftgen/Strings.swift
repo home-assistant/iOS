@@ -2121,6 +2121,10 @@ public enum L10n {
       public enum AppIcon {
         /// App Icon
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.app_icon.title") }
+        public enum CurrentSelected {
+          /// - Selected
+          public static var title: String { return L10n.tr("Localizable", "settings_details.general.app_icon.current_selected.title") }
+        }
         public enum Enum {
           /// Beta
           public static var beta: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.beta") }
@@ -2176,6 +2180,10 @@ public enum L10n {
           public static var release: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.release") }
           /// White
           public static var white: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.white") }
+        }
+        public enum Explanation {
+          /// Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.
+          public static var title: String { return L10n.tr("Localizable", "settings_details.general.app_icon.explanation.title") }
         }
       }
       public enum DeviceName {

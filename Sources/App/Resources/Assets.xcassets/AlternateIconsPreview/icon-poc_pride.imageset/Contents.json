@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pride.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

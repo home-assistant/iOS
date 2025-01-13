@@ -68,44 +68,13 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 +++ Section {
                     $0.hidden = .isCatalyst
                 }
-
-                <<< PushRow<AppIcon>("appIcon") {
+                <<< SettingsButtonRow {
                     $0.hidden = .isCatalyst
                     $0.title = L10n.SettingsDetails.General.AppIcon.title
-                    $0.selectorTitle = $0.title
-                    $0.options = AppIcon.allCases.sorted { a, b in
-                        switch (a.isDefault, b.isDefault) {
-                        case (true, false): return true
-                        case (false, true): return false
-                        default:
-                            // swift sort isn't stable
-                            return AppIcon.allCases.firstIndex(of: a)! < AppIcon.allCases.firstIndex(of: b)!
-                        }
-                    }
-                    $0.value = AppIcon.Release
-                    if let altIconName = UIApplication.shared.alternateIconName,
-                       let icon = AppIcon(rawValue: altIconName) {
-                        $0.value = icon
-                    }
-                    $0.displayValueFor = { $0?.title }
-                }.onPresent { [weak self] _, to in
-                    to.selectableRowCellUpdate = { cell, row in
-                        cell.height = { 72 }
-                        cell.imageView?.layer.masksToBounds = true
-                        cell.imageView?.layer.cornerRadius = 12.63
-                        guard let newIcon = row.selectableValue else { return }
-                        cell.imageView?.image = self?.resizeImage(
-                            image: UIImage(named: newIcon.rawValue),
-                            newSize: .init(width: 64, height: 64)
-                        )
-                        cell.textLabel?.text = newIcon.title
-                    }
-                }.onChange { row in
-                    let iconName = row.value?.iconName
-                    UIApplication.shared.setAlternateIconName(iconName) { error in
-                        Current.Log
-                            .info("set icon to \(String(describing: iconName)) error: \(String(describing: error))")
-                    }
+                    $0.icon = .squareRoundedIcon
+                    $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                        AppIconSelectorView.controller
+                    }, onDismiss: nil)
                 }
 
                 +++ Section {
@@ -912,106 +881,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 UIApplication.shared.openSettings(destination: .backgroundRefresh)
                 row.deselect(animated: true)
             }
-        }
-    }
-}
-
-enum AppIcon: String, CaseIterable {
-    case Release = "release"
-    case Beta = "beta"
-    case Dev = "dev"
-    case Black = "black"
-    case Blue = "blue"
-    case CaribbeanGreen = "caribbean-green"
-    case CornflowerBlue = "cornflower-blue"
-    case Crimson = "crimson"
-    case ElectricViolet = "electric-violet"
-    case FireOrange = "fire-orange"
-    case Green = "green"
-    case Classic = "classic"
-    case OldBeta = "old-beta"
-    case OldDev = "old-dev"
-    case OldRelease = "old-release"
-    case Orange = "orange"
-    case Pink = "pink"
-    case Purple = "purple"
-    case Red = "red"
-    case White = "white"
-    case BiPride = "bi_pride"
-    case POCPride = "POC_pride"
-    case NonBinary = "non-binary"
-    case Rainbow = "rainbow"
-    case Trans = "trans"
-
-    var title: String {
-        switch self {
-        case .Release:
-            return L10n.SettingsDetails.General.AppIcon.Enum.release
-        case .Beta:
-            return L10n.SettingsDetails.General.AppIcon.Enum.beta
-        case .Dev:
-            return L10n.SettingsDetails.General.AppIcon.Enum.dev
-        case .Black:
-            return L10n.SettingsDetails.General.AppIcon.Enum.black
-        case .Blue:
-            return L10n.SettingsDetails.General.AppIcon.Enum.blue
-        case .CaribbeanGreen:
-            return L10n.SettingsDetails.General.AppIcon.Enum.caribbeanGreen
-        case .CornflowerBlue:
-            return L10n.SettingsDetails.General.AppIcon.Enum.cornflowerBlue
-        case .Crimson:
-            return L10n.SettingsDetails.General.AppIcon.Enum.crimson
-        case .ElectricViolet:
-            return L10n.SettingsDetails.General.AppIcon.Enum.electricViolet
-        case .FireOrange:
-            return L10n.SettingsDetails.General.AppIcon.Enum.fireOrange
-        case .Green:
-            return L10n.SettingsDetails.General.AppIcon.Enum.green
-        case .Classic:
-            return L10n.SettingsDetails.General.AppIcon.Enum.classic
-        case .OldBeta:
-            return L10n.SettingsDetails.General.AppIcon.Enum.oldBeta
-        case .OldDev:
-            return L10n.SettingsDetails.General.AppIcon.Enum.oldDev
-        case .OldRelease:
-            return L10n.SettingsDetails.General.AppIcon.Enum.oldRelease
-        case .Orange:
-            return L10n.SettingsDetails.General.AppIcon.Enum.orange
-        case .Pink:
-            return L10n.SettingsDetails.General.AppIcon.Enum.pink
-        case .Purple:
-            return L10n.SettingsDetails.General.AppIcon.Enum.purple
-        case .Red:
-            return L10n.SettingsDetails.General.AppIcon.Enum.red
-        case .White:
-            return L10n.SettingsDetails.General.AppIcon.Enum.white
-        case .BiPride:
-            return L10n.SettingsDetails.General.AppIcon.Enum.prideBi
-        case .POCPride:
-            return L10n.SettingsDetails.General.AppIcon.Enum.pridePoc
-        case .Rainbow:
-            return L10n.SettingsDetails.General.AppIcon.Enum.prideRainbow
-        case .Trans:
-            return L10n.SettingsDetails.General.AppIcon.Enum.prideTrans
-        case .NonBinary:
-            return L10n.SettingsDetails.General.AppIcon.Enum.prideNonBinary
-        }
-    }
-
-    var isDefault: Bool {
-        switch Current.appConfiguration {
-        case .debug where self == .Dev: return true
-        case .beta where self == .Beta: return true
-        case .release where self == .Release: return true
-        default: return false
-        }
-    }
-
-    var iconName: String? {
-        if isDefault {
-            return nil
-        } else {
-            return rawValue
         }
     }
 }
