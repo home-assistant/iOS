@@ -306,6 +306,7 @@
 "magic_item.item_type.action.list.title" = "iOS Actions";
 "magic_item.item_type.action.list.warning.title" = "We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.";
 "magic_item.item_type.entity.list.title" = "Entity";
+"magic_item.item_type.app.list.title" = "App";
 "magic_item.item_type.scene.list.title" = "Scenes";
 "magic_item.item_type.script.list.title" = "Scripts";
 "magic_item.item_type.selection.list.title" = "Item type";

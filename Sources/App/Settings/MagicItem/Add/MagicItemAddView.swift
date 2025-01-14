@@ -5,6 +5,7 @@ struct MagicItemAddView: View {
     enum Context {
         case watch
         case carPlay
+        case widget
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -17,16 +18,22 @@ struct MagicItemAddView: View {
         NavigationView {
             VStack {
                 Picker(L10n.MagicItem.ItemType.Selection.List.title, selection: $viewModel.selectedItemType) {
-                    if context == .carPlay {
+                    if context == .widget {
+                        Text(L10n.MagicItem.ItemType.App.List.title)
+                            .tag(MagicItemAddType.app)
+                    }
+                    if [.carPlay, .widget].contains(context) {
                         Text(L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
                     }
-                    Text(L10n.MagicItem.ItemType.Script.List.title)
-                        .tag(MagicItemAddType.scripts)
-                    Text(L10n.MagicItem.ItemType.Scene.List.title)
-                        .tag(MagicItemAddType.scenes)
-                    Text(L10n.MagicItem.ItemType.Action.List.title)
-                        .tag(MagicItemAddType.actions)
+                    if context != .widget {
+                        Text(L10n.MagicItem.ItemType.Script.List.title)
+                            .tag(MagicItemAddType.scripts)
+                        Text(L10n.MagicItem.ItemType.Scene.List.title)
+                            .tag(MagicItemAddType.scenes)
+                        Text(L10n.MagicItem.ItemType.Action.List.title)
+                            .tag(MagicItemAddType.actions)
+                    }
                 }
                 .pickerStyle(.segmented)
                 .padding()
@@ -40,11 +47,14 @@ struct MagicItemAddView: View {
                         scenesPerServerList
                     case .entities:
                         entitiesPerServerList
+                    case .app:
+                        appFeaturesList
                     }
                 }
                 .searchable(text: $viewModel.searchText)
             }
             .onAppear {
+                autoSelectItemType()
                 viewModel.loadContent()
             }
             .toolbar(content: {
@@ -57,6 +67,27 @@ struct MagicItemAddView: View {
             })
         }
         .preferredColorScheme(.dark)
+    }
+
+    private func autoSelectItemType() {
+        switch context {
+        case .watch:
+            viewModel.selectedItemType = .scripts
+        case .carPlay:
+            viewModel.selectedItemType = .entities
+        case .widget:
+            viewModel.selectedItemType = .app
+        }
+    }
+
+    private var appFeaturesList: some View {
+        Section {
+            Button(action: {
+
+            }) {
+                Text("Open camera")
+            }
+        }
     }
 
     @ViewBuilder
