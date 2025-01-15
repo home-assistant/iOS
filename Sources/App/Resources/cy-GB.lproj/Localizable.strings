@@ -584,6 +584,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.actions.title" = "Gweithrediadau";
 "settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Show in Watch";
+"settings_details.general.app_icon.current_selected.title" = "- Selected";
 "settings_details.general.app_icon.enum.beta" = "Fersiwn beta";
 "settings_details.general.app_icon.enum.black" = "Du";
 "settings_details.general.app_icon.enum.blue" = "Glas";
@@ -611,6 +612,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.red" = "Coch";
 "settings_details.general.app_icon.enum.release" = "Wedi'i cyhoeddi";
 "settings_details.general.app_icon.enum.white" = "Gwyn";
+"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Eicon Ap";
 "settings_details.general.device_name.title" = "Enw'r Dyfais";
 "settings_details.general.full_screen.title" = "Full Screen";

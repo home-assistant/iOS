@@ -584,6 +584,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.actions.title" = "Действия";
 "settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Показване в Watch";
+"settings_details.general.app_icon.current_selected.title" = "- Selected";
 "settings_details.general.app_icon.enum.beta" = "Бета";
 "settings_details.general.app_icon.enum.black" = "Черно";
 "settings_details.general.app_icon.enum.blue" = "Синьо";
@@ -611,6 +612,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.general.app_icon.enum.red" = "Червено";
 "settings_details.general.app_icon.enum.release" = "Последна версия";
 "settings_details.general.app_icon.enum.white" = "Бял";
+"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Икона на приложението";
 "settings_details.general.device_name.title" = "Име на устройството";
 "settings_details.general.full_screen.title" = "Цял екран";

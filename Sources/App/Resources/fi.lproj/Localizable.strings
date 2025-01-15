@@ -584,6 +584,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings_details.actions.title" = "Toiminnot";
 "settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Näytä Watchissa";
+"settings_details.general.app_icon.current_selected.title" = "- Selected";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Musta";
 "settings_details.general.app_icon.enum.blue" = "Sininen";
@@ -611,6 +612,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings_details.general.app_icon.enum.red" = "Punainen";
 "settings_details.general.app_icon.enum.release" = "Julkaistu";
 "settings_details.general.app_icon.enum.white" = "Valkoinen";
+"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Sovelluksen kuvake";
 "settings_details.general.device_name.title" = "Laitteen nimi";
 "settings_details.general.full_screen.title" = "Koko näyttö";

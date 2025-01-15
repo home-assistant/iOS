@@ -584,6 +584,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.actions.title" = "Aksi";
 "settings_details.actions.use_custom_colors.title" = "Gunakan warna khusus";
 "settings_details.actions.watch.available.title" = "Tampilkan di Watch";
+"settings_details.general.app_icon.current_selected.title" = "- Dipilih";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Hitam";
 "settings_details.general.app_icon.enum.blue" = "Biru";
@@ -611,6 +612,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_details.general.app_icon.enum.red" = "Merah";
 "settings_details.general.app_icon.enum.release" = "Rilis";
 "settings_details.general.app_icon.enum.white" = "Putih";
+"settings_details.general.app_icon.explanation.title" = "Setiap ikon memiliki 3 varian (iOS 18+) yaitu default, gelap dan berwarna untuk bereaksi sesuai dengan gaya layar beranda iOS yang dipilih. Beberapa ikon memiliki ikon yang sama untuk mode gelap atau ditangani secara otomatis oleh iOS.";
 "settings_details.general.app_icon.title" = "Ikon Aplikasi";
 "settings_details.general.device_name.title" = "Nama Perangkat";
 "settings_details.general.full_screen.title" = "Layar Penuh";

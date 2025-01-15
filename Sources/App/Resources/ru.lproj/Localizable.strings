@@ -584,6 +584,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.actions.title" = "Действия";
 "settings_details.actions.use_custom_colors.title" = "Использовать пользовательские цвета";
 "settings_details.actions.watch.available.title" = "Показывать на часах";
+"settings_details.general.app_icon.current_selected.title" = "- Выбранный";
 "settings_details.general.app_icon.enum.beta" = "Бета";
 "settings_details.general.app_icon.enum.black" = "Чёрный";
 "settings_details.general.app_icon.enum.blue" = "Синий";
@@ -611,6 +612,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.general.app_icon.enum.red" = "Красный";
 "settings_details.general.app_icon.enum.release" = "Релизный";
 "settings_details.general.app_icon.enum.white" = "Белый";
+"settings_details.general.app_icon.explanation.title" = "Для каждого значка есть 3 варианта (iOS 18+): стандартный, темный и тонированный, чтобы он реагировал в соответствии с выбранным стилем главного экрана iOS. Некоторые значки остаются неизменными в темном режиме или автоматически обрабатываются iOS.";
 "settings_details.general.app_icon.title" = "Значок приложения";
 "settings_details.general.device_name.title" = "Название устройства";
 "settings_details.general.full_screen.title" = "Полноэкранный режим";

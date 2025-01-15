@@ -584,6 +584,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.actions.title" = "Akce";
 "settings_details.actions.use_custom_colors.title" = "Použít vlastní barvy";
 "settings_details.actions.watch.available.title" = "Zobrazit v hodinkách";
+"settings_details.general.app_icon.current_selected.title" = "- Vybráno";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Černá";
 "settings_details.general.app_icon.enum.blue" = "Modrá";
@@ -611,6 +612,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.general.app_icon.enum.red" = "Červená";
 "settings_details.general.app_icon.enum.release" = "Vydání";
 "settings_details.general.app_icon.enum.white" = "Bílá";
+"settings_details.general.app_icon.explanation.title" = "Každá ikona má 3 varianty (iOS 18+), výchozí, tmavou a zabarvenou, aby reagovala podle zvoleného stylu domovské obrazovky iOS. Některé ikony jsou stejné v tmavém režimu nebo je systém iOS zpracovává automaticky.";
 "settings_details.general.app_icon.title" = "Ikona aplikace";
 "settings_details.general.device_name.title" = "Název zařízení";
 "settings_details.general.full_screen.title" = "Na celou obrazovku";

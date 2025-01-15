@@ -584,6 +584,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.actions.title" = "Aktionen";
 "settings_details.actions.use_custom_colors.title" = "Benutzerdefinierte Farben verwenden";
 "settings_details.actions.watch.available.title" = "Auf Watch anzeigen";
+"settings_details.general.app_icon.current_selected.title" = "- Ausgewählt";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Schwarz";
 "settings_details.general.app_icon.enum.blue" = "Blau";
@@ -611,6 +612,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.general.app_icon.enum.red" = "Rot";
 "settings_details.general.app_icon.enum.release" = "Release";
 "settings_details.general.app_icon.enum.white" = "Weiß";
+"settings_details.general.app_icon.explanation.title" = "Jedes Symbol hat 3 Varianten (iOS 18+), Standard, dunkel und getönt, um entsprechend dem ausgewählten Stil des iOS-Home-Bildschirms zu reagieren. Einige Symbole sind im dunklen Modus identisch oder werden automatisch von iOS erstellt.";
 "settings_details.general.app_icon.title" = "App-Symbol";
 "settings_details.general.device_name.title" = "Gerätename";
 "settings_details.general.full_screen.title" = "Vollbild";

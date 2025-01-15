@@ -584,6 +584,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.actions.title" = "Toimingud";
 "settings_details.actions.use_custom_colors.title" = "Kasuta kohandatud värve";
 "settings_details.actions.watch.available.title" = "Kuva nutikellal";
+"settings_details.general.app_icon.current_selected.title" = "- Valitud";
 "settings_details.general.app_icon.enum.beta" = "Beetaversioon";
 "settings_details.general.app_icon.enum.black" = "Must";
 "settings_details.general.app_icon.enum.blue" = "Sinine";
@@ -611,6 +612,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.general.app_icon.enum.red" = "Punane";
 "settings_details.general.app_icon.enum.release" = "Väljalase";
 "settings_details.general.app_icon.enum.white" = "Valge";
+"settings_details.general.app_icon.explanation.title" = "Igal ikoonil on 3 varianti (iOS 18+), vaikimisi, tume ja toonitud, et reageerida vastavalt iOS-i avakuva valitud stiilile. Mõned ikoonid on tumedas režiimis samad või iOS neid käsitleb automaatselt.";
 "settings_details.general.app_icon.title" = "Rakenduse ikoon";
 "settings_details.general.device_name.title" = "Seadme nimi";
 "settings_details.general.full_screen.title" = "Täisekraanil";

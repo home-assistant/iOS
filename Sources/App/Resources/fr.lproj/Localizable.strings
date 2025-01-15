@@ -584,6 +584,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.actions.title" = "Actions";
 "settings_details.actions.use_custom_colors.title" = "Utiliser des couleurs personnalisées";
 "settings_details.actions.watch.available.title" = "Afficher dans Watch";
+"settings_details.general.app_icon.current_selected.title" = "- Selected";
 "settings_details.general.app_icon.enum.beta" = "Bêta";
 "settings_details.general.app_icon.enum.black" = "Noir";
 "settings_details.general.app_icon.enum.blue" = "Bleu";
@@ -611,6 +612,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.general.app_icon.enum.red" = "Rouge";
 "settings_details.general.app_icon.enum.release" = "Dernière version";
 "settings_details.general.app_icon.enum.white" = "Blanc";
+"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Icône de l'application";
 "settings_details.general.device_name.title" = "Nom de l'appareil";
 "settings_details.general.full_screen.title" = "Plein écran";

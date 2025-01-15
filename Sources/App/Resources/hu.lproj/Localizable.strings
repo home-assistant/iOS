@@ -584,6 +584,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.actions.title" = "Műveletek";
 "settings_details.actions.use_custom_colors.title" = "Egyéni színek használata";
 "settings_details.actions.watch.available.title" = "Megjelenítés a Watch-ban";
+"settings_details.general.app_icon.current_selected.title" = "- Kiválasztva";
 "settings_details.general.app_icon.enum.beta" = "Béta";
 "settings_details.general.app_icon.enum.black" = "Fekete";
 "settings_details.general.app_icon.enum.blue" = "Kék";
@@ -611,6 +612,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.general.app_icon.enum.red" = "Piros";
 "settings_details.general.app_icon.enum.release" = "Kiadás";
 "settings_details.general.app_icon.enum.white" = "Fehér";
+"settings_details.general.app_icon.explanation.title" = "Az egyes ikonoknak három változata van (iOS 18+): alapértelmezett, sötét és színezett, amelyek az iOS kezdőképernyő stílusához igazodnak. Néhány ikon azonos a sötét módban vagy automatikusan az iOS kezeli őket.";
 "settings_details.general.app_icon.title" = "Alkalmazás ikon";
 "settings_details.general.device_name.title" = "Eszköznév";
 "settings_details.general.full_screen.title" = "Teljes képernyő";
