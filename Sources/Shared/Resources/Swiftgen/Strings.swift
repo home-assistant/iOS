@@ -52,6 +52,8 @@ public enum L10n {
   }
   /// Retry
   public static var retryLabel: String { return L10n.tr("Localizable", "retry_label") }
+  /// Save
+  public static var saveLabel: String { return L10n.tr("Localizable", "save_label") }
   /// Success
   public static var successLabel: String { return L10n.tr("Localizable", "success_label") }
   /// URL
@@ -2065,6 +2067,36 @@ public enum L10n {
     public enum Widgets {
       /// Widgets
       public static var title: String { return L10n.tr("Localizable", "settings.widgets.title") }
+      public enum Create {
+        /// Create widget
+        public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.title") }
+        public enum AddItem {
+          /// Add item
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.add_item.title") }
+        }
+        public enum Footer {
+          /// While th widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.footer.title") }
+        }
+        public enum Items {
+          /// Items
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.items.title") }
+        }
+        public enum Name {
+          /// e.g. Living room favorites
+          public static var placeholder: String { return L10n.tr("Localizable", "settings.widgets.create.name.placeholder") }
+          /// Name
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.name.title") }
+        }
+        public enum NoItems {
+          /// No items
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.no_items.title") }
+        }
+      }
+      public enum YourWidgets {
+        /// Your widgets
+        public static var title: String { return L10n.tr("Localizable", "settings.widgets.your_widgets.title") }
+      }
     }
   }
 

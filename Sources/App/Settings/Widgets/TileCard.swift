@@ -1,14 +1,6 @@
-//
-//  TileCard.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 13/1/25.
-//  Copyright © 2025 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
-import Shared
 import SFSafeSymbols
+import Shared
+import SwiftUI
 
 struct TileCard: View {
     struct Content {

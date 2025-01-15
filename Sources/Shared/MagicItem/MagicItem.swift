@@ -12,6 +12,7 @@ public struct MagicItem: Codable, Equatable {
     public let serverId: String
     public let type: ItemType
     public var customization: Customization?
+    public var action: Action?
 
     /// Server unique ID - e.g. "EB1364-script.open_gate"
     public var serverUniqueId: String {
@@ -27,14 +28,22 @@ public struct MagicItem: Codable, Equatable {
         }
     }
 
-    public init(id: String, serverId: String, type: ItemType, customization: Customization? = .init()) {
+    public init(
+        id: String,
+        serverId: String,
+        type: ItemType,
+        customization: Customization? = .init(),
+        action: Action? = .default
+    ) {
         self.id = id
         self.serverId = serverId
         self.type = type
         self.customization = customization
+        self.action = action
     }
 
     public enum ItemType: String, Codable {
+        /// aka iOS legacy Action
         case action
         case script
         case scene
@@ -48,6 +57,10 @@ public struct MagicItem: Codable, Equatable {
         /// If true, execution will request confirmation before running
         public var requiresConfirmation: Bool
 
+        public var useCustomColors: Bool {
+            textColor != nil || backgroundColor != nil
+        }
+
         public init(
             iconColor: String? = nil,
             textColor: String? = nil,
@@ -59,6 +72,15 @@ public struct MagicItem: Codable, Equatable {
             self.backgroundColor = backgroundColor
             self.requiresConfirmation = requiresConfirmation
         }
+    }
+
+    public enum Action: Codable, Equatable {
+        case `default`
+        case toggle
+        case navigate(_ navigationPath: String)
+        case runScript(_ scriptId: String)
+        case assist(_ pipelineId: String, startListening: Bool)
+        case nothing
     }
 
     public struct Info: WatchCodable, Equatable {

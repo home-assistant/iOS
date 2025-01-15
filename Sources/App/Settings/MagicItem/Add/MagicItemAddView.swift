@@ -82,9 +82,7 @@ struct MagicItemAddView: View {
 
     private var appFeaturesList: some View {
         Section {
-            Button(action: {
-
-            }) {
+            Button(action: {}) {
                 Text("Open camera")
             }
         }
@@ -151,11 +149,15 @@ struct MagicItemAddView: View {
         ForEach(entities, id: \.id) { entity in
             if visibleForSearch(title: entity.name) {
                 NavigationLink {
-                    MagicItemCustomizationView(mode: .add, item: .init(
-                        id: entity.entityId,
-                        serverId: serverId,
-                        type: type
-                    )) { itemToAdd in
+                    MagicItemCustomizationView(
+                        mode: .add,
+                        displayAction: context == .widget,
+                        item: .init(
+                            id: entity.entityId,
+                            serverId: serverId,
+                            type: type
+                        )
+                    ) { itemToAdd in
                         self.itemToAdd(itemToAdd)
                         dismiss()
                     }

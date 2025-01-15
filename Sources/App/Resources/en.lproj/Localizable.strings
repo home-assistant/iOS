@@ -106,6 +106,7 @@
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
 "assist.watch.volume.title" = "Volume control";
 "cancel_label" = "Cancel";
+"save_label" = "Save";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.config.tabs.title" = "Tabs";
@@ -570,6 +571,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.template_edit.title" = "Edit Template";
 "settings.whats_new.title" = "What's new?";
 "settings.widgets.title" = "Widgets";
+"settings.widgets.create.title" = "Create widget";
+"settings.widgets.your_widgets.title" = "Your widgets";
+"settings.widgets.create.name.title" = "Name";
+"settings.widgets.create.name.placeholder" = "e.g. Living room favorites";
+"settings.widgets.create.items.title" = "Items";
+"settings.widgets.create.no_items.title" = "No items";
+"settings.widgets.create.add_item.title" = "Add item";
+"settings.widgets.create.footer.title" = "While th widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
 "settings_details.actions.actions_synced.empty" = "No Synced Actions";
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";

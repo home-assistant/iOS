@@ -1,7 +1,7 @@
 import Foundation
 import WidgetKit
 
-final class WidgetsSettingsViewModel: ObservableObject {
+final class WidgetBuilderViewModel: ObservableObject {
     @Published var isLoading = false
 
     func reloadWidgets() {

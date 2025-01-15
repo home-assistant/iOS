@@ -184,7 +184,7 @@ struct WatchConfigurationView: View {
             itemRow(item: item, info: info)
         } else {
             NavigationLink {
-                MagicItemCustomizationView(mode: .edit, item: item) { updatedMagicItem in
+                MagicItemCustomizationView(mode: .edit, displayAction: false, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {

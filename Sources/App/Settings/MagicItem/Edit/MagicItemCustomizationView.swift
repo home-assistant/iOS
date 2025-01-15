@@ -14,75 +14,27 @@ struct MagicItemCustomizationView: View {
 
     /// Context in which the screen will be presented, editing existent Magic Item or adding new
     let mode: Mode
+    let displayAction: Bool
     let addItem: (MagicItem) -> Void
 
     init(
         mode: Mode,
+        displayAction: Bool,
         item: MagicItem,
         addItem: @escaping (MagicItem) -> Void
     ) {
         self.mode = mode
         self._viewModel = .init(wrappedValue: .init(item: item))
         self.addItem = addItem
+        self.displayAction = displayAction
     }
 
     var body: some View {
         List {
             if let info = viewModel.info {
-                Section {
-                    HStack {
-                        Text(L10n.MagicItem.Name.title)
-                        Text(info.name)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                    HStack {
-                        Text(L10n.MagicItem.IconName.title)
-                        Text(info.iconName)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                } footer: {
-                    if viewModel.item.type == .script {
-                        Text(L10n.MagicItem.NameAndIcon.footer)
-                    }
-                    if viewModel.item.type == .scene {
-                        Text(L10n.MagicItem.NameAndIcon.Footer.scenes)
-                    }
-                }
-
-                Section {
-                    ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                        var color = Color(uiColor: Asset.Colors.haPrimary.color)
-                        if let configIconColor = viewModel.item.customization?.iconColor {
-                            color = Color(hex: configIconColor)
-                        } else {
-                            viewModel.item.customization?.iconColor = color.hex()
-                        }
-                        return color
-                    }, set: { newColor in
-                        viewModel.item.customization?.iconColor = newColor.hex()
-                    }), supportsOpacity: false)
-                    Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
-                    if useCustomColors {
-                        ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
-                            Color(hex: viewModel.item.customization?.backgroundColor)
-                        }, set: { newColor in
-                            viewModel.item.customization?.backgroundColor = newColor.hex()
-                        }), supportsOpacity: false)
-                        ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
-                            Color(hex: viewModel.item.customization?.textColor)
-                        }, set: { newColor in
-                            viewModel.item.customization?.textColor = newColor.hex()
-                        }), supportsOpacity: false)
-                    }
-                }
-
-                Section {
-                    Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                        viewModel.item.customization?.requiresConfirmation ?? true
-                    }, set: { newValue in
-                        viewModel.item.customization?.requiresConfirmation = newValue
-                    }))
-                }
+                mainInformationView(info: info)
+                customizationView(info: info)
+                actionView
             }
         }
         .onChange(of: viewModel.info) { newValue in
@@ -115,6 +67,73 @@ struct MagicItemCustomizationView: View {
         }
     }
 
+    private func mainInformationView(info: MagicItem.Info) -> some View {
+        Section {
+            HStack {
+                Text(L10n.MagicItem.Name.title)
+                Text(info.name)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            HStack {
+                Text(L10n.MagicItem.IconName.title)
+                Text(info.iconName)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+        } footer: {
+            if viewModel.item.type == .script {
+                Text(L10n.MagicItem.NameAndIcon.footer)
+            }
+            if viewModel.item.type == .scene {
+                Text(L10n.MagicItem.NameAndIcon.Footer.scenes)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func customizationView(info: MagicItem.Info) -> some View {
+        Section {
+            ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
+                var color = Color(uiColor: Asset.Colors.haPrimary.color)
+                if let configIconColor = viewModel.item.customization?.iconColor {
+                    color = Color(hex: configIconColor)
+                } else {
+                    viewModel.item.customization?.iconColor = color.hex()
+                }
+                return color
+            }, set: { newColor in
+                viewModel.item.customization?.iconColor = newColor.hex()
+            }), supportsOpacity: false)
+            Toggle(L10n.MagicItem.UseCustomColors.title, isOn: $useCustomColors)
+            if useCustomColors {
+                ColorPicker(L10n.MagicItem.BackgroundColor.title, selection: .init(get: {
+                    Color(hex: viewModel.item.customization?.backgroundColor)
+                }, set: { newColor in
+                    viewModel.item.customization?.backgroundColor = newColor.hex()
+                }), supportsOpacity: false)
+                ColorPicker(L10n.MagicItem.TextColor.title, selection: .init(get: {
+                    Color(hex: viewModel.item.customization?.textColor)
+                }, set: { newColor in
+                    viewModel.item.customization?.textColor = newColor.hex()
+                }), supportsOpacity: false)
+            }
+        }
+
+        Section {
+            Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
+                viewModel.item.customization?.requiresConfirmation ?? true
+            }, set: { newValue in
+                viewModel.item.customization?.requiresConfirmation = newValue
+            }))
+        }
+    }
+
+    @ViewBuilder
+    private var actionView: some View {
+        if displayAction {
+            Text("Abc")
+        }
+    }
+
     private func preventNilCustomization() {
         if viewModel.item.customization == nil {
             viewModel.item.customization = .init()
@@ -123,6 +142,6 @@ struct MagicItemCustomizationView: View {
 }
 
 #Preview {
-    MagicItemCustomizationView(mode: .add, item: .init(id: "script.unlock_door", serverId: "1", type: .script)) { _ in
+    MagicItemCustomizationView(mode: .add, displayAction: true, item: .init(id: "script.unlock_door", serverId: "1", type: .script)) { _ in
     }
 }
