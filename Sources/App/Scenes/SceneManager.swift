@@ -123,6 +123,11 @@ final class SceneManager {
             let options = UIScene.ActivationRequestOptions()
             options.requestingScene = active
 
+            // Only activate scene if not activated already
+            guard UIApplication.shared.connectedScenes.contains(where: { $0 != active }) else {
+                return .value(delegate)
+            }
+
             // Guarantee it runs on main thread when coming from widgets
             DispatchQueue.main.async {
                 if #available(iOS 17.0, *) {
