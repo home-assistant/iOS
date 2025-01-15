@@ -584,6 +584,7 @@
 "settings_details.actions.title" = "Aksiyonlar";
 "settings_details.actions.use_custom_colors.title" = "Özel renkleri kullan";
 "settings_details.actions.watch.available.title" = "Watch'ta Göster";
+"settings_details.general.app_icon.current_selected.title" = "- Seçilmiş";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Siyah";
 "settings_details.general.app_icon.enum.blue" = "Mavi";
@@ -611,6 +612,7 @@
 "settings_details.general.app_icon.enum.red" = "Kırmızı";
 "settings_details.general.app_icon.enum.release" = "Sürüm";
 "settings_details.general.app_icon.enum.white" = "Beyaz";
+"settings_details.general.app_icon.explanation.title" = "Her simgenin 3 çeşidi vardır (iOS 18+), varsayılan, koyu ve seçili iOS ana ekran stiline göre tepki vermek için renklendirilmiş. Bazı simgeler koyu modda aynıdır veya iOS tarafından otomatik olarak işlenir.";
 "settings_details.general.app_icon.title" = "Uygulama Simgesi";
 "settings_details.general.device_name.title" = "Cihaz adı";
 "settings_details.general.full_screen.title" = "Tam ekran";

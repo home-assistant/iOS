@@ -584,6 +584,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.actions.title" = "Acciones";
 "settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Show in Watch";
+"settings_details.general.app_icon.current_selected.title" = "- Selected";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Negro";
 "settings_details.general.app_icon.enum.blue" = "Azul";
@@ -611,6 +612,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.general.app_icon.enum.red" = "Rojo";
 "settings_details.general.app_icon.enum.release" = "Liberar";
 "settings_details.general.app_icon.enum.white" = "Blanco";
+"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Icono de la aplicación";
 "settings_details.general.device_name.title" = "Nombre del dispositivo";
 "settings_details.general.full_screen.title" = "Pantalla completa";

@@ -584,6 +584,7 @@
 "settings_details.actions.title" = "Ενέργειες";
 "settings_details.actions.use_custom_colors.title" = "Χρήση προσαρμοσμένων χρωμάτων";
 "settings_details.actions.watch.available.title" = "Εμφάνιση στο Ρολόι";
+"settings_details.general.app_icon.current_selected.title" = "- Επιλέχθηκε";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Μαύρο";
 "settings_details.general.app_icon.enum.blue" = "Μπλε";
@@ -611,6 +612,7 @@
 "settings_details.general.app_icon.enum.red" = "Κόκκινο";
 "settings_details.general.app_icon.enum.release" = "Έκδοση";
 "settings_details.general.app_icon.enum.white" = "Λευκό";
+"settings_details.general.app_icon.explanation.title" = "Κάθε εικονίδιο έχει 3 παραλλαγές (iOS 18+), προεπιλογή, σκούρο και χρωματισμένο για να αντιδρά σύμφωνα με το επιλεγμένο στυλ αρχικής οθόνης iOS. Ορισμένα εικονίδια είναι τα ίδια στη σκοτεινή λειτουργία ή αντιμετωπίζονται αυτόματα από το iOS.";
 "settings_details.general.app_icon.title" = "Εικονίδιο εφαρμογής";
 "settings_details.general.device_name.title" = "Όνομα συσκευής";
 "settings_details.general.full_screen.title" = "Πλήρης οθόνη";

@@ -584,6 +584,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.actions.title" = "Acties";
 "settings_details.actions.use_custom_colors.title" = "Gebruik aangepaste kleuren";
 "settings_details.actions.watch.available.title" = "Weergeven op Watch";
+"settings_details.general.app_icon.current_selected.title" = "- Geselecteerd";
 "settings_details.general.app_icon.enum.beta" = "Bèta";
 "settings_details.general.app_icon.enum.black" = "Zwart";
 "settings_details.general.app_icon.enum.blue" = "Blauw";
@@ -611,6 +612,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.general.app_icon.enum.red" = "Rood";
 "settings_details.general.app_icon.enum.release" = "Release";
 "settings_details.general.app_icon.enum.white" = "Wit";
+"settings_details.general.app_icon.explanation.title" = "Elk icoon heeft 3 varianten (iOS 18+), standaard, donker en getint om zich aan te passen op basis van de geselecteerde iOS-startschermstijl. Sommige iconen zijn hetzelfde in de donkere modus of worden automatisch door iOS aangepast.";
 "settings_details.general.app_icon.title" = "App icoon";
 "settings_details.general.device_name.title" = "Apparaatnaam";
 "settings_details.general.full_screen.title" = "Volledig scherm";

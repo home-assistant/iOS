@@ -166,7 +166,7 @@ Bitte besuche {url}, um die Einrichtung abzuschließen.";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::closed" = "Geschlossen";
 "component::overkiz::entity::sensor::three_way_handle_direction::state::open" = "Geöffnet";
 "component::person::entity_component::_::state::home" = "Zuhause";
-"component::person::entity_component::_::state::not_home" = "Außerhalb";
+"component::person::entity_component::_::state::not_home" = "Abwesend";
 "component::plugwise::entity::climate::plugwise::state_attributes::preset_mode::state::home" = "Zuhause";
 "component::plugwise::entity::select::dhw_mode::state::off" = "Aus";
 "component::plugwise::entity::select::regulation_mode::state::off" = "Aus";

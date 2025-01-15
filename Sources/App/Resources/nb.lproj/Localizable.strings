@@ -584,6 +584,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.actions.title" = "Handlinger";
 "settings_details.actions.use_custom_colors.title" = "Use custom colors";
 "settings_details.actions.watch.available.title" = "Vis i Watch";
+"settings_details.general.app_icon.current_selected.title" = "- Selected";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Svart";
 "settings_details.general.app_icon.enum.blue" = "Blå";
@@ -611,6 +612,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings_details.general.app_icon.enum.red" = "Rød";
 "settings_details.general.app_icon.enum.release" = "Utgivelse";
 "settings_details.general.app_icon.enum.white" = "Hvit";
+"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "App-ikon";
 "settings_details.general.device_name.title" = "Enhetsnavn";
 "settings_details.general.full_screen.title" = "Fullskjerm";

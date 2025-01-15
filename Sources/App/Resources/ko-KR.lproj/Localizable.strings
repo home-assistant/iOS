@@ -584,6 +584,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.actions.title" = "동작";
 "settings_details.actions.use_custom_colors.title" = "사용자 정의 색상 사용";
 "settings_details.actions.watch.available.title" = "시계에 표시";
+"settings_details.general.app_icon.current_selected.title" = "- Selected";
 "settings_details.general.app_icon.enum.beta" = "베타";
 "settings_details.general.app_icon.enum.black" = "검정색";
 "settings_details.general.app_icon.enum.blue" = "파란색";
@@ -611,6 +612,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.general.app_icon.enum.red" = "빨간색";
 "settings_details.general.app_icon.enum.release" = "릴리스";
 "settings_details.general.app_icon.enum.white" = "흰색";
+"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "앱 아이콘";
 "settings_details.general.device_name.title" = "기기 이름";
 "settings_details.general.full_screen.title" = "전체 화면";
