@@ -1088,7 +1088,7 @@
 "widgets.gauge.parameters.run_action" = "Εκτέλεση ενέργειας";
 "widgets.gauge.parameters.server" = "Διακομιστής";
 "widgets.gauge.parameters.value_label_template" = "Πρότυπο ετικέτας τιμής";
-"widgets.gauge.parameters.value_template" = "Πρότυπο τιμής (0-1)";
+"widgets.gauge.parameters.value_template" = "Τιμή πρότυπου (0-1)";
 "widgets.gauge.title" = "Μετρητής";
 "widgets.lights.description" = "Ενεργοποίηση/απενεργοποίηση φωτός";
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";

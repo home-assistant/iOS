@@ -584,7 +584,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.actions.title" = "アクション";
 "settings_details.actions.use_custom_colors.title" = "カスタムカラーの使用";
 "settings_details.actions.watch.available.title" = "Watchで表示";
-"settings_details.general.app_icon.current_selected.title" = "- Selected";
+"settings_details.general.app_icon.current_selected.title" = "- 選択済み";
 "settings_details.general.app_icon.enum.beta" = "ベータ";
 "settings_details.general.app_icon.enum.black" = "黒";
 "settings_details.general.app_icon.enum.blue" = "青";
@@ -612,7 +612,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.general.app_icon.enum.red" = "赤";
 "settings_details.general.app_icon.enum.release" = "リリース";
 "settings_details.general.app_icon.enum.white" = "白";
-"settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
+"settings_details.general.app_icon.explanation.title" = "各アイコンには、デフォルト、ダーク、色付きの 3 つのバリエーション (iOS 18 以降) があり、選択した iOS ホーム画面のスタイルに応じて反応します。一部のアイコンはダーク モードでも同じか、iOS によって自動的に処理されます。";
 "settings_details.general.app_icon.title" = "アプリアイコン";
 "settings_details.general.device_name.title" = "デバイス名";
 "settings_details.general.full_screen.title" = "フルスクリーン";

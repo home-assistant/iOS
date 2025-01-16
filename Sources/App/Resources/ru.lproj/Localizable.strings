@@ -830,7 +830,7 @@ Home Assistant - это бесплатное программное обеспе
 "watch.config.cache.error.message" = "Не удалось загрузить конфигурацию часов из кэша.";
 "watch.config.error.message" = "Не удалось загрузить конфигурацию часов, ошибка: %@";
 "watch.config.migration_error.failed_access_grdb" = "Не удалось получить доступ к базе данных (GRDB), ошибка: %@";
-"watch.config.migration_error.failed_create_new_config" = "Failed to save initial watch config, error: %@";
+"watch.config.migration_error.failed_create_new_config" = "Не удалось сохранить начальную конфигурацию часов, ошибка: %@";
 "watch.config.migration_error.failed_migrate_actions" = "Не удалось перенести действия в конфигурацию часов, ошибка: %@";
 "watch.config.migration_error.failed_to_save" = "Не удалось сохранить новую конфигурацию часов, ошибка: %@";
 "watch.configuration.add_item.title" = "Добавить элемент";
