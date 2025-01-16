@@ -638,6 +638,8 @@
 		426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490762C0F2403002155CC /* WatchAudioRecorder.swift */; };
 		4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
+		426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C42D393F0E0062D905 /* EntityPicker.swift */; };
+		426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */; };
 		426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB692C9C543F003CA3AC /* ControlSwitchValueProvider.swift */; };
 		426CBB6C2C9C550D003CA3AC /* IntentSwitchEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */; };
 		426D9C742C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
@@ -1950,6 +1952,8 @@
 		426490742C0F20FF002155CC /* WatchAssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+Build.swift"; sourceTree = "<group>"; };
 		426490762C0F2403002155CC /* WatchAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAudioRecorder.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
+		426BB0C42D393F0E0062D905 /* EntityPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPicker.swift; sourceTree = "<group>"; };
+		426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinePicker.swift; sourceTree = "<group>"; };
 		426CBB692C9C543F003CA3AC /* ControlSwitchValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSwitchValueProvider.swift; sourceTree = "<group>"; };
 		426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSwitchEntity.swift; sourceTree = "<group>"; };
 		426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlEntityProvider.swift; sourceTree = "<group>"; };
@@ -3813,6 +3817,8 @@
 			children = (
 				4251AA972C6B9D30004CCC9D /* Edit */,
 				42D5ACD72C64C0CF00D9C4E2 /* Add */,
+				426BB0C42D393F0E0062D905 /* EntityPicker.swift */,
+				426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */,
 			);
 			path = MagicItem;
 			sourceTree = "<group>";
@@ -6894,6 +6900,7 @@
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
+				426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
@@ -6929,6 +6936,7 @@
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */,
+				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
 				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,

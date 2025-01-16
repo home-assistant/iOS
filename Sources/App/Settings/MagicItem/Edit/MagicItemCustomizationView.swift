@@ -54,7 +54,7 @@ struct MagicItemCustomizationView: View {
         }
         .toolbar {
             Button {
-                addItem(viewModel.item)
+                save()
                 dismiss()
             } label: {
                 Text(mode == .add ? L10n.MagicItem.add : L10n.MagicItem.edit)
@@ -65,6 +65,22 @@ struct MagicItemCustomizationView: View {
             preventNilCustomization()
             viewModel.loadMagicInfo()
         }
+    }
+
+    private func save() {
+        if let action = viewModel.item.action {
+            switch action {
+            case .default, .toggle, .nothing, .runScript:
+                // No update needed
+                break
+            case .navigate:
+                viewModel.item.action = .navigate(viewModel.navigationPathAction)
+            case .assist:
+                break
+            }
+        }
+
+        addItem(viewModel.item)
     }
 
     private func mainInformationView(info: MagicItem.Info) -> some View {
@@ -130,7 +146,78 @@ struct MagicItemCustomizationView: View {
     @ViewBuilder
     private var actionView: some View {
         if displayAction {
-            Text("Abc")
+            Section("Action") {
+                HStack {
+                    Text("On tap")
+                    Spacer()
+                    Menu {
+                        ForEach(ItemAction.allCases, id: \.id) { itemAction in
+                            Button {
+                                viewModel.item.action = itemAction
+                            } label: {
+                                let selectedAction = viewModel.item.action ?? ItemAction.default
+                                if selectedAction.id == itemAction.id {
+                                    Label(itemAction.name, systemSymbol: .checkmark)
+                                } else {
+                                    Text(itemAction.name)
+                                }
+                            }
+                        }
+
+                    } label: {
+                        Text(viewModel.item.action?.name ?? ItemAction.default.name)
+                    }
+                }
+            }
+
+            if viewModel.item.action?.id == ItemAction.navigate("").id {
+                navigateActionTextfield
+            }
+            if viewModel.item.action?.id == ItemAction.assist("", "", false).id {
+                assistActionDetails
+            }
+            if viewModel.item.action?.id == ItemAction.runScript("", "").id {
+                scriptActionDetails
+            }
+        }
+    }
+
+    private var navigateActionTextfield: some View {
+        Section("Navigation path") {
+            TextField("e.g. /lovelace/cameras", text: $viewModel.navigationPathAction)
+        }
+    }
+
+    @ViewBuilder
+    private var assistActionDetails: some View {
+        Section("Assist") {
+            HStack {
+                Text("Pipeline")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                AssistPipelinePicker { serverId, pipeline in
+                    viewModel.item.action = .assist(serverId, pipeline.id, viewModel.startListeningAssistAction)
+                }
+            }
+        }
+        HStack {
+            Text("Start listening")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Toggle(isOn: $viewModel.startListeningAssistAction, label: {})
+                .onChange(of: viewModel.startListeningAssistAction) { newValue in
+                    if case let .assist(serverId, pipelineId, startListening) = viewModel.item.action {
+                        viewModel.item.action = .assist(serverId, pipelineId, newValue)
+                    }
+                }
+        }
+    }
+
+    private var scriptActionDetails: some View {
+        HStack {
+            Text("Script")
+            EntityPicker(domainFilter: .script) { entity in
+                viewModel.item.action = .runScript(entity.serverId, entity.entityId)
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
     }
 
@@ -142,6 +229,10 @@ struct MagicItemCustomizationView: View {
 }
 
 #Preview {
-    MagicItemCustomizationView(mode: .add, displayAction: true, item: .init(id: "script.unlock_door", serverId: "1", type: .script)) { _ in
+    MagicItemCustomizationView(
+        mode: .add,
+        displayAction: true,
+        item: .init(id: "script.unlock_door", serverId: "1", type: .script)
+    ) { _ in
     }
 }

@@ -17,6 +17,12 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.name = name
         self.icon = icon
     }
+
+    public static func config() throws -> [HAAppEntity]? {
+        try Current.database.read({ db in
+            try HAAppEntity.fetchAll(db)
+        })
+    }
 }
 
 public enum ServerEntity {

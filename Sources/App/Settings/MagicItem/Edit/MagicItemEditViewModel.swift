@@ -6,6 +6,10 @@ final class MagicItemEditViewModel: ObservableObject {
     @Published var item: MagicItem
     @Published var info: MagicItem.Info?
 
+    // ItemAction data
+    @Published var navigationPathAction = ""
+    @Published var startListeningAssistAction = true
+
     private let itemProvider = Current.magicItemProvider()
 
     init(item: MagicItem) {

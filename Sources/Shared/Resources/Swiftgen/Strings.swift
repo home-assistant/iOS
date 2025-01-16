@@ -483,6 +483,11 @@ public enum L10n {
     }
   }
 
+  public enum AssistPipelinePicker {
+    /// Pick pipeline
+    public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
+  }
+
   public enum CarPlay {
     public enum Action {
       public enum Intro {
@@ -848,6 +853,11 @@ public enum L10n {
       /// Download finished
       public static var title: String { return L10n.tr("Localizable", "download_manager.finished.title") }
     }
+  }
+
+  public enum EntityPicker {
+    /// Pick entity
+    public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.placeholder") }
   }
 
   public enum Extensions {
