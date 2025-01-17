@@ -1176,10 +1176,38 @@ public enum L10n {
   }
 
   public enum MagicItem {
+    /// Action
+    public static var action: String { return L10n.tr("Localizable", "magic_item.action") }
     /// Add
     public static var add: String { return L10n.tr("Localizable", "magic_item.add") }
     /// Save
     public static var edit: String { return L10n.tr("Localizable", "magic_item.edit") }
+    public enum Action {
+      /// On tap
+      public static var onTap: String { return L10n.tr("Localizable", "magic_item.action.on_tap") }
+      public enum Assist {
+        /// Assist
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.title") }
+        public enum Pipeline {
+          /// Pipeline
+          public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.pipeline.title") }
+        }
+        public enum StartListening {
+          /// Start listening
+          public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.start_listening.title") }
+        }
+      }
+      public enum NavigationPath {
+        /// e.g. /lovelace/cameras
+        public static var placeholder: String { return L10n.tr("Localizable", "magic_item.action.navigation_path.placeholder") }
+        /// Navigation path
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.navigation_path.title") }
+      }
+      public enum Script {
+        /// Script
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.script.title") }
+      }
+    }
     public enum BackgroundColor {
       /// Background color
       public static var title: String { return L10n.tr("Localizable", "magic_item.background_color.title") }

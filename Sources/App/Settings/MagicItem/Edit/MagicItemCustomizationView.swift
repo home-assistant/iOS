@@ -70,13 +70,11 @@ struct MagicItemCustomizationView: View {
     private func save() {
         if let action = viewModel.item.action {
             switch action {
-            case .default, .toggle, .nothing, .runScript:
+            case .default, .toggle, .nothing, .runScript, .assist:
                 // No update needed
                 break
             case .navigate:
                 viewModel.item.action = .navigate(viewModel.navigationPathAction)
-            case .assist:
-                break
             }
         }
 
@@ -146,9 +144,9 @@ struct MagicItemCustomizationView: View {
     @ViewBuilder
     private var actionView: some View {
         if displayAction {
-            Section("Action") {
+            Section(L10n.MagicItem.action) {
                 HStack {
-                    Text("On tap")
+                    Text(L10n.MagicItem.Action.onTap)
                     Spacer()
                     Menu {
                         ForEach(ItemAction.allCases, id: \.id) { itemAction in
@@ -183,16 +181,16 @@ struct MagicItemCustomizationView: View {
     }
 
     private var navigateActionTextfield: some View {
-        Section("Navigation path") {
-            TextField("e.g. /lovelace/cameras", text: $viewModel.navigationPathAction)
+        Section(L10n.MagicItem.Action.NavigationPath.title) {
+            TextField(L10n.MagicItem.Action.NavigationPath.placeholder, text: $viewModel.navigationPathAction)
         }
     }
 
     @ViewBuilder
     private var assistActionDetails: some View {
-        Section("Assist") {
+        Section(L10n.MagicItem.Action.Assist.title) {
             HStack {
-                Text("Pipeline")
+                Text(L10n.MagicItem.Action.Assist.Pipeline.title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 AssistPipelinePicker { serverId, pipeline in
                     viewModel.item.action = .assist(serverId, pipeline.id, viewModel.startListeningAssistAction)
@@ -200,11 +198,11 @@ struct MagicItemCustomizationView: View {
             }
         }
         HStack {
-            Text("Start listening")
+            Text(L10n.MagicItem.Action.Assist.StartListening.title)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Toggle(isOn: $viewModel.startListeningAssistAction, label: {})
                 .onChange(of: viewModel.startListeningAssistAction) { newValue in
-                    if case let .assist(serverId, pipelineId, startListening) = viewModel.item.action {
+                    if case let .assist(serverId, pipelineId, _) = viewModel.item.action {
                         viewModel.item.action = .assist(serverId, pipelineId, newValue)
                     }
                 }
@@ -213,7 +211,7 @@ struct MagicItemCustomizationView: View {
 
     private var scriptActionDetails: some View {
         HStack {
-            Text("Script")
+            Text(L10n.MagicItem.Action.Script.title)
             EntityPicker(domainFilter: .script) { entity in
                 viewModel.item.action = .runScript(entity.serverId, entity.entityId)
             }
