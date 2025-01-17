@@ -6,11 +6,6 @@ import Communicator
 #endif
 
 public struct ConnectionInfo: Codable, Equatable {
-    // TODO: Remove when location permission enforcement is in place
-    /// Developer toggle used while enforcement of location permision is not ready
-    /// Used as feature toggle
-    public static var shouldFallbackToInternalURL = true
-
     private var externalURL: URL?
     private var internalURL: URL?
     private var remoteUIURL: URL?
@@ -205,19 +200,13 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .internal
             url = internalURL
         } else {
-            // TODO: Remove when location permission enforcement is in place
-            if ConnectionInfo.shouldFallbackToInternalURL {
-                activeURLType = .internal
-                url = internalURL
-            } else {
-                activeURLType = .none
-                url = nil
-                /*
-                 No URL that can be used in this context is available
-                 This can happen when only internal URL is set and
-                 user tries to access the App remotely
-                 */
-            }
+            activeURLType = .none
+            url = nil
+            /*
+             No URL that can be used in this context is available
+             This can happen when only internal URL is set and
+             user tries to access the App remotely
+             */
         }
 
         return url?.sanitized()
