@@ -2,7 +2,7 @@
 "2KWKqM" = "Ошибка: Home Assistant не отвечает";
 "2LIxe4" = "Сбой: ${error}";
 "2b0Uo4" = "Служба";
-"2yevCF" = "Which pipeline do you want to use?";
+"2yevCF" = "Какой обработчик вы хотите использовать?";
 "3jKamg" = "{{ now() }}";
 "4fFx9y" = "Обновлено";
 "4tpAXn" = "Просто, чтобы подтвердить, вы хотели ‘${server}’?";
@@ -38,7 +38,7 @@
 "HoH8wg" = "Действия";
 "J3qct4" = "Сервер";
 "JBMp1T" = "Просто, чтобы подтвердить, вы хотели ‘${server}’?";
-"JFaYRG" = "Just to confirm, you wanted ‘${pipeline}’?";
+"JFaYRG" = "Подтвердите, вы имели в виду ‘${pipeline}’?";
 "K4xrvF" = "Ошибка";
 "KHH48D" = "Ошибка: Home Assistant в настоящее время недоступен";
 "KJS2jk" = "Сбой: ${error}";
@@ -87,7 +87,7 @@
 "dFHPYK" = "Выполнено ${action}";
 "eObn2i" = "Страница";
 "f1KX0Q" = "Посмотреть и запустить действия";
-"fiOkO4" = "There are ${count} options matching ‘${pipeline}’";
+"fiOkO4" = "Существует ${count} вариантов, соответствующих ’${pipeline}’";
 "fkQXDn" = "Есть ${count} вариантов, соответствующих \"${action}\".";
 "flUgtx" = "Какое действие?";
 "fnz838" = "Датчики обновлены";
