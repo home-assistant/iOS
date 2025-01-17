@@ -778,7 +778,8 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func executeMagicItem(item: MagicItem, completion: @escaping (Bool) -> Void) {
+    // currentItemState is used only for lock domain since it can't be toggled
+    public func executeMagicItem(item: MagicItem, currentItemState: String = "", completion: @escaping (Bool) -> Void) {
         Current.Log.verbose("Selected magic item id: \(item.id)")
         firstly { () -> Promise<Void> in
             switch item.type {
@@ -807,20 +808,49 @@ public class HomeAssistantAPI {
                 guard let domain = item.domain else {
                     throw MagicItemError.unknownDomain
                 }
-                return Current.api(for: server)?.CallService(
-                    domain: domain.rawValue,
-                    service: "toggle",
-                    serviceData: [
-                        "entity_id": item.id,
-                    ],
-                    shouldLog: true
-                ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+                return executeActionForDomainType(
+                    domain: domain,
+                    entityId: item.id,
+                    state: currentItemState
+                )
             }
         }.done {
             completion(true)
         }.catch { err in
             Current.Log.error("Error during magic item event fire: \(err)")
             completion(false)
+        }
+    }
+
+    public func executeActionForDomainType(domain: Domain, entityId: String, state: String) -> Promise<Void> {
+        var request: HATypedRequest<HAResponseVoid>?
+        switch domain {
+        case .button, .inputButton:
+            request = .pressButton(domain: domain, entityId: entityId)
+        case .cover, .inputBoolean, .light, .switch:
+            request = .toggleDomain(domain: domain, entityId: entityId)
+        case .scene:
+            request = .applyScene(entityId: entityId)
+        case .script:
+            request = .runScript(entityId: entityId)
+        case .lock:
+            guard let state = Domain.State(rawValue: state) else { return .value }
+            switch state {
+            case .unlocking, .unlocked, .opening:
+                request = .lockLock(entityId: entityId)
+            case .locked, .locking:
+                request = .unlockLock(entityId: entityId)
+            default:
+                break
+            }
+        case .sensor, .binarySensor, .zone, .person:
+            break
+        }
+        if let request {
+            return connection.send(request).promise
+                .map { _ in () }
+        } else {
+            return .value
         }
     }
 

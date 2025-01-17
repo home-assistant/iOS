@@ -110,12 +110,16 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 let entityProvider = CarPlayEntityListItem(serverId: magicItem.serverId, entity: placeholderItem)
                 let listItem = entityProvider.template
                 listItem.handler = { [weak self] _, _ in
-                    self?.itemTap(magicItem: magicItem, info: info, item: listItem)
+                    self?.itemTap(
+                        magicItem: magicItem,
+                        info: info,
+                        item: listItem,
+                        currentItemState: placeholderItem.state
+                    )
                 }
                 entityProviders.append(entityProvider)
                 return listItem
             default:
-
                 let icon = magicItem.icon(info: info).carPlayIcon(color: .init(hex: info.customization?.iconColor))
                 let item = CPListItem(
                     text: info.name,
@@ -146,18 +150,19 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func itemTap(
         magicItem: MagicItem,
         info: MagicItem.Info,
-        item: CPListItem
+        item: CPListItem,
+        currentItemState: String = ""
     ) {
         if info.customization?.requiresConfirmation ?? false {
             showConfirmationForRunningMagicItem(item: magicItem, info: info) { [weak self] in
-                self?.executeMagicItem(magicItem, item: item)
+                self?.executeMagicItem(magicItem, item: item, currentItemState: currentItemState)
             }
         } else {
-            executeMagicItem(magicItem, item: item)
+            executeMagicItem(magicItem, item: item, currentItemState: currentItemState)
         }
     }
 
-    private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem) {
+    private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem, currentItemState: String = "") {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
         }), let api = Current.api(for: server) else {
@@ -165,7 +170,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             displayItemResultIcon(on: item, success: false)
             return
         }
-        api.executeMagicItem(item: magicItem) { success in
+        api.executeMagicItem(item: magicItem, currentItemState: currentItemState) { success in
             self.displayItemResultIcon(on: item, success: success)
         }
     }
