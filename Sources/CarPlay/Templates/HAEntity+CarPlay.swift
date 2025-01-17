@@ -32,41 +32,10 @@ extension HAEntity {
     }
 
     func onPress(for api: HomeAssistantAPI) -> Promise<Void> {
-        var request: HATypedRequest<HAResponseVoid>?
-        switch Domain(rawValue: domain) {
-        case .button:
-            request = .pressButton(domain: .button, entityId: entityId)
-        case .cover:
-            request = .toggleDomain(domain: .cover, entityId: entityId)
-        case .inputBoolean:
-            request = .toggleDomain(domain: .inputBoolean, entityId: entityId)
-        case .inputButton:
-            request = .pressButton(domain: .inputButton, entityId: entityId)
-        case .light:
-            request = .toggleDomain(domain: .light, entityId: entityId)
-        case .scene:
-            request = .applyScene(entityId: entityId)
-        case .script:
-            request = .runScript(entityId: entityId)
-        case .switch:
-            request = .toggleDomain(domain: .switch, entityId: entityId)
-        case .lock:
-            guard let state = Domain.State(rawValue: state) else { return .value }
-            switch state {
-            case .unlocking, .unlocked, .opening:
-                request = .lockLock(entityId: entityId)
-            case .locked, .locking:
-                request = .unlockLock(entityId: entityId)
-            default:
-                break
-            }
-        case .none, .sensor, .binarySensor, .zone, .person:
-            break
-        }
-        if let request {
-            return api.connection.send(request).promise
-                .map { _ in () }
+        if let domain = Domain(rawValue: domain) {
+            return api.executeActionForDomainType(domain: domain, entityId: entityId, state: state)
         } else {
+            Current.Log.error("Failed to parse domain for entity \(entityId)")
             return .value
         }
     }
