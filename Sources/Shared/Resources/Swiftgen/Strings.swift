@@ -1212,6 +1212,10 @@ public enum L10n {
       /// Background color
       public static var title: String { return L10n.tr("Localizable", "magic_item.background_color.title") }
     }
+    public enum DisplayText {
+      /// Display text
+      public static var title: String { return L10n.tr("Localizable", "magic_item.display_text.title") }
+    }
     public enum IconColor {
       /// Icon color
       public static var title: String { return L10n.tr("Localizable", "magic_item.icon_color.title") }

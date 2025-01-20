@@ -309,6 +309,7 @@
 "magic_item.action.assist.start_listening.title" = "Start listening";
 "magic_item.action.script.title" = "Script";
 "magic_item.background_color.title" = "Background color";
+"magic_item.display_text.title" = "Display text";
 "magic_item.edit" = "Save";
 "magic_item.icon_color.title" = "Icon color";
 "magic_item.icon_name.title" = "Icon name";

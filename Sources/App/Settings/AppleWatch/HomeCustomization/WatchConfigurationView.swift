@@ -49,6 +49,7 @@ struct WatchConfigurationView: View {
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
+            .preferredColorScheme(.dark)
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
             Button(action: {}, label: {
@@ -196,7 +197,7 @@ struct WatchConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
-            Text(info.name)
+            Text(item.displayText ?? info.name)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: SFSymbol.line3Horizontal.rawValue)
                 .foregroundStyle(.gray)

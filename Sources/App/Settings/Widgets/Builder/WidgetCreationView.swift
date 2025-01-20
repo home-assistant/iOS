@@ -127,7 +127,7 @@ struct WidgetCreationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, color: Asset.Colors.haPrimary.color))
-            Text(info.name)
+            Text(item.displayText ?? info.name)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: SFSymbol.line3Horizontal.rawValue)
                 .foregroundStyle(.gray)
@@ -161,7 +161,7 @@ struct WidgetCreationView: View {
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
             return WidgetBasicViewModel(
                 id: magicItem.id,
-                title: info?.name ?? magicItem.id,
+                title: magicItem.displayText ?? info?.name ?? magicItem.id,
                 subtitle: nil,
                 interactionType: .appIntent(.refresh),
                 icon: MaterialDesignIcons(serversideValueNamed: info?.iconName ?? "", fallback: .dotsGridIcon),

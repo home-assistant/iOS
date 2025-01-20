@@ -52,15 +52,11 @@ struct MagicItemAddView: View {
                 viewModel.loadContent()
             }
             .toolbar(content: {
-                Button(action: {
+                CloseButton {
                     dismiss()
-                }, label: {
-                    Image(systemName: "xmark.circle.fill")
-                })
-                .tint(.white)
+                }
             })
         }
-        .preferredColorScheme(.dark)
     }
 
     private func autoSelectItemType() {
@@ -81,9 +77,9 @@ struct MagicItemAddView: View {
                     itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
                     dismiss()
                 }, label: {
-                    makeItemRow(title: action.Text, imageSystemName: "plus.circle.fill")
+                    MagicItemRow(title: action.Text, imageSystemName: "plus.circle.fill")
                 })
-                .tint(.white)
+                .tint(Color(uiColor: .label))
             }
         }
     }
@@ -146,23 +142,40 @@ struct MagicItemAddView: View {
                         dismiss()
                     }
                 } label: {
-                    makeItemRow(title: entity.name, subtitle: entity.entityId, entityIcon: entity.icon)
+                    MagicItemRow(title: entity.name, subtitle: entity.entityId, entityIcon: entity.icon)
                 }
             }
         }
     }
 
-    private func makeItemRow(
-        title: String,
-        subtitle: String? = nil,
-        imageSystemName: String? = nil,
-        entityIcon: String? = nil,
-        imageColor: Color? = .green
-    ) -> some View {
+    private func visibleForSearch(title: String) -> Bool {
+        viewModel.searchText.count < 3 || title.lowercased().contains(viewModel.searchText.lowercased())
+    }
+}
+
+struct MagicItemRow: View {
+    @State private var showIcon = false
+
+    private let title: String
+    private let subtitle: String?
+    private let imageSystemName: String?
+    private let entityIcon: String?
+
+    init(title: String, subtitle: String? = nil, imageSystemName: String? = nil, entityIcon: String? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+        self.imageSystemName = imageSystemName
+        self.entityIcon = entityIcon
+    }
+
+    var body: some View {
         HStack(spacing: Spaces.one) {
             HStack {
-                if let entityIcon {
-                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: entityIcon, fallback: .gridIcon).image(ofSize: .init(width: 24, height: 24), color: .white))
+                if let entityIcon, showIcon {
+                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: entityIcon, fallback: MaterialDesignIcons(named: entityIcon, fallback: .dotsGridIcon)).image(
+                        ofSize: .init(width: 24, height: 24),
+                        color: Asset.Colors.haPrimary.color
+                    ))
                 }
             }
             .frame(width: 24, height: 24)
@@ -176,16 +189,19 @@ struct MagicItemAddView: View {
                         .foregroundStyle(Color.secondary)
                 }
             }
-            if let imageSystemName, let imageColor {
+            if let imageSystemName {
                 Image(systemName: imageSystemName)
-                    .foregroundStyle(.white, imageColor)
+                    .foregroundStyle(.white, .green)
                     .font(.title3)
             }
         }
-    }
-
-    private func visibleForSearch(title: String) -> Bool {
-        viewModel.searchText.count < 3 || title.lowercased().contains(viewModel.searchText.lowercased())
+        .animation(.easeInOut, value: showIcon)
+        .onAppear {
+            showIcon = true
+        }
+        .onDisappear() {
+            showIcon = false
+        }
     }
 }
 

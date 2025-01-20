@@ -117,7 +117,7 @@ struct CarPlayConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
-            Text(info.name)
+            Text(item.displayText ?? info.name)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "line.3.horizontal")
                 .foregroundStyle(.gray)

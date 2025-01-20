@@ -84,15 +84,23 @@ struct MagicItemCustomizationView: View {
     private func mainInformationView(info: MagicItem.Info) -> some View {
         Section {
             HStack {
-                Text(L10n.MagicItem.Name.title)
-                Text(info.name)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                HStack {
+                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: info.iconName, fallback: .gridIcon).image(ofSize: .init(width: 24, height: 24), color: .label))
+                }
+                .frame(width: 24, height: 24)
+                TextField(viewModel.info?.name ?? viewModel.item.id, text: .init(get: {
+                    viewModel.item.displayText ?? ""
+                }, set: { newValue in
+                    if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        viewModel.item.displayText = nil
+                    } else {
+                        viewModel.item.displayText = newValue
+                    }
+                }))
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            HStack {
-                Text(L10n.MagicItem.IconName.title)
-                Text(info.iconName)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-            }
+        } header: {
+            Text(L10n.MagicItem.DisplayText.title)
         } footer: {
             if viewModel.item.type == .script {
                 Text(L10n.MagicItem.NameAndIcon.footer)
@@ -130,14 +138,6 @@ struct MagicItemCustomizationView: View {
                     viewModel.item.customization?.textColor = newColor.hex()
                 }), supportsOpacity: false)
             }
-        }
-
-        Section {
-            Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                viewModel.item.customization?.requiresConfirmation ?? true
-            }, set: { newValue in
-                viewModel.item.customization?.requiresConfirmation = newValue
-            }))
         }
     }
 
@@ -177,6 +177,13 @@ struct MagicItemCustomizationView: View {
             if viewModel.item.action?.id == ItemAction.runScript("", "").id {
                 scriptActionDetails
             }
+        }
+        Section {
+            Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
+                viewModel.item.customization?.requiresConfirmation ?? true
+            }, set: { newValue in
+                viewModel.item.customization?.requiresConfirmation = newValue
+            }))
         }
     }
 
