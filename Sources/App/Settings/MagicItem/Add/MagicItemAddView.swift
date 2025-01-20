@@ -18,10 +18,6 @@ struct MagicItemAddView: View {
         NavigationView {
             VStack {
                 Picker(L10n.MagicItem.ItemType.Selection.List.title, selection: $viewModel.selectedItemType) {
-                    if context == .widget {
-                        Text(L10n.MagicItem.ItemType.App.List.title)
-                            .tag(MagicItemAddType.app)
-                    }
                     if [.carPlay, .widget].contains(context) {
                         Text(L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
@@ -47,8 +43,6 @@ struct MagicItemAddView: View {
                         scenesPerServerList
                     case .entities:
                         entitiesPerServerList
-                    case .app:
-                        appFeaturesList
                     }
                 }
                 .searchable(text: $viewModel.searchText)
@@ -73,18 +67,8 @@ struct MagicItemAddView: View {
         switch context {
         case .watch:
             viewModel.selectedItemType = .scripts
-        case .carPlay:
+        case .carPlay, .widget:
             viewModel.selectedItemType = .entities
-        case .widget:
-            viewModel.selectedItemType = .app
-        }
-    }
-
-    private var appFeaturesList: some View {
-        Section {
-            Button(action: {}) {
-                Text("Open camera")
-            }
         }
     }
 
@@ -97,7 +81,7 @@ struct MagicItemAddView: View {
                     itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
                     dismiss()
                 }, label: {
-                    makeItemRow(title: action.Text)
+                    makeItemRow(title: action.Text, imageSystemName: "plus.circle.fill")
                 })
                 .tint(.white)
             }
@@ -147,7 +131,7 @@ struct MagicItemAddView: View {
     @ViewBuilder
     private func list(entities: [HAAppEntity], serverId: String, type: MagicItem.ItemType) -> some View {
         ForEach(entities, id: \.id) { entity in
-            if visibleForSearch(title: entity.name) {
+            if visibleForSearch(title: entity.name) || visibleForSearch(title: entity.entityId) {
                 NavigationLink {
                     MagicItemCustomizationView(
                         mode: .add,
@@ -162,7 +146,7 @@ struct MagicItemAddView: View {
                         dismiss()
                     }
                 } label: {
-                    makeItemRow(title: entity.name, imageSystemName: nil)
+                    makeItemRow(title: entity.name, subtitle: entity.entityId, entityIcon: entity.icon)
                 }
             }
         }
@@ -170,12 +154,28 @@ struct MagicItemAddView: View {
 
     private func makeItemRow(
         title: String,
-        imageSystemName: String? = "plus.circle.fill",
+        subtitle: String? = nil,
+        imageSystemName: String? = nil,
+        entityIcon: String? = nil,
         imageColor: Color? = .green
     ) -> some View {
-        HStack {
-            Text(title)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: Spaces.one) {
+            HStack {
+                if let entityIcon {
+                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: entityIcon, fallback: .gridIcon).image(ofSize: .init(width: 24, height: 24), color: .white))
+                }
+            }
+            .frame(width: 24, height: 24)
+            VStack {
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let subtitle {
+                    Text(subtitle)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(.footnote)
+                        .foregroundStyle(Color.secondary)
+                }
+            }
             if let imageSystemName, let imageColor {
                 Image(systemName: imageSystemName)
                     .foregroundStyle(.white, imageColor)

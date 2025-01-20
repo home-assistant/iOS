@@ -9,7 +9,6 @@ enum MagicItemAddType {
     case actions
     case scenes
     case entities
-    case app
 }
 
 final class MagicItemAddViewModel: ObservableObject {
