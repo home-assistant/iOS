@@ -24,7 +24,7 @@ struct WidgetDetails: Widget {
         }
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Details.title)
-        .description(L10n.Widgets.Details.description)
+        .description(L10n.Widgets.Details.descriptionWithWarning)
         .supportedFamilies(WidgetDetailsSupportedFamilies.families)
     }
 
