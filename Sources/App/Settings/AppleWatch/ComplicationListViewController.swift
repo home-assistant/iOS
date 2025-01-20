@@ -48,6 +48,10 @@ class ComplicationListViewController: HAFormViewController {
                 $0.value = URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!
             }
 
+        form +++ InfoLabelRow {
+            $0.title = L10n.Watch.Configurator.Warning.templatingAdmin
+        }
+
         form +++ Section(
             header: L10n.Watch.Configurator.List.ManualUpdates.title,
             footer: L10n.Watch.Configurator.List.ManualUpdates.footer

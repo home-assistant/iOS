@@ -7,7 +7,10 @@ import Shared
 struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.details.title", defaultValue: "Details")
     static let description = IntentDescription(
-        .init("widgets.details.description", defaultValue: "Display states using from Home Assistant in text")
+        .init(
+            "widgets.details.description_with_warning",
+            defaultValue: "Display states using from Home Assistant in text. ATTENTION: User needs to be admin to use this feature"
+        )
     )
 
     @Parameter(title: .init("widgets.details.parameters.server", defaultValue: "Server"), default: nil)

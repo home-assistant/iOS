@@ -24,7 +24,7 @@ struct WidgetGauge: Widget {
         }
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Gauge.title)
-        .description(L10n.Widgets.Gauge.description)
+        .description(L10n.Widgets.Gauge.descriptionWithWarning)
         .supportedFamilies(WidgetGaugeSupportedFamilies.families)
     }
 

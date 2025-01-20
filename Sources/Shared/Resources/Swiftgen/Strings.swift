@@ -3133,6 +3133,10 @@ public enum L10n {
           public static var header: String { return L10n.tr("Localizable", "watch.configurator.sections.ring.header") }
         }
       }
+      public enum Warning {
+        /// ATTENTION: For templating in watch complications, the user needs to have admin role.
+        public static var templatingAdmin: String { return L10n.tr("Localizable", "watch.configurator.warning.templating_admin") }
+      }
     }
     public enum Debug {
       public enum DeleteDb {
@@ -3746,8 +3750,8 @@ public enum L10n {
       }
     }
     public enum Details {
-      /// Display states using from Home Assistant in text
-      public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }
+      /// Display states using from Home Assistant in text. ATTENTION: User needs to be admin to use this feature
+      public static var descriptionWithWarning: String { return L10n.tr("Localizable", "widgets.details.description_with_warning") }
       /// Details
       public static var title: String { return L10n.tr("Localizable", "widgets.details.title") }
       public enum Parameters {
@@ -3766,8 +3770,8 @@ public enum L10n {
       }
     }
     public enum Gauge {
-      /// Display numeric states from Home Assistant in a gauge
-      public static var description: String { return L10n.tr("Localizable", "widgets.gauge.description") }
+      /// Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin to use this feature
+      public static var descriptionWithWarning: String { return L10n.tr("Localizable", "widgets.gauge.description_with_warning") }
       /// Gauge
       public static var title: String { return L10n.tr("Localizable", "widgets.gauge.title") }
       public enum Parameters {

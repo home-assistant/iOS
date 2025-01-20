@@ -16,6 +16,7 @@
 "about.review.title" = "Leave a review";
 "about.title" = "About";
 "about.website.title" = "Website";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "actions_configurator.action.create_automation" = "Create automation";
 "actions_configurator.action.footer" = "Define what will be executed when Action is performed, alternatively you can use the example trigger below manually.";
 "actions_configurator.action.title" = "Execute";
@@ -1070,7 +1071,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.controls.switch.description" = "Turn on/off your switch";
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
-"widgets.details.description" = "Display states using from Home Assistant in text";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Lower Text Template";
@@ -1078,7 +1079,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Upper Text Template";
 "widgets.details.title" = "Details";
-"widgets.gauge.description" = "Display numeric states from Home Assistant in a gauge";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Action";
 "widgets.gauge.parameters.gauge_type" = "Gauge Type";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacity";
