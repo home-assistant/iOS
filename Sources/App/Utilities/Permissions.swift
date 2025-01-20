@@ -312,6 +312,10 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
             return
         }
 
+        if manager.authorizationStatus == .authorizedWhenInUse {
+            locationManager.requestAlwaysAuthorization()
+        }
+
         completionHandler?(manager.authorizationStatus.genericStatus)
     }
 
@@ -329,7 +333,10 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
         let status = locationManager.authorizationStatus
 
         switch status {
-        case .authorizedWhenInUse, .notDetermined:
+        case .notDetermined:
+            locationManager.delegate = self
+            locationManager.requestWhenInUseAuthorization()
+        case .authorizedWhenInUse:
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
         default:
