@@ -1,45 +1,75 @@
+import GRDB
 import SFSafeSymbols
 import Shared
 import SwiftUI
 import WidgetKit
 
-struct CustomWidget {
-    var name: String
-    var items: [MagicItem]
+struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatable {
+    var id: String = UUID().uuidString
+    var name: String = ""
+    var items: [MagicItem] = []
+    /// Controls the UI state of the widget when the item tapped requires confirmation
+    var itemsStates: [MagicItem: ItemState] = [:]
+
+    init(name: String, items: [MagicItem]) {
+        self.name = name
+        self.items = items
+        self.itemsStates = [:]
+    }
+
+    enum ItemState: String, Codable, FetchableRecord, PersistableRecord, Equatable {
+        case idle
+        case pendingConfirmation
+    }
+
+    public static func widgets() throws -> [CustomWidget]? {
+        try Current.database.read({ db in
+            try CustomWidget.fetchAll(db)
+        })
+    }
 }
 
 struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = WidgetCreationViewModel()
+    @StateObject private var viewModel: WidgetCreationViewModel
+
+    init(widget: CustomWidget = CustomWidget(name: "", items: [])) {
+        self._viewModel = .init(wrappedValue: .init(widget: widget))
+    }
 
     var body: some View {
-        NavigationView {
-            List {
-                widgetPreview
-                nameField
-                itemsView
-            }
-            .navigationTitle(L10n.Settings.Widgets.Create.title)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text(L10n.cancelLabel)
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.save()
-                    } label: {
-                        Text(L10n.saveLabel)
-                    }
+        List {
+            widgetPreview
+            nameField
+            itemsView
+        }
+        .navigationTitle(L10n.Settings.Widgets.Create.title)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.save()
+                } label: {
+                    Text(L10n.saveLabel)
                 }
             }
         }
         .onAppear {
             viewModel.load()
         }
+        .onChange(of: viewModel.shouldDismiss) { newValue in
+            if newValue {
+                dismiss()
+            }
+        }
+        .alert("", isPresented: $viewModel.showError, actions: {
+            Button(action: {
+                /* no-op */
+            }, label: {
+                Text(L10n.okLabel)
+            })
+        }, message: {
+            Text(viewModel.errorMessage)
+        })
         .sheet(isPresented: $viewModel.showAddItem) {
             MagicItemAddView(context: .widget) { magicItem in
                 guard let magicItem else { return }

@@ -3,13 +3,13 @@ import SwiftUI
 
 struct WidgetBuilderView: View {
     @StateObject private var viewModel = WidgetBuilderViewModel()
-    @State private var showAddWidget = false
 
     var body: some View {
         List {
             Section(L10n.Settings.Widgets.YourWidgets.title) {
-                Button(action: {
-                    showAddWidget = true
+                widgetsList
+                NavigationLink(destination: {
+                    WidgetCreationView()
                 }) {
                     Label(L10n.Settings.Widgets.Create.title, systemSymbol: .plus)
                 }
@@ -21,10 +21,23 @@ struct WidgetBuilderView: View {
                 Text(L10n.SettingsDetails.Widgets.ReloadAll.description)
             }
         }
-        .sheet(isPresented: $showAddWidget, content: {
-            WidgetCreationView()
-        })
+        .onAppear {
+            viewModel.loadWidgets()
+        }
         .navigationTitle(L10n.Settings.Widgets.title)
+    }
+
+    private var widgetsList: some View {
+        ForEach(viewModel.widgets, id: \.id) { widget in
+            NavigationLink {
+                WidgetCreationView(widget: widget)
+            } label: {
+                Text(widget.name)
+            }
+        }
+        .onDelete { indexSet in
+            viewModel.deleteItem(at: indexSet)
+        }
     }
 
     @ViewBuilder

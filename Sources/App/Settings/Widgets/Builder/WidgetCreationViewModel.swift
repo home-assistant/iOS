@@ -3,9 +3,16 @@ import Shared
 
 final class WidgetCreationViewModel: ObservableObject {
     @Published var showAddItem = false
-    @Published var widget = CustomWidget(name: "", items: [])
+    @Published var shouldDismiss = false
+    @Published var showError = false
+    @Published var errorMessage = ""
+    @Published var widget: CustomWidget
 
     private let infoProvider = Current.magicItemProvider()
+
+    init(widget: CustomWidget) {
+        self.widget = widget
+    }
 
     func load() {
         infoProvider.loadInformation { _ in
@@ -14,7 +21,22 @@ final class WidgetCreationViewModel: ObservableObject {
     }
 
     func save() {
-        // Save
+        guard !widget.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, !widget.items.isEmpty else {
+            errorMessage = "Make sure you have set a name and at least one item for the widget."
+            showError = true
+            return
+        }
+        do {
+            try Current.database.write { db in
+                try widget.insert(db, onConflict: .replace)
+            }
+            shouldDismiss = true
+        } catch {
+            Current.Log.error("Failed to insert/update custom widget, error: \(error.localizedDescription)")
+
+            errorMessage = "Failed to insert/update custom widget, error: \(error.localizedDescription)"
+            showError = true
+        }
     }
 
     func magicItemInfo(for item: MagicItem) -> MagicItem.Info? {

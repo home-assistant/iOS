@@ -85,7 +85,10 @@ struct MagicItemCustomizationView: View {
         Section {
             HStack {
                 HStack {
-                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: info.iconName, fallback: .gridIcon).image(ofSize: .init(width: 24, height: 24), color: .label))
+                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: info.iconName, fallback: .gridIcon).image(
+                        ofSize: .init(width: 24, height: 24),
+                        color: .label
+                    ))
                 }
                 .frame(width: 24, height: 24)
                 TextField(viewModel.info?.name ?? viewModel.item.id, text: .init(get: {

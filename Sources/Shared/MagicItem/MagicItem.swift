@@ -2,9 +2,13 @@ import Foundation
 import GRDB
 
 /// Object that represents iOS item that can be displayed in Watch and Widgets and perform different action types
-public struct MagicItem: Codable, Equatable {
+public struct MagicItem: Codable, Equatable, Hashable {
     public static func == (lhs: MagicItem, rhs: MagicItem) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id && lhs.serverId == rhs.serverId
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 
     /// Id match it's type Id, e.g. "script.open_gate"

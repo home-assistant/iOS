@@ -23,10 +23,14 @@ struct MagicItemAddView: View {
                             .tag(MagicItemAddType.entities)
                     }
                     if context != .widget {
-                        Text(L10n.MagicItem.ItemType.Script.List.title)
-                            .tag(MagicItemAddType.scripts)
-                        Text(L10n.MagicItem.ItemType.Scene.List.title)
-                            .tag(MagicItemAddType.scenes)
+                        // In other context user can just select entities directly
+                        // In Apple watch we don't have entity support yet
+                        if context == .watch {
+                            Text(L10n.MagicItem.ItemType.Script.List.title)
+                                .tag(MagicItemAddType.scripts)
+                            Text(L10n.MagicItem.ItemType.Scene.List.title)
+                                .tag(MagicItemAddType.scenes)
+                        }
                         Text(L10n.MagicItem.ItemType.Action.List.title)
                             .tag(MagicItemAddType.actions)
                     }
@@ -154,6 +158,7 @@ struct MagicItemAddView: View {
 }
 
 struct MagicItemRow: View {
+    // This avoids lag while loading a screen with several rows
     @State private var showIcon = false
 
     private let title: String
@@ -172,7 +177,10 @@ struct MagicItemRow: View {
         HStack(spacing: Spaces.one) {
             HStack {
                 if let entityIcon, showIcon {
-                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: entityIcon, fallback: MaterialDesignIcons(named: entityIcon, fallback: .dotsGridIcon)).image(
+                    Image(uiImage: MaterialDesignIcons(
+                        serversideValueNamed: entityIcon,
+                        fallback: MaterialDesignIcons(named: entityIcon, fallback: .dotsGridIcon)
+                    ).image(
                         ofSize: .init(width: 24, height: 24),
                         color: Asset.Colors.haPrimary.color
                     ))
@@ -199,7 +207,7 @@ struct MagicItemRow: View {
         .onAppear {
             showIcon = true
         }
-        .onDisappear() {
+        .onDisappear {
             showIcon = false
         }
     }
