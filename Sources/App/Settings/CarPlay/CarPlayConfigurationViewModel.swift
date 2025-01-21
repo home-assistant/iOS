@@ -75,20 +75,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     func save(completion: (Bool) -> Void) {
         do {
             try Current.database.write { db in
-                let configsCount = try CarPlayConfig.all().fetchCount(db)
-                if configsCount > 1 {
-                    Current.Log.error("More than one CarPlay config detected, deleting all and saving new one.")
-                    // Making sure only one config exists
-                    try CarPlayConfig.deleteAll(db)
-                    // Save new config
-                    try config.save(db)
-                } else if configsCount == 0 {
-                    Current.Log.info("Saving new CarPlay config and leaving config screen")
-                    try config.save(db)
-                } else {
-                    Current.Log.info("Updating CarPlay config")
-                    try config.update(db)
-                }
+                try config.insert(db, onConflict: .replace)
                 completion(true)
             }
         } catch {
