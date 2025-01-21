@@ -28,16 +28,28 @@ public struct ExternalLinkButton: View {
         }
         .frame(maxWidth: 600)
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color(uiColor: .secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
 #Preview {
-    ExternalLinkButton(
-        icon: Image(systemName: "xmark"),
-        title: "Go there",
-        url: URL(string: "https://google.com")!,
-        tint: .blue
-    )
+    VStack {}
+        .sheet(isPresented: .constant(true)) {
+            VStack {
+                ExternalLinkButton(
+                    icon: Image(systemName: "xmark"),
+                    title: "Go there",
+                    url: URL(string: "https://google.com")!,
+                    tint: .blue
+                )
+                ExternalLinkButton(
+                    icon: Image(systemName: "xmark"),
+                    title: "Go there",
+                    url: URL(string: "https://google.com")!,
+                    tint: .blue
+                )
+                .preferredColorScheme(.dark)
+            }
+        }
 }
