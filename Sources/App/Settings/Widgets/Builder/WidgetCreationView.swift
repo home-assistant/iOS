@@ -192,7 +192,7 @@ struct WidgetCreationView: View {
             return WidgetBasicViewModel(
                 id: magicItem.id,
                 title: magicItem.displayText ?? info?.name ?? magicItem.id,
-                subtitle: nil,
+                subtitle: "Entity state",
                 interactionType: .appIntent(.refresh),
                 icon: MaterialDesignIcons(serversideValueNamed: info?.iconName ?? "", fallback: .dotsGridIcon),
                 textColor: textColor,
