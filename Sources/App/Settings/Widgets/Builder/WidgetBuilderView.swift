@@ -6,6 +6,14 @@ struct WidgetBuilderView: View {
 
     var body: some View {
         List {
+            AppleLikeListTopRowHeader(
+                image: Image(uiImage: MaterialDesignIcons.widgetsIcon.image(
+                    ofSize: .init(width: 80, height: 80),
+                    color: Asset.Colors.haPrimary.color
+                )),
+                title: L10n.Widgets.Custom.title,
+                subtitle: L10n.Widgets.Custom.subtitle
+            )
             Section(L10n.Settings.Widgets.YourWidgets.title) {
                 widgetsList
                 NavigationLink(destination: {
@@ -24,7 +32,6 @@ struct WidgetBuilderView: View {
         .onAppear {
             viewModel.loadWidgets()
         }
-        .navigationTitle(L10n.Settings.Widgets.title)
     }
 
     private var widgetsList: some View {
@@ -46,7 +53,7 @@ struct WidgetBuilderView: View {
             viewModel.reloadWidgets()
         }, label: {
             HStack {
-                Label(L10n.SettingsDetails.Widgets.ReloadAll.title, systemImage: "square.text.square.fill")
+                Label(L10n.SettingsDetails.Widgets.ReloadAll.title, systemSymbol: .squareTextSquareFill)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if viewModel.isLoading {
                     ProgressView()

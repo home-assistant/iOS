@@ -3835,6 +3835,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.switch.title") }
       }
     }
+    public enum Custom {
+      /// Create widgets with your own style
+      public static var subtitle: String { return L10n.tr("Localizable", "widgets.custom.subtitle") }
+      /// Custom widgets
+      public static var title: String { return L10n.tr("Localizable", "widgets.custom.title") }
+    }
     public enum Details {
       /// Display states using from Home Assistant in text
       public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }

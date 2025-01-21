@@ -11,7 +11,7 @@ final class WidgetBuilderViewModel: ObservableObject {
         WidgetCenter.shared.reloadAllTimelines()
 
         // Delay to give some sense of execution
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             self?.isLoading = false
         }
     }

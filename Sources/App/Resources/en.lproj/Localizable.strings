@@ -1131,4 +1131,5 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.title" = "Sensors";
 "entity_picker.placeholder" = "Pick entity";
 "assist_pipeline_picker.placeholder" = "Pick pipeline";
-"
+"widgets.custom.title" = "Custom widgets";
+"widgets.custom.subtitle" = "Create widgets with your own style";
