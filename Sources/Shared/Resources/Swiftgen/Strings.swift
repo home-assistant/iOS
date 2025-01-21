@@ -770,6 +770,8 @@ public enum L10n {
           public static var doc: String { return L10n.tr("Localizable", "connection.error.details.button.doc") }
           /// Report issue in GitHub
           public static var github: String { return L10n.tr("Localizable", "connection.error.details.button.github") }
+          /// Search in GitHub
+          public static var searchGithub: String { return L10n.tr("Localizable", "connection.error.details.button.search_github") }
         }
         public enum Label {
           /// Code
