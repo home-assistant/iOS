@@ -881,6 +881,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.configurator.sections.icon.header" = "Ikona";
 "watch.configurator.sections.ring.footer" = "Kroužek znázorňující průběh kolem textu.";
 "watch.configurator.sections.ring.header" = "Kroužek";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Nastavení se nepodařilo smazat, chyba: %@";
 "watch.debug.delete_db.alert.title" = "Opravdu chcete smazat nastavení hodinek? Toto nelze vrátit zpět.";
 "watch.debug.delete_db.reset.title" = "Resetovat nastavení";
@@ -1071,6 +1072,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.switch.placeholder_title" = "Vybrat spínač";
 "widgets.controls.switch.title" = "Spínač";
 "widgets.details.description" = "Zobrazí stavy pomocí aplikace Home Assistant v textu.";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Akce";
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";
 "widgets.details.parameters.lower_template" = "Šablona dolního textu";
@@ -1079,6 +1081,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.details.parameters.upper_template" = "Šablona horního textu";
 "widgets.details.title" = "Podrobnosti";
 "widgets.gauge.description" = "Zobrazí číselné stavy z Home Assistanta na ukazateli.";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Akce";
 "widgets.gauge.parameters.gauge_type" = "Typ ukazatele";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapacita";

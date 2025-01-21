@@ -3750,6 +3750,8 @@ public enum L10n {
       }
     }
     public enum Details {
+      /// Display states using from Home Assistant in text
+      public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }
       /// Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access
       public static var descriptionWithWarning: String { return L10n.tr("Localizable", "widgets.details.description_with_warning") }
       /// Details
@@ -3770,6 +3772,8 @@ public enum L10n {
       }
     }
     public enum Gauge {
+      /// Display numeric states from Home Assistant in a gauge
+      public static var description: String { return L10n.tr("Localizable", "widgets.gauge.description") }
       /// Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access
       public static var descriptionWithWarning: String { return L10n.tr("Localizable", "widgets.gauge.description_with_warning") }
       /// Gauge

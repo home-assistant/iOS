@@ -881,6 +881,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "watch.configurator.sections.icon.header" = "아이콘";
 "watch.configurator.sections.ring.footer" = "텍스트를 둘러싼 진행률을 보여 주는 링입니다.";
 "watch.configurator.sections.ring.header" = "링";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
@@ -1071,6 +1072,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Home Assistant에서 가져온 상태를 텍스트로 표시합니다";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "동작";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "하단 텍스트 템플릿";
@@ -1079,6 +1081,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.details.parameters.upper_template" = "상단 텍스트 템플릿";
 "widgets.details.title" = "세부 정보";
 "widgets.gauge.description" = "홈어시스턴트의 숫자 상태를 게이지에 표시";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "동작";
 "widgets.gauge.parameters.gauge_type" = "게이지 유형";
 "widgets.gauge.parameters.gauge_type.capacity" = "용량";

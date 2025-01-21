@@ -881,6 +881,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "watch.configurator.sections.icon.header" = "Icoon";
 "watch.configurator.sections.ring.footer" = "De ring toont de voortgang van de tekst.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.configurator.warning.templating_admin" = "LET OP: Om sjablonen te kunnen maken voor complicaties in horloges, moet de gebruiker de beheerdersrol hebben.";
 "watch.debug.delete_db.alert.failed.message" = "Kan configuratie niet verwijderen, fout: %@";
 "watch.debug.delete_db.alert.title" = "Weet je zeker dat je de Watch-configuratie wilt verwijderen? Dit kan niet worden teruggedraaid";
 "watch.debug.delete_db.reset.title" = "Configuratie resetten";
@@ -1071,6 +1072,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.controls.switch.placeholder_title" = "Kies schakelaar";
 "widgets.controls.switch.title" = "Schakelaar";
 "widgets.details.description" = "Statussen weergeven met behulp van Home Assistant in tekst";
+"widgets.details.description_with_warning" = "Statussen weergeven van Home Assistant in tekst. LET OP: Gebruiker moet beheerder zijn voor sjabloontoegang";
 "widgets.details.parameters.action" = "Actie";
 "widgets.details.parameters.details_template" = "Details tekstsjabloon (alleen in rechthoekige familie)";
 "widgets.details.parameters.lower_template" = "Onderste tekstsjabloon";
@@ -1079,6 +1081,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.details.parameters.upper_template" = "Bovenste tekstsjabloon";
 "widgets.details.title" = "Details";
 "widgets.gauge.description" = "Numerieke statussen van Home Assistant weergeven in een meter";
+"widgets.gauge.description_with_warning" = "Numerieke statussen van Home Assistant weergeven in een meter. LET OP: Gebruiker moet beheerder zijn voor sjabloontoegang";
 "widgets.gauge.parameters.action" = "Actie";
 "widgets.gauge.parameters.gauge_type" = "Type meter";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capaciteit";
