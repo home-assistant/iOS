@@ -20,6 +20,9 @@ struct ConnectionErrorDetailsView: View {
                     makeRow(title: L10n.Connection.Error.Details.Label.description, body: error.localizedDescription)
                     makeRow(title: L10n.Connection.Error.Details.Label.domain, body: (error as NSError).domain)
                     makeRow(title: L10n.Connection.Error.Details.Label.code, body: "\((error as NSError).code)")
+                    if let urlError = error as? URLError {
+                        makeRow(title: L10n.urlLabel, body: urlError.failingURL?.absoluteString ?? "")
+                    }
                 }
                 .padding(.vertical)
                 documentationLink
@@ -57,13 +60,26 @@ struct ConnectionErrorDetailsView: View {
         )
     }
 
+    @ViewBuilder
     private var githubLink: some View {
         ExternalLinkButton(
             icon: Image("github.fill"),
             title: L10n.Connection.Error.Details.Button.github,
             url: ExternalLink.githubReportIssue,
-            tint: .black
+            tint: .init(uiColor: .init(dynamicProvider: { trait in
+                trait.userInterfaceStyle == .dark ? .white : .black
+            }))
         )
+        if let searchURL = ExternalLink.githubSearchIssue(domain: (error as NSError).domain) {
+            ExternalLinkButton(
+                icon: Image("github.fill"),
+                title: L10n.Connection.Error.Details.Button.searchGithub,
+                url: searchURL,
+                tint: .init(uiColor: .init(dynamicProvider: { trait in
+                    trait.userInterfaceStyle == .dark ? .white : .black
+                }))
+            )
+        }
     }
 }
 

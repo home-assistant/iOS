@@ -54,6 +54,8 @@ public enum L10n {
   public static var retryLabel: String { return L10n.tr("Localizable", "retry_label") }
   /// Success
   public static var successLabel: String { return L10n.tr("Localizable", "success_label") }
+  /// URL
+  public static var urlLabel: String { return L10n.tr("Localizable", "url_label") }
   /// Username
   public static var usernameLabel: String { return L10n.tr("Localizable", "username_label") }
   /// Yes
@@ -768,6 +770,8 @@ public enum L10n {
           public static var doc: String { return L10n.tr("Localizable", "connection.error.details.button.doc") }
           /// Report issue in GitHub
           public static var github: String { return L10n.tr("Localizable", "connection.error.details.button.github") }
+          /// Search in GitHub
+          public static var searchGithub: String { return L10n.tr("Localizable", "connection.error.details.button.search_github") }
         }
         public enum Label {
           /// Code
