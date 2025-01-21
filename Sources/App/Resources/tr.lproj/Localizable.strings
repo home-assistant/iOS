@@ -881,6 +881,7 @@
 "watch.configurator.sections.icon.header" = "Simge";
 "watch.configurator.sections.ring.footer" = "Metni çevreleyen ilerlemeyi gösteren halka.";
 "watch.configurator.sections.ring.header" = "Halka";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Yapılandırma silinemedi, hata: %@";
 "watch.debug.delete_db.alert.title" = "İzleme yapılandırmasını silmek istediğinizden emin misiniz? Bu geri alınamaz";
 "watch.debug.delete_db.reset.title" = "Yapılandırmayı sıfırla";
@@ -1071,6 +1072,7 @@
 "widgets.controls.switch.placeholder_title" = "Anahtarı seçin";
 "widgets.controls.switch.title" = "Anahtar";
 "widgets.details.description" = "Metinde Home Asistanı'nın kullanıldığı durumları görüntüleme";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Eylem";
 "widgets.details.parameters.details_template" = "Ayrıntılar Metin Şablonu (yalnızca dikdörtgen ailede)";
 "widgets.details.parameters.lower_template" = "Alt Metin Şablonu";
@@ -1079,6 +1081,7 @@
 "widgets.details.parameters.upper_template" = "Üst Metin Şablonu";
 "widgets.details.title" = "Ayrıntılar";
 "widgets.gauge.description" = "Home Assistant'taki sayısal durumları bir göstergede görüntüleyin";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Eylem";
 "widgets.gauge.parameters.gauge_type" = "Gösterge Tipi";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapasite";

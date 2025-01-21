@@ -881,6 +881,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "watch.configurator.sections.icon.header" = "アイコン";
 "watch.configurator.sections.ring.footer" = "テキストを囲む進捗状況を示すリング。";
 "watch.configurator.sections.ring.header" = "リング";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "設定の削除に失敗しました。エラー: %@";
 "watch.debug.delete_db.alert.title" = "ウォッチ設定を削除してもよろしいですか? 元に戻すことはできません";
 "watch.debug.delete_db.reset.title" = "設定をリセット";
@@ -1071,6 +1072,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.controls.switch.placeholder_title" = "スイッチを選ぶ";
 "widgets.controls.switch.title" = "スイッチ";
 "widgets.details.description" = "Home Assistantからテキストを使用して状態を表示する";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "アクション";
 "widgets.details.parameters.details_template" = "詳細テキスト テンプレート (長方形ファミリのみ)";
 "widgets.details.parameters.lower_template" = "下部テキストテンプレート";
@@ -1079,6 +1081,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.details.parameters.upper_template" = "上部テキストテンプレート";
 "widgets.details.title" = "詳細";
 "widgets.gauge.description" = "ホームアシスタントからの数値をゲージに表示";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "アクション";
 "widgets.gauge.parameters.gauge_type" = "ゲージタイプ";
 "widgets.gauge.parameters.gauge_type.capacity" = "容量";

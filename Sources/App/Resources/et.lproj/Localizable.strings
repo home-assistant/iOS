@@ -881,6 +881,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.configurator.sections.icon.header" = "Ikoon";
 "watch.configurator.sections.ring.footer" = "Rõngas mis näitab teksti ümber edenemist.";
 "watch.configurator.sections.ring.header" = "Sõõr";
+"watch.configurator.warning.templating_admin" = "TÄHELEPANU: Kellaprobleemide puhul mallide koostamiseks peab kasutajal olema administraatori roll.";
 "watch.debug.delete_db.alert.failed.message" = "Konfiguratsiooni kustutamine nurjus, viga: %@";
 "watch.debug.delete_db.alert.title" = "Kas soovid kindlasti kella konfiguratsiooni kustutada? Seda ei saa tagasi võtta";
 "watch.debug.delete_db.reset.title" = "Lähtesta konfiguratsioon";
@@ -1071,6 +1072,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.switch.placeholder_title" = "Vali lüliti";
 "widgets.controls.switch.title" = "Lüliti";
 "widgets.details.description" = "Kuva olekud kasutades Home Assistanti teksti";
+"widgets.details.description_with_warning" = "Home Assistanti olekute kuvamine tekstina. TÄHELEPANU. Malli juurdepääsuks peab kasutaja olema administraator";
 "widgets.details.parameters.action" = "Toiming";
 "widgets.details.parameters.details_template" = "Üksikasjade tekstimall (ainult ristkülikus)";
 "widgets.details.parameters.lower_template" = "Väiksema teksti mall";
@@ -1079,6 +1081,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.details.parameters.upper_template" = "Suurema teksti mall";
 "widgets.details.title" = "Üksikasjad";
 "widgets.gauge.description" = "Kuva Home Assistanti numbrilised olekud mõõturis";
+"widgets.gauge.description_with_warning" = "Home Assistanti numbriliste olekute kuvamine näidikul. TÄHELEPANU. Malli juurdepääsuks peab kasutaja olema administraator";
 "widgets.gauge.parameters.action" = "Toiming";
 "widgets.gauge.parameters.gauge_type" = "Mõõturi tüüp";
 "widgets.gauge.parameters.gauge_type.capacity" = "Mahutavus";

@@ -881,6 +881,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "watch.configurator.sections.icon.header" = "Kuvake";
 "watch.configurator.sections.ring.footer" = "Edistysrengas textin ympärillä.";
 "watch.configurator.sections.ring.header" = "Rengas";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
@@ -1071,6 +1072,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Kytkin";
 "widgets.details.description" = "Display states using from Home Assistant in text";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Toiminto";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Lower Text Template";
@@ -1079,6 +1081,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "widgets.details.parameters.upper_template" = "Upper Text Template";
 "widgets.details.title" = "Yksityiskohdat";
 "widgets.gauge.description" = "Home Assistantin numeeristen tilojen näyttäminen mittarissa";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Toiminto";
 "widgets.gauge.parameters.gauge_type" = "Mittarin tyyppi";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacity";

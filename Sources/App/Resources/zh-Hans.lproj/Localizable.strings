@@ -881,6 +881,7 @@
 "watch.configurator.sections.icon.header" = "图标";
 "watch.configurator.sections.ring.footer" = "显示围绕文本的进度环。";
 "watch.configurator.sections.ring.header" = "环";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "删除配置失败，错误：%@";
 "watch.debug.delete_db.alert.title" = "您确定要删除手表配置吗 ？此操作无法恢复";
 "watch.debug.delete_db.reset.title" = "重置配置";
@@ -1071,6 +1072,7 @@
 "widgets.controls.switch.placeholder_title" = "选择开关";
 "widgets.controls.switch.title" = "开关";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "动作";
 "widgets.details.parameters.details_template" = "详情文本模板（仅限矩形系列）";
 "widgets.details.parameters.lower_template" = "下部文本模板";
@@ -1079,6 +1081,7 @@
 "widgets.details.parameters.upper_template" = "上部文本模板";
 "widgets.details.title" = "详情";
 "widgets.gauge.description" = "以仪表方式显示 Home Assistant 中的数字状态";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "动作";
 "widgets.gauge.parameters.gauge_type" = "仪表类型";
 "widgets.gauge.parameters.gauge_type.capacity" = "容量";

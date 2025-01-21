@@ -882,6 +882,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Ringen visar förloppet runt texten.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.configurator.warning.templating_admin" = "OBS: För mallhantering i smartklocka måste användaren ha administratörsrättigheter.";
 "watch.debug.delete_db.alert.failed.message" = "Det gick inte att ta bort konfigurationen, fel: %@";
 "watch.debug.delete_db.alert.title" = "Är du säker på att du vill ta bort klockkonfigurationen? Detta kan inte återställas";
 "watch.debug.delete_db.reset.title" = "Nollställ konfiguration";
@@ -1072,6 +1073,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.controls.switch.placeholder_title" = "Välj omkopplare";
 "widgets.controls.switch.title" = "Brytare";
 "widgets.details.description" = "Visa tillstånd med hjälp av Home Assistant i text";
+"widgets.details.description_with_warning" = "Visa tillstånd från Home Assistant i text. OBS: Användaren måste vara admin för att få tillgång till mallar";
 "widgets.details.parameters.action" = "Åtgärd";
 "widgets.details.parameters.details_template" = "Detaljer Textmall (endast i rektangulär familj)";
 "widgets.details.parameters.lower_template" = "Mall för nedre text";
@@ -1080,6 +1082,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.details.parameters.upper_template" = "Mall för övre text";
 "widgets.details.title" = "Detaljer";
 "widgets.gauge.description" = "Visa numeriska tillstånd från Home Assistant i en mätare";
+"widgets.gauge.description_with_warning" = "Visa numeriska tillstånd från Home Assistant i en mätare. OBS: Användaren måste vara admin för att få tillgång till mallar";
 "widgets.gauge.parameters.action" = "Åtgärd";
 "widgets.gauge.parameters.gauge_type" = "Typ av mätare";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapacitet";

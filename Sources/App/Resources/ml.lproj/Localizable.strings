@@ -881,6 +881,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "watch.configurator.sections.icon.header" = "Icon";
 "watch.configurator.sections.ring.footer" = "The ring showing progress surrounding the text.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Are you sure you want to delete watch configuration? This can't be reverted";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
@@ -1071,6 +1072,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
 "widgets.details.description" = "Display states using from Home Assistant in text";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Lower Text Template";
@@ -1079,6 +1081,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "widgets.details.parameters.upper_template" = "Upper Text Template";
 "widgets.details.title" = "Details";
 "widgets.gauge.description" = "Display numeric states from Home Assistant in a gauge";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Action";
 "widgets.gauge.parameters.gauge_type" = "Gauge Type";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacity";

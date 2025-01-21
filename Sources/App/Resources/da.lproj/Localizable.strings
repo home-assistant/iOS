@@ -881,6 +881,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Ringen viser fremskridt omkring teksten.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Kunne ikke slette konfiguration, fejl: %@";
 "watch.debug.delete_db.alert.title" = "Er du sikker på at du vil slette watch konfigurationen? Dette kan ikke fortrydes";
 "watch.debug.delete_db.reset.title" = "Nulstil konfiguration";
@@ -1071,6 +1072,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.controls.switch.placeholder_title" = "Vælg kontakt";
 "widgets.controls.switch.title" = "Kontakt";
 "widgets.details.description" = "Vis tilstande fra Home Assistant i tekstform";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Handling";
 "widgets.details.parameters.details_template" = "Detaljer tekstskabelon (kun i rektangulær familie)";
 "widgets.details.parameters.lower_template" = "Nedre tekstskabelon";
@@ -1079,6 +1081,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.details.parameters.upper_template" = "Øvre tekstskabelon";
 "widgets.details.title" = "Detaljer";
 "widgets.gauge.description" = "Vis numeriske tilstande fra Home Assistant i en måler";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Handling";
 "widgets.gauge.parameters.gauge_type" = "Målertype";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapacitet";

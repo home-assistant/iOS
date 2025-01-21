@@ -881,6 +881,7 @@
 "watch.configurator.sections.icon.header" = "Εικονίδιο";
 "watch.configurator.sections.ring.footer" = "Ο δακτύλιος που δείχνει την πρόοδο που περιβάλλει το κείμενο.";
 "watch.configurator.sections.ring.header" = "Δακτύλιος";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Αποτυχία διαγραφής της διαμόρφωσης, σφάλμα: %@";
 "watch.debug.delete_db.alert.title" = "Θέλετε σίγουρα να διαγράψετε τη διαμόρφωση ρολογιού. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί";
 "watch.debug.delete_db.reset.title" = "Επαναφορά διαμόρφωσης";
@@ -1071,6 +1072,7 @@
 "widgets.controls.switch.placeholder_title" = "Επιλέξτε διακόπτη";
 "widgets.controls.switch.title" = "Διακόπτης";
 "widgets.details.description" = "Εμφάνιση καταστάσεων με χρήση από το Home Assistant σε κείμενο";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Ενέργεια";
 "widgets.details.parameters.details_template" = "Πρότυπο κειμένου λεπτομερειών (μόνο σε ορθογώνια)";
 "widgets.details.parameters.lower_template" = "Πρότυπο κάτω κειμένου";
@@ -1079,6 +1081,7 @@
 "widgets.details.parameters.upper_template" = "Πρότυπο πάνω κειμένου";
 "widgets.details.title" = "Λεπτομέρειες";
 "widgets.gauge.description" = "Εμφάνιση αριθμητικών καταστάσεων από το Home Assistant σε ένα μετρητή";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Ενέργεια";
 "widgets.gauge.parameters.gauge_type" = "Τύπος μετρητή";
 "widgets.gauge.parameters.gauge_type.capacity" = "Χωρητικότητα";
