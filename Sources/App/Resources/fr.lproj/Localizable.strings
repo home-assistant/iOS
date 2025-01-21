@@ -881,6 +881,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "watch.configurator.sections.icon.header" = "Icône";
 "watch.configurator.sections.ring.footer" = "L'anneau montrant les progrès entourant le texte.";
 "watch.configurator.sections.ring.header" = "Anneau";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
 "watch.debug.delete_db.alert.title" = "Etes-vous sûr de vouloir supprimer la configuration de la montre ? Cette opération ne peut pas être annulée";
 "watch.debug.delete_db.reset.title" = "Reset configuration";
@@ -1071,6 +1072,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Interrupteur";
 "widgets.details.description" = "Afficher les états à l'aide de Home Assistant dans le texte";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Lower Text Template";
@@ -1079,6 +1081,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.details.parameters.upper_template" = "Upper Text Template";
 "widgets.details.title" = "Détails";
 "widgets.gauge.description" = "Afficher les états numériques de Home Assistant dans une jauge";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Action";
 "widgets.gauge.parameters.gauge_type" = "Type de jauge";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacité";

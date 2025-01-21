@@ -881,6 +881,7 @@ Home Assistant - это бесплатное программное обеспе
 "watch.configurator.sections.icon.header" = "Значок";
 "watch.configurator.sections.ring.footer" = "Кольцо, показывающее прогресс, окружающее текст.";
 "watch.configurator.sections.ring.header" = "Кольцо";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Не удалось удалить конфигурацию, ошибка: %@";
 "watch.debug.delete_db.alert.title" = "Вы уверены, что хотите удалить конфигурацию Apple Watch? Это невозможно отменить";
 "watch.debug.delete_db.reset.title" = "Сбросить конфигурацию";
@@ -1071,6 +1072,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.controls.switch.placeholder_title" = "Выберите переключатель";
 "widgets.controls.switch.title" = "Переключатель";
 "widgets.details.description" = "Отображает состояния с помощью Home Assistant в текстовом виде";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Действие";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Нижний текстовый шаблон";
@@ -1079,6 +1081,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.details.parameters.upper_template" = "Верхний текстовый шаблон";
 "widgets.details.title" = "Подробности";
 "widgets.gauge.description" = "Отображение числовых состояний из Home Assistant в виде датчика";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Действие";
 "widgets.gauge.parameters.gauge_type" = "Тип датчика";
 "widgets.gauge.parameters.gauge_type.capacity" = "Емкость";

@@ -881,6 +881,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "A szöveget körülvevő, a haladást mutató gyűrű.";
 "watch.configurator.sections.ring.header" = "Gyűrű";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Nem sikerült törölni a konfigurációt, hiba: %@";
 "watch.debug.delete_db.alert.title" = "Biztosan törölni szeretné a watch konfigurációját? Ez a művelet nem vonható vissza.";
 "watch.debug.delete_db.reset.title" = "Konfiguráció visszaállítása";
@@ -1071,6 +1072,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.switch.placeholder_title" = "Válasszon kapcsolót";
 "widgets.controls.switch.title" = "Kapcsoló";
 "widgets.details.description" = "Az állapotok megjelenítése a Home Assistant segítségével szöveges formában";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Művelet";
 "widgets.details.parameters.details_template" = "Részletek szöveg sablon (csak a téglalap alakú családban)";
 "widgets.details.parameters.lower_template" = "Alsó szöveg sablon";
@@ -1079,6 +1081,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.details.parameters.upper_template" = "Felső szöveg sablon";
 "widgets.details.title" = "Részletek";
 "widgets.gauge.description" = "Számértékek megjelenítése a Home Assistantból egy mérőműszer segítségével";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Művelet";
 "widgets.gauge.parameters.gauge_type" = "Mérőműszer típusa";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapacitás";

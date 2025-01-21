@@ -881,6 +881,7 @@
 "watch.configurator.sections.icon.header" = "Icona";
 "watch.configurator.sections.ring.footer" = "L'anello che mostra il progresso attorno al testo.";
 "watch.configurator.sections.ring.header" = "Anello";
+"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
 "watch.debug.delete_db.alert.failed.message" = "Impossibile eliminare la configurazione, errore: %@";
 "watch.debug.delete_db.alert.title" = "Sei sicuro di voler eliminare la configurazione dell'orologio? Questa azione non può essere annullata";
 "watch.debug.delete_db.reset.title" = "Ripristina configurazione";
@@ -1071,6 +1072,7 @@
 "widgets.controls.switch.placeholder_title" = "Scegli interruttore";
 "widgets.controls.switch.title" = "Interruttore";
 "widgets.details.description" = "Visualizza gli stati utilizzando Home Assistant nel testo";
+"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Azione";
 "widgets.details.parameters.details_template" = "Dettagli Template di testo (solo nella famiglia rettangolare)";
 "widgets.details.parameters.lower_template" = "Template testo inferiore";
@@ -1079,6 +1081,7 @@
 "widgets.details.parameters.upper_template" = "Template del testo superiore";
 "widgets.details.title" = "Dettagli";
 "widgets.gauge.description" = "Visualizza stati numerici da Home Assistant in un indicatore";
+"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Azione";
 "widgets.gauge.parameters.gauge_type" = "Tipo d'indicatore";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacità";

@@ -882,6 +882,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "watch.configurator.sections.icon.header" = "Symbol";
 "watch.configurator.sections.ring.footer" = "Der Ring zeigt den Fortschritt rund um den Text an.";
 "watch.configurator.sections.ring.header" = "Ring";
+"watch.configurator.warning.templating_admin" = "ACHTUNG: Für die Erstellung von Templates in Uhrenkomplikationen muss der Benutzer die Rolle eines Administrators haben.";
 "watch.debug.delete_db.alert.failed.message" = "Löschen der Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.debug.delete_db.alert.title" = "Möchtest du die Watch-Konfiguration wirklich löschen? Dies kann nicht rückgängig gemacht werden.";
 "watch.debug.delete_db.reset.title" = "Konfiguration zurücksetzen";
@@ -1072,6 +1073,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "widgets.controls.switch.placeholder_title" = "Schalter auswählen";
 "widgets.controls.switch.title" = "Schalter";
 "widgets.details.description" = "Anzeigen von Zuständen mit Home Assistant in Textform";
+"widgets.details.description_with_warning" = "Anzeige von Zuständen aus Home Assistant in Textform. ACHTUNG: Der Benutzer muss Administrator sein, um Templates erstellen zu können";
 "widgets.details.parameters.action" = "Aktion";
 "widgets.details.parameters.details_template" = "Template Detail-Text (nur in rechteckiger Familie)";
 "widgets.details.parameters.lower_template" = "Template oberer Text";
@@ -1080,6 +1082,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "widgets.details.parameters.upper_template" = "Template unterer Text";
 "widgets.details.title" = "Details";
 "widgets.gauge.description" = "Numerische Zustände von Home Assistant in einer Analoganzeige darstellen";
+"widgets.gauge.description_with_warning" = "Anzeige von numerischen Zuständen aus Home Assistant in einer Analoganzeige. ACHTUNG: Der Benutzer muss Administrator sein, um Templates erstellen zu können";
 "widgets.gauge.parameters.action" = "Aktion";
 "widgets.gauge.parameters.gauge_type" = "Analoganzeigentyp";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapazität";
