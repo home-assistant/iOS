@@ -8,6 +8,7 @@ public enum DataWidgetsUpdater {
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.gauge.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.details.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.sensors.rawValue)
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.custom.rawValue)
     }
 
     public static func updateControlCenterControls() {

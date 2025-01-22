@@ -46,6 +46,14 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     enum WidgetIntentType: Hashable, Encodable {
         case action(id: String, name: String)
         case script(id: String, entityId: String, serverId: String, name: String, showConfirmationNotification: Bool)
+        /// Entities that can be toggled
+        case toggle(entityId: String, serverId: String)
+        /// Script or Scene
+        case activate(entityId: String, serverId: String)
+        /// Button
+        case press(entityId: String, serverId: String)
+        case navigate(serverId: String, path: String)
+        case assist(serverId: String, pipelineId: String, startListening: Bool)
         case refresh
     }
 }

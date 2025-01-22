@@ -5,6 +5,7 @@ import SwiftUI
 enum WidgetType: String {
     case button
     case sensor
+    case custom
 }
 
 struct WidgetBasicView: View {
@@ -44,7 +45,7 @@ struct WidgetBasicView: View {
     @available(iOS 16.0, *)
     private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
         switch type {
-        case .button:
+        case .button, .custom:
             return AnyView(WidgetBasicViewTintedWrapper(
                 model: model,
                 sizeStyle: sizeStyle,
@@ -61,7 +62,7 @@ struct WidgetBasicView: View {
 
     private func normalView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
         switch type {
-        case .button:
+        case .button, .custom:
             return AnyView(WidgetBasicButtonView(
                 model: model,
                 sizeStyle: sizeStyle,
@@ -102,6 +103,16 @@ struct WidgetBasicView: View {
                 intent.showConfirmationNotification = showConfirmationNotification
                 return intent
             case .refresh:
+                return ReloadWidgetsAppIntent()
+            case let .toggle(entityId, serverId):
+                return ReloadWidgetsAppIntent()
+            case let .activate(entityId, serverId):
+                return ReloadWidgetsAppIntent()
+            case let .press(entityId, serverId):
+                return ReloadWidgetsAppIntent()
+            case let .navigate(serverId, path):
+                return ReloadWidgetsAppIntent()
+            case let .assist(serverId, pipelineId, startListening):
                 return ReloadWidgetsAppIntent()
             }
         }

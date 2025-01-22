@@ -4,31 +4,6 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatable {
-    var id: String = UUID().uuidString
-    var name: String = ""
-    var items: [MagicItem] = []
-    /// Controls the UI state of the widget when the item tapped requires confirmation
-    var itemsStates: [MagicItem: ItemState] = [:]
-
-    init(name: String, items: [MagicItem]) {
-        self.name = name
-        self.items = items
-        self.itemsStates = [:]
-    }
-
-    enum ItemState: String, Codable, FetchableRecord, PersistableRecord, Equatable {
-        case idle
-        case pendingConfirmation
-    }
-
-    public static func widgets() throws -> [CustomWidget]? {
-        try Current.database.read({ db in
-            try CustomWidget.fetchAll(db)
-        })
-    }
-}
-
 struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WidgetCreationViewModel
@@ -189,10 +164,12 @@ struct WidgetCreationView: View {
             let textColor = Color(hex: magicItem.customization?.textColor)
             let iconColor = Color(hex: magicItem.customization?.iconColor)
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
+            let subtitle: String? = [.script, .scene, .button, .inputButton].contains(magicItem.domain) ? nil : L10n
+                .Widgets.EntityState.placeholder
             return WidgetBasicViewModel(
                 id: magicItem.id,
                 title: magicItem.displayText ?? info?.name ?? magicItem.id,
-                subtitle: "Entity state",
+                subtitle: subtitle,
                 interactionType: .appIntent(.refresh),
                 icon: MaterialDesignIcons(serversideValueNamed: info?.iconName ?? "", fallback: .dotsGridIcon),
                 textColor: textColor,

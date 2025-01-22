@@ -3863,6 +3863,10 @@ public enum L10n {
         public static var upperTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.upper_template") }
       }
     }
+    public enum EntityState {
+      /// Entity state
+      public static var placeholder: String { return L10n.tr("Localizable", "widgets.entity_state.placeholder") }
+    }
     public enum Gauge {
       /// Display numeric states from Home Assistant in a gauge
       public static var description: String { return L10n.tr("Localizable", "widgets.gauge.description") }
@@ -3906,6 +3910,20 @@ public enum L10n {
       public static var notConfigured: String { return L10n.tr("Localizable", "widgets.open_page.not_configured") }
       /// Open Page
       public static var title: String { return L10n.tr("Localizable", "widgets.open_page.title") }
+    }
+    public enum Preview {
+      public enum Custom {
+        /// Create your own widget inside the App and then display it here.
+        public static var description: String { return L10n.tr("Localizable", "widgets.preview.custom.description") }
+        /// Custom widget
+        public static var title: String { return L10n.tr("Localizable", "widgets.preview.custom.title") }
+      }
+      public enum Empty {
+        public enum Create {
+          /// Create widget
+          public static var button: String { return L10n.tr("Localizable", "widgets.preview.empty.create.button") }
+        }
+      }
     }
     public enum ReloadWidgets {
       public enum AppIntent {

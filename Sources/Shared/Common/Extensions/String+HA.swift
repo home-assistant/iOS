@@ -10,4 +10,12 @@ public extension String {
     var containsJinjaTemplate: Bool {
         contains("{{") || contains("{%") || contains("{#")
     }
+
+    /// Capitalizes the first character of the string.
+    var capitalizedFirst: String {
+        guard let first else {
+            return self
+        }
+        return first.uppercased() + dropFirst()
+    }
 }

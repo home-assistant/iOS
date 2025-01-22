@@ -559,8 +559,8 @@
 		420CFC7D2D3F9CCB009A94F3 /* AppPanelTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */; };
 		420CFC802D3F9D89009A94F3 /* DatabaseTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */; };
 		420CFC812D3F9D89009A94F3 /* DatabaseTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */; };
-		420CFC842D3FECF6009A94F3 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC832D3FECF6009A94F3 /* CustomWidget.swift */; };
-		420CFC852D3FECF6009A94F3 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC832D3FECF6009A94F3 /* CustomWidget.swift */; };
+		420CFC842D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */; };
+		420CFC852D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */; };
 		420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
 		420D5AE42C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
 		420E2AE32C4746BB004921D8 /* WidgetBasicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */; };
@@ -589,6 +589,10 @@
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		4221ED352D009EF700BAE3EB /* PeriodicAppEntitiesModelUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* PeriodicAppEntitiesModelUpdater.swift */; };
 		4221ED362D009EF700BAE3EB /* PeriodicAppEntitiesModelUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* PeriodicAppEntitiesModelUpdater.swift */; };
+		4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688A2D40F9B7005911E4 /* WidgetCustom.swift */; };
+		4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
+		422368902D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
+		422368912D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
@@ -1883,7 +1887,7 @@
 		420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryListForDisplayTable.swift; sourceTree = "<group>"; };
 		420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPanelTable.swift; sourceTree = "<group>"; };
 		420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTables.swift; sourceTree = "<group>"; };
-		420CFC832D3FECF6009A94F3 /* CustomWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidget.swift; sourceTree = "<group>"; };
+		420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetTable.swift; sourceTree = "<group>"; };
 		420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionSensor.swift; sourceTree = "<group>"; };
 		420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewModel.swift; sourceTree = "<group>"; };
 		420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSizeStyle.swift; sourceTree = "<group>"; };
@@ -1903,6 +1907,9 @@
 		421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderViewModel.swift; sourceTree = "<group>"; };
 		421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifier.swift"; sourceTree = "<group>"; };
 		4221ED332D009BD000BAE3EB /* PeriodicAppEntitiesModelUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodicAppEntitiesModelUpdater.swift; sourceTree = "<group>"; };
+		4223688A2D40F9B7005911E4 /* WidgetCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustom.swift; sourceTree = "<group>"; };
+		4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustomTimelineProvider.swift; sourceTree = "<group>"; };
+		4223688F2D40FCDE005911E4 /* CustomWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidget.swift; sourceTree = "<group>"; };
 		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
@@ -3010,16 +3017,14 @@
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
-				42C101252CD3DAAA0012BA78 /* Cover */,
+				422368892D40F980005911E4 /* Lockscreen */,
+				422368882D40F965005911E4 /* Controls */,
+				422368872D40F959005911E4 /* Custom */,
 				3E02C0F82CAD9EC700102131 /* Sensor */,
-				426CBB682C9C5426003CA3AC /* Switch */,
-				420461672C8F29290062E89F /* Light */,
 				42F958962BB4680100497981 /* Assist */,
 				115560DF27010D6700A8F818 /* Common */,
 				110E693E24E770BD004AA96D /* Actions */,
 				115560EA27012ED000A8F818 /* OpenPage */,
-				403AE9072C2E214D00D48147 /* Gauge */,
-				4080D5BB2C319A9100099C88 /* Details */,
 				1171508324DFCF960065E874 /* Resources */,
 				4289DDAC2C85D595003591C2 /* Scene */,
 				42D3E4A92C5D28F800444BE6 /* Script */,
@@ -3718,7 +3723,7 @@
 			isa = PBXGroup;
 			children = (
 				420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */,
-				420CFC832D3FECF6009A94F3 /* CustomWidget.swift */,
+				420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */,
 				420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */,
 				420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */,
 				420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */,
@@ -3742,6 +3747,7 @@
 			isa = PBXGroup;
 			children = (
 				420F53E72C4E9AEE003C8415 /* WidgetsKind.swift */,
+				4223688F2D40FCDE005911E4 /* CustomWidget.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -3790,6 +3796,34 @@
 				4285C54F2D355F8900DADE45 /* Builder */,
 			);
 			path = Widgets;
+			sourceTree = "<group>";
+		};
+		422368872D40F959005911E4 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				4223688A2D40F9B7005911E4 /* WidgetCustom.swift */,
+				4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
+		422368882D40F965005911E4 /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				42C101252CD3DAAA0012BA78 /* Cover */,
+				426CBB682C9C5426003CA3AC /* Switch */,
+				420461672C8F29290062E89F /* Light */,
+			);
+			path = Controls;
+			sourceTree = "<group>";
+		};
+		422368892D40F980005911E4 /* Lockscreen */ = {
+			isa = PBXGroup;
+			children = (
+				403AE9072C2E214D00D48147 /* Gauge */,
+				4080D5BB2C319A9100099C88 /* Details */,
+			);
+			path = Lockscreen;
 			sourceTree = "<group>";
 		};
 		422E25EB2C7FF27800256D87 /* Control */ = {
@@ -6846,7 +6880,9 @@
 				403AE9122C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,
 				428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
+				4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */,
 				428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
+				4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */,
 				429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */,
 				420461692C8F29440062E89F /* ControlLight.swift in Sources */,
 				110E694624E771AB004AA96D /* Color+Hex.swift in Sources */,
@@ -7338,7 +7374,7 @@
 				110ED56425A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				4251AAC22C6CE9CB004CCC9D /* WatchConfig.swift in Sources */,
 				4251AABF2C6CE376004CCC9D /* MagicItem.swift in Sources */,
-				420CFC852D3FECF6009A94F3 /* CustomWidget.swift in Sources */,
+				420CFC852D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */,
 				1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				428338452BA1BB4F004798C2 /* Spaces.swift in Sources */,
@@ -7400,6 +7436,7 @@
 				B67CE89E22200F220034C1D0 /* DiscoveredHomeAssistant.swift in Sources */,
 				1182620824F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
 				11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */,
+				422368912D40FCDE005911E4 /* CustomWidget.swift in Sources */,
 				11FA53F3251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */,
 				B67CE8B022200F220034C1D0 /* CLLocation+Extensions.swift in Sources */,
 				B67CE8A822200F220034C1D0 /* MJPEGStreamer.swift in Sources */,
@@ -7700,7 +7737,7 @@
 				42DEDA9A2C5B926400E9D29D /* AppVersionSensor.swift in Sources */,
 				11F2F24125871CAF00F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				427647252C8F38590027B21F /* HAAreaResponse.swift in Sources */,
-				420CFC842D3FECF6009A94F3 /* CustomWidget.swift in Sources */,
+				420CFC842D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */,
 				42070EEE2BAC523F0031E96F /* AssistService.swift in Sources */,
 				42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */,
 				420CFC6C2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */,
@@ -7723,6 +7760,7 @@
 				11F2F26E25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,
 				1105CE1C272B9CB300F33BD8 /* ServerManager.swift in Sources */,
 				D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */,
+				422368902D40FCDE005911E4 /* CustomWidget.swift in Sources */,
 				D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */,
 				118261F724F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */,
 				11C8E8AE24F3778E003E7F89 /* DeviceWrapper.swift in Sources */,

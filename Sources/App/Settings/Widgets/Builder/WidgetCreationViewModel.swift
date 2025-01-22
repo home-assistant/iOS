@@ -30,6 +30,7 @@ final class WidgetCreationViewModel: ObservableObject {
             try Current.database.write { db in
                 try widget.insert(db, onConflict: .replace)
             }
+            DataWidgetsUpdater.update()
             shouldDismiss = true
         } catch {
             Current.Log.error("Failed to insert/update custom widget, error: \(error.localizedDescription)")

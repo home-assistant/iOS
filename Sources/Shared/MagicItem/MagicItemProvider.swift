@@ -4,6 +4,7 @@ import PromiseKit
 
 public protocol MagicItemProviderProtocol {
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void)
+    func loadInformation() async -> [String: [HAAppEntity]]
     func getInfo(for item: MagicItem) -> MagicItem.Info?
 }
 
@@ -19,6 +20,25 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 }
             })
         }
+    }
+
+    func loadInformation() async -> [String: [HAAppEntity]] {
+        await withCheckedContinuation { continuation in
+            loadAppEntities {
+                continuation.resume()
+            }
+        }
+        await withCheckedContinuation { continuation in
+            migrateWatchConfig {
+                continuation.resume()
+            }
+        }
+        await withCheckedContinuation { continuation in
+            migrateCarPlayConfig {
+                continuation.resume()
+            }
+        }
+        return entitiesPerServer
     }
 
     func migrateCarPlayConfig(completion: @escaping () -> Void) {

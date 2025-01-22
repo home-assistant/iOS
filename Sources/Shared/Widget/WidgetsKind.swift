@@ -8,6 +8,7 @@ public enum WidgetsKind: String, CaseIterable {
     case details = "WidgetDetails"
     case scripts = "WidgetScripts"
     case sensors
+    case custom
     case controlScript
     case controlScene
     case controlAssist
