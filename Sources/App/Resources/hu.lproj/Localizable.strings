@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Kérdezzen a Discordon";
 "connection.error.details.button.doc" = "Olvassa el a dokumentációt";
 "connection.error.details.button.github" = "Jelentse a problémát a GitHubon";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Kód";
 "connection.error.details.label.description" = "Leírás";
 "connection.error.details.label.domain" = "Tartomány";
@@ -824,6 +825,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "url_handler.x_callback_url.error.general" = "Általános hiba történt";
 "url_handler.x_callback_url.error.serviceMissing" = "szolgáltatást (pl. homeassistant.turn_on) definiálni kell";
 "url_handler.x_callback_url.error.templateMissing" = "Meg kell határozni egy renderelhető sablont";
+"url_label" = "URL";
 "username_label" = "Felhasználónév";
 "watch.assist.lack_config.error.title" = "Kérjük, konfigurálja az Assist funkciót az iOS mobilalkalmazás segítségével";
 "watch.config.assist.select_server" = "Szerver";

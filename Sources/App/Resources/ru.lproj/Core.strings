@@ -3,7 +3,7 @@
 "common::state::connected" = "Подключено";
 "common::state::disabled" = "Отключено";
 "common::state::disconnected" = "Отключено";
-"common::state::enabled" = "Включено";
+"common::state::enabled" = "Активировано";
 "common::state::home" = "Дома";
 "common::state::idle" = "Бездействие";
 "common::state::locked" = "Заблокировано";
@@ -44,7 +44,7 @@
 "component::calendar::entity_component::_::state_attributes::all_day::state::true" = "Да";
 "component::camera::entity_component::_::state::idle" = "Бездействие";
 "component::camera::entity_component::_::state_attributes::motion_detection::state::false" = "Отключено";
-"component::camera::entity_component::_::state_attributes::motion_detection::state::true" = "Включено";
+"component::camera::entity_component::_::state_attributes::motion_detection::state::true" = "Активировано";
 "component::climate::entity_component::_::state::off" = "Выключено";
 "component::climate::entity_component::_::state_attributes::fan_mode::state::off" = "Выключено";
 "component::climate::entity_component::_::state_attributes::fan_mode::state::on" = "Включено";
@@ -72,7 +72,7 @@
 "component::fan::entity_component::_::state_attributes::oscillating::state::true" = "Да";
 "component::fritzbox_callmonitor::entity::sensor::fritzbox_callmonitor::state::idle" = "Бездействие";
 "component::gardena_bluetooth::entity::switch::state::name" = "Открыто";
-"component::google_mail::services::set_vacation::fields::enabled::name" = "Включено";
+"component::google_mail::services::set_vacation::fields::enabled::name" = "Активировано";
 "component::group::entity_component::_::state::closed" = "Закрыто";
 "component::group::entity_component::_::state::home" = "Дома";
 "component::group::entity_component::_::state::locked" = "Заблокировано";
@@ -140,7 +140,7 @@
 "component::litterrobot::entity::sensor::status_code::state::p" = "Пауза";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::off" = "Выключено";
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "Пауза";
-"component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Включено";
+"component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Активировано";
 "component::lock::entity_component::_::state::locked" = "Заблокировано";
 "component::lock::entity_component::_::state::unlocked" = "Открыто";
 "component::lock::title" = "Замок";
@@ -275,12 +275,12 @@
 "component::wled::entity::select::live_override::state:::0" = "Выключено";
 "component::wled::entity::select::live_override::state:::1" = "Включено";
 "component::wolflink::entity::sensor::state::state::aus" = "Отключено";
-"component::wolflink::entity::sensor::state::state::ein" = "Включено";
+"component::wolflink::entity::sensor::state::state::ein" = "Активировано";
 "component::wolflink::entity::sensor::state::state::standby" = "Ожидание";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "Выключено";
-"component::yamaha::services::enable_output::fields::enabled::name" = "Включено";
+"component::yamaha::services::enable_output::fields::enabled::name" = "Активировано";
 "component::yamaha_musiccast::entity::select::zone_sleep::state::off" = "Выключено";
 "component::yeelight::selector::action::options::off" = "Выключено";
 "component::yolink::entity::sensor::power_failure_alarm::state::off" = "Выключено";
 "component::yolink::entity::sensor::power_failure_alarm_beep::state::disabled" = "Отключено";
-"component::yolink::entity::sensor::power_failure_alarm_beep::state::enabled" = "Включено";
+"component::yolink::entity::sensor::power_failure_alarm_beep::state::enabled" = "Активировано";

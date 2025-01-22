@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Spørg i Discord";
 "connection.error.details.button.doc" = "Læs dokumentationen";
 "connection.error.details.button.github" = "Rapporter problemet på Github";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Kode";
 "connection.error.details.label.description" = "Beskrivelse";
 "connection.error.details.label.domain" = "Domæne";
@@ -824,6 +825,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "url_handler.x_callback_url.error.general" = "Der opstod en generel fejl";
 "url_handler.x_callback_url.error.serviceMissing" = "service (f.eks. homeassistant.turn_on) skal defineres";
 "url_handler.x_callback_url.error.templateMissing" = "Der skal defineres en gengivbar skabelon";
+"url_label" = "URL";
 "username_label" = "Brugernavn";
 "watch.assist.lack_config.error.title" = "Konfigurer venligst Assist ved hjælp af iOS companion App";
 "watch.config.assist.select_server" = "Server";

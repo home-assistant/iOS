@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Zeptat se na Discordu";
 "connection.error.details.button.doc" = "Přečíst si dokumentaci";
 "connection.error.details.button.github" = "Nahlásit problém na GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Kód";
 "connection.error.details.label.description" = "Popis";
 "connection.error.details.label.domain" = "Doména";
@@ -824,6 +825,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "url_handler.x_callback_url.error.general" = "Došlo k obecné chybě";
 "url_handler.x_callback_url.error.serviceMissing" = "Musí být definována služba (např. homeassistant.turn_on)";
 "url_handler.x_callback_url.error.templateMissing" = "Musí být definována vykreslitelná šablona";
+"url_label" = "URL";
 "username_label" = "Uživatelské jméno";
 "watch.assist.lack_config.error.title" = "Nastavte Assist pomocí doprovodné aplikace pro iOS";
 "watch.config.assist.select_server" = "Server";

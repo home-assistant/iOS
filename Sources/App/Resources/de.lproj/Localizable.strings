@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Auf Discord fragen";
 "connection.error.details.button.doc" = "Dokumentation lesen";
 "connection.error.details.button.github" = "Problem auf GitHub melden";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Beschreibung";
 "connection.error.details.label.domain" = "Domain";
@@ -825,6 +826,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "url_handler.x_callback_url.error.general" = "Ein allgemeiner Fehler ist aufgetreten";
 "url_handler.x_callback_url.error.serviceMissing" = "Dienst (z. B. homeassistant.turn_on) muss definiert sein.";
 "url_handler.x_callback_url.error.templateMissing" = "Ein darstellbares Template muss definiert werden";
+"url_label" = "URL";
 "username_label" = "Benutzername";
 "watch.assist.lack_config.error.title" = "Bitte konfiguriere Assist mit der iOS-Companion-App";
 "watch.config.assist.select_server" = "Server";

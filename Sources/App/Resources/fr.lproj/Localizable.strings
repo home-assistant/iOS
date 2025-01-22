@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Read documentation";
 "connection.error.details.button.github" = "Report issue in GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
@@ -824,6 +825,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "url_handler.x_callback_url.error.general" = "Une erreur générale s'est produite";
 "url_handler.x_callback_url.error.serviceMissing" = "service (par exemple, homeassistant.turn_on) doit être défini";
 "url_handler.x_callback_url.error.templateMissing" = "Un modèle de rendu doit être défini";
+"url_label" = "URL";
 "username_label" = "Nom d'utilisateur";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Serveur";

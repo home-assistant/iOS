@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Спросить в Discord";
 "connection.error.details.button.doc" = "Читать документацию";
 "connection.error.details.button.github" = "Сообщить о проблеме на GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Код";
 "connection.error.details.label.description" = "Описание";
 "connection.error.details.label.domain" = "Домен";
@@ -824,6 +825,7 @@ Home Assistant - это бесплатное программное обеспе
 "url_handler.x_callback_url.error.general" = "Произошла общая ошибка";
 "url_handler.x_callback_url.error.serviceMissing" = "служба (например, homeassistant.turn_on) должна быть определена";
 "url_handler.x_callback_url.error.templateMissing" = "Необходимо указать интерпретируемый шаблон";
+"url_label" = "URL";
 "username_label" = "Имя пользователя";
 "watch.assist.lack_config.error.title" = "Пожалуйста, настройте Assist с помощью приложения-компаньона iOS";
 "watch.config.assist.select_server" = "Сервер";

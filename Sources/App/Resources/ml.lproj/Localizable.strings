@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Read documentation";
 "connection.error.details.button.github" = "Report issue in GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
@@ -824,6 +825,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "url_handler.x_callback_url.error.general" = "A general error occurred";
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
+"url_label" = "URL";
 "username_label" = "Username";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";

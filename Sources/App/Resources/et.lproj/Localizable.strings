@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Küsi Discordis";
 "connection.error.details.button.doc" = "Loe dokumentatsiooni";
 "connection.error.details.button.github" = "Teata probleemist Githubis";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Kood";
 "connection.error.details.label.description" = "Kirjeldus";
 "connection.error.details.label.domain" = "Domeen";
@@ -824,6 +825,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "url_handler.x_callback_url.error.general" = "Ilmnes üldine tõrge";
 "url_handler.x_callback_url.error.serviceMissing" = "teenus (nt homeassistant.turn_on) peab olema määratletud";
 "url_handler.x_callback_url.error.templateMissing" = "Tuleb määratleda renderdatav mall";
+"url_label" = "URL";
 "username_label" = "Kasutajanimi";
 "watch.assist.lack_config.error.title" = "Seadista Assist iOS-i kaasrakenduse abil";
 "watch.config.assist.select_server" = "Server";

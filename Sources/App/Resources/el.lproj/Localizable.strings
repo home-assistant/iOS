@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Ρωτήστε στο Discord";
 "connection.error.details.button.doc" = "Διαβάστε την τεκμηρίωση";
 "connection.error.details.button.github" = "Αναφορά προβλήματος στο GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Κώδικας";
 "connection.error.details.label.description" = "Περιγραφή";
 "connection.error.details.label.domain" = "Τομέας";
@@ -824,6 +825,7 @@
 "url_handler.x_callback_url.error.general" = "Παρουσιάστηκε ένα γενικό σφάλμα";
 "url_handler.x_callback_url.error.serviceMissing" = "υπηρεσία (π.χ. homeassistant.turn_on) πρέπει να οριστεί";
 "url_handler.x_callback_url.error.templateMissing" = "Πρέπει να οριστεί ένα πρότυπο που μπορεί να αποδοθεί";
+"url_label" = "URL";
 "username_label" = "Όνομα χρήστη";
 "watch.assist.lack_config.error.title" = "Παρακαλώ ρυθμίστε το Assist χρησιμοποιώντας την εφαρμογή iOS companion";
 "watch.config.assist.select_server" = "Διακομιστής";

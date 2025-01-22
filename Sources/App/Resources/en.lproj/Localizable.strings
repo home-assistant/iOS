@@ -826,6 +826,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "url_handler.x_callback_url.error.general" = "A general error occurred";
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
+"url_label" = "URL";
 "username_label" = "Username";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";
@@ -1110,4 +1111,3 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
-"url_label" = "URL";
