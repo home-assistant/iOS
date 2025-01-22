@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Tanyakan di Discord";
 "connection.error.details.button.doc" = "Baca dokumentasi";
 "connection.error.details.button.github" = "Laporkan masalah di GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Kode";
 "connection.error.details.label.description" = "Deskripsi";
 "connection.error.details.label.domain" = "Domain";
@@ -824,6 +825,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "url_handler.x_callback_url.error.general" = "Terjadi kesalahan umum";
 "url_handler.x_callback_url.error.serviceMissing" = "layanan (mis. homeassistant.turn_on) harus ditentukan";
 "url_handler.x_callback_url.error.templateMissing" = "Templat yang dapat dirender harus ditentukan";
+"url_label" = "URL";
 "username_label" = "Nama Pengguna";
 "watch.assist.lack_config.error.title" = "Konfigurasikan Assist menggunakan Aplikasi pendamping iOS";
 "watch.config.assist.select_server" = "Server";

@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Read documentation";
 "connection.error.details.button.github" = "Report issue in GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Kod";
 "connection.error.details.label.description" = "Opis";
 "connection.error.details.label.domain" = "Domena";
@@ -822,6 +823,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "url_handler.x_callback_url.error.general" = "Wystąpił błąd ogólny";
 "url_handler.x_callback_url.error.serviceMissing" = "usługa (np. homeassistant.turn_on) musi zostać zdefiniowana";
 "url_handler.x_callback_url.error.templateMissing" = "Możliwy do wyrenderowania szablon musi być zdefiniowany";
+"url_label" = "URL";
 "username_label" = "Nazwa użytkownika";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";

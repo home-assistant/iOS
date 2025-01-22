@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Chiedi su Discord";
 "connection.error.details.button.doc" = "Leggi la documentazione";
 "connection.error.details.button.github" = "Segnala il problema su GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Codice";
 "connection.error.details.label.description" = "Descrizione";
 "connection.error.details.label.domain" = "Dominio";
@@ -824,6 +825,7 @@
 "url_handler.x_callback_url.error.general" = "Si è verificato un errore generale";
 "url_handler.x_callback_url.error.serviceMissing" = "deve essere definito un servizio (ad es. homeassistant.turn_on)";
 "url_handler.x_callback_url.error.templateMissing" = "Deve essere definito un modello renderizzabile";
+"url_label" = "URL";
 "username_label" = "Nome utente";
 "watch.assist.lack_config.error.title" = "Configura Assist utilizzando l'applicazione complementare iOS";
 "watch.config.assist.select_server" = "Server";

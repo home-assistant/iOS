@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Read documentation";
 "connection.error.details.button.github" = "Report issue in GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
@@ -824,6 +825,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "url_handler.x_callback_url.error.general" = "Det oppstod en generell feil";
 "url_handler.x_callback_url.error.serviceMissing" = "Service (f.eks. homeassistant. turn_on) må defineres";
 "url_handler.x_callback_url.error.templateMissing" = "En gjengivelsesmal må defineres";
+"url_label" = "URL";
 "username_label" = "Brukernavn";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";

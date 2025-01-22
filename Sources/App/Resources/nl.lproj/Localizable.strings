@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Vraag het in Discord";
 "connection.error.details.button.doc" = "Documentatie lezen";
 "connection.error.details.button.github" = "Probleem melden in GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Beschrijving";
 "connection.error.details.label.domain" = "Domein";
@@ -824,6 +825,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "url_handler.x_callback_url.error.general" = "Er is een algemene fout opgetreden";
 "url_handler.x_callback_url.error.serviceMissing" = "service (bijv. homeassistant.turn_on) moet worden gedefinieerd";
 "url_handler.x_callback_url.error.templateMissing" = "Een renderbare sjabloon moet worden gedefinieerd";
+"url_label" = "URL";
 "username_label" = "Gebruikersnaam";
 "watch.assist.lack_config.error.title" = "Configureer Assist met behulp van de iOS-companion app";
 "watch.config.assist.select_server" = "Server";

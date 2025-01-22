@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Discordで質問する";
 "connection.error.details.button.doc" = "ドキュメントを読む";
 "connection.error.details.button.github" = "GitHubで問題を報告する";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "コード";
 "connection.error.details.label.description" = "説明";
 "connection.error.details.label.domain" = "ドメイン";
@@ -824,6 +825,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "url_handler.x_callback_url.error.general" = "一般的なエラーが発生しました";
 "url_handler.x_callback_url.error.serviceMissing" = "サービス (例: homeassistant.turn_on) を定義する必要があります";
 "url_handler.x_callback_url.error.templateMissing" = "レンダリング可能なテンプレートを定義する必要があります";
+"url_label" = "URL";
 "username_label" = "ユーザー名";
 "watch.assist.lack_config.error.title" = "iOSコンパニオンアプリを使用してアシストを設定してください";
 "watch.config.assist.select_server" = "サーバー";

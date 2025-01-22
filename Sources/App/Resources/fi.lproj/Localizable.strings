@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Read documentation";
 "connection.error.details.button.github" = "Report issue in GitHub";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
@@ -824,6 +825,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "url_handler.x_callback_url.error.general" = "Tapahtui yleinen virhe";
 "url_handler.x_callback_url.error.serviceMissing" = "palvelu (esim. homeassistant.turn_on) on määritettävä";
 "url_handler.x_callback_url.error.templateMissing" = "Hahmotettava malli on määritettävä";
+"url_label" = "URL";
 "username_label" = "Käyttäjätunnus";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";

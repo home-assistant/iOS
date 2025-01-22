@@ -185,6 +185,7 @@
 "connection.error.details.button.discord" = "לשאול ב-Discord";
 "connection.error.details.button.doc" = "לקרוא את הדוקומנטציה";
 "connection.error.details.button.github" = "לדווח בעיה ב-Github";
+"connection.error.details.button.search_github" = "Search in GitHub";
 "connection.error.details.label.code" = "קוד";
 "connection.error.details.label.description" = "תיאור";
 "connection.error.details.label.domain" = "דומיין";
@@ -824,6 +825,7 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "url_handler.x_callback_url.error.general" = "A general error occurred";
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
+"url_label" = "URL";
 "username_label" = "שם משתמש";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Server";
