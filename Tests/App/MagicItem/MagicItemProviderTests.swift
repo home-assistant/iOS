@@ -83,13 +83,15 @@ struct MagicItemProviderTests {
         #expect(newWatchConfig?.items == [
             .init(id: "script.one", serverId: "2", type: .script),
             .init(id: "scene.one", serverId: "2", type: .scene),
-            .init(id: "light.one", serverId: "2", type: .entity),
+            // No replacement provided so item stays the same
+            .init(id: "light.one", serverId: "1", type: .entity),
         ])
 
         #expect(newCarPlayConfig?.quickAccessItems == [
             .init(id: "script.one", serverId: "2", type: .script),
             .init(id: "scene.one", serverId: "2", type: .scene),
-            .init(id: "light.one", serverId: "2", type: .entity),
+            // No replacement provided so item stays the same
+            .init(id: "light.one", serverId: "1", type: .entity),
         ])
     }
 }
