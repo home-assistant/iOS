@@ -4,6 +4,7 @@ import SwiftUI
 
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
+    private let feedbackGenerator = UINotificationFeedbackGenerator()
     let error: Error
     var body: some View {
         ScrollView {
@@ -51,7 +52,17 @@ struct ConnectionErrorDetailsView: View {
         ) {
             UIPasteboard.general
                 .string =
-                "Description: \n \(error.localizedDescription) \n Domain: \n \((error as NSError).domain) \n Code: \n \((error as NSError).code) \n URL: \n \((error as? URLError)?.failingURL?.absoluteString ?? "")"
+                """
+                \(L10n.Connection.Error.Details.Label.description): \n 
+                \(error.localizedDescription) \n 
+                \(L10n.Connection.Error.Details.Label.domain): \n 
+                \((error as NSError).domain) \n 
+                \(L10n.Connection.Error.Details.Label.code): \n 
+                \((error as NSError).code) \n 
+                \(L10n.urlLabel): \n 
+                \((error as? URLError)?.failingURL?.absoluteString ?? "")
+                """
+            feedbackGenerator.notificationOccurred(.success)
         }
     }
 
