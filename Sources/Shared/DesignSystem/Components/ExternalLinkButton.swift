@@ -33,6 +33,41 @@ public struct ExternalLinkButton: View {
     }
 }
 
+public struct ActionLinkButton: View {
+    let icon: Image
+    let title: String
+    let tint: Color
+    let action: () -> Void
+
+    public init(icon: Image, title: String, tint: Color, action: @escaping () -> Void) {
+        self.icon = icon
+        self.title = title
+        self.tint = tint
+        self.action = action
+    }
+
+    public var body: some View {
+        Button(action: {
+            action()
+        }, label: {
+            HStack(spacing: Spaces.two) {
+                icon
+                    .frame(width: 30, height: 30)
+                    .font(.title2)
+                    .tint(tint)
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .tint(Color(uiColor: .label))
+                    .font(.body.bold())
+            }
+        })
+        .frame(maxWidth: 600)
+        .padding()
+        .background(Color(uiColor: .secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
 #Preview {
     VStack {}
         .sheet(isPresented: .constant(true)) {

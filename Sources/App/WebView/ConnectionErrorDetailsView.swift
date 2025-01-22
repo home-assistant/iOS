@@ -4,6 +4,7 @@ import SwiftUI
 
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
+    private let feedbackGenerator = UINotificationFeedbackGenerator()
     let error: Error
     var body: some View {
         ScrollView {
@@ -25,6 +26,7 @@ struct ConnectionErrorDetailsView: View {
                     }
                 }
                 .padding(.vertical)
+                copyToClipboardButton
                 documentationLink
                 discordLink
                 githubLink
@@ -39,6 +41,28 @@ struct ConnectionErrorDetailsView: View {
                 .font(.headline.bold())
             Text(body)
                 .textSelection(.enabled)
+        }
+    }
+
+    private var copyToClipboardButton: some View {
+        ActionLinkButton(
+            icon: Image(systemSymbol: .docOnDoc),
+            title: L10n.Connection.Error.Details.Button.clipboard,
+            tint: .init(uiColor: Asset.Colors.haPrimary.color)
+        ) {
+            UIPasteboard.general
+                .string =
+                """
+                \(L10n.Connection.Error.Details.Label.description): \n 
+                \(error.localizedDescription) \n 
+                \(L10n.Connection.Error.Details.Label.domain): \n 
+                \((error as NSError).domain) \n 
+                \(L10n.Connection.Error.Details.Label.code): \n 
+                \((error as NSError).code) \n 
+                \(L10n.urlLabel): \n 
+                \((error as? URLError)?.failingURL?.absoluteString ?? "")
+                """
+            feedbackGenerator.notificationOccurred(.success)
         }
     }
 
@@ -62,14 +86,6 @@ struct ConnectionErrorDetailsView: View {
 
     @ViewBuilder
     private var githubLink: some View {
-        ExternalLinkButton(
-            icon: Image("github.fill"),
-            title: L10n.Connection.Error.Details.Button.github,
-            url: ExternalLink.githubReportIssue,
-            tint: .init(uiColor: .init(dynamicProvider: { trait in
-                trait.userInterfaceStyle == .dark ? .white : .black
-            }))
-        )
         if let searchURL = ExternalLink.githubSearchIssue(domain: (error as NSError).domain) {
             ExternalLinkButton(
                 icon: Image("github.fill"),
