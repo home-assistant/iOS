@@ -764,6 +764,8 @@ public enum L10n {
         /// Connection error
         public static var title: String { return L10n.tr("Localizable", "connection.error.details.title") }
         public enum Button {
+          /// Copy to clipboard
+          public static var clipboard: String { return L10n.tr("Localizable", "connection.error.details.button.clipboard") }
           /// Ask in Discord
           public static var discord: String { return L10n.tr("Localizable", "connection.error.details.button.discord") }
           /// Read documentation
