@@ -108,7 +108,7 @@ struct WidgetCustom: Widget {
             case let .runScript(serverId, scriptId):
                 return .appIntent(.activate(entityId: scriptId, serverId: serverId))
             case let .assist(serverId, pipelineId, startListening):
-                return .appIntent(.assist(serverId: serverId, pipelineId: pipelineId, startListening: startListening))
+                return assistIntent(serverId: serverId, pipelineId: pipelineId, startListening: startListening)
             }
         } else {
             switch domain {
@@ -135,6 +135,18 @@ struct WidgetCustom: Widget {
         if let url =
             URL(
                 string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(magicItem.serverId)"
+            ) {
+            return .widgetURL(url)
+        } else {
+            return .appIntent(.refresh)
+        }
+    }
+
+    private func assistIntent(serverId: String, pipelineId: String, startListening: Bool) -> WidgetBasicViewModel.InteractionType {
+
+        if let url =
+            URL(
+                string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
             ) {
             return .widgetURL(url)
         } else {

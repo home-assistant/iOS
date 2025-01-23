@@ -52,8 +52,6 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         case activate(entityId: String, serverId: String)
         /// Button
         case press(entityId: String, serverId: String)
-        case navigate(serverId: String, path: String)
-        case assist(serverId: String, pipelineId: String, startListening: Bool)
         case refresh
     }
 }

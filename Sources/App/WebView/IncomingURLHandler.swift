@@ -18,6 +18,7 @@ class IncomingURLHandler {
         case fireEvent = "fire_event"
         case sendLocation = "send_location"
         case performAction = "perform_action"
+        case assist
         case navigate
     }
 
@@ -91,6 +92,29 @@ class IncomingURLHandler {
                         queryParameters: queryParameters
                     )
                 }
+            case .assist:
+                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                      let queryParameters = components.queryItems else {
+                    return false
+                }
+
+                let serverId = queryParameters.first(where: { $0.name == "serverId" })?.value ?? ""
+                let pipelineId = queryParameters.first(where: { $0.name == "pipelineId" })?.value ?? ""
+                let startlistening = Bool(queryParameters.first(where: { $0.name == "startListening" })?.value ?? "false") ?? true
+
+                guard let server = Current.servers.all.first(where: {
+                    $0.identifier.rawValue == serverId
+                }) ?? Current .servers.all.first else { return false }
+
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        webViewController.webViewExternalMessageHandler.showAssist(
+                            server: server,
+                            pipeline: pipelineId,
+                            autoStartRecording: startlistening,
+                            animated: false
+                        )
+                    }
             }
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
