@@ -123,7 +123,7 @@ struct WidgetCreationView: View {
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         NavigationLink {
-            MagicItemCustomizationView(mode: .edit, displayAction: true, item: item) { updatedMagicItem in
+            MagicItemCustomizationView(mode: .edit, context: .widget, item: item) { updatedMagicItem in
                 viewModel.updateItem(updatedMagicItem)
             }
         } label: {
@@ -217,9 +217,7 @@ struct WidgetCreationView: View {
     NavigationView {
         VStack {}
             .sheet(isPresented: .constant(true)) {
-                WidgetCreationView {
-                    
-                }
+                WidgetCreationView {}
             }
     }
 }

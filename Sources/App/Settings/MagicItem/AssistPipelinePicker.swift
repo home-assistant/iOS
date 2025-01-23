@@ -4,23 +4,30 @@ import SwiftUI
 
 struct AssistPipelinePicker: View {
     /// Returns serverId and selected pipeline
-    let action: (String, Pipeline) -> Void
-
-    init(action: @escaping (String, Pipeline) -> Void) {
-        self.action = action
-    }
-
     @State private var showList = false
     @State private var assistConfigs: [AssistPipelines] = []
-    @State private var selectedPipeline: Pipeline?
+    @Binding private var selectedServerId: String?
+    @Binding private var selectedPipelineId: String?
     @State private var searchTerm = ""
+
+    init(selectedServerId: Binding<String?>, selectedPipelineId: Binding<String?>) {
+        self._selectedServerId = selectedServerId
+        self._selectedPipelineId = selectedPipelineId
+    }
 
     var body: some View {
         Button(action: {
             showList = true
         }, label: {
-            Text(selectedPipeline?.name ?? L10n.AssistPipelinePicker.placeholder)
+            if selectedServerId != nil, let selectedPipelineId, !assistConfigs.isEmpty {
+                Text(nameForSelectedPipeline() ?? selectedPipelineId)
+            } else {
+                Text(L10n.AssistPipelinePicker.placeholder)
+            }
         })
+        .onAppear {
+            fetchPipelines()
+        }
         .sheet(isPresented: $showList) {
             NavigationView {
                 List {
@@ -34,11 +41,11 @@ struct AssistPipelinePicker: View {
                                 }
                             }), id: \.id) { pipeline in
                                 Button(action: {
-                                    selectedPipeline = pipeline
-                                    action(config.serverId, pipeline)
+                                    selectedPipelineId = pipeline.id
+                                    selectedServerId = config.serverId
                                     showList = false
                                 }, label: {
-                                    if selectedPipeline?.id == pipeline.id {
+                                    if selectedPipelineId == pipeline.id, selectedServerId == config.serverId {
                                         Label(pipeline.name, systemSymbol: .checkmark)
                                     } else {
                                         Text(pipeline.name)
@@ -62,6 +69,12 @@ struct AssistPipelinePicker: View {
                 }
             }
         }
+    }
+
+    private func nameForSelectedPipeline() -> String? {
+        guard let selectedServerId, let selectedPipelineId else { return nil }
+        return assistConfigs.first(where: { $0.serverId == selectedServerId })?.pipelines
+            .first(where: { $0.id == selectedPipelineId })?.name
     }
 
     private func serverName(serverId: String) -> String {

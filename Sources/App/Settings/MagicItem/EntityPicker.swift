@@ -4,24 +4,26 @@ import SwiftUI
 
 struct EntityPicker: View {
     /// Returns entityId
-    let action: (HAAppEntity) -> Void
     let domainFilter: Domain?
-
-    init(domainFilter: Domain?, action: @escaping (HAAppEntity) -> Void) {
-        self.action = action
-        self.domainFilter = domainFilter
-    }
-
     @State private var showList = false
     @State private var entities: [HAAppEntity] = []
-    @State private var selectedEntity: HAAppEntity?
+    @Binding private var selectedEntity: HAAppEntity?
     @State private var searchTerm = ""
+
+    init(selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?) {
+        self.domainFilter = domainFilter
+        self._selectedEntity = selectedEntity
+    }
 
     var body: some View {
         Button(action: {
             showList = true
         }, label: {
-            Text(selectedEntity?.name ?? L10n.EntityPicker.placeholder)
+            if let name = selectedEntity?.name {
+                Text(name)
+            } else {
+                Text(L10n.EntityPicker.placeholder)
+            }
         })
         .sheet(isPresented: $showList) {
             NavigationView {
@@ -40,7 +42,6 @@ struct EntityPicker: View {
                             }), id: \.id) { entity in
                                 Button(action: {
                                     selectedEntity = entity
-                                    action(entity)
                                     showList = false
                                 }, label: {
                                     if let selectedEntity, selectedEntity == entity {

@@ -111,7 +111,15 @@ struct WidgetBasicView: View {
             case let .press(entityId, serverId):
                 return ReloadWidgetsAppIntent()
             case let .navigate(serverId, path):
-                return ReloadWidgetsAppIntent()
+                if #available(iOS 18, *) {
+                    let panel = HAPanel(icon: nil, title: "", path: path, component: "", showInSidebar: false)
+                    let page = PageAppEntity(id: "", panel: panel, serverId: serverId)
+                    let intent = OpenPageAppIntent()
+                    intent.page = page
+                    return intent
+                } else {
+                    return ReloadWidgetsAppIntent()
+                }
             case let .assist(serverId, pipelineId, startListening):
                 return ReloadWidgetsAppIntent()
             }

@@ -8,25 +8,28 @@ struct MagicItemCustomizationView: View {
     }
 
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: MagicItemEditViewModel
+    @StateObject private var viewModel: MagicItemCustomizationViewModel
 
     @State private var useCustomColors = false
 
+    // Toggle to wait until actions are prefilled in case of editing magic item, then it can show the action items
+    @State private var actionsLoaded = false
+
     /// Context in which the screen will be presented, editing existent Magic Item or adding new
     let mode: Mode
-    let displayAction: Bool
+    let context: MagicItemAddView.Context
     let addItem: (MagicItem) -> Void
 
     init(
         mode: Mode,
-        displayAction: Bool,
+        context: MagicItemAddView.Context,
         item: MagicItem,
         addItem: @escaping (MagicItem) -> Void
     ) {
         self.mode = mode
+        self.context = context
         self._viewModel = .init(wrappedValue: .init(item: item))
         self.addItem = addItem
-        self.displayAction = displayAction
     }
 
     var body: some View {
@@ -63,6 +66,7 @@ struct MagicItemCustomizationView: View {
         .onAppear {
             // Avoid nil customization object to prevent state values from crash
             preventNilCustomization()
+            loadActionData()
             viewModel.loadMagicInfo()
         }
     }
@@ -79,6 +83,31 @@ struct MagicItemCustomizationView: View {
         }
 
         addItem(viewModel.item)
+    }
+
+    private func loadActionData() {
+        guard let existentAction = viewModel.item.action else { return }
+        switch existentAction {
+        case let .navigate(path):
+            viewModel.navigationPathAction = path
+        case let .runScript(serverId, scriptId):
+            do {
+                let entity = try HAAppEntity.config()?.first(where: { entity in
+                    entity.serverId == serverId && entity.entityId == scriptId
+                })
+                viewModel.selectedEntity = entity
+            } catch {
+                Current.Log
+                    .error("Failed to prefill script entity in magic item customization: \(error.localizedDescription)")
+            }
+        case let .assist(serverId, pipelineId, startListening):
+            viewModel.startListeningAssistAction = startListening
+            viewModel.selectedPipelineId = pipelineId
+            viewModel.selectedServerIdForPipeline = serverId
+        case .default, .toggle, .nothing:
+            break
+        }
+        actionsLoaded = true
     }
 
     private func mainInformationView(info: MagicItem.Info) -> some View {
@@ -146,7 +175,7 @@ struct MagicItemCustomizationView: View {
 
     @ViewBuilder
     private var actionView: some View {
-        if displayAction {
+        if context == .widget, actionsLoaded {
             Section(L10n.MagicItem.action) {
                 HStack {
                     Text(L10n.MagicItem.Action.onTap)
@@ -181,12 +210,16 @@ struct MagicItemCustomizationView: View {
                 scriptActionDetails
             }
         }
-        Section {
-            Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                viewModel.item.customization?.requiresConfirmation ?? true
-            }, set: { newValue in
-                viewModel.item.customization?.requiresConfirmation = newValue
-            }))
+
+        // TODO: Make widgets support confirmation before execution
+        if context != .widget {
+            Section {
+                Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
+                    viewModel.item.customization?.requiresConfirmation ?? true
+                }, set: { newValue in
+                    viewModel.item.customization?.requiresConfirmation = newValue
+                }))
+            }
         }
     }
 
@@ -202,8 +235,26 @@ struct MagicItemCustomizationView: View {
             HStack {
                 Text(L10n.MagicItem.Action.Assist.Pipeline.title)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                AssistPipelinePicker { serverId, pipeline in
-                    viewModel.item.action = .assist(serverId, pipeline.id, viewModel.startListeningAssistAction)
+                AssistPipelinePicker(
+                    selectedServerId: $viewModel.selectedServerIdForPipeline,
+                    selectedPipelineId: $viewModel.selectedPipelineId
+                )
+                .onChange(of: viewModel.selectedServerIdForPipeline) { newValue in
+                    guard let newValue, let selectedPipelineId = viewModel.selectedPipelineId else { return }
+                    viewModel.item.action = .assist(
+                        newValue,
+                        selectedPipelineId,
+                        viewModel.startListeningAssistAction
+                    )
+                }
+                .onChange(of: viewModel.selectedPipelineId) { newValue in
+                    guard let newValue,
+                          let selectedServerIdForPipeline = viewModel.selectedServerIdForPipeline else { return }
+                    viewModel.item.action = .assist(
+                        selectedServerIdForPipeline,
+                        newValue,
+                        viewModel.startListeningAssistAction
+                    )
                 }
             }
         }
@@ -222,10 +273,12 @@ struct MagicItemCustomizationView: View {
     private var scriptActionDetails: some View {
         HStack {
             Text(L10n.MagicItem.Action.Script.title)
-            EntityPicker(domainFilter: .script) { entity in
-                viewModel.item.action = .runScript(entity.serverId, entity.entityId)
-            }
-            .frame(maxWidth: .infinity, alignment: .trailing)
+            EntityPicker(selectedEntity: $viewModel.selectedEntity, domainFilter: .script)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .onChange(of: viewModel.selectedEntity) { newValue in
+                    guard let newValue else { return }
+                    viewModel.item.action = .runScript(newValue.serverId, newValue.entityId)
+                }
         }
     }
 
@@ -239,7 +292,7 @@ struct MagicItemCustomizationView: View {
 #Preview {
     MagicItemCustomizationView(
         mode: .add,
-        displayAction: true,
+        context: .widget,
         item: .init(id: "script.unlock_door", serverId: "1", type: .script)
     ) { _ in
     }

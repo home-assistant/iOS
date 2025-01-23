@@ -17,7 +17,7 @@ struct WidgetBuilderView: View {
             Section(L10n.Settings.Widgets.YourWidgets.title) {
                 widgetsList
                 NavigationLink(destination: {
-                    WidgetCreationView() {
+                    WidgetCreationView {
                         viewModel.loadWidgets()
                     }
                 }) {

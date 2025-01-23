@@ -135,7 +135,7 @@ struct MagicItemAddView: View {
                 NavigationLink {
                     MagicItemCustomizationView(
                         mode: .add,
-                        displayAction: context == .widget,
+                        context: context,
                         item: .init(
                             id: entity.entityId,
                             serverId: serverId,
