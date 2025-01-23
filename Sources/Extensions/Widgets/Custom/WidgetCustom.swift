@@ -100,7 +100,10 @@ struct WidgetCustom: Widget {
                 if path.hasPrefix("/") {
                     path.removeFirst()
                 }
-                if let url = URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(magicItem.serverId)") {
+                if let url =
+                    URL(
+                        string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(magicItem.serverId)"
+                    ) {
                     return .widgetURL(url)
                 } else {
                     return .appIntent(.refresh)
