@@ -7,8 +7,6 @@ import WidgetKit
 
 @available(iOS 17, *)
 struct WidgetCustom: Widget {
-    @Environment(\.widgetFamily) private var family
-
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
             kind: WidgetsKind.custom.rawValue,
@@ -52,10 +50,7 @@ struct WidgetCustom: Widget {
     ) -> [WidgetBasicViewModel] {
         guard let widget else { return [] }
 
-        return widget.items.prefix({
-            let maxItemsForFamily = WidgetFamilySizes.size(for: family)
-            return maxItemsForFamily
-        }()).map { magicItem in
+        return widget.items.map { magicItem in
             let info = infoProvider.getInfo(for: magicItem)
 
             var iconColor: Color? = nil

@@ -20,13 +20,13 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
-        let widget = widget(for: configuration.widget?.id ?? "-1")
+        let widget = widget(for: configuration.widget?.id ?? "-1", context: context)
         let itemsStates = await itemsStates(widget: widget)
         return await .init(date: .now, widget: widget, magicItemInfoProvider: infoProvider(), itemStates: itemsStates)
     }
 
     func timeline(for configuration: WidgetCustomAppIntent, in context: Context) async -> Timeline<WidgetCustomEntry> {
-        let widget = widget(for: configuration.widget?.id ?? "-1")
+        let widget = widget(for: configuration.widget?.id ?? "-1", context: context)
         let itemsStates = await itemsStates(widget: widget)
 
         return await .init(
@@ -44,9 +44,17 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
         )
     }
 
-    private func widget(for id: String) -> CustomWidget? {
+    private func widget(for id: String, context: Context) -> CustomWidget? {
         do {
-            return try CustomWidget.widgets()?.first { $0.id == id }
+            let widget = try CustomWidget.widgets()?.first { $0.id == id }
+
+            // This prevents widgets displaying more items than the widget family size supports
+            var newWidgetWithPrefixedItems = CustomWidget(
+                name: widget?.name ?? "Uknown",
+                items: Array((widget?.items ?? []).prefix(WidgetFamilySizes.size(for: context.family)))
+            )
+
+            return newWidgetWithPrefixedItems
         } catch {
             Current.Log
                 .error(
