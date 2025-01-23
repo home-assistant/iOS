@@ -133,7 +133,7 @@ enum WidgetCustomSupportedFamilies {
         .systemLarge,
     ]
 }
-
+#if DEBUG
 @available(iOS 17, *)
 #Preview(as: .systemSmall) {
     WidgetCustom()
@@ -158,7 +158,6 @@ enum WidgetCustomSupportedFamilies {
     WidgetCustomEntry(date: .now, widget: nil, magicItemInfoProvider: MockMagicItemProvider(), itemStates: [:])
 }
 
-#if DEBUG
 final class MockMagicItemProvider: MagicItemProviderProtocol {
     func loadInformation(completion: @escaping ([String: [Shared.HAAppEntity]]) -> Void) {
         /* no-op */
