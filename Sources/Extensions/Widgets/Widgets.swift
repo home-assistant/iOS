@@ -34,7 +34,6 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
-        WidgetCustom()
         WidgetAssist()
         WidgetScripts()
         WidgetGauge()

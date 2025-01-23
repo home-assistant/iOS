@@ -6,25 +6,10 @@ struct WidgetBuilderView: View {
 
     var body: some View {
         List {
-            AppleLikeListTopRowHeader(
-                image: Image(uiImage: MaterialDesignIcons.widgetsIcon.image(
-                    ofSize: .init(width: 80, height: 80),
-                    color: Asset.Colors.haPrimary.color
-                )),
-                title: L10n.Widgets.Custom.title,
-                subtitle: L10n.Widgets.Custom.subtitle
-            )
-            Section(L10n.Settings.Widgets.YourWidgets.title) {
-                widgetsList
-                NavigationLink(destination: {
-                    WidgetCreationView {
-                        viewModel.loadWidgets()
-                    }
-                }) {
-                    Label(L10n.Settings.Widgets.Create.title, systemSymbol: .plus)
-                }
+            if #available(iOS 18, *) {
+                header
+                yourWidgetsSection
             }
-
             Section {
                 reloadWidgetsView
             } footer: {
@@ -33,6 +18,30 @@ struct WidgetBuilderView: View {
         }
         .onAppear {
             viewModel.loadWidgets()
+        }
+    }
+
+    private var header: some View {
+        AppleLikeListTopRowHeader(
+            image: Image(uiImage: MaterialDesignIcons.widgetsIcon.image(
+                ofSize: .init(width: 80, height: 80),
+                color: Asset.Colors.haPrimary.color
+            )),
+            title: L10n.Widgets.Custom.title,
+            subtitle: L10n.Widgets.Custom.subtitle
+        )
+    }
+
+    private var yourWidgetsSection: some View {
+        Section(L10n.Settings.Widgets.YourWidgets.title) {
+            widgetsList
+            NavigationLink(destination: {
+                WidgetCreationView {
+                    viewModel.loadWidgets()
+                }
+            }) {
+                Label(L10n.Settings.Widgets.Create.title, systemSymbol: .plus)
+            }
         }
     }
 

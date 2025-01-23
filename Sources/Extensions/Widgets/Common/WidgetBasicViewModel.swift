@@ -47,7 +47,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         case action(id: String, name: String)
         case script(id: String, entityId: String, serverId: String, name: String, showConfirmationNotification: Bool)
         /// Entities that can be toggled
-        case toggle(entityId: String, serverId: String)
+        case toggle(entityId: String, domain: String, serverId: String)
         /// Script or Scene
         case activate(entityId: String, serverId: String)
         /// Button

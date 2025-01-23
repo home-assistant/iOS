@@ -104,8 +104,12 @@ struct WidgetBasicView: View {
                 return intent
             case .refresh:
                 return ReloadWidgetsAppIntent()
-            case let .toggle(entityId, serverId):
-                return ReloadWidgetsAppIntent()
+            case let .toggle(entityId, domain, serverId):
+                var intent = ToggleAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                return intent
             case let .activate(entityId, serverId):
                 return ReloadWidgetsAppIntent()
             case let .press(entityId, serverId):

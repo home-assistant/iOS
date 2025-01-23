@@ -94,20 +94,17 @@ struct WidgetCustom: Widget {
             case .default, .nothing:
                 return .appIntent(.refresh)
             case .toggle:
-                return .appIntent(.toggle(entityId: magicItem.id, serverId: magicItem.serverId))
-            case let .navigate(path):
-                var path = path
-                if path.hasPrefix("/") {
-                    path.removeFirst()
-                }
-                if let url =
-                    URL(
-                        string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(magicItem.serverId)"
-                    ) {
-                    return .widgetURL(url)
+                if let domain = magicItem.domain {
+                    return .appIntent(.toggle(
+                        entityId: magicItem.id,
+                        domain: domain.rawValue,
+                        serverId: magicItem.serverId
+                    ))
                 } else {
                     return .appIntent(.refresh)
                 }
+            case let .navigate(path):
+                return navigateIntent(magicItem, path: path)
             case let .runScript(serverId, scriptId):
                 return .appIntent(.activate(entityId: scriptId, serverId: serverId))
             case let .assist(serverId, pipelineId, startListening):
@@ -127,6 +124,21 @@ struct WidgetCustom: Widget {
             default:
                 return .appIntent(.refresh)
             }
+        }
+    }
+
+    private func navigateIntent(_ magicItem: MagicItem, path: String) -> WidgetBasicViewModel.InteractionType {
+        var path = path
+        if path.hasPrefix("/") {
+            path.removeFirst()
+        }
+        if let url =
+            URL(
+                string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(magicItem.serverId)"
+            ) {
+            return .widgetURL(url)
+        } else {
+            return .appIntent(.refresh)
         }
     }
 }
