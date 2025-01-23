@@ -600,6 +600,10 @@
 		422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */; };
 		422F88132D42806400706A0A /* ToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* ToggleAppIntent.swift */; };
 		422F88142D4282CD00706A0A /* ToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* ToggleAppIntent.swift */; };
+		422F88162D428E8300706A0A /* ActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* ActivateAppIntent.swift */; };
+		422F88172D428E8300706A0A /* ActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* ActivateAppIntent.swift */; };
+		422F88192D42989E00706A0A /* PressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* PressButtonAppIntent.swift */; };
+		422F881A2D42989E00706A0A /* PressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* PressButtonAppIntent.swift */; };
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
@@ -1917,6 +1921,8 @@
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
 		422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.test.swift; sourceTree = "<group>"; };
 		422F88122D42806400706A0A /* ToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleAppIntent.swift; sourceTree = "<group>"; };
+		422F88152D428E8300706A0A /* ActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateAppIntent.swift; sourceTree = "<group>"; };
+		422F88182D42989E00706A0A /* PressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressButtonAppIntent.swift; sourceTree = "<group>"; };
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
@@ -3852,6 +3858,8 @@
 			isa = PBXGroup;
 			children = (
 				422F88122D42806400706A0A /* ToggleAppIntent.swift */,
+				422F88152D428E8300706A0A /* ActivateAppIntent.swift */,
+				422F88182D42989E00706A0A /* PressButtonAppIntent.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -6834,6 +6842,7 @@
 				426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */,
 				420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */,
+				422F88162D428E8300706A0A /* ActivateAppIntent.swift in Sources */,
 				424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */,
 				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
 				115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */,
@@ -6870,6 +6879,7 @@
 				3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
+				422F88192D42989E00706A0A /* PressButtonAppIntent.swift in Sources */,
 				4276471E2C8F2F100027B21F /* IntentLightEntity.swift in Sources */,
 				4273C48D2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
 				42D3E4BB2C5D313000444BE6 /* ScriptAppIntent.swift in Sources */,
@@ -6979,6 +6989,7 @@
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */,
+				422F88172D428E8300706A0A /* ActivateAppIntent.swift in Sources */,
 				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				42A47A8C2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift in Sources */,
@@ -7053,6 +7064,7 @@
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
+				422F881A2D42989E00706A0A /* PressButtonAppIntent.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
 				42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */,

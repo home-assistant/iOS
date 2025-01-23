@@ -100,11 +100,14 @@ class IncomingURLHandler {
 
                 let serverId = queryParameters.first(where: { $0.name == "serverId" })?.value ?? ""
                 let pipelineId = queryParameters.first(where: { $0.name == "pipelineId" })?.value ?? ""
-                let startlistening = Bool(queryParameters.first(where: { $0.name == "startListening" })?.value ?? "false") ?? true
+                let startlistening = Bool(
+                    queryParameters.first(where: { $0.name == "startListening" })?
+                        .value ?? "false"
+                ) ?? true
 
                 guard let server = Current.servers.all.first(where: {
                     $0.identifier.rawValue == serverId
-                }) ?? Current .servers.all.first else { return false }
+                }) ?? Current.servers.all.first else { return false }
 
                 Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
                     .done { webViewController in

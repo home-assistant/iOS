@@ -94,33 +94,37 @@ struct WidgetCustom: Widget {
             case .default, .nothing:
                 return .appIntent(.refresh)
             case .toggle:
-                if let domain = magicItem.domain {
-                    return .appIntent(.toggle(
-                        entityId: magicItem.id,
-                        domain: domain.rawValue,
-                        serverId: magicItem.serverId
-                    ))
-                } else {
-                    return .appIntent(.refresh)
-                }
+                return .appIntent(.toggle(
+                    entityId: magicItem.id,
+                    domain: domain.rawValue,
+                    serverId: magicItem.serverId
+                ))
             case let .navigate(path):
                 return navigateIntent(magicItem, path: path)
             case let .runScript(serverId, scriptId):
-                return .appIntent(.activate(entityId: scriptId, serverId: serverId))
+                return .appIntent(.activate(entityId: scriptId, domain: domain.rawValue, serverId: serverId))
             case let .assist(serverId, pipelineId, startListening):
                 return assistIntent(serverId: serverId, pipelineId: pipelineId, startListening: startListening)
             }
         } else {
             switch domain {
             case .button, .inputButton:
-                return .appIntent(.press(entityId: magicItem.id, serverId: magicItem.serverId))
+                return .appIntent(.press(entityId: magicItem.id, domain: domain.rawValue, serverId: magicItem.serverId))
             case .cover, .inputBoolean, .light, .switch:
-                return .appIntent(.press(entityId: magicItem.id, serverId: magicItem.serverId))
+                return .appIntent(.toggle(
+                    entityId: magicItem.id,
+                    domain: domain.rawValue,
+                    serverId: magicItem.serverId
+                ))
             case .lock:
                 // TODO: Support lock action in widgets
                 return .appIntent(.refresh)
             case .scene, .script:
-                return .appIntent(.activate(entityId: magicItem.id, serverId: magicItem.serverId))
+                return .appIntent(.activate(
+                    entityId: magicItem.id,
+                    domain: domain.rawValue,
+                    serverId: magicItem.serverId
+                ))
             default:
                 return .appIntent(.refresh)
             }
@@ -142,8 +146,8 @@ struct WidgetCustom: Widget {
         }
     }
 
-    private func assistIntent(serverId: String, pipelineId: String, startListening: Bool) -> WidgetBasicViewModel.InteractionType {
-
+    private func assistIntent(serverId: String, pipelineId: String, startListening: Bool) -> WidgetBasicViewModel
+        .InteractionType {
         if let url =
             URL(
                 string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
