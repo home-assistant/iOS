@@ -17,7 +17,9 @@ struct WidgetBuilderView: View {
             Section(L10n.Settings.Widgets.YourWidgets.title) {
                 widgetsList
                 NavigationLink(destination: {
-                    WidgetCreationView()
+                    WidgetCreationView() {
+                        viewModel.loadWidgets()
+                    }
                 }) {
                     Label(L10n.Settings.Widgets.Create.title, systemSymbol: .plus)
                 }
@@ -37,7 +39,9 @@ struct WidgetBuilderView: View {
     private var widgetsList: some View {
         ForEach(viewModel.widgets, id: \.id) { widget in
             NavigationLink {
-                WidgetCreationView(widget: widget)
+                WidgetCreationView(widget: widget) {
+                    viewModel.loadWidgets()
+                }
             } label: {
                 Text(widget.name)
             }

@@ -7,9 +7,10 @@ import WidgetKit
 struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WidgetCreationViewModel
-
-    init(widget: CustomWidget = CustomWidget(name: "", items: [])) {
+    private let dismissAction: () -> Void
+    init(widget: CustomWidget = CustomWidget(name: "", items: []), dismissAction: @escaping () -> Void) {
         self._viewModel = .init(wrappedValue: .init(widget: widget))
+        self.dismissAction = dismissAction
     }
 
     var body: some View {
@@ -34,6 +35,7 @@ struct WidgetCreationView: View {
         .onChange(of: viewModel.shouldDismiss) { newValue in
             if newValue {
                 dismiss()
+                dismissAction()
             }
         }
         .alert("", isPresented: $viewModel.showError, actions: {
@@ -215,7 +217,9 @@ struct WidgetCreationView: View {
     NavigationView {
         VStack {}
             .sheet(isPresented: .constant(true)) {
-                WidgetCreationView()
+                WidgetCreationView {
+                    
+                }
             }
     }
 }
