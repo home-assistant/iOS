@@ -76,7 +76,7 @@ struct WidgetCustom: Widget {
                 id: magicItem.serverUniqueId,
                 title: magicItem.displayText ?? info?.name ?? magicItem.id,
                 subtitle: state,
-                interactionType: .appIntent(intentForItem(magicItem)),
+                interactionType: interactionTypeForItem(magicItem),
                 icon: MaterialDesignIcons(serversideValueNamed: info?.iconName ?? "", fallback: .dotsGridIcon),
                 textColor: textColor ?? Color(uiColor: .label),
                 iconColor: iconColor ?? Color.asset(Asset.Colors.haPrimary),
@@ -86,35 +86,43 @@ struct WidgetCustom: Widget {
         }
     }
 
-    private func intentForItem(_ magicItem: MagicItem) -> WidgetBasicViewModel.WidgetIntentType {
-        guard let domain = magicItem.domain else { return .refresh }
+    private func interactionTypeForItem(_ magicItem: MagicItem) -> WidgetBasicViewModel.InteractionType {
+        guard let domain = magicItem.domain else { return .appIntent(.refresh) }
 
         if let magicItemAction = magicItem.action, magicItemAction != .default {
             switch magicItemAction {
             case .default, .nothing:
-                return .refresh
+                return .appIntent(.refresh)
             case .toggle:
-                return .toggle(entityId: magicItem.id, serverId: magicItem.serverId)
+                return .appIntent(.toggle(entityId: magicItem.id, serverId: magicItem.serverId))
             case let .navigate(path):
-                return .navigate(serverId: magicItem.serverId, path: path)
+                var path = path
+                if path.hasPrefix("/") {
+                    path.removeFirst()
+                }
+                if let url = URL(string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(magicItem.serverId)") {
+                    return .widgetURL(url)
+                } else {
+                    return .appIntent(.refresh)
+                }
             case let .runScript(serverId, scriptId):
-                return .activate(entityId: scriptId, serverId: serverId)
+                return .appIntent(.activate(entityId: scriptId, serverId: serverId))
             case let .assist(serverId, pipelineId, startListening):
-                return .assist(serverId: serverId, pipelineId: pipelineId, startListening: startListening)
+                return .appIntent(.assist(serverId: serverId, pipelineId: pipelineId, startListening: startListening))
             }
         } else {
             switch domain {
             case .button, .inputButton:
-                return .press(entityId: magicItem.id, serverId: magicItem.serverId)
+                return .appIntent(.press(entityId: magicItem.id, serverId: magicItem.serverId))
             case .cover, .inputBoolean, .light, .switch:
-                return .toggle(entityId: magicItem.id, serverId: magicItem.serverId)
+                return .appIntent(.press(entityId: magicItem.id, serverId: magicItem.serverId))
             case .lock:
                 // TODO: Support lock action in widgets
-                return .refresh
+                return .appIntent(.refresh)
             case .scene, .script:
-                return .activate(entityId: magicItem.id, serverId: magicItem.serverId)
+                return .appIntent(.activate(entityId: magicItem.id, serverId: magicItem.serverId))
             default:
-                return .refresh
+                return .appIntent(.refresh)
             }
         }
     }
