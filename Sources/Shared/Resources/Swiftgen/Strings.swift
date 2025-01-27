@@ -3741,6 +3741,20 @@ public enum L10n {
   }
 
   public enum Widgets {
+    public enum Action {
+      public enum Name {
+        /// Assist
+        public static var assist: String { return L10n.tr("Localizable", "widgets.action.name.assist") }
+        /// Default
+        public static var `default`: String { return L10n.tr("Localizable", "widgets.action.name.default") }
+        /// Navigate
+        public static var navigate: String { return L10n.tr("Localizable", "widgets.action.name.navigate") }
+        /// Nothing
+        public static var nothing: String { return L10n.tr("Localizable", "widgets.action.name.nothing") }
+        /// Run Script
+        public static var runScript: String { return L10n.tr("Localizable", "widgets.action.name.run_script") }
+      }
+    }
     public enum Actions {
       /// Perform Home Assistant actions.
       public static var description: String { return L10n.tr("Localizable", "widgets.actions.description") }

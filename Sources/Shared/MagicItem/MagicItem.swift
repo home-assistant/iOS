@@ -133,7 +133,6 @@ public enum MagicItemError: Error {
 public enum ItemAction: Codable, CaseIterable, Equatable {
     public static var allCases: [ItemAction] = [
         .default,
-        .toggle,
         .navigate(""),
         .runScript("", ""),
         .assist("", "", false),
@@ -141,7 +140,6 @@ public enum ItemAction: Codable, CaseIterable, Equatable {
     ]
 
     case `default`
-    case toggle
     case navigate(_ navigationPath: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
@@ -151,8 +149,6 @@ public enum ItemAction: Codable, CaseIterable, Equatable {
         switch self {
         case .default:
             return "default"
-        case .toggle:
-            return "toggle"
         case .navigate:
             return "navigate"
         case .runScript:
@@ -167,17 +163,15 @@ public enum ItemAction: Codable, CaseIterable, Equatable {
     public var name: String {
         switch self {
         case .default:
-            return "Default"
-        case .toggle:
-            return "Toggle"
+            return L10n.Widgets.Action.Name.default
         case .navigate:
-            return "Navigate"
+            return L10n.Widgets.Action.Name.navigate
         case .runScript:
-            return "Run script"
+            return L10n.Widgets.Action.Name.runScript
         case .assist:
-            return "Assist"
+            return L10n.Widgets.Action.Name.assist
         case .nothing:
-            return "Nothing"
+            return L10n.Widgets.Action.Name.nothing
         }
     }
 }

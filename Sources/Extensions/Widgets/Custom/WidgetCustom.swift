@@ -122,14 +122,12 @@ struct WidgetCustom: Widget {
 
         if let magicItemAction = magicItem.action, magicItemAction != .default {
             switch magicItemAction {
-            case .default, .nothing:
+            case .default:
+                // This block of code should not be reached, default should not be handled here
+                // Returning something to avoid compiler error
                 return .appIntent(.refresh)
-            case .toggle:
-                return .appIntent(.toggle(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
+            case .nothing:
+                return .appIntent(.refresh)
             case let .navigate(path):
                 return navigateIntent(magicItem, path: path)
             case let .runScript(serverId, scriptId):

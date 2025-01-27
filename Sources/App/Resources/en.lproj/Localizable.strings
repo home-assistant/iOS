@@ -1137,4 +1137,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.preview.custom.title" = "Custom widget";
 "widgets.preview.custom.description" = "Create your own widget inside the App and then display it here.";
 "widgets.preview.empty.create.button" = "Create widget";
+"widgets.action.name.default" = "Default";
+"widgets.action.name.navigate" = "Navigate";
+"widgets.action.name.run_script" = "Run Script";
+"widgets.action.name.assist" = "Assist";
+"widgets.action.name.nothing" = "Nothing";
 "yes_label" = "Yes";
