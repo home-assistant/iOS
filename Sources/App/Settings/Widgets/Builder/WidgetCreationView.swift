@@ -146,13 +146,7 @@ struct WidgetCreationView: View {
         itemInfo: MagicItem.Info,
         color: UIColor? = nil
     ) -> UIImage {
-        var icon: MaterialDesignIcons = .abTestingIcon
-        switch item.type {
-        case .action:
-            icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .scene, .entity:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
-        }
+        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
 
         return icon.image(
             ofSize: .init(width: 18, height: 18),
@@ -168,12 +162,20 @@ struct WidgetCreationView: View {
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
             let subtitle: String? = [.script, .scene, .button, .inputButton].contains(magicItem.domain) ? nil : L10n
                 .Widgets.EntityState.placeholder
+
+            let icon: MaterialDesignIcons = {
+                if let info {
+                    return magicItem.icon(info: info)
+                } else {
+                    return .gridIcon
+                }
+            }()
             return WidgetBasicViewModel(
                 id: magicItem.id,
                 title: magicItem.displayText ?? info?.name ?? magicItem.id,
                 subtitle: subtitle,
                 interactionType: .appIntent(.refresh),
-                icon: MaterialDesignIcons(serversideValueNamed: info?.iconName ?? "", fallback: .dotsGridIcon),
+                icon: icon,
                 textColor: textColor,
                 iconColor: iconColor,
                 backgroundColor: backgroundColor,

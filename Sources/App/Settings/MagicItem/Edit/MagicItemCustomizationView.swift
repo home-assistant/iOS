@@ -112,14 +112,23 @@ struct MagicItemCustomizationView: View {
 
     private func mainInformationView(info: MagicItem.Info) -> some View {
         Section {
-            HStack {
-                HStack {
-                    Image(uiImage: MaterialDesignIcons(serversideValueNamed: info.iconName, fallback: .gridIcon).image(
-                        ofSize: .init(width: 24, height: 24),
-                        color: .label
-                    ))
-                }
-                .frame(width: 24, height: 24)
+            HStack(spacing: Spaces.two) {
+                IconPicker(
+                    selectedIcon: .init(get: {
+                        viewModel.item.icon(info: info)
+                    }, set: { newIcon in
+                        viewModel.item.customization?.icon = newIcon?.name
+                    }),
+                    selectedColor: .init(get: {
+                        if let iconColorHex = viewModel.item.customization?.iconColor {
+                            return Color(hex: iconColorHex)
+                        } else {
+                            return Color(uiColor: Asset.Colors.haPrimary.color)
+                        }
+                    }, set: { _ in
+                        /* no-op */
+                    })
+                )
                 TextField(viewModel.info?.name ?? viewModel.item.id, text: .init(get: {
                     viewModel.item.displayText ?? ""
                 }, set: { newValue in

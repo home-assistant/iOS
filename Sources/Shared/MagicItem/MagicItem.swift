@@ -63,6 +63,8 @@ public struct MagicItem: Codable, Equatable, Hashable {
         public var backgroundColor: String?
         /// If true, execution will request confirmation before running
         public var requiresConfirmation: Bool
+        /// Override icon, MaterislDesignIcons name
+        public var icon: String?
 
         public var useCustomColors: Bool {
             textColor != nil || backgroundColor != nil
@@ -72,12 +74,14 @@ public struct MagicItem: Codable, Equatable, Hashable {
             iconColor: String? = nil,
             textColor: String? = nil,
             backgroundColor: String? = nil,
-            requiresConfirmation: Bool = true
+            requiresConfirmation: Bool = true,
+            icon: String? = nil
         ) {
             self.iconColor = iconColor
             self.textColor = textColor
             self.backgroundColor = backgroundColor
             self.requiresConfirmation = requiresConfirmation
+            self.icon = icon
         }
     }
 
@@ -99,14 +103,18 @@ public struct MagicItem: Codable, Equatable, Hashable {
     /// Icon for given magic item type
     public func icon(info: Info) -> MaterialDesignIcons {
         var icon: MaterialDesignIcons
-        switch type {
-        case .action, .scene:
-            icon = MaterialDesignIcons(named: info.iconName, fallback: .scriptTextOutlineIcon)
-        case .script, .entity:
-            icon = MaterialDesignIcons(
-                serversideValueNamed: info.iconName,
-                fallback: .dotsGridIcon
-            )
+        if let icon = customization?.icon {
+            return MaterialDesignIcons(named: icon, fallback: .dotsGridIcon)
+        } else {
+            switch type {
+            case .action, .scene:
+                icon = MaterialDesignIcons(named: info.iconName, fallback: .scriptTextOutlineIcon)
+            case .script, .entity:
+                icon = MaterialDesignIcons(
+                    serversideValueNamed: info.iconName,
+                    fallback: .dotsGridIcon
+                )
+            }
         }
 
         return icon

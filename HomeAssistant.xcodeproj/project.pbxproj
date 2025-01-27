@@ -786,6 +786,7 @@
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
+		42C0F7CC2D47B47F00BD5C76 /* IconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */; };
 		42C101242CD3D7700012BA78 /* ControlRefreshDelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */; };
 		42C101272CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */; };
 		42C101282CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */; };
@@ -2124,6 +2125,7 @@
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
+		42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPicker.swift; sourceTree = "<group>"; };
 		42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlRefreshDelay.swift; sourceTree = "<group>"; };
 		42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentCoverEntity.swift; sourceTree = "<group>"; };
 		42C101292CD3DB8A0012BA78 /* CoverIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverIntent.swift; sourceTree = "<group>"; };
@@ -3906,6 +3908,7 @@
 			children = (
 				4251AA982C6B9D4C004CCC9D /* MagicItemCustomizationView.swift */,
 				4251AA9A2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift */,
+				42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */,
 			);
 			path = Edit;
 			sourceTree = "<group>";
@@ -7025,6 +7028,7 @@
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
+				42C0F7CC2D47B47F00BD5C76 /* IconPicker.swift in Sources */,
 				421155232D354F3F00A71630 /* AppIcon.swift in Sources */,
 				42FCD0142B9B29740057783F /* ThreadCredentialDetailsView.swift in Sources */,
 				42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */,

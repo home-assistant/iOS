@@ -65,6 +65,14 @@ struct WidgetCustom: Widget {
                 textColor = Color(hex: textColorHex)
             }
 
+            let icon: MaterialDesignIcons = {
+                if let info {
+                    return magicItem.icon(info: info)
+                } else {
+                    return .gridIcon
+                }
+            }()
+
             let iconColor: Color = {
                 let magicItemIconColor = {
                     if let iconColor = magicItem.customization?.iconColor {
@@ -92,7 +100,7 @@ struct WidgetCustom: Widget {
                 title: magicItem.displayText ?? info?.name ?? magicItem.id,
                 subtitle: state?.value,
                 interactionType: interactionTypeForItem(magicItem),
-                icon: MaterialDesignIcons(serversideValueNamed: info?.iconName ?? "", fallback: .dotsGridIcon),
+                icon: icon,
                 textColor: textColor ?? Color(uiColor: .label),
                 iconColor: iconColor,
                 backgroundColor: backgroundColor ?? Color.asset(Asset.Colors.tileBackground),

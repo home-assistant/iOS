@@ -255,13 +255,7 @@ struct WatchConfigurationView: View {
         watchPreview: Bool,
         color: UIColor? = nil
     ) -> UIImage {
-        var icon: MaterialDesignIcons = .abTestingIcon
-        switch item.type {
-        case .action:
-            icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .scene, .entity:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
-        }
+        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
 
         return icon.image(
             ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
