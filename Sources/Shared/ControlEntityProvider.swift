@@ -15,10 +15,12 @@ public final class ControlEntityProvider {
     public struct State {
         public let value: String
         public let unitOfMeasurement: String?
+        public let domainState: Domain.State?
 
-        public init(value: String, unitOfMeasurement: String?) {
+        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?) {
             self.value = value
             self.unitOfMeasurement = unitOfMeasurement
+            self.domainState = domainState
         }
     }
 
@@ -120,6 +122,10 @@ public final class ControlEntityProvider {
         )
         let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
         stateValue = stateValue.capitalizedFirst
-        return .init(value: stateValue, unitOfMeasurement: unitOfMeasurement)
+        return .init(
+            value: stateValue,
+            unitOfMeasurement: unitOfMeasurement,
+            domainState: .init(rawValue: stateValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
+        )
     }
 }

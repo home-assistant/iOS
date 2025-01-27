@@ -46,20 +46,16 @@ struct WidgetCustom: Widget {
     private func modelsForWidget(
         _ widget: CustomWidget?,
         infoProvider: MagicItemProviderProtocol,
-        states: [MagicItem: String]
+        states: [MagicItem: WidgetCustomEntry.ItemState]
     ) -> [WidgetBasicViewModel] {
         guard let widget else { return [] }
 
         return widget.items.map { magicItem in
             let info = infoProvider.getInfo(for: magicItem)
+            let state: WidgetCustomEntry.ItemState? = states[magicItem]
 
-            var iconColor: Color? = nil
             var backgroundColor: Color? = nil
             var textColor: Color? = nil
-
-            if let iconColorHex = magicItem.customization?.iconColor {
-                iconColor = Color(hex: iconColorHex)
-            }
 
             if let backgroundColorHex = magicItem.customization?.backgroundColor {
                 backgroundColor = Color(hex: backgroundColorHex)
@@ -69,17 +65,36 @@ struct WidgetCustom: Widget {
                 textColor = Color(hex: textColorHex)
             }
 
+            let iconColor: Color = {
+                let magicItemIconColor = {
+                    if let iconColor = magicItem.customization?.iconColor {
+                        return Color(hex: iconColor)
+                    } else {
+                        return Color.asset(Asset.Colors.haPrimary)
+                    }
+                }()
+
+                if [.light, .switch, .inputBoolean].contains(magicItem.domain) {
+                    if state?.domainState == Domain.State.off {
+                        return Color.gray
+                    } else {
+                        return magicItemIconColor
+                    }
+                } else {
+                    return magicItemIconColor
+                }
+            }()
+
             let useCustomColors = backgroundColor != nil || textColor != nil
-            let state: String? = states[magicItem]?.capitalizedFirst
 
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: magicItem.displayText ?? info?.name ?? magicItem.id,
-                subtitle: state,
+                subtitle: state?.value,
                 interactionType: interactionTypeForItem(magicItem),
                 icon: MaterialDesignIcons(serversideValueNamed: info?.iconName ?? "", fallback: .dotsGridIcon),
                 textColor: textColor ?? Color(uiColor: .label),
-                iconColor: iconColor ?? Color.asset(Asset.Colors.haPrimary),
+                iconColor: iconColor,
                 backgroundColor: backgroundColor ?? Color.asset(Asset.Colors.tileBackground),
                 useCustomColors: useCustomColors
             )

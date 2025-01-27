@@ -90,7 +90,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let state: ControlEntityProvider.State = await ControlEntityProvider(domains: Domain.allCases).state(
             server: server,
             entityId: sensor.entityId
-        ) ?? ControlEntityProvider.State(value: "", unitOfMeasurement: nil)
+        ) ?? ControlEntityProvider.State(value: "", unitOfMeasurement: nil, domainState: nil)
         return WidgetSensorsEntry.SensorData(
             id: sensor.id,
             key: sensor.displayString,

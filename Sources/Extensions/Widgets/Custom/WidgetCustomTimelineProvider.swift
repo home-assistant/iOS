@@ -7,7 +7,12 @@ struct WidgetCustomEntry: TimelineEntry {
     var date: Date
     var widget: CustomWidget?
     var magicItemInfoProvider: MagicItemProviderProtocol
-    var itemStates: [MagicItem: String]
+    var itemStates: [MagicItem: ItemState]
+
+    struct ItemState {
+        let value: String
+        let domainState: Domain.State?
+    }
 }
 
 @available(iOS 17, *)
@@ -70,14 +75,14 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
         return infoProvider
     }
 
-    private func itemsStates(widget: CustomWidget?) async -> [MagicItem: String] {
+    private func itemsStates(widget: CustomWidget?) async -> [MagicItem: WidgetCustomEntry.ItemState] {
         guard let widget else { return [:] }
         let items = widget.items.filter {
             // No state needed for those domains
             ![.script, .scene, .inputButton].contains($0.domain)
         }
 
-        var states: [MagicItem: String] = [:]
+        var states: [MagicItem: WidgetCustomEntry.ItemState] = [:]
 
         for item in items {
             let serverId = item.serverId
@@ -90,7 +95,10 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                 entityId: entityId
             ) {
                 states[item] =
-                    "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")"
+                    .init(
+                        value: "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")",
+                        domainState: state.domainState
+                    )
             } else {
                 Current.Log
                     .error(
