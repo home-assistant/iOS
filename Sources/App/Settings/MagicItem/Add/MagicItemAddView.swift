@@ -146,7 +146,17 @@ struct MagicItemAddView: View {
                         dismiss()
                     }
                 } label: {
-                    MagicItemRow(title: entity.name, subtitle: entity.entityId, entityIcon: entity.icon)
+                    MagicItemRow(
+                        title: entity.name,
+                        subtitle: entity.entityId,
+                        entityIcon: {
+                            if let entityId = entity.icon {
+                                return MaterialDesignIcons(serversideValueNamed: entityId, fallback: .dotsGridIcon)
+                            } else {
+                                return Domain(rawValue: entity.domain)?.icon ?? .dotsGridIcon
+                            }
+                        }()
+                    )
                 }
             }
         }
@@ -164,9 +174,14 @@ struct MagicItemRow: View {
     private let title: String
     private let subtitle: String?
     private let imageSystemName: String?
-    private let entityIcon: String?
+    private let entityIcon: MaterialDesignIcons?
 
-    init(title: String, subtitle: String? = nil, imageSystemName: String? = nil, entityIcon: String? = nil) {
+    init(
+        title: String,
+        subtitle: String? = nil,
+        imageSystemName: String? = nil,
+        entityIcon: MaterialDesignIcons? = nil
+    ) {
         self.title = title
         self.subtitle = subtitle
         self.imageSystemName = imageSystemName
@@ -176,11 +191,8 @@ struct MagicItemRow: View {
     var body: some View {
         HStack(spacing: Spaces.one) {
             HStack {
-                if let entityIcon, showIcon {
-                    Image(uiImage: MaterialDesignIcons(
-                        serversideValueNamed: entityIcon,
-                        fallback: MaterialDesignIcons(named: entityIcon, fallback: .dotsGridIcon)
-                    ).image(
+                if showIcon, let entityIcon {
+                    Image(uiImage: entityIcon.image(
                         ofSize: .init(width: 24, height: 24),
                         color: Asset.Colors.haPrimary.color
                     ))
