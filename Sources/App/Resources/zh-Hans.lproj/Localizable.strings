@@ -182,10 +182,11 @@
 "close_label" = "关闭";
 "component.collapsible_view.collapse" = "收缩";
 "component.collapsible_view.expand" = "展开";
+"connection.error.details.button.clipboard" = "复制到剪贴板";
 "connection.error.details.button.discord" = "在 Discord 中询问";
 "connection.error.details.button.doc" = "阅读文档";
 "connection.error.details.button.github" = "在 Github 上报告问题";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "在 GitHub 中搜索";
 "connection.error.details.label.code" = "代码";
 "connection.error.details.label.description" = "描述";
 "connection.error.details.label.domain" = "域";
@@ -825,7 +826,7 @@
 "url_handler.x_callback_url.error.general" = "发生一般错误";
 "url_handler.x_callback_url.error.serviceMissing" = "必须定义服务（例如homeassistant.turn_on）";
 "url_handler.x_callback_url.error.templateMissing" = "必须定义可渲染模板";
-"url_label" = "URL";
+"url_label" = "网址";
 "username_label" = "用户名";
 "watch.assist.lack_config.error.title" = "请配置语音助手使用 iOS companion 应用";
 "watch.config.assist.select_server" = "服务器";

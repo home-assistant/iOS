@@ -182,6 +182,7 @@
 "close_label" = "Luk";
 "component.collapsible_view.collapse" = "Skjul";
 "component.collapsible_view.expand" = "Udvid";
+"connection.error.details.button.clipboard" = "Copy to clipboard";
 "connection.error.details.button.discord" = "Spørg i Discord";
 "connection.error.details.button.doc" = "Læs dokumentationen";
 "connection.error.details.button.github" = "Rapporter problemet på Github";

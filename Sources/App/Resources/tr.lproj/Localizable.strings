@@ -182,6 +182,7 @@
 "close_label" = "Kapat";
 "component.collapsible_view.collapse" = "Daralt";
 "component.collapsible_view.expand" = "Genişlet";
+"connection.error.details.button.clipboard" = "Copy to clipboard";
 "connection.error.details.button.discord" = "Discord'da sor";
 "connection.error.details.button.doc" = "Belgeleri okuyun";
 "connection.error.details.button.github" = "GitHub'da sorun bildirin";

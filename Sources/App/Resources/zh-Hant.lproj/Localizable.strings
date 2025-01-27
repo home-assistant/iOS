@@ -182,10 +182,11 @@
 "close_label" = "關閉";
 "component.collapsible_view.collapse" = "折疊";
 "component.collapsible_view.expand" = "展開";
+"connection.error.details.button.clipboard" = "複製至剪貼簿";
 "connection.error.details.button.discord" = "於 Discord 上詢問";
 "connection.error.details.button.doc" = "閱讀文件";
 "connection.error.details.button.github" = "於 GitHub 回報問題";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "於 GitHub 中搜尋";
 "connection.error.details.label.code" = "錯誤碼";
 "connection.error.details.label.description" = "說明";
 "connection.error.details.label.domain" = "實體類群";
@@ -825,7 +826,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "url_handler.x_callback_url.error.general" = "發生一般錯誤";
 "url_handler.x_callback_url.error.serviceMissing" = "必須定義服務（例如 homeassistant.turn_on）";
 "url_handler.x_callback_url.error.templateMissing" = "必須定義產生模板";
-"url_label" = "URL";
+"url_label" = "網址";
 "username_label" = "使用者名稱";
 "watch.assist.lack_config.error.title" = "請設定使用 iOS companion App 設定助理";
 "watch.config.assist.select_server" = "伺服器";

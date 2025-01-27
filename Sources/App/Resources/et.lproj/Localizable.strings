@@ -182,10 +182,11 @@
 "close_label" = "Sulge";
 "component.collapsible_view.collapse" = "Ahenda";
 "component.collapsible_view.expand" = "Laienda";
+"connection.error.details.button.clipboard" = "Kopeeri lõikelauale";
 "connection.error.details.button.discord" = "Küsi Discordis";
 "connection.error.details.button.doc" = "Loe dokumentatsiooni";
 "connection.error.details.button.github" = "Teata probleemist Githubis";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "Otsi GitHubist";
 "connection.error.details.label.code" = "Kood";
 "connection.error.details.label.description" = "Kirjeldus";
 "connection.error.details.label.domain" = "Domeen";

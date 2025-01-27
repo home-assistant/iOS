@@ -93,7 +93,7 @@
 "component::humidifier::entity_component::_::state_attributes::action::state::off" = "Av";
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Hemma";
 "component::improv_ble::config::abort::already_configured" = "Enheten är redan konfigurerad";
-"component::improv_ble::config::abort::cannot_connect" = "Det gick inte att ansluta.";
+"component::improv_ble::config::abort::cannot_connect" = "Det gick inte att ansluta";
 "component::improv_ble::config::abort::characteristic_missing" = "Enheten är antingen redan ansluten till Wi-Fi eller kan inte längre ansluta till Wi-Fi. Om du vill ansluta den till ett annat nätverk kan du först försöka återställa den till fabriksinställningarna.";
 "component::improv_ble::config::abort::no_devices_found" = "Inga enheter hittades i nätverket";
 "component::improv_ble::config::abort::provision_successful" = "Enheten har anslutit till Wi-Fi-nätverket.";

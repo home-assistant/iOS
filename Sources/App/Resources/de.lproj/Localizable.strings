@@ -182,10 +182,11 @@
 "close_label" = "Schließen";
 "component.collapsible_view.collapse" = "Reduzieren";
 "component.collapsible_view.expand" = "Erweitern";
+"connection.error.details.button.clipboard" = "In die Zwischenablage kopieren";
 "connection.error.details.button.discord" = "Auf Discord fragen";
 "connection.error.details.button.doc" = "Dokumentation lesen";
 "connection.error.details.button.github" = "Problem auf GitHub melden";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "In GitHub suchen";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Beschreibung";
 "connection.error.details.label.domain" = "Domain";
@@ -884,7 +885,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "watch.configurator.sections.icon.header" = "Symbol";
 "watch.configurator.sections.ring.footer" = "Der Ring zeigt den Fortschritt rund um den Text an.";
 "watch.configurator.sections.ring.header" = "Ring";
-"watch.configurator.warning.templating_admin" = "ACHTUNG: Für die Erstellung von Templates in Uhrenkomplikationen muss der Benutzer die Rolle eines Administrators haben.";
+"watch.configurator.warning.templating_admin" = "ACHTUNG: Für die Erstellung von Templates in Watch Komplikationen muss der Benutzer die Rolle eines Administrators haben.";
 "watch.debug.delete_db.alert.failed.message" = "Löschen der Konfiguration fehlgeschlagen, Fehler: %@";
 "watch.debug.delete_db.alert.title" = "Möchtest du die Watch-Konfiguration wirklich löschen? Dies kann nicht rückgängig gemacht werden.";
 "watch.debug.delete_db.reset.title" = "Konfiguration zurücksetzen";
