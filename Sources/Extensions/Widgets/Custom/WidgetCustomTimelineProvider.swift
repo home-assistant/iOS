@@ -50,7 +50,6 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func widget(configuration: WidgetCustomAppIntent, context: Context) -> CustomWidget? {
-
         var widgetId = configuration.widget?.id
         if widgetId == nil {
             do {

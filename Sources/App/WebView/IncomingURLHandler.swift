@@ -3,6 +3,7 @@ import Foundation
 import PromiseKit
 import SafariServices
 import Shared
+import SwiftUI
 
 class IncomingURLHandler {
     private(set) weak var windowController: WebViewWindowController!
@@ -20,6 +21,7 @@ class IncomingURLHandler {
         case performAction = "perform_action"
         case assist
         case navigate
+        case createCustomWidget = "createcustomwidget"
     }
 
     @discardableResult
@@ -117,6 +119,26 @@ class IncomingURLHandler {
                             autoStartRecording: startlistening,
                             animated: false
                         )
+                    }
+            case .createCustomWidget:
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        let controller = UIHostingController(rootView: AnyView(
+                            NavigationView {
+                                WidgetBuilderView()
+                                    .toolbar {
+                                        ToolbarItem(placement: .topBarTrailing) {
+                                            CloseButton {
+                                                webViewController.dismissOverlayController(
+                                                    animated: true,
+                                                    completion: nil
+                                                )
+                                            }
+                                        }
+                                    }
+                            }
+                        ))
+                        webViewController.presentOverlayController(controller: controller, animated: true)
                     }
             }
         } else {
