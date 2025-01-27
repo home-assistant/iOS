@@ -119,6 +119,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
 
         return icon
     }
+
+    /// Name to be visible when rendegin item, priority: displayText -> info.name
+    public func name(info: Info) -> String {
+        displayText ?? info.name
+    }
 }
 
 public enum MagicItemError: Error {

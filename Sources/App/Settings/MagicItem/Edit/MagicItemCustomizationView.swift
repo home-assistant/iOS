@@ -129,8 +129,8 @@ struct MagicItemCustomizationView: View {
                         /* no-op */
                     })
                 )
-                TextField(viewModel.info?.name ?? viewModel.item.id, text: .init(get: {
-                    viewModel.item.displayText ?? ""
+                TextField(viewModel.item.name(info: info), text: .init(get: {
+                    viewModel.item.name(info: info)
                 }, set: { newValue in
                     if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         viewModel.item.displayText = nil

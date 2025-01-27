@@ -93,11 +93,19 @@ struct WidgetCustom: Widget {
                 }
             }()
 
+            let title: String = {
+                if let info {
+                    return magicItem.name(info: info)
+                } else {
+                    return magicItem.id
+                }
+            }()
+
             let useCustomColors = backgroundColor != nil || textColor != nil
 
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
-                title: magicItem.displayText ?? info?.name ?? magicItem.id,
+                title: title,
                 subtitle: state?.value,
                 interactionType: interactionTypeForItem(magicItem),
                 icon: icon,

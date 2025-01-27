@@ -134,7 +134,7 @@ struct WidgetCreationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, color: Asset.Colors.haPrimary.color))
-            Text(item.displayText ?? info.name)
+            Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: SFSymbol.line3Horizontal.rawValue)
                 .foregroundStyle(.gray)
@@ -170,9 +170,18 @@ struct WidgetCreationView: View {
                     return .gridIcon
                 }
             }()
+
+            let title: String = {
+                if let info {
+                    return magicItem.name(info: info)
+                } else {
+                    return magicItem.id
+                }
+            }()
+
             return WidgetBasicViewModel(
                 id: magicItem.id,
-                title: magicItem.displayText ?? info?.name ?? magicItem.id,
+                title: title,
                 subtitle: subtitle,
                 interactionType: .appIntent(.refresh),
                 icon: icon,
