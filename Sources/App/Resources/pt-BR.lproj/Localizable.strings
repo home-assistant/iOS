@@ -182,10 +182,11 @@
 "close_label" = "Fechar";
 "component.collapsible_view.collapse" = "Colapsar";
 "component.collapsible_view.expand" = "Expandir";
+"connection.error.details.button.clipboard" = "Copiar para área de transferência";
 "connection.error.details.button.discord" = "Pergunte no Discord";
 "connection.error.details.button.doc" = "Leia a documentação";
 "connection.error.details.button.github" = "Relatar problema no GitHub";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "Pesquisar no GitHub";
 "connection.error.details.label.code" = "Código";
 "connection.error.details.label.description" = "Descrição";
 "connection.error.details.label.domain" = "Domínio";
@@ -883,7 +884,7 @@
 "watch.configurator.sections.icon.header" = "Ícone";
 "watch.configurator.sections.ring.footer" = "O anel mostrando o progresso em torno do texto.";
 "watch.configurator.sections.ring.header" = "Anel";
-"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
+"watch.configurator.warning.templating_admin" = "ATENÇÃO: Para criar modelos nas complicações do relógio, o usuário precisa ter a função de administrador.";
 "watch.debug.delete_db.alert.failed.message" = "Falha ao excluir configuração, erro: %@";
 "watch.debug.delete_db.alert.title" = "Tem certeza de que deseja excluir a configuração do relógio? Isso não pode ser revertido";
 "watch.debug.delete_db.reset.title" = "Redefinir configuração";
@@ -1074,7 +1075,7 @@
 "widgets.controls.switch.placeholder_title" = "Escolha o interruptor";
 "widgets.controls.switch.title" = "Interruptor";
 "widgets.details.description" = "Exibir estados usando o Home Assistant em texto";
-"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
+"widgets.details.description_with_warning" = "Exibir estados usando o Home Assistant em texto. ATENÇÃO: O usuário precisa ser administrador para ter acesso aos modelos";
 "widgets.details.parameters.action" = "Ação";
 "widgets.details.parameters.details_template" = "Modelo de texto de detalhes (somente na família retangular)";
 "widgets.details.parameters.lower_template" = "Modelo de texto inferior";
@@ -1083,7 +1084,7 @@
 "widgets.details.parameters.upper_template" = "Modelo de texto superior";
 "widgets.details.title" = "Detalhes";
 "widgets.gauge.description" = "Exibir estados numéricos do Home Assistant em um medidor";
-"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
+"widgets.gauge.description_with_warning" = "Exibir estados numéricos do Home Assistant em um medidor. ATENÇÃO: O usuário precisa ser administrador para ter acesso aos modelos";
 "widgets.gauge.parameters.action" = "Ação";
 "widgets.gauge.parameters.gauge_type" = "Tipo de medidor";
 "widgets.gauge.parameters.gauge_type.capacity" = "Capacidade";

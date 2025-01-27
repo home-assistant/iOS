@@ -182,6 +182,7 @@
 "close_label" = "닫기";
 "component.collapsible_view.collapse" = "접기";
 "component.collapsible_view.expand" = "확장하기";
+"connection.error.details.button.clipboard" = "Copy to clipboard";
 "connection.error.details.button.discord" = "Ask in Discord";
 "connection.error.details.button.doc" = "Read documentation";
 "connection.error.details.button.github" = "Report issue in GitHub";

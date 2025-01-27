@@ -182,6 +182,7 @@
 "close_label" = "Bezárás";
 "component.collapsible_view.collapse" = "Összecsuk";
 "component.collapsible_view.expand" = "Kibővít";
+"connection.error.details.button.clipboard" = "Copy to clipboard";
 "connection.error.details.button.discord" = "Kérdezzen a Discordon";
 "connection.error.details.button.doc" = "Olvassa el a dokumentációt";
 "connection.error.details.button.github" = "Jelentse a problémát a GitHubon";

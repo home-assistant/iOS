@@ -182,10 +182,11 @@
 "close_label" = "Закрыть";
 "component.collapsible_view.collapse" = "Свернуть";
 "component.collapsible_view.expand" = "Развернуть";
+"connection.error.details.button.clipboard" = "Скопировать в буфер обмена";
 "connection.error.details.button.discord" = "Спросить в Discord";
 "connection.error.details.button.doc" = "Читать документацию";
 "connection.error.details.button.github" = "Сообщить о проблеме на GitHub";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "Поиск на GitHub";
 "connection.error.details.label.code" = "Код";
 "connection.error.details.label.description" = "Описание";
 "connection.error.details.label.domain" = "Домен";

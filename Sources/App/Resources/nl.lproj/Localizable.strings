@@ -182,10 +182,11 @@
 "close_label" = "Sluiten";
 "component.collapsible_view.collapse" = "Inklappen";
 "component.collapsible_view.expand" = "Uitklappen";
+"connection.error.details.button.clipboard" = "Naar klembord kopiëren";
 "connection.error.details.button.discord" = "Vraag het in Discord";
 "connection.error.details.button.doc" = "Documentatie lezen";
 "connection.error.details.button.github" = "Probleem melden in GitHub";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "Zoeken in GitHub";
 "connection.error.details.label.code" = "Code";
 "connection.error.details.label.description" = "Beschrijving";
 "connection.error.details.label.domain" = "Domein";

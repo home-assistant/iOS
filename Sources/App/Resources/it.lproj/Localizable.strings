@@ -182,6 +182,7 @@
 "close_label" = "Chiudi";
 "component.collapsible_view.collapse" = "Riduci";
 "component.collapsible_view.expand" = "Espandi";
+"connection.error.details.button.clipboard" = "Copy to clipboard";
 "connection.error.details.button.discord" = "Chiedi su Discord";
 "connection.error.details.button.doc" = "Leggi la documentazione";
 "connection.error.details.button.github" = "Segnala il problema su GitHub";

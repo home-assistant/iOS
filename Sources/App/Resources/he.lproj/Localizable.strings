@@ -182,6 +182,7 @@
 "close_label" = "Close";
 "component.collapsible_view.collapse" = "Collapse";
 "component.collapsible_view.expand" = "Expand";
+"connection.error.details.button.clipboard" = "Copy to clipboard";
 "connection.error.details.button.discord" = "לשאול ב-Discord";
 "connection.error.details.button.doc" = "לקרוא את הדוקומנטציה";
 "connection.error.details.button.github" = "לדווח בעיה ב-Github";
