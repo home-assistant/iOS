@@ -32,14 +32,16 @@ struct WidgetCustom: Widget {
     }
 
     private var emptyView: some View {
-        // TODO: Wrap into a button and add intent to create widget
-        VStack(spacing: Spaces.two) {
-            Image(systemSymbol: .squareBadgePlusFill)
-                .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
-                .font(.system(size: 55))
-            Text(L10n.Widgets.Preview.Empty.Create.button)
-                .foregroundStyle(.secondary)
-                .font(.footnote)
+        let url = URL(string: "\(AppConstants.deeplinkURL.absoluteString)createCustomWidget")!
+        return Link(destination: url.withWidgetAuthenticity()) {
+            VStack(spacing: Spaces.two) {
+                Image(systemSymbol: .squareBadgePlusFill)
+                    .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                    .font(.system(size: 55))
+                Text(L10n.Widgets.Preview.Empty.Create.button)
+                    .foregroundStyle(.secondary)
+                    .font(.footnote)
+            }
         }
     }
 
