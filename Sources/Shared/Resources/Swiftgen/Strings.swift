@@ -52,6 +52,8 @@ public enum L10n {
   }
   /// Retry
   public static var retryLabel: String { return L10n.tr("Localizable", "retry_label") }
+  /// Save
+  public static var saveLabel: String { return L10n.tr("Localizable", "save_label") }
   /// Success
   public static var successLabel: String { return L10n.tr("Localizable", "success_label") }
   /// URL
@@ -481,6 +483,11 @@ public enum L10n {
     }
   }
 
+  public enum AssistPipelinePicker {
+    /// Pick pipeline
+    public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
+  }
+
   public enum CarPlay {
     public enum Action {
       public enum Intro {
@@ -848,6 +855,11 @@ public enum L10n {
     }
   }
 
+  public enum EntityPicker {
+    /// Pick entity
+    public static var placeholder: String { return L10n.tr("Localizable", "entity_picker.placeholder") }
+  }
+
   public enum Extensions {
     public enum Map {
       public enum Location {
@@ -1164,13 +1176,45 @@ public enum L10n {
   }
 
   public enum MagicItem {
+    /// Action
+    public static var action: String { return L10n.tr("Localizable", "magic_item.action") }
     /// Add
     public static var add: String { return L10n.tr("Localizable", "magic_item.add") }
     /// Save
     public static var edit: String { return L10n.tr("Localizable", "magic_item.edit") }
+    public enum Action {
+      /// On tap
+      public static var onTap: String { return L10n.tr("Localizable", "magic_item.action.on_tap") }
+      public enum Assist {
+        /// Assist
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.title") }
+        public enum Pipeline {
+          /// Pipeline
+          public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.pipeline.title") }
+        }
+        public enum StartListening {
+          /// Start listening
+          public static var title: String { return L10n.tr("Localizable", "magic_item.action.assist.start_listening.title") }
+        }
+      }
+      public enum NavigationPath {
+        /// e.g. /lovelace/cameras
+        public static var placeholder: String { return L10n.tr("Localizable", "magic_item.action.navigation_path.placeholder") }
+        /// Navigation path
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.navigation_path.title") }
+      }
+      public enum Script {
+        /// Script
+        public static var title: String { return L10n.tr("Localizable", "magic_item.action.script.title") }
+      }
+    }
     public enum BackgroundColor {
       /// Background color
       public static var title: String { return L10n.tr("Localizable", "magic_item.background_color.title") }
+    }
+    public enum DisplayText {
+      /// Display text
+      public static var title: String { return L10n.tr("Localizable", "magic_item.display_text.title") }
     }
     public enum IconColor {
       /// Icon color
@@ -1189,6 +1233,12 @@ public enum L10n {
             /// We will stop supporting iOS Actions in the future, please consider using Home Assistant scripts or scenes instead.
             public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.action.list.warning.title") }
           }
+        }
+      }
+      public enum App {
+        public enum List {
+          /// App
+          public static var title: String { return L10n.tr("Localizable", "magic_item.item_type.app.list.title") }
         }
       }
       public enum Entity {
@@ -2059,6 +2109,36 @@ public enum L10n {
     public enum Widgets {
       /// Widgets
       public static var title: String { return L10n.tr("Localizable", "settings.widgets.title") }
+      public enum Create {
+        /// Create widget
+        public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.title") }
+        public enum AddItem {
+          /// Add item
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.add_item.title") }
+        }
+        public enum Footer {
+          /// While th widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.footer.title") }
+        }
+        public enum Items {
+          /// Items
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.items.title") }
+        }
+        public enum Name {
+          /// e.g. Living room favorites
+          public static var placeholder: String { return L10n.tr("Localizable", "settings.widgets.create.name.placeholder") }
+          /// Name
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.name.title") }
+        }
+        public enum NoItems {
+          /// No items
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.no_items.title") }
+        }
+      }
+      public enum YourWidgets {
+        /// Your widgets
+        public static var title: String { return L10n.tr("Localizable", "settings.widgets.your_widgets.title") }
+      }
     }
   }
 
@@ -3661,6 +3741,20 @@ public enum L10n {
   }
 
   public enum Widgets {
+    public enum Action {
+      public enum Name {
+        /// Assist
+        public static var assist: String { return L10n.tr("Localizable", "widgets.action.name.assist") }
+        /// Default
+        public static var `default`: String { return L10n.tr("Localizable", "widgets.action.name.default") }
+        /// Navigate
+        public static var navigate: String { return L10n.tr("Localizable", "widgets.action.name.navigate") }
+        /// Nothing
+        public static var nothing: String { return L10n.tr("Localizable", "widgets.action.name.nothing") }
+        /// Run Script
+        public static var runScript: String { return L10n.tr("Localizable", "widgets.action.name.run_script") }
+      }
+    }
     public enum Actions {
       /// Perform Home Assistant actions.
       public static var description: String { return L10n.tr("Localizable", "widgets.actions.description") }
@@ -3755,6 +3849,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.switch.title") }
       }
     }
+    public enum Custom {
+      /// Create widgets with your own style
+      public static var subtitle: String { return L10n.tr("Localizable", "widgets.custom.subtitle") }
+      /// Custom widgets
+      public static var title: String { return L10n.tr("Localizable", "widgets.custom.title") }
+    }
     public enum Details {
       /// Display states using from Home Assistant in text
       public static var description: String { return L10n.tr("Localizable", "widgets.details.description") }
@@ -3776,6 +3876,10 @@ public enum L10n {
         /// Upper Text Template
         public static var upperTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.upper_template") }
       }
+    }
+    public enum EntityState {
+      /// Entity state
+      public static var placeholder: String { return L10n.tr("Localizable", "widgets.entity_state.placeholder") }
     }
     public enum Gauge {
       /// Display numeric states from Home Assistant in a gauge
@@ -3820,6 +3924,20 @@ public enum L10n {
       public static var notConfigured: String { return L10n.tr("Localizable", "widgets.open_page.not_configured") }
       /// Open Page
       public static var title: String { return L10n.tr("Localizable", "widgets.open_page.title") }
+    }
+    public enum Preview {
+      public enum Custom {
+        /// Create your own widget inside the App and then display it here.
+        public static var description: String { return L10n.tr("Localizable", "widgets.preview.custom.description") }
+        /// Custom widget
+        public static var title: String { return L10n.tr("Localizable", "widgets.preview.custom.title") }
+      }
+      public enum Empty {
+        public enum Create {
+          /// Create widget
+          public static var button: String { return L10n.tr("Localizable", "widgets.preview.empty.create.button") }
+        }
+      }
     }
     public enum ReloadWidgets {
       public enum AppIntent {

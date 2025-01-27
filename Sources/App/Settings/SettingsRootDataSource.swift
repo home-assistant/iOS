@@ -212,7 +212,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.Widgets.title
             $0.icon = .widgetsIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                UIHostingController(rootView: WidgetsSettingsView.build())
+                UIHostingController(rootView: WidgetBuilderView())
             }, onDismiss: nil)
         }
     }

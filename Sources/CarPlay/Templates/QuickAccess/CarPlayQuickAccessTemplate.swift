@@ -181,7 +181,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         completion: @escaping () -> Void
     ) {
         let alert = CPAlertTemplate(titleVariants: [
-            L10n.Watch.Home.Run.Confirmation.title(info.name),
+            L10n.Watch.Home.Run.Confirmation.title(item.name(info: info)),
         ], actions: [
             .init(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { [weak self] _ in
                 self?.interfaceController?.dismissTemplate(animated: true, completion: nil)

@@ -12,6 +12,16 @@ class IncomingURLHandler {
         registerCallbackURLKitHandlers()
     }
 
+    enum IncomingURLAction: String {
+        case xCallbackURL = "x-callback-url"
+        case callService = "call_service"
+        case fireEvent = "fire_event"
+        case sendLocation = "send_location"
+        case performAction = "perform_action"
+        case assist
+        case navigate
+    }
+
     @discardableResult
     func handle(url: URL) -> Bool {
         Current.Log.verbose("Received URL: \(url)")
@@ -20,68 +30,96 @@ class IncomingURLHandler {
             serviceData = queryItems
         }
         guard let host = url.host else { return true }
-        switch host.lowercased() {
-        case "x-callback-url":
-            return Manager.shared.handleOpen(url: url)
-        case "call_service":
-            confirmAction(
-                title: L10n.UrlHandler.CallService.Confirm.title,
-                message: L10n.UrlHandler.CallService.Confirm.message(url.pathComponents[1]),
-                handler: { self.callServiceURLHandler(url, serviceData) }
-            )
-        case "fire_event":
-            confirmAction(
-                title: L10n.UrlHandler.FireEvent.Confirm.title,
-                message: L10n.UrlHandler.FireEvent.Confirm.message(url.pathComponents[1]),
-                handler: { self.fireEventURLHandler(url, serviceData) }
-            )
-        case "send_location":
-            confirmAction(
-                title: L10n.UrlHandler.SendLocation.Confirm.title,
-                message: L10n.UrlHandler.SendLocation.Confirm.message,
-                handler: { self.sendLocationURLHandler() }
-            )
-        case "perform_action":
-            performActionURLHandler(url, serviceData: serviceData)
-        case "navigate": // homeassistant://navigate/lovelace/dashboard
-            guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-                return false
-            }
+        if let requestedAction = IncomingURLAction(rawValue: host.lowercased()) {
+            switch requestedAction {
+            case .xCallbackURL:
+                return Manager.shared.handleOpen(url: url)
+            case .callService:
+                confirmAction(
+                    title: L10n.UrlHandler.CallService.Confirm.title,
+                    message: L10n.UrlHandler.CallService.Confirm.message(url.pathComponents[1]),
+                    handler: { self.callServiceURLHandler(url, serviceData) }
+                )
+            case .fireEvent:
+                confirmAction(
+                    title: L10n.UrlHandler.FireEvent.Confirm.title,
+                    message: L10n.UrlHandler.FireEvent.Confirm.message(url.pathComponents[1]),
+                    handler: { self.fireEventURLHandler(url, serviceData) }
+                )
+            case .sendLocation:
+                confirmAction(
+                    title: L10n.UrlHandler.SendLocation.Confirm.title,
+                    message: L10n.UrlHandler.SendLocation.Confirm.message,
+                    handler: { self.sendLocationURLHandler() }
+                )
+            case .performAction:
+                performActionURLHandler(url, serviceData: serviceData)
+            case .navigate: // homeassistant://navigate/lovelace/dashboard
+                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                    return false
+                }
 
-            components.scheme = nil
-            components.host = nil
+                components.scheme = nil
+                components.host = nil
 
-            let queryParameters = components.queryItems
-            let isFromWidget = components.popWidgetAuthenticity()
-            let server = components.popWidgetServer(isFromWidget: isFromWidget)
+                let queryParameters = components.queryItems
+                let isFromWidget = components.popWidgetAuthenticity()
+                let server = components.popWidgetServer(isFromWidget: isFromWidget)
 
-            guard let rawURL = components.url?.absoluteString else {
-                return false
-            }
+                guard let rawURL = components.url?.absoluteString else {
+                    return false
+                }
 
-            if
-                let presenting = windowController.presentedViewController,
-                presenting is SFSafariViewController {
-                // Dismiss my.* controller if it's on top - we don't get any other indication
-                presenting.dismiss(animated: true, completion: { [windowController] in
-                    windowController?.openSelectingServer(
+                if
+                    let presenting = windowController.presentedViewController,
+                    presenting is SFSafariViewController {
+                    // Dismiss my.* controller if it's on top - we don't get any other indication
+                    presenting.dismiss(animated: true, completion: { [windowController] in
+                        windowController?.openSelectingServer(
+                            from: .deeplink,
+                            urlString: rawURL,
+                            skipConfirm: true,
+                            queryParameters: queryParameters
+                        )
+                    })
+                } else if let server {
+                    windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
+                } else {
+                    windowController.openSelectingServer(
                         from: .deeplink,
                         urlString: rawURL,
-                        skipConfirm: true,
+                        skipConfirm: isFromWidget,
                         queryParameters: queryParameters
                     )
-                })
-            } else if let server {
-                windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
-            } else {
-                windowController.openSelectingServer(
-                    from: .deeplink,
-                    urlString: rawURL,
-                    skipConfirm: isFromWidget,
-                    queryParameters: queryParameters
-                )
+                }
+            case .assist:
+                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                      let queryParameters = components.queryItems else {
+                    return false
+                }
+
+                let serverId = queryParameters.first(where: { $0.name == "serverId" })?.value ?? ""
+                let pipelineId = queryParameters.first(where: { $0.name == "pipelineId" })?.value ?? ""
+                let startlistening = Bool(
+                    queryParameters.first(where: { $0.name == "startListening" })?
+                        .value ?? "false"
+                ) ?? true
+
+                guard let server = Current.servers.all.first(where: {
+                    $0.identifier.rawValue == serverId
+                }) ?? Current.servers.all.first else { return false }
+
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        webViewController.webViewExternalMessageHandler.showAssist(
+                            server: server,
+                            pipeline: pipelineId,
+                            autoStartRecording: startlistening,
+                            animated: false
+                        )
+                    }
             }
-        default:
+        } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
         }

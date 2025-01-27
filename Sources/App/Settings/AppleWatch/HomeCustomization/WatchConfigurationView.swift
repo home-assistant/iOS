@@ -49,6 +49,7 @@ struct WatchConfigurationView: View {
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
+            .preferredColorScheme(.dark)
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
             Button(action: {}, label: {
@@ -184,7 +185,7 @@ struct WatchConfigurationView: View {
             itemRow(item: item, info: info)
         } else {
             NavigationLink {
-                MagicItemCustomizationView(mode: .edit, item: item) { updatedMagicItem in
+                MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {
@@ -196,7 +197,7 @@ struct WatchConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
-            Text(info.name)
+            Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: SFSymbol.line3Horizontal.rawValue)
                 .foregroundStyle(.gray)
@@ -254,13 +255,7 @@ struct WatchConfigurationView: View {
         watchPreview: Bool,
         color: UIColor? = nil
     ) -> UIImage {
-        var icon: MaterialDesignIcons = .abTestingIcon
-        switch item.type {
-        case .action:
-            icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .scene, .entity:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
-        }
+        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
 
         return icon.image(
             ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
