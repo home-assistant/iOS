@@ -182,10 +182,11 @@
 "close_label" = "Stäng";
 "component.collapsible_view.collapse" = "Komprimera";
 "component.collapsible_view.expand" = "Expandera";
+"connection.error.details.button.clipboard" = "Kopiera till urklipp";
 "connection.error.details.button.discord" = "Fråga i Discord";
 "connection.error.details.button.doc" = "Läs dokumentationen";
 "connection.error.details.button.github" = "Rapportera problem på GitHub";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "Sök i GitHub";
 "connection.error.details.label.code" = "Kod";
 "connection.error.details.label.description" = "Beskrivning";
 "connection.error.details.label.domain" = "Domän";

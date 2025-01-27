@@ -182,10 +182,11 @@
 "close_label" = "Tutup";
 "component.collapsible_view.collapse" = "Ciutkan";
 "component.collapsible_view.expand" = "Bentangkan";
+"connection.error.details.button.clipboard" = "Salin ke papan klip";
 "connection.error.details.button.discord" = "Tanyakan di Discord";
 "connection.error.details.button.doc" = "Baca dokumentasi";
 "connection.error.details.button.github" = "Laporkan masalah di GitHub";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "Cari di GitHub";
 "connection.error.details.label.code" = "Kode";
 "connection.error.details.label.description" = "Deskripsi";
 "connection.error.details.label.domain" = "Domain";
@@ -883,7 +884,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "watch.configurator.sections.icon.header" = "Ikon";
 "watch.configurator.sections.ring.footer" = "Cincin menunjukkan kemajuan di sekitar teks.";
 "watch.configurator.sections.ring.header" = "Cincin";
-"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
+"watch.configurator.warning.templating_admin" = "CATATAN: Untuk membuat templat dalam komplikasi jam tangan, pengguna harus memiliki peran admin.";
 "watch.debug.delete_db.alert.failed.message" = "Gagal menghapus konfigurasi, kesalahan: %@";
 "watch.debug.delete_db.alert.title" = "Yakin ingin menghapus konfigurasi Watch? Ini tidak dapat dikembalikan";
 "watch.debug.delete_db.reset.title" = "Setel ulang konfigurasi";
@@ -1074,7 +1075,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.controls.switch.placeholder_title" = "Pilih Sakelar";
 "widgets.controls.switch.title" = "Sakelar";
 "widgets.details.description" = "Menampilkan status dari Home Assistant dalam bentuk teks";
-"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
+"widgets.details.description_with_warning" = "Menampilkan status dari Home Assistant dalam bentuk teks. CATATAN: Pengguna harus memiliki peran admin untuk akses templat";
 "widgets.details.parameters.action" = "Aksi";
 "widgets.details.parameters.details_template" = "Templat Teks Detail (hanya dalam format persegi panjang)";
 "widgets.details.parameters.lower_template" = "Templat Teks Bawah";
@@ -1083,7 +1084,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.details.parameters.upper_template" = "Templat Teks Atas";
 "widgets.details.title" = "Detail";
 "widgets.gauge.description" = "Menampilkan status numerik dari Home Assistant bentuk gauge";
-"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
+"widgets.gauge.description_with_warning" = "Menampilkan status numerik dari Home Assistant bentuk gauge. CATATAN: Pengguna harus memiliki peran admin untuk akses templat";
 "widgets.gauge.parameters.action" = "Aksi";
 "widgets.gauge.parameters.gauge_type" = "Jenis Gauge";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapasitas";

@@ -1,7 +1,7 @@
 "common::state::active" = "Активно";
 "common::state::closed" = "Закрыто";
 "common::state::connected" = "Подключено";
-"common::state::disabled" = "Отключено";
+"common::state::disabled" = "Деактивировано";
 "common::state::disconnected" = "Отключено";
 "common::state::enabled" = "Активировано";
 "common::state::home" = "Дома";
@@ -43,7 +43,7 @@
 "component::calendar::entity_component::_::state_attributes::all_day::state::false" = "Нет";
 "component::calendar::entity_component::_::state_attributes::all_day::state::true" = "Да";
 "component::camera::entity_component::_::state::idle" = "Бездействие";
-"component::camera::entity_component::_::state_attributes::motion_detection::state::false" = "Отключено";
+"component::camera::entity_component::_::state_attributes::motion_detection::state::false" = "Деактивировано";
 "component::camera::entity_component::_::state_attributes::motion_detection::state::true" = "Активировано";
 "component::climate::entity_component::_::state::off" = "Выключено";
 "component::climate::entity_component::_::state_attributes::fan_mode::state::off" = "Выключено";
@@ -84,7 +84,7 @@
 "component::hdmi_cec::services::standby::name" = "Ожидание";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "Не дома";
 "component::homekit_controller::entity::select::ecobee_mode::state::home" = "Дома";
-"component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Отключено";
+"component::homekit_controller::entity::sensor::thread_status::state::disabled" = "Деактивировано";
 "component::hue::entity::sensor::zigbee_connectivity::state::connected" = "Подключено";
 "component::hue::entity::sensor::zigbee_connectivity::state::disconnected" = "Отключено";
 "component::humidifier::entity_component::_::state::off" = "Выключено";
@@ -219,7 +219,7 @@
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Бездействие";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Закрыто";
 "component::shelly::selector::ble_scanner_mode::options::active" = "Активно";
-"component::shelly::selector::ble_scanner_mode::options::disabled" = "Отключено";
+"component::shelly::selector::ble_scanner_mode::options::disabled" = "Деактивировано";
 "component::siren::entity_component::_::state::off" = "Выключено";
 "component::siren::entity_component::_::state::on" = "Включено";
 "component::starlink::entity::binary_sensor::power_save_idle::name" = "Сон";
@@ -239,7 +239,7 @@
 "component::timer::entity_component::_::state_attributes::editable::state::false" = "Нет";
 "component::timer::entity_component::_::state_attributes::editable::state::true" = "Да";
 "component::transmission::entity::sensor::transmission_status::state::idle" = "Бездействие";
-"component::tuya::entity::select::basic_anti_flicker::state:::0" = "Отключено";
+"component::tuya::entity::select::basic_anti_flicker::state:::0" = "Деактивировано";
 "component::tuya::entity::select::basic_nightvision::state:::1" = "Выключено";
 "component::tuya::entity::select::basic_nightvision::state:::2" = "Включено";
 "component::tuya::entity::select::light_mode::state::none" = "Выключено";
@@ -274,7 +274,7 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "Активно";
 "component::wled::entity::select::live_override::state:::0" = "Выключено";
 "component::wled::entity::select::live_override::state:::1" = "Включено";
-"component::wolflink::entity::sensor::state::state::aus" = "Отключено";
+"component::wolflink::entity::sensor::state::state::aus" = "Деактивировано";
 "component::wolflink::entity::sensor::state::state::ein" = "Активировано";
 "component::wolflink::entity::sensor::state::state::standby" = "Ожидание";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "Выключено";
@@ -282,5 +282,5 @@
 "component::yamaha_musiccast::entity::select::zone_sleep::state::off" = "Выключено";
 "component::yeelight::selector::action::options::off" = "Выключено";
 "component::yolink::entity::sensor::power_failure_alarm::state::off" = "Выключено";
-"component::yolink::entity::sensor::power_failure_alarm_beep::state::disabled" = "Отключено";
+"component::yolink::entity::sensor::power_failure_alarm_beep::state::disabled" = "Деактивировано";
 "component::yolink::entity::sensor::power_failure_alarm_beep::state::enabled" = "Активировано";

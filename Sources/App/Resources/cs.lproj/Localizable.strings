@@ -182,10 +182,11 @@
 "close_label" = "Zavřít";
 "component.collapsible_view.collapse" = "Sbalit";
 "component.collapsible_view.expand" = "Rozbalit";
+"connection.error.details.button.clipboard" = "Zkopírovat do schránky";
 "connection.error.details.button.discord" = "Zeptat se na Discordu";
 "connection.error.details.button.doc" = "Přečíst si dokumentaci";
 "connection.error.details.button.github" = "Nahlásit problém na GitHub";
-"connection.error.details.button.search_github" = "Search in GitHub";
+"connection.error.details.button.search_github" = "Hledat na GitHubu";
 "connection.error.details.label.code" = "Kód";
 "connection.error.details.label.description" = "Popis";
 "connection.error.details.label.domain" = "Doména";
@@ -883,7 +884,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.configurator.sections.icon.header" = "Ikona";
 "watch.configurator.sections.ring.footer" = "Kroužek znázorňující průběh kolem textu.";
 "watch.configurator.sections.ring.header" = "Kroužek";
-"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
+"watch.configurator.warning.templating_admin" = "POZOR: Pro šablonování v komplikacích na hodinkách musí mít uživatel roli správce.";
 "watch.debug.delete_db.alert.failed.message" = "Nastavení se nepodařilo smazat, chyba: %@";
 "watch.debug.delete_db.alert.title" = "Opravdu chcete smazat nastavení hodinek? Toto nelze vrátit zpět.";
 "watch.debug.delete_db.reset.title" = "Resetovat nastavení";
@@ -1074,7 +1075,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.switch.placeholder_title" = "Vybrat spínač";
 "widgets.controls.switch.title" = "Spínač";
 "widgets.details.description" = "Zobrazí stavy pomocí aplikace Home Assistant v textu.";
-"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
+"widgets.details.description_with_warning" = "Zobrazení stavů pomocí aplikace Home Assistant v textu. POZOR: Uživatel musí být správcem pro přístup k šablonám.";
 "widgets.details.parameters.action" = "Akce";
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";
 "widgets.details.parameters.lower_template" = "Šablona dolního textu";
@@ -1083,7 +1084,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.details.parameters.upper_template" = "Šablona horního textu";
 "widgets.details.title" = "Podrobnosti";
 "widgets.gauge.description" = "Zobrazí číselné stavy z Home Assistanta na ukazateli.";
-"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
+"widgets.gauge.description_with_warning" = "Zobrazení číselných stavů z Home Assistanta na měřidle. POZOR: Uživatel musí být správcem pro přístup k šablonám.";
 "widgets.gauge.parameters.action" = "Akce";
 "widgets.gauge.parameters.gauge_type" = "Typ ukazatele";
 "widgets.gauge.parameters.gauge_type.capacity" = "Kapacita";
