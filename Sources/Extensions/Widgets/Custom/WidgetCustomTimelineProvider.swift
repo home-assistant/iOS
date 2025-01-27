@@ -49,7 +49,7 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             let widget = try CustomWidget.widgets()?.first { $0.id == id }
 
             // This prevents widgets displaying more items than the widget family size supports
-            var newWidgetWithPrefixedItems = CustomWidget(
+            let newWidgetWithPrefixedItems = CustomWidget(
                 name: widget?.name ?? "Uknown",
                 items: Array((widget?.items ?? []).prefix(WidgetFamilySizes.size(for: context.family)))
             )
@@ -82,24 +82,19 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
         for item in items {
             let serverId = item.serverId
             let entityId = item.id
-            guard let domain = item.domain else { break }
+            guard let domain = item.domain,
+                  let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { break }
 
-            do {
-                if let state: String = try await ControlEntityProvider(domains: [domain]).currentState(
-                    serverId: serverId,
-                    entityId: entityId
-                ) {
-                    states[item] = state
-                } else {
-                    Current.Log
-                        .error(
-                            "Failed to get state for entity in custom widget (2), entityId: \(entityId), serverId: \(serverId)"
-                        )
-                }
-            } catch {
+            if let state: ControlEntityProvider.State = await ControlEntityProvider(domains: [domain]).state(
+                server: server,
+                entityId: entityId
+            ) {
+                states[item] =
+                    "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")"
+            } else {
                 Current.Log
                     .error(
-                        "Failed to get state for entity in custom widget, entityId: \(entityId), serverId: \(serverId), error: \(error.localizedDescription)"
+                        "Failed to get state for entity in custom widget, entityId: \(entityId), serverId: \(serverId)"
                     )
             }
         }

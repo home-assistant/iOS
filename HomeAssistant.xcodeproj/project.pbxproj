@@ -784,6 +784,8 @@
 		42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */; };
 		42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
+		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
+		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C101242CD3D7700012BA78 /* ControlRefreshDelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */; };
 		42C101272CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */; };
 		42C101282CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */; };
@@ -2121,6 +2123,7 @@
 		42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAccessoryViews.swift; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
+		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
 		42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlRefreshDelay.swift; sourceTree = "<group>"; };
 		42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentCoverEntity.swift; sourceTree = "<group>"; };
 		42C101292CD3DB8A0012BA78 /* CoverIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverIntent.swift; sourceTree = "<group>"; };
@@ -4135,6 +4138,7 @@
 		4296C3722B91F06D0051B63C /* Widget */ = {
 			isa = PBXGroup;
 			children = (
+				42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */,
 				3E02C0FA2CAD9EEB00102131 /* Sensor */,
 				420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */,
 				4296C3732B91F0730051B63C /* Actions */,
@@ -7493,6 +7497,7 @@
 				11F855D924DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */,
 				11AF4D20249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
+				42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */,
 				11F2F27F258725D300F61F7C /* NotificationAttachmentErrorImage.swift in Sources */,
 				B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */,
 				1105CE1D272B9CB300F33BD8 /* ServerManager.swift in Sources */,
@@ -7697,6 +7702,7 @@
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
 				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,
+				42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */,
 				420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */,
 				42FCCFDB2B9B19F70057783F /* ThreadCredential.swift in Sources */,
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
