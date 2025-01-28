@@ -6,7 +6,7 @@ struct WidgetBuilderView: View {
 
     var body: some View {
         List {
-            if #available(iOS 18, *) {
+            if #available(iOS 17, *) {
                 header
                 yourWidgetsSection
             }
