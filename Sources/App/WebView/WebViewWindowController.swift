@@ -119,6 +119,8 @@ final class WebViewWindowController {
 
     func navigate(to url: URL, on server: Server) {
         open(server: server).done { webViewController in
+            // Dismiss any overlayed controllers
+            webViewController.overlayAppController?.dismiss(animated: false)
             webViewController.open(inline: url)
         }
     }
