@@ -52,13 +52,19 @@ struct NoActiveURLView: View {
         }
     }
 
+    @ViewBuilder
     private var configureButton: some View {
         Button(L10n.Connection.Permission.InternalUrl.buttonConfigure) {
             Current.Log.info("Tapped configure local access button in NoActiveURLView")
             configure()
         }
         .buttonStyle(.primaryButton)
-        .padding(.vertical)
+        .padding(.top)
+        Button("I trust this network, remind me tomorrow") {
+            Current.Log.info("Tapped configure local access button in NoActiveURLView")
+            configure()
+        }
+        .buttonStyle(.secondaryButton)
     }
 
     private func configure() {
@@ -81,20 +87,10 @@ struct NoActiveURLView: View {
 
     private var header: some View {
         HStack {
-            Button {
-                Current.Log.info("Tapped settings button in NoActiveURLView")
-                showSettings()
-            } label: {
-                Image(systemSymbol: .gear)
-            }
-            .font(.title2)
-            .foregroundStyle(Color(uiColor: .secondaryLabel))
             Spacer()
-            Button {
+            CloseButton {
                 Current.Log.info("Dismissed NoActiveURLView")
                 dismiss()
-            } label: {
-                Image(systemSymbol: .xmark)
             }
         }
     }
@@ -108,29 +104,38 @@ struct NoActiveURLView: View {
 
     @ViewBuilder
     private var textBlock: some View {
-        Text(L10n.Connection.Permission.InternalUrl.title)
+        Text("Are you home?")
             .font(.title.bold())
-            .padding(.vertical)
+            .padding(.top)
+        Text("The app is trying to connect to a local network but is unable to know if you are at home.")
+            .font(.body)
+            .multilineTextAlignment(.center)
+
         VStack(spacing: Spaces.two) {
-            Group {
-                makeRow(icon: .map, text: L10n.Connection.Permission.InternalUrl.body1)
-                makeRow(icon: .wifi, text: L10n.Connection.Permission.InternalUrl.body2)
-                makeRow(icon: .lock, text: L10n.Connection.Permission.InternalUrl.body3)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            permissionRow(permissionProvided: false, title: "Your Wifi network name", subtitle: "e.g. MyHomeWifi")
+            permissionRow(permissionProvided: true, title: "Location access", subtitle: "To check if you are connected to the same Wifi network as your home, Apple requires location access. You are still in control if you want to share this information with Home Assistant itself.")
         }
+        .padding()
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(.top)
     }
 
-    private func makeRow(icon: SFSymbol, text: String) -> some View {
-        HStack(spacing: Spaces.two) {
+    private func permissionRow(permissionProvided: Bool, title: String, subtitle: String) -> some View {
+        HStack(alignment: .top, spacing: Spaces.two) {
+            Image(systemSymbol: permissionProvided ? .checkmarkCircleFill : .circleDashed)
+                .resizable()
+                .frame(width: 28, height: 28)
+                .foregroundStyle(permissionProvided ? Color.asset(Asset.Colors.haPrimary) : .yellow)
             VStack {
-                Image(systemSymbol: icon)
-                    .font(.title)
-                    .foregroundStyle(Color(uiColor: Asset.Colors.haPrimary.color))
+                Text(title)
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(minHeight: 28)
+                Text(subtitle)
+                    .font(.footnote.weight(.light))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
             }
-            .frame(width: 30, height: 30)
-            Text(text)
-                .font(.body)
         }
     }
 
