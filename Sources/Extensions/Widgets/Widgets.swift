@@ -34,6 +34,7 @@ struct WidgetsBundle17: WidgetBundle {
     }
 
     var body: some Widget {
+        WidgetCustom()
         WidgetAssist()
         WidgetScripts()
         WidgetGauge()
@@ -51,6 +52,7 @@ struct WidgetsBundle18: WidgetBundle {
     }
 
     var body: some Widget {
+        // Controls
         ControlAssist()
         ControlLight()
         ControlSwitch()
@@ -58,6 +60,8 @@ struct WidgetsBundle18: WidgetBundle {
         ControlScript()
         ControlScene()
         ControlOpenPage()
+
+        // Widgets
         WidgetCustom()
         WidgetAssist()
         WidgetScripts()
