@@ -63,52 +63,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         becomeFirstResponder()
 
-        for name: Notification.Name in [
-            HomeAssistantAPI.didConnectNotification,
-            UIApplication.didBecomeActiveNotification,
-        ] {
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(connectionInfoDidChange),
-                name: name,
-                object: nil
-            )
-        }
+        observeConnectionNotifications()
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(scheduleReconnectBackgroundTimer),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-
-        tokens.append(server.observe { [weak self] _ in
-            self?.connectionInfoDidChange()
-        })
-
-        let statusBarView = UIView()
-        statusBarView.tag = 111
-
-        view.addSubview(statusBarView)
-
-        statusBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-
-        statusBarView.translatesAutoresizingMaskIntoConstraints = false
+        let statusBarView = setupStatusBarView()
 
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
 
-        let userContentController = WKUserContentController()
-        let safeScriptMessageHandler = SafeScriptMessageHandler(delegate: self)
-        userContentController.add(safeScriptMessageHandler, name: "getExternalAuth")
-        userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
-        userContentController.add(safeScriptMessageHandler, name: "externalBus")
-        userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
-        userContentController.add(safeScriptMessageHandler, name: "logError")
+        let userContentController = setupUserContentController()
 
         guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
               let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
@@ -144,16 +107,85 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.isOpaque = false
         view!.addSubview(webView)
 
-        for direction: UISwipeGestureRecognizer.Direction in [.left, .right, .up, .down] {
-            webView.addGestureRecognizer(with(UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))) {
-                $0.numberOfTouchesRequired = 2
-                $0.direction = direction
-            })
+        setupGestures()
+        setupURLObserver()
+
+        webView.navigationDelegate = self
+        webView.uiDelegate = self
+
+        setupWebViewConstraints(statusBarView: statusBarView)
+        setupPullToRefresh()
+        setupSettingsButton()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateWebViewSettingsForNotification),
+            name: SettingsStore.webViewRelatedSettingDidChange,
+            object: nil
+        )
+        updateWebViewSettings(reason: .initial)
+        styleUI()
+        getLatestConfig()
+
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+    }
+
+    private func observeConnectionNotifications() {
+        for name: Notification.Name in [
+            HomeAssistantAPI.didConnectNotification,
+            UIApplication.didBecomeActiveNotification,
+        ] {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(connectionInfoDidChange),
+                name: name,
+                object: nil
+            )
         }
 
-        webView.addGestureRecognizer(sidebarGestureRecognizer)
-        webView.addGestureRecognizer(rightEdgeGestureRecognizer)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(scheduleReconnectBackgroundTimer),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
 
+        tokens.append(server.observe { [weak self] _ in
+            self?.connectionInfoDidChange()
+        })
+    }
+
+    private func setupSettingsButton() {
+        WebViewAccessoryViews.settingsButton.addTarget(self, action: #selector(openSettingsView(_:)), for: .touchDown)
+        view.addSubview(WebViewAccessoryViews.settingsButton)
+
+        NSLayoutConstraint.activate([
+            view.bottomAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.bottomAnchor, constant: 16.0),
+            view.rightAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.rightAnchor, constant: 16.0),
+        ])
+    }
+
+    private func setupPullToRefresh() {
+        if !Current.isCatalyst {
+            // refreshing is handled by menu/keyboard shortcuts
+            refreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
+            webView.scrollView.addSubview(refreshControl)
+            webView.scrollView.bounces = true
+        }
+    }
+
+    private func setupWebViewConstraints(statusBarView: UIView) {
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        webView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor).isActive = true
+        webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
+
+    private func setupURLObserver() {
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
             guard let self else { return }
 
@@ -174,48 +206,44 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             ]
             userActivity?.becomeCurrent()
         }
+    }
 
-        webView.navigationDelegate = self
-        webView.uiDelegate = self
-
-        webView.translatesAutoresizingMaskIntoConstraints = false
-
-        webView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        webView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor).isActive = true
-        webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-
-        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        if !Current.isCatalyst {
-            // refreshing is handled by menu/keyboard shortcuts
-            refreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
-            webView.scrollView.addSubview(refreshControl)
-            webView.scrollView.bounces = true
+    private func setupGestures() {
+        for direction: UISwipeGestureRecognizer.Direction in [.left, .right, .up, .down] {
+            webView.addGestureRecognizer(with(UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))) {
+                $0.numberOfTouchesRequired = 2
+                $0.direction = direction
+            })
         }
 
-        WebViewAccessoryViews.settingsButton.addTarget(self, action: #selector(openSettingsView(_:)), for: .touchDown)
-        view.addSubview(WebViewAccessoryViews.settingsButton)
+        webView.addGestureRecognizer(sidebarGestureRecognizer)
+        webView.addGestureRecognizer(rightEdgeGestureRecognizer)
+    }
 
-        NSLayoutConstraint.activate([
-            view.bottomAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.bottomAnchor, constant: 16.0),
-            view.rightAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.rightAnchor, constant: 16.0),
-        ])
+    private func setupUserContentController() -> WKUserContentController {
+        let userContentController = WKUserContentController()
+        let safeScriptMessageHandler = SafeScriptMessageHandler(delegate: self)
+        userContentController.add(safeScriptMessageHandler, name: "getExternalAuth")
+        userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
+        userContentController.add(safeScriptMessageHandler, name: "externalBus")
+        userContentController.add(safeScriptMessageHandler, name: "updateThemeColors")
+        userContentController.add(safeScriptMessageHandler, name: "logError")
+        return userContentController
+    }
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateWebViewSettingsForNotification),
-            name: SettingsStore.webViewRelatedSettingDidChange,
-            object: nil
-        )
-        updateWebViewSettings(reason: .initial)
+    private func setupStatusBarView() -> UIView {
+        let statusBarView = UIView()
+        statusBarView.tag = 111
 
-        styleUI()
-        getLatestConfig()
+        view.addSubview(statusBarView)
 
-        if #available(iOS 16.4, *) {
-            webView.isInspectable = true
-        }
+        statusBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+
+        statusBarView.translatesAutoresizingMaskIntoConstraints = false
+        return statusBarView
     }
 
     public func showSettingsViewController() {
@@ -1168,31 +1196,17 @@ extension WebViewController {
 
     private func moveToServer(next: Bool) {
         let servers = Current.servers.all
-        let current = server
+        guard servers.count > 1, let currentIndex = servers.firstIndex(of: server) else { return }
+
+        let nextIndex = (next ? currentIndex - 1 : currentIndex + 1 + servers.count) % servers.count
+        let nextServer = servers[nextIndex]
 
         Current.sceneManager.webViewWindowControllerPromise.done { controller in
-            guard servers.count > 1,
-                  let startIndex = servers.firstIndex(of: current) else {
-                return
-            }
-
-            let nextIndex = next ? startIndex - 1 : startIndex + 1
-
-            let server: Server
-
-            if nextIndex < servers.startIndex {
-                server = servers[servers.endIndex - 1]
-            } else if nextIndex >= servers.endIndex {
-                server = servers[servers.startIndex]
-            } else {
-                server = servers[nextIndex]
-            }
-
-            controller.open(server: server).done { controller in
+            controller.open(server: nextServer).done { controller in
                 let hud = MBProgressHUD.showAdded(to: controller.view, animated: true)
                 hud.isUserInteractionEnabled = false
                 hud.mode = .text
-                hud.label.text = server.info.name
+                hud.label.text = nextServer.info.name
                 hud.hide(animated: true, afterDelay: 1.0)
             }
         }
