@@ -110,7 +110,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         DataWidgetsUpdater.update()
         Current.modelManager.unsubscribe()
-        Current.periodicAppEntitiesUpdater().stop()
+        Current.appDatabaseUpdater.stop()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -119,8 +119,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         Current.modelManager.subscribe(isAppInForeground: {
             UIApplication.shared.applicationState == .active
         })
-        Current.periodicAppEntitiesUpdater().setup()
-        Current.panelsUpdater().update()
+        Current.appDatabaseUpdater.update()
+        Current.panelsUpdater.update()
     }
 
     func windowScene(

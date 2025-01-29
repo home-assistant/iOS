@@ -10,10 +10,19 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
     static var shared = PanelsUpdater()
 
     private var tokens: [(promise: Promise<HAPanels>, cancel: () -> Void)?] = []
+    private var lastUpdate: Date?
 
     public func update() {
+        if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
+            Current.Log.verbose("Skipping panels update, last update was \(lastUpdate)")
+            return
+        } else {
+            lastUpdate = Date()
+        }
         tokens.forEach({ $0?.cancel() })
         tokens = []
+
+        Current.Log.verbose("Updating panels, servers count \(Current.servers.all.count)")
         for server in Current.servers.all {
             let request = Current.api(for: server)?.connection.send(.panels())
             tokens.append(request)

@@ -2,29 +2,32 @@ import Foundation
 import GRDB
 import HAKit
 
-public protocol PeriodicAppEntitiesModelUpdaterProtocol {
-    func setup()
+public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func updateAppEntities()
+    func update()
 }
 
-final class PeriodicAppEntitiesModelUpdater: PeriodicAppEntitiesModelUpdaterProtocol {
-    static var shared = PeriodicAppEntitiesModelUpdater()
+final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
+    static var shared = AppDatabaseUpdater()
 
     private var requestTokens: [HACancellable?] = []
-    private var timer: Timer?
-
-    func setup() {
-        startUpdateTimer()
-    }
+    private var lastUpdate: Date?
 
     func stop() {
         cancelOnGoingRequests()
-        timer?.invalidate()
     }
 
-    func updateAppEntities() {
+    func update() {
         cancelOnGoingRequests()
+
+        if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
+            Current.Log.verbose("Skipping database update, last update was \(lastUpdate)")
+            return
+        } else {
+            lastUpdate = Date()
+        }
+
+        Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
         Current.servers.all.forEach { server in
             guard server.info.connection.activeURL() != nil else { return }
 
@@ -107,13 +110,5 @@ final class PeriodicAppEntitiesModelUpdater: PeriodicAppEntitiesModelUpdaterProt
     private func cancelOnGoingRequests() {
         requestTokens.forEach { $0?.cancel() }
         requestTokens = []
-    }
-
-    // Start timer that updates app entities every 5 minutes
-    private func startUpdateTimer() {
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 5 * 60, repeats: true) { [weak self] _ in
-            self?.updateAppEntities()
-        }
     }
 }

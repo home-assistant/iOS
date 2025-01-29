@@ -51,9 +51,9 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.11.0):
     - GoogleUtilities/Logger
-  - GRDB.swift (6.29.3):
-    - GRDB.swift/standard (= 6.29.3)
-  - GRDB.swift/standard (6.29.3)
+  - GRDB.swift (7.0.0):
+    - GRDB.swift/standard (= 7.0.0)
+  - GRDB.swift/standard (7.0.0)
   - HAKit (0.4.4):
     - HAKit/Core (= 0.4.4)
   - HAKit/Core (0.4.4):
@@ -132,7 +132,7 @@ DEPENDENCIES:
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
-  - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v6.29.3`)
+  - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v7.0.0`)
   - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.4`)
   - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.4`)
   - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.4`)
@@ -206,7 +206,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/xmartlabs/Eureka
   GRDB.swift:
     :git: https://github.com/groue/GRDB.swift.git
-    :tag: v6.29.3
+    :tag: v7.0.0
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.4
@@ -241,7 +241,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/xmartlabs/Eureka
   GRDB.swift:
     :git: https://github.com/groue/GRDB.swift.git
-    :tag: v6.29.3
+    :tag: v7.0.0
   HAKit:
     :git: https://github.com/home-assistant/HAKit.git
     :tag: 0.4.4
@@ -272,7 +272,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 35ecbbc68ff547fca80f9326c9622e79288c7149
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
-  GRDB.swift: 764235dee4a4fbe3ddcb4f85c61752e8d8da9ad0
+  GRDB.swift: a0ccf69e5d6dd631d9ae40d933eb624e790f5245
   HAKit: d5c0028afd8c5053537fcbc4b0ed2e6e27d3bc2b
   Improv-iOS: 8973990c1b1f3e3aed7fc600c8efce95359cadd0
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
@@ -299,6 +299,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 9bace27ccfcc32ab1a602221366738bacf658272
+PODFILE CHECKSUM: 9f6eb22ccda1a35414dfc27d137971a594c984b1
 
 COCOAPODS: 1.15.2
