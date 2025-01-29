@@ -93,33 +93,35 @@ class ZoneManager {
             "event": event.description,
         ]
 
-        // although technically the processor also does this, it does it after some async processing.
-        // let's be very confident that we're not going to miss out on an update due to being suspended
-        Current.backgroundTask(withName: "zone-manager-perform-event") { _ in
-            processor.perform(event: event)
-        }.get { [weak self] _ in
-            // a location change means we should consider changing our monitored regions
-            // ^ not tap for this side effect because we don't want to do this on failure
-            guard let self else { return }
-            sync(zones: AnyCollection(zones))
-        }.then {
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Updated location",
-                type: .locationUpdate,
-                payload: logPayload
-            ))
-        }.catch { error in
-            Current.Log.error("final error for \(event): \(error)")
+        processor.perform(event: event).pipe(to: { [weak self] result in
+            switch result {
+            case .fulfilled:
+                self?.syncZones(logPayload: logPayload)
+            case let .rejected(error):
+                Current.Log.error("final error for \(event): \(error)")
 
-            var updatedPayload = logPayload
-            updatedPayload["error"] = String(describing: error)
+                var updatedPayload = logPayload
+                updatedPayload["error"] = String(describing: error)
 
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Didn't update: \(error.localizedDescription)",
-                type: .locationUpdate,
-                payload: updatedPayload
-            )).cauterize()
-        }
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Didn't update: \(error.localizedDescription)",
+                    type: .locationUpdate,
+                    payload: updatedPayload
+                )).cauterize()
+            }
+        })
+    }
+
+    private func syncZones(logPayload: [String: String]) {
+        // a location change means we should consider changing our monitored regions
+        // ^ not tap for this side effect because we don't want to do this on failure
+        sync(zones: AnyCollection(zones))
+
+        Current.clientEventStore.addEvent(ClientEvent(
+            text: "Updated location",
+            type: .locationUpdate,
+            payload: logPayload
+        )).cauterize()
     }
 
     private func fire(event: ZoneManagerEvent) {
