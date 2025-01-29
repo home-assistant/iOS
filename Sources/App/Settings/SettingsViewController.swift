@@ -162,11 +162,6 @@ class SettingsViewController: HAFormViewController {
             <<< SettingsRootDataSource.Row.whatsNew.row
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        Current.periodicAppEntitiesUpdater().updateAppEntities()
-    }
-
     @objc func openAbout(_ sender: UIButton) {
         let aboutView = AboutViewController()
 
