@@ -92,7 +92,7 @@ struct DebugView: View {
                     }
                 } footer: {
                     Text(
-                        "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain."
+                        L10n.Settings.Debugging.Thread.footer
                     )
                 }
             }
