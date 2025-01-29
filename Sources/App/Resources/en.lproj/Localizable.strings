@@ -192,6 +192,11 @@
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
 "connection.error.details.title" = "Connection error";
+"connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
+"connection.error.failed_connect.subtitle" = "Check your connection and try again. If you are not at home make sure you have configured remote access.";
+"connection.error.failed_connect.url" = "The app is currently connecting to";
+"connection.error.failed_connect.cloud.title" = "Make sure your Home Assistant Cloud subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive.title" = "You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.";
 "connection.error.generic_title" = "Uh oh! Looks like we are unable to establish a connection.";
 "connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
 "connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
