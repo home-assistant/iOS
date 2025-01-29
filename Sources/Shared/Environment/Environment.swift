@@ -118,13 +118,9 @@ public class AppEnvironment {
         AppEntitiesModel.shared
     }
 
-    public var periodicAppEntitiesUpdater: () -> PeriodicAppEntitiesModelUpdaterProtocol = {
-        PeriodicAppEntitiesModelUpdater.shared
-    }
+    public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
 
-    public var panelsUpdater: () -> PanelsUpdaterProtocol = {
-        PanelsUpdater.shared
-    }
+    public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
 
     #if os(iOS)
     public var realmFatalPresentation: ((UIViewController) -> Void)?
