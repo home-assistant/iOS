@@ -806,8 +806,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             buttonTitle: nil,
             buttonTapHandler: { [weak self] _ in
                 SwiftMessages.hide()
-                self?.presentOverlayController(
-                    controller: UIHostingController(rootView: ConnectionErrorDetailsView(error: error)),
+                guard let self else { return }
+                presentOverlayController(
+                    controller: UIHostingController(rootView: ConnectionErrorDetailsView(server: server, error: error)),
                     animated: true
                 )
             }

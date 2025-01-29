@@ -5,34 +5,118 @@ import SwiftUI
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     private let feedbackGenerator = UINotificationFeedbackGenerator()
+    let server: Server
     let error: Error
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                HStack {
-                    SheetCloseButton {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    headerView
+                    VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: Spaces.two) {
+                            Text(L10n.Connection.Error.FailedConnect.title)
+                                .font(.title.bold())
+                            Text(L10n.Connection.Error.FailedConnect.subtitle)
+                            if let urlError = error as? URLError,
+                               let url = urlError.failingURL?.absoluteString,
+                               let attributedString = try? AttributedString(markdown: "[\(url)](\(url))") {
+                                VStack {
+                                    Text(L10n.Connection.Error.FailedConnect.url)
+                                        .font(.footnote)
+                                    Text(attributedString)
+                                        .font(.body.bold())
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: 600)
+                                .padding()
+                                .background(Color(uiColor: .secondarySystemBackground))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
+
+                            if server.info.connection.canUseCloud,
+                               let cloudText = try? AttributedString(
+                                   markdown: L10n.Connection.Error.FailedConnect.Cloud
+                                       .title
+                               ) {
+                                if server.info.connection.useCloud {
+                                    Text(L10n.Connection.Error.FailedConnect.CloudInactive.title)
+                                } else {
+                                    Text(cloudText)
+                                        .font(.body.italic())
+                                }
+                            }
+                        }
+                        CollapsibleView {
+                            Text("Advanced")
+                                .font(.body.bold())
+                        } expandedContent: {
+                            advancedContent
+                        }
+                        .frame(maxWidth: 600)
+                        .padding()
+                        .background(Color(uiColor: .secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .padding(.top)
+
+                        Rectangle()
+                            .foregroundStyle(Color(uiColor: .label).opacity(0.5))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 1)
+                            .padding(Spaces.three)
+                        copyToClipboardButton
+                        documentationLink
+                        discordLink
+                        githubLink
+                    }
+                    .padding()
+                }
+            }
+            .ignoresSafeArea()
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    CloseButton(tint: .white) {
                         dismiss()
                     }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                Text(L10n.Connection.Error.Details.title)
-                    .font(.title.bold())
-                VStack(alignment: .leading, spacing: Spaces.two) {
-                    makeRow(title: L10n.Connection.Error.Details.Label.description, body: error.localizedDescription)
-                    makeRow(title: L10n.Connection.Error.Details.Label.domain, body: (error as NSError).domain)
-                    makeRow(title: L10n.Connection.Error.Details.Label.code, body: "\((error as NSError).code)")
-                    if let urlError = error as? URLError {
-                        makeRow(title: L10n.urlLabel, body: urlError.failingURL?.absoluteString ?? "")
-                    }
-                }
-                .padding(.vertical)
-                copyToClipboardButton
-                documentationLink
-                discordLink
-                githubLink
             }
-            .padding()
         }
+    }
+
+    private var headerView: some View {
+        VStack {
+            ZStack(alignment: .topTrailing) {
+                Image(uiImage: Asset.SharedAssets.logo.image.withRenderingMode(.alwaysTemplate))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundStyle(.white)
+                    .frame(width: 100, height: 100)
+                Image(systemSymbol: .wifiExclamationmark)
+                    .foregroundStyle(.red)
+                    .padding(Spaces.one)
+                    .background(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 50))
+                    .shadow(radius: 10)
+                    .offset(y: 10)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .frame(minHeight: 140)
+        .padding()
+        .background(Color.asset(Asset.Colors.haPrimary))
+    }
+
+    @ViewBuilder
+    private var advancedContent: some View {
+        VStack(alignment: .leading, spacing: Spaces.two) {
+            makeRow(title: L10n.Connection.Error.Details.Label.description, body: error.localizedDescription)
+            makeRow(title: L10n.Connection.Error.Details.Label.domain, body: (error as NSError).domain)
+            makeRow(title: L10n.Connection.Error.Details.Label.code, body: "\((error as NSError).code)")
+            if let urlError = error as? URLError {
+                makeRow(title: L10n.urlLabel, body: urlError.failingURL?.absoluteString ?? "")
+            }
+        }
+        .padding(.vertical)
     }
 
     private func makeRow(title: String, body: String) -> some View {
@@ -100,7 +184,11 @@ struct ConnectionErrorDetailsView: View {
 }
 
 #Preview {
-    ConnectionErrorDetailsView(error: SomeError.some)
+    VStack {}
+        .background(Color.gray)
+        .sheet(isPresented: .constant(true)) {
+            ConnectionErrorDetailsView(server: ServerFixture.standard, error: SomeError.some)
+        }
 }
 
 enum SomeError: Error {

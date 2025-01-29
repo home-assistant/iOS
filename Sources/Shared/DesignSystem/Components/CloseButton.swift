@@ -3,10 +3,12 @@ import SwiftUI
 public struct CloseButton: View {
     @Environment(\.dismiss) private var dismiss
     private let alternativeAction: (() -> Void)?
+    private let tint: Color
 
     /// When alternative action is set, the button will execute this action instead of dismissing the view.
-    public init(alternativeAction: (() -> Void)? = nil) {
+    public init(tint: Color = Color.gray, alternativeAction: (() -> Void)? = nil) {
         self.alternativeAction = alternativeAction
+        self.tint = tint
     }
 
     public var body: some View {
@@ -19,7 +21,7 @@ public struct CloseButton: View {
         }, label: {
             Image(systemName: "xmark.circle.fill")
                 .font(.system(size: 20))
-                .foregroundStyle(Color.gray)
+                .foregroundStyle(tint)
         })
     }
 }

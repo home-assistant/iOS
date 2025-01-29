@@ -804,6 +804,22 @@ public enum L10n {
           public static var domain: String { return L10n.tr("Localizable", "connection.error.details.label.domain") }
         }
       }
+      public enum FailedConnect {
+        /// Check your connection and try again. If you are not at home make sure you have configured remote access.
+        public static var subtitle: String { return L10n.tr("Localizable", "connection.error.failed_connect.subtitle") }
+        /// We couldn't connect to Home Assistant
+        public static var title: String { return L10n.tr("Localizable", "connection.error.failed_connect.title") }
+        /// The app is currently connecting to
+        public static var url: String { return L10n.tr("Localizable", "connection.error.failed_connect.url") }
+        public enum Cloud {
+          /// Make sure your Home Assistant Cloud subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)
+          public static var title: String { return L10n.tr("Localizable", "connection.error.failed_connect.cloud.title") }
+        }
+        public enum CloudInactive {
+          /// You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.
+          public static var title: String { return L10n.tr("Localizable", "connection.error.failed_connect.cloud_inactive.title") }
+        }
+      }
     }
     public enum Permission {
       public enum InternalUrl {
