@@ -102,7 +102,6 @@
 		1121CD4C271295AD0071C2AA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4B271295AD0071C2AA /* Style.swift */; };
 		1121CD4D271295AD0071C2AA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1121CD4B271295AD0071C2AA /* Style.swift */; };
 		11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11267D0825BBA9FE00F28E5C /* Updater.test.swift */; };
-		1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */; };
 		1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */; };
 		1130A5742751B29E00640E38 /* PerServerContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5732751B29E00640E38 /* PerServerContainer.test.swift */; };
 		1130A5762751BA1800640E38 /* Server.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1130A5752751BA1800640E38 /* Server.test.swift */; };
@@ -762,6 +761,7 @@
 		42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */; };
 		42AC94A42CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
 		42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
+		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
 		42B74A5D2D36A47E00C37304 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A5C2D36A47E00C37304 /* CloseButton.swift */; };
@@ -883,7 +883,6 @@
 		42FCD0072B9B1DA10057783F /* CollapsibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD0052B9B1D9E0057783F /* CollapsibleView.swift */; };
 		42FCD0082B9B1ECE0057783F /* SimulatorThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFF12B9B1C310057783F /* SimulatorThreadClientService.swift */; };
 		42FCD00C2B9B25D60057783F /* ThreadClientProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD00A2B9B25BC0057783F /* ThreadClientProtocol.swift */; };
-		42FCD0122B9B29740057783F /* ThreadCredentialsManagementView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD00D2B9B29740057783F /* ThreadCredentialsManagementView+Build.swift */; };
 		42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD00E2B9B29740057783F /* ThreadCredentialsManagementViewModel.swift */; };
 		42FCD0142B9B29740057783F /* ThreadCredentialDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD00F2B9B29740057783F /* ThreadCredentialDetailsView.swift */; };
 		42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */; };
@@ -1521,7 +1520,6 @@
 		1121CD4827128A970071C2AA /* UIView+StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+StackView.swift"; sourceTree = "<group>"; };
 		1121CD4B271295AD0071C2AA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		11267D0825BBA9FE00F28E5C /* Updater.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.test.swift; sourceTree = "<group>"; };
-		1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsViewController.swift; sourceTree = "<group>"; };
 		1127383B2625512600F5E312 /* ButtonRowWithLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonRowWithLoading.swift; sourceTree = "<group>"; };
 		1128FF37297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Intents.strings; sourceTree = "<group>"; };
 		1128FF38297E5F7D00BAAFD9 /* ml */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ml; path = ml.lproj/Frontend.strings; sourceTree = "<group>"; };
@@ -2105,6 +2103,7 @@
 		42ABB0B82C888AA10081461D /* CarPlayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfig.swift; sourceTree = "<group>"; };
 		42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationViewModel.swift; sourceTree = "<group>"; };
 		42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCardStyleModifier.swift; sourceTree = "<group>"; };
+		42B19BD02D4A358B00B3262B /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
 		42B74A5C2D36A47E00C37304 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
@@ -2218,7 +2217,6 @@
 		42FCCFF52B9B1C310057783F /* ThreadCredentialsSharingViewModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsSharingViewModelProtocol.swift; sourceTree = "<group>"; };
 		42FCD0052B9B1D9E0057783F /* CollapsibleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleView.swift; sourceTree = "<group>"; };
 		42FCD00A2B9B25BC0057783F /* ThreadClientProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadClientProtocol.swift; sourceTree = "<group>"; };
-		42FCD00D2B9B29740057783F /* ThreadCredentialsManagementView+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ThreadCredentialsManagementView+Build.swift"; sourceTree = "<group>"; };
 		42FCD00E2B9B29740057783F /* ThreadCredentialsManagementViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsManagementViewModel.swift; sourceTree = "<group>"; };
 		42FCD00F2B9B29740057783F /* ThreadCredentialDetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialDetailsView.swift; sourceTree = "<group>"; };
 		42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsManagementView.swift; sourceTree = "<group>"; };
@@ -4467,7 +4465,6 @@
 			isa = PBXGroup;
 			children = (
 				42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */,
-				42FCD00D2B9B29740057783F /* ThreadCredentialsManagementView+Build.swift */,
 				42FCD00E2B9B29740057783F /* ThreadCredentialsManagementViewModel.swift */,
 				42FCD0102B9B29740057783F /* Views */,
 			);
@@ -4901,7 +4898,7 @@
 				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
 				1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */,
-				1127381B2622B6F300F5E312 /* DebugSettingsViewController.swift */,
+				42B19BD02D4A358B00B3262B /* DebugView.swift */,
 				420C1BB32CF7DBF300AF22E7 /* ClientEventsLogView */,
 				119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */,
 			);
@@ -7004,7 +7001,6 @@
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */,
 				421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */,
-				1127381C2622B6F300F5E312 /* DebugSettingsViewController.swift in Sources */,
 				42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
@@ -7035,7 +7031,6 @@
 				42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				42B74A622D36B08600C37304 /* WidgetBasicView.swift in Sources */,
-				42FCD0122B9B29740057783F /* ThreadCredentialsManagementView+Build.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,
 				117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */,
 				1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */,
@@ -7170,6 +7165,7 @@
 				3E02C0E22CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
+				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,

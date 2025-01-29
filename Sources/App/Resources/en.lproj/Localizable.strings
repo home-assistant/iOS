@@ -553,6 +553,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.developer.crashlytics_test.non_fatal.notification.title" = "About to submit a non-fatal error";
 "settings.developer.crashlytics_test.non_fatal.title" = "Test Crashlytics Non-Fatal Error";
 "settings.developer.debug_strings.title" = "Debug strings";
+"settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
+"settings.debugging.header.title" = "Debug";
+"settings.debugging.header.subtitle" = "Let's fix that 🐞";
 "settings.developer.export_log_files.title" = "Export log files";
 "settings.developer.footer" = "Don't use these if you don't know what you are doing!";
 "settings.developer.header" = "Developer";
@@ -571,6 +574,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.progress_message" = "Resetting…";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_row.title" = "Reset";
+"settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
 "settings.server_select.page_title" = "Server";
 "settings.server_select.title" = "Server";
@@ -1142,4 +1146,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
+"alert.confirmation.generic.title" = "Are you sure?";
+"alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
 "yes_label" = "Yes";
