@@ -185,6 +185,19 @@ public enum L10n {
     }
   }
 
+  public enum Alert {
+    public enum Confirmation {
+      public enum DeleteEntities {
+        /// This will clean your entities from database and it will only reload the next time you open the app from zero.
+        public static var message: String { return L10n.tr("Localizable", "alert.confirmation.delete_entities.message") }
+      }
+      public enum Generic {
+        /// Are you sure?
+        public static var title: String { return L10n.tr("Localizable", "alert.confirmation.generic.title") }
+      }
+    }
+  }
+
   public enum Alerts {
     public enum ActionAutomationEditor {
       public enum Unavailable {
@@ -1933,6 +1946,20 @@ public enum L10n {
     public enum Debugging {
       /// Debugging
       public static var title: String { return L10n.tr("Localizable", "settings.debugging.title") }
+      public enum CriticalSection {
+        /// Make sure you are aware that these operations cannot be reverted.
+        public static var footer: String { return L10n.tr("Localizable", "settings.debugging.critical_section.footer") }
+      }
+      public enum Header {
+        /// Let's fix that 🐞
+        public static var subtitle: String { return L10n.tr("Localizable", "settings.debugging.header.subtitle") }
+        /// Debug
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.header.title") }
+      }
+      public enum Thread {
+        /// Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.
+        public static var footer: String { return L10n.tr("Localizable", "settings.debugging.thread.footer") }
+      }
     }
     public enum DetailsSection {
       public enum LocationSettingsRow {
@@ -2066,6 +2093,10 @@ public enum L10n {
         public static var progressMessage: String { return L10n.tr("Localizable", "settings.reset_section.reset_alert.progress_message") }
         /// Reset
         public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_alert.title") }
+      }
+      public enum ResetApp {
+        /// Reset App (Remove servers and data)
+        public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_app.title") }
       }
       public enum ResetRow {
         /// Reset

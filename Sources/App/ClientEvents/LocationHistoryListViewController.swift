@@ -1,7 +1,16 @@
 import Eureka
 import RealmSwift
 import Shared
+import SwiftUI
 import UIKit
+
+struct LocationHistoryListViewControllerWrapper: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> LocationHistoryListViewController {
+        LocationHistoryListViewController()
+    }
+
+    func updateUIViewController(_ uiViewController: LocationHistoryListViewController, context: Context) {}
+}
 
 class LocationHistoryListViewController: HAFormViewController {
     private var section: RealmSection<LocationHistoryEntry>?
