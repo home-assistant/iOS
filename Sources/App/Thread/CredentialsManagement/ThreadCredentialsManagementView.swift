@@ -2,14 +2,10 @@ import Shared
 import SwiftUI
 
 struct ThreadCredentialsManagementView: View {
-    @StateObject private var viewModel: ThreadCredentialsManagementViewModel
+    @StateObject private var viewModel = ThreadCredentialsManagementViewModel()
 
     @State private var showDeleteConfirmation = false
     @State private var credentialPendingDelete: ThreadCredential?
-
-    init(viewModel: ThreadCredentialsManagementViewModel) {
-        self._viewModel = .init(wrappedValue: viewModel)
-    }
 
     var body: some View {
         VStack {
@@ -64,5 +60,5 @@ struct ThreadCredentialsManagementView: View {
 }
 
 #Preview {
-    ThreadCredentialsManagementView.build()
+    ThreadCredentialsManagementView()
 }

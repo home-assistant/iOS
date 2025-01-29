@@ -126,7 +126,7 @@ enum SettingsRootDataSource {
             $0.isAvailableForMac = false
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 guard #available(iOS 17, *) else { return UIViewController() }
-                return UIHostingController(rootView: ThreadCredentialsManagementView.build())
+                return UIHostingController(rootView: ThreadCredentialsManagementView())
             }, onDismiss: nil)
         }
     }
@@ -250,7 +250,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.Debugging.title
             $0.icon = .bugIcon
             $0.presentationMode = .show(controllerProvider: .callback {
-                DebugSettingsViewController()
+                UIHostingController(rootView: DebugView())
             }, onDismiss: nil)
         }
     }
