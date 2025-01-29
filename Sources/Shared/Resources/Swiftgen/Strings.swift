@@ -1956,6 +1956,10 @@ public enum L10n {
         /// Debug
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.header.title") }
       }
+      public enum ShakeDisclaimer {
+        /// Now when you shake the app you can access debug features.
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.shake_disclaimer.title") }
+      }
       public enum Thread {
         /// Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.
         public static var footer: String { return L10n.tr("Localizable", "settings.debugging.thread.footer") }

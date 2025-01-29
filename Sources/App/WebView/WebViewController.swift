@@ -684,6 +684,31 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            let controller = UIHostingController(rootView: AnyView(
+                NavigationView {
+                    VStack {
+                        Text(L10n.Settings.Debugging.ShakeDisclaimer.title)
+                            .padding()
+                            .background(Color.asset(Asset.Colors.haPrimary).opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .padding(Spaces.one)
+                        DebugView()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    CloseButton { [weak self] in
+                                        self?.overlayAppController?.dismiss(animated: true)
+                                    }
+                                }
+                            }
+                    }
+                }
+            ))
+            presentOverlayController(controller: controller, animated: true)
+        }
+    }
+
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
         refresh()
         updateSensors()
