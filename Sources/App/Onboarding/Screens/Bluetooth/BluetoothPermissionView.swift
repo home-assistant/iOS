@@ -13,7 +13,7 @@ struct BluetoothPermissionView: View {
             title: L10n.Permission.Screen.Bluetooth.title,
             subtitle: L10n.Permission.Screen.Bluetooth.subtitle,
             reasons: [],
-            showSkipButton: true,
+            showSkipButton: false,
             showCloseButton: true,
             continueAction: {
                 // Request BT permission
@@ -22,11 +22,6 @@ struct BluetoothPermissionView: View {
             dismissAction: nil
         )
         .interactiveDismissDisabled(true)
-        .onAppear {
-            // Permission will be prompted twice, if ignored, it wont display anymore
-            let btScreenDisplayerCount = BluetoothPermissionScreenDisplayedCount()
-            btScreenDisplayerCount.value = (btScreenDisplayerCount.value ?? 0) + 1
-        }
         .onChange(of: viewModel.shouldDismiss) { newValue in
             if newValue {
                 dismiss()

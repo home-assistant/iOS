@@ -454,9 +454,3 @@ public class SettingsStore {
         return String(text.filter { okayChars.contains($0) })
     }
 }
-
-public class BluetoothPermissionScreenDisplayedCount: UserDefaultsValueSync<Int> {
-    public init() {
-        super.init(settingsKey: "bluetoothPermissionScreenPresentedCount")
-    }
-}
