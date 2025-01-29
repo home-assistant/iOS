@@ -1198,7 +1198,13 @@ extension WebViewController {
         let servers = Current.servers.all
         guard servers.count > 1, let currentIndex = servers.firstIndex(of: server) else { return }
 
-        let nextIndex = (next ? currentIndex - 1 : currentIndex + 1 + servers.count) % servers.count
+        let nextIndex: Int
+        if next {
+            nextIndex = (currentIndex - 1 + servers.count) % servers.count
+        } else {
+            nextIndex = (currentIndex + 1) % servers.count
+        }
+
         let nextServer = servers[nextIndex]
 
         Current.sceneManager.webViewWindowControllerPromise.done { controller in
