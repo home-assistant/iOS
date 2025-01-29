@@ -556,6 +556,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
 "settings.debugging.header.title" = "Debug";
 "settings.debugging.header.subtitle" = "Let's fix that 🐞";
+"settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
 "settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.developer.export_log_files.title" = "Export log files";
 "settings.developer.footer" = "Don't use these if you don't know what you are doing!";
