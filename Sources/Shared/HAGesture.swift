@@ -100,8 +100,8 @@ public extension [HAGesture: HAGestureAction] {
     static var defaultGestures: [HAGesture: HAGestureAction] {
         [
             .swipeRight: .showSidebar,
-            ._2FingersSwipeRight: .nextPage,
-            ._2FingersSwipeLeft: .backPage,
+            ._2FingersSwipeRight: .backPage,
+            ._2FingersSwipeLeft: .nextPage,
             ._3FingersSwipeUp: .showServersList,
             ._3FingersSwipeRight: .nextServer,
             ._3FingersSwipeLeft: .previousServer,
