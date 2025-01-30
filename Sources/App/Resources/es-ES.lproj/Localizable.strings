@@ -32,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "You can also change these by customizing the Scene attributes: %@";
 "actions_configurator.visual_section.server_defined" = "The appearance of this action is controlled by the server configuration.";
 "addButtonLabel" = "Add";
+"alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
+"alert.confirmation.generic.title" = "Are you sure?";
 "alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
 "alerts.action_automation_editor.unavailable.title" = "Please update Home Assistant";
 "alerts.alert.ok" = "OK";
@@ -192,6 +194,11 @@
 "connection.error.details.label.description" = "Description";
 "connection.error.details.label.domain" = "Domain";
 "connection.error.details.title" = "Connection error";
+"connection.error.failed_connect.cloud.title" = "Make sure your Home Assistant Cloud subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive.title" = "You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.subtitle" = "Check your connection and try again. If you are not at home make sure you have configured remote access.";
+"connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
+"connection.error.failed_connect.url" = "The app is currently connecting to";
 "connection.error.generic_title" = "Uh oh! Looks like we are unable to establish a connection.";
 "connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
 "connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
@@ -534,6 +541,11 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Recuento de reintentos: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Desconectado";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
+"settings.debugging.header.subtitle" = "Let's fix that 🐞";
+"settings.debugging.header.title" = "Debug";
+"settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
+"settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.debugging.title" = "Debugging";
 "settings.details_section.location_settings_row.title" = "Location";
 "settings.details_section.notification_settings_row.title" = "Notifications";
@@ -570,6 +582,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
 "settings.reset_section.reset_alert.progress_message" = "Resetting…";
 "settings.reset_section.reset_alert.title" = "Reset";
+"settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
 "settings.server_select.page_title" = "Servidor";
