@@ -110,6 +110,20 @@ public enum AppConstants {
         return eventsURL
     }
 
+    public static var watchMagicItemsInfo: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("caches", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to magic items info file")
+            }
+        }
+        let eventsURL = directoryURL.appendingPathComponent("magicItemsInfo.json")
+        return eventsURL
+    }
+
     public static var LogsDirectory: URL {
         let fileManager = FileManager.default
         let directoryURL = AppGroupContainer.appendingPathComponent("logs", isDirectory: true)
