@@ -46,7 +46,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                             payload: [
                                 "error": error.localizedDescription,
                             ]
-                        )).cauterize()
+                        ))
                     }
                 }
             )
@@ -67,7 +67,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                             payload: [
                                 "error": error.localizedDescription,
                             ]
-                        )).cauterize()
+                        ))
                     }
                 }
             )
@@ -103,7 +103,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 payload: [
                     "error": error.localizedDescription,
                 ]
-            )).cauterize()
+            ))
         }
     }
 

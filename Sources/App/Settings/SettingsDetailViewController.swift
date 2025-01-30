@@ -555,7 +555,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 let message =
                     "Server \(server.info.name) - Internal URL set but no internal SSIDs or hardware addresses set"
                 Current.Log.error(message)
-                Current.clientEventStore.addEvent(.init(text: message, type: .settings)).cauterize()
+                Current.clientEventStore.addEvent(.init(text: message, type: .settings))
             }
         }
     }

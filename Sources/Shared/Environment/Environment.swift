@@ -91,7 +91,7 @@ public class AppEnvironment {
     public var calendar: () -> Calendar = { Calendar.autoupdatingCurrent }
 
     /// Provides the Client Event store used for local logging.
-    public var clientEventStore = ClientEventStore()
+    public var clientEventStore: ClientEventStoreProtocol = ClientEventStore()
 
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live

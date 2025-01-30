@@ -144,7 +144,7 @@ public final class RLMZone: Object, UpdatableModel {
                     text: "Unable to create beacon region due to invalid UUID: \(uuidString)",
                     type: .locationUpdate
                 )
-            Current.clientEventStore.addEvent(event).cauterize()
+            Current.clientEventStore.addEvent(event)
             return nil
         }
 

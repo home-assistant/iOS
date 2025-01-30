@@ -108,6 +108,7 @@ class ZoneManager {
                 type: .locationUpdate,
                 payload: logPayload
             ))
+            return Promise.value(())
         }.catch { error in
             Current.Log.error("final error for \(event): \(error)")
 
@@ -118,7 +119,7 @@ class ZoneManager {
                 text: "Didn't update: \(error.localizedDescription)",
                 type: .locationUpdate,
                 payload: updatedPayload
-            )).cauterize()
+            ))
         }
     }
 
@@ -168,7 +169,7 @@ class ZoneManager {
                 payload: [
                     "region": String(describing: region),
                 ]
-            )).cauterize()
+            ))
             locationManager.stopMonitoring(for: region)
         }
 
@@ -179,7 +180,7 @@ class ZoneManager {
                 payload: [
                     "region": String(describing: region),
                 ]
-            )).cauterize()
+            ))
 
             collector.ignoreNextState(for: region)
             locationManager.startMonitoring(for: region)

@@ -13,6 +13,9 @@ struct ClientEventsLogView: View {
             eventsList
         }
         .searchable(text: $viewModel.searchTerm)
+        .refreshable {
+            viewModel.loadEvents()
+        }
         .navigationTitle(L10n.Settings.EventLog.title)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -31,14 +34,14 @@ struct ClientEventsLogView: View {
                         /* no-op */
                     }
                     Button(L10n.yesLabel, role: .destructive) {
-                        Current.clientEventStore.clearAllEvents().cauterize()
+                        Current.clientEventStore.clearAllEvents()
                         dismiss()
                     }
                 }
             }
         }
         .onAppear {
-            viewModel.subscribeEvents()
+            viewModel.loadEvents()
         }
     }
 
