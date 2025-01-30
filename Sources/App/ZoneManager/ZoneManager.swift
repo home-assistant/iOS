@@ -108,7 +108,7 @@ class ZoneManager {
                 type: .locationUpdate,
                 payload: logPayload
             ))
-            return Promise()
+            return Promise.value(())
         }.catch { error in
             Current.Log.error("final error for \(event): \(error)")
 

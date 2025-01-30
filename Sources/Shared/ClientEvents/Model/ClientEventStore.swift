@@ -2,7 +2,13 @@ import Foundation
 import GRDB
 import PromiseKit
 
-public struct ClientEventStore {
+public protocol ClientEventStoreProtocol {
+    func addEvent(_ event: ClientEvent)
+    func getEvents() -> [ClientEvent]
+    func clearAllEvents()
+}
+
+final class ClientEventStore: ClientEventStoreProtocol {
     static var jsonCacheName = "databases/clientEvents.json"
     public func addEvent(_ event: ClientEvent) {
         Current.Log.verbose("Adding event: \(event.text), \(event.jsonPayload)")
