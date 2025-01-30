@@ -220,7 +220,7 @@ struct WatchConfigurationView: View {
             }
             .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
             .clipShape(Circle())
-            Text(itemInfo.name)
+            Text(item.name(info: itemInfo))
                 .font(.system(size: 16))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
