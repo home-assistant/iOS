@@ -1,8 +1,9 @@
 import Shared
 import SwiftUI
 
-struct WatchHomeCoordinatorView: View {
-    @StateObject private var viewModel = WatchHomeCoordinatorViewModel()
+struct WatchHomeView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
 
     init() {
@@ -92,19 +93,22 @@ struct WatchHomeCoordinatorView: View {
                 Text(L10n.Watch.Labels.noConfig)
                     .font(.footnote)
             } else {
-                WatchHomeView(
-                    watchConfig: $viewModel.watchConfig,
-                    magicItemsInfo: $viewModel.magicItemsInfo,
-                    showAssist: $showAssist
-                ) {
-                    viewModel.requestConfig()
-                }
+                mainContent
             }
             if viewModel.watchConfig.items.isEmpty || viewModel.showError {
                 reloadButton
             }
         }
+        .id(viewModel.refreshListID)
         .navigationTitle("")
+        .onChange(of: scenePhase) { newScenePhase in
+            switch newScenePhase {
+            case .active:
+                viewModel.fetchNetworkInfo(completion: nil)
+            default:
+                break
+            }
+        }
     }
 
     private var navReloadButton: some View {
@@ -129,8 +133,31 @@ struct WatchHomeCoordinatorView: View {
             .listRowBackground(Color.clear)
         }
     }
-}
 
-#Preview {
-    WatchHomeCoordinatorView()
+    @ViewBuilder
+    private var mainContent: some View {
+        if #unavailable(watchOS 10),
+           viewModel.watchConfig.assist.showAssist,
+           !viewModel.watchConfig.assist.serverId.isEmpty,
+           !viewModel.watchConfig.assist.pipelineId.isEmpty {
+            assistButton
+        }
+        ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
+            WatchMagicViewRow(
+                item: item,
+                itemInfo: info(for: item)
+            )
+        }
+        reloadButton
+    }
+
+    private func info(for magicItem: MagicItem) -> MagicItem.Info {
+        viewModel.magicItemsInfo.first(where: {
+            $0.id == magicItem.serverUniqueId
+        }) ?? .init(
+            id: magicItem.id,
+            name: magicItem.id,
+            iconName: ""
+        )
+    }
 }

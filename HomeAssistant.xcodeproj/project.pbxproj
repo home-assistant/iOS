@@ -711,7 +711,7 @@
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
 		4285C5552D3568A100DADE45 /* WidgetAddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5542D3568A100DADE45 /* WidgetAddItemView.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */; };
-		428830ED2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift */; };
+		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
 		4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDAE2C85D5C4003591C2 /* ControlScene.swift */; };
@@ -845,8 +845,6 @@
 		42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ActivityView.swift */; };
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
-		42EB03062C6E42F900A184A6 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03052C6E42F900A184A6 /* WatchHomeView.swift */; };
-		42EB03082C6E430300A184A6 /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
 		42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */; };
 		42F158462CA15C99009C7201 /* ControlSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158452CA15C99009C7201 /* ControlSwitch.swift */; };
@@ -2061,7 +2059,7 @@
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
 		4285C5542D3568A100DADE45 /* WidgetAddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAddItemView.swift; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeCoordinatorView.swift; sourceTree = "<group>"; };
-		428830EC2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeCoordinatorViewModel.swift; sourceTree = "<group>"; };
+		428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
 		4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScenesValueProvider.swift; sourceTree = "<group>"; };
 		4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSceneEntity.swift; sourceTree = "<group>"; };
@@ -2175,8 +2173,6 @@
 		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
 		42E95C582CA46AD50010ECE3 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
-		42EB03052C6E42F900A184A6 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
-		42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationView.swift; sourceTree = "<group>"; };
 		42F158452CA15C99009C7201 /* ControlSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSwitch.swift; sourceTree = "<group>"; };
@@ -4270,9 +4266,7 @@
 			children = (
 				4207EB742C87547000286A2D /* MagicItemRow */,
 				428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */,
-				428830EC2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift */,
-				42EB03052C6E42F900A184A6 /* WatchHomeView.swift */,
-				42EB03072C6E430300A184A6 /* WatchHomeViewModel.swift */,
+				428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -7523,9 +7517,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */,
-				42EB03062C6E42F900A184A6 /* WatchHomeView.swift in Sources */,
 				423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */,
-				428830ED2C6E3A9A0012373D /* WatchHomeCoordinatorViewModel.swift in Sources */,
+				428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */,
 				428830EB2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift in Sources */,
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */,
@@ -7543,7 +7536,6 @@
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
 				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
 				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
-				42EB03082C6E430300A184A6 /* WatchHomeViewModel.swift in Sources */,
 				4207EB762C8754BF00286A2D /* WatchMagicViewRowViewModel.swift in Sources */,
 				427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */,
 				11FA936A263FAA920015F1FC /* NotificationSubController.swift in Sources */,
