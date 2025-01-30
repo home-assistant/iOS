@@ -85,7 +85,7 @@ public class HomeAssistantAPI {
                         Current.clientEventStore.addEvent(.init(
                             text: "No active URL available to interact with API, please check if you have internal or external URL available, for internal URL you need to specify your network SSID otherwise for security reasons it won't be available.",
                             type: .networkRequest
-                        )).cauterize()
+                        ))
                         Current.Log.error("activeURL was not available when HAAPI called initializer")
                         return nil
                     }
@@ -205,12 +205,11 @@ public class HomeAssistantAPI {
                     // ha directly will send a 200 with an empty body for deleted
 
                     let message = "Integration is missing; registering."
-                    return Current.clientEventStore
+                    Current.clientEventStore
                         .addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
                             "error": String(describing: error),
-                        ])).then { [self] in
-                            register()
-                        }
+                        ]))
+                    return register()
                 case .unregisteredIdentifier,
                      .unacceptableStatusCode,
                      .replaced,
