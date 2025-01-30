@@ -86,6 +86,17 @@ public extension XCGLogger {
                     .info("No App config database file added to export logs, error: \(error.localizedDescription)")
             }
 
+            // In case App Client Events does not exist it can safely fail
+            do {
+                try archive.addEntry(
+                    with: AppConstants.clientEventsFile.lastPathComponent,
+                    fileURL: AppConstants.clientEventsFile
+                )
+            } catch {
+                Current.Log
+                    .info("No Client Events file added to export logs, error: \(error.localizedDescription)")
+            }
+
             for logFile in try fileManager.contentsOfDirectory(
                 at: Shared.AppConstants.LogsDirectory,
                 includingPropertiesForKeys: nil

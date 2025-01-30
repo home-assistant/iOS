@@ -96,7 +96,7 @@ extension Promise where T == Data {
                     text: text,
                     type: .networkRequest,
                     payload: nil
-                )).cauterize()
+                ))
                 return .init(error: WebhookError.unacceptableStatusCode(statusCode))
             default:
                 break

@@ -281,7 +281,7 @@ public class WebhookManager: NSObject {
                         text: "Retrying with active URL - \(activeURL.absoluteString)",
                         type: .networkRequest
                     )
-                    Current.clientEventStore.addEvent(event).cauterize()
+                    Current.clientEventStore.addEvent(event)
                     let promise: Promise<Any> = sendEphemeral(
                         server: server,
                         request: request,

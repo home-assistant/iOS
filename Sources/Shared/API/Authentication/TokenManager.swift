@@ -161,7 +161,7 @@ public class TokenManager {
                                 "error": String(describing: underlying),
                             ]
                         )
-                        Current.clientEventStore.addEvent(event).cauterize()
+                        Current.clientEventStore.addEvent(event)
                         Current.modelManager.unsubscribe()
                         Current.onboardingObservation.needed(.unauthenticated(
                             server.identifier.rawValue,

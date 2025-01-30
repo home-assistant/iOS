@@ -96,6 +96,20 @@ public enum AppConstants {
         return databaseURL
     }
 
+    public static var clientEventsFile: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create Client Events file")
+            }
+        }
+        let eventsURL = directoryURL.appendingPathComponent("clientEvents.json")
+        return eventsURL
+    }
+
     public static var LogsDirectory: URL {
         let fileManager = FileManager.default
         let directoryURL = AppGroupContainer.appendingPathComponent("logs", isDirectory: true)

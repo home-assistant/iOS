@@ -5,6 +5,8 @@ public enum GRDBDatabaseTable: String {
     case watchConfig
     case assistPipelines
     case carPlayConfig
+    // Dropped since 2025.2, now saved as json file
+    // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
     case clientEvent
     case appEntityRegistryListForDisplay
     case appPanel
@@ -41,15 +43,8 @@ public enum DatabaseTables {
         case quickAccessItems
     }
 
-    // Client events
-    public enum ClientEvent: String {
-        case id
-        case text
-        case type
-        case jsonPayload
-        case date
-    }
-
+    // Table where it is store frontend related values such as
+    // precision for sensors
     public enum AppEntityRegistryListForDisplay: String {
         case id
         case serverId
@@ -57,6 +52,7 @@ public enum DatabaseTables {
         case registry
     }
 
+    // Sidebar dashboard panels
     public enum AppPanel: String {
         case id
         case serverId
