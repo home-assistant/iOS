@@ -375,6 +375,8 @@ final class WebViewExternalMessageHandler {
             improvManager.delegate = self
             improvManager.scan()
         default:
+            // Mac Catalyst doesn't trigger bluetooth permission for some reason
+            guard !Current.isCatalyst else { return }
             let bluetoothPermissionView = UIHostingController(rootView: BluetoothPermissionView())
             webViewController?.presentOverlayController(controller: bluetoothPermissionView, animated: true)
         }
