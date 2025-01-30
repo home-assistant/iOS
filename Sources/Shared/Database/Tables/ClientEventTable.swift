@@ -11,12 +11,11 @@ final class ClientEventTable: DatabaseTableProtocol {
              More information: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
              */
             let shouldDeleteTable = try database.read { db in
-                try !db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
+                try db.tableExists(GRDBDatabaseTable.clientEvent.rawValue)
             }
             if shouldDeleteTable {
                 try database.write { db in
                     try db.drop(table: GRDBDatabaseTable.clientEvent.rawValue)
-                    Current.Log.verbose("Dropped table: \(GRDBDatabaseTable.clientEvent.rawValue) sucessfully")
                 }
             }
         } catch {

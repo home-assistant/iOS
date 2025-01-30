@@ -3,7 +3,7 @@ import GRDB
 import PromiseKit
 
 public struct ClientEventStore {
-    static var jsonCacheName = "clientEvents.json"
+    static var jsonCacheName = "databases/clientEvents.json"
     public func addEvent(_ event: ClientEvent) {
         Current.Log.verbose("Adding event: \(event.text), \(event.jsonPayload)")
         let eventsCacheLimit = 1000
@@ -45,15 +45,8 @@ public struct ClientEventStore {
     }
 
     private func saveJSONData(_ events: [ClientEvent]) {
-        guard let containerURL = FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID) else {
-            Current.Log.error("Failed to get container URL for saving client events")
-            return
-        }
-
-        let fileURL = containerURL.appendingPathComponent(ClientEventStore.jsonCacheName)
-
         do {
+            let fileURL = AppConstants.clientEventsFile
             let jsonData = try JSONEncoder().encode(events)
             try jsonData.write(to: fileURL)
             Current.Log.verbose("JSON saved successfully for client events, file URL: \(fileURL.absoluteString)")
