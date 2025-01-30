@@ -32,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Вы также можете изменить их, настроив атрибуты сцены: %@";
 "actions_configurator.visual_section.server_defined" = "Внешний вид этого действия контролируется конфигурацией сервера.";
 "addButtonLabel" = "Добавить";
+"alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
+"alert.confirmation.generic.title" = "Are you sure?";
 "alerts.action_automation_editor.unavailable.body" = "Чтобы автоматически создать автоматизацию для действия, пожалуйста, обновите свой Home Assistant как минимум до версии 2024.2";
 "alerts.action_automation_editor.unavailable.title" = "Пожалуйста, обновите Home Assistant";
 "alerts.alert.ok" = "ОК";
@@ -192,6 +194,11 @@
 "connection.error.details.label.description" = "Описание";
 "connection.error.details.label.domain" = "Домен";
 "connection.error.details.title" = "Ошибка соединения";
+"connection.error.failed_connect.cloud.title" = "Make sure your Home Assistant Cloud subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive.title" = "You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.subtitle" = "Check your connection and try again. If you are not at home make sure you have configured remote access.";
+"connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
+"connection.error.failed_connect.url" = "The app is currently connecting to";
 "connection.error.generic_title" = "Ой-ой! Похоже, нам не удается установить соединение.";
 "connection.permission.internal_url.body1" = "Чтобы безопасно получить доступ к Home Assistant локально, вам нужно предоставить разрешение на доступ к местоположению ('Всегда').";
 "connection.permission.internal_url.body2" = "Это разрешение позволяет Home Assistant обнаруживать беспроводную сеть, к которой вы подключены, и устанавливать локальное соединение.";
@@ -534,6 +541,11 @@ Home Assistant - это бесплатное программное обеспе
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Количество попыток: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Отсоединено";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
+"settings.debugging.header.subtitle" = "Let's fix that 🐞";
+"settings.debugging.header.title" = "Debug";
+"settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
+"settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.debugging.title" = "Отладка";
 "settings.details_section.location_settings_row.title" = "Местоположение";
 "settings.details_section.notification_settings_row.title" = "Уведомления";
@@ -570,6 +582,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings.reset_section.reset_alert.message" = "Это устройство будет удалено из вашего Home Assistant: вы больше не будете получать уведомления, а все настройки подключения сбросятся.";
 "settings.reset_section.reset_alert.progress_message" = "Сброс…";
 "settings.reset_section.reset_alert.title" = "Сброс";
+"settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Сбросить";
 "settings.reset_section.reset_web_cache.title" = "Сбросить кеш веб-интерфейса";
 "settings.server_select.page_title" = "Сервер";

@@ -32,6 +32,8 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Μπορείτε επίσης να τις αλλάξετε προσαρμόζοντας τα χαρακτηριστικά σκηνής: %@";
 "actions_configurator.visual_section.server_defined" = "Η εμφάνιση αυτής της ενέργειας ελέγχεται από τη ρύθμιση παραμέτρων του διακομιστή.";
 "addButtonLabel" = "Προσθήκη";
+"alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
+"alert.confirmation.generic.title" = "Are you sure?";
 "alerts.action_automation_editor.unavailable.body" = "Για να δημιουργήσετε αυτόματα έναν αυτοματισμό για μια ενέργεια, παρακαλώ ενημερώστε το Home Assistant τουλάχιστον στην έκδοση 2024.2.";
 "alerts.action_automation_editor.unavailable.title" = "Παρακαλώ ενημερώστε το Home Assistant";
 "alerts.alert.ok" = "Εντάξει";
@@ -192,6 +194,11 @@
 "connection.error.details.label.description" = "Περιγραφή";
 "connection.error.details.label.domain" = "Τομέας";
 "connection.error.details.title" = "Σφάλμα σύνδεσης";
+"connection.error.failed_connect.cloud.title" = "Make sure your Home Assistant Cloud subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive.title" = "You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.subtitle" = "Check your connection and try again. If you are not at home make sure you have configured remote access.";
+"connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
+"connection.error.failed_connect.url" = "The app is currently connecting to";
 "connection.error.generic_title" = "Ωχ! Φαίνεται ότι δεν μπορούμε να δημιουργήσουμε μια σύνδεση.";
 "connection.permission.internal_url.body1" = "Για να αποκτήσετε τοπικά πρόσβαση στο Home Assistant με ασφαλή τρόπο, πρέπει να εκχωρήσετε την άδεια τοποθεσίας (\"Πάντα\").";
 "connection.permission.internal_url.body2" = "Αυτό το δικαίωμα επιτρέπει στο Home Assistant να εντοπίσει το ασύρματο δίκτυο στο οποίο είστε συνδεδεμένοι και να δημιουργήσει μια τοπική σύνδεση.";
@@ -534,6 +541,11 @@
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Αριθμός επαναληπτικών προσπαθειών: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Αποσυνδέθηκε";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
+"settings.debugging.header.subtitle" = "Let's fix that 🐞";
+"settings.debugging.header.title" = "Debug";
+"settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
+"settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.debugging.title" = "Αποσφαλμάτωση";
 "settings.details_section.location_settings_row.title" = "Τοποθεσία";
 "settings.details_section.notification_settings_row.title" = "Ειδοποιήσεις";
@@ -570,6 +582,7 @@
 "settings.reset_section.reset_alert.message" = "Θα γίνει επαναφορά των ρυθμίσεών σας και αυτή η συσκευή θα καταργηθεί από τις ειδοποιήσεις push και από τη διαμόρφωση του Home Assistant.";
 "settings.reset_section.reset_alert.progress_message" = "Επαναφορά…";
 "settings.reset_section.reset_alert.title" = "Επαναφορά";
+"settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Επαναφορά";
 "settings.reset_section.reset_web_cache.title" = "Επαναφορά της προσωρινής μνήμης";
 "settings.server_select.page_title" = "Διακομιστής";
