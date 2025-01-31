@@ -18,7 +18,7 @@ struct WidgetCustom: Widget {
                 }, contents: modelsForWidget(
                     widget,
                     infoProvider: timelineEntry.magicItemInfoProvider,
-                    states: timelineEntry.itemStates
+                    states: timelineEntry.entitiesState
                 ), type: .custom)
             } else {
                 emptyView
@@ -105,6 +105,14 @@ struct WidgetCustom: Widget {
 
             let useCustomColors = backgroundColor != nil || textColor != nil
 
+            let showConfirmation = {
+                if let itemState = widget.itemsStates.first(where: { $0.key == magicItem.serverUniqueId })?.value {
+                    return itemState == .pendingConfirmation
+                } else {
+                    return false
+                }
+            }()
+
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
@@ -114,7 +122,10 @@ struct WidgetCustom: Widget {
                 textColor: textColor ?? Color(uiColor: .label),
                 iconColor: iconColor,
                 backgroundColor: backgroundColor ?? Color.asset(Asset.Colors.tileBackground),
-                useCustomColors: useCustomColors
+                useCustomColors: useCustomColors,
+                showConfirmation: showConfirmation,
+                requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
+                widgetId: widget.id
             )
         }
     }
@@ -122,44 +133,60 @@ struct WidgetCustom: Widget {
     private func interactionTypeForItem(_ magicItem: MagicItem) -> WidgetBasicViewModel.InteractionType {
         guard let domain = magicItem.domain else { return .appIntent(.refresh) }
 
+        var interactionType: WidgetBasicViewModel.InteractionType = .appIntent(.refresh)
+
         if let magicItemAction = magicItem.action, magicItemAction != .default {
             switch magicItemAction {
             case .default:
                 // This block of code should not be reached, default should not be handled here
                 // Returning something to avoid compiler error
-                return .appIntent(.refresh)
+                interactionType = .appIntent(.refresh)
             case .nothing:
-                return .appIntent(.refresh)
+                interactionType = .appIntent(.refresh)
             case let .navigate(path):
-                return navigateIntent(magicItem, path: path)
+                interactionType = navigateIntent(magicItem, path: path)
             case let .runScript(serverId, scriptId):
-                return .appIntent(.activate(entityId: scriptId, domain: domain.rawValue, serverId: serverId))
+                interactionType = .appIntent(.activate(
+                    entityId: scriptId,
+                    domain: Domain.script.rawValue,
+                    serverId: serverId
+                ))
             case let .assist(serverId, pipelineId, startListening):
-                return assistIntent(serverId: serverId, pipelineId: pipelineId, startListening: startListening)
+                interactionType = assistIntent(
+                    serverId: serverId,
+                    pipelineId: pipelineId,
+                    startListening: startListening
+                )
             }
         } else {
             switch domain {
             case .button, .inputButton:
-                return .appIntent(.press(entityId: magicItem.id, domain: domain.rawValue, serverId: magicItem.serverId))
+                interactionType = .appIntent(.press(
+                    entityId: magicItem.id,
+                    domain: domain.rawValue,
+                    serverId: magicItem.serverId
+                ))
             case .cover, .inputBoolean, .light, .switch:
-                return .appIntent(.toggle(
+                interactionType = .appIntent(.toggle(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
                     serverId: magicItem.serverId
                 ))
             case .lock:
                 // TODO: Support lock action in widgets
-                return .appIntent(.refresh)
+                interactionType = .appIntent(.refresh)
             case .scene, .script:
-                return .appIntent(.activate(
+                interactionType = .appIntent(.activate(
                     entityId: magicItem.id,
                     domain: domain.rawValue,
                     serverId: magicItem.serverId
                 ))
             default:
-                return .appIntent(.refresh)
+                interactionType = .appIntent(.refresh)
             }
         }
+
+        return interactionType
     }
 
     private func navigateIntent(_ magicItem: MagicItem, path: String) -> WidgetBasicViewModel.InteractionType {
@@ -204,24 +231,24 @@ enum WidgetCustomSupportedFamilies {
 #Preview(as: .systemSmall) {
     WidgetCustom()
 } timeline: {
-    WidgetCustomEntry(date: .now, widget: .init(name: "My widget", items: [
+    WidgetCustomEntry(date: .now, widget: .init(id: "123", name: "My widget", items: [
         .init(id: "1", serverId: "1", type: .entity),
         .init(id: "2", serverId: "2", type: .entity),
-    ]), magicItemInfoProvider: MockMagicItemProvider(), itemStates: [:])
+    ]), magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:])
 }
 
 @available(iOS 17, *)
 #Preview(as: .systemMedium) {
     WidgetCustom()
 } timeline: {
-    WidgetCustomEntry(date: .now, widget: nil, magicItemInfoProvider: MockMagicItemProvider(), itemStates: [:])
+    WidgetCustomEntry(date: .now, widget: nil, magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:])
 }
 
 @available(iOS 17, *)
 #Preview(as: .systemLarge) {
     WidgetCustom()
 } timeline: {
-    WidgetCustomEntry(date: .now, widget: nil, magicItemInfoProvider: MockMagicItemProvider(), itemStates: [:])
+    WidgetCustomEntry(date: .now, widget: nil, magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:])
 }
 
 final class MockMagicItemProvider: MagicItemProviderProtocol {

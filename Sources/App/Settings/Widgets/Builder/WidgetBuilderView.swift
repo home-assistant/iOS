@@ -3,7 +3,7 @@ import SwiftUI
 
 struct WidgetBuilderView: View {
     @StateObject private var viewModel = WidgetBuilderViewModel()
-
+    @State private var showDeleteConfirmation = false
     var body: some View {
         List {
             if #available(iOS 17, *) {
@@ -14,6 +14,31 @@ struct WidgetBuilderView: View {
                 reloadWidgetsView
             } footer: {
                 Text(L10n.SettingsDetails.Widgets.ReloadAll.description)
+            }
+
+            if #available(iOS 17, *) {
+                Button {
+                    showDeleteConfirmation = true
+
+                } label: {
+                    Text(L10n.Settings.Widgets.Custom.DeleteAll.title)
+                }
+                .tint(.red)
+                .confirmationDialog(
+                    L10n.Alert.Confirmation.Generic.title,
+                    isPresented: $showDeleteConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(role: .cancel, action: { /* no-op */ }) {
+                        Text(L10n.cancelLabel)
+                    }
+
+                    Button(role: .destructive, action: {
+                        viewModel.deleteAllWidgets()
+                    }) {
+                        Text(L10n.yesLabel)
+                    }
+                }
             }
         }
         .onAppear {

@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 @available(iOS 16.4, *)
-struct PressButtonAppIntent: AppIntent {
+struct CustomWidgetToggleAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle"
     static var isDiscoverable: Bool = false
 
@@ -26,19 +26,20 @@ struct PressButtonAppIntent: AppIntent {
             return .result()
         }
         await withCheckedContinuation { continuation in
-            connection.send(.pressButton(domain: domain, entityId: entityId)).promise.pipe { result in
+            connection.send(.toggleDomain(domain: domain, entityId: entityId)).promise.pipe { result in
                 switch result {
                 case .fulfilled:
                     continuation.resume()
                 case let .rejected(error):
                     Current.Log
                         .error(
-                            "Failed to execute PressButtonAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
+                            "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
                         )
                     continuation.resume()
                 }
             }
         }
+        _ = try await ResetAllCustomWidgetConfirmationAppIntent().perform()
         return .result()
     }
 }

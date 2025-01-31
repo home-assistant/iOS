@@ -7,7 +7,7 @@ struct WidgetCustomEntry: TimelineEntry {
     var date: Date
     var widget: CustomWidget?
     var magicItemInfoProvider: MagicItemProviderProtocol
-    var itemStates: [MagicItem: ItemState]
+    var entitiesState: [MagicItem: ItemState]
 
     struct ItemState {
         let value: String
@@ -21,18 +21,23 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
     typealias Intent = WidgetCustomAppIntent
 
     func placeholder(in context: Context) -> WidgetCustomEntry {
-        .init(date: .now, magicItemInfoProvider: Current.magicItemProvider(), itemStates: [:])
+        .init(date: .now, magicItemInfoProvider: Current.magicItemProvider(), entitiesState: [:])
     }
 
     func snapshot(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
         let widget = widget(configuration: configuration, context: context)
-        let itemsStates = await itemsStates(widget: widget)
-        return await .init(date: .now, widget: widget, magicItemInfoProvider: infoProvider(), itemStates: itemsStates)
+        let entitiesState = await entitiesState(widget: widget)
+        return await .init(
+            date: .now,
+            widget: widget,
+            magicItemInfoProvider: infoProvider(),
+            entitiesState: entitiesState
+        )
     }
 
     func timeline(for configuration: WidgetCustomAppIntent, in context: Context) async -> Timeline<WidgetCustomEntry> {
         let widget = widget(configuration: configuration, context: context)
-        let itemsStates = await itemsStates(widget: widget)
+        let entitiesState = await entitiesState(widget: widget)
 
         return await .init(
             entries: [
@@ -40,7 +45,7 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                     date: .now,
                     widget: widget,
                     magicItemInfoProvider: infoProvider(),
-                    itemStates: itemsStates
+                    entitiesState: entitiesState
                 ),
             ], policy: .after(
                 Current.date()
@@ -64,8 +69,10 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
 
             // This prevents widgets displaying more items than the widget family size supports
             let newWidgetWithPrefixedItems = CustomWidget(
+                id: widget?.id ?? "Uknown",
                 name: widget?.name ?? "Uknown",
-                items: Array((widget?.items ?? []).prefix(WidgetFamilySizes.size(for: context.family)))
+                items: Array((widget?.items ?? []).prefix(WidgetFamilySizes.size(for: context.family))),
+                itemsStates: widget?.itemsStates ?? [:]
             )
 
             return newWidgetWithPrefixedItems
@@ -84,7 +91,7 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
         return infoProvider
     }
 
-    private func itemsStates(widget: CustomWidget?) async -> [MagicItem: WidgetCustomEntry.ItemState] {
+    private func entitiesState(widget: CustomWidget?) async -> [MagicItem: WidgetCustomEntry.ItemState] {
         guard let widget else { return [:] }
         let items = widget.items.filter {
             // No state needed for those domains

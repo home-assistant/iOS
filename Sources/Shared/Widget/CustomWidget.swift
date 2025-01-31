@@ -2,16 +2,21 @@ import Foundation
 import GRDB
 
 public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatable {
-    public var id: String = UUID().uuidString
-    public var name: String = ""
-    public var items: [MagicItem] = []
-    /// Controls the UI state of the widget when the item tapped requires confirmation
-    public var itemsStates: [MagicItem: ItemState] = [:]
+    public var id: String
+    public var name: String
+    public var items: [MagicItem]
+    /// Controls the UI state of the widget when the item tapped requires confirmation [ServerUniqueId: ItemState]
+    public var itemsStates: [String: ItemState]
 
-    public init(name: String, items: [MagicItem]) {
+    public init(id: String, name: String, items: [MagicItem], itemsStates: [String: ItemState] = [:]) {
+        self.id = id
         self.name = name
         self.items = items
-        self.itemsStates = [:]
+        self.itemsStates = itemsStates
+    }
+
+    public mutating func updateItemsStates(_ states: [String: ItemState]) {
+        itemsStates = states
     }
 
     public enum ItemState: String, Codable, FetchableRecord, PersistableRecord, Equatable {

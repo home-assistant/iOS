@@ -22,6 +22,7 @@ public struct ExternalLinkButton: View {
                     .tint(tint)
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
                     .tint(Color(uiColor: .label))
                     .font(.body.bold())
             }
@@ -57,6 +58,7 @@ public struct ActionLinkButton: View {
                     .tint(tint)
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
                     .tint(Color(uiColor: .label))
                     .font(.body.bold())
             }

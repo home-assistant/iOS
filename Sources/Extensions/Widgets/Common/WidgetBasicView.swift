@@ -19,27 +19,114 @@ struct WidgetBasicView: View {
             ForEach(rows, id: \.self) { column in
                 HStack(spacing: spacing) {
                     ForEach(column) { model in
-                        if case let .widgetURL(url) = model.interactionType {
-                            Link(destination: url.withWidgetAuthenticity()) {
-                                if #available(iOS 18.0, *) {
-                                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
-                                } else {
-                                    normalView(model: model, sizeStyle: sizeStyle)
-                                }
-                            }
-                        } else {
-                            if #available(iOS 17.0, *), let intent = intent(for: model) {
-                                Button(intent: intent) {
-                                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
+                        itemContent(model: model)
                     }
                 }
             }
         }
         .padding([.single, .compressed].contains(sizeStyle) ? 0 : Spaces.one)
+    }
+
+    @ViewBuilder
+    private func itemContent(model: WidgetBasicViewModel) -> some View {
+        if model.showConfirmation, #available(iOS 17.0, *), let confirmationIntent = intent(
+            for: model,
+            isConfirmationDone: true
+        ) {
+            confirmationForm(
+                model: model,
+                confirmationIntent: confirmationIntent,
+                cancellationIntent: ResetAllCustomWidgetConfirmationAppIntent()
+            )
+        } else if case let .widgetURL(url) = model.interactionType {
+            Link(destination: url.withWidgetAuthenticity()) {
+                if #available(iOS 18.0, *) {
+                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
+                } else {
+                    normalView(model: model, sizeStyle: sizeStyle)
+                }
+            }
+        } else {
+            if #available(iOS 17.0, *), let intent = intent(for: model, isConfirmationDone: false) {
+                Button(intent: intent) {
+                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private func confirmationForm(
+        model: WidgetBasicViewModel,
+        confirmationIntent: any AppIntent,
+        cancellationIntent: any AppIntent
+    ) -> some View {
+        let cancelImage = Image(systemSymbol: .xmark)
+        let confirmImage = Image(systemSymbol: .checkmark)
+        let confirmationColor = Color.asset(Asset.Colors.haPrimary)
+        if sizeStyle == .compressed {
+            HStack(spacing: .zero) {
+                Button(intent: cancellationIntent) {
+                    cancelImage
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .foregroundStyle(.red)
+                        .padding(Spaces.half)
+                        .background(.red.opacity(0.2))
+                }
+                .buttonStyle(.plain)
+                Button(intent: confirmationIntent) {
+                    confirmImage
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .foregroundStyle(confirmationColor)
+                        .padding(Spaces.half)
+                        .background(confirmationColor.opacity(0.2))
+                }
+                .buttonStyle(.plain)
+            }
+        } else if sizeStyle == .condensed {
+            VStack(spacing: .zero) {
+                Text(L10n.Alert.Confirmation.Generic.title)
+                    .font(.footnote.bold())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.horizontal, .top], Spaces.one)
+                Spacer()
+                HStack {
+                    Group {
+                        Button(intent: cancellationIntent) {
+                            cancelImage
+                                .frame(maxWidth: .infinity)
+                        }
+                        .tint(.red)
+                        Button(intent: confirmationIntent) {
+                            confirmImage
+                                .frame(maxWidth: .infinity)
+                        }
+                        .tint(confirmationColor)
+                    }
+                }
+            }
+        } else {
+            VStack {
+                Text(L10n.Alert.Confirmation.Generic.title)
+                    .font(.footnote.bold())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
+                HStack {
+                    Button(intent: cancellationIntent) {
+                        cancelImage
+                    }
+                    .tint(.red)
+                    Spacer()
+                    Button(intent: confirmationIntent) {
+                        confirmImage
+                    }
+                    .tint(confirmationColor)
+                }
+            }
+            .padding()
+        }
     }
 
     @available(iOS 16.0, *)
@@ -77,12 +164,19 @@ struct WidgetBasicView: View {
         }
     }
 
-    @available(iOS 16.4, *)
-    private func intent(for model: WidgetBasicViewModel) -> (any AppIntent)? {
+    @available(iOS 17.0, *)
+    private func intent(for model: WidgetBasicViewModel, isConfirmationDone: Bool = true) -> (any AppIntent)? {
         switch model.interactionType {
         case .widgetURL:
             return nil
         case let .appIntent(widgetIntentType):
+            // When confirmation is required and this method wasn't called from confirmation button
+            if model.requiresConfirmation, !isConfirmationDone {
+                let intent = UpdateWidgetItemConfirmationStateAppIntent()
+                intent.widgetId = model.widgetId
+                intent.serverUniqueId = model.id
+                return intent
+            }
             switch widgetIntentType {
             case .action:
                 let intent = PerformAction()
@@ -105,19 +199,19 @@ struct WidgetBasicView: View {
             case .refresh:
                 return ReloadWidgetsAppIntent()
             case let .toggle(entityId, domain, serverId):
-                let intent = ToggleAppIntent()
+                let intent = CustomWidgetToggleAppIntent()
                 intent.domain = domain
                 intent.entityId = entityId
                 intent.serverId = serverId
                 return intent
             case let .activate(entityId, domain, serverId):
-                let intent = ActivateAppIntent()
+                let intent = CustomWidgetActivateAppIntent()
                 intent.domain = domain
                 intent.entityId = entityId
                 intent.serverId = serverId
                 return intent
             case let .press(entityId, domain, serverId):
-                let intent = PressButtonAppIntent()
+                let intent = CustomWidgetPressButtonAppIntent()
                 intent.domain = domain
                 intent.entityId = entityId
                 intent.serverId = serverId
