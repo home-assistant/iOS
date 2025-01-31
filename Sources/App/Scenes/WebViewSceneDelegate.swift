@@ -2,6 +2,7 @@ import Foundation
 import PromiseKit
 import Shared
 import UIKit
+import WidgetKit
 
 final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -108,6 +109,11 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        if #available(iOS 17.0, *) {
+            // if a widget is pending confirmation to execute it's action
+            // this will reset that and the widget will be restored to default state
+            _ = ResetAllCustomWidgetConfirmationAppIntent()
+        }
         DataWidgetsUpdater.update()
         Current.modelManager.unsubscribe()
         Current.appDatabaseUpdater.stop()
@@ -121,10 +127,6 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         })
         Current.appDatabaseUpdater.update()
         Current.panelsUpdater.update()
-
-        if #available(iOS 17.0, *) {
-            _ = ResetAllCustomWidgetConfirmationAppIntent()
-        }
     }
 
     func windowScene(
