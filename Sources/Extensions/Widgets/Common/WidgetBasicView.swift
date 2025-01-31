@@ -29,16 +29,75 @@ struct WidgetBasicView: View {
 
     @ViewBuilder
     private func itemContent(model: WidgetBasicViewModel) -> some View {
-        if model.showConfirmation, #available(iOS 17.0, *), let confirmationIntent = intent(
+        if #available(iOS 17, *) {
+            if model.showConfirmation {
+                confirmationContent(model: model)
+            } else if case let .widgetURL(url) = model.interactionType {
+                if model.requiresConfirmation {
+                    linkThatRequiresConfirmation(model: model)
+                } else {
+                    legacyLinkContent(model: model)
+                }
+            } else if let intent = intent(for: model, isConfirmationDone: false) {
+                Button(intent: intent) {
+                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
+                }
+                .buttonStyle(.plain)
+            } else {
+                Text("Unknown widget configuration (2)")
+            }
+        } else {
+            legacyLinkContent(model: model)
+        }
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    // This view represents the confirmation for for widgets that require confirmation before running
+    private func confirmationContent(model: WidgetBasicViewModel) -> some View {
+        let confirmationIntent = intent(
             for: model,
             isConfirmationDone: true
-        ) {
-            confirmationForm(
-                model: model,
-                confirmationIntent: confirmationIntent,
-                cancellationIntent: ResetAllCustomWidgetConfirmationAppIntent()
-            )
-        } else if case let .widgetURL(url) = model.interactionType {
+        )
+        let confirmationURL: URL? = {
+            if case let .widgetURL(url) = model.interactionType {
+                return url
+            } else {
+                return nil
+            }
+        }()
+        confirmationForm(
+            model: model,
+            confirmationIntent: confirmationIntent,
+            confirmationURL: confirmationURL,
+            cancellationIntent: ResetAllCustomWidgetConfirmationAppIntent()
+        )
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    // This view represents the link that requires confirmation before running
+    // It triggers an intent to display the confirmation form
+    private func linkThatRequiresConfirmation(model: WidgetBasicViewModel) -> some View {
+        Button(intent: {
+            let intent = UpdateWidgetItemConfirmationStateAppIntent()
+            intent.serverUniqueId = model.id
+            intent.widgetId = model.widgetId
+            return intent
+        }()) {
+            if #available(iOS 18.0, *) {
+                tintedWrapperView(model: model, sizeStyle: sizeStyle)
+            } else {
+                normalView(model: model, sizeStyle: sizeStyle)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    // This is the only widget we can present prior to iOS 17, because it doesn't support AppIntents
+    private func legacyLinkContent(model: WidgetBasicViewModel) -> some View {
+        if case let .widgetURL(url) = model.interactionType {
             Link(destination: url.withWidgetAuthenticity()) {
                 if #available(iOS 18.0, *) {
                     tintedWrapperView(model: model, sizeStyle: sizeStyle)
@@ -47,12 +106,7 @@ struct WidgetBasicView: View {
                 }
             }
         } else {
-            if #available(iOS 17.0, *), let intent = intent(for: model, isConfirmationDone: false) {
-                Button(intent: intent) {
-                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
-                }
-                .buttonStyle(.plain)
-            }
+            Text("Unknown widget configuration")
         }
     }
 
@@ -60,72 +114,177 @@ struct WidgetBasicView: View {
     @ViewBuilder
     private func confirmationForm(
         model: WidgetBasicViewModel,
-        confirmationIntent: any AppIntent,
+        confirmationIntent: (any AppIntent)? = nil,
+        confirmationURL: URL? = nil,
         cancellationIntent: any AppIntent
     ) -> some View {
         let cancelImage = Image(systemSymbol: .xmark)
-        let confirmImage = Image(systemSymbol: .checkmark)
+        let confirmImage: some View = {
+            let checkmarkImage = Image(systemSymbol: .checkmark)
+            if confirmationIntent != nil {
+                return AnyView(
+                    checkmarkImage
+                        .frame(maxWidth: .infinity)
+                )
+            } else {
+                return AnyView(
+                    checkmarkImage
+                        .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                        .frame(maxWidth: .infinity)
+                        // Mimic default widget button style
+                        .frame(height: 30)
+                        .background(sizeStyle == .compressed ? nil : Color.asset(Asset.Colors.haPrimary).opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                )
+            }
+        }()
         let confirmationColor = Color.asset(Asset.Colors.haPrimary)
         if sizeStyle == .compressed {
-            HStack(spacing: .zero) {
+            compressedConfirmationForm(
+                model: model,
+                confirmationIntent: confirmationIntent,
+                confirmationURL: confirmationURL,
+                cancellationIntent: cancellationIntent,
+                confirmImage: confirmImage,
+                cancelImage: cancelImage,
+                confirmationColor: confirmationColor
+            )
+        } else if sizeStyle == .condensed {
+            condensedConfirmationForm(
+                model: model,
+                confirmationIntent: confirmationIntent,
+                confirmationURL: confirmationURL,
+                cancellationIntent: cancellationIntent,
+                confirmImage: confirmImage,
+                cancelImage: cancelImage,
+                confirmationColor: confirmationColor
+            )
+        } else {
+            defaultConfirmationForm(
+                model: model,
+                confirmationIntent: confirmationIntent,
+                confirmationURL: confirmationURL,
+                cancellationIntent: cancellationIntent,
+                confirmImage: confirmImage,
+                cancelImage: cancelImage,
+                confirmationColor: confirmationColor
+            )
+        }
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private func defaultConfirmationForm(
+        model: WidgetBasicViewModel,
+        confirmationIntent: (any AppIntent)?,
+        confirmationURL: URL?,
+        cancellationIntent: any AppIntent,
+        confirmImage: some View,
+        cancelImage: some View,
+        confirmationColor: Color
+    ) -> some View {
+        VStack {
+            Text(L10n.Alert.Confirmation.Generic.title)
+                .font(.footnote.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
+            HStack {
                 Button(intent: cancellationIntent) {
                     cancelImage
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .foregroundStyle(.red)
-                        .padding(Spaces.half)
-                        .background(.red.opacity(0.2))
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.plain)
-                Button(intent: confirmationIntent) {
-                    confirmImage
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .foregroundStyle(confirmationColor)
-                        .padding(Spaces.half)
-                        .background(confirmationColor.opacity(0.2))
-                }
-                .buttonStyle(.plain)
-            }
-        } else if sizeStyle == .condensed {
-            VStack(spacing: .zero) {
-                Text(L10n.Alert.Confirmation.Generic.title)
-                    .font(.footnote.bold())
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding([.horizontal, .top], Spaces.one)
+                .tint(.red)
                 Spacer()
-                HStack {
-                    Group {
-                        Button(intent: cancellationIntent) {
-                            cancelImage
-                                .frame(maxWidth: .infinity)
-                        }
-                        .tint(.red)
-                        Button(intent: confirmationIntent) {
-                            confirmImage
-                                .frame(maxWidth: .infinity)
-                        }
-                        .tint(confirmationColor)
-                    }
+                confirmationLinkOrButton(content: AnyView(
+                    confirmImage
+                        .frame(maxWidth: .infinity)
+                ), confirmationIntent: confirmationIntent, confirmationURL: confirmationURL)
+                    .tint(confirmationColor)
+            }
+        }
+        .padding()
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private func condensedConfirmationForm(
+        model: WidgetBasicViewModel,
+        confirmationIntent: (any AppIntent)?,
+        confirmationURL: URL?,
+        cancellationIntent: any AppIntent,
+        confirmImage: some View,
+        cancelImage: some View,
+        confirmationColor: Color
+    ) -> some View {
+        VStack(spacing: .zero) {
+            Text(L10n.Alert.Confirmation.Generic.title)
+                .font(.footnote.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding([.horizontal, .top], Spaces.one)
+            Spacer()
+            HStack {
+                Button(intent: cancellationIntent) {
+                    cancelImage
+                        .frame(maxWidth: .infinity)
                 }
+                .tint(.red)
+                confirmationLinkOrButton(content: AnyView(
+                    confirmImage
+                        .frame(maxWidth: .infinity)
+                ), confirmationIntent: confirmationIntent, confirmationURL: confirmationURL)
+                    .tint(confirmationColor)
+            }
+        }
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private func compressedConfirmationForm(
+        model: WidgetBasicViewModel,
+        confirmationIntent: (any AppIntent)?,
+        confirmationURL: URL?,
+        cancellationIntent: any AppIntent,
+        confirmImage: some View,
+        cancelImage: some View,
+        confirmationColor: Color
+    ) -> some View {
+        HStack(spacing: .zero) {
+            Button(intent: cancellationIntent) {
+                cancelImage
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .foregroundStyle(.red)
+                    .padding(Spaces.half)
+                    .background(.red.opacity(0.2))
+            }
+            .buttonStyle(.plain)
+            confirmationLinkOrButton(content: AnyView(
+                confirmImage
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .foregroundStyle(confirmationColor)
+                    .padding(Spaces.half)
+                    .background(confirmationColor.opacity(0.2))
+            ), confirmationIntent: confirmationIntent, confirmationURL: confirmationURL)
+                .buttonStyle(.plain)
+        }
+    }
+
+    @available(iOS 17.0, *)
+    @ViewBuilder
+    private func confirmationLinkOrButton(
+        content: some View,
+        confirmationIntent: (any AppIntent)? = nil,
+        confirmationURL: URL? = nil
+    ) -> some View {
+        if let confirmationURL {
+            Link(destination: confirmationURL) {
+                content
+            }
+        } else if let confirmationIntent {
+            Button(intent: confirmationIntent) {
+                content
             }
         } else {
-            VStack {
-                Text(L10n.Alert.Confirmation.Generic.title)
-                    .font(.footnote.bold())
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer()
-                HStack {
-                    Button(intent: cancellationIntent) {
-                        cancelImage
-                    }
-                    .tint(.red)
-                    Spacer()
-                    Button(intent: confirmationIntent) {
-                        confirmImage
-                    }
-                    .tint(confirmationColor)
-                }
-            }
-            .padding()
+            EmptyView()
         }
     }
 

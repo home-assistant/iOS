@@ -848,8 +848,8 @@
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
 		42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
 		42EF0ACE2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
-		42EF0AD02D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
 		42EF0AD12D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
+		42EF0AD22D4D1A920088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
 		42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */; };
 		42F158462CA15C99009C7201 /* ControlSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158452CA15C99009C7201 /* ControlSwitch.swift */; };
 		42F158482CA15FA7009C7201 /* SwitchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158472CA15FA7009C7201 /* SwitchIntent.swift */; };
@@ -7105,7 +7105,7 @@
 				42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */,
-				42EF0AD02D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */,
+				42EF0AD22D4D1A920088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
 				429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,

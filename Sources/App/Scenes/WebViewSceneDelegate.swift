@@ -121,6 +121,10 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         })
         Current.appDatabaseUpdater.update()
         Current.panelsUpdater.update()
+
+        if #available(iOS 17.0, *) {
+            _ = ResetAllCustomWidgetConfirmationAppIntent()
+        }
     }
 
     func windowScene(

@@ -2,6 +2,7 @@ import AppIntents
 import Foundation
 import Shared
 import SwiftUI
+import WidgetKit
 
 @available(iOS 16.4, *)
 struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
@@ -20,6 +21,8 @@ struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
         }
 
         _ = try await ResetAllCustomWidgetConfirmationAppIntent().perform()
+
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.custom.rawValue)
 
         if var widget = try CustomWidget.widgets()?.first(where: { $0.id == widgetId }),
            let magicItem = widget.items.first(where: { $0.serverUniqueId == serverUniqueId }) {
