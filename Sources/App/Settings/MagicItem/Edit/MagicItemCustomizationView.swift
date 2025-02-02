@@ -220,15 +220,12 @@ struct MagicItemCustomizationView: View {
             }
         }
 
-        // TODO: Make widgets support confirmation before execution
-        if context != .widget {
-            Section {
-                Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                    viewModel.item.customization?.requiresConfirmation ?? true
-                }, set: { newValue in
-                    viewModel.item.customization?.requiresConfirmation = newValue
-                }))
-            }
+        Section {
+            Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
+                viewModel.item.customization?.requiresConfirmation ?? true
+            }, set: { newValue in
+                viewModel.item.customization?.requiresConfirmation = newValue
+            }))
         }
     }
 

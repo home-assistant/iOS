@@ -12,7 +12,10 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         textColor: Color = Color(uiColor: .label),
         iconColor: Color = Color.asset(Asset.Colors.haPrimary),
         backgroundColor: Color = Color.asset(Asset.Colors.tileBackground),
-        useCustomColors: Bool = false
+        useCustomColors: Bool = false,
+        showConfirmation: Bool = false,
+        requiresConfirmation: Bool = false,
+        widgetId: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -23,6 +26,9 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.iconColor = iconColor
         self.backgroundColor = backgroundColor
         self.useCustomColors = useCustomColors
+        self.showConfirmation = showConfirmation
+        self.requiresConfirmation = requiresConfirmation
+        self.widgetId = widgetId
     }
 
     var id: String
@@ -37,6 +43,16 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var textColor: Color
     var iconColor: Color
     var useCustomColors: Bool
+
+    // When widget requires confirmation before execution this is true
+    // and we show confirmation buttons instead of the widget item data
+    var showConfirmation: Bool
+    // This will first display confirmation form
+    // the intent of the forms in this button will run or not the real intent
+    var requiresConfirmation: Bool
+
+    /// Used to update confirmation state
+    var widgetId: String?
 
     enum InteractionType: Hashable, Encodable {
         case widgetURL(URL)

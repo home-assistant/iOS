@@ -8,7 +8,10 @@ struct WidgetCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: WidgetCreationViewModel
     private let dismissAction: () -> Void
-    init(widget: CustomWidget = CustomWidget(name: "", items: []), dismissAction: @escaping () -> Void) {
+    init(
+        widget: CustomWidget = CustomWidget(id: UUID().uuidString, name: "", items: []),
+        dismissAction: @escaping () -> Void
+    ) {
         self._viewModel = .init(wrappedValue: .init(widget: widget))
         self.dismissAction = dismissAction
     }

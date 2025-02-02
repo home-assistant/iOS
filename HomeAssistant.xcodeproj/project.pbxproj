@@ -597,12 +597,12 @@
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */; };
-		422F88132D42806400706A0A /* ToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* ToggleAppIntent.swift */; };
-		422F88142D4282CD00706A0A /* ToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* ToggleAppIntent.swift */; };
-		422F88162D428E8300706A0A /* ActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* ActivateAppIntent.swift */; };
-		422F88172D428E8300706A0A /* ActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* ActivateAppIntent.swift */; };
-		422F88192D42989E00706A0A /* PressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* PressButtonAppIntent.swift */; };
-		422F881A2D42989E00706A0A /* PressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* PressButtonAppIntent.swift */; };
+		422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
+		422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
+		422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */; };
+		422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */; };
+		422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
+		422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
@@ -846,6 +846,10 @@
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
+		42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
+		42EF0ACE2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
+		42EF0AD12D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
+		42EF0AD22D4D1A920088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
 		42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */; };
 		42F158462CA15C99009C7201 /* ControlSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158452CA15C99009C7201 /* ControlSwitch.swift */; };
 		42F158482CA15FA7009C7201 /* SwitchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158472CA15FA7009C7201 /* SwitchIntent.swift */; };
@@ -1919,9 +1923,9 @@
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
 		422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.test.swift; sourceTree = "<group>"; };
-		422F88122D42806400706A0A /* ToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleAppIntent.swift; sourceTree = "<group>"; };
-		422F88152D428E8300706A0A /* ActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateAppIntent.swift; sourceTree = "<group>"; };
-		422F88182D42989E00706A0A /* PressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressButtonAppIntent.swift; sourceTree = "<group>"; };
+		422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetToggleAppIntent.swift; sourceTree = "<group>"; };
+		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
+		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
@@ -2174,6 +2178,8 @@
 		42E95C582CA46AD50010ECE3 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
+		42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetAllCustomWidgetConfirmationAppIntent.swift; sourceTree = "<group>"; };
+		42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateWidgetItemConfirmationStateAppIntent.swift; sourceTree = "<group>"; };
 		42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationView.swift; sourceTree = "<group>"; };
 		42F158452CA15C99009C7201 /* ControlSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSwitch.swift; sourceTree = "<group>"; };
 		42F158472CA15FA7009C7201 /* SwitchIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchIntent.swift; sourceTree = "<group>"; };
@@ -3856,9 +3862,11 @@
 		422F88112D42804F00706A0A /* AppIntents */ = {
 			isa = PBXGroup;
 			children = (
-				422F88122D42806400706A0A /* ToggleAppIntent.swift */,
-				422F88152D428E8300706A0A /* ActivateAppIntent.swift */,
-				422F88182D42989E00706A0A /* PressButtonAppIntent.swift */,
+				422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */,
+				422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */,
+				422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */,
+				42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */,
+				42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -6840,7 +6848,7 @@
 				426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */,
 				420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */,
-				422F88162D428E8300706A0A /* ActivateAppIntent.swift in Sources */,
+				422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */,
 				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
 				115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */,
@@ -6858,7 +6866,7 @@
 				3E4087F12CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
 				3E02C0F52CA8047000102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,
-				422F88132D42806400706A0A /* ToggleAppIntent.swift in Sources */,
+				422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
 				42AC94A42CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
@@ -6877,7 +6885,7 @@
 				3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
-				422F88192D42989E00706A0A /* PressButtonAppIntent.swift in Sources */,
+				422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
 				4276471E2C8F2F100027B21F /* IntentLightEntity.swift in Sources */,
 				4273C48D2C8859530065A5B4 /* PageAppEntity.swift in Sources */,
 				42D3E4BB2C5D313000444BE6 /* ScriptAppIntent.swift in Sources */,
@@ -6886,6 +6894,7 @@
 				3E02C0F62CA8049500102131 /* WidgetSensorsAppIntentTimelineProvider.swift in Sources */,
 				4296C3782B91F6260051B63C /* PerformAction.swift in Sources */,
 				42C101302CD3DC0C0012BA78 /* ControlCoverValueProvider.swift in Sources */,
+				42EF0AD12D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */,
 				42E65F082C8079FE00C4A6F2 /* ControlAssistValueProvider.swift in Sources */,
 				3E02C0E32CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */,
 				4080D5BE2C319AA000099C88 /* WidgetDetailsView.swift in Sources */,
@@ -6893,6 +6902,7 @@
 				4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */,
 				424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				403AE9092C2E220200D48147 /* WidgetGauge.swift in Sources */,
+				42EF0ACE2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
 				42D3E4BA2C5D30CB00444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */,
 				3E4087EB2CD9047B0085DF29 /* ReloadWidgetsAppIntent.swift in Sources */,
@@ -6987,7 +6997,7 @@
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */,
-				422F88172D428E8300706A0A /* ActivateAppIntent.swift in Sources */,
+				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				42A47A8C2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift in Sources */,
@@ -7052,6 +7062,7 @@
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
+				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */,
@@ -7061,7 +7072,7 @@
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
-				422F881A2D42989E00706A0A /* PressButtonAppIntent.swift in Sources */,
+				422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
 				42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */,
@@ -7094,6 +7105,7 @@
 				42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */,
+				42EF0AD22D4D1A920088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
 				429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
@@ -7166,7 +7178,7 @@
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */,
-				422F88142D4282CD00706A0A /* ToggleAppIntent.swift in Sources */,
+				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
 				429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */,

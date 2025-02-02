@@ -36,4 +36,15 @@ final class WidgetBuilderViewModel: ObservableObject {
             }
         }
     }
+
+    func deleteAllWidgets() {
+        do {
+            _ = try Current.database.write { db in
+                try CustomWidget.deleteAll(db)
+            }
+        } catch {
+            Current.Log.error("Failed to delete all widgets: \(error)")
+        }
+        loadWidgets()
+    }
 }

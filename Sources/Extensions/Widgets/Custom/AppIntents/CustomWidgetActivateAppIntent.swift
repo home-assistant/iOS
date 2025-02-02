@@ -6,7 +6,7 @@ import SwiftUI
 
 @available(iOS 16.4, *)
 /// Intent activate scenes or scripts
-struct ActivateAppIntent: AppIntent {
+struct CustomWidgetActivateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Activate"
     static var isDiscoverable: Bool = false
 
@@ -28,7 +28,7 @@ struct ActivateAppIntent: AppIntent {
             return .result()
         }
 
-        guard var request: HATypedRequest<HAResponseVoid> = {
+        guard let request: HATypedRequest<HAResponseVoid> = {
             switch domain {
             case .script:
                 return .runScript(entityId: entityId)
@@ -56,6 +56,7 @@ struct ActivateAppIntent: AppIntent {
                 }
             }
         }
+        _ = try await ResetAllCustomWidgetConfirmationAppIntent().perform()
         return .result()
     }
 }

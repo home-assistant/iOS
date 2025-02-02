@@ -2186,6 +2186,12 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.no_items.title") }
         }
       }
+      public enum Custom {
+        public enum DeleteAll {
+          /// Reset all custom widgets
+          public static var title: String { return L10n.tr("Localizable", "settings.widgets.custom.delete_all.title") }
+        }
+      }
       public enum YourWidgets {
         /// Your widgets
         public static var title: String { return L10n.tr("Localizable", "settings.widgets.your_widgets.title") }
