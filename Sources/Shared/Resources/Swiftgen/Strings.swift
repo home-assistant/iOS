@@ -977,6 +977,10 @@ public enum L10n {
       /// Gestures
       public static var title: String { return L10n.tr("Localizable", "gestures.screen.title") }
     }
+    public enum Shake {
+      /// Shake
+      public static var title: String { return L10n.tr("Localizable", "gestures.shake.title") }
+    }
     public enum SwipeLeft {
       /// Swipe Left
       public static var title: String { return L10n.tr("Localizable", "gestures.swipe_left.title") }
@@ -995,6 +999,8 @@ public enum L10n {
         public static var nextServer: String { return L10n.tr("Localizable", "gestures.value.option.next_server") }
         /// None
         public static var `none`: String { return L10n.tr("Localizable", "gestures.value.option.none") }
+        /// Open debug
+        public static var openDebug: String { return L10n.tr("Localizable", "gestures.value.option.open_debug") }
         /// Previous server
         public static var previousServer: String { return L10n.tr("Localizable", "gestures.value.option.previous_server") }
         /// Servers list
@@ -1972,9 +1978,9 @@ public enum L10n {
         /// Debug
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.header.title") }
       }
-      public enum ShakeDisclaimer {
-        /// Now when you shake the app you can access debug features.
-        public static var title: String { return L10n.tr("Localizable", "settings.debugging.shake_disclaimer.title") }
+      public enum ShakeDisclaimerOptional {
+        /// Shake the App to open debug
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.shake_disclaimer_optional.title") }
       }
       public enum Thread {
         /// Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.

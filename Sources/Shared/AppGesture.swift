@@ -9,6 +9,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     case nextServer
     case previousServer
     case showSettings
+    case openDebug
     case none
 
     public var localizedString: String {
@@ -29,6 +30,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             return L10n.Gestures.Value.Option.showSettings
         case .none:
             return L10n.Gestures.Value.Option.none
+        case .openDebug:
+            return L10n.Gestures.Value.Option.openDebug
         }
     }
 }
@@ -44,6 +47,7 @@ public enum AppGesture: CaseIterable, Codable {
     //    case _2FingersSwipeDown
     case _2FingersSwipeLeft
     case _2FingersSwipeRight
+    case shake
 
     public var localizedString: String {
         switch self {
@@ -67,6 +71,8 @@ public enum AppGesture: CaseIterable, Codable {
             return L10n.Gestures._2FingersSwipeLeft.title
         case ._2FingersSwipeRight:
             return L10n.Gestures._2FingersSwipeRight.title
+        case .shake:
+            return L10n.Gestures.Shake.title
         }
     }
 
@@ -92,6 +98,8 @@ public enum AppGesture: CaseIterable, Codable {
             8
         case ._3FingersSwipeLeft:
             9
+        case .shake:
+            10
         }
     }
 }
@@ -105,7 +113,7 @@ public extension [AppGesture: HAGestureAction] {
             ._3FingersSwipeUp: .showServersList,
             ._3FingersSwipeRight: .nextServer,
             ._3FingersSwipeLeft: .previousServer,
-            //            ._3FingersSwipeDown: .showSettings,
+            .shake: .openDebug,
         ]
     }
 
