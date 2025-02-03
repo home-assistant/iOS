@@ -601,6 +601,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.widgets.create.name.title" = "Nimi";
 "settings.widgets.create.no_items.title" = "Üksusi pole";
 "settings.widgets.create.title" = "Loo vidin";
+"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings.widgets.title" = "Vidinad";
 "settings.widgets.your_widgets.title" = "Minu vidinad";
 "settings_details.actions.actions_synced.empty" = "Sünkroonitud toiminguid pole";
