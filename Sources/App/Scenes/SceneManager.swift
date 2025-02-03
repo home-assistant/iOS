@@ -120,11 +120,15 @@ final class SceneManager {
     ) -> Guarantee<DelegateType> {
         if let active = existingScenes(for: query.activity).first,
            let delegate = active.delegate as? DelegateType {
+            Current.Log.verbose("Ready to activate scene \(active.session.persistentIdentifier)")
+
             let options = UIScene.ActivationRequestOptions()
             options.requestingScene = active
 
             // Only activate scene if not activated already
-            guard UIApplication.shared.connectedScenes.contains(where: { $0 != active }) else {
+            guard active.activationState != .foregroundActive else {
+                Current.Log
+                    .verbose("Did not activate scene \(active.session.persistentIdentifier), it was already active")
                 return .value(delegate)
             }
 
@@ -155,6 +159,8 @@ final class SceneManager {
         pendingResolvers[token] = PendingResolver(resolver: resolver)
 
         if supportsMultipleScenes {
+            Current.Log.verbose("Ready to request new scene activation for \(query.activity)")
+
             let activity = query.activity.activity
             activity.userInfo = [
                 Self.activityUserInfoKeyResolver: token,
