@@ -13,6 +13,9 @@ struct WidgetBasicView: View {
     let rows: [[WidgetBasicViewModel]]
     let sizeStyle: WidgetBasicSizeStyle
 
+    private let opacityWhenDisabled: CGFloat = 0.1
+    private let blurWhenDisabled: CGFloat = 2
+
     var body: some View {
         let spacing = sizeStyle == .compressed ? .zero : Spaces.one
         VStack(alignment: .leading, spacing: spacing) {
@@ -32,7 +35,7 @@ struct WidgetBasicView: View {
         if #available(iOS 17, *) {
             if model.showConfirmation {
                 confirmationContent(model: model)
-            } else if case let .widgetURL(url) = model.interactionType {
+            } else if case .widgetURL = model.interactionType {
                 if model.requiresConfirmation {
                     linkThatRequiresConfirmation(model: model)
                 } else {
@@ -290,37 +293,45 @@ struct WidgetBasicView: View {
 
     @available(iOS 16.0, *)
     private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        switch type {
-        case .button, .custom:
-            return AnyView(WidgetBasicViewTintedWrapper(
-                model: model,
-                sizeStyle: sizeStyle,
-                viewType: WidgetBasicButtonView.self
-            ))
-        case .sensor:
-            return AnyView(WidgetBasicViewTintedWrapper(
-                model: model,
-                sizeStyle: sizeStyle,
-                viewType: WidgetBasicSensorView.self
-            ))
+        Group {
+            switch type {
+            case .button, .custom:
+                return AnyView(WidgetBasicViewTintedWrapper(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    viewType: WidgetBasicButtonView.self
+                ))
+            case .sensor:
+                return AnyView(WidgetBasicViewTintedWrapper(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    viewType: WidgetBasicSensorView.self
+                ))
+            }
         }
+        .blur(radius: model.disabled ? blurWhenDisabled : 0)
+        .opacity(model.disabled ? opacityWhenDisabled : 1)
     }
 
     private func normalView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        switch type {
-        case .button, .custom:
-            return AnyView(WidgetBasicButtonView(
-                model: model,
-                sizeStyle: sizeStyle,
-                tinted: false
-            ))
-        case .sensor:
-            return AnyView(WidgetBasicSensorView(
-                model: model,
-                sizeStyle: sizeStyle,
-                tinted: false
-            ))
+        Group {
+            switch type {
+            case .button, .custom:
+                return AnyView(WidgetBasicButtonView(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    tinted: false
+                ))
+            case .sensor:
+                return AnyView(WidgetBasicSensorView(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    tinted: false
+                ))
+            }
         }
+        .blur(radius: model.disabled ? blurWhenDisabled : 0)
+        .opacity(model.disabled ? opacityWhenDisabled : 1)
     }
 
     @available(iOS 17.0, *)
@@ -389,7 +400,24 @@ struct WidgetBasicView: View {
                 title: "Title",
                 subtitle: "Subtitle",
                 interactionType: .appIntent(.refresh),
-                icon: .abTestingIcon
+                icon: .abTestingIcon,
+                disabled: true
+            ),
+            .init(
+                id: "2",
+                title: "Title",
+                subtitle: "Subtitle",
+                interactionType: .appIntent(.refresh),
+                icon: .abTestingIcon,
+                disabled: true
+            ),
+            .init(
+                id: "3",
+                title: "Title",
+                subtitle: "Subtitle",
+                interactionType: .appIntent(.refresh),
+                icon: .abTestingIcon,
+                disabled: true
             ),
         ]],
         sizeStyle: .compressed
