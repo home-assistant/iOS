@@ -36,10 +36,8 @@ public enum WidgetBasicSizeStyle {
             size = 32
         case .expanded:
             size = 28
-        case .regular:
+        case .regular, .condensed, .compressed:
             size = 20
-        case .condensed, .compressed:
-            size = 14
         }
 
         return .custom(MaterialDesignIcons.familyName, size: size)
