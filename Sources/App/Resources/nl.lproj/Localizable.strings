@@ -601,6 +601,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.widgets.create.name.title" = "Naam";
 "settings.widgets.create.no_items.title" = "Geen items";
 "settings.widgets.create.title" = "Widget maken";
+"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings.widgets.title" = "Widgets";
 "settings.widgets.your_widgets.title" = "Jouw widgets";
 "settings_details.actions.actions_synced.empty" = "Geen gesynchroniseerde acties";

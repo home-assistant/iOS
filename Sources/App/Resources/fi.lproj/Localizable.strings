@@ -601,6 +601,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings.widgets.create.name.title" = "Name";
 "settings.widgets.create.no_items.title" = "No items";
 "settings.widgets.create.title" = "Create widget";
+"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings.widgets.title" = "Widgetit";
 "settings.widgets.your_widgets.title" = "Your widgets";
 "settings_details.actions.actions_synced.empty" = "Ei synkronoituja toimintoja";
