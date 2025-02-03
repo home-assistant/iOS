@@ -125,8 +125,15 @@ final class WatchAssistViewModel: ObservableObject {
 
     func appendChatItem(_ item: AssistChatItem) {
         DispatchQueue.main.async { [weak self] in
-            self?.chatItems.append(item)
-            self?.showChatLoader = false
+            guard let self else { return }
+            if chatItems.last?.itemType == .typing {
+                chatItems.removeLast()
+            }
+            chatItems.append(item)
+            if item.itemType == .input {
+                chatItems.append(.init(content: "", itemType: .typing))
+            }
+            showChatLoader = false
         }
     }
 

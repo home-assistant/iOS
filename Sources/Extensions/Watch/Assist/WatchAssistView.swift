@@ -3,7 +3,7 @@ import SwiftUI
 
 struct WatchAssistView: View {
     @StateObject private var viewModel: WatchAssistViewModel
-
+    @State private var isInitialAppearance = true
     private let progressViewId = "progressViewId"
 
     init(
@@ -50,7 +50,11 @@ struct WatchAssistView: View {
         }
         .animation(.easeInOut, value: viewModel.state)
         .onAppear {
-            viewModel.initialRoutine()
+            // Avoid re-trigger when coming back from audio volume screen
+            if isInitialAppearance {
+                isInitialAppearance = false
+                viewModel.initialRoutine()
+            }
         }
         .onDisappear {
             viewModel.endRoutine()
@@ -151,20 +155,27 @@ struct WatchAssistView: View {
         Button(action: {
             viewModel.assist()
         }, label: {
-            if #available(watchOS 10.0, *) {
-                Image(systemName: "waveform.circle.fill")
-                    .font(.system(size: 80))
-                    .symbolEffect(
-                        .variableColor.cumulative.dimInactiveLayers.nonReversing,
-                        options: .repeating,
-                        value: viewModel.state
-                    )
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
-                    .frame(maxHeight: .infinity)
-            } else {
-                Image(systemName: "waveform.circle.fill")
-                    .font(.system(size: 50))
+            VStack(spacing: .zero) {
+                if #available(watchOS 10.0, *) {
+                    Image(systemSymbol: .waveformCircleFill)
+                        .font(.system(size: 80))
+                        .symbolEffect(
+                            .variableColor.cumulative.dimInactiveLayers.nonReversing,
+                            options: .repeating,
+                            value: viewModel.state
+                        )
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
+                } else {
+                    Image(systemSymbol: .waveformCircleFill)
+                        .font(.system(size: 50))
+                }
+                Text(L10n.Watch.Assist.Button.Recording.title)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.gray)
+                Text(L10n.Watch.Assist.Button.SendRequest.title)
+                    .font(.footnote.bold())
+                    .padding()
             }
         })
         .buttonStyle(.plain)
