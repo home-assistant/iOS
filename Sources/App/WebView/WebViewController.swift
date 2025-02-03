@@ -964,6 +964,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         view.titleLabel?.numberOfLines = 0
         view.bodyLabel?.numberOfLines = 0
 
+        // Avoid retrying from Home Assistant UI since this is a dead end
+        webView.load(URLRequest(url: URL(string: "about:blank")!))
         SwiftMessages.show(config: config, view: view)
     }
 }
