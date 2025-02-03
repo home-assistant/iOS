@@ -695,7 +695,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         guard gesture.state == .ended else {
             return
         }
-        let gesture: HAGesture = gesture.edges == .left ? .swipeRight : .swipeLeft
+        let gesture: AppGesture = gesture.edges == .left ? .swipeRight : .swipeLeft
         let action = Current.settingsStore.gestures[gesture] ?? .none
         handleGestureAction(action)
     }

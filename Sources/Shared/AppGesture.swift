@@ -33,7 +33,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     }
 }
 
-public enum HAGesture: CaseIterable, Codable {
+public enum AppGesture: CaseIterable, Codable {
     case swipeRight
     case swipeLeft
     case _3FingersSwipeUp
@@ -96,8 +96,8 @@ public enum HAGesture: CaseIterable, Codable {
     }
 }
 
-public extension [HAGesture: HAGestureAction] {
-    static var defaultGestures: [HAGesture: HAGestureAction] {
+public extension [AppGesture: HAGestureAction] {
+    static var defaultGestures: [AppGesture: HAGestureAction] {
         [
             .swipeRight: .showSidebar,
             ._2FingersSwipeRight: .backPage,
