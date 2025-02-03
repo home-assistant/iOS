@@ -3060,6 +3060,16 @@ public enum L10n {
     /// Placeholder
     public static var placeholderComplicationName: String { return L10n.tr("Localizable", "watch.placeholder_complication_name") }
     public enum Assist {
+      public enum Button {
+        public enum Recording {
+          /// Recording...
+          public static var title: String { return L10n.tr("Localizable", "watch.assist.button.recording.title") }
+        }
+        public enum SendRequest {
+          /// Tap to send request
+          public static var title: String { return L10n.tr("Localizable", "watch.assist.button.send_request.title") }
+        }
+      }
       public enum LackConfig {
         public enum Error {
           /// Please configure Assist using iOS companion App

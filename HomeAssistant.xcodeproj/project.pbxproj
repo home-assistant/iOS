@@ -681,6 +681,7 @@
 		4273C48D2C8859530065A5B4 /* PageAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C48C2C8859530065A5B4 /* PageAppEntity.swift */; };
 		4273C48E2C8859530065A5B4 /* PageAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C48C2C8859530065A5B4 /* PageAppEntity.swift */; };
 		4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
+		42752DF12D50F94C00FC2F37 /* AssistTypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */; };
 		42755FF32CD913C700CB0032 /* MagicItemProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42755FF22CD913C700CB0032 /* MagicItemProviderTests.swift */; };
 		4276471E2C8F2F100027B21F /* IntentLightEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4276471D2C8F2F100027B21F /* IntentLightEntity.swift */; };
 		427647202C8F36950027B21F /* ControlLightsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4276471F2C8F36950027B21F /* ControlLightsValueProvider.swift */; };
@@ -7535,6 +7536,7 @@
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */,
 				11FA9321263FA7AC0015F1FC /* NotificationSubControllerMap.swift in Sources */,
+				42752DF12D50F94C00FC2F37 /* AssistTypingIndicator.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				426490752C0F20FF002155CC /* WatchAssistView+Build.swift in Sources */,
 				426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */,
