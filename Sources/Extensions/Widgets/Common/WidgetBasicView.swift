@@ -13,7 +13,7 @@ struct WidgetBasicView: View {
     let rows: [[WidgetBasicViewModel]]
     let sizeStyle: WidgetBasicSizeStyle
 
-    private let opacityWhenDisabled: CGFloat = 0.1
+    private let opacityWhenDisabled: CGFloat = 0.4
     private let blurWhenDisabled: CGFloat = 2
 
     var body: some View {
