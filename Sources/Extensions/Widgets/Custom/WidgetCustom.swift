@@ -17,6 +17,7 @@ struct WidgetCustom: Widget {
                     AnyView(emptyView)
                 }, contents: modelsForWidget(
                     widget,
+                    blurItems: timelineEntry.blurItems,
                     infoProvider: timelineEntry.magicItemInfoProvider,
                     states: timelineEntry.entitiesState
                 ), type: .custom)
@@ -47,6 +48,7 @@ struct WidgetCustom: Widget {
 
     private func modelsForWidget(
         _ widget: CustomWidget?,
+        blurItems: Bool,
         infoProvider: MagicItemProviderProtocol,
         states: [MagicItem: WidgetCustomEntry.ItemState]
     ) -> [WidgetBasicViewModel] {
@@ -125,7 +127,8 @@ struct WidgetCustom: Widget {
                 useCustomColors: useCustomColors,
                 showConfirmation: showConfirmation,
                 requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
-                widgetId: widget.id
+                widgetId: widget.id,
+                disabled: blurItems
             )
         }
     }
@@ -234,21 +237,33 @@ enum WidgetCustomSupportedFamilies {
     WidgetCustomEntry(date: .now, widget: .init(id: "123", name: "My widget", items: [
         .init(id: "1", serverId: "1", type: .entity),
         .init(id: "2", serverId: "2", type: .entity),
-    ]), magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:])
+    ]), magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:], blurItems: false)
 }
 
 @available(iOS 17, *)
 #Preview(as: .systemMedium) {
     WidgetCustom()
 } timeline: {
-    WidgetCustomEntry(date: .now, widget: nil, magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:])
+    WidgetCustomEntry(
+        date: .now,
+        widget: nil,
+        magicItemInfoProvider: MockMagicItemProvider(),
+        entitiesState: [:],
+        blurItems: false
+    )
 }
 
 @available(iOS 17, *)
 #Preview(as: .systemLarge) {
     WidgetCustom()
 } timeline: {
-    WidgetCustomEntry(date: .now, widget: nil, magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:])
+    WidgetCustomEntry(
+        date: .now,
+        widget: nil,
+        magicItemInfoProvider: MockMagicItemProvider(),
+        entitiesState: [:],
+        blurItems: false
+    )
 }
 
 final class MockMagicItemProvider: MagicItemProviderProtocol {
