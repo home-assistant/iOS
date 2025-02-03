@@ -8,6 +8,8 @@ struct WidgetCustomEntry: TimelineEntry {
     var widget: CustomWidget?
     var magicItemInfoProvider: MagicItemProviderProtocol
     var entitiesState: [MagicItem: ItemState]
+    // True when one of items is pending confirmation
+    var blurItems: Bool
 
     struct ItemState {
         let value: String
@@ -21,17 +23,17 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
     typealias Intent = WidgetCustomAppIntent
 
     func placeholder(in context: Context) -> WidgetCustomEntry {
-        .init(date: .now, magicItemInfoProvider: Current.magicItemProvider(), entitiesState: [:])
+        .init(date: .now, magicItemInfoProvider: Current.magicItemProvider(), entitiesState: [:], blurItems: false)
     }
 
     func snapshot(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
         let widget = widget(configuration: configuration, context: context)
-        let entitiesState = await entitiesState(widget: widget)
         return await .init(
             date: .now,
             widget: widget,
             magicItemInfoProvider: infoProvider(),
-            entitiesState: entitiesState
+            entitiesState: [:],
+            blurItems: false
         )
     }
 
@@ -45,7 +47,8 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                     date: .now,
                     widget: widget,
                     magicItemInfoProvider: infoProvider(),
-                    entitiesState: entitiesState
+                    entitiesState: entitiesState,
+                    blurItems: !(widget?.itemsStates.isEmpty ?? false)
                 ),
             ], policy: .after(
                 Current.date()
@@ -93,6 +96,15 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
 
     private func entitiesState(widget: CustomWidget?) async -> [MagicItem: WidgetCustomEntry.ItemState] {
         guard let widget else { return [:] }
+
+        guard widget.itemsStates.isEmpty else {
+            Current.Log
+                .verbose(
+                    "Avoid fetching states for widget with cached states (e.g. pending confirmation) to prevent delay on widget refresh"
+                )
+            return [:]
+        }
+
         let items = widget.items.filter {
             // No state needed for those domains
             ![.script, .scene, .inputButton].contains($0.domain)

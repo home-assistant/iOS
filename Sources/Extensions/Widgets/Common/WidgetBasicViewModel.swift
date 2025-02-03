@@ -15,7 +15,8 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         useCustomColors: Bool = false,
         showConfirmation: Bool = false,
         requiresConfirmation: Bool = false,
-        widgetId: String? = nil
+        widgetId: String? = nil,
+        disabled: Bool = false
     ) {
         self.id = id
         self.title = title
@@ -29,6 +30,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.showConfirmation = showConfirmation
         self.requiresConfirmation = requiresConfirmation
         self.widgetId = widgetId
+        self.disabled = disabled
     }
 
     var id: String
@@ -53,6 +55,8 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
 
     /// Used to update confirmation state
     var widgetId: String?
+    /// When one item confirmation is pending, the rest of the items should be blurred
+    var disabled: Bool
 
     enum InteractionType: Hashable, Encodable {
         case widgetURL(URL)
