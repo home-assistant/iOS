@@ -245,6 +245,7 @@
 "gestures.screen.title" = "Gestures";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
+"gestures.shake.title" = "Shake";
 "gestures.value.option.back_page" = "Back to previous page";
 "gestures.value.option.next_page" = "Go to next page";
 "gestures.value.option.next_server" = "Next server";
@@ -253,6 +254,7 @@
 "gestures.value.option.servers_list" = "Servers list";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Show sidebar";
+"gestures.value.option.open_debug" = "Open debug";
 "grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Cant build API URL";
@@ -544,7 +546,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
 "settings.debugging.header.subtitle" = "Let's fix that 🐞";
 "settings.debugging.header.title" = "Debug";
-"settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
+"settings.debugging.shake_disclaimer_optional.title" = "Shake the App to open debug";
 "settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.debugging.title" = "Debugging";
 "settings.details_section.location_settings_row.title" = "Location";

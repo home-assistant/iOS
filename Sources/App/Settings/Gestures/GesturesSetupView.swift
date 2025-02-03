@@ -16,7 +16,7 @@ struct GesturesSetupView: View {
             )
             Section {
                 ForEach(
-                    HAGesture.allCases.sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
+                    AppGesture.allCases.sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
                     id: \.self
                 ) { gesture in
                     Picker(gesture.localizedString, selection: .init(get: {

@@ -414,10 +414,10 @@ public class SettingsStore {
     }
 
     #if os(iOS)
-    public var gestures: [HAGesture: HAGestureAction] {
+    public var gestures: [AppGesture: HAGestureAction] {
         get {
             guard let data = prefs.data(forKey: "gesturesSettings"),
-                  let decodedGestures = try? JSONDecoder().decode([HAGesture: HAGestureAction].self, from: data) else {
+                  let decodedGestures = try? JSONDecoder().decode([AppGesture: HAGestureAction].self, from: data) else {
                 Current.Log.error("Failed to decode gestures from settings")
                 return .defaultGestures
             }

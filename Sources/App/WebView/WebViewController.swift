@@ -695,7 +695,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         guard gesture.state == .ended else {
             return
         }
-        let gesture: HAGesture = gesture.edges == .left ? .swipeRight : .swipeLeft
+        let gesture: AppGesture = gesture.edges == .left ? .swipeRight : .swipeLeft
         let action = Current.settingsStore.gestures[gesture] ?? .none
         handleGestureAction(action)
     }
@@ -714,26 +714,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
-            let controller = UIHostingController(rootView: AnyView(
-                NavigationView {
-                    VStack {
-                        Text(L10n.Settings.Debugging.ShakeDisclaimer.title)
-                            .padding()
-                            .background(Color.asset(Asset.Colors.haPrimary).opacity(0.2))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .padding(Spaces.one)
-                        DebugView()
-                            .toolbar {
-                                ToolbarItem(placement: .topBarTrailing) {
-                                    CloseButton { [weak self] in
-                                        self?.overlayAppController?.dismiss(animated: true)
-                                    }
-                                }
-                            }
-                    }
-                }
-            ))
-            presentOverlayController(controller: controller, animated: true)
+            let action = Current.settingsStore.gestures[.shake] ?? .none
+            handleGestureAction(action)
         }
     }
 
@@ -967,6 +949,36 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         // Avoid retrying from Home Assistant UI since this is a dead end
         webView.load(URLRequest(url: URL(string: "about:blank")!))
         SwiftMessages.show(config: config, view: view)
+    }
+
+    private func openDebug() {
+        let controller = UIHostingController(rootView: AnyView(
+            NavigationView {
+                VStack {
+                    HStack(spacing: Spaces.half) {
+                        Text(L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
+                        Toggle(isOn: .init(get: {
+                            Current.settingsStore.gestures[.shake] == .openDebug
+                        }, set: { newValue in
+                            Current.settingsStore.gestures[.shake] = newValue ? .openDebug : HAGestureAction.none
+                        }), label: { EmptyView() })
+                    }
+                    .padding()
+                    .background(Color.asset(Asset.Colors.haPrimary).opacity(0.2))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .padding(Spaces.one)
+                    DebugView()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                CloseButton { [weak self] in
+                                    self?.overlayAppController?.dismiss(animated: true)
+                                }
+                            }
+                        }
+                }
+            }
+        ))
+        presentOverlayController(controller: controller, animated: true)
     }
 }
 
@@ -1219,6 +1231,8 @@ extension WebViewController {
         case .none:
             /* no-op */
             break
+        case .openDebug:
+            openDebug()
         }
     }
 

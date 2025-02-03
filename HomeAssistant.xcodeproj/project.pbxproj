@@ -697,7 +697,7 @@
 		4278CB812D01E61D00CFAAC9 /* GesturesSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278CB802D01E61D00CFAAC9 /* GesturesSetupView.swift */; };
 		4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278CB842D01F0B200CFAAC9 /* GesturesSetupViewModel.swift */; };
 		4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278CB872D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift */; };
-		4278CB892D01F81B00CFAAC9 /* HAGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278CB822D01F09400CFAAC9 /* HAGesture.swift */; };
+		4278CB892D01F81B00CFAAC9 /* AppGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278CB822D01F09400CFAAC9 /* AppGesture.swift */; };
 		4278DFD22B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		4278DFD32B45C7AE0087C9D7 /* Core.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4278DFAF2B45C6680087C9D7 /* Core.strings */; };
 		42790C422C4806A700E31B38 /* ImprovFailureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42790C412C4806A700E31B38 /* ImprovFailureView.swift */; };
@@ -2017,7 +2017,7 @@
 		427756CA2C3ED5F700E11D0B /* VolumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
 		4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuaranteedMessages.swift; sourceTree = "<group>"; };
 		4278CB802D01E61D00CFAAC9 /* GesturesSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.swift; sourceTree = "<group>"; };
-		4278CB822D01F09400CFAAC9 /* HAGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAGesture.swift; sourceTree = "<group>"; };
+		4278CB822D01F09400CFAAC9 /* AppGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGesture.swift; sourceTree = "<group>"; };
 		4278CB842D01F0B200CFAAC9 /* GesturesSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupViewModel.swift; sourceTree = "<group>"; };
 		4278CB872D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLikeListTopRowHeader.swift; sourceTree = "<group>"; };
 		4278DFB02B45C6680087C9D7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Core.strings; sourceTree = "<group>"; };
@@ -5120,7 +5120,7 @@
 			isa = PBXGroup;
 			children = (
 				420CFC612D3F9C15009A94F3 /* Database */,
-				4278CB822D01F09400CFAAC9 /* HAGesture.swift */,
+				4278CB822D01F09400CFAAC9 /* AppGesture.swift */,
 				424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */,
 				42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */,
 				42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */,
@@ -7718,7 +7718,7 @@
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				3997926E2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */,
-				4278CB892D01F81B00CFAAC9 /* HAGesture.swift in Sources */,
+				4278CB892D01F81B00CFAAC9 /* AppGesture.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
 				4235075D2CDB756800A19902 /* HAServices.swift in Sources */,
