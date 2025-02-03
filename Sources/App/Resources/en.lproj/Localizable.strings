@@ -601,9 +601,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.widgets.create.name.title" = "Name";
 "settings.widgets.create.no_items.title" = "No items";
 "settings.widgets.create.title" = "Create widget";
+"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings.widgets.title" = "Widgets";
 "settings.widgets.your_widgets.title" = "Your widgets";
-"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings_details.actions.actions_synced.empty" = "No Synced Actions";
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
 "settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";

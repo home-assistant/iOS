@@ -601,6 +601,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.widgets.create.name.title" = "名前";
 "settings.widgets.create.no_items.title" = "アイテムなし";
 "settings.widgets.create.title" = "ウィジェットを作成";
+"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings.widgets.title" = "ウィジェット";
 "settings.widgets.your_widgets.title" = "ウィジェット";
 "settings_details.actions.actions_synced.empty" = "同期されたアクションはありません";

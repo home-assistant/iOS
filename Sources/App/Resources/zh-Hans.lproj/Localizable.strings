@@ -599,6 +599,7 @@
 "settings.widgets.create.name.title" = "名称";
 "settings.widgets.create.no_items.title" = "没有项目";
 "settings.widgets.create.title" = "创建小部件";
+"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings.widgets.title" = "小组件";
 "settings.widgets.your_widgets.title" = "您的小部件";
 "settings_details.actions.actions_synced.empty" = "没有已同步的动作";
