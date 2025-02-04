@@ -19,9 +19,10 @@ public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatab
         itemsStates = states
     }
 
-    public enum ItemState: String, Codable, FetchableRecord, PersistableRecord, Equatable {
+    public enum ItemState: Codable, FetchableRecord, PersistableRecord, Equatable {
         case idle
         case pendingConfirmation
+        case progress(Int)
     }
 
     public static func widgets() throws -> [CustomWidget]? {

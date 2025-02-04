@@ -177,7 +177,7 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
 
     @Parameter(
         title: "Show last update time",
-        default: true
+        default: false
     )
     var showLastUpdateTime: Bool
 
