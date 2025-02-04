@@ -9,7 +9,9 @@ struct WidgetCustomEntry: TimelineEntry {
     var magicItemInfoProvider: MagicItemProviderProtocol
     var entitiesState: [MagicItem: ItemState]
     // True when one of items is pending confirmation
-    var blurItems: Bool
+    var disabledItems: Bool
+    var showLastUpdateTime: Bool
+    var showStates: Bool
 
     struct ItemState {
         let value: String
@@ -23,7 +25,14 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
     typealias Intent = WidgetCustomAppIntent
 
     func placeholder(in context: Context) -> WidgetCustomEntry {
-        .init(date: .now, magicItemInfoProvider: Current.magicItemProvider(), entitiesState: [:], blurItems: false)
+        .init(
+            date: .now,
+            magicItemInfoProvider: Current.magicItemProvider(),
+            entitiesState: [:],
+            disabledItems: false,
+            showLastUpdateTime: false,
+            showStates: false
+        )
     }
 
     func snapshot(for configuration: WidgetCustomAppIntent, in context: Context) async -> WidgetCustomEntry {
@@ -33,13 +42,15 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             widget: widget,
             magicItemInfoProvider: infoProvider(),
             entitiesState: [:],
-            blurItems: false
+            disabledItems: false,
+            showLastUpdateTime: configuration.showLastUpdateTime,
+            showStates: configuration.showStates
         )
     }
 
     func timeline(for configuration: WidgetCustomAppIntent, in context: Context) async -> Timeline<WidgetCustomEntry> {
         let widget = widget(configuration: configuration, context: context)
-        let entitiesState = await entitiesState(widget: widget)
+        let entitiesState = await entitiesState(configuration: configuration, widget: widget)
 
         return await .init(
             entries: [
@@ -48,7 +59,9 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                     widget: widget,
                     magicItemInfoProvider: infoProvider(),
                     entitiesState: entitiesState,
-                    blurItems: !(widget?.itemsStates.isEmpty ?? false)
+                    disabledItems: !(widget?.itemsStates.isEmpty ?? false),
+                    showLastUpdateTime: configuration.showLastUpdateTime,
+                    showStates: configuration.showStates
                 ),
             ], policy: .after(
                 Current.date()
@@ -94,8 +107,16 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
         return infoProvider
     }
 
-    private func entitiesState(widget: CustomWidget?) async -> [MagicItem: WidgetCustomEntry.ItemState] {
+    private func entitiesState(
+        configuration: WidgetCustomAppIntent,
+        widget: CustomWidget?
+    ) async -> [MagicItem: WidgetCustomEntry.ItemState] {
         guard let widget else { return [:] }
+
+        guard configuration.showStates else {
+            Current.Log.verbose("States are disabled in widget configuration")
+            return [:]
+        }
 
         guard widget.itemsStates.isEmpty else {
             Current.Log
@@ -154,12 +175,24 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
     )
     var widget: CustomWidgetEntity?
 
+    @Parameter(
+        title: "Show last update time",
+        default: true
+    )
+    var showLastUpdateTime: Bool
+
+    @Parameter(
+        title: "Show states (BETA)",
+        default: false
+    )
+    var showStates: Bool
+
     static var parameterSummary: some ParameterSummary {
         Summary()
     }
 
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        .result(value: true)
+    func perform() async throws -> some IntentResult {
+        .result()
     }
 }
 

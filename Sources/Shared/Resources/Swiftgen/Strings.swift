@@ -3927,6 +3927,10 @@ public enum L10n {
       public static var subtitle: String { return L10n.tr("Localizable", "widgets.custom.subtitle") }
       /// Custom widgets
       public static var title: String { return L10n.tr("Localizable", "widgets.custom.title") }
+      public enum ShowUpdateTime {
+        /// Last update:
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_update_time.title") }
+      }
     }
     public enum Details {
       /// Display states using from Home Assistant in text

@@ -17,10 +17,11 @@ struct WidgetCustom: Widget {
                     AnyView(emptyView)
                 }, contents: modelsForWidget(
                     widget,
-                    blurItems: timelineEntry.blurItems,
+                    blurItems: timelineEntry.disabledItems,
                     infoProvider: timelineEntry.magicItemInfoProvider,
-                    states: timelineEntry.entitiesState
-                ), type: .custom)
+                    states: timelineEntry.entitiesState,
+                    showStates: timelineEntry.showStates
+                ), type: .custom, showLastUpdate: timelineEntry.showLastUpdateTime)
             } else {
                 emptyView
                     .widgetBackground(Color.clear)
@@ -50,7 +51,8 @@ struct WidgetCustom: Widget {
         _ widget: CustomWidget?,
         blurItems: Bool,
         infoProvider: MagicItemProviderProtocol,
-        states: [MagicItem: WidgetCustomEntry.ItemState]
+        states: [MagicItem: WidgetCustomEntry.ItemState],
+        showStates: Bool
     ) -> [WidgetBasicViewModel] {
         guard let widget else { return [] }
 
@@ -86,7 +88,7 @@ struct WidgetCustom: Widget {
                     }
                 }()
 
-                if [.light, .switch, .inputBoolean].contains(magicItem.domain) {
+                if showStates, [.light, .switch, .inputBoolean].contains(magicItem.domain) {
                     if state?.domainState == Domain.State.off {
                         return Color.gray
                     } else {
@@ -234,10 +236,18 @@ enum WidgetCustomSupportedFamilies {
 #Preview(as: .systemSmall) {
     WidgetCustom()
 } timeline: {
-    WidgetCustomEntry(date: .now, widget: .init(id: "123", name: "My widget", items: [
-        .init(id: "1", serverId: "1", type: .entity),
-        .init(id: "2", serverId: "2", type: .entity),
-    ]), magicItemInfoProvider: MockMagicItemProvider(), entitiesState: [:], blurItems: false)
+    WidgetCustomEntry(
+        date: .now,
+        widget: .init(id: "123", name: "My widget", items: [
+            .init(id: "1", serverId: "1", type: .entity),
+            .init(id: "2", serverId: "2", type: .entity),
+        ]),
+        magicItemInfoProvider: MockMagicItemProvider(),
+        entitiesState: [:],
+        disabledItems: false,
+        showLastUpdateTime: true,
+        showStates: true
+    )
 }
 
 @available(iOS 17, *)
@@ -249,7 +259,9 @@ enum WidgetCustomSupportedFamilies {
         widget: nil,
         magicItemInfoProvider: MockMagicItemProvider(),
         entitiesState: [:],
-        blurItems: false
+        disabledItems: false,
+        showLastUpdateTime: true,
+        showStates: true
     )
 }
 
@@ -262,7 +274,9 @@ enum WidgetCustomSupportedFamilies {
         widget: nil,
         magicItemInfoProvider: MockMagicItemProvider(),
         entitiesState: [:],
-        blurItems: false
+        disabledItems: false,
+        showLastUpdateTime: true,
+        showStates: true
     )
 }
 

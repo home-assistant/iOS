@@ -9,19 +9,36 @@ struct WidgetBasicContainerView: View {
     let emptyViewGenerator: () -> AnyView
     let contents: [WidgetBasicViewModel]
     let type: WidgetType
+    let showLastUpdate: Bool
 
-    init(emptyViewGenerator: @escaping () -> AnyView, contents: [WidgetBasicViewModel], type: WidgetType) {
+    init(
+        emptyViewGenerator: @escaping () -> AnyView,
+        contents: [WidgetBasicViewModel],
+        type: WidgetType,
+        showLastUpdate: Bool = false
+    ) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
         self.type = type
+        self.showLastUpdate = showLastUpdate
     }
 
     var body: some View {
-        Group {
+        VStack {
             if contents.isEmpty {
                 emptyViewGenerator()
             } else {
                 content(for: contents)
+            }
+            if showLastUpdate {
+                Group {
+                    Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") + Text(Date.now, style: .time)
+                }
+                .font(.system(size: 10).bold())
+                .frame(maxWidth: .infinity, alignment: .center)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, Spaces.half)
+                .opacity(0.5)
             }
         }
         // Whenever Apple allow apps to use material backgrounds we should update this

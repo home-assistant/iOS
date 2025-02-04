@@ -13,8 +13,7 @@ struct WidgetBasicView: View {
     let rows: [[WidgetBasicViewModel]]
     let sizeStyle: WidgetBasicSizeStyle
 
-    private let opacityWhenDisabled: CGFloat = 0.4
-    private let blurWhenDisabled: CGFloat = 2
+    private let opacityWhenDisabled: CGFloat = 0.3
 
     var body: some View {
         let spacing = sizeStyle == .compressed ? .zero : Spaces.one
@@ -309,7 +308,6 @@ struct WidgetBasicView: View {
                 ))
             }
         }
-        .blur(radius: model.disabled ? blurWhenDisabled : 0)
         .opacity(model.disabled ? opacityWhenDisabled : 1)
     }
 
@@ -330,7 +328,6 @@ struct WidgetBasicView: View {
                 ))
             }
         }
-        .blur(radius: model.disabled ? blurWhenDisabled : 0)
         .opacity(model.disabled ? opacityWhenDisabled : 1)
     }
 
