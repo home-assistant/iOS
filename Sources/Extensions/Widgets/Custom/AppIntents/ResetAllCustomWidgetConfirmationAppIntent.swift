@@ -2,7 +2,6 @@ import AppIntents
 import Foundation
 import Shared
 import SwiftUI
-import WidgetKit
 
 @available(iOS 16.4, *)
 struct ResetAllCustomWidgetConfirmationAppIntent: AppIntent {
@@ -10,9 +9,6 @@ struct ResetAllCustomWidgetConfirmationAppIntent: AppIntent {
     static var isDiscoverable: Bool = false
 
     func perform() async throws -> some IntentResult {
-        defer {
-            WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.custom.rawValue)
-        }
         do {
             guard var customWidgets = try CustomWidget.widgets(), !customWidgets.isEmpty else {
                 return .result()
@@ -41,6 +37,7 @@ struct ResetAllCustomWidgetConfirmationAppIntent: AppIntent {
         } catch {
             Current.Log.error("Failed to load custom widgets to reset items states: \(error)")
         }
+
         return .result()
     }
 }

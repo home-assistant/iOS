@@ -47,7 +47,6 @@ struct WidgetCustom: Widget {
         }
     }
 
-    // swiftlint:disable cyclomatic_complexity
     private func modelsForWidget(
         _ widget: CustomWidget?,
         blurItems: Bool,
@@ -118,31 +117,17 @@ struct WidgetCustom: Widget {
                 }
             }()
 
-            let progress: Int? = {
-                if let itemState = widget.itemsStates.first(where: { $0.key == magicItem.serverUniqueId })?.value {
-                    if case let .progress(progress) = itemState {
-                        return progress
-                    } else {
-                        return nil
-                    }
-                } else {
-                    return nil
-                }
-            }()
-
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
                 subtitle: state?.value,
-                interactionType: interactionTypeForItem(widget: widget, magicItem: magicItem),
+                interactionType: interactionTypeForItem(magicItem),
                 icon: icon,
                 textColor: textColor ?? Color(uiColor: .label),
                 iconColor: iconColor,
                 backgroundColor: backgroundColor ?? Color.asset(Asset.Colors.tileBackground),
                 useCustomColors: useCustomColors,
                 showConfirmation: showConfirmation,
-                showProgress: progress != nil,
-                progress: progress ?? 0,
                 requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
                 widgetId: widget.id,
                 disabled: blurItems
@@ -150,8 +135,7 @@ struct WidgetCustom: Widget {
         }
     }
 
-    private func interactionTypeForItem(widget: CustomWidget, magicItem: MagicItem) -> WidgetBasicViewModel
-        .InteractionType {
+    private func interactionTypeForItem(_ magicItem: MagicItem) -> WidgetBasicViewModel.InteractionType {
         guard let domain = magicItem.domain else { return .appIntent(.refresh) }
 
         var interactionType: WidgetBasicViewModel.InteractionType = .appIntent(.refresh)
@@ -189,8 +173,6 @@ struct WidgetCustom: Widget {
                 ))
             case .cover, .inputBoolean, .light, .switch:
                 interactionType = .appIntent(.toggle(
-                    widgetId: widget.id,
-                    magicItemServerUniqueId: magicItem.serverUniqueId,
                     entityId: magicItem.id,
                     domain: domain.rawValue,
                     serverId: magicItem.serverId

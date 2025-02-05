@@ -14,8 +14,6 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         backgroundColor: Color = Color.asset(Asset.Colors.tileBackground),
         useCustomColors: Bool = false,
         showConfirmation: Bool = false,
-        showProgress: Bool = false,
-        progress: Int = 0,
         requiresConfirmation: Bool = false,
         widgetId: String? = nil,
         disabled: Bool = false
@@ -30,8 +28,6 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.backgroundColor = backgroundColor
         self.useCustomColors = useCustomColors
         self.showConfirmation = showConfirmation
-        self.showProgress = showProgress
-        self.progress = progress
         self.requiresConfirmation = requiresConfirmation
         self.widgetId = widgetId
         self.disabled = disabled
@@ -57,10 +53,6 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     // the intent of the forms in this button will run or not the real intent
     var requiresConfirmation: Bool
 
-    // When the widget item is executing it can display progress
-    var showProgress: Bool
-    var progress: Int
-
     /// Used to update confirmation state
     var widgetId: String?
     /// When one item confirmation is pending, the rest of the items should be blurred
@@ -75,13 +67,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         case action(id: String, name: String)
         case script(id: String, entityId: String, serverId: String, name: String, showConfirmationNotification: Bool)
         /// Entities that can be toggled
-        case toggle(
-            widgetId: String,
-            magicItemServerUniqueId: String,
-            entityId: String,
-            domain: String,
-            serverId: String
-        )
+        case toggle(entityId: String, domain: String, serverId: String)
         /// Script or Scene
         case activate(entityId: String, domain: String, serverId: String)
         /// Button
