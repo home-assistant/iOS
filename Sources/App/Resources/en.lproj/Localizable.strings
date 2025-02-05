@@ -1168,4 +1168,5 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.custom.intent_activate_failed.body" = "Please try again";
 "widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
 "widgets.custom.intent_press_failed.body" = "Please try again";
+"web_view.server_selection.title" = "Choose server";
 "yes_label" = "Yes";

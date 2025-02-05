@@ -3817,6 +3817,13 @@ public enum L10n {
     }
   }
 
+  public enum WebView {
+    public enum ServerSelection {
+      /// Choose server
+      public static var title: String { return L10n.tr("Localizable", "web_view.server_selection.title") }
+    }
+  }
+
   public enum Widgets {
     public enum Action {
       public enum Name {

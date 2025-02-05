@@ -40,6 +40,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
 
     private var initialURL: URL?
+    private var statusBarButtonsStack: UIStackView?
 
     /// A view controller presented by a request from the webview
     var overlayAppController: UIViewController?
@@ -236,14 +237,90 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         statusBarView.tag = 111
 
         view.addSubview(statusBarView)
-
-        statusBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            statusBarView.topAnchor.constraint(equalTo: view.topAnchor),
+            statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        ])
+
+        if Current.isCatalyst {
+            setupStatusBarButtons(statusBarView: statusBarView)
+        }
+
         return statusBarView
+    }
+
+    private func setupStatusBarButtons(statusBarView: UIView) {
+        let picker = UIButton(type: .system)
+        picker.setTitle(server.info.name, for: .normal)
+        picker.translatesAutoresizingMaskIntoConstraints = false
+
+        let menuActions = Current.servers.all.map { server in
+            UIAction(title: server.info.name, handler: { [weak self] _ in
+                self?.openServer(server)
+            })
+        }
+
+        // Using UIMenu since UIPickerView is not available on Catalyst
+        picker.menu = UIMenu(title: L10n.WebView.ServerSelection.title, children: menuActions)
+        picker.showsMenuAsPrimaryAction = true
+
+        let openInSafariButton = UIButton(type: .detailDisclosure)
+        openInSafariButton.setImage(UIImage(systemSymbol: .safari), for: .normal)
+        openInSafariButton.backgroundColor = .systemBackground
+        openInSafariButton.tintColor = Asset.Colors.haPrimary.color
+        openInSafariButton.layer.cornerRadius = 10
+        openInSafariButton.addTarget(self, action: #selector(openServerInSafari), for: .touchUpInside)
+
+        if let statusBarButtonsStack {
+            statusBarButtonsStack.removeFromSuperview()
+            self.statusBarButtonsStack = nil
+        }
+
+        let arrangedSubviews: [UIView] = {
+            if Current.servers.all.count > 1 {
+                return [picker, openInSafariButton]
+            } else {
+                // No need to display server picker
+                return [openInSafariButton]
+            }
+        }()
+
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.axis = .horizontal
+        stackView.spacing = Spaces.one
+
+        statusBarView.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -Spaces.half),
+            stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: Spaces.half),
+        ])
+        statusBarButtonsStack = stackView
+    }
+
+    private func openServer(_ server: Server) {
+        Current.sceneManager.webViewWindowControllerPromise.done { controller in
+            controller.open(server: server)
+        }
+    }
+
+    @objc private func openServerInSafari() {
+        if let url = webView.url {
+            guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                return
+            }
+            // Remove external_auth=1 query item from URL
+            urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
+
+            if let url = urlComponents.url {
+                UIApplication.shared.open(url)
+            }
+        }
     }
 
     public func showSettingsViewController() {
