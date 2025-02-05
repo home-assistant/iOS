@@ -243,12 +243,14 @@
 "gestures.footer.title" = "自訂於 Frontend 中使用的手勢。";
 "gestures.screen.body" = "當使用 Home Assistant 主介面時將會套用以下手勢。";
 "gestures.screen.title" = "手勢";
+"gestures.shake.title" = "搖動";
 "gestures.swipe_left.title" = "向左滑";
 "gestures.swipe_right.title" = "向右滑";
 "gestures.value.option.back_page" = "回上一頁";
 "gestures.value.option.next_page" = "至下一頁";
 "gestures.value.option.next_server" = "下一個伺服器";
 "gestures.value.option.none" = "無";
+"gestures.value.option.open_debug" = "開啟除錯";
 "gestures.value.option.previous_server" = "上一個伺服器";
 "gestures.value.option.servers_list" = "伺服器列表";
 "gestures.value.option.show_settings" = "開啟 App 設定";
@@ -545,6 +547,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings.debugging.header.subtitle" = "讓我們來修正此問題 🐞";
 "settings.debugging.header.title" = "除錯";
 "settings.debugging.shake_disclaimer.title" = "現在只要搖動 App 時、即可以訪問除錯功能。";
+"settings.debugging.shake_disclaimer_optional.title" = "搖動 App 以開啟除錯";
 "settings.debugging.thread.footer" = "檢查 Apple 鑰匙圈存取內有哪些 Thread 憑證，也可以於 Home Assistant 匯入或從鑰匙圈存取中刪除。";
 "settings.debugging.title" = "除錯";
 "settings.details_section.location_settings_row.title" = "座標設定";
@@ -601,7 +604,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings.widgets.create.name.title" = "名稱";
 "settings.widgets.create.no_items.title" = "沒有項目";
 "settings.widgets.create.title" = "新增小工具";
-"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
+"settings.widgets.custom.delete_all.title" = "重置所有自訂小工具";
 "settings.widgets.title" = "小工具";
 "settings.widgets.your_widgets.title" = "你的小工具";
 "settings_details.actions.actions_synced.empty" = "無同步觸發動作";
@@ -863,6 +866,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "url_handler.x_callback_url.error.templateMissing" = "必須定義產生模板";
 "url_label" = "網址";
 "username_label" = "使用者名稱";
+"watch.assist.button.recording.title" = "錄製中...";
+"watch.assist.button.send_request.title" = "點擊以傳送請求";
 "watch.assist.lack_config.error.title" = "請設定使用 iOS companion App 設定助理";
 "watch.config.assist.select_server" = "伺服器";
 "watch.config.cache.error.message" = "無法由暫存載入手錶設定。";
@@ -1114,6 +1119,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.controls.switch.description" = "開啟/關閉開關";
 "widgets.controls.switch.placeholder_title" = "選擇開關";
 "widgets.controls.switch.title" = "開關";
+"widgets.custom.show_update_time.title" = "最後更新：";
 "widgets.custom.subtitle" = "新增具有自己風格的小工具";
 "widgets.custom.title" = "自訂小工具";
 "widgets.details.description" = "在文字中使用 Home Assistant 顯示狀態";

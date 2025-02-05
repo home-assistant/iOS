@@ -243,12 +243,14 @@
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestes";
+"gestures.shake.title" = "Shake";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
 "gestures.value.option.next_page" = "Go to next page";
 "gestures.value.option.next_server" = "Serveur suivant";
 "gestures.value.option.none" = "Aucun";
+"gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.previous_server" = "Serveur précédent";
 "gestures.value.option.servers_list" = "Liste des serveurs";
 "gestures.value.option.show_settings" = "Open App settings";
@@ -545,6 +547,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings.debugging.header.subtitle" = "Let's fix that 🐞";
 "settings.debugging.header.title" = "Debug";
 "settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
+"settings.debugging.shake_disclaimer_optional.title" = "Shake the App to open debug";
 "settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.debugging.title" = "Débogage";
 "settings.details_section.location_settings_row.title" = "Paramètres d'emplacement";
@@ -863,6 +866,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "url_handler.x_callback_url.error.templateMissing" = "Un modèle de rendu doit être défini";
 "url_label" = "URL";
 "username_label" = "Nom d'utilisateur";
+"watch.assist.button.recording.title" = "Recording...";
+"watch.assist.button.send_request.title" = "Tap to send request";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
 "watch.config.assist.select_server" = "Serveur";
 "watch.config.cache.error.message" = "Failed to load watch config from cache.";
@@ -1114,6 +1119,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.switch.description" = "Allumer/éteindre votre interrupteur";
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Interrupteur";
+"widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
 "widgets.details.description" = "Afficher les états à l'aide de Home Assistant dans le texte";

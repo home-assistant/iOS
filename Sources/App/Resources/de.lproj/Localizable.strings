@@ -243,12 +243,14 @@
 "gestures.footer.title" = "Gesten für die Verwendung im Frontend anpassen.";
 "gestures.screen.body" = "Die folgenden Gesten werden immer angewendet, wenn du die Hauptbenutzeroberfläche von Home Assistant verwendest.";
 "gestures.screen.title" = "Gesten";
+"gestures.shake.title" = "Schütteln";
 "gestures.swipe_left.title" = "Nach links wischen";
 "gestures.swipe_right.title" = "Nach rechts wischen";
 "gestures.value.option.back_page" = "Zurück zur vorherigen Seite";
 "gestures.value.option.next_page" = "Weiter zur nächsten Seite";
 "gestures.value.option.next_server" = "Nächster Server";
 "gestures.value.option.none" = "Kein";
+"gestures.value.option.open_debug" = "Debuggen öffnen";
 "gestures.value.option.previous_server" = "Vorheriger Server";
 "gestures.value.option.servers_list" = "Serverliste";
 "gestures.value.option.show_settings" = "App-Einstellungen öffnen";
@@ -545,6 +547,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings.debugging.header.subtitle" = "Lass uns das beheben 🐞";
 "settings.debugging.header.title" = "Debuggen";
 "settings.debugging.shake_disclaimer.title" = "Wenn du die App jetzt schüttelst, kannst auf die Debugging-Funktionen zugreifen.";
+"settings.debugging.shake_disclaimer_optional.title" = "Die App schütteln, um das Debuggen zu öffnen";
 "settings.debugging.thread.footer" = "Prüfe, welche Thread-Anmeldedaten sich im Apple-Schlüsselbund befinden. Du kannst sie auch in Home Assistant importieren oder aus dem Schlüsselbund löschen.";
 "settings.debugging.title" = "Debuggen";
 "settings.details_section.location_settings_row.title" = "Standort";
@@ -601,7 +604,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings.widgets.create.name.title" = "Name";
 "settings.widgets.create.no_items.title" = "Keine Objekte";
 "settings.widgets.create.title" = "Widget erstellen";
-"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
+"settings.widgets.custom.delete_all.title" = "Alle benutzerdefinierten Widgets zurücksetzen";
 "settings.widgets.title" = "Widgets";
 "settings.widgets.your_widgets.title" = "Deine Widgets";
 "settings_details.actions.actions_synced.empty" = "Keine synchronisierten Aktionen";
@@ -864,6 +867,8 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "url_handler.x_callback_url.error.templateMissing" = "Ein darstellbares Template muss definiert werden";
 "url_label" = "URL";
 "username_label" = "Benutzername";
+"watch.assist.button.recording.title" = "Aufnahme …";
+"watch.assist.button.send_request.title" = "Tippen, um Anfrage zu senden";
 "watch.assist.lack_config.error.title" = "Bitte konfiguriere Assist mit der iOS-Companion-App";
 "watch.config.assist.select_server" = "Server";
 "watch.config.cache.error.message" = "Laden der Watch-Konfiguration aus dem Cache fehlgeschlagen.";
@@ -1115,6 +1120,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "widgets.controls.switch.description" = "Schalte deinen Schalter ein/aus";
 "widgets.controls.switch.placeholder_title" = "Schalter auswählen";
 "widgets.controls.switch.title" = "Schalter";
+"widgets.custom.show_update_time.title" = "Letzte Aktualisierung:";
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
 "widgets.custom.title" = "Benutzerdefinierte Widgets";
 "widgets.details.description" = "Anzeigen von Zuständen mit Home Assistant in Textform";
