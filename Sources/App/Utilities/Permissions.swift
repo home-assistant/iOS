@@ -177,7 +177,6 @@ public enum PermissionType {
         let locationManager = CLLocationManager()
         switch self {
         case .location:
-            guard CLLocationManager.locationServicesEnabled() else { return .restricted }
             return locationManager.authorizationStatus.genericStatus
         case .motion:
             return CMMotionActivityManager.authorizationStatus().genericStatus
