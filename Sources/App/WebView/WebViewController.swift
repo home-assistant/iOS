@@ -260,7 +260,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         let menuActions = Current.servers.all.map { server in
             UIAction(title: server.info.name, handler: { [weak self] _ in
-                picker.setTitle(server.info.name, for: .normal)
                 self?.openServer(server)
             })
         }
