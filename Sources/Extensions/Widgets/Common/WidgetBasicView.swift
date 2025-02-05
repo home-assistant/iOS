@@ -13,6 +13,8 @@ struct WidgetBasicView: View {
     let rows: [[WidgetBasicViewModel]]
     let sizeStyle: WidgetBasicSizeStyle
 
+    private let opacityWhenDisabled: CGFloat = 0.3
+
     var body: some View {
         let spacing = sizeStyle == .compressed ? .zero : Spaces.one
         VStack(alignment: .leading, spacing: spacing) {
@@ -306,6 +308,7 @@ struct WidgetBasicView: View {
                 ))
             }
         }
+        .opacity(model.disabled ? opacityWhenDisabled : 1)
     }
 
     private func normalView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
@@ -325,6 +328,7 @@ struct WidgetBasicView: View {
                 ))
             }
         }
+        .opacity(model.disabled ? opacityWhenDisabled : 1)
     }
 
     @available(iOS 17.0, *)
@@ -361,10 +365,8 @@ struct WidgetBasicView: View {
                 return intent
             case .refresh:
                 return ReloadWidgetsAppIntent()
-            case let .toggle(widgetId, magicItemServerUniqueId, entityId, domain, serverId):
+            case let .toggle(entityId, domain, serverId):
                 let intent = CustomWidgetToggleAppIntent()
-                intent.widgetId = widgetId
-                intent.magicItemServerUniqueId = magicItemServerUniqueId
                 intent.domain = domain
                 intent.entityId = entityId
                 intent.serverId = serverId
