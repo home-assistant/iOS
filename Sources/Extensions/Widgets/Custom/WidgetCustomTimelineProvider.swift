@@ -8,8 +8,6 @@ struct WidgetCustomEntry: TimelineEntry {
     var widget: CustomWidget?
     var magicItemInfoProvider: MagicItemProviderProtocol
     var entitiesState: [MagicItem: ItemState]
-    // True when one of items is pending confirmation
-    var disabledItems: Bool
     var showLastUpdateTime: Bool
     var showStates: Bool
 
@@ -29,7 +27,6 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             date: .now,
             magicItemInfoProvider: Current.magicItemProvider(),
             entitiesState: [:],
-            disabledItems: false,
             showLastUpdateTime: false,
             showStates: false
         )
@@ -42,7 +39,6 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             widget: widget,
             magicItemInfoProvider: infoProvider(),
             entitiesState: [:],
-            disabledItems: false,
             showLastUpdateTime: configuration.showLastUpdateTime,
             showStates: configuration.showStates
         )
@@ -59,7 +55,6 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                     widget: widget,
                     magicItemInfoProvider: infoProvider(),
                     entitiesState: entitiesState,
-                    disabledItems: !(widget?.itemsStates.isEmpty ?? false),
                     showLastUpdateTime: configuration.showLastUpdateTime,
                     showStates: configuration.showStates
                 ),

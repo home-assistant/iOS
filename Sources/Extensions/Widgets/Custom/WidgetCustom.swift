@@ -17,7 +17,6 @@ struct WidgetCustom: Widget {
                     AnyView(emptyView)
                 }, contents: modelsForWidget(
                     widget,
-                    blurItems: timelineEntry.disabledItems,
                     infoProvider: timelineEntry.magicItemInfoProvider,
                     states: timelineEntry.entitiesState,
                     showStates: timelineEntry.showStates
@@ -49,7 +48,6 @@ struct WidgetCustom: Widget {
 
     private func modelsForWidget(
         _ widget: CustomWidget?,
-        blurItems: Bool,
         infoProvider: MagicItemProviderProtocol,
         states: [MagicItem: WidgetCustomEntry.ItemState],
         showStates: Bool
@@ -88,7 +86,9 @@ struct WidgetCustom: Widget {
                     }
                 }()
 
-                if showStates, [.light, .switch, .inputBoolean].contains(magicItem.domain) {
+                if !widget.itemsStates.isEmpty {
+                    return Color.gray
+                } else if showStates, [.light, .switch, .inputBoolean].contains(magicItem.domain) {
                     if state?.domainState == Domain.State.off {
                         return Color.gray
                     } else {
@@ -130,7 +130,7 @@ struct WidgetCustom: Widget {
                 showConfirmation: showConfirmation,
                 requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,
                 widgetId: widget.id,
-                disabled: blurItems
+                disabled: !widget.itemsStates.isEmpty
             )
         }
     }
@@ -244,7 +244,6 @@ enum WidgetCustomSupportedFamilies {
         ]),
         magicItemInfoProvider: MockMagicItemProvider(),
         entitiesState: [:],
-        disabledItems: false,
         showLastUpdateTime: true,
         showStates: true
     )
@@ -259,7 +258,6 @@ enum WidgetCustomSupportedFamilies {
         widget: nil,
         magicItemInfoProvider: MockMagicItemProvider(),
         entitiesState: [:],
-        disabledItems: false,
         showLastUpdateTime: true,
         showStates: true
     )
@@ -274,7 +272,6 @@ enum WidgetCustomSupportedFamilies {
         widget: nil,
         magicItemInfoProvider: MockMagicItemProvider(),
         entitiesState: [:],
-        disabledItems: false,
         showLastUpdateTime: true,
         showStates: true
     )

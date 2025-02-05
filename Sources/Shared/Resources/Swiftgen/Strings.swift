@@ -3931,6 +3931,24 @@ public enum L10n {
       public static var subtitle: String { return L10n.tr("Localizable", "widgets.custom.subtitle") }
       /// Custom widgets
       public static var title: String { return L10n.tr("Localizable", "widgets.custom.title") }
+      public enum IntentActivateFailed {
+        /// Please try again
+        public static var body: String { return L10n.tr("Localizable", "widgets.custom.intent_activate_failed.body") }
+        /// Failed to 'activate' entity
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.intent_activate_failed.title") }
+      }
+      public enum IntentPressFailed {
+        /// Please try again
+        public static var body: String { return L10n.tr("Localizable", "widgets.custom.intent_press_failed.body") }
+        /// Failed to 'press' entity
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.intent_press_failed.title") }
+      }
+      public enum IntentToggleFailed {
+        /// Please try again
+        public static var body: String { return L10n.tr("Localizable", "widgets.custom.intent_toggle_failed.body") }
+        /// Failed to 'toggle' entity
+        public static var title: String { return L10n.tr("Localizable", "widgets.custom.intent_toggle_failed.title") }
+      }
       public enum ShowUpdateTime {
         /// Last update:
         public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_update_time.title") }
