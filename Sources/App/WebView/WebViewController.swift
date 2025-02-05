@@ -40,6 +40,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
 
     private var initialURL: URL?
+    private var statusBarButtonsStack: UIStackView?
 
     /// A view controller presented by a request from the webview
     var overlayAppController: UIViewController?
@@ -236,14 +237,66 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         statusBarView.tag = 111
 
         view.addSubview(statusBarView)
-
-        statusBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            statusBarView.topAnchor.constraint(equalTo: view.topAnchor),
+            statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            statusBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        ])
+
+        if Current.isCatalyst {
+            setupStatusBarButtons(statusBarView: statusBarView)
+        }
+
         return statusBarView
+    }
+
+    private func setupStatusBarButtons(statusBarView: UIView) {
+        let button = UIButton(type: .system)
+        button.setTitle(server.info.name, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+
+        let menuActions = Current.servers.all.map { server in
+            UIAction(title: server.info.name, handler: { [weak self] _ in
+                button.setTitle(server.info.name, for: .normal)
+                self?.openServer(server)
+            })
+        }
+
+        // Using UIMenu since UIPickerView is not available on Catalyst
+        button.menu = UIMenu(title: L10n.WebView.ServerSelection.title, children: menuActions)
+        button.showsMenuAsPrimaryAction = true
+
+        if let statusBarButtonsStack {
+            statusBarButtonsStack.removeFromSuperview()
+            self.statusBarButtonsStack = nil
+        }
+
+        guard Current.servers.all.count > 1 else {
+            // No need to display server picker
+            return
+        }
+
+        let stackView = UIStackView(arrangedSubviews: [button])
+        stackView.axis = .horizontal
+        stackView.spacing = Spaces.one
+
+        statusBarView.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -Spaces.half),
+            stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: Spaces.half),
+        ])
+        statusBarButtonsStack = stackView
+    }
+
+    private func openServer(_ server: Server) {
+        Current.sceneManager.webViewWindowControllerPromise.done { controller in
+            controller.open(server: server)
+        }
     }
 
     public func showSettingsViewController() {
