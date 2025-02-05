@@ -254,32 +254,43 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     private func setupStatusBarButtons(statusBarView: UIView) {
-        let button = UIButton(type: .system)
-        button.setTitle(server.info.name, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        let picker = UIButton(type: .system)
+        picker.setTitle(server.info.name, for: .normal)
+        picker.translatesAutoresizingMaskIntoConstraints = false
 
         let menuActions = Current.servers.all.map { server in
             UIAction(title: server.info.name, handler: { [weak self] _ in
-                button.setTitle(server.info.name, for: .normal)
+                picker.setTitle(server.info.name, for: .normal)
                 self?.openServer(server)
             })
         }
 
         // Using UIMenu since UIPickerView is not available on Catalyst
-        button.menu = UIMenu(title: L10n.WebView.ServerSelection.title, children: menuActions)
-        button.showsMenuAsPrimaryAction = true
+        picker.menu = UIMenu(title: L10n.WebView.ServerSelection.title, children: menuActions)
+        picker.showsMenuAsPrimaryAction = true
+
+        let openInSafariButton = UIButton(type: .detailDisclosure)
+        openInSafariButton.setImage(UIImage(systemSymbol: .safari), for: .normal)
+        openInSafariButton.backgroundColor = .systemBackground
+        openInSafariButton.tintColor = Asset.Colors.haPrimary.color
+        openInSafariButton.layer.cornerRadius = 10
+        openInSafariButton.addTarget(self, action: #selector(openServerInSafari), for: .touchUpInside)
 
         if let statusBarButtonsStack {
             statusBarButtonsStack.removeFromSuperview()
             self.statusBarButtonsStack = nil
         }
 
-        guard Current.servers.all.count > 1 else {
-            // No need to display server picker
-            return
-        }
+        let arrangedSubviews: [UIView] = {
+            if Current.servers.all.count > 1 {
+                return [picker, openInSafariButton]
+            } else {
+                // No need to display server picker
+                return [openInSafariButton]
+            }
+        }()
 
-        let stackView = UIStackView(arrangedSubviews: [button])
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
         stackView.axis = .horizontal
         stackView.spacing = Spaces.one
 
@@ -296,6 +307,20 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private func openServer(_ server: Server) {
         Current.sceneManager.webViewWindowControllerPromise.done { controller in
             controller.open(server: server)
+        }
+    }
+
+    @objc private func openServerInSafari() {
+        if let url = webView.url {
+            guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                return
+            }
+            // Remove external_auth=1 query item from URL
+            urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
+
+            if let url = urlComponents.url {
+                UIApplication.shared.open(url)
+            }
         }
     }
 
