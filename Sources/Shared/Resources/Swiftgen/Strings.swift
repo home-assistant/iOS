@@ -1978,6 +1978,10 @@ public enum L10n {
         /// Debug
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.header.title") }
       }
+      public enum ShakeDisclaimer {
+        /// Now when you shake the app you can access debug features.
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.shake_disclaimer.title") }
+      }
       public enum ShakeDisclaimerOptional {
         /// Shake the App to open debug
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.shake_disclaimer_optional.title") }

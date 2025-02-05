@@ -243,12 +243,14 @@
 "gestures.footer.title" = "自定义在前端使用的手势。";
 "gestures.screen.body" = "当您使用 Home Assistant 主用户界面时，将应用以下手势。";
 "gestures.screen.title" = "手势";
+"gestures.shake.title" = "摇一摇";
 "gestures.swipe_left.title" = "向左滑动";
 "gestures.swipe_right.title" = "向右滑动";
 "gestures.value.option.back_page" = "返回上一页";
 "gestures.value.option.next_page" = "转至下一页";
 "gestures.value.option.next_server" = "下一个服务器";
 "gestures.value.option.none" = "无";
+"gestures.value.option.open_debug" = "开启调试";
 "gestures.value.option.previous_server" = "上一个服务器";
 "gestures.value.option.servers_list" = "服务器列表";
 "gestures.value.option.show_settings" = "打开应用设置";
@@ -543,6 +545,7 @@
 "settings.debugging.header.subtitle" = "让我们解决这个问题 🐞";
 "settings.debugging.header.title" = "调试";
 "settings.debugging.shake_disclaimer.title" = "现在当您摇动应用时，您就可以访问调试功能。";
+"settings.debugging.shake_disclaimer_optional.title" = "摇一摇应用可开启调试";
 "settings.debugging.thread.footer" = "检查 Apple Keychain 内有哪些 Thread 凭据，您也可以在 Home Assistant 中导入或从 Keychain 中删除。";
 "settings.debugging.title" = "调试";
 "settings.details_section.location_settings_row.title" = "定位设置";
@@ -599,7 +602,7 @@
 "settings.widgets.create.name.title" = "名称";
 "settings.widgets.create.no_items.title" = "没有项目";
 "settings.widgets.create.title" = "创建小部件";
-"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
+"settings.widgets.custom.delete_all.title" = "重置所有自定义小部件";
 "settings.widgets.title" = "小组件";
 "settings.widgets.your_widgets.title" = "您的小部件";
 "settings_details.actions.actions_synced.empty" = "没有已同步的动作";
@@ -863,6 +866,8 @@
 "url_handler.x_callback_url.error.templateMissing" = "必须定义可渲染模板";
 "url_label" = "网址";
 "username_label" = "用户名";
+"watch.assist.button.recording.title" = "正在录音...";
+"watch.assist.button.send_request.title" = "点击发送请求";
 "watch.assist.lack_config.error.title" = "请配置语音助手使用 iOS companion 应用";
 "watch.config.assist.select_server" = "服务器";
 "watch.config.cache.error.message" = "无法从缓存中加载监视配置。";
@@ -1114,6 +1119,7 @@
 "widgets.controls.switch.description" = "打开/关闭你的开关";
 "widgets.controls.switch.placeholder_title" = "选择开关";
 "widgets.controls.switch.title" = "开关";
+"widgets.custom.show_update_time.title" = "上次更新：";
 "widgets.custom.subtitle" = "创建具有自己风格的小部件";
 "widgets.custom.title" = "自定义小部件";
 "widgets.details.description" = "以文本形式显示 Home Assistant 中的使用状况";

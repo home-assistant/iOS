@@ -243,12 +243,14 @@
 "gestures.footer.title" = "A gesztusok testreszabása a felhasználói felületen való használathoz.";
 "gestures.screen.body" = "Az alábbi gesztusok akkor lesznek alkalmazva, amikor a Home Assistant fő felhasználói felületét használja.";
 "gestures.screen.title" = "Gesztusok";
+"gestures.shake.title" = "Shake";
 "gestures.swipe_left.title" = "Csúsztassa balra";
 "gestures.swipe_right.title" = "Csúsztassa jobbra";
 "gestures.value.option.back_page" = "Vissza az előző oldalra";
 "gestures.value.option.next_page" = "Tovább a következő oldalra";
 "gestures.value.option.next_server" = "Következő szerver";
 "gestures.value.option.none" = "Nincs";
+"gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.previous_server" = "Előző szerver";
 "gestures.value.option.servers_list" = "Szerverek listája";
 "gestures.value.option.show_settings" = "Alkalmazásbeállítások megnyitása";
@@ -545,6 +547,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.debugging.header.subtitle" = "Let's fix that 🐞";
 "settings.debugging.header.title" = "Debug";
 "settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
+"settings.debugging.shake_disclaimer_optional.title" = "Shake the App to open debug";
 "settings.debugging.thread.footer" = "Check what Thread credentials are inside Apple Keychain, you can also import in Home Assistant or delete from Keychain.";
 "settings.debugging.title" = "Hibakeresés";
 "settings.details_section.location_settings_row.title" = "Elhelyezkedés";
@@ -863,6 +866,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "url_handler.x_callback_url.error.templateMissing" = "Meg kell határozni egy renderelhető sablont";
 "url_label" = "URL";
 "username_label" = "Felhasználónév";
+"watch.assist.button.recording.title" = "Recording...";
+"watch.assist.button.send_request.title" = "Tap to send request";
 "watch.assist.lack_config.error.title" = "Kérjük, konfigurálja az Assist funkciót az iOS mobilalkalmazás segítségével";
 "watch.config.assist.select_server" = "Szerver";
 "watch.config.cache.error.message" = "Nem sikerült betölteni a watch konfigurációt a gyorsítótárból.";
@@ -1114,6 +1119,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.switch.description" = "A kapcsoló be- és kikapcsolása";
 "widgets.controls.switch.placeholder_title" = "Válasszon kapcsolót";
 "widgets.controls.switch.title" = "Kapcsoló";
+"widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
 "widgets.details.description" = "Az állapotok megjelenítése a Home Assistant segítségével szöveges formában";

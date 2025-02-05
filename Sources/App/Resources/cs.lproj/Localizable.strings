@@ -243,12 +243,14 @@
 "gestures.footer.title" = "Přizpůsobte si gesta, která se mají používat na frontendu.";
 "gestures.screen.body" = "Níže uvedená gesta se použijí vždy, když používáte hlavní uživatelské rozhraní Home Assistanta.";
 "gestures.screen.title" = "Gesta";
+"gestures.shake.title" = "Zatřást";
 "gestures.swipe_left.title" = "Přejetí vlevo";
 "gestures.swipe_right.title" = "Přejetí vpravo";
 "gestures.value.option.back_page" = "Zpět na předchozí stránku";
 "gestures.value.option.next_page" = "Přejít na další stránku";
 "gestures.value.option.next_server" = "Další server";
 "gestures.value.option.none" = "Nic";
+"gestures.value.option.open_debug" = "Otevřít ladění";
 "gestures.value.option.previous_server" = "Předchozí server";
 "gestures.value.option.servers_list" = "Seznam serverů";
 "gestures.value.option.show_settings" = "Otevřít nastavení aplikace";
@@ -545,6 +547,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.debugging.header.subtitle" = "Pojďme to napravit 🐞";
 "settings.debugging.header.title" = "Ladění";
 "settings.debugging.shake_disclaimer.title" = "Nyní, když zatřesete aplikací, získáte přístup k funkcím ladění.";
+"settings.debugging.shake_disclaimer_optional.title" = "Zatřesením telefonu otevřete ladění";
 "settings.debugging.thread.footer" = "Zkontrolujte, jaké přihlašovací údaje Thread jsou v Klíčence Apple. Můžete je také importovat v Home Assistantovi nebo je smazat z Klíčenky.";
 "settings.debugging.title" = "Ladění";
 "settings.details_section.location_settings_row.title" = "Poloha";
@@ -601,7 +604,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.widgets.create.name.title" = "Název";
 "settings.widgets.create.no_items.title" = "Žádné položky";
 "settings.widgets.create.title" = "Vytvořit widget";
-"settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
+"settings.widgets.custom.delete_all.title" = "Resetovat všechny vlastní widgety";
 "settings.widgets.title" = "Widgety";
 "settings.widgets.your_widgets.title" = "Vaše widgety";
 "settings_details.actions.actions_synced.empty" = "Žádné synchronizované akce";
@@ -863,6 +866,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "url_handler.x_callback_url.error.templateMissing" = "Musí být definována vykreslitelná šablona";
 "url_label" = "URL";
 "username_label" = "Uživatelské jméno";
+"watch.assist.button.recording.title" = "Nahrávání...";
+"watch.assist.button.send_request.title" = "Klepnutím odešlete požadavek";
 "watch.assist.lack_config.error.title" = "Nastavte Assist pomocí doprovodné aplikace pro iOS";
 "watch.config.assist.select_server" = "Server";
 "watch.config.cache.error.message" = "Nepodařilo se načíst nastavení hodinek z mezipaměti.";
@@ -1114,6 +1119,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.switch.description" = "Zapne/Vypne spínač.";
 "widgets.controls.switch.placeholder_title" = "Vybrat spínač";
 "widgets.controls.switch.title" = "Spínač";
+"widgets.custom.show_update_time.title" = "Poslední aktualizace:";
 "widgets.custom.subtitle" = "Vytvářejte widgety ve vlastním stylu";
 "widgets.custom.title" = "Vlastní widgety";
 "widgets.details.description" = "Zobrazí stavy pomocí aplikace Home Assistant v textu.";
