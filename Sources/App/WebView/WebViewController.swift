@@ -14,10 +14,9 @@ import UIKit
 
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
-    var overlayAppController: UIViewController? { get set }
+    var overlayedController: UIViewController? { get }
 
     func presentOverlayController(controller: UIViewController, animated: Bool)
-    func presentController(_ controller: UIViewController, animated: Bool)
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
@@ -41,9 +40,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
-
-    /// A view controller presented by a request from the webview
-    var overlayAppController: UIViewController?
 
     enum RestorableStateKey: String {
         case lastURL
@@ -707,8 +703,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private func showNoActiveURLError() {
         Current.Log.info("Showing noActiveURLError")
         webView.scrollView.refreshControl?.endRefreshing()
-        guard !(overlayAppController is NoActiveURLViewController) else { return }
-        presentController(NoActiveURLViewController(server: server), animated: true)
+        guard !(overlayedController is NoActiveURLViewController) else { return }
+        presentOverlayController(controller: NoActiveURLViewController(server: server), animated: true)
     }
 
     @objc private func connectionInfoDidChange() {
@@ -1048,7 +1044,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {
                                 CloseButton { [weak self] in
-                                    self?.overlayAppController?.dismiss(animated: true)
+                                    self?.dismissOverlayController(animated: true, completion: nil)
                                 }
                             }
                         }
@@ -1218,12 +1214,15 @@ extension ConnectionInfo {
 }
 
 extension WebViewController: WebViewControllerProtocol {
+    var overlayedController: UIViewController? {
+        presentedViewController
+    }
+
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            overlayAppController?.dismiss(animated: false, completion: nil)
-            overlayAppController = controller
-            present(controller, animated: animated, completion: nil)
+            self?.dismissOverlayController(animated: false, completion: { [weak self] in
+                self?.present(controller, animated: animated, completion: nil)
+            })
         }
     }
 
@@ -1231,27 +1230,12 @@ extension WebViewController: WebViewControllerProtocol {
         webView.evaluateJavaScript(script, completionHandler: completion)
     }
 
-    func presentController(_ controller: UIViewController, animated: Bool) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            if let overlayAppController {
-                overlayAppController.dismiss(animated: false)
-            }
-            overlayAppController = controller
-            present(controller, animated: animated)
-        }
-    }
-
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
-        if let overlayAppController {
-            overlayAppController.dismiss(animated: animated, completion: completion)
-        } else {
-            completion?()
-        }
+        dismissAllViewControllersAbove(completion: completion)
     }
 
     func dismissControllerAboveOverlayController() {
-        overlayAppController?.dismissAllViewControllersAbove()
+        overlayedController?.dismissAllViewControllersAbove()
     }
 
     func updateSettingsButton(state: String) {
