@@ -29,9 +29,6 @@ struct NoActiveURLView: View {
         .ignoresSafeArea(edges: .bottom)
         .onDisappear {
             Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                .done { webViewController in
-                    webViewController.overlayAppController = nil
-                }
         }
         .alert(L10n.Connection.Permission.InternalUrl.Ignore.Alert.title, isPresented: $showIgnoreConfirmation) {
             Button(L10n.yesLabel, role: .destructive) {
