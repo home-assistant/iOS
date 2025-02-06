@@ -11,10 +11,16 @@ struct WidgetCustomEntry: TimelineEntry {
     var showLastUpdateTime: Bool
     var showStates: Bool
 
-    struct ItemState {
+    struct ItemState: Codable {
         let value: String
         let domainState: Domain.State?
     }
+}
+
+struct WidgetCustomItemStatesCache: Codable {
+    let widgetId: String
+    let cacheCreatedDate: Date
+    let states: [MagicItem: WidgetCustomEntry.ItemState]
 }
 
 @available(iOS 17, *)
@@ -121,6 +127,16 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             return [:]
         }
 
+        /* Cache states in local json
+         Necessary because there is a long term bug in widgets which triggers a reload of the timeline provider
+         several times instead of just once */
+        if let cache = getStatesCache(widgetId: widget.id), cache.cacheCreatedDate.timeIntervalSinceNow > -1 {
+            Current.Log.verbose("Widget custom states cache is still valid, returning cached states")
+            return cache.states
+        }
+
+        Current.Log.verbose("Widget custom has no valid cache, fetching states")
+
         let items = widget.items.filter {
             // No state needed for those domains
             ![.script, .scene, .inputButton].contains($0.domain)
@@ -151,7 +167,40 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             }
         }
 
+        /* Cache states in local json
+         Necessary because there is a long term bug in widgets which triggers a reload of the timeline provider
+         several times instead of just once */
+        do {
+            let cache = WidgetCustomItemStatesCache(
+                widgetId: widget.id,
+                cacheCreatedDate: Date(),
+                states: states
+            )
+            let fileURL = AppConstants.widgetCachedStates(widgetId: widget.id)
+            let encodedStates = try JSONEncoder().encode(cache)
+            try encodedStates.write(to: fileURL)
+            Current.Log
+                .verbose("JSON saved successfully for widget custom cached states, file URL: \(fileURL.absoluteString)")
+        } catch {
+            Current.Log
+                .error("Failed to cache states in WidgetCustomTimelineProvider, error: \(error.localizedDescription)")
+        }
+
         return states
+    }
+
+    private func getStatesCache(widgetId: String) -> WidgetCustomItemStatesCache? {
+        let fileURL = AppConstants.widgetCachedStates(widgetId: widgetId)
+        do {
+            let data = try Data(contentsOf: fileURL)
+            return try JSONDecoder().decode(WidgetCustomItemStatesCache.self, from: data)
+        } catch {
+            Current.Log
+                .error(
+                    "Failed to load states cache in WidgetCustomTimelineProvider, error: \(error.localizedDescription)"
+                )
+            return nil
+        }
     }
 }
 

@@ -127,6 +127,15 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         })
         Current.appDatabaseUpdater.update()
         Current.panelsUpdater.update()
+
+        let widgetsCacheFile = AppConstants.widgetsCacheURL
+
+        // Clean up widgets cache file
+        do {
+            try FileManager.default.removeItem(at: widgetsCacheFile)
+        } catch {
+            Current.Log.error("Failed to remove widgets cache file: \(error)")
+        }
     }
 
     func windowScene(
