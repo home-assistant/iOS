@@ -1084,6 +1084,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "watch.labels.selected_pipeline.title" = "Saluran";
 "watch.placeholder_complication_name" = "Penampung";
 "watch.settings.no_items.phone.title" = "Tidak ada item yang dikonfigurasi, pilih item di bawah ini.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Baku";
 "widgets.action.name.navigate" = "Buka";
@@ -1119,6 +1120,12 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.controls.switch.description" = "Nyalakan/matikan sakelar Anda";
 "widgets.controls.switch.placeholder_title" = "Pilih Sakelar";
 "widgets.controls.switch.title" = "Sakelar";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Buat widget dengan gaya Anda sendiri";
 "widgets.custom.title" = "Widget khusus";

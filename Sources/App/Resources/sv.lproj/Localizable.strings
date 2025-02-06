@@ -1085,6 +1085,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platshållare";
 "watch.settings.no_items.phone.title" = "Inga objekt konfigurerade, vänligen välj objekt nedan.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
 "widgets.action.name.navigate" = "Navigera";
@@ -1120,6 +1121,12 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.controls.switch.description" = "Slå på/av brytare";
 "widgets.controls.switch.placeholder_title" = "Välj omkopplare";
 "widgets.controls.switch.title" = "Brytare";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Skapa widgets med din egen stil";
 "widgets.custom.title" = "Anpassade widgets";
