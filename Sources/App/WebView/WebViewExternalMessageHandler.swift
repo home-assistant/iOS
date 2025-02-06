@@ -113,7 +113,7 @@ final class WebViewExternalMessageHandler {
                     incomingMessageId: incomingMessageId
                 )
             case .barCodeScannerClose:
-                if webViewController.overlayAppController as? BarcodeScannerHostingController != nil {
+                if webViewController.overlayedController as? BarcodeScannerHostingController != nil {
                     webViewController.dismissControllerAboveOverlayController()
                     webViewController.dismissOverlayController(animated: true, completion: nil)
                 }
@@ -121,7 +121,7 @@ final class WebViewExternalMessageHandler {
                 guard let message = incomingMessage.Payload?["message"] as? String else { return }
                 let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
                 alert.addAction(.init(title: L10n.okLabel, style: .default))
-                webViewController.presentController(alert, animated: false)
+                webViewController.presentOverlayController(controller: alert, animated: false)
             case .threadStoreCredentialInAppleKeychain:
                 guard let macExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
                       let activeOperationalDataset = incomingMessage.Payload?["active_operational_dataset"] as? String else { return }
@@ -224,7 +224,7 @@ final class WebViewExternalMessageHandler {
             threadManagementView.view.backgroundColor = .clear
             threadManagementView.modalPresentationStyle = .overFullScreen
             threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController.presentController(threadManagementView, animated: true)
+            webViewController.presentOverlayController(controller: threadManagementView, animated: true)
         }
     }
 
@@ -241,7 +241,7 @@ final class WebViewExternalMessageHandler {
             threadManagementView.view.backgroundColor = .clear
             threadManagementView.modalPresentationStyle = .overFullScreen
             threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController?.presentController(threadManagementView, animated: true)
+            webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
         }
     }
 
@@ -313,7 +313,7 @@ final class WebViewExternalMessageHandler {
                     alert.addAction(.init(title: L10n.continueLabel, style: .destructive, handler: { [weak self] _ in
                         self?.comissionMatterDevice()
                     }))
-                    self?.webViewController?.presentController(alert, animated: false)
+                    self?.webViewController?.presentOverlayController(controller: alert, animated: false)
                 } else {
                     Current.Log
                         .verbose(
