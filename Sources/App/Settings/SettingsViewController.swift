@@ -34,6 +34,7 @@ class SettingsViewController: HAFormViewController {
             }
 
             func serversDidChange(_ serverManager: ServerManager) {
+                guard UIApplication.shared.applicationState == .active else { return }
                 UIView.performWithoutAnimation {
                     updateRows()
                 }
