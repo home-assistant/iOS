@@ -1,7 +1,7 @@
 import UIKit
 
 public extension UIViewController {
-    func dismissAllViewControllersAbove() {
+    func dismissAllViewControllersAbove(completion: (() -> Void)? = nil) {
         var topViewController: UIViewController? = self
         while let presentedViewController = topViewController?.presentedViewController {
             if presentedViewController == self {
@@ -11,7 +11,9 @@ public extension UIViewController {
         }
 
         if let topViewController, topViewController != self {
-            topViewController.dismiss(animated: false, completion: nil)
+            topViewController.dismiss(animated: false, completion: completion)
+        } else {
+            completion?()
         }
     }
 }
