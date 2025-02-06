@@ -21,7 +21,8 @@ import UIKit
                     // root will be set when connecting scene
                     return UINavigationController()
                 } else {
-                    return UINavigationController(rootViewController: SettingsViewController())
+                    return UINavigationController(rootViewController: SettingsViewController(onDismiss: { /* no-op */
+                    }))
                 }
             }()
         )

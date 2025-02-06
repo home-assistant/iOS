@@ -20,9 +20,11 @@ class SettingsViewController: HAFormViewController {
         static let all = ContentSection(rawValue: ~0b0)
     }
 
+    let onDismiss: () -> Void
     let contentSections: ContentSection
-    init(contentSections: ContentSection = .all) {
+    init(contentSections: ContentSection = .all, onDismiss: @escaping () -> Void) {
         self.contentSections = contentSections
+        self.onDismiss = onDismiss
         super.init()
     }
 
@@ -160,6 +162,12 @@ class SettingsViewController: HAFormViewController {
 
         form +++ Section()
             <<< SettingsRootDataSource.Row.whatsNew.row
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        onDismiss()
     }
 
     @objc func openAbout(_ sender: UIButton) {

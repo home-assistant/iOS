@@ -69,7 +69,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.ConnectionSection.servers
             $0.icon = .serverIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                SettingsViewController(contentSections: .servers)
+                SettingsViewController(contentSections: .servers, onDismiss: { /* no-op  */ })
             }, onDismiss: nil)
         }
     }

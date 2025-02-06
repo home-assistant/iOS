@@ -16,6 +16,7 @@ protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
     var overlayAppController: UIViewController? { get set }
 
+    func showSettingsViewController()
     func presentOverlayController(controller: UIViewController, animated: Bool)
     func presentController(_ controller: UIViewController, animated: Bool)
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
@@ -244,18 +245,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
         return statusBarView
-    }
-
-    public func showSettingsViewController() {
-        getLatestConfig()
-        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            let settingsView = SettingsViewController()
-            settingsView.hidesBottomBarWhenPushed = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            presentOverlayController(controller: navController, animated: true)
-        }
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -1141,6 +1130,20 @@ extension ConnectionInfo {
 }
 
 extension WebViewController: WebViewControllerProtocol {
+    public func showSettingsViewController() {
+        getLatestConfig()
+        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
+            Current.sceneManager.activateAnyScene(for: .settings)
+        } else {
+            let settingsView = SettingsViewController { [weak self] in
+                self?.overlayAppController = nil
+            }
+            settingsView.hidesBottomBarWhenPushed = true
+            let navController = UINavigationController(rootViewController: settingsView)
+            presentOverlayController(controller: navController, animated: true)
+        }
+    }
+
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }

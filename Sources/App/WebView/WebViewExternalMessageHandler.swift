@@ -56,7 +56,7 @@ final class WebViewExternalMessageHandler {
                     }
                 }
             case .configScreenShow:
-                showSettingsViewController()
+                webViewController.showSettingsViewController()
             case .haptic:
                 guard let hapticType = incomingMessage.Payload?["hapticType"] as? String else {
                     Current.Log.error("Received haptic via bus but hapticType was not string! \(incomingMessage)")
@@ -151,17 +151,6 @@ final class WebViewExternalMessageHandler {
         response?.then { [self] outgoing in
             sendExternalBus(message: outgoing)
         }.cauterize()
-    }
-
-    func showSettingsViewController() {
-        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            let settingsView = SettingsViewController()
-            settingsView.hidesBottomBarWhenPushed = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            webViewController?.presentOverlayController(controller: navController, animated: true)
-        }
     }
 
     func handleHaptic(_ hapticType: String) {
