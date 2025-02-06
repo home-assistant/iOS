@@ -1084,6 +1084,7 @@
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Espaço reservado";
 "watch.settings.no_items.phone.title" = "Nenhum item configurado, escolha os itens abaixo.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Padrão";
 "widgets.action.name.navigate" = "Navegar";
@@ -1119,6 +1120,12 @@
 "widgets.controls.switch.description" = "Ligue/desligue seu interruptor";
 "widgets.controls.switch.placeholder_title" = "Escolha o interruptor";
 "widgets.controls.switch.title" = "Interruptor";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Última atualização:";
 "widgets.custom.subtitle" = "Crie widgets com seu próprio estilo";
 "widgets.custom.title" = "Widgets personalizados";

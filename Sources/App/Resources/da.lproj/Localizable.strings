@@ -1084,6 +1084,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Pladsholder";
 "watch.settings.no_items.phone.title" = "Ingen elementer konfigureret, vælg venligst elementer nedenfor.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";
@@ -1119,6 +1120,12 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.controls.switch.description" = "Tænd/sluk din kontakt";
 "widgets.controls.switch.placeholder_title" = "Vælg kontakt";
 "widgets.controls.switch.title" = "Kontakt";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";

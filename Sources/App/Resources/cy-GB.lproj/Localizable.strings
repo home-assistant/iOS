@@ -1084,6 +1084,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";
@@ -1119,6 +1120,12 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.controls.switch.description" = "Turn on/off your switch";
 "widgets.controls.switch.placeholder_title" = "Choose switch";
 "widgets.controls.switch.title" = "Switch";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
