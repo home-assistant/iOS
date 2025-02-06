@@ -1084,6 +1084,7 @@
 "watch.labels.selected_pipeline.title" = "İşlem hattı";
 "watch.placeholder_complication_name" = "Yer tutucu";
 "watch.settings.no_items.phone.title" = "Hiçbir öğe yapılandırılmadı, lütfen aşağıdaki öğeleri seçin.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Asistan";
 "widgets.action.name.default" = "Varsayılan";
 "widgets.action.name.navigate" = "Gezin";
@@ -1119,6 +1120,12 @@
 "widgets.controls.switch.description" = "Anahtarınızı açın/kapatın";
 "widgets.controls.switch.placeholder_title" = "Anahtarı seçin";
 "widgets.controls.switch.title" = "Anahtar";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Son güncelleme:";
 "widgets.custom.subtitle" = "Kendi stilinizle widget'lar yaratın";
 "widgets.custom.title" = "Kişiselleştirilmiş widget'lar";

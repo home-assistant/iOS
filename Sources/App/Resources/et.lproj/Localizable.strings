@@ -1084,6 +1084,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.labels.selected_pipeline.title" = "Voog";
 "watch.placeholder_complication_name" = "Kohatäide";
 "watch.settings.no_items.phone.title" = "Üksusi pole konfigureeritud, vali allolevad üksused.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Abiline";
 "widgets.action.name.default" = "Vaikimisi";
 "widgets.action.name.navigate" = "Navigeeri";
@@ -1119,6 +1120,12 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.switch.description" = "Lüliti sisse/välja";
 "widgets.controls.switch.placeholder_title" = "Vali lüliti";
 "widgets.controls.switch.title" = "Lüliti";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Viimati uuendatud:";
 "widgets.custom.subtitle" = "Loo oma stiiliga vidinaid";
 "widgets.custom.title" = "Kohandatud vidinad";

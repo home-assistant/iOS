@@ -1084,6 +1084,7 @@ Home Assistant - это бесплатное программное обеспе
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Заглушка";
 "watch.settings.no_items.phone.title" = "Элементы не настроены, пожалуйста, выберите элементы ниже.";
+"web_view.server_selection.title" = "Choose server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "По умолчанию";
 "widgets.action.name.navigate" = "Navigate";
@@ -1119,6 +1120,12 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.controls.switch.description" = "Включает/выключает ваш переключатель";
 "widgets.controls.switch.placeholder_title" = "Выберите переключатель";
 "widgets.controls.switch.title" = "Переключатель";
+"widgets.custom.intent_activate_failed.body" = "Please try again";
+"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
+"widgets.custom.intent_press_failed.body" = "Please try again";
+"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
+"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.show_update_time.title" = "Последнее обновление:";
 "widgets.custom.subtitle" = "Создавайте виджеты в своем собственном стиле";
 "widgets.custom.title" = "Пользовательские виджеты";

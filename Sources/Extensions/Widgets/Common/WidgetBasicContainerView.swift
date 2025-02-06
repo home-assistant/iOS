@@ -30,7 +30,7 @@ struct WidgetBasicContainerView: View {
             } else {
                 content(for: contents)
             }
-            if showLastUpdate {
+            if showLastUpdate, !contents.isEmpty {
                 Group {
                     Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") + Text(Date.now, style: .time)
                 }
