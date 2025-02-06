@@ -147,9 +147,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func setPreferredPipelineId(_ pipelineId: String) {
-        DispatchQueue.main.async { [weak self] in
-            self?.preferredPipelineId = pipelineId
-        }
+        preferredPipelineId = pipelineId
     }
 
     func stopStreaming() {
