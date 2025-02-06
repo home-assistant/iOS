@@ -214,16 +214,21 @@ struct AssistView: View {
     @ViewBuilder
     private var assistMicButton: some View {
         Button(action: {
-            feedbackGenerator.notificationOccurred(.success)
-            isFirstResponder = false
-            viewModel.assistWithAudio()
+            assistMicButtonAction()
         }, label: {
             Image(uiImage: MaterialDesignIcons.microphoneIcon.image(ofSize: iconSize, color: iconColor))
         })
         .buttonStyle(.plain)
+        .keyboardShortcut(.init("a"))
         .font(.system(size: iconSize.width))
         .padding(.trailing)
         .animation(.smooth, value: viewModel.isRecording)
+    }
+
+    private func assistMicButtonAction() {
+        feedbackGenerator.notificationOccurred(.success)
+        isFirstResponder = false
+        viewModel.assistWithAudio()
     }
 
     private var sendIcon: some View {
