@@ -9,7 +9,7 @@ struct CustomWidgetToggleAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle"
     static var isDiscoverable: Bool = false
 
-    // Now translation needed below, this is not a discoverable intent
+    // No translation needed below, this is not a discoverable intent
     @Parameter(title: "Server")
     var serverId: String?
     @Parameter(title: "Domain")
