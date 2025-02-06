@@ -604,6 +604,8 @@
 		422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
 		422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
+		423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
+		423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
@@ -1928,6 +1930,7 @@
 		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
 		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
+		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
 		4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUserDefaults.swift; sourceTree = "<group>"; };
@@ -3868,6 +3871,7 @@
 				422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */,
 				42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */,
 				42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */,
+				4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -6917,6 +6921,7 @@
 				4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */,
 				429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */,
 				420461692C8F29440062E89F /* ControlLight.swift in Sources */,
+				423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
 				110E694624E771AB004AA96D /* Color+Hex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7180,6 +7185,7 @@
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */,
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
+				423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
 				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
 				429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */,

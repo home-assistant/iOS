@@ -10,6 +10,7 @@ struct CustomWidgetActivateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Activate"
     static var isDiscoverable: Bool = false
 
+    // Now translation needed below, this is not a discoverable intent
     @Parameter(title: "Server")
     var serverId: String?
     @Parameter(title: "Domain")
@@ -27,6 +28,7 @@ struct CustomWidgetActivateAppIntent: AppIntent {
               }), let connection = Current.api(for: server)?.connection else {
             return .result()
         }
+        AppIntentHaptics.notify()
 
         guard let request: HATypedRequest<HAResponseVoid> = {
             switch domain {

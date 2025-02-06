@@ -1,5 +1,4 @@
 import AppIntents
-import AudioToolbox
 import Foundation
 import PromiseKit
 import Shared
@@ -46,9 +45,7 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
         }
 
         if hapticConfirmation {
-            // Unfortunately this is the only 'haptics' that works with widgets
-            // ideally in the future this should use CoreHaptics for a better experience
-            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+            AppIntentHaptics.notify()
         }
 
         try await withCheckedThrowingContinuation { continuation in
