@@ -17,7 +17,7 @@ public enum Domain: String, CaseIterable {
     case person
     // TODO: Map more domains
 
-    public enum State: String {
+    public enum State: String, Codable {
         case locked
         case unlocked
         case jammed

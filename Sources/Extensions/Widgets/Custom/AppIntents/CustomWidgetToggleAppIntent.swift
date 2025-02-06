@@ -47,14 +47,6 @@ struct CustomWidgetToggleAppIntent: AppIntent {
             }
         }
         _ = try await ResetAllCustomWidgetConfirmationAppIntent().perform()
-
-        /* Since several entities when toggled may not report the correct state right away
-         This is a workaround to refresh the widget a little later
-         In theory through push notification we could always ask the widget to update through
-         and automation/blueprint etc, but it's currently not reliable https://developer.apple.com/forums/thread/773852 */
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.custom.rawValue)
-        }
         return .result()
     }
 }
