@@ -8,6 +8,7 @@ struct CustomWidgetPressButtonAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle"
     static var isDiscoverable: Bool = false
 
+    // No translation needed below, this is not a discoverable intent
     @Parameter(title: "Server")
     var serverId: String?
     @Parameter(title: "Domain")
@@ -25,6 +26,7 @@ struct CustomWidgetPressButtonAppIntent: AppIntent {
               }), let connection = Current.api(for: server)?.connection else {
             return .result()
         }
+        AppIntentHaptics.notify()
         await withCheckedContinuation { continuation in
             connection.send(.pressButton(domain: domain, entityId: entityId)).promise.pipe { result in
                 switch result {

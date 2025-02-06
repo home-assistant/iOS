@@ -5,6 +5,7 @@ import SwiftUI
 
 @available(iOS 16.4, *)
 struct ResetAllCustomWidgetConfirmationAppIntent: AppIntent {
+    // No translation needed below, this is not a discoverable intent
     static var title: LocalizedStringResource = "Reset custom widget confirmation states"
     static var isDiscoverable: Bool = false
 

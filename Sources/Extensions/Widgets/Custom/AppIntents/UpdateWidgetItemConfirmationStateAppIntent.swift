@@ -9,6 +9,7 @@ struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Update custom widget confirmation"
     static var isDiscoverable: Bool = false
 
+    // No translation needed below, this is not a discoverable intent
     @Parameter(title: "Widget Id")
     var widgetId: String?
 
