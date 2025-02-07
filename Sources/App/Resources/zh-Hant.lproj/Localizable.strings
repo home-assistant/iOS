@@ -1084,7 +1084,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "watch.labels.selected_pipeline.title" = "助理設定";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "未設定項目、請於下方選擇項目。";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "選擇伺服器";
 "widgets.action.name.assist" = "助理";
 "widgets.action.name.default" = "預設";
 "widgets.action.name.navigate" = "導航至";
@@ -1120,12 +1120,12 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.controls.switch.description" = "開啟/關閉開關";
 "widgets.controls.switch.placeholder_title" = "選擇開關";
 "widgets.controls.switch.title" = "開關";
-"widgets.custom.intent_activate_failed.body" = "Please try again";
-"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
-"widgets.custom.intent_press_failed.body" = "Please try again";
-"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
-"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.intent_activate_failed.body" = "請再試一次";
+"widgets.custom.intent_activate_failed.title" = "無法 '啟用' 實體";
+"widgets.custom.intent_press_failed.body" = "請再試一次";
+"widgets.custom.intent_press_failed.title" = "無法 '按下' 實體";
+"widgets.custom.intent_toggle_failed.body" = "請再試一次";
+"widgets.custom.intent_toggle_failed.title" = "無法 '切換' 實體";
 "widgets.custom.show_update_time.title" = "最後更新：";
 "widgets.custom.subtitle" = "新增具有自己風格的小工具";
 "widgets.custom.title" = "自訂小工具";

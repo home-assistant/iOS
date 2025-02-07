@@ -1085,7 +1085,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platzhalter";
 "watch.settings.no_items.phone.title" = "Keine Einträge konfiguriert. Bitte wähle untenstehende Einträge aus.";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "Server auswählen";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
 "widgets.action.name.navigate" = "Navigieren";
@@ -1121,12 +1121,12 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "widgets.controls.switch.description" = "Schalte deinen Schalter ein/aus";
 "widgets.controls.switch.placeholder_title" = "Schalter auswählen";
 "widgets.controls.switch.title" = "Schalter";
-"widgets.custom.intent_activate_failed.body" = "Please try again";
-"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
-"widgets.custom.intent_press_failed.body" = "Please try again";
-"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
-"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.intent_activate_failed.body" = "Bitte erneut versuchen";
+"widgets.custom.intent_activate_failed.title" = "Entität konnte nicht „aktiviert“ werden";
+"widgets.custom.intent_press_failed.body" = "Bitte erneut versuchen";
+"widgets.custom.intent_press_failed.title" = "Entität konnte nicht „gedrückt“ werden";
+"widgets.custom.intent_toggle_failed.body" = "Bitte erneut versuchen";
+"widgets.custom.intent_toggle_failed.title" = "Entität konnte nicht „umgeschaltet“ werden";
 "widgets.custom.show_update_time.title" = "Letzte Aktualisierung:";
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
 "widgets.custom.title" = "Benutzerdefinierte Widgets";

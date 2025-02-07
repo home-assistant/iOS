@@ -1084,7 +1084,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "watch.labels.selected_pipeline.title" = "Pijplijn";
 "watch.placeholder_complication_name" = "Tijdelijke aanduiding";
 "watch.settings.no_items.phone.title" = "Geen items geconfigureerd, kies hieronder items.";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "Server kiezen";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standaard";
 "widgets.action.name.navigate" = "Navigeer";
@@ -1120,12 +1120,12 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.controls.switch.description" = "Zet je schakelaar aan of uit";
 "widgets.controls.switch.placeholder_title" = "Kies schakelaar";
 "widgets.controls.switch.title" = "Schakelaar";
-"widgets.custom.intent_activate_failed.body" = "Please try again";
-"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
-"widgets.custom.intent_press_failed.body" = "Please try again";
-"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
-"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.intent_activate_failed.body" = "Probeer het opnieuw";
+"widgets.custom.intent_activate_failed.title" = "Kan entiteit niet 'activeren'";
+"widgets.custom.intent_press_failed.body" = "Probeer het opnieuw";
+"widgets.custom.intent_press_failed.title" = "Kan entiteit niet 'indrukken'";
+"widgets.custom.intent_toggle_failed.body" = "Probeer het opnieuw";
+"widgets.custom.intent_toggle_failed.title" = "Kan entiteit niet 'omschakelen'";
 "widgets.custom.show_update_time.title" = "Laatst bijgewerkt:";
 "widgets.custom.subtitle" = "Maak widgets in je eigen stijl";
 "widgets.custom.title" = "Aangepaste widgets";
