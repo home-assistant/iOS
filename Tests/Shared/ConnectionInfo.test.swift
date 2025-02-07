@@ -3,6 +3,10 @@ import Version
 import XCTest
 
 class ConnectionInfoTests: XCTestCase {
+    override func setUp() async throws {
+        ConnectionInfo.shouldFallbackToInternalURL = false
+    }
+
     func testInternalOnlyURL() {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
