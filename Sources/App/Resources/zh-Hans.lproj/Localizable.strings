@@ -1084,7 +1084,7 @@
 "watch.labels.selected_pipeline.title" = "管道";
 "watch.placeholder_complication_name" = "占位符";
 "watch.settings.no_items.phone.title" = "未配置任何项目，请选择下面的项目。";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "选择服务器";
 "widgets.action.name.assist" = "语音助手";
 "widgets.action.name.default" = "默认";
 "widgets.action.name.navigate" = "导航";
@@ -1120,12 +1120,12 @@
 "widgets.controls.switch.description" = "打开/关闭你的开关";
 "widgets.controls.switch.placeholder_title" = "选择开关";
 "widgets.controls.switch.title" = "开关";
-"widgets.custom.intent_activate_failed.body" = "Please try again";
-"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
-"widgets.custom.intent_press_failed.body" = "Please try again";
-"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
-"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.intent_activate_failed.body" = "请重试";
+"widgets.custom.intent_activate_failed.title" = "“激活”实体失败";
+"widgets.custom.intent_press_failed.body" = "请重试";
+"widgets.custom.intent_press_failed.title" = "“按下”实体失败";
+"widgets.custom.intent_toggle_failed.body" = "请重试";
+"widgets.custom.intent_toggle_failed.title" = "“切换”实体失败";
 "widgets.custom.show_update_time.title" = "上次更新：";
 "widgets.custom.subtitle" = "创建具有自己风格的小部件";
 "widgets.custom.title" = "自定义小部件";

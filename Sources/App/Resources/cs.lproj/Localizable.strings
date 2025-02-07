@@ -1084,7 +1084,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Zástupný symbol";
 "watch.settings.no_items.phone.title" = "Nejsou nastaveny žádné položky, vyberte položky níže.";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "Vyberte server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Výchozí";
 "widgets.action.name.navigate" = "Navigovat";
@@ -1120,12 +1120,12 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.switch.description" = "Zapne/Vypne spínač.";
 "widgets.controls.switch.placeholder_title" = "Vybrat spínač";
 "widgets.controls.switch.title" = "Spínač";
-"widgets.custom.intent_activate_failed.body" = "Please try again";
-"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
-"widgets.custom.intent_press_failed.body" = "Please try again";
-"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
-"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.intent_activate_failed.body" = "Zkuste to znovu";
+"widgets.custom.intent_activate_failed.title" = "Selhání entity: \"activate\"";
+"widgets.custom.intent_press_failed.body" = "Zkuste to znovu";
+"widgets.custom.intent_press_failed.title" = "Selhání entity: \"press\"";
+"widgets.custom.intent_toggle_failed.body" = "Zkuste to znovu";
+"widgets.custom.intent_toggle_failed.title" = "Selhání entity: \"toggle\"";
 "widgets.custom.show_update_time.title" = "Poslední aktualizace:";
 "widgets.custom.subtitle" = "Vytvářejte widgety ve vlastním stylu";
 "widgets.custom.title" = "Vlastní widgety";

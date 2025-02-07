@@ -1084,7 +1084,7 @@
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Σύμβολο κράτησης θέσης";
 "watch.settings.no_items.phone.title" = "Δεν έχουν διαμορφωθεί στοιχεία, παρακαλώ επιλέξτε στοιχεία παρακάτω.";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "Επιλέξτε διακομιστή";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Προεπιλογή";
 "widgets.action.name.navigate" = "Πλοήγηση";
@@ -1120,12 +1120,12 @@
 "widgets.controls.switch.description" = "Ενεργοποιήστε/απενεργοποιήστε το διακόπτη σας";
 "widgets.controls.switch.placeholder_title" = "Επιλέξτε διακόπτη";
 "widgets.controls.switch.title" = "Διακόπτης";
-"widgets.custom.intent_activate_failed.body" = "Please try again";
-"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
-"widgets.custom.intent_press_failed.body" = "Please try again";
-"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
-"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.intent_activate_failed.body" = "Παρακαλώ δοκιμάστε ξανά";
+"widgets.custom.intent_activate_failed.title" = "Αποτυχία 'ενεργοποίησης' οντότητας";
+"widgets.custom.intent_press_failed.body" = "Παρακαλώ δοκιμάστε ξανά";
+"widgets.custom.intent_press_failed.title" = "Αποτυχία 'πατήματος' οντότητας";
+"widgets.custom.intent_toggle_failed.body" = "Παρακαλώ δοκιμάστε ξανά";
+"widgets.custom.intent_toggle_failed.title" = "Αποτυχία 'εναλλαγής' οντότητας";
 "widgets.custom.show_update_time.title" = "Τελευταία ενημέρωση:";
 "widgets.custom.subtitle" = "Δημιουργήστε γραφικά στοιχεία με το δικό σας στυλ";
 "widgets.custom.title" = "Προσαρμοσμένα γραφικά στοιχεία";
