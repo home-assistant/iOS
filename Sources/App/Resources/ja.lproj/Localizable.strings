@@ -1084,7 +1084,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "watch.labels.selected_pipeline.title" = "パイプライン";
 "watch.placeholder_complication_name" = "プレースホルダー";
 "watch.settings.no_items.phone.title" = "項目が設定されていません。以下の項目を選択してください。";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "サーバーの選択";
 "widgets.action.name.assist" = "アシスト";
 "widgets.action.name.default" = "デフォルト";
 "widgets.action.name.navigate" = "ナビゲート";
@@ -1120,12 +1120,12 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.controls.switch.description" = "スイッチのオン／オフ";
 "widgets.controls.switch.placeholder_title" = "スイッチを選ぶ";
 "widgets.controls.switch.title" = "スイッチ";
-"widgets.custom.intent_activate_failed.body" = "Please try again";
-"widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
-"widgets.custom.intent_press_failed.body" = "Please try again";
-"widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
-"widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.intent_activate_failed.body" = "もう一度お試しください";
+"widgets.custom.intent_activate_failed.title" = "エンティティを「アクティブ化」できませんでした";
+"widgets.custom.intent_press_failed.body" = "もう一度お試しください";
+"widgets.custom.intent_press_failed.title" = "エンティティを「押す」ことができませんでした";
+"widgets.custom.intent_toggle_failed.body" = "もう一度お試しください";
+"widgets.custom.intent_toggle_failed.title" = "エンティティの「トグル」に失敗しました";
 "widgets.custom.show_update_time.title" = "最終更新日:";
 "widgets.custom.subtitle" = "独自のスタイルでウィジェットを作成する";
 "widgets.custom.title" = "カスタムウィジェット";
