@@ -2,7 +2,7 @@ import Shared
 import SwiftUI
 
 struct AppleLikeListTopRowHeader: View {
-    let image: Image
+    let image: AnyView
     let title: String
     let subtitle: String
 
@@ -24,7 +24,7 @@ struct AppleLikeListTopRowHeader: View {
 
 #Preview {
     AppleLikeListTopRowHeader(
-        image: Image(imageAsset: Asset.SharedAssets.casita),
+        image: AnyView(Image(imageAsset: Asset.SharedAssets.casita)),
         title: "Settings",
         subtitle: "This is a text that represents the body"
     )
