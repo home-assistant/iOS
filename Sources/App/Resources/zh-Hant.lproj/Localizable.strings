@@ -57,7 +57,7 @@
 "app_intents.assist.pipeline.default.title" = "預設";
 "app_intents.assist.pipeline.title" = "助理設定";
 "app_intents.assist.preferred_pipeline.title" = "首選";
-"app_intents.assist.refresh_warning.title" = "找不到助手設定？於 App 中開啟助力以更新設定列表。";
+"app_intents.assist.refresh_warning.title" = "找不到助理設定？於 App 中開啟助力以更新設定列表。";
 "app_intents.closed_state_icon.title" = "關閉狀態的圖示";
 "app_intents.controls.assist.parameter.with_voice" = "使用語音";
 "app_intents.controls.assist.title" = "App 中的助理";

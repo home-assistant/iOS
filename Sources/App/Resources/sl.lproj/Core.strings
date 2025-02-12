@@ -23,8 +23,8 @@
 "component::automation::entity_component::_::state::on" = "Vklopljeno";
 "component::binary_sensor::entity_component::_::state::off" = "Izklopljeno";
 "component::binary_sensor::entity_component::_::state::on" = "Vklopljeno";
-"component::binary_sensor::entity_component::connectivity::state::off" = "Prekinjena povezava";
-"component::binary_sensor::entity_component::connectivity::state::on" = "Povezano";
+"component::binary_sensor::entity_component::connectivity::state::off" = "Povezava prekinjena";
+"component::binary_sensor::entity_component::connectivity::state::on" = "Povezan";
 "component::binary_sensor::entity_component::door::state::off" = "Zaprto";
 "component::binary_sensor::entity_component::door::state::on" = "Odprto";
 "component::binary_sensor::entity_component::garage_door::state::off" = "Zaprto";
