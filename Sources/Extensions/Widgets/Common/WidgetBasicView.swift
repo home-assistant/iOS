@@ -370,6 +370,7 @@ struct WidgetBasicView: View {
                 intent.domain = domain
                 intent.entityId = entityId
                 intent.serverId = serverId
+                intent.widgetShowingStates = model.subtitle != nil
                 return intent
             case let .activate(entityId, domain, serverId):
                 let intent = CustomWidgetActivateAppIntent()
