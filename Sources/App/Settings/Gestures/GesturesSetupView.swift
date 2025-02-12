@@ -7,10 +7,10 @@ struct GesturesSetupView: View {
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: Image(uiImage: MaterialDesignIcons.gestureIcon.image(
+                image: AnyView(Image(uiImage: MaterialDesignIcons.gestureIcon.image(
                     ofSize: .init(width: 80, height: 80),
                     color: Asset.Colors.haPrimary.color
-                )),
+                ))),
                 title: L10n.Gestures.Screen.title,
                 subtitle: L10n.Gestures.Screen.body
             )

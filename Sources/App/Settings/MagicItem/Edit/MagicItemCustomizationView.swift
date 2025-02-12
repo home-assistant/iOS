@@ -219,13 +219,16 @@ struct MagicItemCustomizationView: View {
                 scriptActionDetails
             }
         }
-
         Section {
             Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
                 viewModel.item.customization?.requiresConfirmation ?? true
             }, set: { newValue in
                 viewModel.item.customization?.requiresConfirmation = newValue
             }))
+        } footer: {
+            if context == .widget {
+                Text(L10n.Widgets.Custom.RequireConfirmation.footer)
+            }
         }
     }
 

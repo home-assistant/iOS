@@ -48,10 +48,21 @@ struct WidgetBuilderView: View {
 
     private var header: some View {
         AppleLikeListTopRowHeader(
-            image: Image(uiImage: MaterialDesignIcons.widgetsIcon.image(
-                ofSize: .init(width: 80, height: 80),
-                color: Asset.Colors.haPrimary.color
-            )),
+            image: AnyView(
+                ZStack(alignment: .topTrailing) {
+                    Image(uiImage: MaterialDesignIcons.widgetsIcon.image(
+                        ofSize: .init(width: 80, height: 80),
+                        color: Asset.Colors.haPrimary.color
+                    ))
+                    Text("BETA")
+                        .font(.caption)
+                        .padding(.horizontal, Spaces.one)
+                        .padding(.vertical, Spaces.half)
+                        .background(.regularMaterial)
+                        .clipShape(Capsule())
+                        .offset(x: Spaces.oneAndHalf, y: 0)
+                }
+            ),
             title: L10n.Widgets.Custom.title,
             subtitle: L10n.Widgets.Custom.subtitle
         )

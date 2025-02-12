@@ -27,10 +27,10 @@ struct DebugView: View {
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: .init(uiImage: MaterialDesignIcons.bugIcon.image(
+                image: AnyView(Image(uiImage: MaterialDesignIcons.bugIcon.image(
                     ofSize: .init(width: 120, height: 120),
                     color: Asset.Colors.haPrimary.color
-                )),
+                ))),
                 title: L10n.Settings.Debugging.Header.title,
                 subtitle: L10n.Settings.Debugging.Header.subtitle
             )

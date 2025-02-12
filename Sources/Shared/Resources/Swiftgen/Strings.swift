@@ -3956,6 +3956,10 @@ public enum L10n {
         /// Failed to 'toggle' entity
         public static var title: String { return L10n.tr("Localizable", "widgets.custom.intent_toggle_failed.title") }
       }
+      public enum RequireConfirmation {
+        /// Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.
+        public static var footer: String { return L10n.tr("Localizable", "widgets.custom.require_confirmation.footer") }
+      }
       public enum ShowUpdateTime {
         /// Last update:
         public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_update_time.title") }
