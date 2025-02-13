@@ -40,10 +40,11 @@ struct ConnectionErrorDetailsView: View {
                                        .title
                                ) {
                                 if server.info.connection.useCloud {
-                                    Text(L10n.Connection.Error.FailedConnect.CloudInactive.title)
-                                } else {
                                     Text(cloudText)
                                         .font(.body.italic())
+                                } else {
+                                    // Alert user when it has deactivated cloud usage in the App
+                                    Text(L10n.Connection.Error.FailedConnect.CloudInactive.title)
                                 }
                             }
                         }
