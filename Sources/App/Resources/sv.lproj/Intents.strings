@@ -103,7 +103,7 @@
 "hKNPaD" = "Server";
 "hLFNfv" = "Misslyckades: ${error}";
 "hXWHln" = "Server";
-"hfoDeC" = "Avsett språk";
+"hfoDeC" = "Avsiktsspråk";
 "hhPmPc" = "JSON";
 "hsrlTY" = "Få en enskild stillbild från en kamera";
 "iMvUhs" = "Öppna sida";
@@ -142,7 +142,7 @@
 "sfDGvk" = "Skapade mall";
 "txfcnn" = "Text";
 "tycImk" = "Utför en åtgärd definierad i appen";
-"uqeIcc" = "Hjälp till med \" ${text} \"";
+"uqeIcc" = "Hjälp till med \"${text}\"";
 "v7TSD5" = "Skicka plats";
 "vAIAF2" = "Skicka sensoruppdatering till Home Assistant";
 "vebd70" = "Server";

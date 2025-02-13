@@ -1126,6 +1126,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
 "widgets.custom.intent_toggle_failed.body" = "Please try again";
 "widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";

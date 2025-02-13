@@ -1126,6 +1126,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.custom.intent_press_failed.title" = "Не удалось 'нажать' на объект";
 "widgets.custom.intent_toggle_failed.body" = "Попробуйте ещё раз.";
 "widgets.custom.intent_toggle_failed.title" = "Не удалось 'переключить' объект";
+"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
 "widgets.custom.show_update_time.title" = "Последнее обновление:";
 "widgets.custom.subtitle" = "Создавайте виджеты в своем собственном стиле";
 "widgets.custom.title" = "Пользовательские виджеты";
