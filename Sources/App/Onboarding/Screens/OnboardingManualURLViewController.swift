@@ -166,6 +166,10 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
 
         isConnecting = true
 
+        if let urlString = urlField.text {
+            urlField.text = removeTrailingSlash(from: urlString)
+        }
+
         let authentication = OnboardingAuth()
 
         firstly {
@@ -212,6 +216,14 @@ class OnboardingManualURLViewController: UIViewController, UITextFieldDelegate {
             case .noSchemeCancelled:
                 return true
             }
+        }
+    }
+
+    private func removeTrailingSlash(from string: String) -> String {
+        if string.hasSuffix("/") {
+            return String(string.dropLast())
+        } else {
+            return string
         }
     }
 
