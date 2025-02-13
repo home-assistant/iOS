@@ -2178,7 +2178,7 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.add_item.title") }
         }
         public enum Footer {
-          /// While th widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.
+          /// While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.
           public static var title: String { return L10n.tr("Localizable", "settings.widgets.create.footer.title") }
         }
         public enum Items {

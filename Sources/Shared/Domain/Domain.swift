@@ -17,6 +17,11 @@ public enum Domain: String, CaseIterable {
     case person
     // TODO: Map more domains
 
+    public init?(entityId: String) {
+        let domainString = entityId.components(separatedBy: ".").first ?? ""
+        self.init(rawValue: domainString)
+    }
+
     public enum State: String, Codable {
         case locked
         case unlocked

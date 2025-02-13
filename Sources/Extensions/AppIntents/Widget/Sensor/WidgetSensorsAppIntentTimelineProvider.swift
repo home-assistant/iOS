@@ -96,7 +96,7 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
             key: sensor.displayString,
             value: state.value,
             unitOfMeasurement: state.unitOfMeasurement,
-            icon: sensor.icon
+            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon.name
         )
     }
 
