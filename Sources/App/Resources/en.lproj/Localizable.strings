@@ -1126,10 +1126,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
 "widgets.custom.intent_toggle_failed.body" = "Please try again";
 "widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
+"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
 "widgets.details.description" = "Display states using from Home Assistant in text";
 "widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Action";
