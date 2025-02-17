@@ -125,8 +125,13 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         Current.modelManager.subscribe(isAppInForeground: {
             UIApplication.shared.applicationState == .active
         })
-        Current.appDatabaseUpdater.update()
-        Current.panelsUpdater.update()
+
+        Current.appDatabaseUpdater.update {
+            UIApplication.shared.applicationState
+        }
+        Current.panelsUpdater.update {
+            UIApplication.shared.applicationState
+        }
 
         let widgetsCacheFile = AppConstants.widgetsCacheURL
 

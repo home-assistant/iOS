@@ -159,7 +159,6 @@ enum SettingsRootDataSource {
             $0.icon = .watchVariantIcon
             $0.hidden = .isCatalyst
             $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                Current.appDatabaseUpdater.update()
                 let controller = UIHostingController(rootView: WatchConfigurationView())
                 controller.overrideUserInterfaceStyle = .dark
                 return controller
@@ -175,7 +174,6 @@ enum SettingsRootDataSource {
             $0.icon = .carBackIcon
             $0.hidden = .isCatalyst
             $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                Current.appDatabaseUpdater.update()
                 let controller = UIHostingController(rootView: CarPlayConfigurationView())
                 controller.overrideUserInterfaceStyle = .dark
                 return controller
@@ -214,8 +212,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.Widgets.title
             $0.icon = .widgetsIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                Current.appDatabaseUpdater.update()
-                return UIHostingController(rootView: WidgetBuilderView())
+                UIHostingController(rootView: WidgetBuilderView())
             }, onDismiss: nil)
         }
     }

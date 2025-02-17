@@ -1,10 +1,11 @@
 import Foundation
 import GRDB
 import HAKit
+import UIKit
 
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update()
+    func update(uiApplicationState: @escaping () -> UIApplication.State)
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -17,7 +18,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         cancelOnGoingRequests()
     }
 
-    func update() {
+    func update(uiApplicationState: @escaping () -> UIApplication.State) {
         cancelOnGoingRequests()
 
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
@@ -30,13 +31,13 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
         Current.servers.all.forEach { server in
             guard server.info.connection.activeURL() != nil else { return }
-
             // Cache entities
             let requestToken = Current.api(for: server)?.connection.send(
                 HATypedRequest<[HAEntity]>.fetchStates(),
                 completion: { result in
                     switch result {
                     case let .success(entities):
+                        guard uiApplicationState() == .active else { return }
                         Current.appEntitiesModel().updateModel(Set(entities), server: server)
                     case let .failure(error):
                         Current.Log.error("Failed to fetch states: \(error)")
@@ -58,6 +59,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 completion: { [weak self] result in
                     switch result {
                     case let .success(response):
+                        guard uiApplicationState() == .active else { return }
                         self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
                     case let .failure(error):
                         Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")
