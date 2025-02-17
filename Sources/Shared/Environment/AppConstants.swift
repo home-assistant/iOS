@@ -65,6 +65,18 @@ public enum AppConstants {
         }
     }
 
+    public static func navigateDeeplinkURL(path: String, serverId: String, avoidUnecessaryReload: Bool) -> URL? {
+        URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)"
+        )
+    }
+
+    public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
+        URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
+        )
+    }
+
     /// The App Group ID used by the app and extensions for sharing data.
     public static var AppGroupID: String {
         "group." + BundleID.lowercased()

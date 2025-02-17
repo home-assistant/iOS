@@ -22,27 +22,15 @@ struct OpenPageAppIntent: AppIntent {
         guard let page,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == page.serverId }) ?? Current
               .servers.all.first else { return .result() }
-
-        let urlString = "/" + page.panel.path
-
         #if !WIDGET_EXTENSION
-        DispatchQueue.main.async {
-            if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
-                if let activeURL = server.info.connection.activeURL(),
-                   let pageURL = URL(string: "\(activeURL)\(urlString)") {
-                    UIApplication.shared.open(pageURL)
-                } else {
-                    Current.Log.error("Failed to open page \(urlString) on server \(server.info.name)")
-                }
-            } else {
-                Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-                    windowController.open(
-                        from: .deeplink,
-                        server: server,
-                        urlString: urlString,
-                        skipConfirm: true
-                    )
-                }
+        if let url =
+            AppConstants.navigateDeeplinkURL(
+                path: page.panel.path,
+                serverId: server.identifier.rawValue,
+                avoidUnecessaryReload: true
+            ) {
+            DispatchQueue.main.async {
+                UIApplication.shared.open(url)
             }
         }
         #endif
