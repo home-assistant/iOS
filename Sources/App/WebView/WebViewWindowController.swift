@@ -117,11 +117,11 @@ final class WebViewWindowController {
         return currentController
     }
 
-    func navigate(to url: URL, on server: Server) {
+    func navigate(to url: URL, on server: Server, avoidUnecessaryReload: Bool = false) {
         open(server: server).done { webViewController in
             // Dismiss any overlayed controllers
             webViewController.dismissOverlayController(animated: true, completion: nil)
-            webViewController.open(inline: url)
+            webViewController.open(inline: url, avoidUnecessaryReload: avoidUnecessaryReload)
         }
     }
 
@@ -212,19 +212,45 @@ final class WebViewWindowController {
         skipConfirm: Bool = false,
         queryParameters: [URLQueryItem]? = nil
     ) {
-        let serverName = queryParameters?.first(where: { $0.name == "server" })?.value
+        let serverNameOrId = queryParameters?.first(where: { $0.name == "server" })?.value
+        let avoidUnecessaryReload = {
+            if let avoidUnecessaryReloadString =
+                queryParameters?.first(where: { $0.name == "avoidUnecessaryReload" })?.value {
+                return Bool(avoidUnecessaryReloadString) ?? false
+            } else {
+                return false
+            }
+        }()
         let servers = Current.servers.all
 
-        if let first = servers.first, Current.servers.all.count == 1 || serverName != nil {
-            if serverName == "default" || serverName == nil {
-                open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+        if let first = servers.first, Current.servers.all.count == 1 || serverNameOrId != nil {
+            if serverNameOrId == "default" || serverNameOrId == nil {
+                open(
+                    from: from,
+                    server: first,
+                    urlString: openUrlRaw,
+                    skipConfirm: skipConfirm
+                )
             } else {
                 if let selectedServer = servers.first(where: { server in
-                    server.info.name.lowercased() == serverName?.lowercased()
+                    server.info.name.lowercased() == serverNameOrId?.lowercased() ||
+                        server.identifier.rawValue == serverNameOrId
                 }) {
-                    open(from: from, server: selectedServer, urlString: openUrlRaw, skipConfirm: skipConfirm)
+                    open(
+                        from: from,
+                        server: selectedServer,
+                        urlString: openUrlRaw,
+                        skipConfirm: skipConfirm,
+                        avoidUnecessaryReload: avoidUnecessaryReload
+                    )
                 } else {
-                    open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+                    open(
+                        from: from,
+                        server: first,
+                        urlString: openUrlRaw,
+                        skipConfirm: skipConfirm,
+                        avoidUnecessaryReload: avoidUnecessaryReload
+                    )
                 }
             }
         } else if Current.servers.all.count > 1 {
@@ -246,7 +272,13 @@ final class WebViewWindowController {
         }
     }
 
-    func open(from: OpenSource, server: Server, urlString openUrlRaw: String, skipConfirm: Bool = false) {
+    func open(
+        from: OpenSource,
+        server: Server,
+        urlString openUrlRaw: String,
+        skipConfirm: Bool = false,
+        avoidUnecessaryReload: Bool = false
+    ) {
         let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
         let externalURL = URL(string: openUrlRaw)
 
@@ -256,7 +288,8 @@ final class WebViewWindowController {
             urlString: openUrlRaw,
             webviewURL: webviewURL,
             externalURL: externalURL,
-            skipConfirm: skipConfirm
+            skipConfirm: skipConfirm,
+            avoidUnecessaryReload: avoidUnecessaryReload
         )
     }
 
@@ -270,7 +303,8 @@ final class WebViewWindowController {
         urlString openUrlRaw: String,
         webviewURL: URL?,
         externalURL: URL?,
-        skipConfirm: Bool
+        skipConfirm: Bool,
+        avoidUnecessaryReload: Bool = false
     ) {
         guard webviewURL != nil || externalURL != nil else {
             return
@@ -278,7 +312,7 @@ final class WebViewWindowController {
 
         let triggerOpen = { [self] in
             if let webviewURL {
-                navigate(to: webviewURL, on: server)
+                navigate(to: webviewURL, on: server, avoidUnecessaryReload: avoidUnecessaryReload)
             } else if let externalURL {
                 openURLInBrowser(externalURL, presentedViewController)
             }

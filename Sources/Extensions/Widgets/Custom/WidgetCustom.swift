@@ -199,10 +199,11 @@ struct WidgetCustom: Widget {
         if path.hasPrefix("/") {
             path.removeFirst()
         }
-        if let url =
-            URL(
-                string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(magicItem.serverId)"
-            ) {
+        if let url = AppConstants.navigateDeeplinkURL(
+            path: path,
+            serverId: magicItem.serverId,
+            avoidUnecessaryReload: true
+        ) {
             return .widgetURL(url)
         } else {
             return .appIntent(.refresh)
@@ -211,10 +212,11 @@ struct WidgetCustom: Widget {
 
     private func assistIntent(serverId: String, pipelineId: String, startListening: Bool) -> WidgetBasicViewModel
         .InteractionType {
-        if let url =
-            URL(
-                string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
-            ) {
+        if let url = AppConstants.assistDeeplinkURL(
+            serverId: serverId,
+            pipelineId: pipelineId,
+            startListening: startListening
+        ) {
             return .widgetURL(url)
         } else {
             return .appIntent(.refresh)
