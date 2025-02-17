@@ -1126,7 +1126,7 @@
 "widgets.custom.intent_press_failed.title" = "Αποτυχία 'πατήματος' οντότητας";
 "widgets.custom.intent_toggle_failed.body" = "Παρακαλώ δοκιμάστε ξανά";
 "widgets.custom.intent_toggle_failed.title" = "Αποτυχία 'εναλλαγής' οντότητας";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "Η επιβεβαίωση γραφικού στοιχείου και η εμφάνιση της κατάστασης είναι προς το παρόν σε BETA, αν αντιμετωπίζετε προβλήματα, απενεργοποιήστε το 'Απαιτείται επιβεβαίωση' και αποθηκεύστε.";
 "widgets.custom.show_update_time.title" = "Τελευταία ενημέρωση:";
 "widgets.custom.subtitle" = "Δημιουργήστε γραφικά στοιχεία με το δικό σας στυλ";
 "widgets.custom.title" = "Προσαρμοσμένα γραφικά στοιχεία";

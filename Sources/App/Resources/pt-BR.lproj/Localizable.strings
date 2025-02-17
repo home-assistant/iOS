@@ -598,7 +598,7 @@
 "settings.template_edit.title" = "Editar modelo";
 "settings.whats_new.title" = "O que há de novo?";
 "settings.widgets.create.add_item.title" = "Adicionar Item";
-"settings.widgets.create.footer.title" = "Embora a visualização do widget exiba apenas um tamanho de widget, seu widget personalizado estará disponível em vários tamanhos, respeitando o limite de itens por tamanho.";
+"settings.widgets.create.footer.title" = "Embora a pré-visualização do widget exiba apenas um tamanho de widget, seu widget personalizado estará disponível em vários tamanhos, respeitando o limite de itens por tamanho.";
 "settings.widgets.create.items.title" = "Itens";
 "settings.widgets.create.name.placeholder" = "por exemplo, favoritos da sala de estar";
 "settings.widgets.create.name.title" = "Nome";
@@ -1126,7 +1126,7 @@
 "widgets.custom.intent_press_failed.title" = "Falha ao 'pressionar' entidade";
 "widgets.custom.intent_toggle_failed.body" = "Por favor, tente novamente";
 "widgets.custom.intent_toggle_failed.title" = "Falha ao 'alternar' entidade";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "A confirmação do widget e a exibição do estado estão atualmente em BETA. Se você tiver problemas, desative \"Exigir confirmação\" e salve.";
 "widgets.custom.show_update_time.title" = "Última atualização:";
 "widgets.custom.subtitle" = "Crie widgets com seu próprio estilo";
 "widgets.custom.title" = "Widgets personalizados";

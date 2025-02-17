@@ -598,7 +598,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings.template_edit.title" = "Template bearbeiten";
 "settings.whats_new.title" = "Was gibt es Neues?";
 "settings.widgets.create.add_item.title" = "Objekt hinzufügen";
-"settings.widgets.create.footer.title" = "Während in der Widget-Vorschau nur eine Widget-Größe angezeigt wird, ist dein benutzerdefiniertes Widget in mehreren Größen verfügbar, wobei die Objektbeschränkung pro Größe berücksichtigt wird.";
+"settings.widgets.create.footer.title" = "Während in der Widget-Vorschau nur eine Widget-Größe angezeigt wird, ist dein benutzerdefiniertes Widget in mehreren Größen verfügbar, wobei die Beschränkung der Objekte je Größe berücksichtigt wird.";
 "settings.widgets.create.items.title" = "Objekte";
 "settings.widgets.create.name.placeholder" = "z.B. Wohnzimmer-Favoriten";
 "settings.widgets.create.name.title" = "Name";
@@ -1127,7 +1127,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "widgets.custom.intent_press_failed.title" = "Entität konnte nicht „gedrückt“ werden";
 "widgets.custom.intent_toggle_failed.body" = "Bitte erneut versuchen";
 "widgets.custom.intent_toggle_failed.title" = "Entität konnte nicht „umgeschaltet“ werden";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "Die Widget-Bestätigung und Zustandsanzeige befinden sich derzeit in der BETA-Phase. Wenn Probleme auftreten, deaktiviere „Bestätigung erforderlich“ und speichere.";
 "widgets.custom.show_update_time.title" = "Letzte Aktualisierung:";
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
 "widgets.custom.title" = "Benutzerdefinierte Widgets";
