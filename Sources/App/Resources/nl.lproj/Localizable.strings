@@ -1126,7 +1126,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.custom.intent_press_failed.title" = "Kan entiteit niet 'indrukken'";
 "widgets.custom.intent_toggle_failed.body" = "Probeer het opnieuw";
 "widgets.custom.intent_toggle_failed.title" = "Kan entiteit niet 'omschakelen'";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "Widgetbevestiging en statusweergave zijn momenteel in BETA. Als je problemen ondervindt, schakel dan 'Bevestiging vereist' uit en sla op.";
 "widgets.custom.show_update_time.title" = "Laatst bijgewerkt:";
 "widgets.custom.subtitle" = "Maak widgets in je eigen stijl";
 "widgets.custom.title" = "Aangepaste widgets";

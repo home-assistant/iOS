@@ -598,7 +598,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.template_edit.title" = "Sablon szerkesztése";
 "settings.whats_new.title" = "Újdonságok";
 "settings.widgets.create.add_item.title" = "Elem hozzáadása";
-"settings.widgets.create.footer.title" = "Bár az előnézet csak egy widgetméretet mutat, az egyéni widget több méretben is elérhető lesz, figyelembe véve az egyes méretekhez tartozó elemkorlátot.";
+"settings.widgets.create.footer.title" = "Bár az előnézet csak egyetlen widgetméretet mutat, az egyéni widgetje több méretben is elérhető lesz, figyelembe véve az egyes méretekhez tartozó elem limiteket.";
 "settings.widgets.create.items.title" = "Elemek";
 "settings.widgets.create.name.placeholder" = "pl. Nappali kedvencek";
 "settings.widgets.create.name.title" = "Név";
@@ -1126,7 +1126,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.custom.intent_press_failed.title" = "Nem sikerült 'megnyomni' az entitást";
 "widgets.custom.intent_toggle_failed.body" = "Kérjük, próbálja újra";
 "widgets.custom.intent_toggle_failed.title" = "Nem sikerült 'kapcsolni' az entitást";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "A widget megerősítése és állapotmegjelenítése jelenleg BÉTA verzióban van. Ha problémákat tapasztal, kapcsolja ki a 'Megerősítés kérése' opciót, majd mentse a beállítást.";
 "widgets.custom.show_update_time.title" = "Utolsó frissítés:";
 "widgets.custom.subtitle" = "Saját stílusú widgetek létrehozása";
 "widgets.custom.title" = "Egyedi widgetek";

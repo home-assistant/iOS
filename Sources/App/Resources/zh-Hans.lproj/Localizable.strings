@@ -1126,7 +1126,7 @@
 "widgets.custom.intent_press_failed.title" = "“按下”实体失败";
 "widgets.custom.intent_toggle_failed.body" = "请重试";
 "widgets.custom.intent_toggle_failed.title" = "“切换”实体失败";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "小部件确认和状态显示目前处于测试阶段，如果您遇到问题，请禁用“需要确认”并保存。";
 "widgets.custom.show_update_time.title" = "上次更新：";
 "widgets.custom.subtitle" = "创建具有自己风格的小部件";
 "widgets.custom.title" = "自定义小部件";

@@ -598,7 +598,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.template_edit.title" = "Edit Templat";
 "settings.whats_new.title" = "Yang baru";
 "settings.widgets.create.add_item.title" = "Tambahkan item";
-"settings.widgets.create.footer.title" = "While th widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
+"settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
 "settings.widgets.create.items.title" = "Item";
 "settings.widgets.create.name.placeholder" = "mis. Favorit Ruang Keluarga";
 "settings.widgets.create.name.title" = "Nama";

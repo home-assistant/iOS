@@ -598,7 +598,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.template_edit.title" = "ടെംപ്ലേറ്റ് എഡിറ്റ് ചെയ്യുക";
 "settings.whats_new.title" = "What's new?";
 "settings.widgets.create.add_item.title" = "Add item";
-"settings.widgets.create.footer.title" = "While th widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
+"settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
 "settings.widgets.create.items.title" = "Items";
 "settings.widgets.create.name.placeholder" = "e.g. Living room favorites";
 "settings.widgets.create.name.title" = "Name";

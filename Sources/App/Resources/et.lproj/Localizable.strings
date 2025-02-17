@@ -1126,7 +1126,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.custom.intent_press_failed.title" = "Olemi 'vajutamine' nurjus";
 "widgets.custom.intent_toggle_failed.body" = "Proovi uuesti";
 "widgets.custom.intent_toggle_failed.title" = "Olemi \"ümberlülitamine\" nurjus";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "Vidina kinnitus ja oleku kuvamine on praegu beetaversioonis, kui tekib probleeme, keela \"Nõua kinnitust\" ja salvesta.";
 "widgets.custom.show_update_time.title" = "Viimati uuendatud:";
 "widgets.custom.subtitle" = "Loo oma stiiliga vidinaid";
 "widgets.custom.title" = "Kohandatud vidinad";
