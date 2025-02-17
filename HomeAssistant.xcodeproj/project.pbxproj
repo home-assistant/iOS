@@ -587,7 +587,6 @@
 		421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */; };
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		4221ED352D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
-		4221ED362D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
 		4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688A2D40F9B7005911E4 /* WidgetCustom.swift */; };
 		4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
 		422368902D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
@@ -835,7 +834,6 @@
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
 		42DE75D32D1061A600FF379F /* PanelsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DE75D12D105F3000FF379F /* PanelsUpdater.swift */; };
-		42DE75D42D1061A600FF379F /* PanelsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DE75D12D105F3000FF379F /* PanelsUpdater.swift */; };
 		42DEDA9A2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42DEDA9B2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */; };
@@ -7375,7 +7373,6 @@
 				424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */,
-				4221ED362D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */,
 				424151FA2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */,
 				42070EED2BAC523F0031E96F /* AssistService.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -7439,7 +7436,6 @@
 				11CFD78227364F450082D557 /* Identifier.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
 				42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
-				42DE75D42D1061A600FF379F /* PanelsUpdater.swift in Sources */,
 				11B38EF7275C54A300205C7B /* UpdateSensorsIntentHandler.swift in Sources */,
 				1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
 				426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
