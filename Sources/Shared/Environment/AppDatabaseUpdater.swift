@@ -5,7 +5,7 @@ import UIKit
 
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update(uiApplicationState: @escaping () -> UIApplication.State)
+    func update()
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -18,7 +18,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         cancelOnGoingRequests()
     }
 
-    func update(uiApplicationState: @escaping () -> UIApplication.State) {
+    func update() {
         cancelOnGoingRequests()
 
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
@@ -37,7 +37,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 completion: { result in
                     switch result {
                     case let .success(entities):
-                        guard uiApplicationState() == .active else { return }
                         Current.appEntitiesModel().updateModel(Set(entities), server: server)
                     case let .failure(error):
                         Current.Log.error("Failed to fetch states: \(error)")
@@ -59,7 +58,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 completion: { [weak self] result in
                     switch result {
                     case let .success(response):
-                        guard uiApplicationState() == .active else { return }
                         self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
                     case let .failure(error):
                         Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")

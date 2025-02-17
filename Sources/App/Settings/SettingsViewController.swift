@@ -165,9 +165,7 @@ class SettingsViewController: HAFormViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Current.appDatabaseUpdater.update {
-            UIApplication.shared.applicationState
-        }
+        Current.appDatabaseUpdater.update()
     }
 
     @objc func openAbout(_ sender: UIButton) {
