@@ -119,19 +119,14 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         Current.appDatabaseUpdater.stop()
     }
 
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        DataWidgetsUpdater.update()
+    func sceneDidBecomeActive(_ scene: UIScene) {
         Current.modelManager.cleanup().cauterize()
         Current.modelManager.subscribe(isAppInForeground: {
             UIApplication.shared.applicationState == .active
         })
 
-        Current.appDatabaseUpdater.update {
-            UIApplication.shared.applicationState
-        }
-        Current.panelsUpdater.update {
-            UIApplication.shared.applicationState
-        }
+        Current.appDatabaseUpdater.update()
+        Current.panelsUpdater.update()
 
         let widgetsCacheFile = AppConstants.widgetsCacheURL
 

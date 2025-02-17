@@ -4,7 +4,7 @@ import PromiseKit
 import UIKit
 
 public protocol PanelsUpdaterProtocol {
-    func update(uiApplicationState: () -> UIApplication.State)
+    func update()
 }
 
 final class PanelsUpdater: PanelsUpdaterProtocol {
@@ -13,7 +13,7 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
     private var tokens: [(promise: Promise<HAPanels>, cancel: () -> Void)?] = []
     private var lastUpdate: Date?
 
-    public func update(uiApplicationState: () -> UIApplication.State) {
+    public func update() {
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
             Current.Log.verbose("Skipping panels update, last update was \(lastUpdate)")
             return
@@ -28,7 +28,6 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
             let request = Current.api(for: server)?.connection.send(.panels())
             tokens.append(request)
 
-            guard uiApplicationState() == .active else { return }
             request?.promise.done({ [weak self] panels in
                 self?.saveInDatabase(panels, server: server)
             }).cauterize()
