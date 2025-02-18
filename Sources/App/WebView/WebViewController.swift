@@ -264,26 +264,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         picker.menu = UIMenu(title: L10n.WebView.ServerSelection.title, children: menuActions)
         picker.showsMenuAsPrimaryAction = true
 
-        let openInSafariButton = UIButton(type: .detailDisclosure)
-        openInSafariButton.setImage(UIImage(systemSymbol: .safari), for: .normal)
-        openInSafariButton.backgroundColor = .systemBackground
-        openInSafariButton.tintColor = Asset.Colors.haPrimary.color
-        openInSafariButton.layer.cornerRadius = 10
-        openInSafariButton.addTarget(self, action: #selector(openServerInSafari), for: .touchUpInside)
-
         if let statusBarButtonsStack {
             statusBarButtonsStack.removeFromSuperview()
             self.statusBarButtonsStack = nil
         }
 
-        let arrangedSubviews: [UIView] = {
-            if Current.servers.all.count > 1 {
-                return [picker, openInSafariButton]
-            } else {
-                // No need to display server picker
-                return [openInSafariButton]
-            }
-        }()
+        let arrangedSubviews: [UIView] = Current.servers.all.count > 1 ? [picker] : []
 
         let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
         stackView.axis = .horizontal
@@ -292,9 +278,29 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         statusBarView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
+        let openInSafariButton = UIButton(type: .custom)
+        let image = UIImage(resource: .compass).scaledToSize(.init(width: 7, height: 7))
+            .withTintColor(Asset.Colors.haPrimary.color)
+        openInSafariButton.setImage(image, for: .normal)
+        openInSafariButton.backgroundColor = .white
+        openInSafariButton.tintColor = .white
+        openInSafariButton.layer.cornerRadius = 6
+        openInSafariButton.layer.shadowColor = UIColor.black.cgColor
+        openInSafariButton.layer.shadowRadius = 0.5
+        openInSafariButton.layer.shadowOpacity = 0.7
+        openInSafariButton.layer.shadowOffset = .init(width: 0, height: 0)
+        openInSafariButton.layer.masksToBounds = false
+        openInSafariButton.addTarget(self, action: #selector(openServerInSafari), for: .touchUpInside)
+        statusBarView.addSubview(openInSafariButton)
+        openInSafariButton.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
             stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -Spaces.half),
             stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: Spaces.half),
+            openInSafariButton.leftAnchor.constraint(equalTo: statusBarView.leftAnchor, constant: 68),
+            openInSafariButton.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: 8),
+            openInSafariButton.widthAnchor.constraint(equalToConstant: 12),
+            openInSafariButton.heightAnchor.constraint(equalToConstant: 12),
         ])
         statusBarButtonsStack = stackView
     }
