@@ -65,6 +65,10 @@ struct MagicItemAddView: View {
             .onAppear {
                 autoSelectItemType()
                 viewModel.loadContent()
+
+                if viewModel.selectedServerId == nil {
+                    viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
+                }
             }
             .toolbar(content: {
                 CloseButton {
@@ -159,10 +163,10 @@ struct MagicItemAddView: View {
 
     @ViewBuilder
     private var entitiesPerServerList: some View {
-        ForEach(Array(viewModel.entities.keys), id: \.identifier) { server in
-            Section(server.info.name) {
-                list(entities: viewModel.entities[server] ?? [], serverId: server.identifier.rawValue, type: .entity)
-            }
+        ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+        if let server = Current.servers.all
+            .first(where: { $0.identifier.rawValue == viewModel.selectedServerId }) ?? Current.servers.all.first {
+            list(entities: viewModel.entities[server] ?? [], serverId: server.identifier.rawValue, type: .entity)
         }
     }
 
