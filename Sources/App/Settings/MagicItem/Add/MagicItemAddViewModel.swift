@@ -18,6 +18,7 @@ final class MagicItemAddViewModel: ObservableObject {
     @Published var entities: [Server: [HAAppEntity]] = [:]
     @Published var actions: [Action] = []
     @Published var searchText: String = ""
+    @Published var selectedServerId: String?
 
     private var entitiesSubscription: AnyCancellable?
 

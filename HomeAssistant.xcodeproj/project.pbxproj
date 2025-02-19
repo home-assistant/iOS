@@ -798,6 +798,7 @@
 		42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101292CD3DB8A0012BA78 /* CoverIntent.swift */; };
 		42C1012E2CD3DBF00012BA78 /* ControlCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C1012C2CD3DBF00012BA78 /* ControlCover.swift */; };
 		42C101302CD3DC0C0012BA78 /* ControlCoverValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C1012F2CD3DC0C0012BA78 /* ControlCoverValueProvider.swift */; };
+		42C131D02D66084C00AF48E6 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C131CF2D66084C00AF48E6 /* PillView.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42C373B22BC5382900898990 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B12BC5382900898990 /* HostingController.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -856,6 +857,7 @@
 		42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */; };
 		42F158462CA15C99009C7201 /* ControlSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158452CA15C99009C7201 /* ControlSwitch.swift */; };
 		42F158482CA15FA7009C7201 /* SwitchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158472CA15FA7009C7201 /* SwitchIntent.swift */; };
+		42F161442D661D11003DDC75 /* ServersPickerPillList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F161422D661CBA003DDC75 /* ServersPickerPillList.swift */; };
 		42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */; };
 		42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */; };
 		42F1DA5F2B4D4B32002729BC /* CarPlayServerListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */; };
@@ -2137,6 +2139,7 @@
 		42C101292CD3DB8A0012BA78 /* CoverIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverIntent.swift; sourceTree = "<group>"; };
 		42C1012C2CD3DBF00012BA78 /* ControlCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCover.swift; sourceTree = "<group>"; };
 		42C1012F2CD3DC0C0012BA78 /* ControlCoverValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCoverValueProvider.swift; sourceTree = "<group>"; };
+		42C131CF2D66084C00AF48E6 /* PillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillView.swift; sourceTree = "<group>"; };
 		42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WatchApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		42C373B12BC5382900898990 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
@@ -2188,6 +2191,7 @@
 		42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationView.swift; sourceTree = "<group>"; };
 		42F158452CA15C99009C7201 /* ControlSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSwitch.swift; sourceTree = "<group>"; };
 		42F158472CA15FA7009C7201 /* SwitchIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchIntent.swift; sourceTree = "<group>"; };
+		42F161422D661CBA003DDC75 /* ServersPickerPillList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersPickerPillList.swift; sourceTree = "<group>"; };
 		42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSizeObserver.swift; sourceTree = "<group>"; };
 		42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowScenesManager.swift; sourceTree = "<group>"; };
 		42F1DA5E2B4D4B32002729BC /* CarPlayServerListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayServerListTemplate.swift; sourceTree = "<group>"; };
@@ -4298,6 +4302,7 @@
 		42CA28B12B101D9C0093B31A /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				42F161422D661CBA003DDC75 /* ServersPickerPillList.swift */,
 				429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */,
 				42FCD0052B9B1D9E0057783F /* CollapsibleView.swift */,
 				42CA28AF2B101D6B0093B31A /* CardView.swift */,
@@ -4305,6 +4310,7 @@
 				42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */,
 				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
 				42B74A5C2D36A47E00C37304 /* CloseButton.swift */,
+				42C131CF2D66084C00AF48E6 /* PillView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -7571,6 +7577,7 @@
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
 				4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */,
+				42F161442D661D11003DDC75 /* ServersPickerPillList.swift in Sources */,
 				4297ADA82C89C74A00790812 /* GRDB+Initialization.swift in Sources */,
 				1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
 				420CFC792D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */,
@@ -7761,6 +7768,7 @@
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
 				426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */,
 				42CE8FB02B46C3D900C707F9 /* CoreStrings+Values.swift in Sources */,
+				42C131D02D66084C00AF48E6 /* PillView.swift in Sources */,
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				42B94BED2B96083C00DEE060 /* AssistModel.swift in Sources */,
