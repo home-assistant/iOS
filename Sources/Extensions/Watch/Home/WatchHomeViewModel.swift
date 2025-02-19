@@ -25,9 +25,6 @@ final class WatchHomeViewModel: ObservableObject {
     // are different, the list won't refresh. This is a workaround to force a refresh
     @Published var refreshListID: UUID = .init()
 
-    private let watchConfigCacheKey = "watch-config"
-    private let magicItemsInfoCacheKey = "magic-items-info"
-
     func fetchNetworkInfo(completion: (() -> Void)? = nil) {
         NEHotspotNetwork.fetchCurrent { hotspotNetwork in
             WatchUserDefaults.shared.set(hotspotNetwork?.ssid, key: .watchSSID)

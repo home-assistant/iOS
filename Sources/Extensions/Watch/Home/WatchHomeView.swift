@@ -25,6 +25,7 @@ struct WatchHomeView: View {
                 )
             })
             .onAppear {
+                viewModel.fetchNetworkInfo(completion: nil)
                 viewModel.initialRoutine()
             }
     }
@@ -101,14 +102,6 @@ struct WatchHomeView: View {
         }
         .id(viewModel.refreshListID)
         .navigationTitle("")
-        .onChange(of: scenePhase) { newScenePhase in
-            switch newScenePhase {
-            case .active:
-                viewModel.fetchNetworkInfo(completion: nil)
-            default:
-                break
-            }
-        }
     }
 
     private var navReloadButton: some View {
