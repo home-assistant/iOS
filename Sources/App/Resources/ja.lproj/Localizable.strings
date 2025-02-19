@@ -1126,7 +1126,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.custom.intent_press_failed.title" = "エンティティを「押す」ことができませんでした";
 "widgets.custom.intent_toggle_failed.body" = "もう一度お試しください";
 "widgets.custom.intent_toggle_failed.title" = "エンティティの「トグル」に失敗しました";
-"widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.require_confirmation.footer" = "ウィジェットの確認と状態表示は現在ベータ版です。問題が発生した場合は、「確認が必要」を無効にして保存してください。";
 "widgets.custom.show_update_time.title" = "最終更新日:";
 "widgets.custom.subtitle" = "独自のスタイルでウィジェットを作成する";
 "widgets.custom.title" = "カスタムウィジェット";
