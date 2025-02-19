@@ -9,6 +9,7 @@ struct EntityPicker: View {
     @State private var entities: [HAAppEntity] = []
     @Binding private var selectedEntity: HAAppEntity?
     @State private var searchTerm = ""
+    @State private var selectedServerId: String?
 
     init(selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?) {
         self.domainFilter = domainFilter
@@ -16,6 +17,13 @@ struct EntityPicker: View {
     }
 
     var body: some View {
+        button
+            .sheet(isPresented: $showList) {
+                screen
+            }
+    }
+
+    private var button: some View {
         Button(action: {
             showList = true
         }, label: {
@@ -25,45 +33,54 @@ struct EntityPicker: View {
                 Text(L10n.EntityPicker.placeholder)
             }
         })
-        .sheet(isPresented: $showList) {
-            NavigationView {
-                List {
-                    ForEach(Current.servers.all, id: \.identifier) { server in
-                        Section(server.info.name) {
-                            ForEach(entities.filter({ entity in
-                                if searchTerm.count > 2 {
-                                    return entity.serverId == server.identifier.rawValue && (
-                                        entity.name.lowercased().contains(searchTerm.lowercased()) ||
-                                            entity.entityId.lowercased().contains(searchTerm.lowercased())
-                                    )
-                                } else {
-                                    return entity.serverId == server.identifier.rawValue
-                                }
-                            }), id: \.id) { entity in
-                                Button(action: {
-                                    selectedEntity = entity
-                                    showList = false
-                                }, label: {
-                                    if let selectedEntity, selectedEntity == entity {
-                                        Label(entity.name, systemSymbol: .checkmark)
-                                    } else {
-                                        Text(entity.name)
-                                    }
-                                })
-                                .tint(.accentColor)
-                            }
-                        }
+    }
+
+    private var screen: some View {
+        NavigationView {
+            List {
+                ServersPickerPillList(selectedServerId: $selectedServerId)
+                ForEach(entities.filter({ entity in
+                    if searchTerm.count > 2 {
+                        return entity.serverId == selectedServerId && (
+                            entity.name.lowercased().contains(searchTerm.lowercased()) ||
+                                entity.entityId.lowercased().contains(searchTerm.lowercased())
+                        )
+                    } else {
+                        return entity.serverId == selectedServerId
                     }
-                }
-                .searchable(text: $searchTerm)
-                .onAppear {
-                    fetchEntities()
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        CloseButton {
-                            showList = false
+                }), id: \.id) { entity in
+                    Button(action: {
+                        selectedEntity = entity
+                        showList = false
+                    }, label: {
+                        VStack {
+                            Group {
+                                if let selectedEntity, selectedEntity == entity {
+                                    Label(entity.name, systemSymbol: .checkmark)
+                                } else {
+                                    Text(entity.name)
+                                }
+                                Text(entity.entityId)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
+                    })
+                    .tint(.accentColor)
+                }
+            }
+            .searchable(text: $searchTerm)
+            .onAppear {
+                fetchEntities()
+                if selectedServerId == nil {
+                    selectedServerId = Current.servers.all.first?.identifier.rawValue
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    CloseButton {
+                        showList = false
                     }
                 }
             }

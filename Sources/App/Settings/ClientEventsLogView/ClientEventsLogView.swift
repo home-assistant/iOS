@@ -90,7 +90,10 @@ struct ClientEventsLogView: View {
                         Button {
                             viewModel.resetTypeFilter()
                         } label: {
-                            filterPill(L10n.ClientEvents.EventType.all, selected: viewModel.typeFilter == nil)
+                            PillView(
+                                text: L10n.ClientEvents.EventType.all,
+                                selected: viewModel.typeFilter == nil
+                            )
                         }
                         ForEach(ClientEvent.EventType.allCases.sorted { e1, e2 in
                             e1.displayText < e2.displayText
@@ -98,7 +101,10 @@ struct ClientEventsLogView: View {
                             Button {
                                 viewModel.typeFilter = type
                             } label: {
-                                filterPill(type.displayText, selected: viewModel.typeFilter == type)
+                                PillView(
+                                    text: type.displayText,
+                                    selected: viewModel.typeFilter == type
+                                )
                             }
                         }
                     }
@@ -122,15 +128,6 @@ struct ClientEventsLogView: View {
                 view
             }
         }
-    }
-
-    private func filterPill(_ text: String, selected: Bool) -> some View {
-        Text(text)
-            .foregroundStyle(selected ? .white : Color(uiColor: .label))
-            .padding(Spaces.one)
-            .padding(.horizontal)
-            .background(selected ? Color.asset(Asset.Colors.haPrimary) : Color.secondary.opacity(0.1))
-            .clipShape(Capsule())
     }
 
     private func listItem(_ event: ClientEvent) -> some View {
