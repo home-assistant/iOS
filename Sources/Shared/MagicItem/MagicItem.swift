@@ -124,6 +124,95 @@ public struct MagicItem: Codable, Equatable, Hashable {
     public func name(info: Info) -> String {
         displayText ?? info.name
     }
+
+    public var widgetInteractionType: WidgetInteractionType {
+        let magicItem = self
+        guard let domain = magicItem.domain else { return .appIntent(.refresh) }
+
+        var interactionType: WidgetInteractionType = .appIntent(.refresh)
+
+        if let magicItemAction = magicItem.action, magicItemAction != .default {
+            switch magicItemAction {
+            case .default:
+                // This block of code should not be reached, default should not be handled here
+                // Returning something to avoid compiler error
+                interactionType = .appIntent(.refresh)
+            case .nothing:
+                interactionType = .appIntent(.refresh)
+            case let .navigate(path):
+                interactionType = navigateIntent(path: path)
+            case let .runScript(serverId, scriptId):
+                interactionType = .appIntent(.activate(
+                    entityId: scriptId,
+                    domain: Domain.script.rawValue,
+                    serverId: serverId
+                ))
+            case let .assist(serverId, pipelineId, startListening):
+                interactionType = assistIntent(
+                    serverId: serverId,
+                    pipelineId: pipelineId,
+                    startListening: startListening
+                )
+            }
+        } else {
+            switch domain {
+            case .button, .inputButton:
+                interactionType = .appIntent(.press(
+                    entityId: magicItem.id,
+                    domain: domain.rawValue,
+                    serverId: magicItem.serverId
+                ))
+            case .cover, .inputBoolean, .light, .switch:
+                interactionType = .appIntent(.toggle(
+                    entityId: magicItem.id,
+                    domain: domain.rawValue,
+                    serverId: magicItem.serverId
+                ))
+            case .lock:
+                // TODO: Support lock action in widgets
+                interactionType = .appIntent(.refresh)
+            case .scene, .script:
+                interactionType = .appIntent(.activate(
+                    entityId: magicItem.id,
+                    domain: domain.rawValue,
+                    serverId: magicItem.serverId
+                ))
+            default:
+                interactionType = .appIntent(.refresh)
+            }
+        }
+
+        return interactionType
+    }
+
+    private func navigateIntent(path: String) -> WidgetInteractionType {
+        let magicItem = self
+        var path = path
+        if path.hasPrefix("/") {
+            path.removeFirst()
+        }
+        if let url = AppConstants.navigateDeeplinkURL(
+            path: path,
+            serverId: magicItem.serverId,
+            avoidUnecessaryReload: true
+        ) {
+            return .widgetURL(url)
+        } else {
+            return .appIntent(.refresh)
+        }
+    }
+
+    private func assistIntent(serverId: String, pipelineId: String, startListening: Bool) -> WidgetInteractionType {
+        if let url = AppConstants.assistDeeplinkURL(
+            serverId: serverId,
+            pipelineId: pipelineId,
+            startListening: startListening
+        ) {
+            return .widgetURL(url)
+        } else {
+            return .appIntent(.refresh)
+        }
+    }
 }
 
 public enum MagicItemError: Error {

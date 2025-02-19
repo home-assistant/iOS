@@ -165,6 +165,15 @@ struct WidgetCreationView: View {
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
             let subtitle: String? = [.script, .scene, .button, .inputButton].contains(magicItem.domain) ? nil : L10n
                 .Widgets.EntityState.placeholder
+            let interactionType = magicItem.widgetInteractionType
+            let showIconBackground = {
+                switch interactionType {
+                case .widgetURL:
+                    return true
+                case let .appIntent(widgetIntentType):
+                    return widgetIntentType != .refresh
+                }
+            }()
 
             let icon: MaterialDesignIcons = {
                 if let info {
@@ -188,6 +197,7 @@ struct WidgetCreationView: View {
                 subtitle: subtitle,
                 interactionType: .appIntent(.refresh),
                 icon: icon,
+                showIconBackground: showIconBackground,
                 textColor: textColor,
                 iconColor: iconColor,
                 backgroundColor: backgroundColor,

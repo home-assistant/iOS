@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import SwiftUI
 
-struct WidgetBasicSensorView: WidgetBasicViewInterface {
+struct WidgetBasicSensorView: WidgetBasicViewProtocol {
     @Environment(\.widgetFamily) private var widgetFamily
 
     let model: WidgetBasicViewModel

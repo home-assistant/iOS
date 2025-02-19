@@ -117,12 +117,23 @@ struct WidgetCustom: Widget {
                 }
             }()
 
+            let interactionType = magicItem.widgetInteractionType
+            let showIconBackground = {
+                switch interactionType {
+                case .widgetURL:
+                    return true
+                case let .appIntent(widgetIntentType):
+                    return widgetIntentType != .refresh
+                }
+            }()
+
             return WidgetBasicViewModel(
                 id: magicItem.serverUniqueId,
                 title: title,
                 subtitle: state?.value,
-                interactionType: interactionTypeForItem(magicItem),
+                interactionType: interactionType,
                 icon: icon,
+                showIconBackground: showIconBackground,
                 textColor: textColor ?? Color(uiColor: .label),
                 iconColor: iconColor,
                 backgroundColor: backgroundColor ?? Color.asset(Asset.Colors.tileBackground),
@@ -132,94 +143,6 @@ struct WidgetCustom: Widget {
                 widgetId: widget.id,
                 disabled: !widget.itemsStates.isEmpty
             )
-        }
-    }
-
-    private func interactionTypeForItem(_ magicItem: MagicItem) -> WidgetBasicViewModel.InteractionType {
-        guard let domain = magicItem.domain else { return .appIntent(.refresh) }
-
-        var interactionType: WidgetBasicViewModel.InteractionType = .appIntent(.refresh)
-
-        if let magicItemAction = magicItem.action, magicItemAction != .default {
-            switch magicItemAction {
-            case .default:
-                // This block of code should not be reached, default should not be handled here
-                // Returning something to avoid compiler error
-                interactionType = .appIntent(.refresh)
-            case .nothing:
-                interactionType = .appIntent(.refresh)
-            case let .navigate(path):
-                interactionType = navigateIntent(magicItem, path: path)
-            case let .runScript(serverId, scriptId):
-                interactionType = .appIntent(.activate(
-                    entityId: scriptId,
-                    domain: Domain.script.rawValue,
-                    serverId: serverId
-                ))
-            case let .assist(serverId, pipelineId, startListening):
-                interactionType = assistIntent(
-                    serverId: serverId,
-                    pipelineId: pipelineId,
-                    startListening: startListening
-                )
-            }
-        } else {
-            switch domain {
-            case .button, .inputButton:
-                interactionType = .appIntent(.press(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            case .cover, .inputBoolean, .light, .switch:
-                interactionType = .appIntent(.toggle(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            case .lock:
-                // TODO: Support lock action in widgets
-                interactionType = .appIntent(.refresh)
-            case .scene, .script:
-                interactionType = .appIntent(.activate(
-                    entityId: magicItem.id,
-                    domain: domain.rawValue,
-                    serverId: magicItem.serverId
-                ))
-            default:
-                interactionType = .appIntent(.refresh)
-            }
-        }
-
-        return interactionType
-    }
-
-    private func navigateIntent(_ magicItem: MagicItem, path: String) -> WidgetBasicViewModel.InteractionType {
-        var path = path
-        if path.hasPrefix("/") {
-            path.removeFirst()
-        }
-        if let url = AppConstants.navigateDeeplinkURL(
-            path: path,
-            serverId: magicItem.serverId,
-            avoidUnecessaryReload: true
-        ) {
-            return .widgetURL(url)
-        } else {
-            return .appIntent(.refresh)
-        }
-    }
-
-    private func assistIntent(serverId: String, pipelineId: String, startListening: Bool) -> WidgetBasicViewModel
-        .InteractionType {
-        if let url = AppConstants.assistDeeplinkURL(
-            serverId: serverId,
-            pipelineId: pipelineId,
-            startListening: startListening
-        ) {
-            return .widgetURL(url)
-        } else {
-            return .appIntent(.refresh)
         }
     }
 }
