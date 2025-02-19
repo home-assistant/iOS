@@ -221,7 +221,7 @@ struct MagicItemCustomizationView: View {
         }
         Section {
             Toggle(L10n.MagicItem.RequireConfirmation.title, isOn: .init(get: {
-                viewModel.item.customization?.requiresConfirmation ?? true
+                viewModel.item.customization?.requiresConfirmation ?? false
             }, set: { newValue in
                 viewModel.item.customization?.requiresConfirmation = newValue
             }))

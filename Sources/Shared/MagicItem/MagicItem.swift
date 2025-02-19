@@ -74,7 +74,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
             iconColor: String? = nil,
             textColor: String? = nil,
             backgroundColor: String? = nil,
-            requiresConfirmation: Bool = true,
+            requiresConfirmation: Bool = false,
             icon: String? = nil
         ) {
             self.iconColor = iconColor
