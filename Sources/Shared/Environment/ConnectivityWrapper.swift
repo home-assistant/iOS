@@ -2,9 +2,9 @@ import Foundation
 #if os(iOS)
 import CoreTelephony
 import Reachability
+import SystemConfiguration.CaptiveNetwork
 #endif
 import Communicator
-import NetworkExtension
 
 /// Wrapper around CoreTelephony, Reachability
 public class ConnectivityWrapper {
@@ -59,18 +59,31 @@ public class ConnectivityWrapper {
             #if targetEnvironment(simulator)
             return "Simulator"
             #endif
+
+            guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
+            for interface in interfaces {
+                guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else {
+                    continue
+                }
+                return interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
+            }
             return nil
         }
         self.currentWiFiBSSID = {
-            nil
+            guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
+            for interface in interfaces {
+                guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else {
+                    continue
+                }
+                return interfaceInfo[kCNNetworkInfoKeyBSSID as String] as? String
+            }
+            return nil
         }
         self.connectivityDidChangeNotification = { .reachabilityChanged }
         self.simpleNetworkType = { reachability?.getSimpleNetworkType() ?? .unknown }
         self.cellularNetworkType = { reachability?.getNetworkType() ?? .unknown }
         self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
-
-        syncNetworkInformation()
     }
     #else
     init() {
@@ -86,8 +99,6 @@ public class ConnectivityWrapper {
         self.cellularNetworkType = { .unknown }
         self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
-
-        syncNetworkInformation()
     }
     #endif
 
@@ -100,20 +111,4 @@ public class ConnectivityWrapper {
         CTTelephonyNetworkInfo().serviceCurrentRadioAccessTechnology
     }
     #endif
-
-    private func syncNetworkInformation() {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            Current.Log
-                .verbose(
-                    "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
-                )
-            self.currentWiFiSSID = {
-                #if targetEnvironment(simulator)
-                return "Simulator"
-                #endif
-                return hotspotNetwork?.ssid
-            }
-            self.currentWiFiBSSID = { hotspotNetwork?.bssid }
-        }
-    }
 }
