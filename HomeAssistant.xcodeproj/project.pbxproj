@@ -506,8 +506,8 @@
 		3E02C0F52CA8047000102131 /* WidgetSensorsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */; };
 		3E02C0F62CA8049500102131 /* WidgetSensorsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0EA2CA7FD2A00102131 /* WidgetSensorsAppIntentTimelineProvider.swift */; };
 		3E4087EB2CD9047B0085DF29 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
-		3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */; };
-		3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */; };
+		3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift */; };
+		3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift */; };
 		3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */; };
 		3E4087F12CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */; };
 		4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */; };
@@ -707,6 +707,8 @@
 		42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */; };
 		4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
+		427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
+		427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		428338442BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
@@ -1865,7 +1867,7 @@
 		3E02C0E42CA7FCF400102131 /* WidgetSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensors.swift; sourceTree = "<group>"; };
 		3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsAppIntent.swift; sourceTree = "<group>"; };
 		3E02C0EA2CA7FD2A00102131 /* WidgetSensorsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
-		3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewInterface.swift; sourceTree = "<group>"; };
+		3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewProtocol.swift; sourceTree = "<group>"; };
 		3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSensorView.swift; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCircularView.swift; sourceTree = "<group>"; };
@@ -2058,6 +2060,7 @@
 		42790C432C48077200E31B38 /* ImprovSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovSuccessView.swift; sourceTree = "<group>"; };
 		42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLikeBottomSheet.swift; sourceTree = "<group>"; };
 		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4283383F2BA1B17C004798C2 /* AssistRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRequests.swift; sourceTree = "<group>"; };
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
@@ -2900,7 +2903,7 @@
 				1165705527018C4E003906A7 /* WidgetEmptyView.swift */,
 				115560E227010DAB00A8F818 /* WidgetBasicButtonView.swift */,
 				3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */,
-				3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift */,
+				3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift */,
 				424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */,
 				420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */,
 				420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */,
@@ -5129,6 +5132,7 @@
 				42F1DA6F2B4EE2E8002729BC /* HAAreaResponse.swift */,
 				426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */,
 				42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */,
+				427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */,
 				4251AABD2C6CE230004CCC9D /* MagicItem */,
 				4264906A2C0F1B40002155CC /* Assist */,
 				426740A42B17348700C1DD73 /* Assets */,
@@ -6885,7 +6889,7 @@
 				3E02C0E82CA7FCF400102131 /* WidgetSensors.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
 				4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */,
-				3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */,
+				3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
@@ -7000,7 +7004,7 @@
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
-				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewInterface.swift in Sources */,
+				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
@@ -7303,6 +7307,7 @@
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
+				427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				115560E927011E3300A8F818 /* HAPanel.swift in Sources */,
 				42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */,
@@ -7737,6 +7742,7 @@
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
 				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
+				427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,

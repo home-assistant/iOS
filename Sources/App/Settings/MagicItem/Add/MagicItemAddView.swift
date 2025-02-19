@@ -8,35 +8,46 @@ struct MagicItemAddView: View {
         case widget
     }
 
+    enum PickerOption {
+        case entities
+        case scripts
+        case scenes
+        case legacyiOSActions
+    }
+
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = MagicItemAddViewModel()
+    private let visiblePickerOptions: [PickerOption]
 
     let context: Context
     let itemToAdd: (MagicItem?) -> Void
 
+    init(context: Context, itemToAdd: @escaping (MagicItem?) -> Void) {
+        self.context = context
+        self.itemToAdd = itemToAdd
+
+        self.visiblePickerOptions = {
+            var options: [PickerOption] = []
+            if [.carPlay, .widget].contains(context) {
+                options.append(.entities)
+            }
+            if context != .widget {
+                // In other context user can just select entities directly
+                // In Apple watch we don't have entity support yet
+                if context == .watch {
+                    options.append(.scripts)
+                    options.append(.scenes)
+                }
+                options.append(.legacyiOSActions)
+            }
+            return options
+        }()
+    }
+
     var body: some View {
         NavigationView {
             VStack {
-                Picker(L10n.MagicItem.ItemType.Selection.List.title, selection: $viewModel.selectedItemType) {
-                    if [.carPlay, .widget].contains(context) {
-                        Text(L10n.MagicItem.ItemType.Entity.List.title)
-                            .tag(MagicItemAddType.entities)
-                    }
-                    if context != .widget {
-                        // In other context user can just select entities directly
-                        // In Apple watch we don't have entity support yet
-                        if context == .watch {
-                            Text(L10n.MagicItem.ItemType.Script.List.title)
-                                .tag(MagicItemAddType.scripts)
-                            Text(L10n.MagicItem.ItemType.Scene.List.title)
-                                .tag(MagicItemAddType.scenes)
-                        }
-                        Text(L10n.MagicItem.ItemType.Action.List.title)
-                            .tag(MagicItemAddType.actions)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding()
+                pickerView
                 List {
                     switch viewModel.selectedItemType {
                     case .actions:
@@ -63,6 +74,33 @@ struct MagicItemAddView: View {
         }
     }
 
+    @ViewBuilder
+    private var pickerView: some View {
+        // If there is only one option, don't show the picker
+        if visiblePickerOptions.count > 1 {
+            Picker(L10n.MagicItem.ItemType.Selection.List.title, selection: $viewModel.selectedItemType) {
+                ForEach(visiblePickerOptions, id: \.self) { option in
+                    switch option {
+                    case .entities:
+                        Text(L10n.MagicItem.ItemType.Entity.List.title)
+                            .tag(MagicItemAddType.entities)
+                    case .legacyiOSActions:
+                        Text(L10n.MagicItem.ItemType.Action.List.title)
+                            .tag(MagicItemAddType.actions)
+                    case .scripts:
+                        Text(L10n.MagicItem.ItemType.Script.List.title)
+                            .tag(MagicItemAddType.scripts)
+                    case .scenes:
+                        Text(L10n.MagicItem.ItemType.Scene.List.title)
+                            .tag(MagicItemAddType.scenes)
+                    }
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding()
+        }
+    }
+
     private func autoSelectItemType() {
         switch context {
         case .watch:
@@ -76,7 +114,7 @@ struct MagicItemAddView: View {
     private var actionsList: some View {
         actionsDeprecationDisclaimer
         ForEach(viewModel.actions, id: \.ID) { action in
-            if visibleForSearch(title: action.Text) {
+            if visibleForSearch(title: action.Text, entityId: action.ID) {
                 Button(action: {
                     itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
                     dismiss()
@@ -130,40 +168,42 @@ struct MagicItemAddView: View {
 
     @ViewBuilder
     private func list(entities: [HAAppEntity], serverId: String, type: MagicItem.ItemType) -> some View {
-        ForEach(entities, id: \.id) { entity in
-            if visibleForSearch(title: entity.name) || visibleForSearch(title: entity.entityId) {
-                NavigationLink {
-                    MagicItemCustomizationView(
-                        mode: .add,
-                        context: context,
-                        item: .init(
-                            id: entity.entityId,
-                            serverId: serverId,
-                            type: type
-                        )
-                    ) { itemToAdd in
-                        self.itemToAdd(itemToAdd)
-                        dismiss()
-                    }
-                } label: {
-                    MagicItemRow(
-                        title: entity.name,
-                        subtitle: entity.entityId,
-                        entityIcon: {
-                            if let entityId = entity.icon {
-                                return MaterialDesignIcons(serversideValueNamed: entityId, fallback: .dotsGridIcon)
-                            } else {
-                                return Domain(rawValue: entity.domain)?.icon ?? .dotsGridIcon
-                            }
-                        }()
+        ForEach(entities.filter({ entity in
+            visibleForSearch(title: entity.name, entityId: entity.entityId)
+        }), id: \.id) { entity in
+            NavigationLink {
+                MagicItemCustomizationView(
+                    mode: .add,
+                    context: context,
+                    item: .init(
+                        id: entity.entityId,
+                        serverId: serverId,
+                        type: type
                     )
+                ) { itemToAdd in
+                    self.itemToAdd(itemToAdd)
+                    dismiss()
                 }
+            } label: {
+                MagicItemRow(
+                    title: entity.name,
+                    subtitle: entity.entityId,
+                    entityIcon: {
+                        if let entityId = entity.icon {
+                            return MaterialDesignIcons(serversideValueNamed: entityId, fallback: .dotsGridIcon)
+                        } else {
+                            return Domain(rawValue: entity.domain)?.icon ?? .dotsGridIcon
+                        }
+                    }()
+                )
             }
         }
     }
 
-    private func visibleForSearch(title: String) -> Bool {
-        viewModel.searchText.count < 3 || title.lowercased().contains(viewModel.searchText.lowercased())
+    private func visibleForSearch(title: String, entityId: String) -> Bool {
+        viewModel.searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+            title.lowercased().contains(viewModel.searchText.lowercased()) ||
+            entityId.lowercased().contains(viewModel.searchText.lowercased())
     }
 }
 
