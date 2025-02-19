@@ -714,7 +714,7 @@
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
 		4285C5552D3568A100DADE45 /* WidgetAddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5542D3568A100DADE45 /* WidgetAddItemView.swift */; };
-		428830EB2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */; };
+		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
 		4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E65F072C8079FE00C4A6F2 /* ControlAssistValueProvider.swift */; };
@@ -2069,7 +2069,7 @@
 		4285C5502D355F9900DADE45 /* WidgetCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationView.swift; sourceTree = "<group>"; };
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
 		4285C5542D3568A100DADE45 /* WidgetAddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAddItemView.swift; sourceTree = "<group>"; };
-		428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeCoordinatorView.swift; sourceTree = "<group>"; };
+		428830EA2C6E3A8D0012373D /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
 		4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScenesValueProvider.swift; sourceTree = "<group>"; };
@@ -4283,7 +4283,7 @@
 			isa = PBXGroup;
 			children = (
 				4207EB742C87547000286A2D /* MagicItemRow */,
-				428830EA2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift */,
+				428830EA2C6E3A8D0012373D /* WatchHomeView.swift */,
 				428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */,
 			);
 			path = Home;
@@ -7545,7 +7545,7 @@
 				426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */,
 				423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */,
 				428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */,
-				428830EB2C6E3A8D0012373D /* WatchHomeCoordinatorView.swift in Sources */,
+				428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */,
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */,
 				11FA9321263FA7AC0015F1FC /* NotificationSubControllerMap.swift in Sources */,
