@@ -48,6 +48,7 @@ struct ConnectionErrorDetailsView: View {
                                 }
                             }
                         }
+                        openSettingsButton
                         CollapsibleView {
                             Text("Advanced")
                                 .font(.body.bold())
@@ -73,14 +74,30 @@ struct ConnectionErrorDetailsView: View {
                     .padding()
                 }
             }
-            .ignoresSafeArea()
+            .ignoresSafeArea(edges: .top)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        openSettings()
+                    }, label: {
+                        Image(uiImage: MaterialDesignIcons.cogIcon.image(
+                            ofSize: .init(width: 28, height: 28),
+                            color: .white
+                        ))
+                    })
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton(tint: .white) {
                         dismiss()
                     }
                 }
             }
+        }
+    }
+
+    private func openSettings() {
+        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
+            controller.showSettingsViewController()
         }
     }
 
@@ -149,6 +166,20 @@ struct ConnectionErrorDetailsView: View {
                 """
             feedbackGenerator.notificationOccurred(.success)
         }
+    }
+
+    private var openSettingsButton: some View {
+        ActionLinkButton(
+            icon: Image(uiImage: MaterialDesignIcons.cogIcon.image(
+                ofSize: .init(width: 28, height: 28),
+                color: .label
+            )),
+            title: L10n.ConnectionError.OpenSettings.title,
+            tint: .init(uiColor: Asset.Colors.haPrimary.color)
+        ) {
+            openSettings()
+        }
+        .padding(.top)
     }
 
     private var documentationLink: some View {
