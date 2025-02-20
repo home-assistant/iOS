@@ -638,6 +638,20 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "carPlay.state.loading.title") }
       }
     }
+    public enum Tabs {
+      public enum Active {
+        /// Active
+        public static var title: String { return L10n.tr("Localizable", "carPlay.tabs.active.title") }
+        public enum DeleteAction {
+          /// Swipe left to remove tab
+          public static var title: String { return L10n.tr("Localizable", "carPlay.tabs.active.delete_action.title") }
+        }
+      }
+      public enum Inactive {
+        /// Inactive
+        public static var title: String { return L10n.tr("Localizable", "carPlay.tabs.inactive.title") }
+      }
+    }
     public enum Unlock {
       public enum Confirmation {
         /// Are you sure you want to perform unlock action on %@?
@@ -844,6 +858,13 @@ public enum L10n {
           }
         }
       }
+    }
+  }
+
+  public enum ConnectionError {
+    public enum AdvancedSection {
+      /// Advanced
+      public static var title: String { return L10n.tr("Localizable", "connection_error.advanced_section.title") }
     }
   }
 

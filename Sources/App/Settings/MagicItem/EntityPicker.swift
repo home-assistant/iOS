@@ -30,7 +30,7 @@ struct EntityPicker: View {
             if let name = selectedEntity?.name {
                 Text(name)
             } else {
-                Text(L10n.EntityPicker.placeholder)
+                Text(verbatim: L10n.EntityPicker.placeholder)
             }
         })
     }

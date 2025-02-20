@@ -91,7 +91,7 @@ struct WatchHomeView: View {
                     .listRowBackground(Color.red.opacity(0.5).clipShape(RoundedRectangle(cornerRadius: 12)))
             }
             if viewModel.watchConfig.items.isEmpty {
-                Text(L10n.Watch.Labels.noConfig)
+                Text(verbatim: L10n.Watch.Labels.noConfig)
                     .font(.footnote)
             } else {
                 mainContent

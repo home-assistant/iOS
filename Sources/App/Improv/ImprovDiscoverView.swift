@@ -128,7 +128,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 cancelWifiInput()
             }
         } message: {
-            Text(L10n.Improv.Wifi.Alert.description)
+            Text(verbatim: L10n.Improv.Wifi.Alert.description)
         }
     }
 
@@ -196,7 +196,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 }
             }, header: {
                 HStack(spacing: Spaces.two) {
-                    Text(L10n.Improv.List.title)
+                    Text(verbatim: L10n.Improv.List.title)
                         .textCase(.uppercase)
                         .font(.footnote)
                         .foregroundStyle(Color(uiColor: .secondaryLabel))

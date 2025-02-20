@@ -18,7 +18,7 @@ struct ImprovSuccessView: View {
                             .stroke(.regularMaterial, lineWidth: 5)
                     )
             }
-            Text(L10n.Improv.State.success)
+            Text(verbatim: L10n.Improv.State.success)
                 .font(.title3.bold())
                 .foregroundStyle(Color(uiColor: .secondaryLabel))
         }
@@ -31,7 +31,7 @@ struct ImprovSuccessView: View {
         Button {
             action()
         } label: {
-            Text(L10n.Improv.Button.continue)
+            Text(verbatim: L10n.Improv.Button.continue)
                 .foregroundStyle(Color(uiColor: .label))
                 .padding()
         }

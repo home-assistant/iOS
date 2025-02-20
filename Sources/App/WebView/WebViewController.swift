@@ -1043,7 +1043,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             NavigationView {
                 VStack {
                     HStack(spacing: Spaces.half) {
-                        Text(L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
+                        Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
                         Toggle(isOn: .init(get: {
                             Current.settingsStore.gestures[.shake] == .openDebug
                         }, set: { newValue in

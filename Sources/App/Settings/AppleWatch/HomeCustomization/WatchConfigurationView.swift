@@ -20,7 +20,7 @@ struct WatchConfigurationView: View {
                         Button(action: {
                             dismiss()
                         }, label: {
-                            Text(L10n.cancelLabel)
+                            Text(verbatim: L10n.cancelLabel)
                         })
                     }
                     ToolbarItem(placement: .topBarTrailing) {
@@ -34,7 +34,7 @@ struct WatchConfigurationView: View {
                                 }
                             }
                         }, label: {
-                            Text(L10n.Watch.Configuration.Save.title)
+                            Text(verbatim: L10n.Watch.Configuration.Save.title)
                         })
                     }
                 })
@@ -53,7 +53,7 @@ struct WatchConfigurationView: View {
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
             Button(action: {}, label: {
-                Text(L10n.okLabel)
+                Text(verbatim: L10n.okLabel)
             })
         }
     }
@@ -116,7 +116,7 @@ struct WatchConfigurationView: View {
     private var assistSection: some View {
         Section("Assist") {
             Toggle(isOn: $viewModel.watchConfig.assist.showAssist, label: {
-                Text(L10n.Watch.Configuration.ShowAssist.title)
+                Text(verbatim: L10n.Watch.Configuration.ShowAssist.title)
             })
             if viewModel.watchConfig.assist.showAssist {
                 Picker(L10n.Watch.Config.Assist.selectServer, selection: $viewModel.watchConfig.assist.serverId) {
@@ -287,7 +287,7 @@ struct WatchConfigurationView: View {
     }
 
     private var noItemsWatchView: some View {
-        Text(L10n.Watch.Settings.NoItems.Phone.title)
+        Text(verbatim: L10n.Watch.Settings.NoItems.Phone.title)
             .frame(maxWidth: .infinity, alignment: .center)
             .font(.footnote)
             .padding(Spaces.one)

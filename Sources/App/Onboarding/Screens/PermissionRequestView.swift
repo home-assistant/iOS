@@ -44,7 +44,7 @@ struct PermissionRequestView: View {
                     Button {
                         continueAction()
                     } label: {
-                        Text(L10n.continueLabel)
+                        Text(verbatim: L10n.continueLabel)
                     }
                     .buttonStyle(.primaryButton)
                     if showSkipButton {
@@ -52,14 +52,14 @@ struct PermissionRequestView: View {
                             dismissAction?()
                             dismiss()
                         } label: {
-                            Text(L10n.Permission.Screen.Bluetooth.secondaryButton)
+                            Text(verbatim: L10n.Permission.Screen.Bluetooth.secondaryButton)
                         }
                         .buttonStyle(.secondaryButton)
                     } else {
                         Button {
                             /* no-op */
                         } label: {
-                            Text(L10n.Onboarding.Permissions.changeLaterNote)
+                            Text(verbatim: L10n.Onboarding.Permissions.changeLaterNote)
                         }
                         .buttonStyle(.linkButton)
                     }

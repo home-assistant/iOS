@@ -21,7 +21,7 @@ struct CarPlayConfigurationView: View {
                         Button(action: {
                             dismiss()
                         }, label: {
-                            Text(L10n.cancelLabel)
+                            Text(verbatim: L10n.cancelLabel)
                         })
                     }
                     ToolbarItem(placement: .topBarTrailing) {
@@ -35,7 +35,7 @@ struct CarPlayConfigurationView: View {
                                 }
                             }
                         }, label: {
-                            Text(L10n.Watch.Configuration.Save.title)
+                            Text(verbatim: L10n.Watch.Configuration.Save.title)
                         })
                     }
                 })
@@ -53,7 +53,7 @@ struct CarPlayConfigurationView: View {
                 })
                 .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
                     Button(action: {}, label: {
-                        Text(L10n.okLabel)
+                        Text(verbatim: L10n.okLabel)
                     })
                 }
         }
@@ -182,12 +182,12 @@ struct CarPlayConfigurationView: View {
                     viewModel.deleteTab(at: indexSet)
                 }
             } header: {
-                Text("Active")
+                Text(L10n.CarPlay.Tabs.Active.title)
             } footer: {
-                Text("Swipe left to remove tab")
+                Text(L10n.CarPlay.Tabs.Active.DeleteAction.title)
             }
             if viewModel.config.tabs.count != CarPlayTab.allCases.count {
-                Section("Inactive") {
+                Section(L10n.CarPlay.Tabs.Inactive.title) {
                     ForEach(CarPlayTab.allCases.filter({ tab in
                         !viewModel.config.tabs.contains(tab)
                     }), id: \.rawValue) { tab in

@@ -109,7 +109,7 @@ struct WatchAssistView: View {
         if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
             HStack(spacing: Spaces.one) {
                 if viewModel.assistService.deviceReachable {
-                    Text(L10n.Assist.Watch.MicButton.title)
+                    Text(verbatim: L10n.Assist.Watch.MicButton.title)
                     Image(systemName: "mic.fill")
                 } else {
                     Image(systemName: "iphone.slash")
@@ -170,10 +170,10 @@ struct WatchAssistView: View {
                     Image(systemSymbol: .waveformCircleFill)
                         .font(.system(size: 50))
                 }
-                Text(L10n.Watch.Assist.Button.Recording.title)
+                Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
                     .font(.system(size: 11))
                     .foregroundStyle(.gray)
-                Text(L10n.Watch.Assist.Button.SendRequest.title)
+                Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
                     .font(.footnote.bold())
                     .padding()
             }

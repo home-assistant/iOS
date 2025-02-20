@@ -31,10 +31,10 @@ struct WatchMagicViewRow: View {
                 Button(action: {
                     viewModel.confirmationAction()
                 }, label: {
-                    Text(L10n.yesLabel)
+                    Text(verbatim: L10n.yesLabel)
                 })
                 Button(action: {}, label: {
-                    Text(L10n.cancelLabel)
+                    Text(verbatim: L10n.cancelLabel)
                 })
                 .tint(.red)
             }

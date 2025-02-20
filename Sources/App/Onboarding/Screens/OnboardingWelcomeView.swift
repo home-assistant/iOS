@@ -27,11 +27,11 @@ struct OnboardingWelcomeView: View {
     private var textBlock: some View {
         ScrollView {
             VStack(spacing: Spaces.two) {
-                Text(L10n.Onboarding.Welcome.title(Current.device.systemName()))
+                Text(verbatim: L10n.Onboarding.Welcome.title(Current.device.systemName()))
                     .font(.title.bold())
                     .frame(maxWidth: .infinity, alignment: .center)
                     .multilineTextAlignment(.center)
-                Text(L10n.Onboarding.Welcome.description)
+                Text(verbatim: L10n.Onboarding.Welcome.description)
                     .foregroundStyle(Color(uiColor: .secondaryLabel))
                 Button(L10n.Onboarding.Welcome.learnMore) {
                     showLearnMore = true
@@ -44,7 +44,7 @@ struct OnboardingWelcomeView: View {
 
     private var continueButton: some View {
         NavigationLink(destination: OnboardingScanningView()) {
-            Text(L10n.continueLabel)
+            Text(verbatim: L10n.continueLabel)
                 .font(.callout.bold())
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)

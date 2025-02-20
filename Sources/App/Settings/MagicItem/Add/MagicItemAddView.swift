@@ -86,16 +86,16 @@ struct MagicItemAddView: View {
                 ForEach(visiblePickerOptions, id: \.self) { option in
                     switch option {
                     case .entities:
-                        Text(L10n.MagicItem.ItemType.Entity.List.title)
+                        Text(verbatim: L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
                     case .legacyiOSActions:
-                        Text(L10n.MagicItem.ItemType.Action.List.title)
+                        Text(verbatim: L10n.MagicItem.ItemType.Action.List.title)
                             .tag(MagicItemAddType.actions)
                     case .scripts:
-                        Text(L10n.MagicItem.ItemType.Script.List.title)
+                        Text(verbatim: L10n.MagicItem.ItemType.Script.List.title)
                             .tag(MagicItemAddType.scripts)
                     case .scenes:
-                        Text(L10n.MagicItem.ItemType.Scene.List.title)
+                        Text(verbatim: L10n.MagicItem.ItemType.Scene.List.title)
                             .tag(MagicItemAddType.scenes)
                     }
                 }
@@ -135,7 +135,7 @@ struct MagicItemAddView: View {
             Button {
                 viewModel.selectedItemType = .scripts
             } label: {
-                Text(L10n.MagicItem.ItemType.Action.List.Warning.title)
+                Text(verbatim: L10n.MagicItem.ItemType.Action.List.Warning.title)
             }
             .buttonStyle(.bordered)
             .tint(.red)

@@ -22,7 +22,7 @@ struct AssistPipelinePicker: View {
             if selectedServerId != nil, let selectedPipelineId, !assistConfigs.isEmpty {
                 Text(nameForSelectedPipeline() ?? selectedPipelineId)
             } else {
-                Text(L10n.AssistPipelinePicker.placeholder)
+                Text(verbatim: L10n.AssistPipelinePicker.placeholder)
             }
         })
         .onAppear {

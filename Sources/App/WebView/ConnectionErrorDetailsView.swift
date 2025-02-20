@@ -14,14 +14,14 @@ struct ConnectionErrorDetailsView: View {
                     headerView
                     VStack(alignment: .leading) {
                         VStack(alignment: .leading, spacing: Spaces.two) {
-                            Text(L10n.Connection.Error.FailedConnect.title)
+                            Text(verbatim: L10n.Connection.Error.FailedConnect.title)
                                 .font(.title.bold())
-                            Text(L10n.Connection.Error.FailedConnect.subtitle)
+                            Text(verbatim: L10n.Connection.Error.FailedConnect.subtitle)
                             if let urlError = error as? URLError,
                                let url = urlError.failingURL?.absoluteString,
                                let attributedString = try? AttributedString(markdown: "[\(url)](\(url))") {
                                 VStack {
-                                    Text(L10n.Connection.Error.FailedConnect.url)
+                                    Text(verbatim: L10n.Connection.Error.FailedConnect.url)
                                         .font(.footnote)
                                     Text(attributedString)
                                         .font(.body.bold())
@@ -44,12 +44,12 @@ struct ConnectionErrorDetailsView: View {
                                         .font(.body.italic())
                                 } else {
                                     // Alert user when it has deactivated cloud usage in the App
-                                    Text(L10n.Connection.Error.FailedConnect.CloudInactive.title)
+                                    Text(verbatim: L10n.Connection.Error.FailedConnect.CloudInactive.title)
                                 }
                             }
                         }
                         CollapsibleView {
-                            Text("Advanced")
+                            Text(L10n.ConnectionError.AdvancedSection.title)
                                 .font(.body.bold())
                         } expandedContent: {
                             advancedContent
