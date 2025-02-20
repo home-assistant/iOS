@@ -24,11 +24,45 @@ struct WidgetBasicContainerView: View {
     }
 
     var body: some View {
+        WidgetBasicContainerWrapperView(
+            emptyViewGenerator: emptyViewGenerator,
+            contents: contents,
+            type: type,
+            showLastUpdate: showLastUpdate,
+            family: family
+        )
+    }
+}
+
+/// This wrapper only exists so it can be snapshot tested with the proper family size which is not possible with the
+/// `WidgetBasicContainerView` and the environment variable
+struct WidgetBasicContainerWrapperView: View {
+    let emptyViewGenerator: () -> AnyView
+    let contents: [WidgetBasicViewModel]
+    let type: WidgetType
+    let showLastUpdate: Bool
+    let family: WidgetFamily
+
+    init(
+        emptyViewGenerator: @escaping () -> AnyView,
+        contents: [WidgetBasicViewModel],
+        type: WidgetType,
+        showLastUpdate: Bool = false,
+        family: WidgetFamily
+    ) {
+        self.emptyViewGenerator = emptyViewGenerator
+        self.contents = contents
+        self.type = type
+        self.showLastUpdate = showLastUpdate
+        self.family = family
+    }
+
+    var body: some View {
         VStack {
             if contents.isEmpty {
                 emptyViewGenerator()
             } else {
-                content(for: contents)
+                content(for: Array(contents.prefix(WidgetFamilySizes.size(for: family))))
             }
             if showLastUpdate, !contents.isEmpty {
                 Group {

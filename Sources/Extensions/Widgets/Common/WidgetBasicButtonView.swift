@@ -67,7 +67,7 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .condensed, .compressed:
+                case .regular, .compact, .compressed:
                     HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
                         icon
                         VStack(alignment: .leading, spacing: .zero) {
