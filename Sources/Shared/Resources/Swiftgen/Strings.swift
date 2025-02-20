@@ -865,6 +865,7 @@ public enum L10n {
     public enum AdvancedSection {
       /// Advanced
       public static var title: String { return L10n.tr("Localizable", "connection_error.advanced_section.title") }
+    }
     public enum OpenSettings {
       /// Open settings
       public static var title: String { return L10n.tr("Localizable", "connection_error.open_settings.title") }
@@ -3983,6 +3984,18 @@ public enum L10n {
       public enum RequireConfirmation {
         /// Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.
         public static var footer: String { return L10n.tr("Localizable", "widgets.custom.require_confirmation.footer") }
+      }
+      public enum ShowLastUpdateTime {
+        public enum Param {
+          /// Show last update time
+          public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_last_update_time.param.title") }
+        }
+      }
+      public enum ShowStates {
+        public enum Param {
+          /// Show states (BETA)
+          public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_states.param.title") }
+        }
       }
       public enum ShowUpdateTime {
         /// Last update:
