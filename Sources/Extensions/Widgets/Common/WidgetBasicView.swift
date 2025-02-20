@@ -53,6 +53,104 @@ struct WidgetBasicView: View {
         }
     }
 
+    @available(iOS 16.0, *)
+    private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
+        Group {
+            switch type {
+            case .button, .custom:
+                return AnyView(WidgetBasicViewTintedWrapper(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    viewType: WidgetBasicButtonView.self
+                ))
+            case .sensor:
+                return AnyView(WidgetBasicViewTintedWrapper(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    viewType: WidgetBasicSensorView.self
+                ))
+            }
+        }
+        .opacity(model.disabled ? opacityWhenDisabled : 1)
+    }
+
+    private func normalView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
+        Group {
+            switch type {
+            case .button, .custom:
+                return AnyView(WidgetBasicButtonView(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    tinted: false
+                ))
+            case .sensor:
+                return AnyView(WidgetBasicSensorView(
+                    model: model,
+                    sizeStyle: sizeStyle,
+                    tinted: false
+                ))
+            }
+        }
+        .opacity(model.disabled ? opacityWhenDisabled : 1)
+    }
+
+    @available(iOS 17.0, *)
+    private func intent(for model: WidgetBasicViewModel, isConfirmationDone: Bool = true) -> (any AppIntent)? {
+        switch model.interactionType {
+        case .widgetURL:
+            return nil
+        case let .appIntent(widgetIntentType):
+            // When confirmation is required and this method wasn't called from confirmation button
+            if model.requiresConfirmation, !isConfirmationDone {
+                let intent = UpdateWidgetItemConfirmationStateAppIntent()
+                intent.widgetId = model.widgetId
+                intent.serverUniqueId = model.id
+                return intent
+            }
+            switch widgetIntentType {
+            case .action:
+                let intent = PerformAction()
+                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
+                intent.hapticConfirmation = true
+                return intent
+            case let .script(id, entityId, serverId, name, showConfirmationNotification):
+                let intent = ScriptAppIntent()
+                intent.script = .init(
+                    id: id,
+                    entityId: entityId,
+                    serverId: serverId,
+                    serverName: "", // not used in this context
+                    displayString: name,
+                    iconName: "" // not used in this context
+                )
+                intent.hapticConfirmation = true
+                intent.showConfirmationNotification = showConfirmationNotification
+                return intent
+            case .refresh:
+                return ReloadWidgetsAppIntent()
+            case let .toggle(entityId, domain, serverId):
+                let intent = CustomWidgetToggleAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                intent.widgetShowingStates = model.subtitle != nil
+                return intent
+            case let .activate(entityId, domain, serverId):
+                let intent = CustomWidgetActivateAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                return intent
+            case let .press(entityId, domain, serverId):
+                let intent = CustomWidgetPressButtonAppIntent()
+                intent.domain = domain
+                intent.entityId = entityId
+                intent.serverId = serverId
+                return intent
+            }
+        }
+    }
+
     @available(iOS 17.0, *)
     @ViewBuilder
     // This view represents the confirmation for for widgets that require confirmation before running
@@ -151,7 +249,7 @@ struct WidgetBasicView: View {
                 cancelImage: cancelImage,
                 confirmationColor: confirmationColor
             )
-        } else if sizeStyle == .condensed {
+        } else if sizeStyle == .compact {
             condensedConfirmationForm(
                 model: model,
                 confirmationIntent: confirmationIntent,
@@ -287,104 +385,6 @@ struct WidgetBasicView: View {
             }
         } else {
             EmptyView()
-        }
-    }
-
-    @available(iOS 16.0, *)
-    private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        Group {
-            switch type {
-            case .button, .custom:
-                return AnyView(WidgetBasicViewTintedWrapper(
-                    model: model,
-                    sizeStyle: sizeStyle,
-                    viewType: WidgetBasicButtonView.self
-                ))
-            case .sensor:
-                return AnyView(WidgetBasicViewTintedWrapper(
-                    model: model,
-                    sizeStyle: sizeStyle,
-                    viewType: WidgetBasicSensorView.self
-                ))
-            }
-        }
-        .opacity(model.disabled ? opacityWhenDisabled : 1)
-    }
-
-    private func normalView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        Group {
-            switch type {
-            case .button, .custom:
-                return AnyView(WidgetBasicButtonView(
-                    model: model,
-                    sizeStyle: sizeStyle,
-                    tinted: false
-                ))
-            case .sensor:
-                return AnyView(WidgetBasicSensorView(
-                    model: model,
-                    sizeStyle: sizeStyle,
-                    tinted: false
-                ))
-            }
-        }
-        .opacity(model.disabled ? opacityWhenDisabled : 1)
-    }
-
-    @available(iOS 17.0, *)
-    private func intent(for model: WidgetBasicViewModel, isConfirmationDone: Bool = true) -> (any AppIntent)? {
-        switch model.interactionType {
-        case .widgetURL:
-            return nil
-        case let .appIntent(widgetIntentType):
-            // When confirmation is required and this method wasn't called from confirmation button
-            if model.requiresConfirmation, !isConfirmationDone {
-                let intent = UpdateWidgetItemConfirmationStateAppIntent()
-                intent.widgetId = model.widgetId
-                intent.serverUniqueId = model.id
-                return intent
-            }
-            switch widgetIntentType {
-            case .action:
-                let intent = PerformAction()
-                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
-                intent.hapticConfirmation = true
-                return intent
-            case let .script(id, entityId, serverId, name, showConfirmationNotification):
-                let intent = ScriptAppIntent()
-                intent.script = .init(
-                    id: id,
-                    entityId: entityId,
-                    serverId: serverId,
-                    serverName: "", // not used in this context
-                    displayString: name,
-                    iconName: "" // not used in this context
-                )
-                intent.hapticConfirmation = true
-                intent.showConfirmationNotification = showConfirmationNotification
-                return intent
-            case .refresh:
-                return ReloadWidgetsAppIntent()
-            case let .toggle(entityId, domain, serverId):
-                let intent = CustomWidgetToggleAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                intent.widgetShowingStates = model.subtitle != nil
-                return intent
-            case let .activate(entityId, domain, serverId):
-                let intent = CustomWidgetActivateAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                return intent
-            case let .press(entityId, domain, serverId):
-                let intent = CustomWidgetPressButtonAppIntent()
-                intent.domain = domain
-                intent.entityId = entityId
-                intent.serverId = serverId
-                return intent
-            }
         }
     }
 }

@@ -157,50 +157,212 @@ enum WidgetCustomSupportedFamilies {
 }
 
 #if DEBUG
-@available(iOS 17, *)
-#Preview(as: .systemSmall) {
-    WidgetCustom()
-} timeline: {
-    WidgetCustomEntry(
-        date: .now,
-        widget: .init(id: "123", name: "My widget", items: [
-            .init(id: "1", serverId: "1", type: .entity),
-            .init(id: "2", serverId: "2", type: .entity),
-        ]),
-        magicItemInfoProvider: MockMagicItemProvider(),
-        entitiesState: [:],
-        showLastUpdateTime: true,
-        showStates: true
-    )
-}
 
-@available(iOS 17, *)
-#Preview(as: .systemMedium) {
-    WidgetCustom()
-} timeline: {
-    WidgetCustomEntry(
-        date: .now,
-        widget: nil,
-        magicItemInfoProvider: MockMagicItemProvider(),
-        entitiesState: [:],
-        showLastUpdateTime: true,
-        showStates: true
-    )
-}
+// UNCOMMENT ON DEMAND: If all previews are uncommented, Xcode will, most probably, fail to render them all at once.
 
-@available(iOS 17, *)
-#Preview(as: .systemLarge) {
-    WidgetCustom()
-} timeline: {
-    WidgetCustomEntry(
-        date: .now,
-        widget: nil,
-        magicItemInfoProvider: MockMagicItemProvider(),
-        entitiesState: [:],
-        showLastUpdateTime: true,
-        showStates: true
-    )
-}
+// @available(iOS 17, *)
+// #Preview("Small empty", as: .systemSmall) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: []),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+
+// @available(iOS 17, *)
+// #Preview("Small 1 Item", as: .systemSmall) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+//
+// @available(iOS 17, *)
+// #Preview("Small 2 Items", as: .systemSmall) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//            .init(id: "2", serverId: "2", type: .entity),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+//
+// @available(iOS 17, *)
+// #Preview("Small 3 Items", as: .systemSmall) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//            .init(id: "2", serverId: "2", type: .entity),
+//            .init(id: "3", serverId: "3", type: .entity),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [.init(id: "3", serverId: "3", type: .entity): .init(value: "On", domainState: .on)],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+
+// @available(iOS 17, *)
+// #Preview("Medium 1 item", as: .systemMedium) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+//
+// @available(iOS 17, *)
+// #Preview("Medium 2 items", as: .systemMedium) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//            .init(id: "2", serverId: "2", type: .entity),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [.init(id: "2", serverId: "2", type: .entity): .init(value: "On", domainState: .on)],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+
+// @available(iOS 17, *)
+// #Preview("Medium 3 items", as: .systemMedium) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//            .init(id: "2", serverId: "2", type: .entity),
+//            .init(id: "3", serverId: "3", type: .entity),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [.init(id: "2", serverId: "2", type: .entity): .init(value: "On", domainState: .on)],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+
+// @available(iOS 17, *)
+// #Preview("Medium 4 items", as: .systemMedium) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//            .init(id: "2", serverId: "2", type: .entity),
+//            .init(id: "3", serverId: "3", type: .entity),
+//            .init(id: "4", serverId: "4", type: .entity),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+
+// @available(iOS 17, *)
+// #Preview("Medium 5 items", as: .systemMedium) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//            .init(id: "2", serverId: "2", type: .entity),
+//            .init(id: "3", serverId: "3", type: .entity),
+//            .init(id: "4", serverId: "4", type: .entity),
+//            .init(id: "5", serverId: "5", type: .entity),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+//
+// @available(iOS 17, *)
+// #Preview("Medium 6 items", as: .systemMedium) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: .init(id: "123", name: "My widget", items: [
+//            .init(id: "light.one", serverId: "1", type: .entity, action: .navigate("/lovelace/0")),
+//            .init(id: "2", serverId: "2", type: .entity),
+//            .init(id: "3", serverId: "3", type: .entity),
+//            .init(id: "4", serverId: "4", type: .entity),
+//            .init(id: "5", serverId: "5", type: .entity),
+//            .init(id: "6", serverId: "6", type: .entity),
+//        ]),
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+//
+// @available(iOS 17, *)
+// #Preview("Medium empty", as: .systemMedium) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: nil,
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
+//
+// @available(iOS 17, *)
+// #Preview("Large empty", as: .systemLarge) {
+//    WidgetCustom()
+// } timeline: {
+//    WidgetCustomEntry(
+//        date: .now,
+//        widget: nil,
+//        magicItemInfoProvider: MockMagicItemProvider(),
+//        entitiesState: [:],
+//        showLastUpdateTime: true,
+//        showStates: true
+//    )
+// }
 
 final class MockMagicItemProvider: MagicItemProviderProtocol {
     func loadInformation(completion: @escaping ([String: [Shared.HAAppEntity]]) -> Void) {
@@ -212,7 +374,7 @@ final class MockMagicItemProvider: MagicItemProviderProtocol {
     }
 
     func getInfo(for item: Shared.MagicItem) -> Shared.MagicItem.Info? {
-        if item.id == "1" {
+        if item.id == "light.one" {
             return .init(id: "1", name: "Abc", iconName: "script", customization: nil)
         } else {
             return .init(id: "2", name: "Cba", iconName: "heart", customization: .init(iconColor: "#FFFFFF"))
