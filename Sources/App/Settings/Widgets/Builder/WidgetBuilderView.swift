@@ -13,7 +13,7 @@ struct WidgetBuilderView: View {
             Section {
                 reloadWidgetsView
             } footer: {
-                Text(L10n.SettingsDetails.Widgets.ReloadAll.description)
+                Text(verbatim: L10n.SettingsDetails.Widgets.ReloadAll.description)
             }
 
             if #available(iOS 17, *) {
@@ -21,7 +21,7 @@ struct WidgetBuilderView: View {
                     showDeleteConfirmation = true
 
                 } label: {
-                    Text(L10n.Settings.Widgets.Custom.DeleteAll.title)
+                    Text(verbatim: L10n.Settings.Widgets.Custom.DeleteAll.title)
                 }
                 .tint(.red)
                 .confirmationDialog(
@@ -30,13 +30,13 @@ struct WidgetBuilderView: View {
                     titleVisibility: .visible
                 ) {
                     Button(role: .cancel, action: { /* no-op */ }) {
-                        Text(L10n.cancelLabel)
+                        Text(verbatim: L10n.cancelLabel)
                     }
 
                     Button(role: .destructive, action: {
                         viewModel.deleteAllWidgets()
                     }) {
-                        Text(L10n.yesLabel)
+                        Text(verbatim: L10n.yesLabel)
                     }
                 }
             }

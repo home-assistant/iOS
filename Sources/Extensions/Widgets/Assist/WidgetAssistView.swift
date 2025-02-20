@@ -50,7 +50,7 @@ struct WidgetAssistView: View {
                 .foregroundStyle(.ultraThickMaterial)
                 VStack(spacing: .zero) {
                     Group {
-                        Text(L10n.Widgets.Assist.actionTitle)
+                        Text(verbatim: L10n.Widgets.Assist.actionTitle)
                             .font(.footnote.bold())
                             .foregroundColor(Color(uiColor: .label))
                         Text(subtitle)

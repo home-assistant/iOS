@@ -186,7 +186,7 @@ struct WidgetBasicView: View {
         confirmationColor: Color
     ) -> some View {
         VStack {
-            Text(L10n.Alert.Confirmation.Generic.title)
+            Text(verbatim: L10n.Alert.Confirmation.Generic.title)
                 .font(.footnote.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
             Spacer()
@@ -219,7 +219,7 @@ struct WidgetBasicView: View {
         confirmationColor: Color
     ) -> some View {
         VStack(spacing: .zero) {
-            Text(L10n.Alert.Confirmation.Generic.title)
+            Text(verbatim: L10n.Alert.Confirmation.Generic.title)
                 .font(.footnote.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding([.horizontal, .top], Spaces.one)

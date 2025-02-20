@@ -638,6 +638,20 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "carPlay.state.loading.title") }
       }
     }
+    public enum Tabs {
+      public enum Active {
+        /// Active
+        public static var title: String { return L10n.tr("Localizable", "carPlay.tabs.active.title") }
+        public enum DeleteAction {
+          /// Swipe left to remove tab
+          public static var title: String { return L10n.tr("Localizable", "carPlay.tabs.active.delete_action.title") }
+        }
+      }
+      public enum Inactive {
+        /// Inactive
+        public static var title: String { return L10n.tr("Localizable", "carPlay.tabs.inactive.title") }
+      }
+    }
     public enum Unlock {
       public enum Confirmation {
         /// Are you sure you want to perform unlock action on %@?
@@ -848,6 +862,10 @@ public enum L10n {
   }
 
   public enum ConnectionError {
+    public enum AdvancedSection {
+      /// Advanced
+      public static var title: String { return L10n.tr("Localizable", "connection_error.advanced_section.title") }
+    }
     public enum OpenSettings {
       /// Open settings
       public static var title: String { return L10n.tr("Localizable", "connection_error.open_settings.title") }
@@ -3966,6 +3984,18 @@ public enum L10n {
       public enum RequireConfirmation {
         /// Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.
         public static var footer: String { return L10n.tr("Localizable", "widgets.custom.require_confirmation.footer") }
+      }
+      public enum ShowLastUpdateTime {
+        public enum Param {
+          /// Show last update time
+          public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_last_update_time.param.title") }
+        }
+      }
+      public enum ShowStates {
+        public enum Param {
+          /// Show states (BETA)
+          public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_states.param.title") }
+        }
       }
       public enum ShowUpdateTime {
         /// Last update:

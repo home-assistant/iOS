@@ -58,9 +58,9 @@ struct AssistView: View {
         }
         .alert(isPresented: $viewModel.showError) {
             .init(
-                title: Text(L10n.errorLabel),
+                title: Text(verbatim: L10n.errorLabel),
                 message: Text(viewModel.errorMessage),
-                dismissButton: .default(Text(L10n.okLabel))
+                dismissButton: .default(Text(verbatim: L10n.okLabel))
             )
         }
     }

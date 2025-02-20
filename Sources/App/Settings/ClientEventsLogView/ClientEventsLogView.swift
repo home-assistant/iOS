@@ -23,7 +23,7 @@ struct ClientEventsLogView: View {
                 Button {
                     showClearConfirmation = true
                 } label: {
-                    Text(L10n.ClientEvents.View.clear)
+                    Text(verbatim: L10n.ClientEvents.View.clear)
                 }
                 .confirmationDialog(
                     L10n.ClientEvents.View.ClearConfirm.title,
@@ -51,7 +51,7 @@ struct ClientEventsLogView: View {
             listItem(event)
         }
         if filteredEvents.isEmpty {
-            Text(L10n.ClientEvents.noEvents)
+            Text(verbatim: L10n.ClientEvents.noEvents)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .listRowBackground(Color.clear)
                 .font(.headline)

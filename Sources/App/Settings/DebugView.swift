@@ -174,7 +174,7 @@ struct DebugView: View {
             }
             .alert(L10n.Alert.Confirmation.Generic.title, isPresented: $showDeleteEntitiesAlert) {
                 Button(role: .cancel, action: { /* no-op */ }) {
-                    Text(L10n.cancelLabel)
+                    Text(verbatim: L10n.cancelLabel)
                 }
                 Button(role: .destructive, action: {
                     do {
@@ -186,10 +186,10 @@ struct DebugView: View {
                         Current.Log.error("Failed to reset app entities, error: \(error)")
                     }
                 }) {
-                    Text(L10n.yesLabel)
+                    Text(verbatim: L10n.yesLabel)
                 }
             } message: {
-                Text(L10n.Alert.Confirmation.DeleteEntities.message)
+                Text(verbatim: L10n.Alert.Confirmation.DeleteEntities.message)
             }
             Button {
                 loadingCleaningWebCache = true
@@ -224,21 +224,21 @@ struct DebugView: View {
             }
             .alert(L10n.Alert.Confirmation.Generic.title, isPresented: $showResetAppAlert) {
                 Button(role: .cancel, action: { /* no-op */ }) {
-                    Text(L10n.cancelLabel)
+                    Text(verbatim: L10n.cancelLabel)
                 }
                 Button(role: .destructive, action: {
                     Task {
                         await resetApp()
                     }
                 }) {
-                    Text(L10n.yesLabel)
+                    Text(verbatim: L10n.yesLabel)
                 }
             } message: {
-                Text(L10n.Settings.ResetSection.ResetAlert.title)
+                Text(verbatim: L10n.Settings.ResetSection.ResetAlert.title)
             }
 
         } footer: {
-            Text(L10n.Settings.Debugging.CriticalSection.footer)
+            Text(verbatim: L10n.Settings.Debugging.CriticalSection.footer)
         }
     }
 
@@ -257,7 +257,7 @@ struct DebugView: View {
             }
             .alert(L10n.errorLabel, isPresented: $showWatchSyncError) {
                 Button(role: .cancel, action: { /* no-op */ }) {
-                    Text(L10n.okLabel)
+                    Text(verbatim: L10n.okLabel)
                 }
             } message: {
                 Text(watchSyncErrorMessage ?? "Unknown")
@@ -312,9 +312,9 @@ struct DebugView: View {
             }
 
         } header: {
-            Text(L10n.Settings.Developer.header)
+            Text(verbatim: L10n.Settings.Developer.header)
         } footer: {
-            Text(L10n.Settings.Developer.footer)
+            Text(verbatim: L10n.Settings.Developer.footer)
         }
     }
 

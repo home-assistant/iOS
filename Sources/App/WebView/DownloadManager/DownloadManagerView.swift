@@ -41,7 +41,7 @@ struct DownloadManagerView: View {
                 .progressViewStyle(.circular)
                 .scaleEffect(2)
                 .padding(Spaces.four)
-            Text(L10n.DownloadManager.Downloading.title)
+            Text(verbatim: L10n.DownloadManager.Downloading.title)
                 .font(.title.bold())
             fileCard
             Text(viewModel.progress)
@@ -76,7 +76,7 @@ struct DownloadManagerView: View {
                     .bounce,
                     options: .nonRepeating
                 )
-            Text(L10n.DownloadManager.Finished.title)
+            Text(verbatim: L10n.DownloadManager.Finished.title)
                 .font(.title.bold())
             if let url = viewModel.lastURLCreated {
                 if Current.isCatalyst {

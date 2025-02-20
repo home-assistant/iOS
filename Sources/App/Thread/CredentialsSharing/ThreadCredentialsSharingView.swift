@@ -77,7 +77,7 @@ struct ThreadCredentialsSharingView<Model>: View where Model: ThreadCredentialsS
         Button {
             dismiss()
         } label: {
-            Text(L10n.doneLabel)
+            Text(verbatim: L10n.doneLabel)
         }
     }
 
@@ -87,7 +87,7 @@ struct ThreadCredentialsSharingView<Model>: View where Model: ThreadCredentialsS
                 await viewModel.mainOperation()
             }
         } label: {
-            Text(L10n.retryLabel)
+            Text(verbatim: L10n.retryLabel)
         }
     }
 

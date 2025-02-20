@@ -150,6 +150,9 @@
 "carplay.navigation.button.next" = "Next";
 "carplay.navigation.button.previous" = "Previous";
 "carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
+"carPlay.tabs.active.title" = "Active";
+"carPlay.tabs.inactive.title" = "Inactive";
+"carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
 "cl_error.description.deferred_accuracy_too_low" = "Deferred mode is not supported for the requested accuracy.";
 "cl_error.description.deferred_canceled" = "The request for deferred updates was canceled by your app or by the location manager.";
 "cl_error.description.deferred_distance_filtered" = "Deferred mode does not support distance filters.";
@@ -1170,6 +1173,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
+"connection_error.advanced_section.title" = "Advanced";
 "widgets.custom.show_last_update_time.param.title" = "Show last update time";
 "widgets.custom.show_states.param.title" = "Show states (BETA)";
 "connection_error.open_settings.title" = "Open settings";

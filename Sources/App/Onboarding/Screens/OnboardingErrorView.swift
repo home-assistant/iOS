@@ -12,7 +12,7 @@ struct OnboardingErrorView: View {
 
     var body: some View {
         VStack(spacing: Spaces.two) {
-            Text(L10n.Onboarding.ConnectionError.title)
+            Text(verbatim: L10n.Onboarding.ConnectionError.title)
                 .font(.title.bold())
             Image(systemSymbol: .xmarkCircleFill)
                 .font(.system(size: 60))

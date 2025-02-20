@@ -105,7 +105,7 @@ struct NoActiveURLView: View {
 
     @ViewBuilder
     private var textBlock: some View {
-        Text(L10n.Connection.Permission.InternalUrl.title)
+        Text(verbatim: L10n.Connection.Permission.InternalUrl.title)
             .font(.title.bold())
             .padding(.vertical)
         VStack(spacing: Spaces.two) {

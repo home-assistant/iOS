@@ -28,7 +28,7 @@ struct WidgetCreationView: View {
                 Button {
                     viewModel.save()
                 } label: {
-                    Text(L10n.saveLabel)
+                    Text(verbatim: L10n.saveLabel)
                 }
             }
         }
@@ -45,7 +45,7 @@ struct WidgetCreationView: View {
             Button(action: {
                 /* no-op */
             }, label: {
-                Text(L10n.okLabel)
+                Text(verbatim: L10n.okLabel)
             })
         }, message: {
             Text(viewModel.errorMessage)
@@ -107,9 +107,9 @@ struct WidgetCreationView: View {
                 Label(L10n.Settings.Widgets.Create.AddItem.title, systemSymbol: .plus)
             }
         } header: {
-            Text(L10n.Watch.Configuration.Items.title)
+            Text(verbatim: L10n.Watch.Configuration.Items.title)
         } footer: {
-            Text(L10n.Settings.Widgets.Create.Footer.title)
+            Text(verbatim: L10n.Settings.Widgets.Create.Footer.title)
         }
     }
 

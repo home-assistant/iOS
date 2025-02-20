@@ -39,7 +39,7 @@ struct WidgetCustom: Widget {
                 Image(systemSymbol: .squareBadgePlusFill)
                     .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
                     .font(.system(size: 55))
-                Text(L10n.Widgets.Preview.Empty.Create.button)
+                Text(verbatim: L10n.Widgets.Preview.Empty.Create.button)
                     .foregroundStyle(.secondary)
                     .font(.footnote)
             }

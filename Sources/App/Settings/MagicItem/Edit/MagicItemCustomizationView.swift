@@ -141,13 +141,13 @@ struct MagicItemCustomizationView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         } header: {
-            Text(L10n.MagicItem.DisplayText.title)
+            Text(verbatim: L10n.MagicItem.DisplayText.title)
         } footer: {
             if viewModel.item.type == .script {
-                Text(L10n.MagicItem.NameAndIcon.footer)
+                Text(verbatim: L10n.MagicItem.NameAndIcon.footer)
             }
             if viewModel.item.type == .scene {
-                Text(L10n.MagicItem.NameAndIcon.Footer.scenes)
+                Text(verbatim: L10n.MagicItem.NameAndIcon.Footer.scenes)
             }
         }
     }
@@ -187,7 +187,7 @@ struct MagicItemCustomizationView: View {
         if context == .widget, actionsLoaded {
             Section(L10n.MagicItem.action) {
                 HStack {
-                    Text(L10n.MagicItem.Action.onTap)
+                    Text(verbatim: L10n.MagicItem.Action.onTap)
                     Spacer()
                     Menu {
                         ForEach(ItemAction.allCases, id: \.id) { itemAction in
@@ -227,7 +227,7 @@ struct MagicItemCustomizationView: View {
             }))
         } footer: {
             if context == .widget {
-                Text(L10n.Widgets.Custom.RequireConfirmation.footer)
+                Text(verbatim: L10n.Widgets.Custom.RequireConfirmation.footer)
             }
         }
     }
@@ -242,7 +242,7 @@ struct MagicItemCustomizationView: View {
     private var assistActionDetails: some View {
         Section(L10n.MagicItem.Action.Assist.title) {
             HStack {
-                Text(L10n.MagicItem.Action.Assist.Pipeline.title)
+                Text(verbatim: L10n.MagicItem.Action.Assist.Pipeline.title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 AssistPipelinePicker(
                     selectedServerId: $viewModel.selectedServerIdForPipeline,
@@ -268,7 +268,7 @@ struct MagicItemCustomizationView: View {
             }
         }
         HStack {
-            Text(L10n.MagicItem.Action.Assist.StartListening.title)
+            Text(verbatim: L10n.MagicItem.Action.Assist.StartListening.title)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Toggle(isOn: $viewModel.startListeningAssistAction, label: {})
                 .onChange(of: viewModel.startListeningAssistAction) { newValue in
@@ -281,7 +281,7 @@ struct MagicItemCustomizationView: View {
 
     private var scriptActionDetails: some View {
         HStack {
-            Text(L10n.MagicItem.Action.Script.title)
+            Text(verbatim: L10n.MagicItem.Action.Script.title)
             EntityPicker(selectedEntity: $viewModel.selectedEntity, domainFilter: .script)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .onChange(of: viewModel.selectedEntity) { newValue in

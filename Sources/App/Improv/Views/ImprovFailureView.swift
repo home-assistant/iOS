@@ -19,7 +19,7 @@ struct ImprovFailureView: View {
         Button {
             action()
         } label: {
-            Text(L10n.Improv.Button.continue)
+            Text(verbatim: L10n.Improv.Button.continue)
                 .padding()
                 .foregroundColor(Color(uiColor: .secondaryLabel))
         }

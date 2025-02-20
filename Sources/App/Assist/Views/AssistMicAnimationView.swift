@@ -30,7 +30,7 @@ struct AssistMicAnimationView: View {
             VStack(spacing: Spaces.one) {
                 icon
                     .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
-                Text(L10n.Assist.Button.Listening.title)
+                Text(verbatim: L10n.Assist.Button.Listening.title)
                     .opacity(0.5)
             }
         }

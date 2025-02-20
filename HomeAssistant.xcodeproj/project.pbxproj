@@ -713,7 +713,6 @@
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
-		4285C5552D3568A100DADE45 /* WidgetAddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5542D3568A100DADE45 /* WidgetAddItemView.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -2068,7 +2067,6 @@
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
 		4285C5502D355F9900DADE45 /* WidgetCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationView.swift; sourceTree = "<group>"; };
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
-		4285C5542D3568A100DADE45 /* WidgetAddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAddItemView.swift; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
@@ -4104,7 +4102,6 @@
 				421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */,
 				4285C5502D355F9900DADE45 /* WidgetCreationView.swift */,
 				42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */,
-				4285C5542D3568A100DADE45 /* WidgetAddItemView.swift */,
 			);
 			path = Builder;
 			sourceTree = "<group>";
@@ -7128,7 +7125,6 @@
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
-				4285C5552D3568A100DADE45 /* WidgetAddItemView.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
 				42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
