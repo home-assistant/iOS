@@ -125,7 +125,7 @@
 "carPlay.labels.settings.advanced.section.button.title" = "Перезапустить приложение";
 "carPlay.labels.settings.advanced.section.title" = "Расширенные";
 "carPlay.labels.tab.settings" = "Настройки";
-"carPlay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
+"carPlay.lock.confirmation.title" = "Вы уверены, что хотите выполнить действие блокировки %@?";
 "carPlay.navigation.button.next" = "Далее";
 "carPlay.navigation.button.previous" = "Назад";
 "carPlay.navigation.tab.actions" = "Действия";
@@ -141,7 +141,7 @@
 "carPlay.notification.quick_access.intro.title" = "Создать конфигурацию CarPlay";
 "carPlay.quick_access.intro.item.title" = "Создайте свою конфигурацию CarPlay";
 "carPlay.state.loading.title" = "Загрузка…";
-"carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
+"carPlay.unlock.confirmation.title" = "Вы уверены, что хотите выполнить действие разблокировки %@?";
 "carplay.labels.already_added_server" = "Уже добавлено";
 "carplay.labels.empty_domain_list" = "Домены недоступны";
 "carplay.labels.no_servers_available" = "Нет доступных серверов. Добавьте сервер в приложении.";
@@ -149,7 +149,7 @@
 "carplay.lock.confirmation.title" = "Are you sure you want to perform lock action on %@?";
 "carplay.navigation.button.next" = "Далее";
 "carplay.navigation.button.previous" = "Назад";
-"carplay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
+"carplay.unlock.confirmation.title" = "Вы уверены, что хотите выполнить действие разблокировки %@?";
 "cl_error.description.deferred_accuracy_too_low" = "Отложенный режим не подходит для выбранной точности.";
 "cl_error.description.deferred_canceled" = "Запрос отложенного обновления был отменён вашим приложением или службой геолокации.";
 "cl_error.description.deferred_distance_filtered" = "Отложенный режим не поддерживает фильтр по расстоянию.";
@@ -307,14 +307,14 @@
 "location_change_notification.unknown.body" = "Геопозиция обновлена неизвестным способом";
 "location_change_notification.url_scheme.body" = "Геопозиция обновлена запросом URL";
 "location_change_notification.visit.body" = "Геопозиция обновлена посещением";
-"location_change_notification.watch_context.body" = "Location updated via watch context sync";
+"location_change_notification.watch_context.body" = "Местоположение обновлено через синхронизацию контекста часов";
 "location_change_notification.x_callback_url.body" = "Местоположение обновлено с помощью X-Callback-URL";
 "magic_item.action" = "Действие";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Начать слушать";
 "magic_item.action.assist.title" = "Assist";
 "magic_item.action.navigation_path.placeholder" = "например, /lovelace/cameras";
-"magic_item.action.navigation_path.title" = "Navigation path";
+"magic_item.action.navigation_path.title" = "Путь навигации";
 "magic_item.action.on_tap" = "Нажатие";
 "magic_item.action.script.title" = "Скрипт";
 "magic_item.add" = "Добавить";
@@ -1160,7 +1160,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.preview.custom.description" = "Создайте свой собственный виджет внутри приложения, а затем отобразите его здесь.";
 "widgets.preview.custom.title" = "Пользовательский виджет";
 "widgets.preview.empty.create.button" = "Создать виджет";
-"widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
+"widgets.reload_widgets.app_intent.description" = "Перезагрузить все временные шкалы виджетов.";
 "widgets.reload_widgets.app_intent.title" = "Перезагрузить виджеты";
 "widgets.scene.activate.title" = "Активировать сцену";
 "widgets.scene.description.title" = "Запустить сцену";
