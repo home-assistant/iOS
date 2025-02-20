@@ -847,6 +847,13 @@ public enum L10n {
     }
   }
 
+  public enum ConnectionError {
+    public enum OpenSettings {
+      /// Open settings
+      public static var title: String { return L10n.tr("Localizable", "connection_error.open_settings.title") }
+    }
+  }
+
   public enum Database {
     public enum Problem {
       /// Delete Database & Quit App
