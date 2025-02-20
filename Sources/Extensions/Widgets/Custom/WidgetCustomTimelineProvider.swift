@@ -220,14 +220,14 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
     var widget: CustomWidgetEntity?
 
     @Parameter(
-        title: "Show last update time",
+        title: .init("widgets.custom.show_last_update_time.param.title", defaultValue: "Show last update time"),
         default: true
     )
     var showLastUpdateTime: Bool
 
     @Parameter(
-        title: "Show states (BETA)",
-        default: false
+        title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
+        default: true
     )
     var showStates: Bool
 
