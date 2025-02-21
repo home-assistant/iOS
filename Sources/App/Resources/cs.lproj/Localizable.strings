@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "Vytvořit nastavení CarPlay";
 "carPlay.quick_access.intro.item.title" = "Vytvořte nastavení CarPlay";
 "carPlay.state.loading.title" = "Načítání...";
+"carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
+"carPlay.tabs.active.title" = "Active";
+"carPlay.tabs.inactive.title" = "Inactive";
 "carPlay.unlock.confirmation.title" = "Opravdu chcete provést akci odemknutí na %@?";
 "carplay.labels.already_added_server" = "Již přidáno";
 "carplay.labels.empty_domain_list" = "Nejsou k dispozici žádné domény";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "Pokud stále chcete používat místní adresu URL a nechcete poskytnout oprávnění pro polohu, můžete klepnout na tlačítko níže, ale uvědomte si bezpečnostní rizika.";
 "connection.permission.internal_url.ignore.alert.title" = "Jste si jisti?";
 "connection.permission.internal_url.title" = "Povolení přístupu";
+"connection_error.advanced_section.title" = "Advanced";
+"connection_error.open_settings.title" = "Open settings";
 "continue_label" = "Pokračovat";
 "copy_label" = "Kopírovat";
 "database.problem.delete" = "Smazat databázi a ukončit aplikaci";
@@ -1127,6 +1132,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.custom.intent_toggle_failed.body" = "Zkuste to znovu";
 "widgets.custom.intent_toggle_failed.title" = "Selhání entity: \"toggle\"";
 "widgets.custom.require_confirmation.footer" = "Potvrzení widgetu a zobrazení stavu jsou aktuálně ve verzi BETA. Pokud se setkáte s problémy, vypněte volbu \"Vyžadovat potvrzení\" a uložte.";
+"widgets.custom.show_last_update_time.param.title" = "Show last update time";
+"widgets.custom.show_states.param.title" = "Show states (BETA)";
 "widgets.custom.show_update_time.title" = "Poslední aktualizace:";
 "widgets.custom.subtitle" = "Vytvářejte widgety ve vlastním stylu";
 "widgets.custom.title" = "Vlastní widgety";
