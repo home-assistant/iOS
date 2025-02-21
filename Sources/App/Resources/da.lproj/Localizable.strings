@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "Opret CarPlay konfiguration";
 "carPlay.quick_access.intro.item.title" = "Lav din CarPlay konfiguration";
 "carPlay.state.loading.title" = "Indlæser…";
+"carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
+"carPlay.tabs.active.title" = "Active";
+"carPlay.tabs.inactive.title" = "Inactive";
 "carPlay.unlock.confirmation.title" = "Er du sikker på, at du vil udføre oplåsningshandling på %@?";
 "carplay.labels.already_added_server" = "Allerede tilføjet";
 "carplay.labels.empty_domain_list" = "Ingen domæner tilgængelige";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "Hvis du stadig vil bruge den lokale URL, og ikke vil give lokations tilladelse, så kan du trykke på knappen under, men vær venligst bekendt med sikkerhedsrisikoen.";
 "connection.permission.internal_url.ignore.alert.title" = "Er du sikker?";
 "connection.permission.internal_url.title" = "Tilladelsesadgang";
+"connection_error.advanced_section.title" = "Advanced";
+"connection_error.open_settings.title" = "Open settings";
 "continue_label" = "Fortsæt";
 "copy_label" = "Kopiér";
 "database.problem.delete" = "Slet database og afslut app";
@@ -1127,6 +1132,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.custom.intent_toggle_failed.body" = "Please try again";
 "widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.show_last_update_time.param.title" = "Show last update time";
+"widgets.custom.show_states.param.title" = "Show states (BETA)";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
