@@ -748,6 +748,8 @@ public enum L10n {
     public enum EventType {
       /// All
       public static var all: String { return L10n.tr("Localizable", "client_events.event_type.all") }
+      /// Background operation
+      public static var backgroundOperation: String { return L10n.tr("Localizable", "client_events.event_type.background_operation") }
       /// Database
       public static var database: String { return L10n.tr("Localizable", "client_events.event_type.database") }
       /// Location Update
