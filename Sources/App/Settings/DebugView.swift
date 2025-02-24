@@ -178,7 +178,7 @@ struct DebugView: View {
                 }
                 Button(role: .destructive, action: {
                     do {
-                        _ = try Current.database.write { db in
+                        _ = try Current.database().write { db in
                             try HAAppEntity.deleteAll(db)
                             Current.Log.verbose("Deleted all app entities")
                         }

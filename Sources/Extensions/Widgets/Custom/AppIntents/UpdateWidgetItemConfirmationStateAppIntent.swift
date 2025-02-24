@@ -29,7 +29,7 @@ struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
            let magicItem = widget.items.first(where: { $0.serverUniqueId == serverUniqueId }) {
             widget.itemsStates = [magicItem.serverUniqueId: .pendingConfirmation]
             do {
-                try await Current.database.write { [widget] db in
+                try await Current.database().write { [widget] db in
                     try widget.update(db)
                 }
             } catch {

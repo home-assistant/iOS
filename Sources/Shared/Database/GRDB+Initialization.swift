@@ -10,7 +10,6 @@ public extension DatabaseQueue {
 
             // Create tables if needed
             DatabaseQueue.tables().forEach { $0.createIfNeeded(database: database) }
-
             DatabaseQueue.deleteOldTables(database: database)
 
             #if targetEnvironment(simulator)

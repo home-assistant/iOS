@@ -27,7 +27,7 @@ final class WidgetCreationViewModel: ObservableObject {
             return
         }
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try widget.insert(db, onConflict: .replace)
             }
             DataWidgetsUpdater.update()

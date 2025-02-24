@@ -30,7 +30,7 @@ public struct AppPanel: Codable, FetchableRecord, PersistableRecord {
     }
 
     public static func panels(serverId: String) throws -> [AppPanel]? {
-        try Current.database.read({ db in
+        try Current.database().read({ db in
             try AppPanel
                 .filter(
                     Column(DatabaseTables.AppPanel.serverId.rawValue) == serverId

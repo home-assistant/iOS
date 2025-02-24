@@ -30,7 +30,7 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
     }
 
     public static func config() throws -> WatchConfig? {
-        try Current.database.read({ db in
+        try Current.database().read({ db in
             try WatchConfig.fetchOne(db)
         })
     }

@@ -25,7 +25,7 @@ public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatab
     }
 
     public static func widgets() throws -> [CustomWidget]? {
-        try Current.database.read({ db in
+        try Current.database().read({ db in
             try CustomWidget.fetchAll(db)
         })
     }

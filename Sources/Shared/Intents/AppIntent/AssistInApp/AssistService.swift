@@ -106,7 +106,7 @@ public final class AssistService: AssistServiceProtocol {
     private func saveInDatabase(_ response: PipelineResponse) {
         do {
             let assistPipeline = AssistPipelines(serverId: server.identifier.rawValue, pipelineResponse: response)
-            _ = try Current.database.write { db in
+            _ = try Current.database().write { db in
                 try AssistPipelines.filter(
                     Column(DatabaseTables.AssistPipelines.serverId.rawValue) == server.identifier.rawValue
                 ).deleteAll(db)

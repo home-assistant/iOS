@@ -77,7 +77,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         ) }).sorted(by: { $0.id < $1.id })
 
         do {
-            let cachedEntities = try Current.database.read { db in
+            let cachedEntities = try Current.database().read { db in
                 try HAAppEntity
                     .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                     .orderByPrimaryKey()
@@ -88,7 +88,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                     .verbose(
                         "Updating App Entities for \(server.info.name), cached entities were different than new entities"
                     )
-                try Current.database.write { db in
+                try Current.database().write { db in
                     try HAAppEntity.deleteAll(db, ids: cachedEntities.map(\.id))
                     for entity in appEntities {
                         try entity.insert(db)
