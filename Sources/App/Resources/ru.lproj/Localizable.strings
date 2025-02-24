@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "Создать конфигурацию CarPlay";
 "carPlay.quick_access.intro.item.title" = "Создайте свою конфигурацию CarPlay";
 "carPlay.state.loading.title" = "Загрузка…";
+"carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
+"carPlay.tabs.active.title" = "Active";
+"carPlay.tabs.inactive.title" = "Inactive";
 "carPlay.unlock.confirmation.title" = "Вы уверены, что хотите выполнить действие разблокировки %@?";
 "carplay.labels.already_added_server" = "Уже добавлено";
 "carplay.labels.empty_domain_list" = "Домены недоступны";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "Если вы по-прежнему хотите использовать локальный URL-адрес и не хотите предоставлять разрешение на определение местоположения, вы можете нажать кнопку ниже, но, пожалуйста, помните о рисках безопасности.";
 "connection.permission.internal_url.ignore.alert.title" = "Вы уверены?";
 "connection.permission.internal_url.title" = "Доступ к разрешениям";
+"connection_error.advanced_section.title" = "Расширенные";
+"connection_error.open_settings.title" = "Открыть настройки";
 "continue_label" = "Продолжить";
 "copy_label" = "Копировать";
 "database.problem.delete" = "Удалить базу данных и выйти из приложения";
@@ -1127,6 +1132,8 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.custom.intent_toggle_failed.body" = "Попробуйте ещё раз.";
 "widgets.custom.intent_toggle_failed.title" = "Не удалось 'переключить' объект";
 "widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
+"widgets.custom.show_last_update_time.param.title" = "Показывать время последнего обновления";
+"widgets.custom.show_states.param.title" = "Показывать состояния (БЕТА)";
 "widgets.custom.show_update_time.title" = "Последнее обновление:";
 "widgets.custom.subtitle" = "Создавайте виджеты в своем собственном стиле";
 "widgets.custom.title" = "Пользовательские виджеты";

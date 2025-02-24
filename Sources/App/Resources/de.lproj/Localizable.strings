@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "CarPlay-Konfiguration erstellen";
 "carPlay.quick_access.intro.item.title" = "Deine CarPlay-Konfiguration erstellen";
 "carPlay.state.loading.title" = "Laden …";
+"carPlay.tabs.active.delete_action.title" = "Nach links wischen, um den Tab zu entfernen";
+"carPlay.tabs.active.title" = "Aktiv";
+"carPlay.tabs.inactive.title" = "Inaktiv";
 "carPlay.unlock.confirmation.title" = "Bist du sicher, dass du die Aktion Aufschließen von %@ ausführen möchtest?";
 "carplay.labels.already_added_server" = "Bereits hinzugefügt";
 "carplay.labels.empty_domain_list" = "Keine Domänen verfügbar";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "Wenn du dennoch die lokale URL verwenden und keine Standortberechtigung erteilen möchtest, kannst du auf den Knopf unten tippen. Beachte jedoch bitte die Sicherheitsrisiken.";
 "connection.permission.internal_url.ignore.alert.title" = "Bist du sicher?";
 "connection.permission.internal_url.title" = "Berechtigungszugriff";
+"connection_error.advanced_section.title" = "Erweitert";
+"connection_error.open_settings.title" = "Einstellungen öffnen";
 "continue_label" = "Weiter";
 "copy_label" = "Kopieren";
 "database.problem.delete" = "Datenbank löschen & App beenden";
@@ -1128,6 +1133,8 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "widgets.custom.intent_toggle_failed.body" = "Bitte erneut versuchen";
 "widgets.custom.intent_toggle_failed.title" = "Entität konnte nicht „umgeschaltet“ werden";
 "widgets.custom.require_confirmation.footer" = "Die Widget-Bestätigung und Zustandsanzeige befinden sich derzeit in der BETA-Phase. Wenn Probleme auftreten, deaktiviere „Bestätigung erforderlich“ und speichere.";
+"widgets.custom.show_last_update_time.param.title" = "Letzte Aktualisierungszeit anzeigen";
+"widgets.custom.show_states.param.title" = "Zustände anzeigen (BETA)";
 "widgets.custom.show_update_time.title" = "Letzte Aktualisierung:";
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
 "widgets.custom.title" = "Benutzerdefinierte Widgets";

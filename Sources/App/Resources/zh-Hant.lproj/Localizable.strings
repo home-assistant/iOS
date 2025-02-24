@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "新增 CarPlay 設定";
 "carPlay.quick_access.intro.item.title" = "新增 CarPlay 設定";
 "carPlay.state.loading.title" = "正在載入…";
+"carPlay.tabs.active.delete_action.title" = "向左滑動即可移除分頁";
+"carPlay.tabs.active.title" = "啟用";
+"carPlay.tabs.inactive.title" = "未啟用";
 "carPlay.unlock.confirmation.title" = "確定要對 %@ 進行解鎖操作嗎？";
 "carplay.labels.already_added_server" = "已新增";
 "carplay.labels.empty_domain_list" = "沒有可用實體類群";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "如果您仍然想使用本地端網址、同時不想提供定位服務權限。可以點擊下面的按鈕，但請注意資安風險。";
 "connection.permission.internal_url.ignore.alert.title" = "確定？";
 "connection.permission.internal_url.title" = "權限存取";
+"connection_error.advanced_section.title" = "進階";
+"connection_error.open_settings.title" = "開啟設定";
 "continue_label" = "繼續";
 "copy_label" = "複製";
 "database.problem.delete" = "刪除資料數據並退出 App";
@@ -1127,6 +1132,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.custom.intent_toggle_failed.body" = "請再試一次";
 "widgets.custom.intent_toggle_failed.title" = "無法 '切換' 實體";
 "widgets.custom.require_confirmation.footer" = "小工具確認與狀態顯示目前處於測試階段，假如遇到問題，請關閉 '需要確認' 並儲存。";
+"widgets.custom.show_last_update_time.param.title" = "顯示最後更新時間";
+"widgets.custom.show_states.param.title" = "顯示狀態（測試）";
 "widgets.custom.show_update_time.title" = "最後更新：";
 "widgets.custom.subtitle" = "新增具有自己風格的小工具";
 "widgets.custom.title" = "自訂小工具";
