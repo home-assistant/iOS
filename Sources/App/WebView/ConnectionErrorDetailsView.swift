@@ -93,6 +93,7 @@ struct ConnectionErrorDetailsView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
     }
 
     private func openSettings() {
