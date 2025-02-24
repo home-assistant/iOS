@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "Δημιουργία διαμόρφωσης CarPlay";
 "carPlay.quick_access.intro.item.title" = "Δημιουργήστε τη διαμόρφωση του CarPlay σας";
 "carPlay.state.loading.title" = "Φόρτωση...";
+"carPlay.tabs.active.delete_action.title" = "Σύρετε προς τα αριστερά για να αφαιρέσετε την καρτέλα";
+"carPlay.tabs.active.title" = "Ενεργό";
+"carPlay.tabs.inactive.title" = "Ανενεργό";
 "carPlay.unlock.confirmation.title" = "Είστε σίγουροι ότι θέλετε να εκτελέσετε ενέργεια ξεκλειδώματος στο %@;";
 "carplay.labels.already_added_server" = "Εχει ήδη προστεθεί";
 "carplay.labels.empty_domain_list" = "Δεν υπάρχουν διαθέσιμα domains";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "Αν εξακολουθείτε να θέλετε να χρησιμοποιήσετε την τοπική διεύθυνση URL και δεν θέλετε να δώσετε άδεια τοποθεσίας, μπορείτε να πατήσετε το παρακάτω κουμπί, όμως παρακαλώ, λάβετε υπόψη τους κινδύνους ασφαλείας.";
 "connection.permission.internal_url.ignore.alert.title" = "Είστε σίγουρος/η;";
 "connection.permission.internal_url.title" = "Αδεια πρόσβασης";
+"connection_error.advanced_section.title" = "Για προχωρημένους";
+"connection_error.open_settings.title" = "Ανοιγμα ρυθμίσεων";
 "continue_label" = "Συνέχεια";
 "copy_label" = "Αντιγραφή";
 "database.problem.delete" = "Διαγραφή βάσης δεδομένων και έξοδος από την εφαρμογή";
@@ -1127,6 +1132,8 @@
 "widgets.custom.intent_toggle_failed.body" = "Παρακαλώ δοκιμάστε ξανά";
 "widgets.custom.intent_toggle_failed.title" = "Αποτυχία 'εναλλαγής' οντότητας";
 "widgets.custom.require_confirmation.footer" = "Η επιβεβαίωση γραφικού στοιχείου και η εμφάνιση της κατάστασης είναι προς το παρόν σε BETA, αν αντιμετωπίζετε προβλήματα, απενεργοποιήστε το 'Απαιτείται επιβεβαίωση' και αποθηκεύστε.";
+"widgets.custom.show_last_update_time.param.title" = "Εμφάνιση χρόνου τελευταίας ενημέρωσης";
+"widgets.custom.show_states.param.title" = "Εμφάνιση καταστάσεων (BETA)";
 "widgets.custom.show_update_time.title" = "Τελευταία ενημέρωση:";
 "widgets.custom.subtitle" = "Δημιουργήστε γραφικά στοιχεία με το δικό σας στυλ";
 "widgets.custom.title" = "Προσαρμοσμένα γραφικά στοιχεία";

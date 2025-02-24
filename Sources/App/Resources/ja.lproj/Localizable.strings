@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "CarPlay設定の作成";
 "carPlay.quick_access.intro.item.title" = "CarPlay設定を作成する";
 "carPlay.state.loading.title" = "読み込み中…";
+"carPlay.tabs.active.delete_action.title" = "左にスワイプしてタブを削除";
+"carPlay.tabs.active.title" = "アクティブ";
+"carPlay.tabs.inactive.title" = "非アクティブ";
 "carPlay.unlock.confirmation.title" = "%@にロック解除アクションを実行しますか?";
 "carplay.labels.already_added_server" = "すでに追加されています";
 "carplay.labels.empty_domain_list" = "利用可能なドメインがありません";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "引き続きローカル URL を使用し、位置情報の許可を与えたくない場合は、下のボタンをタップできますが、セキュリティ上のリスクに注意してください。";
 "connection.permission.internal_url.ignore.alert.title" = "よろしいですか？";
 "connection.permission.internal_url.title" = "アクセス許可";
+"connection_error.advanced_section.title" = "詳細";
+"connection_error.open_settings.title" = "設定を開く";
 "continue_label" = "続行";
 "copy_label" = "コピー";
 "database.problem.delete" = "データベースを削除してアプリを終了する";
@@ -1127,6 +1132,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.custom.intent_toggle_failed.body" = "もう一度お試しください";
 "widgets.custom.intent_toggle_failed.title" = "エンティティの「トグル」に失敗しました";
 "widgets.custom.require_confirmation.footer" = "ウィジェットの確認と状態表示は現在ベータ版です。問題が発生した場合は、「確認が必要」を無効にして保存してください。";
+"widgets.custom.show_last_update_time.param.title" = "最終更新時間を表示";
+"widgets.custom.show_states.param.title" = "状態を表示 (ベータ版)";
 "widgets.custom.show_update_time.title" = "最終更新日:";
 "widgets.custom.subtitle" = "独自のスタイルでウィジェットを作成する";
 "widgets.custom.title" = "カスタムウィジェット";

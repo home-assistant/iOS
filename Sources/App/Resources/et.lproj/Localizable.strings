@@ -141,6 +141,9 @@
 "carPlay.notification.quick_access.intro.title" = "Loo CarPlay konfiguratsioon";
 "carPlay.quick_access.intro.item.title" = "Loo oma CarPlay konfiguratsioon";
 "carPlay.state.loading.title" = "Laadimine…";
+"carPlay.tabs.active.delete_action.title" = "Vahekaardi eemaldamiseks pühi vasakule";
+"carPlay.tabs.active.title" = "Aktiivne";
+"carPlay.tabs.inactive.title" = "Passiivne";
 "carPlay.unlock.confirmation.title" = "Kas oled kindel, et soovid teostada %@ lukustuse avamise toimingut?";
 "carplay.labels.already_added_server" = "Juba lisatud";
 "carplay.labels.empty_domain_list" = "Domeene pole saadaval";
@@ -208,6 +211,8 @@
 "connection.permission.internal_url.footer" = "Kui soovid siiski kasutada kohalikku URL-i ja ei soovi asukoha luba anda, võid puudutada allolevat nupp, kuid pea meeles turvariske.";
 "connection.permission.internal_url.ignore.alert.title" = "Kas oled kindel?";
 "connection.permission.internal_url.title" = "Juurdepääsuluba";
+"connection_error.advanced_section.title" = "Täpsem";
+"connection_error.open_settings.title" = "Ava sätted";
 "continue_label" = "Jätka";
 "copy_label" = "Kopeeri";
 "database.problem.delete" = "Kustuta andmebaas ja sulge rakendus";
@@ -1127,6 +1132,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.custom.intent_toggle_failed.body" = "Proovi uuesti";
 "widgets.custom.intent_toggle_failed.title" = "Olemi \"ümberlülitamine\" nurjus";
 "widgets.custom.require_confirmation.footer" = "Vidina kinnitus ja oleku kuvamine on praegu beetaversioonis, kui tekib probleeme, keela \"Nõua kinnitust\" ja salvesta.";
+"widgets.custom.show_last_update_time.param.title" = "Kuva viimase värskenduse aeg";
+"widgets.custom.show_states.param.title" = "Kuva olekud (BEETA)";
 "widgets.custom.show_update_time.title" = "Viimati uuendatud:";
 "widgets.custom.subtitle" = "Loo oma stiiliga vidinaid";
 "widgets.custom.title" = "Kohandatud vidinad";
