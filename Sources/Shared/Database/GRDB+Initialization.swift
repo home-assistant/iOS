@@ -11,6 +11,8 @@ public extension DatabaseQueue {
             // Create tables if needed
             DatabaseQueue.tables().forEach { $0.createIfNeeded(database: database) }
 
+            deleteOldTables(database: database)
+
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
             #endif
@@ -39,11 +41,27 @@ public extension DatabaseQueue {
             WatchConfigTable(),
             CarPlayConfigTable(),
             AssistPipelinesTable(),
-            ClientEventTable(),
             AppEntityRegistryListForDisplayTable(),
             AppPanelTable(),
             CustomWidgetTable(),
         ]
+    }
+
+    private func deleteOldTables(database: DatabasePool) {
+        do {
+            /*
+             ClientEvent used to be saved in GRDB, but because of a problem of one process holding
+             lock on the database and causing crash 0xdead10cc now it is saved as a json file
+             More information: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
+             */
+            try database.write { db in
+                try db.drop(table: GRDBDatabaseTable.clientEvent.rawValue)
+            }
+        } catch {
+            let errorMessage =
+                "Failed or not needed delete client event GRDB info, error: \(error.localizedDescription)"
+            Current.Log.verbose(errorMessage)
+        }
     }
 }
 
