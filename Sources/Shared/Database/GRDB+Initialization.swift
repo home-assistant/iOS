@@ -47,7 +47,7 @@ public extension DatabaseQueue {
         ]
     }
 
-    private func deleteOldTables(database: DatabasePool) {
+    private func deleteOldTables(database: DatabaseQueue) {
         do {
             /*
              ClientEvent used to be saved in GRDB, but because of a problem of one process holding
