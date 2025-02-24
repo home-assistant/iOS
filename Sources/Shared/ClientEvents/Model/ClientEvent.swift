@@ -138,6 +138,8 @@ public extension ClientEvent.EventType {
             return L10n.ClientEvents.EventType.settings
         case .database:
             return L10n.ClientEvents.EventType.database
+        case .backgroundOperation:
+            return L10n.ClientEvents.EventType.backgroundOperation
         }
     }
 }
