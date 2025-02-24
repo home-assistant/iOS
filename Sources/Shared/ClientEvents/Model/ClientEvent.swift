@@ -15,6 +15,7 @@ public struct ClientEvent: Codable, FetchableRecord, PersistableRecord {
         case networkRequest
         case settings
         case database
+        case backgroundOperation
         case unknown
     }
 
