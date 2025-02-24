@@ -9,7 +9,7 @@ public extension DatabaseQueue {
             let database = try DatabaseQueue(path: databasePath())
 
             // Create tables if needed
-            DatabaseQueue.tables().forEach { table in
+            for table in DatabaseQueue.tables() {
                 do {
                     try table.createIfNeeded(database: database)
                 } catch {
