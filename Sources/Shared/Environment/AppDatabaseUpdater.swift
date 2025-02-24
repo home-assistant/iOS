@@ -14,6 +14,15 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     private var requestTokens: [HACancellable?] = []
     private var lastUpdate: Date?
 
+    init() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(enterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+    }
+
     func stop() {
         cancelOnGoingRequests()
     }
@@ -32,47 +41,59 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         Current.servers.all.forEach { server in
             guard server.info.connection.activeURL() != nil else { return }
             // Cache entities
-            let requestToken = Current.api(for: server)?.connection.send(
-                HATypedRequest<[HAEntity]>.fetchStates(),
-                completion: { result in
-                    switch result {
-                    case let .success(entities):
-                        Current.appEntitiesModel().updateModel(Set(entities), server: server)
-                    case let .failure(error):
-                        Current.Log.error("Failed to fetch states: \(error)")
-                        Current.clientEventStore.addEvent(.init(
-                            text: "Failed to fetch states on server \(server.info.name)",
-                            type: .networkRequest,
-                            payload: [
-                                "error": error.localizedDescription,
-                            ]
-                        ))
-                    }
-                }
-            )
-            requestTokens.append(requestToken)
+            let entitiesDatabaseToken = updateEntitiesDatabase(server: server)
+            requestTokens.append(entitiesDatabaseToken)
 
             // Cache entities registry list for display
-            let requestToken2 = Current.api(for: server)?.connection.send(
-                HATypedRequest<EntityRegistryListForDisplay>.fetchEntityRegistryListForDisplay(),
-                completion: { [weak self] result in
-                    switch result {
-                    case let .success(response):
-                        self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
-                    case let .failure(error):
-                        Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")
-                        Current.clientEventStore.addEvent(.init(
-                            text: "Failed to fetch EntityRegistryListForDisplay on server \(server.info.name)",
-                            type: .networkRequest,
-                            payload: [
-                                "error": error.localizedDescription,
-                            ]
-                        ))
-                    }
-                }
-            )
-            requestTokens.append(requestToken2)
+            let entitiesRegistryToken = updateEntitiesRegistryListForDisplay(server: server)
+            requestTokens.append(entitiesRegistryToken)
         }
+    }
+
+    private func updateEntitiesDatabase(server: Server) -> HACancellable? {
+        Current.api(for: server)?.connection.send(
+            HATypedRequest<[HAEntity]>.fetchStates(),
+            completion: { result in
+                switch result {
+                case let .success(entities):
+                    Current.appEntitiesModel().updateModel(Set(entities), server: server)
+                case let .failure(error):
+                    Current.Log.error("Failed to fetch states: \(error)")
+                    Current.clientEventStore.addEvent(.init(
+                        text: "Failed to fetch states on server \(server.info.name)",
+                        type: .networkRequest,
+                        payload: [
+                            "error": error.localizedDescription,
+                        ]
+                    ))
+                }
+            }
+        )
+    }
+
+    private func updateEntitiesRegistryListForDisplay(server: Server) -> HACancellable? {
+        Current.api(for: server)?.connection.send(
+            HATypedRequest<EntityRegistryListForDisplay>.fetchEntityRegistryListForDisplay(),
+            completion: { [weak self] result in
+                switch result {
+                case let .success(response):
+                    self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
+                case let .failure(error):
+                    Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")
+                    Current.clientEventStore.addEvent(.init(
+                        text: "Failed to fetch EntityRegistryListForDisplay on server \(server.info.name)",
+                        type: .networkRequest,
+                        payload: [
+                            "error": error.localizedDescription,
+                        ]
+                    ))
+                }
+            }
+        )
+    }
+
+    @objc private func enterBackground() {
+        cancelOnGoingRequests()
     }
 
     private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) {
