@@ -19,7 +19,7 @@ struct ResetAllCustomWidgetConfirmationAppIntent: AppIntent {
             }
 
             do {
-                try await Current.database.write { [customWidgets] db in
+                try await Current.database().write { [customWidgets] db in
                     for widget in customWidgets {
                         do {
                             try widget.update(db)

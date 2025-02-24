@@ -205,7 +205,7 @@ public struct AssistPipelines: Codable, FetchableRecord, PersistableRecord {
     }
 
     public static func config() throws -> [AssistPipelines]? {
-        try Current.database.read({ db in
+        try Current.database().read({ db in
             try AssistPipelines.fetchAll(db)
         })
     }

@@ -129,7 +129,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private func loadCachedPipelines() {
         do {
-            if let cachedPipelineConfig = try Current.database.read({ db in
+            if let cachedPipelineConfig = try Current.database().read({ db in
                 try AssistPipelines
                     .filter(Column(DatabaseTables.AssistPipelines.serverId.rawValue) == server.identifier.rawValue)
                     .fetchOne(db)

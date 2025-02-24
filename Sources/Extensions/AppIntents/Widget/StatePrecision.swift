@@ -8,7 +8,7 @@ public enum StatePrecision {
         }
         if let decimalPlacesForEntityId: Int = {
             do {
-                return try Current.database.read { db in
+                return try Current.database().read { db in
                     try AppEntityRegistryListForDisplay
                         .filter(
                             Column(DatabaseTables.AppEntityRegistryListForDisplay.id.rawValue) == ServerEntity

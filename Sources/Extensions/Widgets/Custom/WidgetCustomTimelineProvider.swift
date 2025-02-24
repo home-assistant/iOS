@@ -280,7 +280,7 @@ struct CustomWidgetAppEntityQuery: EntityQuery, EntityStringQuery {
 
     private func widgets() -> [CustomWidget] {
         do {
-            return try Current.database.read { db in
+            return try Current.database().read { db in
                 try CustomWidget.fetchAll(db)
             }
         } catch {

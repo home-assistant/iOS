@@ -550,8 +550,6 @@
 		420CFC6D2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */; };
 		420CFC702D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
 		420CFC712D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */; };
-		420CFC742D3F9C98009A94F3 /* ClientEventTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC732D3F9C98009A94F3 /* ClientEventTable.swift */; };
-		420CFC752D3F9C98009A94F3 /* ClientEventTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC732D3F9C98009A94F3 /* ClientEventTable.swift */; };
 		420CFC782D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */; };
 		420CFC792D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */; };
 		420CFC7C2D3F9CCB009A94F3 /* AppPanelTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */; };
@@ -1905,7 +1903,6 @@
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinesTable.swift; sourceTree = "<group>"; };
-		420CFC732D3F9C98009A94F3 /* ClientEventTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTable.swift; sourceTree = "<group>"; };
 		420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryListForDisplayTable.swift; sourceTree = "<group>"; };
 		420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPanelTable.swift; sourceTree = "<group>"; };
 		420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTables.swift; sourceTree = "<group>"; };
@@ -3762,7 +3759,6 @@
 				420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */,
 				420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */,
 				420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */,
-				420CFC732D3F9C98009A94F3 /* ClientEventTable.swift */,
 				420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */,
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
 			);
@@ -7456,7 +7452,6 @@
 				1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				428338452BA1BB4F004798C2 /* Spaces.swift in Sources */,
-				420CFC742D3F9C98009A94F3 /* ClientEventTable.swift in Sources */,
 				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				11B38EEF275C54A300205C7B /* OpenPageIntentHandler.swift in Sources */,
 				4278C9BF2C89DD5D00A7B5F4 /* HAAppEntity.swift in Sources */,
@@ -7707,7 +7702,6 @@
 				11358AEF24FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* AppConstants.swift in Sources */,
 				119DE933263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
-				420CFC752D3F9C98009A94F3 /* ClientEventTable.swift in Sources */,
 				114CBAE82839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,

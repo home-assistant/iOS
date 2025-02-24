@@ -27,7 +27,7 @@ final class WidgetBuilderViewModel: ObservableObject {
     func deleteItem(at offsets: IndexSet) {
         for index in offsets {
             do {
-                _ = try Current.database.write { db in
+                _ = try Current.database().write { db in
                     try widgets[index].delete(db)
                 }
                 loadWidgets()
@@ -39,7 +39,7 @@ final class WidgetBuilderViewModel: ObservableObject {
 
     func deleteAllWidgets() {
         do {
-            _ = try Current.database.write { db in
+            _ = try Current.database().write { db in
                 try CustomWidget.deleteAll(db)
             }
         } catch {

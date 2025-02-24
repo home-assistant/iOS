@@ -176,7 +176,7 @@ class CarPlaySceneDelegate: UIResponder {
         configObservation?.cancel()
         let observation = ValueObservation.tracking(CarPlayConfig.fetchOne)
         configObservation = observation.start(
-            in: Current.database,
+            in: Current.database(),
             onError: { error in
                 Current.Log.error("CarPlay config observation failed with error: \(error)")
             },

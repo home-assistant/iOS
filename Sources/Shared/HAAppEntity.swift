@@ -19,7 +19,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
     }
 
     public static func config() throws -> [HAAppEntity]? {
-        try Current.database.read({ db in
+        try Current.database().read({ db in
             try HAAppEntity.fetchAll(db)
         })
     }

@@ -47,7 +47,7 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
         }
 
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try AppPanel.filter(Column(DatabaseTables.AppPanel.serverId.rawValue) == server.identifier.rawValue)
                     .deleteAll(db)
                 for panel in appPanels {

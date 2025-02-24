@@ -86,7 +86,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 )
             }
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try AppEntityRegistryListForDisplay
                     .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
                     .deleteAll(db)

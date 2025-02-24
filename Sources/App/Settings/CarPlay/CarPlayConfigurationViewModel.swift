@@ -22,7 +22,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     private func loadDatabase() {
         do {
-            if let config: CarPlayConfig = try Current.database.read({ db in
+            if let config: CarPlayConfig = try Current.database().read({ db in
                 do {
                     return try CarPlayConfig.fetchOne(db)
                 } catch {
@@ -74,7 +74,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     @MainActor
     func save(completion: (Bool) -> Void) {
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
                 completion(true)
             }
@@ -87,7 +87,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     func deleteConfiguration(completion: (Bool) -> Void) {
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try CarPlayConfig.deleteAll(db)
                 completion(true)
             }

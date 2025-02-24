@@ -85,7 +85,7 @@ final class WatchHomeViewModel: ObservableObject {
         let itemsInfo = magicItemsInfo.map({ MagicItem.Info.decodeForWatch($0) })
 
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try watchConfig.insert(db, onConflict: .replace)
             }
             saveItemsInfoInCache(itemsInfo.compactMap({ $0 }))
@@ -102,7 +102,7 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     func loadCache() {
         do {
-            if let watchConfig = try Current.database.read({ db in
+            if let watchConfig = try Current.database().read({ db in
                 try WatchConfig.fetchOne(db)
             }) {
                 loadInformationCache(watchConfig: watchConfig)
@@ -132,7 +132,7 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     private func clearCacheAndLoad() {
         do {
-            _ = try Current.database.write { db in
+            _ = try Current.database().write { db in
                 try WatchConfig.deleteAll(db)
             }
         } catch {

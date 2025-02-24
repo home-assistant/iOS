@@ -5,12 +5,13 @@ public enum GRDBDatabaseTable: String {
     case watchConfig
     case assistPipelines
     case carPlayConfig
-    // Dropped since 2025.2, now saved as json file
-    // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
-    case clientEvent
     case appEntityRegistryListForDisplay
     case appPanel
     case customWidget
+
+    // Dropped since 2025.2, now saved as json file
+    // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
+    case clientEvent
 }
 
 public enum DatabaseTables {
