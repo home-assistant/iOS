@@ -11,7 +11,7 @@ public extension DatabaseQueue {
             // Create tables if needed
             DatabaseQueue.tables().forEach { $0.createIfNeeded(database: database) }
 
-            deleteOldTables(database: database)
+            DatabaseQueue.deleteOldTables(database: database)
 
             #if targetEnvironment(simulator)
             print("GRDB App database is stored at \(AppConstants.appGRDBFile.description)")
@@ -47,7 +47,7 @@ public extension DatabaseQueue {
         ]
     }
 
-    private func deleteOldTables(database: DatabaseQueue) {
+    internal static func deleteOldTables(database: DatabaseQueue) {
         do {
             /*
              ClientEvent used to be saved in GRDB, but because of a problem of one process holding
