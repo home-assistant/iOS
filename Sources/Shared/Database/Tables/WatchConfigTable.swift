@@ -2,8 +2,7 @@ import Foundation
 import GRDB
 
 final class WatchConfigTable: DatabaseTableProtocol {
-    func createIfNeeded(database: DatabaseQueue) {
-        do {
+    func createIfNeeded(database: DatabaseQueue) throws {
             let shouldCreateTable = try database.read { db in
                 try !db.tableExists(GRDBDatabaseTable.watchConfig.rawValue)
             }
@@ -16,9 +15,5 @@ final class WatchConfigTable: DatabaseTableProtocol {
                     }
                 }
             }
-        } catch {
-            let errorMessage = "Failed create GRDB table, error: \(error.localizedDescription)"
-            Current.Log.error(errorMessage)
-        }
     }
 }

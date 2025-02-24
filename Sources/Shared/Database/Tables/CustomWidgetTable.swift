@@ -19,7 +19,7 @@ final class CustomWidgetTable: DatabaseTableProtocol {
             }
         } catch {
             let errorMessage = "Failed create GRDB table, error: \(error.localizedDescription)"
-            Current.Log.error(errorMessage)
+            Current.clientEventStore.addEvent(ClientEvent(text: errorMessage, type: .database))
         }
     }
 }

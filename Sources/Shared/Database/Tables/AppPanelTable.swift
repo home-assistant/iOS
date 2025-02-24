@@ -2,8 +2,7 @@ import Foundation
 import GRDB
 
 final class AppPanelTable: DatabaseTableProtocol {
-    func createIfNeeded(database: DatabaseQueue) {
-        do {
+    func createIfNeeded(database: DatabaseQueue) throws {
             let shouldCreateTable = try database.read { db in
                 try !db.tableExists(GRDBDatabaseTable.appPanel.rawValue)
             }
@@ -20,9 +19,5 @@ final class AppPanelTable: DatabaseTableProtocol {
                     }
                 }
             }
-        } catch {
-            let errorMessage = "Failed create GRDB table, error: \(error.localizedDescription)"
-            Current.Log.error(errorMessage)
-        }
     }
 }

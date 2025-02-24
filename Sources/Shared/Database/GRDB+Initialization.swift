@@ -9,7 +9,15 @@ public extension DatabaseQueue {
             let database = try DatabaseQueue(path: databasePath())
 
             // Create tables if needed
-            DatabaseQueue.tables().forEach { $0.createIfNeeded(database: database) }
+            DatabaseQueue.tables().forEach { table in
+                do {
+                    try table.createIfNeeded(database: database)
+                } catch {
+                    let className = String(describing: type(of: table))
+                    let errorMessage = "Failed create GRDB table \(className), error: \(error.localizedDescription)"
+                    Current.clientEventStore.addEvent(ClientEvent(text: errorMessage, type: .database))
+                }
+            }
             DatabaseQueue.deleteOldTables(database: database)
 
             #if targetEnvironment(simulator)
@@ -65,5 +73,5 @@ public extension DatabaseQueue {
 }
 
 protocol DatabaseTableProtocol {
-    func createIfNeeded(database: DatabaseQueue)
+    func createIfNeeded(database: DatabaseQueue) throws
 }
