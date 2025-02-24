@@ -13,6 +13,17 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
     private var tokens: [(promise: Promise<HAPanels>, cancel: () -> Void)?] = []
     private var lastUpdate: Date?
 
+    private var inForeground = true
+
+    init() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(enterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+    }
+
     public func update() {
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
             Current.Log.verbose("Skipping panels update, last update was \(lastUpdate)")
@@ -32,6 +43,11 @@ final class PanelsUpdater: PanelsUpdaterProtocol {
                 self?.saveInDatabase(panels, server: server)
             }).cauterize()
         }
+    }
+
+    @objc private func enterBackground() {
+        tokens.forEach({ $0?.cancel() })
+        tokens = []
     }
 
     private func saveInDatabase(_ panels: HAPanels, server: Server) {
