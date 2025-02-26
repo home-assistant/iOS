@@ -189,6 +189,8 @@ public final class AssistService: AssistServiceProtocol {
             Current.Log.error("Received error while interating with Assist: \(data)")
             delegate?.didReceiveError(code: data.data?.code ?? "-1", message: data.data?.message ?? "Unknown error")
             cancellable.cancel()
+        case .unknown:
+            Current.Log.verbose("Unmapped event received from Assist")
         }
     }
 }
