@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Podstawowa lokalizacja nie mogła od razu zainicjować funkcji monitorowania regionu.";
 "cl_error.description.unknown" = "Nieznany błąd lokalizacji podstawowej";
 "client_events.event_type.all" = "Wszystkie";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Baza danych";
 "client_events.event_type.location_update" = "Aktualizacja lokalizacji";
 "client_events.event_type.networkRequest" = "Żądanie sieciowe";

@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location could not initialize the region monitoring feature immediately.";
 "cl_error.description.unknown" = "Unknown Core Location error";
 "client_events.event_type.all" = "All";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Location Update";
 "client_events.event_type.networkRequest" = "Network Request";
@@ -181,7 +182,6 @@
 "client_events.event_type.service_call" = "Service Call";
 "client_events.event_type.settings" = "Settings";
 "client_events.event_type.unknown" = "Unknown";
-"client_events.event_type.background_operation" = "Background operation";
 "client_events.no_events" = "No events";
 "client_events.view.clear" = "Clear";
 "client_events.view.clear_confirm.message" = "This cannot be undone.";

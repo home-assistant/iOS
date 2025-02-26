@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location n'a pas pu initialiser immédiatement la fonction de surveillance de la région.";
 "cl_error.description.unknown" = "Erreur interne de localisation inconnue";
 "client_events.event_type.all" = "Tous";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Mise à jour de l'emplacement";
 "client_events.event_type.networkRequest" = "Requête réseau";

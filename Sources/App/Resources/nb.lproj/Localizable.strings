@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Kjerneplassering kunne ikke initialisere regionovervåkingsfunksjonen umiddelbart.";
 "cl_error.description.unknown" = "Ukjent Core Location-feil";
 "client_events.event_type.all" = "All";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Beliggenhet Oppdatering";
 "client_events.event_type.networkRequest" = "Nettverksforespørselen";

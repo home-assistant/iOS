@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location가 지역 모니터링 기능을 즉시 초기화할 수 없습니다.";
 "cl_error.description.unknown" = "알 수 없는 Core Location 오류";
 "client_events.event_type.all" = "모두";
+"client_events.event_type.background_operation" = "백그라운드 작업";
 "client_events.event_type.database" = "데이터베이스";
 "client_events.event_type.location_update" = "위치 업데이트";
 "client_events.event_type.networkRequest" = "네트워크 요청";

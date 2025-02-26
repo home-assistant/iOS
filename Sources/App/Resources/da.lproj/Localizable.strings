@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location kunne ikke initialisere områdeovervågningsfunktionen med det samme.";
 "cl_error.description.unknown" = "Ukendt Core Location-fejl";
 "client_events.event_type.all" = "Alle";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Lokalitetsopdatering";
 "client_events.event_type.networkRequest" = "Netværksanmodning";

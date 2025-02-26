@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Kernlocatie kan de regio monitoring functie niet onmiddellijk initialiseren.";
 "cl_error.description.unknown" = "Onbekende kernlocatiefout";
 "client_events.event_type.all" = "Alle";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Locatie update";
 "client_events.event_type.networkRequest" = "Netwerk Verzoek";

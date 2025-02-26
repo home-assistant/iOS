@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core location kunde inte initiera regionövervakningsfunktionen omedelbart.";
 "cl_error.description.unknown" = "Okänt Core Location-fel";
 "client_events.event_type.all" = "Alla";
+"client_events.event_type.background_operation" = "Åtgärd i bakgrunden";
 "client_events.event_type.database" = "Databas";
 "client_events.event_type.location_update" = "Platsuppdatering";
 "client_events.event_type.networkRequest" = "Nätverksförfrågan";

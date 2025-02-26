@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Служба геолокации не смогла немедленно запустить отслеживание региона.";
 "cl_error.description.unknown" = "Неизвестная ошибка служб геолокации";
 "client_events.event_type.all" = "Все";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "База данных";
 "client_events.event_type.location_update" = "Обновление геопозиции";
 "client_events.event_type.networkRequest" = "Запрос сети";
