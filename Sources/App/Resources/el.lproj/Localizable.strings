@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Η βασική τοποθεσία δεν ήταν δυνατό να προετοιμάσει αμέσως τη δυνατότητα παρακολούθησης περιοχής.";
 "cl_error.description.unknown" = "Σφάλμα άγνωστης βασικής θέσης";
 "client_events.event_type.all" = "Ολα";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Βάση δεδομένων";
 "client_events.event_type.location_update" = "Ενημέρωση τοποθεσίας";
 "client_events.event_type.networkRequest" = "Αίτημα δικτύου";

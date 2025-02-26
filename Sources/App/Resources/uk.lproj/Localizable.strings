@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location не вдалося негайно ініціалізувати функцію моніторингу регіону.";
 "cl_error.description.unknown" = "Невідома помилка розташування";
 "client_events.event_type.all" = "All";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Оновлення розташування";
 "client_events.event_type.networkRequest" = "Мережевий запит";

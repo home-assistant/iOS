@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "コアロケーションは、リージョン監視機能をすぐに初期化できませんでした。";
 "cl_error.description.unknown" = "不明なコアロケーションエラー";
 "client_events.event_type.all" = "すべて";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "データベース";
 "client_events.event_type.location_update" = "ロケーションの更新";
 "client_events.event_type.networkRequest" = "ネットワークリクエスト";

@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location 無法立即初始區域監控功能。";
 "cl_error.description.unknown" = "未知核心座標錯誤";
 "client_events.event_type.all" = "全部";
+"client_events.event_type.background_operation" = "背景作業";
 "client_events.event_type.database" = "資料庫";
 "client_events.event_type.location_update" = "座標更新";
 "client_events.event_type.networkRequest" = "網路請求";

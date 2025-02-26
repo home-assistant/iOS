@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location tidak dapat segera menginisialisasi fitur pemantauan wilayah.";
 "cl_error.description.unknown" = "Kesalahan Core Location yang Tidak Diketahui";
 "client_events.event_type.all" = "Semua";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Pembaruan Lokasi";
 "client_events.event_type.networkRequest" = "Permintaan Jaringan";

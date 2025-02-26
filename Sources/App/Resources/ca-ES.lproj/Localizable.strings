@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location no ha pogut inicialitzar la funció de supervisió de la regió immediatament.";
 "cl_error.description.unknown" = "Error Core Location desconegut";
 "client_events.event_type.all" = "All";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Actualització d'ubicació";
 "client_events.event_type.networkRequest" = "Sol·licitud de xarxa";

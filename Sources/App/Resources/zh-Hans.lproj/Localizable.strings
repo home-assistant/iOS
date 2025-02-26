@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "核心位置无法立即初始化区域监控功能。";
 "cl_error.description.unknown" = "未知的核心位置错误";
 "client_events.event_type.all" = "全部";
+"client_events.event_type.background_operation" = "后台操作";
 "client_events.event_type.database" = "数据库";
 "client_events.event_type.location_update" = "位置更新";
 "client_events.event_type.networkRequest" = "网络请求";
