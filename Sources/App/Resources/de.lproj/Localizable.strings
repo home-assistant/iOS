@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location konnte die Regionsüberwachungsfunktion nicht sofort initialisieren.";
 "cl_error.description.unknown" = "Unbekannter Core Location-Fehler";
 "client_events.event_type.all" = "Alle";
+"client_events.event_type.background_operation" = "Hintergrundbetrieb";
 "client_events.event_type.database" = "Datenbank";
 "client_events.event_type.location_update" = "Standortaktualisierung";
 "client_events.event_type.networkRequest" = "Netzwerkanfrage";
