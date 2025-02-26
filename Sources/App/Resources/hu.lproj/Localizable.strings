@@ -592,7 +592,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.reset_section.reset_alert.title" = "Visszaállítás";
 "settings.reset_section.reset_app.title" = "Alkalmazás visszaállítása (kiszolgálók és adatok eltávolítása)";
 "settings.reset_section.reset_row.title" = "Visszaállítás";
-"settings.reset_section.reset_web_cache.title" = "Kezelőfelület cache trölése";
+"settings.reset_section.reset_web_cache.title" = "Kezelőfelület cache törlése";
 "settings.server_select.page_title" = "Szerver";
 "settings.server_select.title" = "Szerver";
 "settings.status_section.header" = "Állapot";
