@@ -80,7 +80,12 @@ public struct AssistResponse: HADataDecodable {
     public init(data: HAData) throws {
         self.data = try? data.decode("data")
         let type = try data.decode("type") as String
-        self.type = AssistEvent(rawValue: type)!
+        if let eventType = AssistEvent(rawValue: type) {
+            self.type = eventType
+        } else {
+            Current.Log.error("Unknown assist event type: \(type)")
+            self.type = .unknown
+        }
         self.timestamp = try data.decode("timestamp")
     }
 
@@ -184,6 +189,13 @@ public enum AssistEvent: String, Codable {
     case ttsStart = "tts-start"
     case ttsEnd = "tts-end"
     case error = "error"
+    case unknown
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = AssistEvent(rawValue: rawValue) ?? .unknown
+    }
 }
 
 /// Saved in database
