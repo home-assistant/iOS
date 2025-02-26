@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Põhiasukoht ei saanud piirkonna jälgimise funktsiooni kohe käivitada.";
 "cl_error.description.unknown" = "Tundmatu põhiasukoha viga";
 "client_events.event_type.all" = "Kõik";
+"client_events.event_type.background_operation" = "Taustategevus";
 "client_events.event_type.database" = "Andmebaas";
 "client_events.event_type.location_update" = "Asukoha värskendus";
 "client_events.event_type.networkRequest" = "Võrgutaotlus";

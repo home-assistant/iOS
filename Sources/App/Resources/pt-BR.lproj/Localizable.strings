@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "A Localização do Núcleo não pôde inicializar o recurso de monitoramento da região imediatamente.";
 "cl_error.description.unknown" = "Erro de localização do núcleo desconhecido";
 "client_events.event_type.all" = "Todos";
+"client_events.event_type.background_operation" = "Operação em segundo plano";
 "client_events.event_type.database" = "Banco de dados";
 "client_events.event_type.location_update" = "Atualização de localização";
 "client_events.event_type.networkRequest" = "Solicitação de rede";

@@ -173,6 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "A Core Location nem tudta azonnal inicializálni a régiófigyelő funkciót.";
 "cl_error.description.unknown" = "Ismeretlen központi hely hiba";
 "client_events.event_type.all" = "Összes";
+"client_events.event_type.background_operation" = "Background operation";
 "client_events.event_type.database" = "Adatbázis";
 "client_events.event_type.location_update" = "Helymeghatározás frissítése";
 "client_events.event_type.networkRequest" = "Hálózati kérelem";
