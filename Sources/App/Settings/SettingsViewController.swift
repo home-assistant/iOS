@@ -117,14 +117,10 @@ class SettingsViewController: HAFormViewController {
         }
 
         if contentSections.contains(.integrations) {
-            let featuresSection = Section()
+            form +++ Section()
                 <<< SettingsRootDataSource.Row.sensors.row
                 <<< SettingsRootDataSource.Row.nfc.row
-
-            #if DEBUG
-            featuresSection <<< SettingsRootDataSource.Row.widgets.row
-            #endif
-            form +++ featuresSection
+                <<< SettingsRootDataSource.Row.widgets.row
         }
 
         // Display Apple Watch section only for devices that make sense
