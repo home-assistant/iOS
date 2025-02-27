@@ -2,6 +2,7 @@ import Eureka
 import MapKit
 import RealmSwift
 import Shared
+import SwiftUI
 import UIKit
 
 protocol LocationHistoryDetailMoveDelegate: AnyObject {
@@ -18,6 +19,20 @@ protocol LocationHistoryDetailMoveDelegate: AnyObject {
 private class RegionCircle: MKCircle {}
 private class ZoneCircle: MKCircle {}
 private class GPSCircle: MKCircle {}
+
+struct LocationHistoryDetailViewControllerWrapper: UIViewControllerRepresentable {
+	private var entry: LocationHistoryEntry
+	
+	func makeUIViewController(context: Context) -> LocationHistoryDetailViewController {
+		LocationHistoryDetailViewController(entry: entry)
+	}
+	
+	func updateUIViewController(_ uiViewController: LocationHistoryDetailViewController, context: Context) {}
+	
+	init(entry: LocationHistoryEntry) {
+		self.entry = entry
+	}
+}
 
 final class LocationHistoryDetailViewController: UIViewController, TypedRowControllerType {
     typealias RowValue = LocationHistoryDetailViewController

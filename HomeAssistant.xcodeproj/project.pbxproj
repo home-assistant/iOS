@@ -69,7 +69,7 @@
 		1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
 		1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
 		11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11108D622634C8FE009DAB0F /* LearnMoreButtonRow.swift */; };
-		1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */; };
+		1112AE9B25F71775007A541A /* LocationHistoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112AE9A25F71775007A541A /* LocationHistoryListView.swift */; };
 		1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */; };
 		1112EA93271B78690038BBFC /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1112EA92271B78690038BBFC /* UserNotifications.framework */; };
 		1115044E2528485200DCFA94 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
@@ -1512,7 +1512,7 @@
 		110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationErrorViewController.swift; sourceTree = "<group>"; };
 		1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.swift"; sourceTree = "<group>"; };
 		11108D622634C8FE009DAB0F /* LearnMoreButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreButtonRow.swift; sourceTree = "<group>"; };
-		1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryListViewController.swift; sourceTree = "<group>"; };
+		1112AE9A25F71775007A541A /* LocationHistoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryListView.swift; sourceTree = "<group>"; };
 		1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryDetailViewController.swift; sourceTree = "<group>"; };
 		1112EA92271B78690038BBFC /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
 		11169B3E262BCEE6005EF90A /* dynamic_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = dynamic_notification.apns; sourceTree = "<group>"; };
@@ -5185,7 +5185,7 @@
 		D03D893720E0AF1B00D4F28D /* ClientEvents */ = {
 			isa = PBXGroup;
 			children = (
-				1112AE9A25F71775007A541A /* LocationHistoryListViewController.swift */,
+				1112AE9A25F71775007A541A /* LocationHistoryListView.swift */,
 				1112AEBA25F717E9007A541A /* LocationHistoryDetailViewController.swift */,
 			);
 			path = ClientEvents;
@@ -7022,7 +7022,7 @@
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
-				1112AE9B25F71775007A541A /* LocationHistoryListViewController.swift in Sources */,
+				1112AE9B25F71775007A541A /* LocationHistoryListView.swift in Sources */,
 				426EE49B2CA4194E00A5EF4F /* OnboardingWelcomeView.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
