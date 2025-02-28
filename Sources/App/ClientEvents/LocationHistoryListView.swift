@@ -93,14 +93,14 @@ private class LocationHistoryListViewModel: ObservableObject {
             .sorted(byKeyPath: "CreatedAt", ascending: false)
 
         token = results.observe { [weak self] _ in
-			self?.updateEntries(with: results)
+            self?.updateEntries(with: results)
         }
-		updateEntries(with: results)
+        updateEntries(with: results)
     }
-	
-	private func updateEntries(with results: Results<LocationHistoryEntry>) {
-		locationHistoryEntries = results.map(LocationHistoryEntry.init)
-	}
+
+    private func updateEntries(with results: Results<LocationHistoryEntry>) {
+        locationHistoryEntries = results.map(LocationHistoryEntry.init)
+    }
 }
 
 struct LocationHistoryListView: View {
