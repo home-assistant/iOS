@@ -13,6 +13,7 @@ class ClientEventTests: XCTestCase {
 
     override func tearDown() {
         store.clearAllEvents()
+		super.tearDown()
     }
 
     func testStartsEmpty() {
