@@ -1,4 +1,5 @@
 @testable import HomeAssistant
+import RealmSwift
 import Shared
 import SnapshotTesting
 import SwiftUI
@@ -12,6 +13,12 @@ private extension CGFloat {
 struct LocationHistoryListViewSnapshotTests {
     @available(iOS 18, *)
     @MainActor @Test func snapshotEmptyListTest() {
+        let executionIdentifier = UUID().uuidString
+        Current.realm = {
+            try! Realm(
+                configuration: .init(inMemoryIdentifier: executionIdentifier)
+            )
+        }
         let view = NavigationView {
             LocationHistoryListView()
         }
@@ -33,6 +40,12 @@ struct LocationHistoryListViewSnapshotTests {
             LocationHistoryListView()
         }
         Current.date = { Date(timeIntervalSince1970: 1_740_766_173) }
+        let executionIdentifier = UUID().uuidString
+        Current.realm = {
+            try! Realm(
+                configuration: .init(inMemoryIdentifier: executionIdentifier)
+            )
+        }
         let realm = Current.realm()
         realm.reentrantWrite {
             realm.add([
