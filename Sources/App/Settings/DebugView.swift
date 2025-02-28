@@ -105,7 +105,7 @@ struct DebugView: View {
                 }
 
                 NavigationLink {
-					LocationHistoryListView()
+                    LocationHistoryListView()
                 } label: {
                     linkContent(
                         image: .init(systemSymbol: .map),

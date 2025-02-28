@@ -264,7 +264,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 +++ ButtonRow {
                     $0.title = L10n.Settings.LocationHistory.title
                     $0.presentationMode = .show(controllerProvider: .callback(builder: {
-						LocationHistoryListViewHostingController(rootView: LocationHistoryListView())
+                        LocationHistoryListViewHostingController(rootView: LocationHistoryListView())
                     }), onDismiss: nil)
                 }
 
