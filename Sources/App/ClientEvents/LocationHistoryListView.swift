@@ -9,25 +9,25 @@ extension LocationHistoryEntry: @retroactive Identifiable {
 }
 
 private struct LocationHistoryEntryListItemView: View {
+	private let environment: AppEnvironment
 	private let entry: LocationHistoryEntry
 	private let dateFormatter: DateFormatter
-	private weak var detailMoveDelegate: LocationHistoryDetailMoveDelegate?
 	
 	init(
+		environment: AppEnvironment,
 		entry: LocationHistoryEntry,
-		dateFormatter: DateFormatter,
-		detailMoveDelegate: LocationHistoryDetailMoveDelegate? = nil
+		dateFormatter: DateFormatter
 	) {
+		self.environment = environment
 		self.entry = entry
 		self.dateFormatter = dateFormatter
-		self.detailMoveDelegate = detailMoveDelegate
 	}
 	
 	var body: some View {
 		NavigationLink {
 			LocationHistoryDetailViewControllerWrapper(
-				entry: entry,
-				moveDelegate: detailMoveDelegate
+				environment: environment,
+				currentEntry: entry
 			)
 			.edgesIgnoringSafeArea([.top,.bottom])
 		} label: {
@@ -48,6 +48,7 @@ private struct LocationHistoryEntryListItemView: View {
 		Form {
 			Section {
 				LocationHistoryEntryListItemView(
+					environment: Current,
 					entry: .init(
 						updateType: .Manual,
 						location: .init(latitude: 41.1234, longitude: 52.2),
@@ -61,6 +62,7 @@ private struct LocationHistoryEntryListItemView: View {
 					}
 				)
 				LocationHistoryEntryListItemView(
+					environment: Current,
 					entry: .init(
 						updateType: .Periodic,
 						location: nil,
@@ -125,42 +127,14 @@ private class LocationHistoryListViewModel: ObservableObject {
 	}
 }
 
-extension LocationHistoryListViewModel: LocationHistoryDetailMoveDelegate {
-	func detail(
-		_ controller: LocationHistoryDetailViewController,
-		canMove direction: LocationHistoryDetailViewController.MoveDirection
-	) -> Bool {
-		switch direction {
-			case .up:
-				locationHistoryEntries.first != controller.entry
-			case .down:
-				locationHistoryEntries.last != controller.entry
-		}
-	}
-	
-	func detail(
-		_ controller: LocationHistoryDetailViewController,
-		move direction: LocationHistoryDetailViewController.MoveDirection
-	) {
-		guard
-			let currentIndex = locationHistoryEntries.firstIndex(of: controller.entry)
-		else { return }
-		let newIndex = switch direction {
-			case .up: currentIndex - 1
-			case .down: currentIndex + 1
-		}
-		
-		guard let newEntry = locationHistoryEntries[safe: newIndex] else { return }
-		controller.entry = newEntry
-	}
-}
-
 struct LocationHistoryListView: View {
+	private var environment: AppEnvironment
 	@StateObject private var viewModel: LocationHistoryListViewModel
 	
 	init(
 		environment: AppEnvironment = Current
 	) {
+		self.environment = environment
 		self._viewModel = .init(wrappedValue: .init(environment: environment))
 	}
 	
@@ -174,9 +148,9 @@ struct LocationHistoryListView: View {
 					List {
 						ForEach(viewModel.locationHistoryEntries) { entry in
 							LocationHistoryEntryListItemView(
+								environment: environment,
 								entry: entry,
-								dateFormatter: viewModel.dateFormatter,
-								detailMoveDelegate: viewModel
+								dateFormatter: viewModel.dateFormatter
 							)
 						}
 					}
