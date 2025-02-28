@@ -156,8 +156,4 @@ struct LocationHistoryListView: View {
 	}
 }
 
-final class LocationHistoryListViewHostingController: UIHostingController<LocationHistoryListView> {
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		[.portrait]
-	}
-}
+final class LocationHistoryListViewHostingController: UIHostingController<LocationHistoryListView> {}
