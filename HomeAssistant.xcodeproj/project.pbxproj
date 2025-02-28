@@ -901,6 +901,7 @@
 		42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */; };
 		46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C3EB1B2D721017009A893F /* Array+SafeSubscripting.test.swift */; };
 		46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46CC96812D7136F400F784CA /* Array+SafeSubscripting.swift */; };
+		46F103262D721516002BC586 /* LocationHistoryListViewSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F103252D721504002BC586 /* LocationHistoryListViewSnapshot.test.swift */; };
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
@@ -2240,6 +2241,7 @@
 		42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsManagementView.swift; sourceTree = "<group>"; };
 		46C3EB1B2D721017009A893F /* Array+SafeSubscripting.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SafeSubscripting.test.swift"; sourceTree = "<group>"; };
 		46CC96812D7136F400F784CA /* Array+SafeSubscripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SafeSubscripting.swift"; sourceTree = "<group>"; };
+		46F103252D721504002BC586 /* LocationHistoryListViewSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryListViewSnapshot.test.swift; sourceTree = "<group>"; };
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
@@ -4575,6 +4577,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		46F103242D7214F7002BC586 /* ClientEvents */ = {
+			isa = PBXGroup;
+			children = (
+				46F103252D721504002BC586 /* LocationHistoryListViewSnapshot.test.swift */,
+			);
+			path = ClientEvents;
+			sourceTree = "<group>";
+		};
 		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
@@ -4895,6 +4905,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				46F103242D7214F7002BC586 /* ClientEvents */,
 				422E626A2CDCF00000987BD0 /* Area */,
 				4272B9A72CDCE140008CC262 /* CarPlay */,
 				424151FE2CD90CA200D7A6F9 /* MagicItem */,
@@ -7286,6 +7297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
+				46F103262D721516002BC586 /* LocationHistoryListViewSnapshot.test.swift in Sources */,
 				42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */,
 				42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
