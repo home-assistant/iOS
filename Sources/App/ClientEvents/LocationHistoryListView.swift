@@ -39,39 +39,20 @@ private struct LocationHistoryEntryListItemView: View {
     }
 }
 
-#Preview {
-    NavigationView {
-        Form {
-            Section {
-                LocationHistoryEntryListItemView(
-                    entry: .init(
-                        updateType: .Manual,
-                        location: .init(latitude: 41.1234, longitude: 52.2),
-                        zone: .defaultSettingValue,
-                        accuracyAuthorization: .fullAccuracy,
-                        payload: "payload"
-                    ),
-                    dateFormatter: with(DateFormatter()) {
-                        $0.dateStyle = .short
-                        $0.timeStyle = .medium
-                    }
-                )
-                LocationHistoryEntryListItemView(
-                    entry: .init(
-                        updateType: .Periodic,
-                        location: nil,
-                        zone: nil,
-                        accuracyAuthorization: .reducedAccuracy,
-                        payload: "payload"
-                    ),
-                    dateFormatter: with(DateFormatter()) {
-                        $0.dateStyle = .short
-                        $0.timeStyle = .medium
-                    }
-                )
-            }
+#Preview("LocationHistoryEntryListItemView") {
+    LocationHistoryEntryListItemView(
+        entry: .init(
+            updateType: .Manual,
+            location: .init(latitude: 41.1234, longitude: 52.2),
+            zone: .defaultSettingValue,
+            accuracyAuthorization: .fullAccuracy,
+            payload: "payload"
+        ),
+        dateFormatter: with(DateFormatter()) {
+            $0.dateStyle = .short
+            $0.timeStyle = .medium
         }
-    }
+    )
 }
 
 private class LocationHistoryListViewModel: ObservableObject {
@@ -150,9 +131,47 @@ struct LocationHistoryListView: View {
     }
 }
 
-#Preview {
-    NavigationView {
+private struct PreviewLocationHistoryListView: View {
+    init(locationHistory: [LocationHistoryEntry]) {
+        let realm = Current.realm()
+        realm.reentrantWrite {
+            realm.add(locationHistory)
+        }
+    }
+
+    var body: some View {
         LocationHistoryListView()
+    }
+}
+
+#Preview("LocationHistoryListView wo/ Locations") {
+    NavigationView {
+        PreviewLocationHistoryListView(
+            locationHistory: []
+        )
+    }
+}
+
+#Preview("LocationHistoryListView w/ Locations") {
+    NavigationView {
+        PreviewLocationHistoryListView(
+            locationHistory: [
+                LocationHistoryEntry(
+                    updateType: .Manual,
+                    location: .init(latitude: 41.1234, longitude: 52.2),
+                    zone: .defaultSettingValue,
+                    accuracyAuthorization: .fullAccuracy,
+                    payload: "payload"
+                ),
+                LocationHistoryEntry(
+                    updateType: .Periodic,
+                    location: nil,
+                    zone: nil,
+                    accuracyAuthorization: .reducedAccuracy,
+                    payload: "payload"
+                ),
+            ]
+        )
     }
 }
 
