@@ -1,4 +1,3 @@
-import Eureka
 import MapKit
 import RealmSwift
 import Shared
@@ -22,21 +21,43 @@ private class GPSCircle: MKCircle {}
 
 struct LocationHistoryDetailViewControllerWrapper: UIViewControllerRepresentable {
 	private var entry: LocationHistoryEntry
+	private weak var moveDelegate: LocationHistoryDetailMoveDelegate?
+	
+	class Coordinator {
+		var parentObserver: NSKeyValueObservation?
+		var titleObsserver: NSKeyValueObservation?
+	}
 	
 	func makeUIViewController(context: Context) -> LocationHistoryDetailViewController {
-		LocationHistoryDetailViewController(entry: entry)
+		let viewController = LocationHistoryDetailViewController(entry: entry)
+		context.coordinator.parentObserver = viewController.observe(\.parent) { vc, _ in
+			vc.parent?.title = vc.title
+			vc.parent?.navigationItem.title = vc.navigationItem.title
+			vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+			vc.parent?.toolbarItems = vc.toolbarItems
+		}
+		context.coordinator.titleObsserver = viewController.observe(\.title) { vc, _ in
+			vc.parent?.title = vc.title
+			vc.parent?.navigationItem.title = vc.navigationItem.title
+		}
+		viewController.moveDelegate = moveDelegate
+		return viewController
 	}
 	
 	func updateUIViewController(_ uiViewController: LocationHistoryDetailViewController, context: Context) {}
 	
-	init(entry: LocationHistoryEntry) {
+	func makeCoordinator() -> Self.Coordinator { Coordinator() }
+	
+	init(
+		entry: LocationHistoryEntry,
+		moveDelegate: LocationHistoryDetailMoveDelegate?
+	) {
 		self.entry = entry
+		self.moveDelegate = moveDelegate
 	}
 }
 
-final class LocationHistoryDetailViewController: UIViewController, TypedRowControllerType {
-    typealias RowValue = LocationHistoryDetailViewController
-    var row: RowOf<RowValue>!
+final class LocationHistoryDetailViewController: UIViewController {
     var onDismissCallback: ((UIViewController) -> Void)?
 
     enum MoveDirection {
@@ -49,17 +70,21 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
         }
     }
 
-    let entry: LocationHistoryEntry
+	var entry: LocationHistoryEntry {
+		didSet {
+			setUp()
+			updateOverlays()
+			updateAnnotations()
+			center(self)
+			updateButtons()
+		}
+	}
     private let map = MKMapView()
 
     init(entry: LocationHistoryEntry) {
         self.entry = entry
         super.init(nibName: nil, bundle: nil)
-        title = DateFormatter.localizedString(
-            from: entry.CreatedAt,
-            dateStyle: .short,
-            timeStyle: .medium
-        )
+		setUp()
     }
 
     @available(*, unavailable)
@@ -77,6 +102,15 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
 
         navigationController?.setToolbarHidden(false, animated: animated)
     }
+	
+	private func setUp() {
+		title = DateFormatter.localizedString(
+			from: entry.CreatedAt,
+			dateStyle: .short,
+			timeStyle: .medium
+		)
+		navigationItem.title = title
+	}
 
     @objc private func center(_ sender: AnyObject?) {
         map.setRegion(
@@ -289,13 +323,23 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
             map.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
-        map.addOverlays(Self.overlays(for: Current.realm().objects(RLMZone.self)))
-        map.addOverlays(Self.overlays(for: entry.clLocation))
-        map.addAnnotations(Self.annotations(for: entry.clLocation))
+		updateOverlays()
+		updateAnnotations()
 
         center(nil)
         updateButtons()
     }
+	
+	func updateOverlays() {
+		map.removeOverlays(map.overlays)
+		map.addOverlays(Self.overlays(for: Current.realm().objects(RLMZone.self)))
+		map.addOverlays(Self.overlays(for: entry.clLocation))
+	}
+	
+	func updateAnnotations() {
+		map.removeAnnotations(map.annotations)
+		map.addAnnotations(Self.annotations(for: entry.clLocation))
+	}
 }
 
 extension LocationHistoryDetailViewController: MKMapViewDelegate {
