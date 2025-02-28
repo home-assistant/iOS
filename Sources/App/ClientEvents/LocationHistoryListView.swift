@@ -9,16 +9,13 @@ extension LocationHistoryEntry: @retroactive Identifiable {
 }
 
 private struct LocationHistoryEntryListItemView: View {
-	private let environment: AppEnvironment
 	private let entry: LocationHistoryEntry
 	private let dateFormatter: DateFormatter
 	
 	init(
-		environment: AppEnvironment,
 		entry: LocationHistoryEntry,
 		dateFormatter: DateFormatter
 	) {
-		self.environment = environment
 		self.entry = entry
 		self.dateFormatter = dateFormatter
 	}
@@ -26,7 +23,6 @@ private struct LocationHistoryEntryListItemView: View {
 	var body: some View {
 		NavigationLink {
 			LocationHistoryDetailViewControllerWrapper(
-				environment: environment,
 				currentEntry: entry
 			)
 			.edgesIgnoringSafeArea([.top,.bottom])
@@ -48,7 +44,6 @@ private struct LocationHistoryEntryListItemView: View {
 		Form {
 			Section {
 				LocationHistoryEntryListItemView(
-					environment: Current,
 					entry: .init(
 						updateType: .Manual,
 						location: .init(latitude: 41.1234, longitude: 52.2),
@@ -62,7 +57,6 @@ private struct LocationHistoryEntryListItemView: View {
 					}
 				)
 				LocationHistoryEntryListItemView(
-					environment: Current,
 					entry: .init(
 						updateType: .Periodic,
 						location: nil,
@@ -81,8 +75,6 @@ private struct LocationHistoryEntryListItemView: View {
 }
 
 private class LocationHistoryListViewModel: ObservableObject {
-	private var environment: AppEnvironment
-	
 	@ObservedResults(LocationHistoryEntry.self) var locationHistoryEntryResults
 	@Published var locationHistoryEntries: [LocationHistoryEntry] = []
 	
@@ -99,16 +91,7 @@ private class LocationHistoryListViewModel: ObservableObject {
 	
 	let clearButtonTitle: String = L10n.ClientEvents.View.clear
 	
-	func clear() {
-		let realm = environment.realm()
-		environment.realm().reentrantWrite {
-			realm.delete(realm.objects(LocationHistoryEntry.self))
-		}
-	}
-	
-	init(environment: AppEnvironment) {
-		self.environment = environment
-		
+	init() {
 		setupObserver()
 	}
 	
@@ -116,8 +99,15 @@ private class LocationHistoryListViewModel: ObservableObject {
 		token?.invalidate()
 	}
 	
+	func clear() {
+		let realm = Current.realm()
+		realm.reentrantWrite {
+			realm.delete(realm.objects(LocationHistoryEntry.self))
+		}
+	}
+	
 	private func setupObserver() {
-		let results = environment.realm()
+		let results = Current.realm()
 			.objects(LocationHistoryEntry.self)
 			.sorted(byKeyPath: "CreatedAt", ascending: false)
 		
@@ -128,15 +118,7 @@ private class LocationHistoryListViewModel: ObservableObject {
 }
 
 struct LocationHistoryListView: View {
-	private var environment: AppEnvironment
-	@StateObject private var viewModel: LocationHistoryListViewModel
-	
-	init(
-		environment: AppEnvironment = Current
-	) {
-		self.environment = environment
-		self._viewModel = .init(wrappedValue: .init(environment: environment))
-	}
+	@StateObject private var viewModel = LocationHistoryListViewModel()
 	
 	var body: some View {
 		Form {
@@ -148,7 +130,6 @@ struct LocationHistoryListView: View {
 					List {
 						ForEach(viewModel.locationHistoryEntries) { entry in
 							LocationHistoryEntryListItemView(
-								environment: environment,
 								entry: entry,
 								dateFormatter: viewModel.dateFormatter
 							)
@@ -171,7 +152,7 @@ struct LocationHistoryListView: View {
 
 #Preview {
 	NavigationView {
-		LocationHistoryListView(environment: Current)
+		LocationHistoryListView()
 	}
 }
 

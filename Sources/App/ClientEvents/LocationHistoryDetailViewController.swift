@@ -9,7 +9,6 @@ private class ZoneCircle: MKCircle {}
 private class GPSCircle: MKCircle {}
 
 struct LocationHistoryDetailViewControllerWrapper: UIViewControllerRepresentable {
-	private var environment: AppEnvironment
 	private var currentEntry: LocationHistoryEntry
 	
 	class Coordinator {
@@ -18,7 +17,7 @@ struct LocationHistoryDetailViewControllerWrapper: UIViewControllerRepresentable
 	}
 	
 	func makeUIViewController(context: Context) -> LocationHistoryDetailViewController {
-		let viewController = LocationHistoryDetailViewController(environment: environment, currentEntry: currentEntry)
+		let viewController = LocationHistoryDetailViewController(currentEntry: currentEntry)
 		context.coordinator.parentObserver = viewController.observe(\.parent) { vc, _ in
 			vc.parent?.title = vc.title
 			vc.parent?.navigationItem.title = vc.navigationItem.title
@@ -36,11 +35,7 @@ struct LocationHistoryDetailViewControllerWrapper: UIViewControllerRepresentable
 	
 	func makeCoordinator() -> Self.Coordinator { Coordinator() }
 	
-	init(
-		environment: AppEnvironment,
-		currentEntry: LocationHistoryEntry
-	) {
-		self.environment = environment
+	init(currentEntry: LocationHistoryEntry) {
 		self.currentEntry = currentEntry
 	}
 }
@@ -52,7 +47,6 @@ final class LocationHistoryDetailViewController: UIViewController {
         case up, down
     }
 
-	private var environment: AppEnvironment
 	private var currentEntry: LocationHistoryEntry {
 		didSet {
 			setUp()
@@ -66,11 +60,7 @@ final class LocationHistoryDetailViewController: UIViewController {
 	private var token: NotificationToken?
     private let map = MKMapView()
 
-	init(
-		environment: AppEnvironment,
-		currentEntry: LocationHistoryEntry
-	) {
-		self.environment = environment
+	init(currentEntry: LocationHistoryEntry) {
         self.currentEntry = currentEntry
         super.init(nibName: nil, bundle: nil)
 		setUp()
@@ -107,7 +97,7 @@ final class LocationHistoryDetailViewController: UIViewController {
 	}
 	
 	private func setUpObserver() {
-		let results = environment.realm()
+		let results = Current.realm()
 			.objects(LocationHistoryEntry.self)
 			.sorted(byKeyPath: "CreatedAt", ascending: false)
 		
