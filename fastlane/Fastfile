@@ -459,7 +459,7 @@ lane :test do
     scheme: 'Tests-Unit',
     result_bundle: true,
     skip_package_dependencies_resolution: true,
-    destination: 'platform=iOS Simulator,name=iPhone 16,OS=18.1'
+    destination: 'platform=iOS Simulator,name=iPhone 16,OS=18.2'
   )
 end
 

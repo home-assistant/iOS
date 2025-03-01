@@ -1,55 +1,79 @@
-import Eureka
 import MapKit
 import RealmSwift
 import Shared
+import SwiftUI
 import UIKit
-
-protocol LocationHistoryDetailMoveDelegate: AnyObject {
-    func detail(
-        _ controller: LocationHistoryDetailViewController,
-        canMove direction: LocationHistoryDetailViewController.MoveDirection
-    ) -> Bool
-    func detail(
-        _ controller: LocationHistoryDetailViewController,
-        move direction: LocationHistoryDetailViewController.MoveDirection
-    )
-}
 
 private class RegionCircle: MKCircle {}
 private class ZoneCircle: MKCircle {}
 private class GPSCircle: MKCircle {}
 
-final class LocationHistoryDetailViewController: UIViewController, TypedRowControllerType {
-    typealias RowValue = LocationHistoryDetailViewController
-    var row: RowOf<RowValue>!
+struct LocationHistoryDetailViewControllerWrapper: UIViewControllerRepresentable {
+    private var currentEntry: LocationHistoryEntry
+
+    class Coordinator {
+        var parentObserver: NSKeyValueObservation?
+        var titleObsserver: NSKeyValueObservation?
+    }
+
+    func makeUIViewController(context: Context) -> LocationHistoryDetailViewController {
+        let viewController = LocationHistoryDetailViewController(currentEntry: currentEntry)
+        context.coordinator.parentObserver = viewController.observe(\.parent) { vc, _ in
+            vc.parent?.title = vc.title
+            vc.parent?.navigationItem.title = vc.navigationItem.title
+            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+            vc.parent?.toolbarItems = vc.toolbarItems
+        }
+        context.coordinator.titleObsserver = viewController.observe(\.title) { vc, _ in
+            vc.parent?.title = vc.title
+            vc.parent?.navigationItem.title = vc.navigationItem.title
+        }
+        return viewController
+    }
+
+    func updateUIViewController(_ uiViewController: LocationHistoryDetailViewController, context: Context) {}
+
+    func makeCoordinator() -> Self.Coordinator { Coordinator() }
+
+    init(currentEntry: LocationHistoryEntry) {
+        self.currentEntry = currentEntry
+    }
+}
+
+final class LocationHistoryDetailViewController: UIViewController {
     var onDismissCallback: ((UIViewController) -> Void)?
 
     enum MoveDirection {
         case up, down
     }
 
-    weak var moveDelegate: LocationHistoryDetailMoveDelegate? {
+    private var currentEntry: LocationHistoryEntry {
         didSet {
+            setUp()
+            updateOverlays()
+            updateAnnotations()
+            center(self)
             updateButtons()
         }
     }
 
-    let entry: LocationHistoryEntry
+    private var locationHistoryEntries: [LocationHistoryEntry] = []
+    private var token: NotificationToken?
     private let map = MKMapView()
 
-    init(entry: LocationHistoryEntry) {
-        self.entry = entry
+    init(currentEntry: LocationHistoryEntry) {
+        self.currentEntry = currentEntry
         super.init(nibName: nil, bundle: nil)
-        title = DateFormatter.localizedString(
-            from: entry.CreatedAt,
-            dateStyle: .short,
-            timeStyle: .medium
-        )
+        setUp()
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError()
+    }
+
+    deinit {
+        token?.invalidate()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -63,10 +87,30 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
         navigationController?.setToolbarHidden(false, animated: animated)
     }
 
+    private func setUp() {
+        setUpObserver()
+        title = DateFormatter.localizedString(
+            from: currentEntry.CreatedAt,
+            dateStyle: .short,
+            timeStyle: .medium
+        )
+        navigationItem.title = title
+    }
+
+    private func setUpObserver() {
+        let results = Current.realm()
+            .objects(LocationHistoryEntry.self)
+            .sorted(byKeyPath: "CreatedAt", ascending: false)
+
+        token = results.observe { [weak self] _ in
+            self?.locationHistoryEntries = results.map(LocationHistoryEntry.init)
+        }
+    }
+
     @objc private func center(_ sender: AnyObject?) {
         map.setRegion(
             .init(
-                center: entry.clLocation.coordinate,
+                center: currentEntry.clLocation.coordinate,
                 latitudinalMeters: 300,
                 longitudinalMeters: 300
             ),
@@ -79,9 +123,9 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
 
         let accuracyNote: String
 
-        if entry.Accuracy == 65 {
+        if currentEntry.Accuracy == 65 {
             accuracyNote = " (from Wi-Fi)"
-        } else if entry.Accuracy == 1414 {
+        } else if currentEntry.Accuracy == 1414 {
             accuracyNote = " (from cell tower)"
         } else {
             accuracyNote = ""
@@ -89,7 +133,7 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
 
         let accuracyAuthorization: String
 
-        if let authorization = entry.accuracyAuthorization {
+        if let authorization = currentEntry.accuracyAuthorization {
             switch authorization {
             case .fullAccuracy: accuracyAuthorization = "full"
             case .reducedAccuracy: accuracyAuthorization = "reduced"
@@ -111,13 +155,13 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
             """
             ## Payload
             ```json
-            \(entry.Payload)
+            \(currentEntry.Payload)
             ```
 
             ## Location
-            - Trigger: \(entry.Trigger ?? "(unknown)")
-            - Center: (\(latLongString(entry.Latitude)), \(latLongString(entry.Longitude)))
-            - Accuracy: \(distanceString(entry.Accuracy))\(accuracyNote)
+            - Trigger: \(currentEntry.Trigger ?? "(unknown)")
+            - Center: (\(latLongString(currentEntry.Latitude)), \(latLongString(currentEntry.Longitude)))
+            - Accuracy: \(distanceString(currentEntry.Accuracy))\(accuracyNote)
             - Accuracy Authorization: \(accuracyAuthorization)
 
             ## Regions
@@ -127,13 +171,14 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
         let allRegions = Current.realm().objects(RLMZone.self)
             .flatMap(\.circularRegionsForMonitoring)
             .sorted(by: { a, b in
-                a.distanceWithAccuracy(from: entry.clLocation) < b.distanceWithAccuracy(from: entry.clLocation)
+                a.distanceWithAccuracy(from: currentEntry.clLocation) < b
+                    .distanceWithAccuracy(from: currentEntry.clLocation)
             })
         for region in allRegions {
             let regionLocation = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
-            let distanceWithoutAccuracy = regionLocation.distance(from: entry.clLocation)
-            let distanceWithAccuracy = region.distanceWithAccuracy(from: entry.clLocation)
-            let contains = region.containsWithAccuracy(entry.clLocation)
+            let distanceWithoutAccuracy = regionLocation.distance(from: currentEntry.clLocation)
+            let distanceWithAccuracy = region.distanceWithAccuracy(from: currentEntry.clLocation)
+            let contains = region.containsWithAccuracy(currentEntry.clLocation)
 
             value.append(
                 """
@@ -176,11 +221,11 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
     }
 
     @objc private func moveUp(_ sender: AnyObject?) {
-        moveDelegate?.detail(self, move: .up)
+        move(.up)
     }
 
     @objc private func moveDown(_ sender: AnyObject?) {
-        moveDelegate?.detail(self, move: .down)
+        move(.down)
     }
 
     private static func overlays<T: Collection>(for zones: T) -> [MKOverlay] where T.Element: RLMZone {
@@ -216,8 +261,8 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
         let upItem = navigationItem.rightBarButtonItems?.first(where: { $0.action == #selector(moveUp(_:)) })
         let downItem = navigationItem.rightBarButtonItems?.first(where: { $0.action == #selector(moveDown(_:)) })
 
-        upItem?.isEnabled = moveDelegate?.detail(self, canMove: .up) ?? false
-        downItem?.isEnabled = moveDelegate?.detail(self, canMove: .down) ?? false
+        upItem?.isEnabled = canMove(.up)
+        downItem?.isEnabled = canMove(.down)
     }
 
     override func viewDidLoad() {
@@ -274,12 +319,51 @@ final class LocationHistoryDetailViewController: UIViewController, TypedRowContr
             map.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
-        map.addOverlays(Self.overlays(for: Current.realm().objects(RLMZone.self)))
-        map.addOverlays(Self.overlays(for: entry.clLocation))
-        map.addAnnotations(Self.annotations(for: entry.clLocation))
+        updateOverlays()
+        updateAnnotations()
 
         center(nil)
         updateButtons()
+    }
+
+    func updateOverlays() {
+        map.removeOverlays(map.overlays)
+        map.addOverlays(Self.overlays(for: Current.realm().objects(RLMZone.self)))
+        map.addOverlays(Self.overlays(for: currentEntry.clLocation))
+    }
+
+    func updateAnnotations() {
+        map.removeAnnotations(map.annotations)
+        map.addAnnotations(Self.annotations(for: currentEntry.clLocation))
+    }
+}
+
+private extension LocationHistoryDetailViewController {
+    func canMove(
+        _ direction: LocationHistoryDetailViewController.MoveDirection
+    ) -> Bool {
+        switch direction {
+        case .up:
+            locationHistoryEntries.first?.CreatedAt != currentEntry.CreatedAt
+        case .down:
+            locationHistoryEntries.last?.CreatedAt != currentEntry.CreatedAt
+        }
+    }
+
+    func move(
+        _ direction: LocationHistoryDetailViewController.MoveDirection
+    ) {
+        guard
+            let currentIndex = locationHistoryEntries.firstIndex(where: { entry in
+                entry.CreatedAt == currentEntry.CreatedAt
+            }) else { return }
+        let newIndex = switch direction {
+        case .up: currentIndex - 1
+        case .down: currentIndex + 1
+        }
+
+        guard let newEntry = locationHistoryEntries[safe: newIndex] else { return }
+        currentEntry = newEntry
     }
 }
 
