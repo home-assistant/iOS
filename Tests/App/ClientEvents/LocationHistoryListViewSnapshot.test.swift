@@ -22,15 +22,9 @@ struct LocationHistoryListViewSnapshotTests {
         let view = NavigationView {
             LocationHistoryListView()
         }
-        assertSnapshot(
+        assertSnapshots(
             of: view,
-            as: .image(
-                layout: .fixed(
-                    width: .width,
-                    height: .height
-                ),
-                traits: .iPhone13(.portrait)
-            )
+            as: makeDefaultStrategies()
         )
     }
 
@@ -65,15 +59,9 @@ struct LocationHistoryListViewSnapshotTests {
                 ),
             ])
         }
-        assertSnapshot(
+        assertSnapshots(
             of: view,
-            as: .image(
-                layout: .fixed(
-                    width: .width,
-                    height: .height
-                ),
-                traits: .iPhone13(.portrait)
-            )
+            as: makeDefaultStrategies()
         )
     }
 }

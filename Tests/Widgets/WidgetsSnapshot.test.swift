@@ -19,12 +19,15 @@ struct WidgetsSnapshotTests {
                     withIconBackgroundColor: true,
                     familySize: familySize
                 )
-                assertSnapshot(
+                assertSnapshots(
                     of: view,
-                    as: .image(layout: .fixed(
-                        width: widthForPreview(family: familySize),
-                        height: heightForPreview(family: familySize)
-                    ))
+                    as: makeDefaultStrategies(
+                        layout: .fixed(
+                            width: widthForPreview(family: familySize),
+                            height: heightForPreview(family: familySize)
+                        )
+                    ),
+					testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
@@ -40,12 +43,15 @@ struct WidgetsSnapshotTests {
                     withIconBackgroundColor: false,
                     familySize: familySize
                 )
-                assertSnapshot(
+                assertSnapshots(
                     of: view,
-                    as: .image(layout: .fixed(
-                        width: widthForPreview(family: familySize),
-                        height: heightForPreview(family: familySize)
-                    ))
+                    as: makeDefaultStrategies(
+                        layout: .fixed(
+                            width: widthForPreview(family: familySize),
+                            height: heightForPreview(family: familySize)
+                        )
+					),
+					testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
@@ -61,12 +67,15 @@ struct WidgetsSnapshotTests {
                     withIconBackgroundColor: true,
                     familySize: familySize
                 )
-                assertSnapshot(
+                assertSnapshots(
                     of: view,
-                    as: .image(layout: .fixed(
-                        width: widthForPreview(family: familySize),
-                        height: heightForPreview(family: familySize)
-                    ))
+                    as: makeDefaultStrategies(
+                        layout: .fixed(
+                            width: widthForPreview(family: familySize),
+                            height: heightForPreview(family: familySize)
+                        )
+					),
+					testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
@@ -82,16 +91,27 @@ struct WidgetsSnapshotTests {
                     withIconBackgroundColor: false,
                     familySize: familySize
                 )
-                assertSnapshot(
+                assertSnapshots(
                     of: view,
-                    as: .image(layout: .fixed(
-                        width: widthForPreview(family: familySize),
-                        height: heightForPreview(family: familySize)
-                    ))
+                    as: makeDefaultStrategies(
+                        layout: .fixed(
+                            width: widthForPreview(family: familySize),
+                            height: heightForPreview(family: familySize)
+                        )
+					),
+					testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
     }
+	
+	private func testName(
+		base: String = #function,
+		widgetFamily: WidgetFamily,
+		tilesCount: Int
+	) -> String {
+		"\(base).\(widgetFamily.description).\(tilesCount)_tiles"
+	}
 
     private func heightForPreview(family: WidgetFamily) -> CGFloat {
         switch family {
