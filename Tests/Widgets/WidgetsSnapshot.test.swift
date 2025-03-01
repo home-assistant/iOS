@@ -27,7 +27,7 @@ struct WidgetsSnapshotTests {
                             height: heightForPreview(family: familySize)
                         )
                     ),
-					testName: testName(widgetFamily: familySize, tilesCount: i)
+                    testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
@@ -50,8 +50,8 @@ struct WidgetsSnapshotTests {
                             width: widthForPreview(family: familySize),
                             height: heightForPreview(family: familySize)
                         )
-					),
-					testName: testName(widgetFamily: familySize, tilesCount: i)
+                    ),
+                    testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
@@ -74,8 +74,8 @@ struct WidgetsSnapshotTests {
                             width: widthForPreview(family: familySize),
                             height: heightForPreview(family: familySize)
                         )
-					),
-					testName: testName(widgetFamily: familySize, tilesCount: i)
+                    ),
+                    testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
@@ -98,20 +98,20 @@ struct WidgetsSnapshotTests {
                             width: widthForPreview(family: familySize),
                             height: heightForPreview(family: familySize)
                         )
-					),
-					testName: testName(widgetFamily: familySize, tilesCount: i)
+                    ),
+                    testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
         }
     }
-	
-	private func testName(
-		base: String = #function,
-		widgetFamily: WidgetFamily,
-		tilesCount: Int
-	) -> String {
-		"\(base).\(widgetFamily.description).\(tilesCount)_tiles"
-	}
+
+    private func testName(
+        base: String = #function,
+        widgetFamily: WidgetFamily,
+        tilesCount: Int
+    ) -> String {
+        "\(base).\(widgetFamily.description).\(tilesCount)_tiles"
+    }
 
     private func heightForPreview(family: WidgetFamily) -> CGFloat {
         switch family {
