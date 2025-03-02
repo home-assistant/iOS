@@ -173,7 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Çekirdek Konum, bölge izleme özelliğini hemen başlatamadı.";
 "cl_error.description.unknown" = "Bilinmeyen Çekirdek Konumu hatası";
 "client_events.event_type.all" = "Tümü";
-"client_events.event_type.background_operation" = "Background operation";
+"client_events.event_type.background_operation" = "Arka plan işlemi";
 "client_events.event_type.database" = "Veritabanı";
 "client_events.event_type.location_update" = "Konum Güncelleme";
 "client_events.event_type.networkRequest" = "Ağ İsteği";

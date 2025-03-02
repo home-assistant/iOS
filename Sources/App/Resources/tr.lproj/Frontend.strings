@@ -9,6 +9,6 @@
 "panel::media_browser" = "Medya";
 "panel::profile" = "Profil";
 "panel::shopping_list" = "Alışveriş listesi";
-"panel::states" = "Genel bakış";
+"panel::states" = "Ana Ekran";
 "state::default::unavailable" = "Kullanım dışı";
 "state::default::unknown" = "Bilinmeyen";
