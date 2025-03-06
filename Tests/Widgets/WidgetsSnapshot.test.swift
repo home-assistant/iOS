@@ -21,9 +21,9 @@ struct WidgetsSnapshotTests {
                 )
                 assertLightDarkSnapshots(
                     of: view,
-					layout: .fixed(
-						width: widthForPreview(family: familySize),
-						height: heightForPreview(family: familySize)
+                    layout: .fixed(
+                        width: widthForPreview(family: familySize),
+                        height: heightForPreview(family: familySize)
                     ),
                     testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
@@ -41,12 +41,12 @@ struct WidgetsSnapshotTests {
                     withIconBackgroundColor: false,
                     familySize: familySize
                 )
-				assertLightDarkSnapshots(
+                assertLightDarkSnapshots(
                     of: view,
-					layout: .fixed(
-						width: widthForPreview(family: familySize),
-						height: heightForPreview(family: familySize)
-					),
+                    layout: .fixed(
+                        width: widthForPreview(family: familySize),
+                        height: heightForPreview(family: familySize)
+                    ),
                     testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
@@ -63,12 +63,12 @@ struct WidgetsSnapshotTests {
                     withIconBackgroundColor: true,
                     familySize: familySize
                 )
-				assertLightDarkSnapshots(
+                assertLightDarkSnapshots(
                     of: view,
-					layout: .fixed(
-						width: widthForPreview(family: familySize),
-						height: heightForPreview(family: familySize)
-					),
+                    layout: .fixed(
+                        width: widthForPreview(family: familySize),
+                        height: heightForPreview(family: familySize)
+                    ),
                     testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }
@@ -85,12 +85,12 @@ struct WidgetsSnapshotTests {
                     withIconBackgroundColor: false,
                     familySize: familySize
                 )
-				assertLightDarkSnapshots(
+                assertLightDarkSnapshots(
                     of: view,
-					layout: .fixed(
-						width: widthForPreview(family: familySize),
-						height: heightForPreview(family: familySize)
-					),
+                    layout: .fixed(
+                        width: widthForPreview(family: familySize),
+                        height: heightForPreview(family: familySize)
+                    ),
                     testName: testName(widgetFamily: familySize, tilesCount: i)
                 )
             }

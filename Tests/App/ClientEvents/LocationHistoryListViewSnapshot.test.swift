@@ -19,11 +19,11 @@ struct LocationHistoryListViewSnapshotTests {
                 configuration: .init(inMemoryIdentifier: executionIdentifier)
             )
         }
-		let view = NavigationView {
+        let view = NavigationView {
             LocationHistoryListView()
         }
-		assertLightDarkSnapshots(
-			of: view
+        assertLightDarkSnapshots(
+            of: view
         )
     }
 
@@ -58,7 +58,7 @@ struct LocationHistoryListViewSnapshotTests {
                 ),
             ])
         }
-		assertLightDarkSnapshots(
+        assertLightDarkSnapshots(
             of: view
         )
     }
