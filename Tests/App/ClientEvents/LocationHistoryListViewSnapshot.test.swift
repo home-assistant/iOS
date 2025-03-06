@@ -19,12 +19,11 @@ struct LocationHistoryListViewSnapshotTests {
                 configuration: .init(inMemoryIdentifier: executionIdentifier)
             )
         }
-        let view = NavigationView {
+		let view = NavigationView {
             LocationHistoryListView()
         }
-        assertSnapshots(
-            of: view,
-            as: makeDefaultStrategies()
+		assertLightDarkSnapshots(
+			of: view
         )
     }
 
@@ -59,9 +58,8 @@ struct LocationHistoryListViewSnapshotTests {
                 ),
             ])
         }
-        assertSnapshots(
-            of: view,
-            as: makeDefaultStrategies()
+		assertLightDarkSnapshots(
+            of: view
         )
     }
 }

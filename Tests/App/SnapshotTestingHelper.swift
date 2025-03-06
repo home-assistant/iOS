@@ -1,16 +1,34 @@
-import SwiftUICore
+import SwiftUI
 import UIKit
 
 import SnapshotTesting
 
-func makeDefaultStrategies<Value>(
-    layout: SwiftUISnapshotLayout = SwiftUISnapshotLayout.device(config: .iPhone13(.portrait))
-) -> [Snapshotting<Value, UIImage>] where Value: View {
-    [UIUserInterfaceStyle.light, UIUserInterfaceStyle.dark]
-        .map { style in
-            Snapshotting<Value, UIImage>.image(
-                layout: layout,
-                traits: .init(userInterfaceStyle: style)
-            )
-        }
+func assertLightDarkSnapshots<Value>(
+	of value: @autoclosure () throws -> Value,
+	layout: SwiftUISnapshotLayout = SwiftUISnapshotLayout.device(config: .iPhone13(.portrait)),
+	record recording: Bool? = nil,
+	timeout: TimeInterval = 5,
+	fileID: StaticString = #fileID,
+	file filePath: StaticString = #filePath,
+	testName: String = #function,
+	line: UInt = #line,
+	column: UInt = #column
+) where Value: SwiftUI.View {
+	try? [UIUserInterfaceStyle.light, UIUserInterfaceStyle.dark]
+		.forEach { style in
+			assertSnapshot(
+				of: try value(),
+				as: Snapshotting<Value, UIImage>.image(
+					layout: layout,
+					traits: .init(userInterfaceStyle: style)
+				),
+				record: recording,
+				timeout: timeout,
+				fileID: fileID,
+				file: filePath,
+				testName: "\(testName)-\(style == .light ? "light" : "dark")",
+				line: line,
+				column: column
+			)
+		}
 }
