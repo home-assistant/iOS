@@ -63,7 +63,7 @@
 "component::demo::entity::sensor::thermostat_mode::state::away" = "Fuera";
 "component::device_tracker::entity_component::_::state::home" = "En casa";
 "component::device_tracker::entity_component::_::state::not_home" = "Fuera";
-"component::ecoforest::entity::sensor::status::state::off" = "Agapado";
+"component::ecoforest::entity::sensor::status::state::off" = "Apagado";
 "component::ecoforest::entity::sensor::status::state::on" = "Encendido";
 "component::ecoforest::entity::sensor::status::state::stand_by" = "En espera";
 "component::fan::entity_component::_::state::off" = "Apagado";
