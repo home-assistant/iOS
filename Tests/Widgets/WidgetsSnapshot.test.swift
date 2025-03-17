@@ -2,9 +2,6 @@
 
 import SharedTesting
 
-import SnapshotTesting
-
-import SwiftUI
 import Testing
 import WidgetKit
 
@@ -39,14 +36,6 @@ struct WidgetsSnapshotTests {
         )
     }
 
-    private func testName(
-        base: String = #function,
-        widgetFamily: WidgetFamily,
-        tilesCount: Int
-    ) -> String {
-        "\(base)-\(widgetFamily.description)-\(String(format: "%02d", tilesCount))_tiles"
-    }
-
     private func heightForPreview(family: WidgetFamily) -> CGFloat {
         switch family {
         case .systemSmall, .systemMedium:
@@ -67,16 +56,5 @@ struct WidgetsSnapshotTests {
         default:
             return 600
         }
-    }
-}
-
-extension WidgetFamily: @retroactive EnvironmentKey {
-    public static var defaultValue: WidgetFamily = .systemMedium
-}
-
-extension EnvironmentValues {
-    var widgetFamily: WidgetFamily {
-        get { self[WidgetFamily.self] }
-        set { self[WidgetFamily.self] = newValue }
     }
 }
