@@ -47,7 +47,7 @@ struct WidgetsSnapshotTests {
                         width: widthForPreview(family: familySize),
                         height: heightForPreview(family: familySize)
                     ),
-                    testName: testName(widgetFamily: familySize, tilesCount: i)
+                    testName: testName(widgetFamily: familySize, tilesCount: i + 1)
                 )
             }
         }
@@ -69,7 +69,7 @@ struct WidgetsSnapshotTests {
                         width: widthForPreview(family: familySize),
                         height: heightForPreview(family: familySize)
                     ),
-                    testName: testName(widgetFamily: familySize, tilesCount: i)
+                    testName: testName(widgetFamily: familySize, tilesCount: i + 1)
                 )
             }
         }
@@ -91,7 +91,7 @@ struct WidgetsSnapshotTests {
                         width: widthForPreview(family: familySize),
                         height: heightForPreview(family: familySize)
                     ),
-                    testName: testName(widgetFamily: familySize, tilesCount: i)
+                    testName: testName(widgetFamily: familySize, tilesCount: i + 1)
                 )
             }
         }
@@ -102,7 +102,7 @@ struct WidgetsSnapshotTests {
         widgetFamily: WidgetFamily,
         tilesCount: Int
     ) -> String {
-        "\(base)-\(widgetFamily.description)-\(tilesCount)_tiles"
+        "\(base)-\(widgetFamily.description)-\(String(format: "%02d", tilesCount))_tiles"
     }
 
     private func heightForPreview(family: WidgetFamily) -> CGFloat {
