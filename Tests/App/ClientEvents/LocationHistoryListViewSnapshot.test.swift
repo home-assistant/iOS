@@ -11,6 +11,6 @@ struct LocationHistoryListViewSnapshotTests {
     @MainActor @Test func snapshots() {
         LocationHistoryListView_Previews
             .configuration
-			.assertLightDarkSnapshots(drawHierarchyInKeyWindow: true)
+            .assertLightDarkSnapshots(drawHierarchyInKeyWindow: true)
     }
 }
