@@ -98,16 +98,25 @@ public struct AssistResponse: HADataDecodable {
         public let ttsOutput: TtsOutput?
         public let code: String?
         public let message: String?
+        public var chatLogDelta: ChatLogDelta?
 
         public init(data: HAData) throws {
             self.pipeline = try? data.decode("data")
             self.language = try? data.decode("language")
             self.intentOutput = try? data.decode("intent_output")
+            self.chatLogDelta = try? data.decode("chat_log_delta")
             self.runnerData = try? data.decode("runner_data")
             self.sttOutput = try? data.decode("stt_output")
             self.ttsOutput = try? data.decode("tts_output")
             self.code = try? data.decode("code")
             self.message = try? data.decode("message")
+        }
+
+        public struct ChatLogDelta: HADataDecodable {
+            public let content: String?
+            public init(data: HAData) throws {
+                self.content = try? data.decode("content")
+            }
         }
 
         public struct SttOutput: HADataDecodable {
@@ -188,6 +197,7 @@ public enum AssistEvent: String, Codable {
     case intentEnd = "intent-end"
     case ttsStart = "tts-start"
     case ttsEnd = "tts-end"
+    case intentProgress = "intent-progress"
     case error = "error"
     case unknown
 

@@ -104,9 +104,20 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     private func appendToChat(_ item: AssistChatItem) {
-        if chatItems.last?.itemType == .typing {
-            chatItems.removeLast()
+        if item.itemType == .output {
+            /*
+             Always replace last output chat item in case a new one is
+             appended in sequence, avoiding duplicate content in case the pipeline supports stream responses
+             */
+            if [.output, .typing].contains(chatItems.last?.itemType) {
+                chatItems.removeLast()
+            }
+        } else {
+            if chatItems.last?.itemType == .typing {
+                chatItems.removeLast()
+            }
         }
+
         chatItems.append(item)
         if item.itemType == .input {
             chatItems.append(.init(content: "", itemType: .typing))
@@ -209,6 +220,15 @@ extension AssistViewModel: AudioRecorderDelegate {
 }
 
 extension AssistViewModel: AssistServiceDelegate {
+    func didReceiveStreamResponseChunk(_ content: String) {
+        if let lastItemInList = chatItems.last, lastItemInList.itemType == .output {
+            let newContent = lastItemInList.content + content
+            appendToChat(.init(content: newContent, itemType: .output))
+        } else {
+            appendToChat(.init(content: content, itemType: .output))
+        }
+    }
+
     func didReceiveEvent(_ event: AssistEvent) {
         if [.sttEnd, .runEnd].contains(event), isRecording {
             stopStreaming()
