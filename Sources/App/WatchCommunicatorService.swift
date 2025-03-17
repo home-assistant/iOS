@@ -341,6 +341,10 @@ extension WatchCommunicatorService {
 // MARK: - AssistServiceDelegate
 
 extension WatchCommunicatorService: AssistServiceDelegate {
+    func didReceiveStreamResponseChunk(_ content: String) {
+        /* no-op */
+    }
+
     func didReceiveEvent(_ event: Shared.AssistEvent) {
         Current.Log.info("Watch Assist received event: \(event)")
     }
