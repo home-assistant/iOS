@@ -221,13 +221,17 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
 
     @Parameter(
         title: .init("widgets.custom.show_last_update_time.param.title", defaultValue: "Show last update time"),
-        default: true
+        default: false
     )
     var showLastUpdateTime: Bool
 
     @Parameter(
         title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
-        default: true
+        description: .init(
+            "widgets.custom.show_states.description",
+            defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
+        ),
+        default: false
     )
     var showStates: Bool
 

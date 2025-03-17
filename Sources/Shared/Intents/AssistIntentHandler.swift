@@ -93,6 +93,10 @@ class AssistIntentHandler: NSObject, AssistIntentHandling {
 }
 
 extension AssistIntentHandler: AssistServiceDelegate {
+    func didReceiveStreamResponseChunk(_ content: String) {
+        /* no-op */
+    }
+
     func didReceiveEvent(_ event: AssistEvent) {
         /* no-op */
     }

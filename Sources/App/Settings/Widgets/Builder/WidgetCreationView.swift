@@ -21,6 +21,7 @@ struct WidgetCreationView: View {
             widgetPreview
             nameField
             itemsView
+            documentation
         }
         .navigationTitle(L10n.Settings.Widgets.Create.title)
         .toolbar {
@@ -82,6 +83,12 @@ struct WidgetCreationView: View {
             Spacer()
         }
         .listRowBackground(Color.clear)
+    }
+
+    private var documentation: some View {
+        Section {
+            WidgetDocumentationLink()
+        }
     }
 
     private var nameField: some View {
@@ -163,8 +170,6 @@ struct WidgetCreationView: View {
             let textColor = Color(hex: magicItem.customization?.textColor)
             let iconColor = Color(hex: magicItem.customization?.iconColor)
             let backgroundColor = Color(hex: magicItem.customization?.backgroundColor)
-            let subtitle: String? = [.script, .scene, .button, .inputButton].contains(magicItem.domain) ? nil : L10n
-                .Widgets.EntityState.placeholder
             let interactionType = magicItem.widgetInteractionType
             let showIconBackground = {
                 switch interactionType {
@@ -194,7 +199,7 @@ struct WidgetCreationView: View {
             return WidgetBasicViewModel(
                 id: magicItem.id,
                 title: title,
-                subtitle: subtitle,
+                subtitle: nil,
                 interactionType: .appIntent(.refresh),
                 icon: icon,
                 showIconBackground: showIconBackground,
