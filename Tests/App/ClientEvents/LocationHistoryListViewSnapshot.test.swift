@@ -5,11 +5,6 @@ import SnapshotTesting
 import SwiftUI
 import Testing
 
-private extension CGFloat {
-    static let width: CGFloat = 400
-    static let height: CGFloat = 867
-}
-
 struct LocationHistoryListViewSnapshotTests {
     @available(iOS 18, *)
     @MainActor @Test func snapshotEmptyListTest() {
@@ -22,15 +17,9 @@ struct LocationHistoryListViewSnapshotTests {
         let view = NavigationView {
             LocationHistoryListView()
         }
-        assertSnapshot(
+        assertLightDarkSnapshots(
             of: view,
-            as: .image(
-                layout: .fixed(
-                    width: .width,
-                    height: .height
-                ),
-                traits: .iPhone13(.portrait)
-            )
+            drawHierarchyInKeyWindow: true
         )
     }
 
@@ -65,15 +54,9 @@ struct LocationHistoryListViewSnapshotTests {
                 ),
             ])
         }
-        assertSnapshot(
+        assertLightDarkSnapshots(
             of: view,
-            as: .image(
-                layout: .fixed(
-                    width: .width,
-                    height: .height
-                ),
-                traits: .iPhone13(.portrait)
-            )
+            drawHierarchyInKeyWindow: true
         )
     }
 }
