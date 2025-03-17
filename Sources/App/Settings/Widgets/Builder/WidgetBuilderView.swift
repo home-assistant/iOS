@@ -40,6 +40,9 @@ struct WidgetBuilderView: View {
                     }
                 }
             }
+            Section {
+                WidgetDocumentationLink()
+            }
         }
         .onAppear {
             viewModel.loadWidgets()

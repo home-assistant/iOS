@@ -7,4 +7,7 @@ public enum ExternalLink {
     public static func githubSearchIssue(domain: String) -> URL? {
         URL(string: "https://github.com/home-assistant/iOS/search?q=\(domain)&type=issues")
     }
+
+    public static var customWidgetsDocumentation =
+        URL(string: "https://companion.home-assistant.io/docs/integrations/ios-widgets")!
 }
