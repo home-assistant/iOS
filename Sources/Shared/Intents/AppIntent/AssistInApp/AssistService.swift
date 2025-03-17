@@ -15,6 +15,8 @@ public protocol AssistServiceDelegate: AnyObject {
     func didReceiveEvent(_ event: AssistEvent)
     func didReceiveSttContent(_ content: String)
     func didReceiveIntentEndContent(_ content: String)
+    /// LLMs supports streaming their response so it shows up word by word
+    func didReceiveStreamResponseChunk(_ content: String)
     func didReceiveGreenLightForAudioInput()
     func didReceiveTtsMediaUrl(_ mediaUrl: URL)
     func didReceiveError(code: String, message: String)
@@ -184,6 +186,8 @@ public final class AssistService: AssistServiceProtocol {
             guard let mediaUrlPath = data.data?.ttsOutput?.urlPath,
                   let mediaUrl = server.info.connection.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
             delegate?.didReceiveTtsMediaUrl(mediaUrl)
+        case .intentProgress:
+            delegate?.didReceiveStreamResponseChunk(data.data?.chatLogDelta?.content ?? "Unknown")
         case .error:
             sttBinaryHandlerId = nil
             Current.Log.error("Received error while interating with Assist: \(data)")

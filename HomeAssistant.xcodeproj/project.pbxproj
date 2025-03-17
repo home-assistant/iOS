@@ -818,6 +818,7 @@
 		42CE8FB62B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
 		42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */; };
 		42CE8FBB2B46DB6200C707F9 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D0AE442D88259000D9715A /* WidgetDocumentationLink.swift */; };
 		42D334272D105990008D8E78 /* AppPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D334262D105990008D8E78 /* AppPanel.swift */; };
 		42D334282D105990008D8E78 /* AppPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D334262D105990008D8E78 /* AppPanel.swift */; };
 		42D3E49C2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */; };
@@ -2160,6 +2161,7 @@
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
 		42CE8FAE2B46C3D600C707F9 /* CoreStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreStrings+Values.swift"; sourceTree = "<group>"; };
 		42CE8FB42B46CAFD00C707F9 /* FrontendStrings+Values.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FrontendStrings+Values.swift"; sourceTree = "<group>"; };
+		42D0AE442D88259000D9715A /* WidgetDocumentationLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDocumentationLink.swift; sourceTree = "<group>"; };
 		42D334262D105990008D8E78 /* AppPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPanel.swift; sourceTree = "<group>"; };
 		42D3E49B2C5BB88F00444BE6 /* WatchBatterySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBatterySensor.swift; sourceTree = "<group>"; };
 		42D3E4A02C5BCD1100444BE6 /* WatchContext.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContext.test.swift; sourceTree = "<group>"; };
@@ -4128,6 +4130,7 @@
 				421155242D355C6700A71630 /* WidgetBuilderView.swift */,
 				421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */,
 				4285C5502D355F9900DADE45 /* WidgetCreationView.swift */,
+				42D0AE442D88259000D9715A /* WidgetDocumentationLink.swift */,
 				42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */,
 			);
 			path = Builder;
@@ -7209,6 +7212,7 @@
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
 				B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
+				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */,
 				42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */,
