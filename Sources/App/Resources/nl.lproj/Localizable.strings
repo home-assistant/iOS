@@ -173,7 +173,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Kernlocatie kan de regio monitoring functie niet onmiddellijk initialiseren.";
 "cl_error.description.unknown" = "Onbekende kernlocatiefout";
 "client_events.event_type.all" = "Alle";
-"client_events.event_type.background_operation" = "Background operation";
+"client_events.event_type.background_operation" = "Achtergrond werking";
 "client_events.event_type.database" = "Database";
 "client_events.event_type.location_update" = "Locatie update";
 "client_events.event_type.networkRequest" = "Netwerk Verzoek";
@@ -513,8 +513,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "bijv. http://homeassistant.local:8123/";
 "settings.connection_section.internal_base_url.requires_setup.title" = "Instellen vereist";
-"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "Om de interne URL te gebruiken, moet de naam van je wifi-netwerk (SSID) of hardwareadressen opgeven. Anders gebruikt de app altijd standaard de externe URL.";
-"settings.connection_section.internal_base_url.ssid_required.title" = "Om de interne URL te gebruiken, moet de naam van je wifi-netwerk (SSID). Anders gebruikt de app altijd standaard de externe URL.";
+"settings.connection_section.internal_base_url.ssid_bssid_required.title" = "Om de interne URL te gebruiken, moet de naam van je Wi-Fi-netwerk (SSID) of hardwareadressen opgeven. Anders gebruikt de app altijd standaard de externe URL.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "Om de interne URL te gebruiken, moet de naam van je Wi-Fi-netwerk (SSID). Anders gebruikt de app altijd standaard de externe URL.";
 "settings.connection_section.internal_base_url.title" = "Interne URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Voeg nieuw hardware-adres toe";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Interne URL wordt gebruikt als de primaire netwerkinterface een MAC-adres heeft dat overeenkomt met een van deze hardwareadressen.";
@@ -648,12 +648,12 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.general.app_icon.enum.old_release" = "Oude versie";
 "settings_details.general.app_icon.enum.orange" = "Oranje";
 "settings_details.general.app_icon.enum.pink" = "Roze";
-"settings_details.general.app_icon.enum.pride_bi" = "Trots: Bi";
+"settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";
 "settings_details.general.app_icon.enum.pride_non_binary" = "Pride: Non-binair";
-"settings_details.general.app_icon.enum.pride_poc" = "Trots: 8 kleuren";
+"settings_details.general.app_icon.enum.pride_poc" = "Pride: 8 kleuren";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow (omgekeerd)";
 "settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Rainbow (omgekeerd)";
-"settings_details.general.app_icon.enum.pride_trans" = "Trots: Trans";
+"settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.enum.purple" = "Paars";
 "settings_details.general.app_icon.enum.red" = "Rood";
 "settings_details.general.app_icon.enum.release" = "Release";
