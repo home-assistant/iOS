@@ -17,8 +17,7 @@ struct WidgetsSnapshotTests {
             layout: .fixed(
                 width: widthForPreview(family: .systemLarge),
                 height: heightForPreview(family: .systemLarge)
-            ),
-            traits: .init()
+            )
         )
     }
 
@@ -28,8 +27,7 @@ struct WidgetsSnapshotTests {
             layout: .fixed(
                 width: widthForPreview(family: .systemMedium),
                 height: heightForPreview(family: .systemMedium)
-            ),
-            traits: .init()
+            )
         )
     }
 
@@ -39,17 +37,8 @@ struct WidgetsSnapshotTests {
             layout: .fixed(
                 width: widthForPreview(family: .systemSmall),
                 height: heightForPreview(family: .systemSmall)
-            ),
-            traits: .init()
+            )
         )
-    }
-
-    private func testName(
-        base: String = #function,
-        widgetFamily: WidgetFamily,
-        tilesCount: Int
-    ) -> String {
-        "\(base)-\(widgetFamily.description)-\(tilesCount)_tiles"
     }
 
     private func heightForPreview(family: WidgetFamily) -> CGFloat {

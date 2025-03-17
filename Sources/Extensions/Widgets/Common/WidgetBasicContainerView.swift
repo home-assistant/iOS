@@ -110,7 +110,11 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                             withSubtitle: true,
                             withIconBackgroundColor: true
                         ),
-                        name: "withSubtitleWithIconBackground-\(familySize.description)-\(maxTiles)_tiles"
+						name: previewName(
+							"withSubtitleWithIconBackground",
+							widgetFamily: familySize,
+							tilesCount: maxTiles
+						)
                     ),
                     .init(
                         item: .init(
@@ -118,7 +122,11 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                             withSubtitle: true,
                             withIconBackgroundColor: false
                         ),
-                        name: "withSubtitleWithoutIconBackground-\(familySize.description)-\(maxTiles)_tiles"
+						name: previewName(
+							"withSubtitleWithoutIconBackground",
+							widgetFamily: familySize,
+							tilesCount: maxTiles
+						)
                     ),
                     .init(
                         item: .init(
@@ -126,7 +134,11 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                             withSubtitle: false,
                             withIconBackgroundColor: true
                         ),
-                        name: "withoutSubtitleWithIconBackground-\(familySize.description)-\(maxTiles)_tiles"
+						name: previewName(
+							"withoutSubtitleWithIconBackground",
+							widgetFamily: familySize,
+							tilesCount: maxTiles
+						)
                     ),
                     .init(
                         item: .init(
@@ -134,11 +146,23 @@ struct WidgetBasicContainerView_Previews: PreviewProvider {
                             withSubtitle: false,
                             withIconBackgroundColor: false
                         ),
-                        name: "withoutSubtitleWithoutIconBackground-\(familySize.description)-\(maxTiles)_tiles"
+						name: previewName(
+							"withoutSubtitleWithoutIconBackground",
+							widgetFamily: familySize,
+							tilesCount: maxTiles
+						)
                     ),
                 ]
             }
     }
+	
+	private static func previewName(
+		_ base: String,
+		widgetFamily: WidgetFamily,
+		tilesCount: Int
+	) -> String {
+		"\(base)-\(widgetFamily.description)-\(String(format: "%02d", tilesCount))_tiles"
+	}
 
     private static func widgetBasicContainerView(
         modelsCount: Int,

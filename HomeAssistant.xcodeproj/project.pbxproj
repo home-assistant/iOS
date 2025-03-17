@@ -903,6 +903,7 @@
 		461521052D7F23F00073C7BE /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 461521042D7F23F00073C7BE /* InlineSnapshotTesting */; };
 		461521072D7F23F70073C7BE /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 461521062D7F23F70073C7BE /* SnapshotTestingCustomDump */; };
 		461E905C2D7F33F300DB0218 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 461E905B2D7F33F300DB0218 /* XCTest.framework */; platformFilter = ios; };
+		464DB2142D8854FA0059A36F /* SnapshotTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */; };
 		465AFEA42D7EF4AB0043C08F /* SnapshottablePreviewConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465AFEA32D7EF4980043C08F /* SnapshottablePreviewConfigurations.swift */; };
 		465AFEA62D7EFDEB0043C08F /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465AFEA52D7EFDDF0043C08F /* LocationHistoryEntryListItemView.swift */; };
 		465AFECF2D7F044F0043C08F /* SharedTesting.h in Headers */ = {isa = PBXBuildFile; fileRef = 465AFECD2D7F044F0043C08F /* SharedTesting.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4644,6 +4645,7 @@
 		465AFECE2D7F044F0043C08F /* SharedTesting */ = {
 			isa = PBXGroup;
 			children = (
+				46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */,
 				465AFECC2D7F044F0043C08F /* SnapshottablePreviewConfigurations+SnapshotTesting.swift */,
 				465AFECD2D7F044F0043C08F /* SharedTesting.h */,
 			);
@@ -5000,7 +5002,6 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 				422E626A2CDCF00000987BD0 /* Area */,
 				4272B9A72CDCE140008CC262 /* CarPlay */,
@@ -7182,6 +7183,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				464DB2142D8854FA0059A36F /* SnapshotTestingHelper.swift in Sources */,
 				465AFED02D7F044F0043C08F /* SnapshottablePreviewConfigurations+SnapshotTesting.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
