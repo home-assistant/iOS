@@ -105,7 +105,7 @@
 "component::improv_ble::config::flow_title" = "{name}";
 "component::improv_ble::config::progress::authorize" = "此设备需要授权，请按其授权按钮或查阅设备手册了解如何继续。";
 "component::improv_ble::config::progress::provisioning" = "此设备正连接到无线网络。";
-"component::improv_ble::config::step::bluetooth_confirm::description" = "您要设置”{name}“吗 ？";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "您要设置“{name}”吗 ？";
 "component::improv_ble::config::step::identify::description" = "此设备现正标识自己，例如通过闪烁或发出蜂鸣声。";
 "component::improv_ble::config::step::main_menu::description" = "选择下一步。";
 "component::improv_ble::config::step::main_menu::menu_options::identify" = "识别设备";
