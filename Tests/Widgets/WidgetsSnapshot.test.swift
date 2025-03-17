@@ -8,8 +8,6 @@ import SwiftUI
 import Testing
 import WidgetKit
 
-/* Some snapshots may look duplicate but they guarantee that if we pass more models to a widget container
- it will only displays what it's family supports guided by `WidgetFamilySizes` */
 struct WidgetsSnapshotTests {
     @available(iOS 18, *)
     @MainActor @Test func systemLargeSnapshots() {
@@ -39,6 +37,14 @@ struct WidgetsSnapshotTests {
                 height: heightForPreview(family: .systemSmall)
             )
         )
+    }
+
+    private func testName(
+        base: String = #function,
+        widgetFamily: WidgetFamily,
+        tilesCount: Int
+    ) -> String {
+        "\(base)-\(widgetFamily.description)-\(String(format: "%02d", tilesCount))_tiles"
     }
 
     private func heightForPreview(family: WidgetFamily) -> CGFloat {

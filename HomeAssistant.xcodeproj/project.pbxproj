@@ -5005,6 +5005,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 				422E626A2CDCF00000987BD0 /* Area */,
 				4272B9A72CDCE140008CC262 /* CarPlay */,
