@@ -16,7 +16,7 @@ struct LocationHistoryListViewSnapshotTests {
     @MainActor @Test func snapshots() {
         LocationHistoryListView_Previews
             .configuration
-            .assertSnapshots(
+            .assertLightDarkSnapshots(
                 layout: .fixed(width: .width, height: .height),
                 traits: .iPhone13(.portrait)
             )

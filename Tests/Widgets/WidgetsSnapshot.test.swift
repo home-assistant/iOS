@@ -13,7 +13,7 @@ import WidgetKit
 struct WidgetsSnapshotTests {
     @available(iOS 18, *)
     @MainActor @Test func systemLargeSnapshots() {
-        WidgetBasicContainerView_Previews.systemLargeConfigurations.assertSnapshots(
+        WidgetBasicContainerView_Previews.systemLargeConfigurations.assertLightDarkSnapshots(
             layout: .fixed(
                 width: widthForPreview(family: .systemLarge),
                 height: heightForPreview(family: .systemLarge)
@@ -24,7 +24,7 @@ struct WidgetsSnapshotTests {
 
     @available(iOS 18, *)
     @MainActor @Test func systemMediumSnapshots() {
-        WidgetBasicContainerView_Previews.systemMediumConfigurations.assertSnapshots(
+        WidgetBasicContainerView_Previews.systemMediumConfigurations.assertLightDarkSnapshots(
             layout: .fixed(
                 width: widthForPreview(family: .systemMedium),
                 height: heightForPreview(family: .systemMedium)
@@ -35,13 +35,21 @@ struct WidgetsSnapshotTests {
 
     @available(iOS 18, *)
     @MainActor @Test func systemSmallSnapshots() {
-        WidgetBasicContainerView_Previews.systemSmallConfigurations.assertSnapshots(
+        WidgetBasicContainerView_Previews.systemSmallConfigurations.assertLightDarkSnapshots(
             layout: .fixed(
                 width: widthForPreview(family: .systemSmall),
                 height: heightForPreview(family: .systemSmall)
             ),
             traits: .init()
         )
+    }
+
+    private func testName(
+        base: String = #function,
+        widgetFamily: WidgetFamily,
+        tilesCount: Int
+    ) -> String {
+        "\(base)-\(widgetFamily.description)-\(tilesCount)_tiles"
     }
 
     private func heightForPreview(family: WidgetFamily) -> CGFloat {

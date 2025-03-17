@@ -912,6 +912,7 @@
 		465AFED42D7F0C5C0043C08F /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		465AFED82D7F0FE90043C08F /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 465AFEAC2D7F03BD0043C08F /* SharedTesting.framework */; };
 		465AFED92D7F0FE90043C08F /* SharedTesting.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 465AFEAC2D7F03BD0043C08F /* SharedTesting.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		46BA6A4E2D734EBB002C2262 /* SnapshotTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */; };
 		46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C3EB1B2D721017009A893F /* Array+SafeSubscripting.test.swift */; };
 		46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46CC96812D7136F400F784CA /* Array+SafeSubscripting.swift */; };
 		46F103262D721516002BC586 /* LocationHistoryListViewSnapshot.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F103252D721504002BC586 /* LocationHistoryListViewSnapshot.test.swift */; };
@@ -2295,6 +2296,7 @@
 		465AFEAC2D7F03BD0043C08F /* SharedTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SharedTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		465AFECC2D7F044F0043C08F /* SnapshottablePreviewConfigurations+SnapshotTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SnapshottablePreviewConfigurations+SnapshotTesting.swift"; sourceTree = "<group>"; };
 		465AFECD2D7F044F0043C08F /* SharedTesting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedTesting.h; sourceTree = "<group>"; };
+		46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingHelper.swift; sourceTree = "<group>"; };
 		46C3EB1B2D721017009A893F /* Array+SafeSubscripting.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SafeSubscripting.test.swift"; sourceTree = "<group>"; };
 		46CC96812D7136F400F784CA /* Array+SafeSubscripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SafeSubscripting.swift"; sourceTree = "<group>"; };
 		46F103252D721504002BC586 /* LocationHistoryListViewSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryListViewSnapshot.test.swift; sourceTree = "<group>"; };
@@ -4998,6 +5000,7 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 				422E626A2CDCF00000987BD0 /* Area */,
 				4272B9A72CDCE140008CC262 /* CarPlay */,
@@ -7470,6 +7473,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46BA6A4E2D734EBB002C2262 /* SnapshotTestingHelper.swift in Sources */,
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				46F103262D721516002BC586 /* LocationHistoryListViewSnapshot.test.swift in Sources */,
 				42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */,
