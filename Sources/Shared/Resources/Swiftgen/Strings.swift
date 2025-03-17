@@ -3994,6 +3994,10 @@ public enum L10n {
         }
       }
       public enum ShowStates {
+        /// Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.
+        public static func description(_ p1: Float) -> String {
+          return L10n.tr("Localizable", "widgets.custom.show_states.description", p1)
+        }
         public enum Param {
           /// Show states (BETA)
           public static var title: String { return L10n.tr("Localizable", "widgets.custom.show_states.param.title") }

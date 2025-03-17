@@ -21,6 +21,7 @@ struct WidgetCreationView: View {
             widgetPreview
             nameField
             itemsView
+            documentation
         }
         .navigationTitle(L10n.Settings.Widgets.Create.title)
         .toolbar {
@@ -82,6 +83,12 @@ struct WidgetCreationView: View {
             Spacer()
         }
         .listRowBackground(Color.clear)
+    }
+
+    private var documentation: some View {
+        Section {
+            WidgetDocumentationLink()
+        }
     }
 
     private var nameField: some View {
