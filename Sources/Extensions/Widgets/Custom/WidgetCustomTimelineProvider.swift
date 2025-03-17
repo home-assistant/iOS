@@ -227,7 +227,10 @@ struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
 
     @Parameter(
         title: .init("widgets.custom.show_states.param.title", defaultValue: "Show states (BETA)"),
-        description: .init("widgets.custom.show_states.description", defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."),
+        description: .init(
+            "widgets.custom.show_states.description",
+            defaultValue: "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information."
+        ),
         default: false
     )
     var showStates: Bool
