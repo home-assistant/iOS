@@ -11,6 +11,7 @@ final class MockAssistService: AssistServiceProtocol {
     var audioDataSent: Data?
     var finishSendingAudioCalled = false
     var replacedServer: Shared.Server?
+    var shouldStartListeningAgainAfterPlaybackEnd: Bool = false
 
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void) {
         fetchPipelinesCalled = true
