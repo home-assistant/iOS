@@ -260,7 +260,7 @@ struct DebugView: View {
                     Text(verbatim: L10n.okLabel)
                 }
             } message: {
-                Text(watchSyncErrorMessage ?? "Unknown")
+                Text(watchSyncErrorMessage.orEmpty)
             }
 
             Button {

@@ -148,10 +148,12 @@ public struct AssistResponse: HADataDecodable {
             public init(data: HAData) throws {
                 self.response = try? data.decode("response")
                 self.conversationId = try? data.decode("conversation_id")
+                self.continueConversation = (try? data.decode("continue_conversation")) ?? false
             }
 
             public let response: Response?
             public let conversationId: String?
+            public let continueConversation: Bool
         }
 
         public struct Response: HADataDecodable {
