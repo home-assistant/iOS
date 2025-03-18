@@ -4,6 +4,7 @@ import HAKit
 
 public protocol AssistServiceProtocol {
     var delegate: AssistServiceDelegate? { get set }
+    var shouldStartListeningAgainAfterPlaybackEnd: Bool { get }
     func replaceServer(server: Server)
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void)
     func assist(source: AssistSource)
@@ -40,6 +41,7 @@ public enum AssistSource: Equatable {
 
 public final class AssistService: AssistServiceProtocol {
     public weak var delegate: AssistServiceDelegate?
+    public var shouldStartListeningAgainAfterPlaybackEnd = false
     private var server: Server
 
     private var cancellable: HACancellable?
@@ -153,48 +155,73 @@ public final class AssistService: AssistServiceProtocol {
         delegate?.didReceiveEvent(data.type)
         switch data.type {
         case .runStart:
-            guard let sttBinaryHandlerId = data.data?.runnerData?.sttBinaryHandlerId else {
-                Current.Log.error("No sttBinaryHandlerId on runStart")
-                return
-            }
-            Current.Log.info("sttBinaryHandlerId: \(sttBinaryHandlerId)")
-            self.sttBinaryHandlerId = UInt8(sttBinaryHandlerId)
-            delegate?.didReceiveGreenLightForAudioInput()
+            runStart(sttBinaryHandlerId: data.data?.runnerData?.sttBinaryHandlerId)
         case .runEnd:
-            sttBinaryHandlerId = nil
-            cancellable.cancel()
-        case .wakeWordStart:
-            break
-        case .wakeWordEnd:
-            break
-        case .sttStart:
-            break
-        case .sttVadStart:
-            break
-        case .sttVadEnd:
-            break
+            runEnd(cancellable: cancellable)
         case .sttEnd:
-            delegate?.didReceiveSttContent(data.data?.sttOutput?.text ?? "Unknown")
-        case .intentStart:
-            break
+            sttEnd(content: data.data?.sttOutput?.text)
         case .intentEnd:
-            conversationId = data.data?.intentOutput?.conversationId
-            delegate?.didReceiveIntentEndContent(data.data?.intentOutput?.response?.speech.plain.speech ?? "Unknown")
-        case .ttsStart:
-            break
+            intentEnd(
+                conversationId: data.data?.intentOutput?.conversationId,
+                content: data.data?.intentOutput?.response?.speech.plain.speech,
+                continueConversation: (data.data?.intentOutput?.continueConversation).orFalse
+            )
         case .ttsEnd:
-            guard let mediaUrlPath = data.data?.ttsOutput?.urlPath,
-                  let mediaUrl = server.info.connection.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
-            delegate?.didReceiveTtsMediaUrl(mediaUrl)
+            ttsEnd(mediaUrlPath: data.data?.ttsOutput?.urlPath)
         case .intentProgress:
-            delegate?.didReceiveStreamResponseChunk(data.data?.chatLogDelta?.content ?? "Unknown")
+            intentProgress(messageChunk: data.data?.chatLogDelta?.content)
         case .error:
-            sttBinaryHandlerId = nil
-            Current.Log.error("Received error while interating with Assist: \(data)")
-            delegate?.didReceiveError(code: data.data?.code ?? "-1", message: data.data?.message ?? "Unknown error")
-            cancellable.cancel()
+            assistError(data: data, cancellable: cancellable)
+        case .wakeWordStart, .wakeWordEnd, .sttStart, .sttVadStart, .sttVadEnd, .intentStart, .ttsStart:
+            break
         case .unknown:
             Current.Log.verbose("Unmapped event received from Assist")
         }
+    }
+}
+
+// MARK: - Handling Assist events
+
+extension AssistService {
+    private func runStart(sttBinaryHandlerId: Int?) {
+        guard let sttBinaryHandlerId else {
+            Current.Log.error("No sttBinaryHandlerId on runStart")
+            return
+        }
+        Current.Log.info("sttBinaryHandlerId: \(sttBinaryHandlerId)")
+        self.sttBinaryHandlerId = UInt8(sttBinaryHandlerId)
+        delegate?.didReceiveGreenLightForAudioInput()
+    }
+
+    private func runEnd(cancellable: HACancellable) {
+        sttBinaryHandlerId = nil
+        cancellable.cancel()
+    }
+
+    private func sttEnd(content: String?) {
+        delegate?.didReceiveSttContent(content.orEmpty)
+    }
+
+    private func intentEnd(conversationId: String?, content: String?, continueConversation: Bool) {
+        self.conversationId = conversationId
+        delegate?.didReceiveIntentEndContent(content.orEmpty)
+        shouldStartListeningAgainAfterPlaybackEnd = continueConversation
+    }
+
+    private func ttsEnd(mediaUrlPath: String?) {
+        guard let mediaUrlPath,
+              let mediaUrl = server.info.connection.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
+        delegate?.didReceiveTtsMediaUrl(mediaUrl)
+    }
+
+    private func intentProgress(messageChunk: String?) {
+        delegate?.didReceiveStreamResponseChunk(messageChunk.orEmpty)
+    }
+
+    private func assistError(data: AssistResponse, cancellable: HACancellable) {
+        sttBinaryHandlerId = nil
+        Current.Log.error("Received error while interating with Assist: \(data)")
+        delegate?.didReceiveError(code: data.data?.code ?? "-1", message: data.data?.message ?? "Unknown error")
+        cancellable.cancel()
     }
 }
