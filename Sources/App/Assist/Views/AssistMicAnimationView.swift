@@ -32,6 +32,7 @@ struct AssistMicAnimationView: View {
                     .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
                 Text(verbatim: L10n.Assist.Button.Listening.title)
                     .opacity(0.5)
+                    .padding(.bottom)
             }
         }
     }
