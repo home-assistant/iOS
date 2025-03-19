@@ -47,7 +47,8 @@ final class SceneAppIntent: AppIntent {
             api.CallService(
                 domain: Domain.scene.rawValue,
                 service: "turn_on",
-                serviceData: ["entity_id": scene.entityId]
+                serviceData: ["entity_id": scene.entityId],
+                triggerSource: .AppIntent
             )
             .pipe { [weak self] result in
                 switch result {
