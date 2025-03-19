@@ -1134,6 +1134,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.custom.intent_toggle_failed.title" = "Selhání entity: \"toggle\"";
 "widgets.custom.require_confirmation.footer" = "Potvrzení widgetu a zobrazení stavu jsou aktuálně ve verzi BETA. Pokud se setkáte s problémy, vypněte volbu \"Vyžadovat potvrzení\" a uložte.";
 "widgets.custom.show_last_update_time.param.title" = "Zobrazit čas poslední aktualizace";
+"widgets.custom.show_states.description" = "Zobrazení nejnovějších stavů není 100% zaručeno. Můžete to zkusit a další informace naleznete v dokumentaci k doprovodné aplikaci.";
 "widgets.custom.show_states.param.title" = "Zobrazit stavy (BETA)";
 "widgets.custom.show_update_time.title" = "Poslední aktualizace:";
 "widgets.custom.subtitle" = "Vytvářejte widgety ve vlastním stylu";
