@@ -15,7 +15,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "465AFEAB2D7F03BD0043C08F"
+               BlueprintIdentifier = "46C62B872D8A3687002C0001"
                BuildableName = "SharedTesting.framework"
                BlueprintName = "SharedTesting"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
@@ -50,7 +50,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "465AFEAB2D7F03BD0043C08F"
+            BlueprintIdentifier = "46C62B872D8A3687002C0001"
             BuildableName = "SharedTesting.framework"
             BlueprintName = "SharedTesting"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">

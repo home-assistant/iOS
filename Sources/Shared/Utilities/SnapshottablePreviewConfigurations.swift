@@ -1,5 +1,32 @@
 import SwiftUI
 
+/// Struct to hold different preview configurations that can be reused for snapshot testing
+///
+/// Each configuration holds an item, of generic type Item, and a name.
+/// A configure function is also provided that outputs a SwiftUI View, taking an item as input.
+///
+/// Usage example:
+/// ```
+/// struct MyView_Previews: PreviewProvider {
+///   static var previews: some View {
+/// 	configuration.previews()
+///   }
+///
+///   static var configuration: SnapshottablePreviewConfigurations<String> = {
+/// 	.init(
+/// 	  configurations: [
+/// 		.init(item: "1st", name: "First"),
+/// 		.init(
+/// 		  item: "2nd",
+/// 		  name: "Second"
+/// 		),
+/// 	  ],
+/// 	  configure: { configuration in
+/// 		Text(configuration)
+/// 	  }
+/// 	)
+///   }()
+/// }
 public struct SnapshottablePreviewConfigurations<Item> {
     public struct Configuration<ConfigurationItem>: Identifiable {
         public let item: ConfigurationItem
