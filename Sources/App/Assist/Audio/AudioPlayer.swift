@@ -3,11 +3,17 @@ import Foundation
 import Shared
 
 protocol AudioPlayerProtocol {
+    var delegate: AudioPlayerDelegate? { get set }
     func play(url: URL)
     func pause()
 }
 
+protocol AudioPlayerDelegate: AnyObject {
+    func audioPlayerDidFinishPlaying(_ player: AudioPlayer)
+}
+
 final class AudioPlayer: NSObject, AudioPlayerProtocol {
+    weak var delegate: AudioPlayerDelegate?
     private let player = AVPlayer()
 
     func play(url: URL) {
@@ -23,9 +29,24 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
         let playerItem = AVPlayerItem(url: url)
         player.replaceCurrentItem(with: playerItem)
         player.play()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(audioDidFinishPlaying(_:)),
+            name: .AVPlayerItemDidPlayToEndTime,
+            object: playerItem
+        )
     }
 
     func pause() {
         player.pause()
+    }
+
+    @objc private func audioDidFinishPlaying(_ notification: Notification) {
+        delegate?.audioPlayerDidFinishPlaying(self)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

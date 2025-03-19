@@ -26,7 +26,6 @@ struct AssistView: View {
                     pipelinesPicker
                 }
                 chatList
-                bottomBar
             }
             .navigationTitle("Assist")
             .navigationBarTitleDisplayMode(.inline)
@@ -69,7 +68,7 @@ struct AssistView: View {
         Button {
             dismiss()
         } label: {
-            Image(systemName: "xmark")
+            Image(systemSymbol: .xmark)
         }
         .buttonStyle(.plain)
         .tint(Color(uiColor: .label))
@@ -141,6 +140,9 @@ struct AssistView: View {
                 }
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            bottomBar
+        }
     }
 
     /// Position is where it will be placed related to the list
@@ -156,44 +158,53 @@ struct AssistView: View {
 
     private var bottomBar: some View {
         ZStack {
-            HStack(spacing: Spaces.two) {
-                TextField("", text: $viewModel.inputText)
-                    .textFieldStyle(.plain)
-                    .focused($isFirstResponder)
-                    .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
-                    .frame(height: 45)
-                    .padding(.horizontal, viewModel.isRecording ? .zero : Spaces.two)
-                    .overlay(content: {
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.gray)
-                    })
-                    .opacity(viewModel.isRecording ? 0 : 1)
-                    .animation(.smooth, value: viewModel.isRecording)
-                    .onSubmit {
-                        viewModel.assistWithText()
-                    }
-                if viewModel.inputText.isEmpty {
-                    assistMicButton
-                } else {
-                    assistSendTextButton
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, Spaces.two)
-            .padding(.vertical)
-            .padding(.bottom, isIpad ? Spaces.two : Spaces.half)
-            .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
-            .opacity(viewModel.isRecording ? 0 : 1)
-            Button {
-                feedbackGenerator.notificationOccurred(.warning)
-                viewModel.stopStreaming()
-            } label: {
-                AssistMicAnimationView()
-                    .frame(maxWidth: viewModel.isRecording ? .infinity : 0)
-            }
-            .buttonStyle(.plain)
-            .opacity(viewModel.isRecording ? 1 : 0)
+            inputTextView
+            microphoneIcon
         }
+        .frame(maxHeight: 80)
+    }
+
+    private var inputTextView: some View {
+        HStack(spacing: Spaces.two) {
+            TextField("", text: $viewModel.inputText)
+                .textFieldStyle(.plain)
+                .focused($isFirstResponder)
+                .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
+                .frame(height: 45)
+                .padding(.horizontal, viewModel.isRecording ? .zero : Spaces.two)
+                .overlay(content: {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(.gray)
+                })
+                .opacity(viewModel.isRecording ? 0 : 1)
+                .animation(.smooth, value: viewModel.isRecording)
+                .onSubmit {
+                    viewModel.assistWithText()
+                }
+            if viewModel.inputText.isEmpty {
+                assistMicButton
+            } else {
+                assistSendTextButton
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, Spaces.two)
+        .padding(.vertical)
+        .padding(.bottom, isIpad ? Spaces.two : Spaces.half)
+        .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
+        .opacity(viewModel.isRecording ? 0 : 1)
+    }
+
+    private var microphoneIcon: some View {
+        Button {
+            feedbackGenerator.notificationOccurred(.warning)
+            viewModel.stopStreaming()
+        } label: {
+            AssistMicAnimationView()
+                .frame(maxWidth: viewModel.isRecording ? .infinity : 0)
+        }
+        .buttonStyle(.plain)
+        .opacity(viewModel.isRecording ? 1 : 0)
     }
 
     private var assistSendTextButton: some View {

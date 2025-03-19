@@ -248,6 +248,7 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
+        audioPlayer.delegate = self
         audioPlayer.play(url: mediaUrl)
     }
 
@@ -268,6 +269,14 @@ extension AssistViewModel: AssistSessionDelegate {
             preferredPipelineId = context.pipelineId
             autoStartRecording = context.autoStartRecording
             initialRoutine()
+        }
+    }
+}
+
+extension AssistViewModel: AudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AudioPlayer) {
+        if assistService.shouldStartListeningAgainAfterPlaybackEnd {
+            assistWithAudio()
         }
     }
 }

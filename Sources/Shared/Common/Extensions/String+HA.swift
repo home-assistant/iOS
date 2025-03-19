@@ -19,3 +19,9 @@ public extension String {
         return first.uppercased() + dropFirst()
     }
 }
+
+public extension String? {
+    var orEmpty: String {
+        self ?? ""
+    }
+}
