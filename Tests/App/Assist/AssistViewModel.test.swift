@@ -134,4 +134,18 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertEqual(sut.inputText, "")
         XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
     }
+
+    func testVolumeIsZeroTriggersRecording() {
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
+        sut.volumeIsZero()
+
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    func testVolumeIsZeroDoesNotTriggersRecording() {
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = false
+        sut.volumeIsZero()
+
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+    }
 }
