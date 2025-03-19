@@ -10,6 +10,7 @@ protocol AudioPlayerProtocol {
 
 protocol AudioPlayerDelegate: AnyObject {
     func audioPlayerDidFinishPlaying(_ player: AudioPlayer)
+    func volumeIsZero()
 }
 
 final class AudioPlayer: NSObject, AudioPlayerProtocol {
@@ -22,6 +23,13 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
             try audioSession.setActive(false)
             try audioSession.setCategory(.playback)
             try audioSession.setActive(true)
+
+            Current.Log.verbose("Audio player current volume: \(audioSession.outputVolume)")
+
+            if audioSession.outputVolume == 0 {
+                delegate?.volumeIsZero()
+                return
+            }
         } catch {
             Current.Log.error("Failed to setup audio session for audio player: \(error.localizedDescription)")
         }

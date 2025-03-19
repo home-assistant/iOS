@@ -215,7 +215,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         case .event:
             let data = api.actionEvent(actionID: ID, actionName: Name, source: .Preview)
             let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
-            let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map(\.description).sorted()
+            let sourceStrings = HomeAssistantAPI.AppTriggerSource.allCases.map(\.description).sorted()
 
             let indentation = "\n    "
 
@@ -252,7 +252,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         components.host = "perform_action"
         components.path = "/" + ID
         components.queryItems = [
-            .init(name: "source", value: HomeAssistantAPI.ActionSource.Widget.rawValue),
+            .init(name: "source", value: HomeAssistantAPI.AppTriggerSource.Widget.rawValue),
         ]
         return components.url!
     }
