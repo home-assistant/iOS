@@ -1134,6 +1134,8 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "widgets.custom.intent_toggle_failed.title" = "無法 '切換' 實體";
 "widgets.custom.require_confirmation.footer" = "小工具確認與狀態顯示目前處於測試階段，假如遇到問題，請關閉 '需要確認' 並儲存。";
 "widgets.custom.show_last_update_time.param.title" = "顯示最後更新時間";
+"widgets.custom.show_states.description" = "顯示最新狀態、不保證 100% 準確。您可以嘗試一下，並查看 \
+Companion 應用程式相關資料以獲得更詳細資訊。";
 "widgets.custom.show_states.param.title" = "顯示狀態（測試）";
 "widgets.custom.show_update_time.title" = "最後更新：";
 "widgets.custom.subtitle" = "新增具有自己風格的小工具";

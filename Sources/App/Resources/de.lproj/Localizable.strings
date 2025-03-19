@@ -1135,6 +1135,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "widgets.custom.intent_toggle_failed.title" = "Entität konnte nicht „umgeschaltet“ werden";
 "widgets.custom.require_confirmation.footer" = "Die Widget-Bestätigung und Zustandsanzeige befinden sich derzeit in der BETA-Phase. Wenn Probleme auftreten, deaktiviere „Bestätigung erforderlich“ und speichere.";
 "widgets.custom.show_last_update_time.param.title" = "Letzte Aktualisierungszeit anzeigen";
+"widgets.custom.show_states.description" = "Die Anzeige der neuesten Zustände ist nicht zu 100 % garantiert. Du kannst es ausprobieren und in der Dokumentation der Companion-App nachsehen, um weitere Informationen zu erhalten.";
 "widgets.custom.show_states.param.title" = "Zustände anzeigen (BETA)";
 "widgets.custom.show_update_time.title" = "Letzte Aktualisierung:";
 "widgets.custom.subtitle" = "Erstelle Widgets in deinem eigenen Stil";
