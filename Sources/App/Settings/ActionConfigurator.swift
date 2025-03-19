@@ -128,28 +128,6 @@ class ActionConfigurator: HAFormViewController, TypedRowControllerType {
             }
         }
 
-        if !Current.isCatalyst {
-            firstSection <<< SwitchRow {
-                $0.title = L10n.SettingsDetails.Actions.CarPlay.Available.title
-                $0.value = action.showInCarPlay
-                $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.showInCarPlay))
-            }.onChange { row in
-                if let value = row.value {
-                    self.action.showInCarPlay = value
-                }
-            }
-
-            firstSection <<< SwitchRow("showInWatch") {
-                $0.title = L10n.SettingsDetails.Actions.Watch.Available.title
-                $0.value = action.showInWatch
-                $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.showInWatch))
-            }.onChange { row in
-                if let value = row.value {
-                    self.action.showInWatch = value
-                }
-            }
-        }
-
         if action.canConfigure(\Action.IconName) {
             visuals <<< SearchPushRow<MaterialDesignIcons> {
                 $0.options = MaterialDesignIcons.allCases
