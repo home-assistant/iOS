@@ -1134,6 +1134,7 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
 "widgets.custom.show_last_update_time.param.title" = "Show last update time";
+"widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
 "widgets.custom.show_states.param.title" = "Show states (BETA)";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";

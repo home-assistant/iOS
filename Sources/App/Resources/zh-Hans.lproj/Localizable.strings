@@ -1134,6 +1134,7 @@
 "widgets.custom.intent_toggle_failed.title" = "“切换”实体失败";
 "widgets.custom.require_confirmation.footer" = "小部件确认和状态显示目前处于测试阶段，如果您遇到问题，请禁用“需要确认”并保存。";
 "widgets.custom.show_last_update_time.param.title" = "显示上次更新时间";
+"widgets.custom.show_states.description" = "不能 100% 保证显示最新状态，您可以尝试一下，查看配套应用文档可获取更多信息。";
 "widgets.custom.show_states.param.title" = "显示状态（测试版）";
 "widgets.custom.show_update_time.title" = "上次更新：";
 "widgets.custom.subtitle" = "创建具有自己风格的小部件";
