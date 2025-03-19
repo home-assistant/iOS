@@ -5,6 +5,7 @@ import HAKit
 public protocol AssistServiceProtocol {
     var delegate: AssistServiceDelegate? { get set }
     var shouldStartListeningAgainAfterPlaybackEnd: Bool { get }
+    func resetShouldStartListeningAgainAfterPlaybackEnd()
     func replaceServer(server: Server)
     func fetchPipelines(completion: @escaping (PipelineResponse?) -> Void)
     func assist(source: AssistSource)
@@ -177,6 +178,10 @@ public final class AssistService: AssistServiceProtocol {
         case .unknown:
             Current.Log.verbose("Unmapped event received from Assist")
         }
+    }
+
+    private func resetShouldStartListeningAgainAfterPlaybackEnd() {
+        shouldStartListeningAgainAfterPlaybackEnd = false
     }
 }
 

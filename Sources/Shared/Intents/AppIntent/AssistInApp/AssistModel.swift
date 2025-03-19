@@ -129,7 +129,7 @@ public struct AssistResponse: HADataDecodable {
         public struct TtsOutput: HADataDecodable {
             public let urlPath: String?
             public init(data: HAData) throws {
-                // Even thought API name it 'url' it is just the path without the base url
+                // Even though API name it 'url' it is just the path without the base url
                 self.urlPath = try? data.decode("url")
             }
         }
