@@ -180,7 +180,7 @@ public final class AssistService: AssistServiceProtocol {
         }
     }
 
-    private func resetShouldStartListeningAgainAfterPlaybackEnd() {
+    public func resetShouldStartListeningAgainAfterPlaybackEnd() {
         shouldStartListeningAgainAfterPlaybackEnd = false
     }
 }

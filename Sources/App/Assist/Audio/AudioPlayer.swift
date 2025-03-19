@@ -4,7 +4,6 @@ import Shared
 
 protocol AudioPlayerProtocol {
     var delegate: AudioPlayerDelegate? { get set }
-    var volume: Float? { get }
     func play(url: URL)
     func pause()
 }
@@ -17,10 +16,6 @@ protocol AudioPlayerDelegate: AnyObject {
 final class AudioPlayer: NSObject, AudioPlayerProtocol {
     weak var delegate: AudioPlayerDelegate?
     private let player = AVPlayer()
-
-    var volume: Float? {
-        AVAudioSession.sharedInstance().outputVolume
-    }
 
     func play(url: URL) {
         do {
