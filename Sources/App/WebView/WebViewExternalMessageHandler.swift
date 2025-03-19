@@ -121,7 +121,7 @@ final class WebViewExternalMessageHandler {
                 guard let message = incomingMessage.Payload?["message"] as? String else { return }
                 let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
                 alert.addAction(.init(title: L10n.okLabel, style: .default))
-                webViewController.presentOverlayController(controller: alert, animated: false)
+                webViewController.presentAlertController(controller: alert, animated: true)
             case .threadStoreCredentialInAppleKeychain:
                 guard let macExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
                       let activeOperationalDataset = incomingMessage.Payload?["active_operational_dataset"] as? String else { return }
