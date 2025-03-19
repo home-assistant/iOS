@@ -21,7 +21,7 @@ struct WidgetsSnapshotTests {
 
     @available(iOS 18, *)
     @MainActor @Test func systemMediumSnapshots() {
-		let size = snapshotSize(for: .systemMedium)
+        let size = snapshotSize(for: .systemMedium)
         WidgetBasicContainerView_Previews
             .systemMediumConfigurations
             .assertLightDarkSnapshots(
@@ -34,7 +34,7 @@ struct WidgetsSnapshotTests {
 
     @available(iOS 18, *)
     @MainActor @Test func systemSmallSnapshots() {
-		let size = snapshotSize(for: .systemSmall)
+        let size = snapshotSize(for: .systemSmall)
         WidgetBasicContainerView_Previews
             .systemSmallConfigurations
             .assertLightDarkSnapshots(
