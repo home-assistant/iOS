@@ -88,7 +88,6 @@ abstract_target 'iOS' do
     end
   end
 
-  target 'SharedTesting'
   target 'Extensions-Intents'
   target 'Extensions-Matter'
   target 'Extensions-NotificationContent'

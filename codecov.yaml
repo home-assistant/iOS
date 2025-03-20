@@ -15,6 +15,5 @@ coverage:
 ignore:
   - Sources/Shared/Resources
   - Sources/App/Resources
-  - Sources/SharedTesting
   - Tests
   - Pods

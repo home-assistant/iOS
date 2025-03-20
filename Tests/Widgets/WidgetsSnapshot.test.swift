@@ -1,5 +1,4 @@
 @testable import HomeAssistant
-import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
