@@ -74,5 +74,4 @@ final class MockWebViewController: WebViewControllerProtocol {
     func presentAlertController(controller: UIViewController, animated: Bool) {
         presentAlertControllerCalled = true
     }
-
 }
