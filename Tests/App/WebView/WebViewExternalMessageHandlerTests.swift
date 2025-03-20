@@ -94,15 +94,28 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             "id": 1,
             "message": "",
             "command": "",
+            "type": "bar_code/scan",
+            "payload": [
+                "title": "abc",
+                "description": "abc2",
+            ],
+        ]
+        // Open scanner
+        sut.handleExternalMessage(dictionary)
+
+        let dictionary2: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
             "type": "bar_code/notify",
             "payload": [
                 "message": "abc",
             ],
         ]
 
-        sut.handleExternalMessage(dictionary)
-
-        XCTAssertTrue(mockWebViewController.overlayedController is UIAlertController)
+        sut.handleExternalMessage(dictionary2)
+        XCTAssertTrue(mockWebViewController.presentOverlayControllerCalled)
+        XCTAssertTrue(mockWebViewController.presentAlertControllerCalled)
     }
 
     func testHandleExternalMessageStoreInPlatformKeychainOpenTransferFlow() {

@@ -17,6 +17,7 @@ protocol WebViewControllerProtocol: AnyObject {
     var overlayedController: UIViewController? { get }
 
     func presentOverlayController(controller: UIViewController, animated: Bool)
+    func presentAlertController(controller: UIViewController, animated: Bool)
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
@@ -1237,6 +1238,17 @@ extension WebViewController: WebViewControllerProtocol {
             self?.dismissOverlayController(animated: false, completion: { [weak self] in
                 self?.present(controller, animated: animated, completion: nil)
             })
+        }
+    }
+
+    func presentAlertController(controller: UIViewController, animated: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if let overlayedController {
+                overlayedController.present(controller, animated: animated, completion: nil)
+            } else {
+                present(controller, animated: animated, completion: nil)
+            }
         }
     }
 
