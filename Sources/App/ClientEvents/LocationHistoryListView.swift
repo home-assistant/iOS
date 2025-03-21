@@ -8,53 +8,6 @@ extension LocationHistoryEntry: @retroactive Identifiable {
     }
 }
 
-private struct LocationHistoryEntryListItemView: View {
-    private let entry: LocationHistoryEntry
-    private let dateFormatter: DateFormatter
-
-    init(
-        entry: LocationHistoryEntry,
-        dateFormatter: DateFormatter
-    ) {
-        self.entry = entry
-        self.dateFormatter = dateFormatter
-    }
-
-    var body: some View {
-        NavigationLink {
-            LocationHistoryDetailViewControllerWrapper(
-                currentEntry: entry
-            )
-            .edgesIgnoringSafeArea([.top, .bottom])
-        } label: {
-            VStack(alignment: .leading) {
-                Text(dateFormatter.string(from: entry.CreatedAt))
-                    .foregroundStyle(.primary)
-                if let trigger = entry.Trigger {
-                    Text(trigger)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-}
-
-#Preview("LocationHistoryEntryListItemView") {
-    LocationHistoryEntryListItemView(
-        entry: .init(
-            updateType: .Manual,
-            location: .init(latitude: 41.1234, longitude: 52.2),
-            zone: .defaultSettingValue,
-            accuracyAuthorization: .fullAccuracy,
-            payload: "payload"
-        ),
-        dateFormatter: with(DateFormatter()) {
-            $0.dateStyle = .short
-            $0.timeStyle = .medium
-        }
-    )
-}
-
 private class LocationHistoryListViewModel: ObservableObject {
     @ObservedResults(LocationHistoryEntry.self) var locationHistoryEntryResults
     @Published var locationHistoryEntries: [LocationHistoryEntry] = []
@@ -136,48 +89,74 @@ struct LocationHistoryListView: View {
     }
 }
 
+final class LocationHistoryListViewHostingController: UIHostingController<LocationHistoryListView> {}
+
 private struct PreviewLocationHistoryListView: View {
-    init(locationHistory: [LocationHistoryEntry]) {
+    private var locationHistory: [LocationHistoryEntry]
+
+    private func writeToRealm(_ locationHistory: [LocationHistoryEntry]) {
         let realm = Current.realm()
         realm.reentrantWrite {
-            realm.add(locationHistory)
+            realm.deleteAll()
+            for entry in locationHistory {
+                let newEntry = LocationHistoryEntry(value: entry)
+                realm.add(newEntry)
+            }
         }
+    }
+
+    init(
+        locationHistory: [LocationHistoryEntry]
+    ) {
+        self.locationHistory = locationHistory
+        writeToRealm(locationHistory)
     }
 
     var body: some View {
         LocationHistoryListView()
+            .onAppear {
+                writeToRealm(locationHistory)
+            }
     }
 }
 
-#Preview("LocationHistoryListView wo/ Locations") {
-    NavigationView {
-        PreviewLocationHistoryListView(
-            locationHistory: []
-        )
+struct LocationHistoryListView_Previews: PreviewProvider {
+    static var previews: some View {
+        configuration.previews()
     }
-}
 
-#Preview("LocationHistoryListView w/ Locations") {
-    NavigationView {
-        PreviewLocationHistoryListView(
-            locationHistory: [
-                LocationHistoryEntry(
-                    updateType: .Manual,
-                    location: .init(latitude: 41.1234, longitude: 52.2),
-                    zone: .defaultSettingValue,
-                    accuracyAuthorization: .fullAccuracy,
-                    payload: "payload"
+    static var configuration: SnapshottablePreviewConfigurations<[LocationHistoryEntry]> = {
+        Current.date = { Date(timeIntervalSince1970: 1_740_766_173) }
+        return .init(
+            configurations: [
+                .init(item: [], name: "LocationHistoryListView wo/ Locations"),
+                .init(
+                    item: [
+                        LocationHistoryEntry(
+                            updateType: .Manual,
+                            location: .init(latitude: 41.1234, longitude: 52.2),
+                            zone: .defaultSettingValue,
+                            accuracyAuthorization: .fullAccuracy,
+                            payload: "payload"
+                        ),
+                        LocationHistoryEntry(
+                            updateType: .Periodic,
+                            location: nil,
+                            zone: nil,
+                            accuracyAuthorization: .reducedAccuracy,
+                            payload: "payload"
+                        ),
+                    ],
+                    name: "LocationHistoryListView w/ Locations"
                 ),
-                LocationHistoryEntry(
-                    updateType: .Periodic,
-                    location: nil,
-                    zone: nil,
-                    accuracyAuthorization: .reducedAccuracy,
-                    payload: "payload"
-                ),
-            ]
+            ],
+            configure: { configuration in
+                NavigationView {
+                    PreviewLocationHistoryListView(
+                        locationHistory: configuration
+                    )
+                }
+            }
         )
-    }
+    }()
 }
-
-final class LocationHistoryListViewHostingController: UIHostingController<LocationHistoryListView> {}
