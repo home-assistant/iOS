@@ -119,7 +119,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
             return
         }
 
-        api.executeMagicItem(item: magicItem) { success in
+        api.executeMagicItem(item: magicItem, source: .Watch) { success in
             completion(success)
         }
     }

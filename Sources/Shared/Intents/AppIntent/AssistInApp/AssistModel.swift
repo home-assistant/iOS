@@ -129,7 +129,7 @@ public struct AssistResponse: HADataDecodable {
         public struct TtsOutput: HADataDecodable {
             public let urlPath: String?
             public init(data: HAData) throws {
-                // Even thought API name it 'url' it is just the path without the base url
+                // Even though API name it 'url' it is just the path without the base url
                 self.urlPath = try? data.decode("url")
             }
         }
@@ -148,10 +148,12 @@ public struct AssistResponse: HADataDecodable {
             public init(data: HAData) throws {
                 self.response = try? data.decode("response")
                 self.conversationId = try? data.decode("conversation_id")
+                self.continueConversation = (try? data.decode("continue_conversation")) ?? false
             }
 
             public let response: Response?
             public let conversationId: String?
+            public let continueConversation: Bool
         }
 
         public struct Response: HADataDecodable {

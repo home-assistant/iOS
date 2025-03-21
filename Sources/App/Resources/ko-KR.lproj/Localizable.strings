@@ -1134,6 +1134,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.custom.intent_toggle_failed.title" = "구성요소 '토글'에 실패했습니다";
 "widgets.custom.require_confirmation.footer" = "위젯 확인 및 상태 표시 기능은 현재 베타 버전입니다. 문제가 발생하면 '확인 필요'를 비활성화하고 저장하세요.";
 "widgets.custom.show_last_update_time.param.title" = "마지막 업데이트 시간 표시";
+"widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
 "widgets.custom.show_states.param.title" = "상태 표시 (베타)";
 "widgets.custom.show_update_time.title" = "마지막 업데이트:";
 "widgets.custom.subtitle" = "나만의 스타일로 위젯 만들기";

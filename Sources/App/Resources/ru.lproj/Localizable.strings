@@ -930,7 +930,7 @@ Home Assistant - это бесплатное программное обеспе
 "watch.configurator.sections.icon.header" = "Значок";
 "watch.configurator.sections.ring.footer" = "Кольцо, показывающее прогресс, окружающее текст.";
 "watch.configurator.sections.ring.header" = "Кольцо";
-"watch.configurator.warning.templating_admin" = "ATTENTION: For templating in watch complications the user needs to have admin role.";
+"watch.configurator.warning.templating_admin" = "ВНИМАНИЕ: Для использования шаблонов в часах пользователю необходимо иметь роль администратора.";
 "watch.debug.delete_db.alert.failed.message" = "Не удалось удалить конфигурацию, ошибка: %@";
 "watch.debug.delete_db.alert.title" = "Вы уверены, что хотите удалить конфигурацию Apple Watch? Это невозможно отменить";
 "watch.debug.delete_db.reset.title" = "Сбросить конфигурацию";
@@ -1134,12 +1134,13 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.custom.intent_toggle_failed.title" = "Не удалось 'переключить' объект";
 "widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
 "widgets.custom.show_last_update_time.param.title" = "Показывать время последнего обновления";
+"widgets.custom.show_states.description" = "Отображение последних состояний не гарантируется на 100%, вы можете попробовать и ознакомиться с документацией приложения-компаньона для получения дополнительной информации.";
 "widgets.custom.show_states.param.title" = "Показывать состояния (БЕТА)";
 "widgets.custom.show_update_time.title" = "Последнее обновление:";
 "widgets.custom.subtitle" = "Создавайте виджеты в своем собственном стиле";
 "widgets.custom.title" = "Пользовательские виджеты";
 "widgets.details.description" = "Отображает состояния с помощью Home Assistant в текстовом виде";
-"widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
+"widgets.details.description_with_warning" = "Отображение состояний из Home Assistant в виде текста. ВНИМАНИЕ: Пользователь должен быть администратором для доступа к шаблонам";
 "widgets.details.parameters.action" = "Действие";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Нижний текстовый шаблон";
@@ -1149,7 +1150,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.details.title" = "Подробности";
 "widgets.entity_state.placeholder" = "Состояние объекта";
 "widgets.gauge.description" = "Отображение числовых состояний из Home Assistant в виде датчика";
-"widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
+"widgets.gauge.description_with_warning" = "Отображение числовых состояний из Home Assistant в виде шкалы. ВНИМАНИЕ: Пользователь должен быть администратором для доступа к шаблонам";
 "widgets.gauge.parameters.action" = "Действие";
 "widgets.gauge.parameters.gauge_type" = "Тип датчика";
 "widgets.gauge.parameters.gauge_type.capacity" = "Емкость";

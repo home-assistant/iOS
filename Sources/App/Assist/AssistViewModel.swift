@@ -192,6 +192,13 @@ final class AssistViewModel: NSObject, ObservableObject {
         }
         return prefixData + data
     }
+
+    private func startRecordingAgainIfNeeded() {
+        if assistService.shouldStartListeningAgainAfterPlaybackEnd {
+            assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
+            assistWithAudio()
+        }
+    }
 }
 
 extension AssistViewModel: AudioRecorderDelegate {
@@ -248,6 +255,7 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
+        audioPlayer.delegate = self
         audioPlayer.play(url: mediaUrl)
     }
 
@@ -269,5 +277,15 @@ extension AssistViewModel: AssistSessionDelegate {
             autoStartRecording = context.autoStartRecording
             initialRoutine()
         }
+    }
+}
+
+extension AssistViewModel: AudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AudioPlayer) {
+        startRecordingAgainIfNeeded()
+    }
+
+    func volumeIsZero() {
+        startRecordingAgainIfNeeded()
     }
 }

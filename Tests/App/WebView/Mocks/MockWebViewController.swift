@@ -29,6 +29,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var lastUpdateImprovEntryViewState = false
 
     var reloadCalled = false
+    var presentAlertControllerCalled = false
 
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         presentOverlayControllerCalled = true
@@ -68,5 +69,9 @@ final class MockWebViewController: WebViewControllerProtocol {
 
     func reload() {
         reloadCalled = true
+    }
+
+    func presentAlertController(controller: UIViewController, animated: Bool) {
+        presentAlertControllerCalled = true
     }
 }

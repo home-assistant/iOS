@@ -118,4 +118,34 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertEqual(mockAudioPlayer.playUrl, URL(string: "https://google.com")!)
         XCTAssertTrue(mockAudioPlayer.playCalled)
     }
+
+    func testAudioPlayerDidFinishPlayingStartRecordingAgain() {
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
+        sut.audioPlayerDidFinishPlaying(AudioPlayer())
+
+        XCTAssertEqual(sut.inputText, "")
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    func testAudioPlayerDidFinishPlayingNotStartRecordingAgain() {
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = false
+        sut.audioPlayerDidFinishPlaying(AudioPlayer())
+
+        XCTAssertEqual(sut.inputText, "")
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+    }
+
+    func testVolumeIsZeroTriggersRecording() {
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = true
+        sut.volumeIsZero()
+
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    func testVolumeIsZeroDoesNotTriggersRecording() {
+        mockAssistService.shouldStartListeningAgainAfterPlaybackEnd = false
+        sut.volumeIsZero()
+
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+    }
 }

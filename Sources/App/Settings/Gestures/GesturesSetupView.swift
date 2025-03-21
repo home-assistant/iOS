@@ -28,6 +28,13 @@ struct GesturesSetupView: View {
                             makeRow(gestureAction: action)
                         }
                     }
+                    .modify({ view in
+                        if #available(iOS 16.0, *) {
+                            view.pickerStyle(.navigationLink)
+                        } else {
+                            view.pickerStyle(.menu)
+                        }
+                    })
                 }
             }
         }
