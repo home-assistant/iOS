@@ -1134,7 +1134,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.custom.intent_toggle_failed.title" = "Gagal untuk 'mengalihkan' entitas";
 "widgets.custom.require_confirmation.footer" = "Konfirmasi widget dan tampilan status saat ini masih dalam versi BETA, jika Anda mengalami masalah, nonaktifkan 'Memerlukan konfirmasi' dan simpan.";
 "widgets.custom.show_last_update_time.param.title" = "Tampilkan waktu pembaruan terakhir";
-"widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
+"widgets.custom.show_states.description" = "Tampilan status terbaru tidak dapat dijamin 100%, Anda dapat mencobanya dan memeriksa dokumentasi Aplikasi pendamping untuk informasi lebih lanjut.";
 "widgets.custom.show_states.param.title" = "Tampilkan status (BETA)";
 "widgets.custom.show_update_time.title" = "Pembaruan terakhir:";
 "widgets.custom.subtitle" = "Buat widget dengan gaya Anda sendiri";
