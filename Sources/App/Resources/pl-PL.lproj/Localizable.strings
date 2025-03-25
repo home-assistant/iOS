@@ -142,8 +142,8 @@
 "carPlay.quick_access.intro.item.title" = "Create your CarPlay configuration";
 "carPlay.state.loading.title" = "Ładuję…";
 "carPlay.tabs.active.delete_action.title" = "Swipe left to remove tab";
-"carPlay.tabs.active.title" = "Active";
-"carPlay.tabs.inactive.title" = "Inactive";
+"carPlay.tabs.active.title" = "Aktywny";
+"carPlay.tabs.inactive.title" = "Nie aktywny";
 "carPlay.unlock.confirmation.title" = "Are you sure you want to perform unlock action on %@?";
 "carplay.labels.already_added_server" = "Już dodane";
 "carplay.labels.empty_domain_list" = "Brak dostępnych domen";
@@ -212,8 +212,8 @@
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
-"connection_error.advanced_section.title" = "Advanced";
-"connection_error.open_settings.title" = "Open settings";
+"connection_error.advanced_section.title" = "Zaawansowane";
+"connection_error.open_settings.title" = "Otwórz ustawienia";
 "continue_label" = "Kontynuuj";
 "copy_label" = "Kopiuj";
 "database.problem.delete" = "Usuń bazę i opuść aplikację";
@@ -1088,7 +1088,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Tekst zastępczy";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
-"web_view.server_selection.title" = "Choose server";
+"web_view.server_selection.title" = "Wybierz serwer";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";
@@ -1128,13 +1128,13 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.custom.intent_activate_failed.title" = "Failed to 'activate' entity";
 "widgets.custom.intent_press_failed.body" = "Please try again";
 "widgets.custom.intent_press_failed.title" = "Failed to 'press' entity";
-"widgets.custom.intent_toggle_failed.body" = "Please try again";
+"widgets.custom.intent_toggle_failed.body" = "Spróbuj ponownie";
 "widgets.custom.intent_toggle_failed.title" = "Failed to 'toggle' entity";
 "widgets.custom.require_confirmation.footer" = "Widget confirmation and state display are currently in BETA, if you experience issues please disable 'Require confirmation' and save.";
 "widgets.custom.show_last_update_time.param.title" = "Show last update time";
 "widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
 "widgets.custom.show_states.param.title" = "Show states (BETA)";
-"widgets.custom.show_update_time.title" = "Last update:";
+"widgets.custom.show_update_time.title" = "Ostatnia aktualizacja:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
 "widgets.custom.title" = "Custom widgets";
 "widgets.details.description" = "Display states using from Home Assistant in text";
