@@ -352,8 +352,6 @@ public class HomeAssistantAPI {
     ) -> Promise<Void> {
         let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
         INInteraction(intent: intent, response: nil).donate(completion: nil)
-        var serviceData = serviceData
-        serviceData["triggerSource"] = triggerSource.rawValue
 
         return Current.webhooks.send(
             identifier: .serviceCall,
