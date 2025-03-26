@@ -434,8 +434,7 @@ extension IncomingURLHandler {
                             return api.CallService(
                                 domain: serviceDomain,
                                 service: serviceName,
-                                serviceData: serviceData,
-                                triggerSource: .URLHandler
+                                serviceData: serviceData
                             )
                         } else {
                             throw XCallbackError.generalError
@@ -551,12 +550,7 @@ extension IncomingURLHandler {
 
         firstly { () -> Promise<Void> in
             if let api = Current.apis.first {
-                return api.CallService(
-                    domain: domain,
-                    service: service,
-                    serviceData: serviceData,
-                    triggerSource: .URLHandler
-                )
+                return api.CallService(domain: domain, service: service, serviceData: serviceData)
             } else {
                 throw HomeAssistantAPI.APIError.notConfigured
             }
@@ -604,10 +598,10 @@ extension IncomingURLHandler {
             return
         }
 
-        let source: HomeAssistantAPI.AppTriggerSource = {
+        let source: HomeAssistantAPI.ActionSource = {
             if
                 let sourceString = serviceData["source"],
-                let source = HomeAssistantAPI.AppTriggerSource(rawValue: sourceString) {
+                let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
                 return source
             } else {
                 return .URLHandler

@@ -170,7 +170,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             displayItemResultIcon(on: item, success: false)
             return
         }
-        api.executeMagicItem(item: magicItem, currentItemState: currentItemState, source: .CarPlay) { success in
+        api.executeMagicItem(item: magicItem, currentItemState: currentItemState) { success in
             self.displayItemResultIcon(on: item, success: success)
         }
     }

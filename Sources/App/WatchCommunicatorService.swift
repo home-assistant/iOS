@@ -198,7 +198,6 @@ final class WatchCommunicatorService {
             domain: domain,
             service: serviceName,
             serviceData: serviceData,
-            triggerSource: .Watch,
             shouldLog: true
         ).pipe { result in
             switch result {

@@ -127,7 +127,6 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
                 domain: domain,
                 service: service,
                 serviceData: payloadDict,
-                triggerSource: .AppIntent,
                 shouldLog: true
             ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.done { _ in

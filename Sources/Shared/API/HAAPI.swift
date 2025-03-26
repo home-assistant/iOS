@@ -347,13 +347,10 @@ public class HomeAssistantAPI {
         domain: String,
         service: String,
         serviceData: [String: Any],
-        triggerSource: AppTriggerSource,
         shouldLog: Bool = true
     ) -> Promise<Void> {
         let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
         INInteraction(intent: intent, response: nil).donate(completion: nil)
-        var serviceData = serviceData
-        serviceData["triggerSource"] = triggerSource.rawValue
 
         return Current.webhooks.send(
             identifier: .serviceCall,
@@ -575,7 +572,7 @@ public class HomeAssistantAPI {
         "sourceDeviceID": Current.settingsStore.deviceID,
     ] }
 
-    public enum AppTriggerSource: String, CaseIterable, CustomStringConvertible {
+    public enum ActionSource: String, CaseIterable, CustomStringConvertible {
         case Watch = "watch"
         case Widget = "widget"
         case AppShortcut = "appShortcut" // UIApplicationShortcutItem
@@ -583,7 +580,6 @@ public class HomeAssistantAPI {
         case SiriShortcut = "siriShortcut"
         case URLHandler = "urlHandler"
         case CarPlay = "carPlay"
-        case AppIntent = "appIntent"
 
         public var description: String {
             rawValue
@@ -635,7 +631,7 @@ public class HomeAssistantAPI {
     public func actionEvent(
         actionID: String,
         actionName: String,
-        source: AppTriggerSource
+        source: ActionSource
     ) -> (eventType: String, eventData: [String: String]) {
         var eventData = sharedEventDeviceInfo
         eventData["actionName"] = actionName
@@ -647,7 +643,7 @@ public class HomeAssistantAPI {
 
     public func actionScene(
         actionID: String,
-        source: AppTriggerSource
+        source: ActionSource
     ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
         (serviceDomain: "scene", serviceName: "turn_on", serviceData: ["entity_id": actionID])
     }
@@ -751,7 +747,7 @@ public class HomeAssistantAPI {
         }).asVoid()
     }
 
-    public func HandleAction(actionID: String, source: AppTriggerSource) -> Promise<Void> {
+    public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
         guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
             Current.Log.error("couldn't find action with id \(actionID)")
             return .init(error: HomeAssistantAPI.APIError.cantBuildURL)
@@ -776,19 +772,13 @@ public class HomeAssistantAPI {
             return CallService(
                 domain: serviceInfo.serviceDomain,
                 service: serviceInfo.serviceName,
-                serviceData: serviceInfo.serviceData,
-                triggerSource: source
+                serviceData: serviceInfo.serviceData
             )
         }
     }
 
     // currentItemState is used only for lock domain since it can't be toggled
-    public func executeMagicItem(
-        item: MagicItem,
-        currentItemState: String = "",
-        source: AppTriggerSource,
-        completion: @escaping (Bool) -> Void
-    ) {
+    public func executeMagicItem(item: MagicItem, currentItemState: String = "", completion: @escaping (Bool) -> Void) {
         Current.Log.verbose("Selected magic item id: \(item.id)")
         firstly { () -> Promise<Void> in
             switch item.type {
@@ -799,7 +789,6 @@ public class HomeAssistantAPI {
                     domain: domain,
                     service: service,
                     serviceData: [:],
-                    triggerSource: source,
                     shouldLog: true
                 ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             case .action:
@@ -811,10 +800,7 @@ public class HomeAssistantAPI {
                 return Current.api(for: server)?.CallService(
                     domain: domain,
                     service: "turn_on",
-                    serviceData: [
-                        "entity_id": item.id,
-                    ],
-                    triggerSource: source,
+                    serviceData: ["entity_id": item.id],
                     shouldLog: true
                 ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             case .entity:
