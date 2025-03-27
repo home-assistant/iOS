@@ -62,7 +62,7 @@ struct IntentSwitchAppEntityQuery: EntityQuery, EntityStringQuery {
 
     private func getSwitchEntities(matching string: String? = nil) async -> [(Server, [IntentSwitchEntity])] {
         var switchEntities: [(Server, [IntentSwitchEntity])] = []
-        let entities = ControlEntityProvider(domains: [.switch]).getEntities(matching: string)
+        let entities = ControlEntityProvider(domains: [.switch, .inputBoolean]).getEntities(matching: string)
 
         for (server, values) in entities {
             switchEntities.append((server, values.map({ entity in
