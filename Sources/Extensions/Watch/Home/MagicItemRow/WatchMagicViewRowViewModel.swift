@@ -113,13 +113,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
         }
         Current.Log.error("Executing watch magic item directly via API")
 
-        guard let api = Current.api(for: server) else {
-            Current.Log.error("No API available to execute watch magic item")
-            completion(false)
-            return
-        }
-
-        api.executeMagicItem(item: magicItem, source: .Watch) { success in
+        magicItem.execute(on: server, source: .Watch) { success in
             completion(success)
         }
     }

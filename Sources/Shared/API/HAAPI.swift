@@ -573,21 +573,6 @@ public class HomeAssistantAPI {
         "sourceDeviceID": Current.settingsStore.deviceID,
     ] }
 
-    public enum AppTriggerSource: String, CaseIterable, CustomStringConvertible {
-        case Watch = "watch"
-        case Widget = "widget"
-        case AppShortcut = "appShortcut" // UIApplicationShortcutItem
-        case Preview = "preview"
-        case SiriShortcut = "siriShortcut"
-        case URLHandler = "urlHandler"
-        case CarPlay = "carPlay"
-        case AppIntent = "appIntent"
-
-        public var description: String {
-            rawValue
-        }
-    }
-
     public func legacyNotificationActionEvent(
         identifier: String,
         category: String?,
@@ -777,59 +762,6 @@ public class HomeAssistantAPI {
                 serviceData: serviceInfo.serviceData,
                 triggerSource: source
             )
-        }
-    }
-
-    // currentItemState is used only for lock domain since it can't be toggled
-    public func executeMagicItem(
-        item: MagicItem,
-        currentItemState: String = "",
-        source: AppTriggerSource,
-        completion: @escaping (Bool) -> Void
-    ) {
-        Current.Log.verbose("Selected magic item id: \(item.id)")
-        firstly { () -> Promise<Void> in
-            switch item.type {
-            case .script:
-                let domain = Domain.script.rawValue
-                let service = item.id.replacingOccurrences(of: "\(domain).", with: "")
-                return Current.api(for: server)?.CallService(
-                    domain: domain,
-                    service: service,
-                    serviceData: [:],
-                    triggerSource: source,
-                    shouldLog: true
-                ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            case .action:
-                return Current.api(for: server)?
-                    .HandleAction(actionID: item.id, source: .CarPlay) ??
-                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            case .scene:
-                let domain = Domain.scene.rawValue
-                return Current.api(for: server)?.CallService(
-                    domain: domain,
-                    service: "turn_on",
-                    serviceData: [
-                        "entity_id": item.id,
-                    ],
-                    triggerSource: source,
-                    shouldLog: true
-                ) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            case .entity:
-                guard let domain = item.domain else {
-                    throw MagicItemError.unknownDomain
-                }
-                return executeActionForDomainType(
-                    domain: domain,
-                    entityId: item.id,
-                    state: currentItemState
-                )
-            }
-        }.done {
-            completion(true)
-        }.catch { err in
-            Current.Log.error("Error during magic item event fire: \(err)")
-            completion(false)
         }
     }
 
