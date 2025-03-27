@@ -1134,7 +1134,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.custom.intent_toggle_failed.title" = "Nem sikerült 'kapcsolni' az entitást";
 "widgets.custom.require_confirmation.footer" = "A widget megerősítése és állapotmegjelenítése jelenleg BÉTA verzióban van. Ha problémákat tapasztal, kapcsolja ki a 'Megerősítés kérése' opciót, majd mentse a beállítást.";
 "widgets.custom.show_last_update_time.param.title" = "Utolsó frissítés idejének megjelenítése";
-"widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
+"widgets.custom.show_states.description" = "A legfrissebb állapotok megjelenítése nem garantált 100%-osan, de kipróbálhatja. További információért tekintse meg a társalkalmazás dokumentációját.";
 "widgets.custom.show_states.param.title" = "Állapotok megjelenítése (BÉTA)";
 "widgets.custom.show_update_time.title" = "Utolsó frissítés:";
 "widgets.custom.subtitle" = "Saját stílusú widgetek létrehozása";
