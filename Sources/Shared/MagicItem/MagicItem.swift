@@ -1,5 +1,7 @@
 import Foundation
 import GRDB
+import HAKit
+import PromiseKit
 
 /// Object that represents iOS item that can be displayed in Watch and Widgets and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
@@ -261,6 +263,110 @@ public enum ItemAction: Codable, CaseIterable, Equatable {
             return L10n.Widgets.Action.Name.assist
         case .nothing:
             return L10n.Widgets.Action.Name.nothing
+        }
+    }
+}
+
+public extension MagicItem {
+    // currentItemState is used only for lock domain since it can't be toggled
+    func execute(
+        on server: Server,
+        source: AppTriggerSource,
+        currentItemState: String = "",
+        completion: @escaping (Bool) -> Void
+    ) {
+        do {
+            if let request: Promise<Void> = try {
+                switch type {
+                case .script:
+                    let domain = Domain.script.rawValue
+                    let service = id.replacingOccurrences(of: "\(domain).", with: "")
+                    return Current.api(for: server)?.CallService(
+                        domain: domain,
+                        service: service,
+                        serviceData: [:],
+                        triggerSource: source,
+                        shouldLog: true
+                    )
+                case .action:
+                    return Current.api(for: server)?
+                        .HandleAction(actionID: id, source: source)
+                case .scene:
+                    let domain = Domain.scene.rawValue
+                    return Current.api(for: server)?.CallService(
+                        domain: domain,
+                        service: "turn_on",
+                        serviceData: [
+                            "entity_id": id,
+                        ],
+                        triggerSource: source,
+                        shouldLog: true
+                    )
+                case .entity:
+                    guard let domain else {
+                        throw MagicItemError.unknownDomain
+                    }
+                    return executeActionForDomainType(
+                        server: server,
+                        domain: domain,
+                        entityId: id,
+                        state: currentItemState
+                    )
+                }
+            }() {
+                request.pipe(to: { result in
+                    switch result {
+                    case .fulfilled:
+                        Current.Log.verbose("Success executing magic item \(id)")
+                        completion(true)
+                    case let .rejected(error):
+                        Current.Log.error("Error while executing magic item \(id): \(error.localizedDescription)")
+                        completion(false)
+                    }
+                })
+            } else {
+                Current.Log.error("No request available while executing magic item \(id)")
+            }
+        } catch {
+            Current.Log.error("Error while executing magic item (2): \(error.localizedDescription)")
+            completion(false)
+        }
+    }
+
+    private func executeActionForDomainType(
+        server: Server,
+        domain: Domain,
+        entityId: String,
+        state: String
+    ) -> Promise<Void> {
+        var request: HATypedRequest<HAResponseVoid>?
+        switch domain {
+        case .button, .inputButton:
+            request = .pressButton(domain: domain, entityId: entityId)
+        case .cover, .inputBoolean, .light, .switch:
+            request = .toggleDomain(domain: domain, entityId: entityId)
+        case .scene:
+            request = .applyScene(entityId: entityId)
+        case .script:
+            request = .runScript(entityId: entityId)
+        case .lock:
+            guard let state = Domain.State(rawValue: state) else { return .value }
+            switch state {
+            case .unlocking, .unlocked, .opening:
+                request = .lockLock(entityId: entityId)
+            case .locked, .locking:
+                request = .unlockLock(entityId: entityId)
+            default:
+                break
+            }
+        case .sensor, .binarySensor, .zone, .person:
+            break
+        }
+        if let request, let connection = Current.api(for: server)?.connection {
+            return connection.send(request).promise
+                .map { _ in () }
+        } else {
+            return .value
         }
     }
 }

@@ -165,13 +165,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem, currentItemState: String = "") {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
-        }), let api = Current.api(for: server) else {
+        }) else {
             Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
             displayItemResultIcon(on: item, success: false)
             return
         }
-        api.executeMagicItem(item: magicItem, currentItemState: currentItemState, source: .CarPlay) { success in
-            self.displayItemResultIcon(on: item, success: success)
+        magicItem.execute(on: server, source: .CarPlay) { [weak self] success in
+            self?.displayItemResultIcon(on: item, success: success)
         }
     }
 

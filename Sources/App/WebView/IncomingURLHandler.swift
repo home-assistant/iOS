@@ -604,10 +604,10 @@ extension IncomingURLHandler {
             return
         }
 
-        let source: HomeAssistantAPI.AppTriggerSource = {
+        let source: AppTriggerSource = {
             if
                 let sourceString = serviceData["source"],
-                let source = HomeAssistantAPI.AppTriggerSource(rawValue: sourceString) {
+                let source = AppTriggerSource(rawValue: sourceString) {
                 return source
             } else {
                 return .URLHandler
