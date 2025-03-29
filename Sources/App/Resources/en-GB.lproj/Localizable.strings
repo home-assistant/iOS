@@ -113,7 +113,7 @@
 "carPlay.action.intro.item.title" = "Create your first action";
 "carPlay.config.tabs.title" = "Tabs";
 "carPlay.debug.delete_db.alert.failed.message" = "Failed to delete configuration, error: %@";
-"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete the CarPlay configuration? This cannot be reversed.";
+"carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.debug.delete_db.reset.title" = "Reset configuration";
 "carPlay.labels.already_added_server" = "Already added";
@@ -246,7 +246,7 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
 "gestures.3_fingers_swipe_up.title" = "3 👆 swipe up";
-"gestures.footer.title" = "Customise gestures to be used on the frontend.";
+"gestures.footer.title" = "Customize gestures to be used on the frontend.";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
 "gestures.shake.title" = "Shake";
@@ -482,7 +482,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "open_label" = "Open";
 "permission.screen.bluetooth.secondary_button" = "Skip";
-"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth on this device. Allow Bluetooth access for the Home Assistant app.";
+"permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
 "permission.screen.bluetooth.title" = "Search devices";
 "preview_output" = "Preview Output";
 "reload_label" = "Reload";
@@ -514,7 +514,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.internal_base_url.placeholder" = "e.g. http://homeassistant.local:8123/";
 "settings.connection_section.internal_base_url.requires_setup.title" = "Requires setup";
 "settings.connection_section.internal_base_url.ssid_bssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID) or hardware addresses, otherwise the App will always default to external URL.";
-"settings.connection_section.internal_base_url.ssid_required.title" = "To use an internal URL, specify the SSID of the Wi-Fi network; otherwise, the external URL will be used by default.";
+"settings.connection_section.internal_base_url.ssid_required.title" = "To use internal URL you need to specify your Wifi network name (SSID), otherwise the App will always default to external URL.";
 "settings.connection_section.internal_base_url.title" = "Internal URL";
 "settings.connection_section.internal_url_hardware_addresses.add_new_ssid" = "Add New Hardware Address";
 "settings.connection_section.internal_url_hardware_addresses.footer" = "Internal URL will be used when the primary network interface has a MAC address matching one of these hardware addresses.";
@@ -606,7 +606,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.widgets.create.add_item.title" = "Add item";
 "settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
 "settings.widgets.create.items.title" = "Items";
-"settings.widgets.create.name.placeholder" = "e.g. Living room favorites";
+"settings.widgets.create.name.placeholder" = "e.g. Living room favourites";
 "settings.widgets.create.name.title" = "Name";
 "settings.widgets.create.no_items.title" = "No items";
 "settings.widgets.create.title" = "Create widget";
