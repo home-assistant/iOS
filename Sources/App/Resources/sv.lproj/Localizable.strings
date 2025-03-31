@@ -1135,7 +1135,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.custom.intent_toggle_failed.title" = "Det gick inte att \"växla\" entiteten";
 "widgets.custom.require_confirmation.footer" = "Widgetbekräftelse och tillståndsvisning är för närvarande i BETA. Om du upplever problem, inaktivera \"Kräv bekräftelse\" och spara.";
 "widgets.custom.show_last_update_time.param.title" = "Visa senaste uppdateringstid";
-"widgets.custom.show_states.description" = "Att visa de senaste tillstånden är inte 100 % garanterat. Se dokumentationen för den companion-appen för mer information.";
+"widgets.custom.show_states.description" = "Visning av senaste tillstånd är inte 100% garanterat, du kan göra ett försök och kolla appdokumentationen för mer information.";
 "widgets.custom.show_states.param.title" = "Visa tillstånd (BETA)";
 "widgets.custom.show_update_time.title" = "Senaste uppdatering:";
 "widgets.custom.subtitle" = "Skapa widgets med din egen stil";

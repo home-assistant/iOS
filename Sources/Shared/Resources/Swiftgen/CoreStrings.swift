@@ -560,9 +560,9 @@ public enum CoreStrings {
   public static var componentWledEntitySelectLiveOverrideState0: String { return CoreStrings.tr("Core", "component::wled::entity::select::live_override::state:::0") }
   /// On
   public static var componentWledEntitySelectLiveOverrideState1: String { return CoreStrings.tr("Core", "component::wled::entity::select::live_override::state:::1") }
-  /// Disabled
+  /// Off
   public static var componentWolflinkEntitySensorStateStateAus: String { return CoreStrings.tr("Core", "component::wolflink::entity::sensor::state::state::aus") }
-  /// Enabled
+  /// On
   public static var componentWolflinkEntitySensorStateStateEin: String { return CoreStrings.tr("Core", "component::wolflink::entity::sensor::state::state::ein") }
   /// Standby
   public static var componentWolflinkEntitySensorStateStateStandby: String { return CoreStrings.tr("Core", "component::wolflink::entity::sensor::state::state::standby") }
