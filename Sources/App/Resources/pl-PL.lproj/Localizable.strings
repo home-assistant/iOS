@@ -532,7 +532,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.remote_ui_url.title" = "Adres URL zdalnego interfejsu użytkownika";
 "settings.connection_section.sensor_send_type.setting.all" = "Wszystko";
 "settings.connection_section.sensor_send_type.setting.none" = "Nic";
-"settings.connection_section.sensor_send_type.title" = "Czujniki wysłane";
+"settings.connection_section.sensor_send_type.title" = "Sensory wysłane";
 "settings.connection_section.servers" = "Serwery";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Dostęp do identyfikatorów SSID w tle wymaga, aby ustawienia lokalizacji były ustawione na „Zawsze”. Kliknij tutaj, aby zmienić ustawienia.";
@@ -1176,5 +1176,5 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.scripts.title" = "Skrypty";
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
-"widgets.sensors.title" = "Czujniki";
+"widgets.sensors.title" = "Sensory";
 "yes_label" = "Tak";

@@ -274,8 +274,8 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "Активно";
 "component::wled::entity::select::live_override::state:::0" = "Выключено";
 "component::wled::entity::select::live_override::state:::1" = "Включено";
-"component::wolflink::entity::sensor::state::state::aus" = "Деактивировано";
-"component::wolflink::entity::sensor::state::state::ein" = "Активировано";
+"component::wolflink::entity::sensor::state::state::aus" = "Выключено";
+"component::wolflink::entity::sensor::state::state::ein" = "Включено";
 "component::wolflink::entity::sensor::state::state::standby" = "Ожидание";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "Выключено";
 "component::yamaha::services::enable_output::fields::enabled::name" = "Активировано";
