@@ -26,15 +26,17 @@ struct SwitchIntent: SetValueIntent {
             service = value ? HAServices.turnOn : HAServices.turnOff
         }
 
+        // This intent can also handle for example, input_boolean
+        let domain = Domain(entityId: entity.entityId) ?? .switch
+
         let _ = await withCheckedContinuation { continuation in
             connection.send(.callService(
-                domain: .init(stringLiteral: Domain.switch.rawValue),
+                domain: .init(stringLiteral: domain.rawValue),
                 service: .init(stringLiteral: service),
                 data: [
                     "entity_id": entity.entityId,
                 ]
-            )).promise.pipe { result in
-                print(result)
+            )).promise.pipe { _ in
                 continuation.resume()
             }
         }
