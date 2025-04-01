@@ -4,16 +4,39 @@ import SwiftUI
 
 struct OnboardingWelcomeView: View {
     @State private var showLearnMore = false
+    @State private var showLogo = false
+    @State private var showButtons = false
+    @State private var logoScale = 0.9
+    @State private var buttonYOffset: CGFloat = 10
 
     var body: some View {
         VStack(spacing: .zero) {
             Spacer()
-            logoBlock
-            textBlock
+            Group {
+                logoBlock
+                textBlock
+            }
+            .opacity(showLogo ? 1 : 0)
+            .scaleEffect(logoScale)
             Spacer()
             continueButton
+                .opacity(showButtons ? 1 : 0)
+                .offset(y: buttonYOffset)
         }
         .frame(maxWidth: 600)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.5)) {
+                showLogo = true
+                logoScale = 1.0
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        showButtons = true
+                        buttonYOffset = 0
+                    }
+                }
+            }
+        }
         .fullScreenCover(isPresented: $showLearnMore) {
             SafariWebView(url: URL(string: "http://www.home-assistant.io")!)
         }
@@ -33,25 +56,28 @@ struct OnboardingWelcomeView: View {
                     .multilineTextAlignment(.center)
                 Text(verbatim: L10n.Onboarding.Welcome.description)
                     .foregroundStyle(Color(uiColor: .secondaryLabel))
-                Button(L10n.Onboarding.Welcome.learnMore) {
-                    showLearnMore = true
-                }
-                .tint(Color.asset(Asset.Colors.haPrimary))
             }
             .padding()
         }
     }
 
     private var continueButton: some View {
-        NavigationLink(destination: OnboardingScanningView()) {
-            Text(verbatim: L10n.continueLabel)
-                .font(.callout.bold())
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 55)
-                .background(Color.asset(Asset.Colors.haPrimary))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-        }.padding(Spaces.two)
+        VStack {
+            NavigationLink(destination: OnboardingScanningView()) {
+                Text(verbatim: L10n.continueLabel)
+                    .font(.callout.bold())
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 55)
+                    .background(Color.asset(Asset.Colors.haPrimary))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }.padding(Spaces.two)
+            Button(L10n.Onboarding.Welcome.getStarted) {
+                showLearnMore = true
+            }
+            .tint(Color.asset(Asset.Colors.haPrimary))
+            .frame(minHeight: 40)
+        }
     }
 }
 
