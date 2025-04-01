@@ -9,6 +9,8 @@ public enum AppConstants {
         public static var homeAssistant = URL(string: "https://www.home-assistant.io")!
         public static var homeAssistantGetStarted = URL(string: "https://www.home-assistant.io/installation/")!
         public static var companionAppDocs = URL(string: "https://companion.home-assistant.io")!
+        public static var companionAppDocsTroubleshooting =
+            URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors")!
     }
 
     /// Home Assistant Blue

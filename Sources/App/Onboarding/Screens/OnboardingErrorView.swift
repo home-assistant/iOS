@@ -23,7 +23,11 @@ struct OnboardingErrorView: View {
             VStack {
                 exportLogsView
                 Button(L10n.Onboarding.ConnectionError.moreInfoButton) {
-                    openURL(documentationURL(for: error))
+                    if let url = documentationURL(for: error) {
+                        openURL(url)
+                    } else {
+                        Current.Log.error("Failed to create documentation URL for error: \(error)")
+                    }
                 }
                 .buttonStyle(.secondaryButton)
             }
@@ -65,6 +69,7 @@ struct OnboardingErrorView: View {
             ForEach(errorComponents, id: \.self) { error in
                 Text(AttributedString(error))
                     .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding()
@@ -77,12 +82,10 @@ struct OnboardingErrorView: View {
     @ViewBuilder
     private var exportLogsView: some View {
         Group {
-            if #available(iOS 16.0, *) {
-                if let archiveURL = Current.Log.archiveURL() {
-                    ShareLink(item: archiveURL, label: {
-                        Text(Current.Log.exportTitle)
-                    })
-                }
+            if #available(iOS 16.0, *), let archiveURL = Current.Log.archiveURL() {
+                ShareLink(item: archiveURL, label: {
+                    Text(Current.Log.exportTitle)
+                })
             } else {
                 Button(Current.Log.exportTitle) {
                     showShareSheet = true
@@ -93,14 +96,14 @@ struct OnboardingErrorView: View {
         .padding(.horizontal)
     }
 
-    private func documentationURL(for error: Error) -> URL {
-        var string = "https://companion.home-assistant.io/docs/troubleshooting/errors"
+    private func documentationURL(for error: Error) -> URL? {
+        var string = AppConstants.WebURLs.companionAppDocsTroubleshooting.absoluteString
 
         if let error = error as? OnboardingAuthError {
             string += "#\(error.kind.documentationAnchor)"
         }
 
-        return URL(string: string)!
+        return URL(string: string)
     }
 }
 
