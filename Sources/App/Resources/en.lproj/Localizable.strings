@@ -67,8 +67,9 @@
 "app_intents.intent.cover.title" = "Control cover";
 "app_intents.intent.light.title" = "Control light";
 "app_intents.intent.switch.title" = "Control switch";
-"app_intents.lights.light.target" = "Target state";
+"app_intents.state.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
+"app_intents.switch.title" = "Switch";
 "app_intents.lights.off_state_icon.title" = "Icon for off state";
 "app_intents.lights.on_state_icon.title" = "Icon for on state";
 "app_intents.notify_when_run.description" = "Shows notification after executed";

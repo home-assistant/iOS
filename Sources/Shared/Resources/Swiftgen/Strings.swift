@@ -331,8 +331,6 @@ public enum L10n {
     }
     public enum Lights {
       public enum Light {
-        /// Target state
-        public static var target: String { return L10n.tr("Localizable", "app_intents.lights.light.target") }
         /// Light
         public static var title: String { return L10n.tr("Localizable", "app_intents.lights.light.title") }
       }
@@ -458,6 +456,10 @@ public enum L10n {
       public static var target: String { return L10n.tr("Localizable", "app_intents.state.target") }
       /// Toggle
       public static var toggle: String { return L10n.tr("Localizable", "app_intents.state.toggle") }
+    }
+    public enum Switch {
+      /// Switch
+      public static var title: String { return L10n.tr("Localizable", "app_intents.switch.title") }
     }
     public enum WidgetAction {
       /// Which actions?

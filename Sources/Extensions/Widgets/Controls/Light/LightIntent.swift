@@ -9,7 +9,7 @@ struct LightIntent: SetValueIntent {
     @Parameter(title: .init("app_intents.lights.light.title", defaultValue: "Light"))
     var light: IntentLightEntity
 
-    @Parameter(title: .init("app_intents.lights.light.target", defaultValue: "Target state"))
+    @Parameter(title: .init("app_intents.state.target", defaultValue: "Target state"))
     var value: Bool
 
     @Parameter(title: .init("app_intents.state.toggle", defaultValue: "Toggle"), default: false)
