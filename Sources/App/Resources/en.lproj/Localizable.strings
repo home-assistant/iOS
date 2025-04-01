@@ -212,7 +212,7 @@
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
-"connection_error.advanced_section.title" = "Advanced";
+"connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Open settings";
 "continue_label" = "Continue";
 "copy_label" = "Copy";

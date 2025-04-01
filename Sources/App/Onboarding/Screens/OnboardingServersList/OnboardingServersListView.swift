@@ -55,7 +55,7 @@ struct OnboardingServersListView: View {
         .fullScreenCover(isPresented: $showDocumentation) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
         }
-        .fullScreenCover(isPresented: .init(get: {
+        .sheet(isPresented: .init(get: {
             viewModel.nextDestination != nil
         }, set: { newValue in
             if !newValue {
@@ -66,14 +66,12 @@ struct OnboardingServersListView: View {
             case .next:
                 EmptyView()
             case let .error(error):
-                VStack {
-                    CloseButton {
-                        viewModel.resetFlow()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding()
-                    OnboardingErrorView(error: error)
-                }
+                ConnectionErrorDetailsView(
+                    server: ServerFixture.standard,
+                    error: error,
+                    showSettingsEntry: false,
+                    expandMoreDetails: true
+                )
             case .none:
                 EmptyView()
             }

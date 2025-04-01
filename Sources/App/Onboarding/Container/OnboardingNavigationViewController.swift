@@ -96,18 +96,6 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         super.viewDidLoad()
 
         delegate = self
-        view.tintColor = Asset.Colors.haPrimary.color
-        navigationController?.navigationBar.tintColor = Asset.Colors.haPrimary.color
-
-        let appearance = with(UINavigationBarAppearance()) {
-            $0.configureWithOpaqueBackground()
-            $0.backgroundColor = .systemBackground
-            $0.shadowColor = .clear
-            $0.titleTextAttributes = [.foregroundColor: UIColor.label]
-        }
-        navigationBar.standardAppearance = appearance
-        navigationBar.scrollEdgeAppearance = appearance
-        navigationBar.tintColor = .label
     }
 
     @objc private func cancelTapped(_ sender: UIBarButtonItem) {

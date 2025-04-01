@@ -864,9 +864,9 @@ public enum L10n {
   }
 
   public enum ConnectionError {
-    public enum AdvancedSection {
-      /// Advanced
-      public static var title: String { return L10n.tr("Localizable", "connection_error.advanced_section.title") }
+    public enum MoreDetailsSection {
+      /// More details
+      public static var title: String { return L10n.tr("Localizable", "connection_error.more_details_section.title") }
     }
     public enum OpenSettings {
       /// Open settings
