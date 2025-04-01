@@ -719,6 +719,10 @@
 		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
+		427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */; };
+		427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */; };
+		427FEE092D9C04050047C00C /* OnboardingScanningViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */; };
+		427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */; };
 		428338442BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
@@ -2126,6 +2130,10 @@
 		42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLikeBottomSheet.swift; sourceTree = "<group>"; };
 		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
+		427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListView.swift; sourceTree = "<group>"; };
+		427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.swift; sourceTree = "<group>"; };
+		427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningViewModel.swift; sourceTree = "<group>"; };
+		427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersScanAnimationView.swift; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4283383F2BA1B17C004798C2 /* AssistRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRequests.swift; sourceTree = "<group>"; };
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
@@ -3096,16 +3104,17 @@
 		1168BF35271811C200DD4D15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				429821122CD0DD71005ECD39 /* Bluetooth */,
+				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
+				427FEE052D9C03C50047C00C /* OnboardingServersList */,
 				B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */,
 				11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */,
 				B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */,
 				11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */,
 				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
-				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
 				42E95C582CA46AD50010ECE3 /* ActivityView.swift */,
 				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
 				42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */,
+				429821122CD0DD71005ECD39 /* Bluetooth */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -4197,6 +4206,17 @@
 				42790C432C48077200E31B38 /* ImprovSuccessView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		427FEE052D9C03C50047C00C /* OnboardingServersList */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */,
+				427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */,
+				427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */,
+				427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */,
+			);
+			path = OnboardingServersList;
 			sourceTree = "<group>";
 		};
 		428338412BA1BAF3004798C2 /* Constants */ = {
@@ -6716,9 +6736,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6905,9 +6929,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7030,9 +7058,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7047,9 +7079,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7276,6 +7312,7 @@
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
 				42070EE82BAC43240031E96F /* AssistSession.swift in Sources */,
+				427FEE092D9C04050047C00C /* OnboardingScanningViewModel.swift in Sources */,
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
@@ -7374,6 +7411,7 @@
 				42EF0AD22D4D1A920088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
 				429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */,
+				427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */,
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
@@ -7381,6 +7419,7 @@
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
+				427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
 				42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
@@ -7400,6 +7439,7 @@
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
+				427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */,
 				B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,

@@ -1781,6 +1781,16 @@ public enum L10n {
       /// Scanning for Servers
       public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
     }
+    public enum Servers {
+      public enum Docs {
+        /// Read documentation
+        public static var read: String { return L10n.tr("Localizable", "onboarding.servers.docs.read") }
+      }
+      public enum Search {
+        /// Looking for servers nearby...
+        public static var message: String { return L10n.tr("Localizable", "onboarding.servers.search.message") }
+      }
+    }
     public enum Welcome {
       /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
       /// 

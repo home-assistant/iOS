@@ -38,7 +38,7 @@ struct OnboardingWelcomeView: View {
             }
         }
         .fullScreenCover(isPresented: $showLearnMore) {
-            SafariWebView(url: URL(string: "http://www.home-assistant.io")!)
+            SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
         }
     }
 
@@ -63,20 +63,17 @@ struct OnboardingWelcomeView: View {
 
     private var continueButton: some View {
         VStack {
-            NavigationLink(destination: OnboardingScanningView()) {
+            NavigationLink(destination: OnboardingServersListView()) {
                 Text(verbatim: L10n.continueLabel)
-                    .font(.callout.bold())
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 55)
-                    .background(Color.asset(Asset.Colors.haPrimary))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            }.padding(Spaces.two)
+            }
+            .buttonStyle(.primaryButton)
+            .padding(.horizontal, Spaces.two)
             Button(L10n.Onboarding.Welcome.getStarted) {
                 showLearnMore = true
             }
             .tint(Color.asset(Asset.Colors.haPrimary))
             .frame(minHeight: 40)
+            .buttonStyle(.secondaryButton)
         }
     }
 }

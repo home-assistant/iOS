@@ -5,6 +5,12 @@ import Version
 
 /// Contains shared constants
 public enum AppConstants {
+    public enum WebURLs {
+        public static var homeAssistant = URL(string: "https://www.home-assistant.io")!
+        public static var homeAssistantGetStarted = URL(string: "https://www.home-assistant.io/installation/")!
+        public static var companionAppDocs = URL(string: "https://companion.home-assistant.io")!
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
