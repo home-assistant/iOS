@@ -6,10 +6,10 @@ import Shared
 struct SwitchIntent: SetValueIntent {
     static var title: LocalizedStringResource = .init("app_intents.intent.switch.title", defaultValue: "Control switch")
 
-    @Parameter(title: .init("app_intents.lights.light.title", defaultValue: "Light"))
+    @Parameter(title: .init("app_intents.light.title", defaultValue: "Switch"))
     var entity: IntentSwitchEntity
 
-    @Parameter(title: .init("app_intents.lights.light.target", defaultValue: "Target state"))
+    @Parameter(title: .init("app_intents.state.target", defaultValue: "Target state"))
     var value: Bool
 
     @Parameter(title: .init("app_intents.state.toggle", defaultValue: "Toggle"), default: false)
