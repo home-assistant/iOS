@@ -2,18 +2,23 @@ import Foundation
 import SwiftUI
 
 public struct HAButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.callout.bold())
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 55)
-            .background(Color.asset(Asset.Colors.haPrimary))
+            .background(isEnabled ? Color.asset(Asset.Colors.haPrimary) : Color.gray)
             .clipShape(RoundedRectangle(cornerRadius: 12))
+            .opacity(isEnabled ? 1 : 0.5)
     }
 }
 
 public struct HASecondaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.callout.bold())
@@ -21,6 +26,20 @@ public struct HASecondaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .frame(height: 55)
             .clipShape(RoundedRectangle(cornerRadius: 12))
+            .opacity(isEnabled ? 1 : 0.5)
+    }
+}
+
+public struct HAPillButtonStyle: ButtonStyle {
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.callout.bold())
+            .foregroundColor(.white)
+            .padding(.vertical, Spaces.one)
+            .padding(.horizontal, Spaces.oneAndHalf)
+            .background(Color.asset(Asset.Colors.haPrimary))
+            .frame(alignment: .leading)
+            .clipShape(Capsule())
     }
 }
 
@@ -69,5 +88,11 @@ public extension ButtonStyle where Self == HALinkButtonStyle {
 public extension ButtonStyle where Self == HACriticalButtonStyle {
     static var criticalButton: HACriticalButtonStyle {
         HACriticalButtonStyle()
+    }
+}
+
+public extension ButtonStyle where Self == HAPillButtonStyle {
+    static var pillButton: HAPillButtonStyle {
+        HAPillButtonStyle()
     }
 }

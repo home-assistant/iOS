@@ -6,7 +6,7 @@ struct OnboardingScanningInstanceRow: View {
     let internalURLString: String?
     let externalURLString: String?
     let internalOrExternalURLString: String
-    @Binding var isLoading: Bool
+    let isLoading: Bool
 
     var body: some View {
         HStack {
@@ -55,21 +55,21 @@ struct OnboardingScanningInstanceRow: View {
             internalURLString: "https://example.com",
             externalURLString: "https://example.com",
             internalOrExternalURLString: "https://example.com",
-            isLoading: .constant(false)
+            isLoading: true
         )
         OnboardingScanningInstanceRow(
             name: "Home Assistant",
             internalURLString: "https://example.com",
             externalURLString: "https://example.com",
             internalOrExternalURLString: "https://example.com",
-            isLoading: .constant(false)
+            isLoading: false
         )
         OnboardingScanningInstanceRow(
             name: "Home Assistant",
             internalURLString: "https://example.com",
             externalURLString: "https://example.com",
             internalOrExternalURLString: "https://example.com",
-            isLoading: .constant(false)
+            isLoading: false
         )
     }
 }

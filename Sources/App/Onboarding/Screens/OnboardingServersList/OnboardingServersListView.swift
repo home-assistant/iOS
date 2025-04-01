@@ -4,8 +4,8 @@ import SwiftUI
 
 struct OnboardingServersListView: View {
     @ObservedObject private var viewModel = OnboardingScanningViewModel()
-    @State private var isLoading = false
     @State private var showDocumentation = false
+    @State private var showManualInput = false
 
     var body: some View {
         List {
@@ -24,18 +24,19 @@ struct OnboardingServersListView: View {
                     serverRow(instance: instance)
                 }
             }
+            .disabled(viewModel.currentlyInstanceLoading != nil)
         }
         .animation(.easeInOut, value: viewModel.discoveredInstances.count)
         .safeAreaInset(edge: .bottom) {
-            bottomsButtons
+            bottomButtons
         }
         .navigationTitle(L10n.Onboarding.Scanning.title)
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 ProgressView()
                     .progressViewStyle(.circular)
-                    .opacity(isLoading ? 1 : 0)
-                    .animation(.easeInOut, value: isLoading)
+                    .opacity(viewModel.isLoading ? 1 : 0)
+                    .animation(.easeInOut, value: viewModel.isLoading)
             }
         })
         .onAppear {
@@ -43,9 +44,39 @@ struct OnboardingServersListView: View {
         }
         .onDisappear {
             viewModel.stopDiscovery()
+            viewModel.currentlyInstanceLoading = nil
         }
+        .sheet(isPresented: $showManualInput, content: {
+            ManualURLEntryView { connectURL in
+                viewModel.isLoading = true
+                viewModel.selectInstance(.init(manualURL: connectURL))
+            }
+        })
         .fullScreenCover(isPresented: $showDocumentation) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
+        }
+        .fullScreenCover(isPresented: .init(get: {
+            viewModel.nextDestination != nil
+        }, set: { newValue in
+            if !newValue {
+                viewModel.resetFlow()
+            }
+        })) {
+            switch viewModel.nextDestination {
+            case .next:
+                EmptyView()
+            case let .error(error):
+                VStack {
+                    CloseButton {
+                        viewModel.resetFlow()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding()
+                    OnboardingErrorView(error: error)
+                }
+            case .none:
+                EmptyView()
+            }
         }
     }
 
@@ -55,16 +86,18 @@ struct OnboardingServersListView: View {
             internalURLString: instance.internalURL?.absoluteString,
             externalURLString: instance.externalURL?.absoluteString,
             internalOrExternalURLString: instance.internalOrExternalURL.absoluteString,
-            isLoading: $isLoading
+            isLoading: instance == viewModel.currentlyInstanceLoading
         )
         .onTapGesture {
             viewModel.selectInstance(instance)
         }
     }
 
-    private var bottomsButtons: some View {
+    private var bottomButtons: some View {
         VStack {
-            Button(action: {}) {
+            Button(action: {
+                showManualInput = true
+            }) {
                 Text(L10n.Onboarding.Scanning.manual)
             }
             .buttonStyle(.primaryButton)
@@ -76,6 +109,6 @@ struct OnboardingServersListView: View {
             .buttonStyle(.secondaryButton)
         }
         .padding([.horizontal, .top])
-        .background(.regularMaterial)
+        .background(.ultraThinMaterial)
     }
 }

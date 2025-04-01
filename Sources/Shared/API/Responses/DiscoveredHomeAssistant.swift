@@ -3,7 +3,7 @@ import ObjectMapper
 import PromiseKit
 import Version
 
-public struct DiscoveredHomeAssistant: ImmutableMappable {
+public struct DiscoveredHomeAssistant: ImmutableMappable, Equatable {
     public var uuid: String?
     public var version: Version
     public var internalOrExternalURL: URL

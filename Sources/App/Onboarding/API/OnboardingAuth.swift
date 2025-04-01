@@ -5,6 +5,18 @@ import PromiseKit
 import Shared
 import SwiftUI
 
+struct OnboardinSuccessController: UIViewControllerRepresentable {
+    let server: Server?
+
+    func makeUIViewController(context: Context) -> some UIViewController {
+        OnboardingPermissionViewControllerFactory.next(server: server)
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        /* no-op */
+    }
+}
+
 class OnboardingAuth {
     func successController(server: Server?) -> UIViewController {
         OnboardingPermissionViewControllerFactory.next(server: server)

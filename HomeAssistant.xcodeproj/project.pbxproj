@@ -723,6 +723,7 @@
 		427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */; };
 		427FEE092D9C04050047C00C /* OnboardingScanningViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */; };
 		427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */; };
+		427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */; };
 		428338442BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
@@ -2134,6 +2135,7 @@
 		427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.swift; sourceTree = "<group>"; };
 		427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningViewModel.swift; sourceTree = "<group>"; };
 		427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersScanAnimationView.swift; sourceTree = "<group>"; };
+		427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualURLEntryView.swift; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4283383F2BA1B17C004798C2 /* AssistRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRequests.swift; sourceTree = "<group>"; };
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
@@ -4211,12 +4213,21 @@
 		427FEE052D9C03C50047C00C /* OnboardingServersList */ = {
 			isa = PBXGroup;
 			children = (
+				427FEE0C2D9C221D0047C00C /* ManualURLEntry */,
 				427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */,
 				427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */,
 				427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */,
 				427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */,
 			);
 			path = OnboardingServersList;
+			sourceTree = "<group>";
+		};
+		427FEE0C2D9C221D0047C00C /* ManualURLEntry */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */,
+			);
+			path = ManualURLEntry;
 			sourceTree = "<group>";
 		};
 		428338412BA1BAF3004798C2 /* Constants */ = {
@@ -7505,6 +7516,7 @@
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
+				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,

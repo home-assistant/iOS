@@ -25,6 +25,7 @@ struct OnboardingErrorView: View {
                 Button(L10n.Onboarding.ConnectionError.moreInfoButton) {
                     openURL(documentationURL(for: error))
                 }
+                .buttonStyle(.secondaryButton)
             }
         }
         .onAppear {
@@ -75,17 +76,21 @@ struct OnboardingErrorView: View {
 
     @ViewBuilder
     private var exportLogsView: some View {
-        if #available(iOS 16.0, *) {
-            if let archiveURL = Current.Log.archiveURL() {
-                ShareLink(item: archiveURL, label: {
-                    Text(Current.Log.exportTitle)
-                })
-            }
-        } else {
-            Button(Current.Log.exportTitle) {
-                showShareSheet = true
+        Group {
+            if #available(iOS 16.0, *) {
+                if let archiveURL = Current.Log.archiveURL() {
+                    ShareLink(item: archiveURL, label: {
+                        Text(Current.Log.exportTitle)
+                    })
+                }
+            } else {
+                Button(Current.Log.exportTitle) {
+                    showShareSheet = true
+                }
             }
         }
+        .buttonStyle(.primaryButton)
+        .padding(.horizontal)
     }
 
     private func documentationURL(for error: Error) -> URL {

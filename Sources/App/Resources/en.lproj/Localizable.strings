@@ -439,6 +439,11 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.device_name_check.error.rename_action" = "Rename";
 "onboarding.device_name_check.error.title" = "A device already exists with the name '%1$@'";
 "onboarding.manual_setup.connect" = "Connect";
+"onboarding.manual_setup.input_error.title" = "Invalid URL";
+"onboarding.manual_setup.input_error.message" = "Make sure you have entered a valid URL.";
+"onboarding.manual_setup.text_field.title" = "Your Home Assistant URL";
+"onboarding.manual_setup.text_field.placeholder" = "e.g. http://homeassistant.local:8123";
+"onboarding.manual_setup.helper_section.title" = "Did you mean...";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
 "onboarding.manual_setup.description" = "The URL of your Home Assistant server. Make sure it includes the protocol and port.";

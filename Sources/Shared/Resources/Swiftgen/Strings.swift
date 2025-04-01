@@ -1692,11 +1692,27 @@ public enum L10n {
         /// Could not create a URL
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.couldnt_make_url.title") }
       }
+      public enum HelperSection {
+        /// Did you mean...
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.helper_section.title") }
+      }
+      public enum InputError {
+        /// Make sure you have entered a valid URL.
+        public static var message: String { return L10n.tr("Localizable", "onboarding.manual_setup.input_error.message") }
+        /// Invalid URL
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.input_error.title") }
+      }
       public enum NoScheme {
         /// Should we try connecting using http:// or https://?
         public static var message: String { return L10n.tr("Localizable", "onboarding.manual_setup.no_scheme.message") }
         /// URL entered without scheme
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.no_scheme.title") }
+      }
+      public enum TextField {
+        /// e.g. http://homeassistant.local:8123
+        public static var placeholder: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.placeholder") }
+        /// Your Home Assistant URL
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.title") }
       }
     }
     public enum Permissions {
