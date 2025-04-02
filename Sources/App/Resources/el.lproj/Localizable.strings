@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Ειδοποίηση επιβεβαίωσης";
 "app_intents.state.target" = "Κατάσταση-στόχος";
 "app_intents.state.toggle" = "Διακόπτης";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Ποιες ενέργειες;";
 "assist.button.listening.title" = "Ακρόαση...";
 "assist.error.pipelines_response" = "Αποτυχία λήψης των Assist pipelines, παρακαλώ ελέγξτε τη διαμόρφωση των pipelines.";

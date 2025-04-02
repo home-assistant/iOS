@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Kinnitusteatis";
 "app_intents.state.target" = "Sihtolek";
 "app_intents.state.toggle" = "Muuda olekut";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Millised toimingud?";
 "assist.button.listening.title" = "Kuulan...";
 "assist.error.pipelines_response" = "Assisti voogude hankimine nurjus, kontrolli oma voogude sätteid.";

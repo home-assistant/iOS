@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "確認通知";
 "app_intents.state.target" = "ターゲットの状態";
 "app_intents.state.toggle" = "トグル";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "どのアクション？";
 "assist.button.listening.title" = "リスニング...";
 "assist.error.pipelines_response" = "アシスト パイプラインを取得できませんでした。パイプラインの構成を確認してください。";

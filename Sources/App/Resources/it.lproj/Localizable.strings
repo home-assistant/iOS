@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Notifica di conferma";
 "app_intents.state.target" = "Stato di destinazione";
 "app_intents.state.toggle" = "Toggle";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Quali azioni?";
 "assist.button.listening.title" = "In ascolto...";
 "assist.error.pipelines_response" = "Impossibile ottenere i pipeline Assist, controlla la configurazione dei tuoi pipeline.";

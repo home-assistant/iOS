@@ -274,8 +274,8 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "Aktiivne";
 "component::wled::entity::select::live_override::state:::0" = "Väljas";
 "component::wled::entity::select::live_override::state:::1" = "Sees";
-"component::wolflink::entity::sensor::state::state::aus" = "Keelatud";
-"component::wolflink::entity::sensor::state::state::ein" = "Lubatud";
+"component::wolflink::entity::sensor::state::state::aus" = "Väljas";
+"component::wolflink::entity::sensor::state::state::ein" = "Sees";
 "component::wolflink::entity::sensor::state::state::standby" = "Unerežiimil";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "Väljas";
 "component::yamaha::services::enable_output::fields::enabled::name" = "Lubatud";

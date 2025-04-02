@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Notificação de confirmação";
 "app_intents.state.target" = "Estado alvo";
 "app_intents.state.toggle" = "Alternar";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Quais ações?";
 "assist.button.listening.title" = "Ouvindo...";
 "assist.error.pipelines_response" = "Falha ao obter pipelines do Assist. Verifique a configuração dos pipelines.";
