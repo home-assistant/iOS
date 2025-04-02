@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Onay bildirimi";
 "app_intents.state.target" = "Hedef durum";
 "app_intents.state.toggle" = "Değiştir";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Hangi eylemler?";
 "assist.button.listening.title" = "Dinleme...";
 "assist.error.pipelines_response" = "Assist ardışık düzenleri alınamadı. Lütfen ardışık düzen yapılandırmanızı kontrol edin.";

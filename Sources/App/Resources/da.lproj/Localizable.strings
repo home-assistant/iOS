@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Bekræft notifikation";
 "app_intents.state.target" = "Target state";
 "app_intents.state.toggle" = "Skift";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Hvilke handlinger?";
 "assist.button.listening.title" = "Lytter...";
 "assist.error.pipelines_response" = "Kunne ikke hente Assist-pipelines. Tjek venligst din pipelines-konfiguration.";

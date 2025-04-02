@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Bestätigungsmeldung";
 "app_intents.state.target" = "Zielzustand";
 "app_intents.state.toggle" = "Umschalten";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Welche Aktionen?";
 "assist.button.listening.title" = "Zuhören …";
 "assist.error.pipelines_response" = "Assist-Pipelines konnten nicht abgerufen werden. Bitte überprüfe deine Pipeline-Konfiguration.";

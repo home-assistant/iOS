@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "確認通知";
 "app_intents.state.target" = "目標狀態";
 "app_intents.state.toggle" = "開關";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "哪個動作？";
 "assist.button.listening.title" = "聆聽中...";
 "assist.error.pipelines_response" = "獲取助理 Pipeline 失敗，請檢查 Pipeline 設定。";

@@ -100,6 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Notifikasi konfirmasi";
 "app_intents.state.target" = "Status target";
 "app_intents.state.toggle" = "Alihkan";
+"app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Aksi yang mana?";
 "assist.button.listening.title" = "Mendengarkan...";
 "assist.error.pipelines_response" = "Gagal mendapatkan alur Assist, periksa konfigurasi alur Anda.";
