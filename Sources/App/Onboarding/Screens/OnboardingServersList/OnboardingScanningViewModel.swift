@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Shared
 import SwiftUI
+import PromiseKit
 
 final class OnboardingScanningViewModel: ObservableObject {
     enum Destination {
@@ -77,8 +78,14 @@ final class OnboardingScanningViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case let .fulfilled(server):
+                    Current.Log.verbose("Onboarding authentication succeeded")
                     self?.nextDestination = .next // AnyView(OnboardinSuccessController(server: server))
                 case let .rejected(error):
+                    if case .cancelled = error as? PMKError {
+                        Current.Log.verbose("Cancelled onboarding authentication (PMKError Cancelled)")
+                        self?.resetFlow()
+                        return
+                    }
                     self?.nextDestination = .error(error)
                 }
                 self?.isLoading = false
