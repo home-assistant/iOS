@@ -13,7 +13,16 @@ struct OnboardinSuccessController: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        /* no-op */
+        if uiViewController is OnboardingTerminalViewController {
+            Current.onboardingObservation.complete()
+
+            let firstOnboardingNavigationViewController = UIApplication.shared
+                .keyWindow?
+                .rootViewController?
+                .presentedViewController as? UINavigationController
+
+            firstOnboardingNavigationViewController?.dismiss(animated: true, completion: nil)
+        }
     }
 }
 

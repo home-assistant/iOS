@@ -56,14 +56,19 @@ struct OnboardingServersListView: View {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
         }
         .sheet(isPresented: .init(get: {
-            viewModel.nextDestination != nil
+            if case .error = viewModel.nextDestination {
+                return true
+            } else {
+                return false
+            }
         }, set: { newValue in
             if !newValue {
                 viewModel.resetFlow()
             }
         })) {
             switch viewModel.nextDestination {
-            case .next:
+            case .next, .none:
+                // This scenarios are handlded in full screen
                 EmptyView()
             case let .error(error):
                 ConnectionErrorDetailsView(
@@ -72,7 +77,27 @@ struct OnboardingServersListView: View {
                     showSettingsEntry: false,
                     expandMoreDetails: true
                 )
-            case .none:
+            }
+        }
+        .fullScreenCover(isPresented: .init(get: {
+            if case .next = viewModel.nextDestination {
+                return true
+            } else {
+                return false
+            }
+        }, set: { newValue in
+            if !newValue {
+                viewModel.resetFlow()
+            }
+        })) {
+            switch viewModel.nextDestination {
+            case let .next(server):
+                NavigationView {
+                    AnyView(OnboardinSuccessController(server: server))
+                }
+                .navigationViewStyle(.stack)
+            case .error, .none:
+                // This scenarios are handlded in sheet
                 EmptyView()
             }
         }

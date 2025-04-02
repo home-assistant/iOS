@@ -1,13 +1,13 @@
 import Combine
 import Foundation
+import PromiseKit
 import Shared
 import SwiftUI
-import PromiseKit
 
 final class OnboardingScanningViewModel: ObservableObject {
     enum Destination {
         case error(Error)
-        case next
+        case next(Server)
     }
 
     @Published var discoveredInstances: [DiscoveredHomeAssistant] = []
@@ -79,7 +79,7 @@ final class OnboardingScanningViewModel: ObservableObject {
                 switch result {
                 case let .fulfilled(server):
                     Current.Log.verbose("Onboarding authentication succeeded")
-                    self?.nextDestination = .next // AnyView(OnboardinSuccessController(server: server))
+                    self?.nextDestination = .next(server) // AnyView(OnboardinSuccessController(server: server))
                 case let .rejected(error):
                     if case .cancelled = error as? PMKError {
                         Current.Log.verbose("Cancelled onboarding authentication (PMKError Cancelled)")
