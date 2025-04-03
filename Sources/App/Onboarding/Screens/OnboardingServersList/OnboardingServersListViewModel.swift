@@ -16,7 +16,7 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var showError = false
     @Published var error: Error?
 
-    @Published var showLocationPermissionScreen = false
+    @Published var showPermissionsFlow = false
 
     /// Indicator for manual input loading
     @Published var isLoading = false
@@ -103,9 +103,8 @@ final class OnboardingServersListViewModel: ObservableObject {
 
     @MainActor
     private func authenticationSucceeded(server: Server) {
-//        showLocationPermissionScreen = true
         discovery.stop()
-        Current.onboardingObservation.complete()
+        showPermissionsFlow = true
     }
 }
 

@@ -41,14 +41,9 @@ struct OnboardingServersListView: View {
         .sheet(isPresented: $viewModel.showError) {
             errorView
         }
-//        .fullScreenCover(isPresented: $viewModel.showLocationPermissionScreen) {
-//            VStack {
-//                Text("Location permission screen")
-//            }
-//            .onDisappear {
-//
-//            }
-//        }
+        .fullScreenCover(isPresented: $viewModel.showPermissionsFlow) {
+            OnboardingPermissionsNavigationView()
+        }
     }
 
     private func onAppear() {

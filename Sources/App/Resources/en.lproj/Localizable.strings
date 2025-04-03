@@ -32,6 +32,7 @@
 "actions_configurator.visual_section.scene_hint_footer" = "You can also change these by customizing the Scene attributes: %@";
 "actions_configurator.visual_section.server_defined" = "The appearance of this action is controlled by the server configuration.";
 "addButtonLabel" = "Add";
+"privacyLabel" = "Privacy";
 "alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
 "alert.confirmation.generic.title" = "Are you sure?";
 "alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
@@ -1187,3 +1188,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+"onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with Home Assistant unless you select 'Allow & Share with Home Assistant'";
+"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
+"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
+"onboarding.permission.location.buttons.deny" = "Deny";
+"onboarding.permission.location.deny.alert.title" = "Are you sure?";
+"onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";

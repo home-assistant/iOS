@@ -16,6 +16,36 @@ public struct HAButtonStyle: ButtonStyle {
     }
 }
 
+public struct HANeutralButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.callout.bold())
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: 55)
+            .background(Color.gray)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .opacity(isEnabled ? 1 : 0.5)
+    }
+}
+
+public struct HANegativeButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.callout.bold())
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: 55)
+            .background(isEnabled ? .red : Color.gray)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .opacity(isEnabled ? 1 : 0.5)
+    }
+}
+
 public struct HASecondaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
 
@@ -23,6 +53,20 @@ public struct HASecondaryButtonStyle: ButtonStyle {
         configuration.label
             .font(.callout.bold())
             .foregroundColor(Color.asset(Asset.Colors.haPrimary))
+            .frame(maxWidth: .infinity)
+            .frame(height: 55)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .opacity(isEnabled ? 1 : 0.5)
+    }
+}
+
+public struct HASecondaryNegativeButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.callout.bold())
+            .foregroundColor(.red)
             .frame(maxWidth: .infinity)
             .frame(height: 55)
             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -73,9 +117,27 @@ public extension ButtonStyle where Self == HAButtonStyle {
     }
 }
 
+public extension ButtonStyle where Self == HANegativeButtonStyle {
+    static var negativeButton: HANegativeButtonStyle {
+        HANegativeButtonStyle()
+    }
+}
+
+public extension ButtonStyle where Self == HANeutralButtonStyle {
+    static var neutralButton: HANeutralButtonStyle {
+        HANeutralButtonStyle()
+    }
+}
+
 public extension ButtonStyle where Self == HASecondaryButtonStyle {
     static var secondaryButton: HASecondaryButtonStyle {
         HASecondaryButtonStyle()
+    }
+}
+
+public extension ButtonStyle where Self == HASecondaryNegativeButtonStyle {
+    static var secondaryNegativeButton: HASecondaryNegativeButtonStyle {
+        HASecondaryNegativeButtonStyle()
     }
 }
 

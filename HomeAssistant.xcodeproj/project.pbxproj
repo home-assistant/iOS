@@ -403,7 +403,6 @@
 		11CFD785273662DF0082D557 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CFD783273662DF0082D557 /* Server.swift */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */; };
-		11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
@@ -629,6 +628,7 @@
 		424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
 		424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
+		42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
@@ -725,6 +725,8 @@
 		427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */; };
 		427FEE592D9D48120047C00C /* View+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE572D9D48120047C00C /* View+HA.swift */; };
 		427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */; };
+		427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */; };
+		427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */; };
 		428338442BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
@@ -1851,7 +1853,6 @@
 		11CFD783273662DF0082D557 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
-		11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionWorkflowController.swift; sourceTree = "<group>"; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2040,6 +2041,7 @@
 		4242A2D02B2B5C9F00E9F001 /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-ES"; path = "es-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewTintedWrapper.swift; sourceTree = "<group>"; };
+		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
@@ -2136,6 +2138,8 @@
 		427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationView.swift; sourceTree = "<group>"; };
 		427FEE572D9D48120047C00C /* View+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HA.swift"; sourceTree = "<group>"; };
 		427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationViewModel.swift; sourceTree = "<group>"; };
+		427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationView.swift; sourceTree = "<group>"; };
+		427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyNoteView.swift; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4283383F2BA1B17C004798C2 /* AssistRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRequests.swift; sourceTree = "<group>"; };
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
@@ -3106,6 +3110,7 @@
 			children = (
 				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
 				427FEE052D9C03C50047C00C /* OnboardingServersList */,
+				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
 				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
 				42E95C582CA46AD50010ECE3 /* ActivityView.swift */,
 				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
@@ -3119,7 +3124,6 @@
 			isa = PBXGroup;
 			children = (
 				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
-				11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */,
 				427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */,
 				427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */,
 			);
@@ -4226,6 +4230,15 @@
 			path = ManualURLEntry;
 			sourceTree = "<group>";
 		};
+		427FEE642D9EBC340047C00C /* OnboardingPermissions */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */,
+				42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */,
+			);
+			path = OnboardingPermissions;
+			sourceTree = "<group>";
+		};
 		428338412BA1BAF3004798C2 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -4448,6 +4461,7 @@
 				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
 				42B74A5C2D36A47E00C37304 /* CloseButton.swift */,
 				42C131CF2D66084C00AF48E6 /* PillView.swift */,
+				427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -7448,6 +7462,7 @@
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
 				427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
+				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */,
@@ -7502,7 +7517,7 @@
 				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
-				11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */,
+				427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
 				4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
@@ -7908,6 +7923,7 @@
 				42790C462C4808FA00E31B38 /* AppleLikeBottomSheet.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
+				427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */,
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,

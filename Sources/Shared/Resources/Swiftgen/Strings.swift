@@ -44,6 +44,8 @@ public enum L10n {
   public static var openLabel: String { return L10n.tr("Localizable", "open_label") }
   /// Preview Output
   public static var previewOutput: String { return L10n.tr("Localizable", "preview_output") }
+  /// Privacy
+  public static var privacyLabel: String { return L10n.tr("Localizable", "privacyLabel") }
   /// Reload
   public static var reloadLabel: String { return L10n.tr("Localizable", "reload_label") }
   /// Requires %@ or later.
@@ -1713,6 +1715,30 @@ public enum L10n {
         public static var placeholder: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.placeholder") }
         /// Your Home Assistant URL
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.title") }
+      }
+    }
+    public enum Permission {
+      public enum Location {
+        /// To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permission.location.description") }
+        /// Your location won't be shared with Home Assistant unless you select 'Allow & Share with Home Assistant'
+        public static var privacyNote: String { return L10n.tr("Localizable", "onboarding.permission.location.privacy_note") }
+        public enum Buttons {
+          /// Allow & Share with Home Assistant
+          public static var allowAndShare: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.allow_and_share") }
+          /// Allow for App use only
+          public static var allowForApp: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.allow_for_app") }
+          /// Deny
+          public static var deny: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.deny") }
+        }
+        public enum Deny {
+          public enum Alert {
+            /// Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.
+            public static var message: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.message") }
+            /// Are you sure?
+            public static var title: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.title") }
+          }
+        }
       }
     }
     public enum Permissions {
