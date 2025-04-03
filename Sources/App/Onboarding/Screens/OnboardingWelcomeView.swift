@@ -9,6 +9,8 @@ struct OnboardingWelcomeView: View {
     @State private var logoScale = 0.9
     @State private var buttonYOffset: CGFloat = 10
 
+    @Binding var shouldDismissOnboarding: Bool
+
     var body: some View {
         VStack(spacing: .zero) {
             Spacer()
@@ -63,7 +65,7 @@ struct OnboardingWelcomeView: View {
 
     private var continueButton: some View {
         VStack {
-            NavigationLink(destination: OnboardingServersListView()) {
+            NavigationLink(destination: OnboardingServersListView(shouldDismissOnboarding: $shouldDismissOnboarding)) {
                 Text(verbatim: L10n.continueLabel)
             }
             .buttonStyle(.primaryButton)
@@ -79,13 +81,5 @@ struct OnboardingWelcomeView: View {
 }
 
 #Preview {
-    OnboardingWelcomeView()
-}
-
-struct OnboardingScanningView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        OnboardingScanningViewController()
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
 }

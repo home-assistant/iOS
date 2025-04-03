@@ -2,6 +2,7 @@ import Foundation
 import MBProgressHUD
 import PromiseKit
 import Shared
+import SwiftUI
 import UIKit
 
 final class WebViewWindowController {
@@ -61,21 +62,15 @@ final class WebViewWindowController {
 
     func setup() {
         if let style = OnboardingNavigationViewController.requiredOnboardingStyle {
-            Current.Log.info("showing onboarding \(style)")
-            updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: style))
+            Current.Log.info("Showing onboarding \(style)")
+            updateRootViewController(to: OnboardingNavigationView.controller(onboardingStyle: style))
         } else {
-            if let rootController = window.rootViewController, !rootController.children.isEmpty {
-                Current.Log.info("[iOS 12] state restoration loaded controller, not creating a new one")
-                // not changing anything, but handle the promises
-                updateRootViewController(to: rootController)
+            if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
+                updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
             } else {
-                if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
-                    updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
-                } else {
-                    updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
-                }
-                restorationActivity = nil
+                updateRootViewController(to: OnboardingNavigationView.controller(onboardingStyle: .initial))
             }
+            restorationActivity = nil
         }
     }
 
@@ -414,7 +409,7 @@ extension WebViewWindowController: OnboardingStateObserver {
     func onboardingStateDidChange(to state: OnboardingState) {
         switch state {
         case let .needed(type):
-            guard !(window.rootViewController is OnboardingNavigationViewController) else {
+            if window.rootViewController as? UIHostingController<OnboardingNavigationView> != nil {
                 return
             }
 
@@ -427,7 +422,7 @@ extension WebViewWindowController: OnboardingStateObserver {
             switch type {
             case .error, .logout:
                 if Current.servers.all.isEmpty {
-                    let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
+                    let controller = OnboardingNavigationView.controller(onboardingStyle: .initial)
                     updateRootViewController(to: controller)
 
                     if type.shouldShowError {

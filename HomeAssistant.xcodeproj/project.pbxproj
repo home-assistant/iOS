@@ -404,7 +404,6 @@
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */; };
 		11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */; };
-		11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
@@ -415,7 +414,6 @@
 		11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
 		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
-		11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */; };
 		11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */; };
 		11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED439727265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift */; };
 		11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED439927265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift */; };
@@ -721,9 +719,12 @@
 		427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */; };
 		427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */; };
-		427FEE092D9C04050047C00C /* OnboardingScanningViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */; };
+		427FEE092D9C04050047C00C /* OnboardingServersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */; };
 		427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */; };
 		427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */; };
+		427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */; };
+		427FEE592D9D48120047C00C /* View+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE572D9D48120047C00C /* View+HA.swift */; };
+		427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */; };
 		428338442BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
@@ -1109,9 +1110,7 @@
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB69226BBDA900E541DD /* SettingsViewController.swift */; };
 		B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */; };
-		B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
-		B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
@@ -1853,7 +1852,6 @@
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
 		11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionWorkflowController.swift; sourceTree = "<group>"; };
-		11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionViewController.swift; sourceTree = "<group>"; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1863,7 +1861,6 @@
 		11DE9F3925B614EB0081C0ED /* Application.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Application.xib; sourceTree = "<group>"; };
 		11E16399250B1B760076D612 /* OnboardingStateObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStateObservation.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
-		11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTerminalViewController.swift; sourceTree = "<group>"; };
 		11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepModels.test.swift; sourceTree = "<group>"; };
 		11ED439727265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepNotify.test.swift; sourceTree = "<group>"; };
 		11ED439927265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepRegister.test.swift; sourceTree = "<group>"; };
@@ -2133,9 +2130,12 @@
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
 		427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListView.swift; sourceTree = "<group>"; };
 		427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.swift; sourceTree = "<group>"; };
-		427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningViewModel.swift; sourceTree = "<group>"; };
+		427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListViewModel.swift; sourceTree = "<group>"; };
 		427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersScanAnimationView.swift; sourceTree = "<group>"; };
 		427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualURLEntryView.swift; sourceTree = "<group>"; };
+		427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationView.swift; sourceTree = "<group>"; };
+		427FEE572D9D48120047C00C /* View+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HA.swift"; sourceTree = "<group>"; };
+		427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationViewModel.swift; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4283383F2BA1B17C004798C2 /* AssistRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRequests.swift; sourceTree = "<group>"; };
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
@@ -2581,9 +2581,7 @@
 		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
 		B661FB69226BBDA900E541DD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsViewController.swift; sourceTree = "<group>"; };
-		B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManualURLViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
-		B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningViewController.swift; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		B66C58A9215086F0004AB261 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -3108,10 +3106,6 @@
 			children = (
 				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
 				427FEE052D9C03C50047C00C /* OnboardingServersList */,
-				B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */,
-				11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */,
-				B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */,
-				11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */,
 				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
 				42E95C582CA46AD50010ECE3 /* ActivityView.swift */,
 				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
@@ -3126,6 +3120,8 @@
 			children = (
 				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
 				11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */,
+				427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */,
+				427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */,
 			);
 			path = Container;
 			sourceTree = "<group>";
@@ -4216,7 +4212,7 @@
 				427FEE0C2D9C221D0047C00C /* ManualURLEntry */,
 				427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */,
 				427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */,
-				427FEE082D9C04050047C00C /* OnboardingScanningViewModel.swift */,
+				427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */,
 				427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */,
 			);
 			path = OnboardingServersList;
@@ -5416,6 +5412,7 @@
 				D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */,
 				D0DD2CED213BCA8900C3D9F7 /* URL+Extensions.swift */,
 				D0EEF302214D8F0300D1D360 /* String+HA.swift */,
+				427FEE572D9D48120047C00C /* View+HA.swift */,
 				42D996E42D89863A001737A0 /* Bool+HA.swift */,
 				42E3B8B82D8AC63300F5D084 /* Float+HA.swift */,
 				D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */,
@@ -7303,6 +7300,7 @@
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
+				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
@@ -7317,13 +7315,12 @@
 				421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */,
 				42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
-				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
 				42FCCFFB2B9B1C310057783F /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
 				42070EE82BAC43240031E96F /* AssistSession.swift in Sources */,
-				427FEE092D9C04050047C00C /* OnboardingScanningViewModel.swift in Sources */,
+				427FEE092D9C04050047C00C /* OnboardingServersListViewModel.swift in Sources */,
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
@@ -7406,7 +7403,6 @@
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
-				11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */,
 				422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */,
 				1101568424D770B2009424C9 /* NFCWriter.swift in Sources */,
 				42B74A662D37C2C000C37304 /* WidgetCreationViewModel.swift in Sources */,
@@ -7451,7 +7447,6 @@
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
 				427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */,
-				B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
@@ -7504,6 +7499,7 @@
 				429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */,
 				4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
+				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */,
@@ -7517,7 +7513,6 @@
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
-				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
@@ -7942,6 +7937,7 @@
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
 				42FCCFA82B9A05400057783F /* View+RoundedCorner.swift in Sources */,
+				427FEE592D9D48120047C00C /* View+HA.swift in Sources */,
 				1164D9DE25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,

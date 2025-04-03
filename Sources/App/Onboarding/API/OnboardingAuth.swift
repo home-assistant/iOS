@@ -5,32 +5,7 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-struct OnboardinSuccessController: UIViewControllerRepresentable {
-    let server: Server?
-
-    func makeUIViewController(context: Context) -> some UIViewController {
-        OnboardingPermissionViewControllerFactory.next(server: server)
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        if uiViewController is OnboardingTerminalViewController {
-            Current.onboardingObservation.complete()
-
-            let firstOnboardingNavigationViewController = UIApplication.shared
-                .keyWindow?
-                .rootViewController?
-                .presentedViewController as? UINavigationController
-
-            firstOnboardingNavigationViewController?.dismiss(animated: true, completion: nil)
-        }
-    }
-}
-
 class OnboardingAuth {
-    func successController(server: Server?) -> UIViewController {
-        OnboardingPermissionViewControllerFactory.next(server: server)
-    }
-
     func failureController(error: Error) -> UIViewController {
         UIHostingController(rootView: OnboardingErrorView(error: error))
     }

@@ -4,7 +4,7 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-final class OnboardingScanningViewModel: ObservableObject {
+final class OnboardingServersListViewModel: ObservableObject {
     enum Destination {
         case error(Error)
         case next(Server)
@@ -12,7 +12,11 @@ final class OnboardingScanningViewModel: ObservableObject {
 
     @Published var discoveredInstances: [DiscoveredHomeAssistant] = []
     @Published var currentlyInstanceLoading: DiscoveredHomeAssistant?
-    @Published var nextDestination: Destination?
+
+    @Published var showError = false
+    @Published var error: Error?
+
+    @Published var showLocationPermissionScreen = false
 
     /// Indicator for manual input loading
     @Published var isLoading = false
@@ -66,27 +70,26 @@ final class OnboardingScanningViewModel: ObservableObject {
         discovery.stop()
     }
 
-    func selectInstance(_ instance: DiscoveredHomeAssistant) {
+    func selectInstance(_ instance: DiscoveredHomeAssistant, controller: UIViewController?) {
+        guard let controller else {
+            Current.Log.error("No controller provided for onboarding")
+            return
+        }
         Current.Log.verbose("Selected instance \(instance)")
 
         currentlyInstanceLoading = instance
 
         let authentication = OnboardingAuth()
-        guard let topViewController = UIApplication.shared.windows.first?.rootViewController else { return }
 
-        authentication.authenticate(to: instance, sender: topViewController).pipe { [weak self] result in
+        authentication.authenticate(to: instance, sender: controller).pipe { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case let .fulfilled(server):
                     Current.Log.verbose("Onboarding authentication succeeded")
-                    self?.nextDestination = .next(server) // AnyView(OnboardinSuccessController(server: server))
+                    self?.authenticationSucceeded(server: server)
                 case let .rejected(error):
-                    if case .cancelled = error as? PMKError {
-                        Current.Log.verbose("Cancelled onboarding authentication (PMKError Cancelled)")
-                        self?.resetFlow()
-                        return
-                    }
-                    self?.nextDestination = .error(error)
+                    self?.error = error
+                    self?.showError = true
                 }
                 self?.isLoading = false
             }
@@ -94,18 +97,28 @@ final class OnboardingScanningViewModel: ObservableObject {
     }
 
     func resetFlow() {
-        nextDestination = nil
         currentlyInstanceLoading = nil
         isLoading = false
     }
+
+    @MainActor
+    private func authenticationSucceeded(server: Server) {
+//        showLocationPermissionScreen = true
+        discovery.stop()
+        Current.onboardingObservation.complete()
+    }
 }
 
-extension OnboardingScanningViewModel: BonjourObserver {
+extension OnboardingServersListViewModel: BonjourObserver {
     func bonjour(_ bonjour: Bonjour, didAdd instance: DiscoveredHomeAssistant) {
-        discoveredInstances.append(instance)
+        DispatchQueue.main.async { [weak self] in
+            self?.discoveredInstances.append(instance)
+        }
     }
 
     func bonjour(_ bonjour: Bonjour, didRemoveInstanceWithName name: String) {
-        discoveredInstances.removeAll { $0.bonjourName == name }
+        DispatchQueue.main.async { [weak self] in
+            self?.discoveredInstances.removeAll { $0.bonjourName == name }
+        }
     }
 }
