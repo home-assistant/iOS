@@ -100,7 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Уведомление о подтверждении";
 "app_intents.state.target" = "Целевое состояние";
 "app_intents.state.toggle" = "Переключить";
-"app_intents.switch.title" = "Switch";
+"app_intents.switch.title" = "Переключатель";
 "app_intents.widget_action.actions_parameter_configuration" = "Какие действия?";
 "assist.button.listening.title" = "Слушаю...";
 "assist.error.pipelines_response" = "Не удалось получить пайплайны Assist, пожалуйста, проверьте ваши настройки пайплайнов.";

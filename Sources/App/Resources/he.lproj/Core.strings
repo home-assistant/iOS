@@ -274,7 +274,7 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "פעיל";
 "component::wled::entity::select::live_override::state:::0" = "כבוי";
 "component::wled::entity::select::live_override::state:::1" = "מופעל";
-"component::wolflink::entity::sensor::state::state::aus" = "מושבת";
+"component::wolflink::entity::sensor::state::state::aus" = "כבוי";
 "component::wolflink::entity::sensor::state::state::ein" = "מופעל";
 "component::wolflink::entity::sensor::state::state::standby" = "בהמתנה";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "כבוי";

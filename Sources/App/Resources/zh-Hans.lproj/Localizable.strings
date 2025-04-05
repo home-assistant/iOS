@@ -100,7 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "确认通知";
 "app_intents.state.target" = "目标状态";
 "app_intents.state.toggle" = "切换";
-"app_intents.switch.title" = "Switch";
+"app_intents.switch.title" = "开关";
 "app_intents.widget_action.actions_parameter_configuration" = "哪些动作 ？";
 "assist.button.listening.title" = "正在监听...";
 "assist.error.pipelines_response" = "无法获取语音助手管道，请检查您的管道配置。";
