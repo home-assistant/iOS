@@ -247,7 +247,7 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
 "gestures.3_fingers_swipe_up.title" = "3 👆 swipe up";
-"gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.footer.title" = "Customise gestures to be used on the frontend.";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
 "gestures.shake.title" = "Shake";

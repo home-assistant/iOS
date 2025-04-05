@@ -100,7 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "확인 알림";
 "app_intents.state.target" = "대상 상태";
 "app_intents.state.toggle" = "토글";
-"app_intents.switch.title" = "Switch";
+"app_intents.switch.title" = "스위치";
 "app_intents.widget_action.actions_parameter_configuration" = "어떤 동작을 원하시나요?";
 "assist.button.listening.title" = "청취 중...";
 "assist.error.pipelines_response" = "Assist 파이프라인을 얻지 못했습니다. 파이프라인 구성을 확인하세요.";
@@ -1135,7 +1135,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "widgets.custom.intent_toggle_failed.title" = "구성요소 '토글'에 실패했습니다";
 "widgets.custom.require_confirmation.footer" = "위젯 확인 및 상태 표시 기능은 현재 베타 버전입니다. 문제가 발생하면 '확인 필요'를 비활성화하고 저장하세요.";
 "widgets.custom.show_last_update_time.param.title" = "마지막 업데이트 시간 표시";
-"widgets.custom.show_states.description" = "Displaying latest states is not 100% guaranteed, you can give it a try and check the companion App documentation for more information.";
+"widgets.custom.show_states.description" = "최신 상태가 100% 표시되는 것은 보장할 수 없으므로, 시도해 보고 자세한 내용은 앱 설명서를 확인하세요.";
 "widgets.custom.show_states.param.title" = "상태 표시 (베타)";
 "widgets.custom.show_update_time.title" = "마지막 업데이트:";
 "widgets.custom.subtitle" = "나만의 스타일로 위젯 만들기";
