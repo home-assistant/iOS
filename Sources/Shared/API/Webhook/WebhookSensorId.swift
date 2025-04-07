@@ -3,7 +3,7 @@ import Foundation
 public enum WebhookSensorId: String {
     case iPhoneAudioOutput = "iphone-audio-output"
     case activity = "activity"
-    case connectivitySSID = "connectivity-ssid"
+    case connectivitySSID = "connectivity_ssid"
     case connectivityBSID = "connectivity_bssid"
     case connectivityConnectionType = "connectivity_connection_type"
     case geocodedLocation = "geocoded_location"
