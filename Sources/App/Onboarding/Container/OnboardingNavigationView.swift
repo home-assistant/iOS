@@ -1,6 +1,36 @@
 import Shared
 import SwiftUI
 
+enum OnboardingStyle: Equatable {
+    enum RequiredType: Equatable {
+        case full
+        case permissions
+    }
+
+    case initial
+    case required(RequiredType)
+    case secondary
+
+    var insertsCancelButton: Bool {
+        switch self {
+        case .initial, .required: return false
+        case .secondary: return true
+        }
+    }
+}
+
+enum OnboardingNavigation {
+    public static var requiredOnboardingStyle: OnboardingStyle? {
+        if Current.servers.all.isEmpty {
+            return .required(.full)
+        } else if !OnboardingPermissionHandler.notDeterminedPermissions.isEmpty {
+            return .required(.permissions)
+        } else {
+            return nil
+        }
+    }
+}
+
 struct OnboardingNavigationView: View {
     static func controller(onboardingStyle: OnboardingStyle) -> UIViewController {
         OnboardingNavigationView(onboardingStyle: onboardingStyle).embeddedInHostingController()

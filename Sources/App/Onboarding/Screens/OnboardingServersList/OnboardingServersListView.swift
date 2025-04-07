@@ -5,7 +5,7 @@ import SwiftUI
 struct OnboardingServersListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var hostingProvider: ViewControllerProvider
-    @ObservedObject private var viewModel = OnboardingServersListViewModel()
+    @StateObject private var viewModel = OnboardingServersListViewModel()
 
     @State private var showDocumentation = false
     @State private var showManualInput = false

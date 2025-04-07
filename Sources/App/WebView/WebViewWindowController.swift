@@ -61,7 +61,7 @@ final class WebViewWindowController {
     }
 
     func setup() {
-        if let style = OnboardingNavigationViewController.requiredOnboardingStyle {
+        if let style = OnboardingNavigation.requiredOnboardingStyle {
             Current.Log.info("Showing onboarding \(style)")
             updateRootViewController(to: OnboardingNavigationView.controller(onboardingStyle: style))
         } else {
@@ -457,7 +457,7 @@ extension WebViewWindowController: OnboardingStateObserver {
                 shouldLoadImmediately: true
             )
         case .complete:
-            if window.rootViewController is OnboardingNavigationViewController {
+            if window.rootViewController as? UIHostingController<OnboardingNavigationView> != nil {
                 let controller: WebViewController?
 
                 if let preload = onboardingPreloadWebViewController {

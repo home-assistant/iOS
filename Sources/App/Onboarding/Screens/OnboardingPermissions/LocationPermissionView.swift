@@ -5,6 +5,7 @@ import SwiftUI
 struct LocationPermissionView: View {
     @StateObject private var viewModel = LocationPermissionViewModel()
     let permission: PermissionType
+    let completeAction: () -> Void
 
     var body: some View {
         VStack(spacing: Spaces.three) {
@@ -25,6 +26,11 @@ struct LocationPermissionView: View {
                 Text(verbatim: L10n.Onboarding.Permission.Location.Deny.Alert.message)
             }
         )
+        .onChange(of: viewModel.shouldComplete) { newValue in
+            if newValue {
+                completeAction()
+            }
+        }
     }
 
     @ViewBuilder
@@ -62,7 +68,9 @@ struct LocationPermissionView: View {
                 Text(L10n.Onboarding.Permission.Location.Buttons.allowAndShare)
             }
             .buttonStyle(.primaryButton)
-            Button {} label: {
+            Button {
+                viewModel.requestLocationPermission()
+            } label: {
                 Text(L10n.Onboarding.Permission.Location.Buttons.allowForApp)
             }
             .buttonStyle(.primaryButton)
@@ -77,11 +85,12 @@ struct LocationPermissionView: View {
 }
 
 #Preview {
-    LocationPermissionView(permission: .location)
+    LocationPermissionView(permission: .location) {}
 }
 
 final class LocationPermissionViewModel: NSObject, ObservableObject {
     @Published var showDenyAlert: Bool = false
+    @Published var shouldComplete: Bool = false
     private let locationManager = CLLocationManager()
 
     func requestLocationPermission() {
@@ -107,6 +116,11 @@ extension LocationPermissionViewModel: CLLocationManagerDelegate {
             break
         @unknown default:
             break
+        }
+
+        guard manager.authorizationStatus != .notDetermined else { return }
+        DispatchQueue.main.async { [weak self] in
+            self?.shouldComplete = true
         }
     }
 }

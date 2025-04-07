@@ -13,13 +13,9 @@ enum OnboardingPermissionHandler {
 
 struct OnboardingPermissionsNavigationView: View {
     var body: some View {
-        if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first {
-            if permission == .location {
-                LocationPermissionView(permission: permission)
-            } else {
-                // If we endup enforcing other permissions during onboarding
-                // we need to handle them here
-                flowEnd
+        if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
+            LocationPermissionView(permission: permission) {
+                Current.onboardingObservation.complete()
             }
         } else {
             flowEnd
@@ -27,9 +23,13 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     private var flowEnd: some View {
-        EmptyView()
+        Image(systemSymbol: .checkmark)
+            .foregroundStyle(.green)
+            .font(.system(size: 100))
             .onAppear {
-                Current.onboardingObservation.complete()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    Current.onboardingObservation.complete()
+                }
             }
     }
 }
