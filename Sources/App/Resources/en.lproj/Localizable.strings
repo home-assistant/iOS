@@ -1194,3 +1194,5 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.permission.location.buttons.deny" = "Deny";
 "onboarding.permission.location.deny.alert.title" = "Are you sure?";
 "onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
+"post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
+"post_onboarding.permission.notification.message" = "Notifications can be useful in your automations. Tap the icon to allow or deny.";

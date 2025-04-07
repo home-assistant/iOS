@@ -1856,6 +1856,17 @@ public enum L10n {
     }
   }
 
+  public enum PostOnboarding {
+    public enum Permission {
+      public enum Notification {
+        /// Notifications can be useful in your automations. Tap the icon to allow or deny.
+        public static var message: String { return L10n.tr("Localizable", "post_onboarding.permission.notification.message") }
+        /// Do you want to receive notifications?
+        public static var title: String { return L10n.tr("Localizable", "post_onboarding.permission.notification.title") }
+      }
+    }
+  }
+
   public enum Sensors {
     public enum Active {
       public enum Setting {

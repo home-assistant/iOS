@@ -6,6 +6,7 @@ import GRDB
 import HAKit
 import PromiseKit
 import RealmSwift
+import UserNotifications
 import Version
 import XCGLogger
 
@@ -431,5 +432,9 @@ public class AppEnvironment {
 
     public var bluetoothPermissionStatus: CBManagerAuthorization {
         CBCentralManager.authorization
+    }
+
+    public var userNotificationCenter: UNUserNotificationCenter {
+        UNUserNotificationCenter.current()
     }
 }
