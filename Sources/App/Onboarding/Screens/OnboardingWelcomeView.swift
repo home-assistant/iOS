@@ -25,7 +25,7 @@ struct OnboardingWelcomeView: View {
                 .opacity(showButtons ? 1 : 0)
                 .offset(y: buttonYOffset)
         }
-        .frame(maxWidth: 600)
+        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .onAppear {
             withAnimation(.easeInOut(duration: 1.5)) {
                 showLogo = true

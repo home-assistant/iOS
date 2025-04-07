@@ -46,7 +46,7 @@ final class DisplaySensor: SensorProvider {
 
         sensors.append(with(WebhookSensor(
             name: "Displays",
-            uniqueID: "displays_count",
+            uniqueID: WebhookSensorId.displaysCount.rawValue,
             icon: "mdi:monitor-multiple",
             state: screens.count
         )) {
@@ -58,14 +58,14 @@ final class DisplaySensor: SensorProvider {
 
         sensors.append(WebhookSensor(
             name: "Primary Display Name",
-            uniqueID: "primary_display_name",
+            uniqueID: WebhookSensorId.primaryDisplayName.rawValue,
             icon: "mdi:monitor-star",
             state: screens.first.map(\.name) ?? "None"
         ))
 
         sensors.append(WebhookSensor(
             name: "Primary Display ID",
-            uniqueID: "primary_display_id",
+            uniqueID: WebhookSensorId.primaryDisplayId.rawValue,
             icon: "mdi:monitor-star",
             state: screens.first.map(\.identifier) ?? "None"
         ))

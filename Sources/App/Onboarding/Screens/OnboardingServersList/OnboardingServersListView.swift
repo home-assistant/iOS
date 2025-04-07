@@ -4,6 +4,8 @@ import SwiftUI
 
 struct OnboardingServersListView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
     @EnvironmentObject var hostingProvider: ViewControllerProvider
     @StateObject private var viewModel = OnboardingServersListViewModel()
 
@@ -85,6 +87,7 @@ struct OnboardingServersListView: View {
                 Section {
                     serverRow(instance: instance)
                 }
+                .frame(minHeight: Current.isCatalyst ? 60 : nil)
                 .listSectionSpacing(.compact)
             } else {
                 serverRow(instance: instance)
@@ -102,42 +105,51 @@ struct OnboardingServersListView: View {
     }
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
-        OnboardingScanningInstanceRow(
-            name: instance.locationName,
-            internalURLString: instance.internalURL?.absoluteString,
-            externalURLString: instance.externalURL?.absoluteString,
-            internalOrExternalURLString: instance.internalOrExternalURL.absoluteString,
-            isLoading: instance == viewModel.currentlyInstanceLoading
-        )
-        .onTapGesture {
+        Button(action: {
             viewModel.selectInstance(instance, controller: hostingProvider.viewController)
-        }
+        }, label: {
+            OnboardingScanningInstanceRow(
+                name: instance.locationName,
+                internalURLString: instance.internalURL?.absoluteString,
+                externalURLString: instance.externalURL?.absoluteString,
+                internalOrExternalURLString: instance.internalOrExternalURL.absoluteString,
+                isLoading: instance == viewModel.currentlyInstanceLoading
+            )
+        })
+        .tint(Color(uiColor: .label))
     }
 
     private var bottomButtons: some View {
         VStack {
-            Button(action: {
-                showManualInput = true
-            }) {
-                Text(L10n.Onboarding.Scanning.manual)
-            }
-            .buttonStyle(.primaryButton)
-            .sheet(isPresented: $showManualInput) {
-                ManualURLEntryView { connectURL in
-                    viewModel.isLoading = true
-                    viewModel.selectInstance(.init(manualURL: connectURL), controller: hostingProvider.viewController)
+            VStack {
+                Button(action: {
+                    showManualInput = true
+                }) {
+                    Text(L10n.Onboarding.Scanning.manual)
+                }
+                .buttonStyle(.primaryButton)
+                .sheet(isPresented: $showManualInput) {
+                    ManualURLEntryView { connectURL in
+                        viewModel.isLoading = true
+                        viewModel.selectInstance(
+                            .init(manualURL: connectURL),
+                            controller: hostingProvider.viewController
+                        )
+                    }
+                }
+                Button(action: {
+                    showDocumentation = true
+                }) {
+                    Text(L10n.Onboarding.Servers.Docs.read)
+                }
+                .buttonStyle(.secondaryButton)
+                .fullScreenCover(isPresented: $showDocumentation) {
+                    SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
                 }
             }
-            Button(action: {
-                showDocumentation = true
-            }) {
-                Text(L10n.Onboarding.Servers.Docs.read)
-            }
-            .buttonStyle(.secondaryButton)
-            .fullScreenCover(isPresented: $showDocumentation) {
-                SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
-            }
+            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         }
+        .frame(maxWidth: .infinity)
         .padding([.horizontal, .top])
         .background(.ultraThinMaterial)
     }

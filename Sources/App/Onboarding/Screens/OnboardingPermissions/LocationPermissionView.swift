@@ -13,6 +13,7 @@ struct LocationPermissionView: View {
             Spacer()
             actionButtons
         }
+        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding()
         .alert(
             L10n.Onboarding.Permission.Location.Deny.Alert.title,
@@ -63,18 +64,21 @@ struct LocationPermissionView: View {
     private var actionButtons: some View {
         VStack(spacing: Spaces.one) {
             Button {
+                viewModel.enableLocationSensor()
                 viewModel.requestLocationPermission()
             } label: {
                 Text(L10n.Onboarding.Permission.Location.Buttons.allowAndShare)
             }
             .buttonStyle(.primaryButton)
             Button {
+                viewModel.disableLocationSensor()
                 viewModel.requestLocationPermission()
             } label: {
                 Text(L10n.Onboarding.Permission.Location.Buttons.allowForApp)
             }
             .buttonStyle(.primaryButton)
             Button {
+                viewModel.disableLocationSensor()
                 viewModel.showDenyAlert = true
             } label: {
                 Text(L10n.Onboarding.Permission.Location.Buttons.deny)
@@ -92,10 +96,55 @@ final class LocationPermissionViewModel: NSObject, ObservableObject {
     @Published var showDenyAlert: Bool = false
     @Published var shouldComplete: Bool = false
     private let locationManager = CLLocationManager()
+    private var webhookSensors: [WebhookSensor] = []
+
+    private let sensorIdsToEnableDisable: [WebhookSensorId] = [
+        .geocodedLocation,
+        .connectivityBSID,
+        .connectivitySSID,
+    ]
+
+    override init() {
+        super.init()
+        Current.sensors.register(observer: self)
+    }
 
     func requestLocationPermission() {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
+    }
+
+    func disableLocationSensor() {
+        let sensorsToDisable = webhookSensors.filter { sensor in
+            sensorIdsToEnableDisable.map(\.rawValue).contains(sensor.UniqueID)
+        }
+        for sensor in sensorsToDisable {
+            Current.sensors.setEnabled(false, for: sensor)
+        }
+    }
+
+    func enableLocationSensor() {
+        let sensorsToEnable = webhookSensors.filter { sensor in
+            sensorIdsToEnableDisable.map(\.rawValue).contains(sensor.UniqueID)
+        }
+        for sensor in sensorsToEnable {
+            Current.sensors.setEnabled(true, for: sensor)
+        }
+    }
+}
+
+extension LocationPermissionViewModel: SensorObserver {
+    func sensorContainer(
+        _ container: Shared.SensorContainer,
+        didSignalForUpdateBecause reason: Shared.SensorContainerUpdateReason
+    ) {
+        /* no-op */
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors.done { [weak self] sensors in
+            self?.webhookSensors = sensors
+        }
     }
 }
 

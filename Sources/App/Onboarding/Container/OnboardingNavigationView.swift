@@ -74,6 +74,7 @@ struct OnboardingNavigationView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
         .onChange(of: viewModel.shouldDismiss) { newValue in
             if newValue {
                 closeOnboarding()

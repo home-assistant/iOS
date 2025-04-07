@@ -629,6 +629,11 @@
 		424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */; };
+		42462E6D2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
+		42462E6E2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
+		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
@@ -2041,6 +2046,8 @@
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewTintedWrapper.swift; sourceTree = "<group>"; };
 		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
+		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
+		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
@@ -3447,7 +3454,6 @@
 				11AF4D24249D1931006C74C0 /* LastUpdateSensor.swift */,
 				11AF4D18249C8253006C74C0 /* PedometerSensor.swift */,
 				119385A3249E8E360097F497 /* StorageSensor.swift */,
-				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
 				B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */,
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				110ED56225A563D600489AF7 /* DisplaySensor.swift */,
@@ -4258,6 +4264,7 @@
 			isa = PBXGroup;
 			children = (
 				428338422BA1BAFB004798C2 /* Spaces.swift */,
+				42462E702DA4114800ECC8A7 /* Sizes.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -5269,6 +5276,8 @@
 		B6E91C212232482A0014CB8D /* Webhook */ = {
 			isa = PBXGroup;
 			children = (
+				42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */,
+				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
 				11AF4D0F249C7DD8006C74C0 /* Sensors */,
 				B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */,
 				1141182824AFA0F000E6525C /* Networking */,
@@ -7359,6 +7368,7 @@
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
 				424123882CDCEB66007EDE70 /* AreaProvider.swift in Sources */,
+				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
@@ -7714,6 +7724,7 @@
 				11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */,
 				42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
+				42462E6E2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */,
 				424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */,
@@ -7791,6 +7802,7 @@
 				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */,
+				42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
@@ -7909,6 +7921,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
 				4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */,
@@ -8085,6 +8098,7 @@
 				116570772702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
+				42462E6D2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,

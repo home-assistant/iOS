@@ -38,7 +38,7 @@ final class WatchBatterySensor: SensorProvider {
             if let batteryLevel {
                 sensors.append(WebhookSensor(
                     name: "Watch Battery Level",
-                    uniqueID: "watch-battery",
+                    uniqueID: WebhookSensorId.watchBattery.rawValue,
                     icon: icon,
                     deviceClass: .battery,
                     state: batteryLevel,
@@ -49,7 +49,7 @@ final class WatchBatterySensor: SensorProvider {
             if let batteryState {
                 sensors.append(WebhookSensor(
                     name: "Watch Battery State",
-                    uniqueID: "watch-battery-state",
+                    uniqueID: WebhookSensorId.watchBatteryState.rawValue,
                     icon: icon,
                     state: batteryState.description
                 ))

@@ -1188,7 +1188,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
 "onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
-"onboarding.permission.location.privacy_note" = "Your location won't be shared with Home Assistant unless you select 'Allow & Share with Home Assistant'";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
 "onboarding.permission.location.buttons.deny" = "Deny";

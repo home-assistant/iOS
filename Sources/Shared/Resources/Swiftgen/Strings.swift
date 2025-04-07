@@ -1721,7 +1721,7 @@ public enum L10n {
       public enum Location {
         /// To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.
         public static var description: String { return L10n.tr("Localizable", "onboarding.permission.location.description") }
-        /// Your location won't be shared with Home Assistant unless you select 'Allow & Share with Home Assistant'
+        /// Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.
         public static var privacyNote: String { return L10n.tr("Localizable", "onboarding.permission.location.privacy_note") }
         public enum Buttons {
           /// Allow & Share with Home Assistant
