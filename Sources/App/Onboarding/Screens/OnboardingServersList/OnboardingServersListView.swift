@@ -41,8 +41,12 @@ struct OnboardingServersListView: View {
         .sheet(isPresented: $viewModel.showError) {
             errorView
         }
-        .fullScreenCover(isPresented: $viewModel.showPermissionsFlow) {
-            OnboardingPermissionsNavigationView()
+        .fullScreenCover(isPresented: .init(get: {
+            viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
+        }, set: { newValue in
+            viewModel.showPermissionsFlow = newValue
+        })) {
+            OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer)
         }
     }
 

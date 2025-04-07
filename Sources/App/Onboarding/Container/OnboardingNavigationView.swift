@@ -57,7 +57,7 @@ struct OnboardingNavigationView: View {
                     case .full:
                         OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                     case .permissions:
-                        OnboardingPermissionsNavigationView()
+                        OnboardingPermissionsNavigationView(onboardingServer: nil)
                     }
                 }
             }

@@ -107,7 +107,7 @@ public class ConnectivityWrapper {
         syncNetworkInformation()
     }
 
-    private func syncNetworkInformation() {
+    public func syncNetworkInformation(completion: (() -> Void)? = nil) {
         NEHotspotNetwork.fetchCurrent { hotspotNetwork in
             Current.Log
                 .verbose(
@@ -122,6 +122,7 @@ public class ConnectivityWrapper {
             }
             let bssid = hotspotNetwork?.bssid
             self.currentWiFiBSSID = { bssid }
+            completion?()
         }
     }
 }

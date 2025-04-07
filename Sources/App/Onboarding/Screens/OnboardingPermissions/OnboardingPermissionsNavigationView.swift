@@ -12,13 +12,27 @@ enum OnboardingPermissionHandler {
 }
 
 struct OnboardingPermissionsNavigationView: View {
+    let onboardingServer: Server?
+
     var body: some View {
-        if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
-            LocationPermissionView(permission: permission) {
-                Current.onboardingObservation.complete()
+        Group {
+            if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
+                LocationPermissionView(permission: permission) {
+                    Current.onboardingObservation.complete()
+                }
+            } else {
+                flowEnd
             }
-        } else {
-            flowEnd
+        }
+        .onDisappear {
+            Current.connectivity.syncNetworkInformation {
+                if let onboardingServer, let currentSSID = Current.connectivity.currentWiFiSSID() {
+                    // Update SSIDs if we have access to them, since we're gonna need it later
+                    onboardingServer.info.connection.internalSSIDs = [currentSSID]
+                } else {
+                    Current.Log.verbose("No onboarding server or no SSID available")
+                }
+            }
         }
     }
 
@@ -35,5 +49,5 @@ struct OnboardingPermissionsNavigationView: View {
 }
 
 #Preview {
-    OnboardingPermissionsNavigationView()
+    OnboardingPermissionsNavigationView(onboardingServer: ServerFixture.standard)
 }

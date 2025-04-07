@@ -17,6 +17,7 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var error: Error?
 
     @Published var showPermissionsFlow = false
+    @Published var onboardingServer: Server?
 
     /// Indicator for manual input loading
     @Published var isLoading = false
@@ -104,6 +105,7 @@ final class OnboardingServersListViewModel: ObservableObject {
     @MainActor
     private func authenticationSucceeded(server: Server) {
         discovery.stop()
+        onboardingServer = server
         showPermissionsFlow = true
     }
 }
