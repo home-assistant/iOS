@@ -100,7 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Bekräftelseavisering";
 "app_intents.state.target" = "Måltillstånd";
 "app_intents.state.toggle" = "Växla";
-"app_intents.switch.title" = "Switch";
+"app_intents.switch.title" = "Brytare";
 "app_intents.widget_action.actions_parameter_configuration" = "Vilka åtgärder?";
 "assist.button.listening.title" = "Lyssnar...";
 "assist.error.pipelines_response" = "Misslyckades med att inhämta Assist Pipelines, kontrollera din pipelinekonfiguration.";

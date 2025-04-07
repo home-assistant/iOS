@@ -100,7 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Potvrzovací oznámení";
 "app_intents.state.target" = "Cílový stav";
 "app_intents.state.toggle" = "Přepnout";
-"app_intents.switch.title" = "Switch";
+"app_intents.switch.title" = "Spínač";
 "app_intents.widget_action.actions_parameter_configuration" = "Které akce?";
 "assist.button.listening.title" = "Poslouchání...";
 "assist.error.pipelines_response" = "Nepodařilo se získat pomocné kanály, zkontrolujte nastavení kanálů.";
