@@ -1,11 +1,11 @@
 import SwiftUI
 import UIKit
 
-struct ActivityView: UIViewControllerRepresentable {
+struct ShareActivityView: UIViewControllerRepresentable {
     var activityItems: [Any]
     var applicationActivities: [UIActivity]? = nil
 
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityView>)
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ShareActivityView>)
         -> UIActivityViewController {
         let controller = UIActivityViewController(
             activityItems: activityItems,
@@ -16,6 +16,6 @@ struct ActivityView: UIViewControllerRepresentable {
 
     func updateUIViewController(
         _ uiViewController: UIActivityViewController,
-        context: UIViewControllerRepresentableContext<ActivityView>
+        context: UIViewControllerRepresentableContext<ShareActivityView>
     ) {}
 }

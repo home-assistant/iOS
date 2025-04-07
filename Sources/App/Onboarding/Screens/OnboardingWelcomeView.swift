@@ -45,17 +45,16 @@ struct OnboardingWelcomeView: View {
     }
 
     private var logoBlock: some View {
-        Image(uiImage: Asset.SharedAssets.logo.image)
+        Image(uiImage: Asset.SharedAssets.logoHorizontalText.image)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: 300)
             .padding(.vertical, Spaces.four)
     }
 
     private var textBlock: some View {
         ScrollView {
             VStack(spacing: Spaces.two) {
-                Text(verbatim: L10n.Onboarding.Welcome.title(Current.device.systemName()))
-                    .font(.title.bold())
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .multilineTextAlignment(.center)
                 Text(verbatim: L10n.Onboarding.Welcome.description)
                     .foregroundStyle(Color(uiColor: .secondaryLabel))
             }

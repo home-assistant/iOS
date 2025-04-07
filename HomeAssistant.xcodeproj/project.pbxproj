@@ -870,7 +870,7 @@
 		42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */; };
 		42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C542CA44FC90010ECE3 /* SafariWebView.swift */; };
 		42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */; };
-		42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ActivityView.swift */; };
+		42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */; };
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
@@ -2263,7 +2263,7 @@
 		42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerViewModel.swift; sourceTree = "<group>"; };
 		42E95C542CA44FC90010ECE3 /* SafariWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebView.swift; sourceTree = "<group>"; };
 		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
-		42E95C582CA46AD50010ECE3 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetAllCustomWidgetConfirmationAppIntent.swift; sourceTree = "<group>"; };
@@ -2941,6 +2941,9 @@
 			children = (
 				B657A8E81CA646EB00121384 /* App */,
 				FD3BC66429BA000A00B19FBE /* CarPlay */,
+				42A47A8E2C4548BC00C9B43D /* Improv */,
+				42FCCFF72B9B1C310057783F /* Thread */,
+				42462E6A2DA3CF8500ECC8A7 /* Watch */,
 				111501A72528412C00DCFA94 /* Extensions */,
 				11DE9D8425B6103C0081C0ED /* Launcher */,
 				1167402325198F9A00F51626 /* MacBridge */,
@@ -3112,10 +3115,8 @@
 				427FEE052D9C03C50047C00C /* OnboardingServersList */,
 				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
 				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
-				42E95C582CA46AD50010ECE3 /* ActivityView.swift */,
+				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
 				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
-				42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */,
-				429821122CD0DD71005ECD39 /* Bluetooth */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -4034,6 +4035,23 @@
 				42755FF22CD913C700CB0032 /* MagicItemProviderTests.swift */,
 			);
 			path = MagicItem;
+			sourceTree = "<group>";
+		};
+		42462E6A2DA3CF8500ECC8A7 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
+		42462E6B2DA3D05500ECC8A7 /* PermissionScreen */ = {
+			isa = PBXGroup;
+			children = (
+				42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */,
+				429821122CD0DD71005ECD39 /* Bluetooth */,
+			);
+			path = PermissionScreen;
 			sourceTree = "<group>";
 		};
 		4251AA972C6B9D30004CCC9D /* Edit */ = {
@@ -5033,24 +5051,22 @@
 		B657A8E81CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
+				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
+				422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */,
+				11EFCDD424F5FA7E00314D85 /* Scenes */,
+				11AF1ED82528FBAA00AAE364 /* Onboarding */,
+				11AD2E2A2528FDB700FBC437 /* WebView */,
+				42462E6B2DA3D05500ECC8A7 /* PermissionScreen */,
 				42B94BD92B9606CD00DEE060 /* Assist */,
 				42FCCFDD2B9B1AB00057783F /* BarcodeScanner */,
-				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */,
-				42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
-				42A47A8E2C4548BC00C9B43D /* Improv */,
-				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				117EB13E2569AD3000049541 /* Notifications */,
-				11AF1ED82528FBAA00AAE364 /* Onboarding */,
-				B69933961E232AF50054453D /* Resources */,
-				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				B661FB6B226BCC8500E541DD /* Settings */,
 				11B7ECD9274DA521009AD634 /* Servers */,
-				42FCCFF72B9B1C310057783F /* Thread */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
-				11AD2E2A2528FDB700FBC437 /* WebView */,
 				11A71C6924A463EE00D9565F /* ZoneManager */,
+				B69933961E232AF50054453D /* Resources */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -7469,7 +7485,7 @@
 				42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				420C57C72D0A6DE700D2D9AC /* NoActiveURLView.swift in Sources */,
-				42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */,
+				42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
@@ -8559,7 +8575,6 @@
 				B657A8F51CA646EB00121384 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			path = .;
 			sourceTree = "<group>";
 		};
 		B678DB351EA9999C0045312F /* MainInterface.storyboard */ = {
@@ -8609,7 +8624,6 @@
 				42F1DA672B4D993B002729BC /* bg */,
 			);
 			name = Localizable.strings;
-			path = .;
 			sourceTree = "<group>";
 		};
 		B6CC5D842159D10D00833E5D /* Interface.storyboard */ = {

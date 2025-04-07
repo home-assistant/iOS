@@ -110,7 +110,7 @@ struct ConnectionErrorDetailsView: View {
                 }
             }
             .sheet(isPresented: $showExportLogsShareSheet, content: {
-                ActivityView(activityItems: [Current.Log.archiveURL()])
+                ShareActivityView(activityItems: [Current.Log.archiveURL()])
             })
         }
         .navigationViewStyle(.stack)

@@ -485,7 +485,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
-"onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.docs.read" = "Read documentation";
 "open_label" = "Open";

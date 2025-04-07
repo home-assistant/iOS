@@ -36,7 +36,7 @@ struct OnboardingErrorView: View {
             viewAppeared = true
         }
         .sheet(isPresented: $showShareSheet, content: {
-            ActivityView(activityItems: [Current.Log.archiveURL()])
+            ShareActivityView(activityItems: [Current.Log.archiveURL()])
         })
     }
 
