@@ -100,7 +100,7 @@
 "app_intents.show_confirmation_dialog.title" = "Bevestigingsmelding";
 "app_intents.state.target" = "Doelstaat";
 "app_intents.state.toggle" = "Schakelen";
-"app_intents.switch.title" = "Switch";
+"app_intents.switch.title" = "Schakelaar";
 "app_intents.widget_action.actions_parameter_configuration" = "Welke acties?";
 "assist.button.listening.title" = "Luisteren...";
 "assist.error.pipelines_response" = "Assist-pijplijnen konden niet worden verkregen. Controleer je pijplijnconfiguratie.";
