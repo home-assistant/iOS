@@ -46,6 +46,7 @@ struct ManualURLEntryView: View {
         }
     }
 
+    // View which displays helpers to add http or https to the URL
     @ViewBuilder
     private var httpOrHttpsSection: some View {
         let cleanedURL = urlString.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)

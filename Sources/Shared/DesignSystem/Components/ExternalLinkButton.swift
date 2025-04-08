@@ -41,7 +41,7 @@ public struct ExternalLinkButton: View {
         .frame(maxWidth: 600)
         .padding()
         .background(background)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
     }
 }
 
@@ -77,7 +77,7 @@ public struct ActionLinkButton: View {
         .frame(maxWidth: 600)
         .padding()
         .background(Color(uiColor: .secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
     }
 }
 

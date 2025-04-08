@@ -292,7 +292,7 @@ struct WatchConfigurationView: View {
             .font(.footnote)
             .padding(Spaces.one)
             .background(.gray.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.one))
     }
 }
 

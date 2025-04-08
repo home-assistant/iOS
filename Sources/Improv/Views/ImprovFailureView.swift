@@ -25,7 +25,7 @@ struct ImprovFailureView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.two))
     }
 }
 

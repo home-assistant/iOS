@@ -1055,7 +1055,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                     }
                     .padding()
                     .background(Color.asset(Asset.Colors.haPrimary).opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                     .padding(Spaces.one)
                     DebugView()
                         .toolbar {
@@ -1365,7 +1365,9 @@ extension WebViewController {
 
 extension WebViewController {
     private func postOnboardingNotificationPermission() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+        // 3 seconds feels a good timin to show this notification after the user has onboarded
+        let delayedSeconds: CGFloat = 3
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayedSeconds) { [weak self] in
             Task {
                 let notificationCenter = Current.userNotificationCenter
                 let settings = await notificationCenter.notificationSettings()

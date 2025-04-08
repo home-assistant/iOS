@@ -65,7 +65,7 @@ struct ThreadCredentialDetailsView: View {
         .frame(height: 50)
         .background(actionButtonbackgroundColor)
         .foregroundColor(.white)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.one))
         .padding(.top)
     }
 

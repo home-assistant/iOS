@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// View used to display and highlight privacy related information
 public struct PrivacyNoteView: View {
     @State private var background: AnyView
     @State private var startPoint: UnitPoint = .topLeading

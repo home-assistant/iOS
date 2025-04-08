@@ -1,4 +1,3 @@
-import CoreLocation
 import Shared
 import SwiftUI
 
@@ -52,15 +51,6 @@ struct LocationPermissionView: View {
         .frame(maxWidth: .infinity, alignment: .center)
     }
 
-    private var bullets: some View {
-        Group {
-            ForEach(permission.enableBulletPoints, id: \.id) { bulletPoint in
-                Text(verbatim: bulletPoint.text)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
     private var actionButtons: some View {
         VStack(spacing: Spaces.one) {
             Button {
@@ -90,86 +80,4 @@ struct LocationPermissionView: View {
 
 #Preview {
     LocationPermissionView(permission: .location) {}
-}
-
-final class LocationPermissionViewModel: NSObject, ObservableObject {
-    @Published var showDenyAlert: Bool = false
-    @Published var shouldComplete: Bool = false
-    private let locationManager = CLLocationManager()
-    private var webhookSensors: [WebhookSensor] = []
-
-    private let sensorIdsToEnableDisable: [WebhookSensorId] = [
-        .geocodedLocation,
-        .connectivityBSID,
-        .connectivitySSID,
-    ]
-
-    override init() {
-        super.init()
-        Current.sensors.register(observer: self)
-    }
-
-    func requestLocationPermission() {
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-    }
-
-    func disableLocationSensor() {
-        let sensorsToDisable = webhookSensors.filter { sensor in
-            sensorIdsToEnableDisable.map(\.rawValue).contains(sensor.UniqueID)
-        }
-        for sensor in sensorsToDisable {
-            Current.sensors.setEnabled(false, for: sensor)
-        }
-    }
-
-    func enableLocationSensor() {
-        let sensorsToEnable = webhookSensors.filter { sensor in
-            sensorIdsToEnableDisable.map(\.rawValue).contains(sensor.UniqueID)
-        }
-        for sensor in sensorsToEnable {
-            Current.sensors.setEnabled(true, for: sensor)
-        }
-    }
-}
-
-extension LocationPermissionViewModel: SensorObserver {
-    func sensorContainer(
-        _ container: Shared.SensorContainer,
-        didSignalForUpdateBecause reason: Shared.SensorContainerUpdateReason
-    ) {
-        /* no-op */
-    }
-
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        update.sensors.done { [weak self] sensors in
-            self?.webhookSensors = sensors
-        }
-    }
-}
-
-extension LocationPermissionViewModel: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .notDetermined:
-            break
-        case .restricted:
-            break
-        case .denied:
-            break
-        case .authorizedAlways:
-            break
-        case .authorizedWhenInUse:
-            manager.requestAlwaysAuthorization()
-        case .authorized:
-            break
-        @unknown default:
-            break
-        }
-
-        guard manager.authorizationStatus != .notDetermined else { return }
-        DispatchQueue.main.async { [weak self] in
-            self?.shouldComplete = true
-        }
-    }
 }

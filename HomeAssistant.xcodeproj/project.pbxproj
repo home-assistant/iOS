@@ -634,6 +634,10 @@
 		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42462E752DA53F7200ECC8A7 /* LocationPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */; };
+		42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
+		42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
+		42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
@@ -2048,6 +2052,8 @@
 		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
 		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
+		42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionViewModel.swift; sourceTree = "<group>"; };
+		42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizes.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
@@ -4256,6 +4262,7 @@
 			children = (
 				427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */,
 				42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */,
+				42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */,
 			);
 			path = OnboardingPermissions;
 			sourceTree = "<group>";
@@ -4265,6 +4272,7 @@
 			children = (
 				428338422BA1BAFB004798C2 /* Spaces.swift */,
 				42462E702DA4114800ECC8A7 /* Sizes.swift */,
+				42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -7326,6 +7334,7 @@
 				425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */,
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
 				423B5E0D2D677BB90000CB95 /* WidgetContentMargin.swift in Sources */,
+				42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				B616B299227ED68E00828165 /* Bonjour.swift in Sources */,
 				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
@@ -7402,6 +7411,7 @@
 				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
+				42462E752DA53F7200ECC8A7 /* LocationPermissionViewModel.swift in Sources */,
 				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
@@ -7743,6 +7753,7 @@
 				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
 				11F20BC8274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
+				42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* AppConstants.swift in Sources */,
 				11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
@@ -8130,6 +8141,7 @@
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
 				11B38EE6275C54A200205C7B /* CallServiceIntentHandler.swift in Sources */,
 				4254C4CD2D103F7B00245021 /* ExternalLinkButton.swift in Sources */,
+				42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */,

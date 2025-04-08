@@ -90,7 +90,7 @@ struct DownloadManagerView: View {
                         .padding()
                         .foregroundStyle(.white)
                         .background(Color.asset(Asset.Colors.haPrimary))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                         .padding()
                         .onAppear(perform: {
                             shareWrapper = .init(url: url)
@@ -111,7 +111,7 @@ struct DownloadManagerView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.gray.opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
         .padding()
     }
 
@@ -121,7 +121,7 @@ struct DownloadManagerView: View {
             .multilineTextAlignment(.leading)
             .padding()
             .background(.red.opacity(0.5))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
             .padding()
     }
 }
