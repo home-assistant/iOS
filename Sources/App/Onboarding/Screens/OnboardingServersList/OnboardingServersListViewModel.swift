@@ -22,7 +22,7 @@ final class OnboardingServersListViewModel: ObservableObject {
     /// Indicator for manual input loading
     @Published var isLoading = false
 
-    private let discovery = Bonjour()
+    private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
 
     init() {

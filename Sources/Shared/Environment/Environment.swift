@@ -437,4 +437,10 @@ public class AppEnvironment {
     public var userNotificationCenter: UNUserNotificationCenter {
         UNUserNotificationCenter.current()
     }
+
+    #if !os(watchOS)
+    public var bonjour: () -> BonjourProtocol = {
+        Bonjour()
+    }
+    #endif
 }
