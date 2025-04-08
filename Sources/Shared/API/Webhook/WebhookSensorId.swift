@@ -1,6 +1,6 @@
 import Foundation
 
-public enum WebhookSensorId: String {
+public enum WebhookSensorId: String, CaseIterable {
     case iPhoneAudioOutput = "iphone-audio-output"
     case activity = "activity"
     case connectivitySSID = "connectivity_ssid"

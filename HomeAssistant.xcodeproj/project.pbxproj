@@ -744,6 +744,12 @@
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
+		428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */; };
+		428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */; };
+		428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */; };
+		4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */; };
+		4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */; };
+		4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626092DA5CD1B00D58D13 /* SpacesTests.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -2163,6 +2169,12 @@
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
 		4285C5502D355F9900DADE45 /* WidgetCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationView.swift; sourceTree = "<group>"; };
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
+		428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleViewTests.swift; sourceTree = "<group>"; };
+		428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkButtonTests.swift; sourceTree = "<group>"; };
+		428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStylesTests.swift; sourceTree = "<group>"; };
+		428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizesTests.swift; sourceTree = "<group>"; };
+		428626092DA5CD1B00D58D13 /* SpacesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesTests.swift; sourceTree = "<group>"; };
+		4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorIdTests.swift; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
@@ -4321,6 +4333,41 @@
 			path = Builder;
 			sourceTree = "<group>";
 		};
+		428626002DA5CC8400D58D13 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				428626012DA5CC8B00D58D13 /* Components */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		428626012DA5CC8B00D58D13 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */,
+				428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */,
+				428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		4286260A2DA5CD1B00D58D13 /* Sizes */ = {
+			isa = PBXGroup;
+			children = (
+				428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */,
+				428626092DA5CD1B00D58D13 /* SpacesTests.swift */,
+			);
+			path = Sizes;
+			sourceTree = "<group>";
+		};
+		4286260C2DA5CD1B00D58D13 /* Webhook */ = {
+			isa = PBXGroup;
+			children = (
+				4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */,
+			);
+			path = Webhook;
+			sourceTree = "<group>";
+		};
 		4289DDAC2C85D595003591C2 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
@@ -5118,6 +5165,9 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				4286260A2DA5CD1B00D58D13 /* Sizes */,
+				4286260C2DA5CD1B00D58D13 /* Webhook */,
+				428626002DA5CC8400D58D13 /* DesignSystem */,
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
 				42E3B8BB2D8ACDC100F5D084 /* Extensions */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
@@ -7631,6 +7681,9 @@
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */,
 				46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */,
+				4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */,
+				4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */,
+				4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
@@ -7641,6 +7694,9 @@
 				42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */,
 				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
+				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,
+				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
+				428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,

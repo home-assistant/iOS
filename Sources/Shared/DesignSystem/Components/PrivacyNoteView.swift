@@ -2,24 +2,27 @@ import SwiftUI
 
 /// View used to display and highlight privacy related information
 public struct PrivacyNoteView: View {
-    @State private var background: AnyView
     @State private var startPoint: UnitPoint = .topLeading
     @State private var endPoint: UnitPoint = .bottomTrailing
     @State private var timer: Timer?
-
-    let cornerRadius: CGFloat = 10
-    let content: String
-
-    public init(content: String) {
-        self.content = content
-
-        self.background = AnyView(
-            LinearGradient(
-                colors: [.purple, .blue],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+    @State private var background: AnyView = .init(
+        LinearGradient(
+            colors: [.purple, .blue],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
         )
+        .overlay(content: {
+            ThickMaterialOverlay()
+        })
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro))
+    )
+
+    private let content: String
+    private let animating: Bool
+
+    public init(content: String, animating: Bool = true) {
+        self.content = content
+        self.animating = animating
     }
 
     public var body: some View {
@@ -28,11 +31,12 @@ public struct PrivacyNoteView: View {
                 .font(.caption.bold())
                 .padding(.horizontal, Spaces.one)
                 .padding(.vertical, Spaces.half)
-                .background(.regularMaterial)
+                .background(.thickMaterial)
                 .foregroundStyle(.gray)
                 .clipShape(Capsule())
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(verbatim: content)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.caption)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
@@ -40,12 +44,14 @@ public struct PrivacyNoteView: View {
         }
         .padding(Spaces.one)
         .background(background)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro))
         .shadow(color: Color(uiColor: .label).opacity(0.2), radius: 5)
         .padding(.top)
         .onAppear {
-            reverse()
-            startTimer()
+            if animating {
+                rotareLinearBackgroundPointsForBackgroundAnimation()
+                startTimer()
+            }
         }
         .onDisappear {
             stopTimer()
@@ -54,7 +60,7 @@ public struct PrivacyNoteView: View {
 
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            reverse()
+            rotareLinearBackgroundPointsForBackgroundAnimation()
         }
     }
 
@@ -63,7 +69,7 @@ public struct PrivacyNoteView: View {
         timer = nil
     }
 
-    private func reverse() {
+    private func rotareLinearBackgroundPointsForBackgroundAnimation() {
         startPoint = rotatePoint(startPoint)
         endPoint = rotatePoint(endPoint)
         withAnimation(.easeIn(duration: 2)) {
@@ -74,9 +80,9 @@ public struct PrivacyNoteView: View {
                     endPoint: endPoint
                 )
                 .overlay(content: {
-                    material
+                    ThickMaterialOverlay()
                 })
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro))
             )
         }
     }
@@ -103,8 +109,10 @@ public struct PrivacyNoteView: View {
             return .topLeading
         }
     }
+}
 
-    private var material: some View {
+struct ThickMaterialOverlay: View {
+    var body: some View {
         VStack {}
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.thickMaterial)
@@ -112,8 +120,15 @@ public struct PrivacyNoteView: View {
 }
 
 #Preview {
-    PrivacyNoteView(
-        content: "This is a privacy note. It contains important information about your data and how it is used."
-    )
-    .padding()
+    VStack {
+        PrivacyNoteView(
+            content: "This is a privacy note. It contains important information about your data and how it is used."
+        )
+        .padding()
+        PrivacyNoteView(
+            content: "This is a privacy note. It contains important information about your data and how it is used.",
+            animating: false
+        )
+        .padding()
+    }
 }
