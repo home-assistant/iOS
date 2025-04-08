@@ -43,7 +43,7 @@ final class FrontmostAppSensor: SensorProvider {
 
         sensors.append(with(WebhookSensor(
             name: "Frontmost App",
-            uniqueID: "frontmost_app",
+            uniqueID: WebhookSensorId.frontmostApp.rawValue,
             icon: "mdi:traffic-light",
             state: frontmost?.localizedName ?? "None"
         )) {

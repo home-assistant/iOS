@@ -34,7 +34,10 @@ public class GeocoderSensor: SensorProvider {
             guard case GeocoderError.noLocation = error, case .registration = request.reason else { throw error }
             return .value([])
         }.map { [request] (placemarks: [CLPlacemark]) -> [WebhookSensor] in
-            let sensor = with(WebhookSensor(name: "Geocoded Location", uniqueID: "geocoded_location")) {
+            let sensor = with(WebhookSensor(
+                name: "Geocoded Location",
+                uniqueID: WebhookSensorId.geocodedLocation.rawValue
+            )) {
                 $0.State = "Unknown"
                 $0.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
                 $0.Settings = [

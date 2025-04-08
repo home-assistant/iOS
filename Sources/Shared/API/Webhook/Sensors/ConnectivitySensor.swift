@@ -73,7 +73,7 @@ public class ConnectivitySensor: SensorProvider {
         }
 
         return .value([
-            with(WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid")) { sensor in
+            with(WebhookSensor(name: "SSID", uniqueID: WebhookSensorId.connectivitySSID.rawValue)) { sensor in
                 if let ssid = Current.connectivity.currentWiFiSSID() {
                     sensor.State = ssid
                     sensor.Icon = "mdi:wifi"
@@ -82,7 +82,7 @@ public class ConnectivitySensor: SensorProvider {
                     sensor.Icon = "mdi:wifi-off"
                 }
             },
-            with(WebhookSensor(name: "BSSID", uniqueID: "connectivity_bssid")) { sensor in
+            with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
                 if let bssid = Current.connectivity.currentWiFiBSSID() {
                     sensor.State = bssid
                     sensor.Icon = "mdi:wifi-star"
@@ -102,7 +102,10 @@ public class ConnectivitySensor: SensorProvider {
         let simple = Current.connectivity.simpleNetworkType()
 
         return .value([
-            with(WebhookSensor(name: "Connection Type", uniqueID: "connectivity_connection_type")) { sensor in
+            with(WebhookSensor(
+                name: "Connection Type",
+                uniqueID: WebhookSensorId.connectivityConnectionType.rawValue
+            )) { sensor in
                 sensor.State = simple.description
                 sensor.Icon = simple.icon
 

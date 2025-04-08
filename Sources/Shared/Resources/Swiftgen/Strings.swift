@@ -44,6 +44,8 @@ public enum L10n {
   public static var openLabel: String { return L10n.tr("Localizable", "open_label") }
   /// Preview Output
   public static var previewOutput: String { return L10n.tr("Localizable", "preview_output") }
+  /// Privacy
+  public static var privacyLabel: String { return L10n.tr("Localizable", "privacyLabel") }
   /// Reload
   public static var reloadLabel: String { return L10n.tr("Localizable", "reload_label") }
   /// Requires %@ or later.
@@ -868,9 +870,9 @@ public enum L10n {
   }
 
   public enum ConnectionError {
-    public enum AdvancedSection {
-      /// Advanced
-      public static var title: String { return L10n.tr("Localizable", "connection_error.advanced_section.title") }
+    public enum MoreDetailsSection {
+      /// More details
+      public static var title: String { return L10n.tr("Localizable", "connection_error.more_details_section.title") }
     }
     public enum OpenSettings {
       /// Open settings
@@ -1696,11 +1698,51 @@ public enum L10n {
         /// Could not create a URL
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.couldnt_make_url.title") }
       }
+      public enum HelperSection {
+        /// Did you mean...
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.helper_section.title") }
+      }
+      public enum InputError {
+        /// Make sure you have entered a valid URL.
+        public static var message: String { return L10n.tr("Localizable", "onboarding.manual_setup.input_error.message") }
+        /// Invalid URL
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.input_error.title") }
+      }
       public enum NoScheme {
         /// Should we try connecting using http:// or https://?
         public static var message: String { return L10n.tr("Localizable", "onboarding.manual_setup.no_scheme.message") }
         /// URL entered without scheme
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.no_scheme.title") }
+      }
+      public enum TextField {
+        /// e.g. http://homeassistant.local:8123
+        public static var placeholder: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.placeholder") }
+        /// Your Home Assistant URL
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.title") }
+      }
+    }
+    public enum Permission {
+      public enum Location {
+        /// To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.
+        public static var description: String { return L10n.tr("Localizable", "onboarding.permission.location.description") }
+        /// Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.
+        public static var privacyNote: String { return L10n.tr("Localizable", "onboarding.permission.location.privacy_note") }
+        public enum Buttons {
+          /// Allow & Share with Home Assistant
+          public static var allowAndShare: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.allow_and_share") }
+          /// Allow for App use only
+          public static var allowForApp: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.allow_for_app") }
+          /// Deny
+          public static var deny: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.deny") }
+        }
+        public enum Deny {
+          public enum Alert {
+            /// Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.
+            public static var message: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.message") }
+            /// Are you sure?
+            public static var title: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.title") }
+          }
+        }
       }
     }
     public enum Permissions {
@@ -1785,17 +1827,23 @@ public enum L10n {
       /// Scanning for Servers
       public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
     }
+    public enum Servers {
+      public enum Docs {
+        /// Read documentation
+        public static var read: String { return L10n.tr("Localizable", "onboarding.servers.docs.read") }
+      }
+      public enum Search {
+        /// Looking for servers nearby...
+        public static var message: String { return L10n.tr("Localizable", "onboarding.servers.search.message") }
+      }
+    }
     public enum Welcome {
       /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
-      /// Learn more
-      public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
-      /// Welcome to Home Assistant %@!
-      public static func title(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
-      }
+      /// Get started with Home Assistant
+      public static var getStarted: String { return L10n.tr("Localizable", "onboarding.welcome.get_started") }
     }
   }
 
@@ -1808,6 +1856,17 @@ public enum L10n {
         public static var subtitle: String { return L10n.tr("Localizable", "permission.screen.bluetooth.subtitle") }
         /// Search devices
         public static var title: String { return L10n.tr("Localizable", "permission.screen.bluetooth.title") }
+      }
+    }
+  }
+
+  public enum PostOnboarding {
+    public enum Permission {
+      public enum Notification {
+        /// Notifications can be useful in your automations. Tap the icon to allow or deny.
+        public static var message: String { return L10n.tr("Localizable", "post_onboarding.permission.notification.message") }
+        /// Do you want to receive notifications?
+        public static var title: String { return L10n.tr("Localizable", "post_onboarding.permission.notification.title") }
       }
     }
   }

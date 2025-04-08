@@ -26,7 +26,7 @@ class SettingsViewController: HAFormViewController {
         super.init()
     }
 
-    class func servers() -> (Section, deallocate: () -> Void) {
+    class func servers(controller: UIViewController) -> (Section, deallocate: () -> Void) {
         class Observer: ServerObserver {
             let updateRows: () -> Void
             init(updateRows: @escaping () -> Void) {
@@ -56,11 +56,13 @@ class SettingsViewController: HAFormViewController {
 
             rows.append(HomeAssistantAccountRow {
                 $0.value = .add
-                $0.presentationMode = .show(controllerProvider: .callback(builder: { () -> UIViewController in
-                    OnboardingNavigationViewController(onboardingStyle: .secondary)
-                }), onDismiss: nil)
                 $0.onCellSelection { _, row in
                     row.deselect(animated: true)
+                    controller.present(
+                        OnboardingNavigationView.controller(onboardingStyle: .secondary),
+                        animated: true,
+                        completion: nil
+                    )
                 }
             })
 
@@ -103,7 +105,7 @@ class SettingsViewController: HAFormViewController {
         }
 
         if contentSections.contains(.servers) {
-            let (section, deallocate) = Self.servers()
+            let (section, deallocate) = Self.servers(controller: self)
             form +++ section
             after(life: self).done(deallocate)
         }

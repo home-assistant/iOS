@@ -4,9 +4,21 @@ import SwiftUI
 
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var showExportLogsShareSheet: Bool = false
+
     private let feedbackGenerator = UINotificationFeedbackGenerator()
-    let server: Server
+    let server: Server?
     let error: Error
+    let showSettingsEntry: Bool
+    let expandMoreDetails: Bool
+
+    init(server: Server?, error: Error, showSettingsEntry: Bool = true, expandMoreDetails: Bool = false) {
+        self.server = server
+        self.error = error
+        self.showSettingsEntry = showSettingsEntry
+        self.expandMoreDetails = expandMoreDetails
+    }
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -31,10 +43,10 @@ struct ConnectionErrorDetailsView: View {
                                 .frame(maxWidth: 600)
                                 .padding()
                                 .background(Color(uiColor: .secondarySystemBackground))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                             }
 
-                            if server.info.connection.canUseCloud,
+                            if let server, server.info.connection.canUseCloud,
                                let cloudText = try? AttributedString(
                                    markdown: L10n.Connection.Error.FailedConnect.Cloud
                                        .title
@@ -48,9 +60,11 @@ struct ConnectionErrorDetailsView: View {
                                 }
                             }
                         }
-                        openSettingsButton
-                        CollapsibleView {
-                            Text(L10n.ConnectionError.AdvancedSection.title)
+                        if showSettingsEntry {
+                            openSettingsButton
+                        }
+                        CollapsibleView(startExpanded: expandMoreDetails) {
+                            Text(L10n.ConnectionError.MoreDetailsSection.title)
                                 .font(.body.bold())
                         } expandedContent: {
                             advancedContent
@@ -58,7 +72,7 @@ struct ConnectionErrorDetailsView: View {
                         .frame(maxWidth: 600)
                         .padding()
                         .background(Color(uiColor: .secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                         .padding(.top)
 
                         Rectangle()
@@ -67,6 +81,7 @@ struct ConnectionErrorDetailsView: View {
                             .frame(height: 1)
                             .padding(Spaces.three)
                         copyToClipboardButton
+                        exportLogsButton
                         documentationLink
                         discordLink
                         githubLink
@@ -77,14 +92,16 @@ struct ConnectionErrorDetailsView: View {
             .ignoresSafeArea(edges: .top)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        openSettings()
-                    }, label: {
-                        Image(uiImage: MaterialDesignIcons.cogIcon.image(
-                            ofSize: .init(width: 28, height: 28),
-                            color: .white
-                        ))
-                    })
+                    if showSettingsEntry {
+                        Button(action: {
+                            openSettings()
+                        }, label: {
+                            Image(uiImage: MaterialDesignIcons.cogIcon.image(
+                                ofSize: .init(width: 28, height: 28),
+                                color: .white
+                            ))
+                        })
+                    }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton(tint: .white) {
@@ -92,6 +109,9 @@ struct ConnectionErrorDetailsView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showExportLogsShareSheet, content: {
+                ShareActivityView(activityItems: [Current.Log.archiveURL()])
+            })
         }
         .navigationViewStyle(.stack)
     }
@@ -166,6 +186,21 @@ struct ConnectionErrorDetailsView: View {
                 \((error as? URLError)?.failingURL?.absoluteString ?? "")
                 """
             feedbackGenerator.notificationOccurred(.success)
+        }
+    }
+
+    private var exportLogsButton: some View {
+        ActionLinkButton(
+            icon: Image(systemSymbol: .squareAndArrowUp),
+            title: Current.Log.exportTitle,
+            tint: .init(uiColor: Asset.Colors.haPrimary.color)
+        ) {
+            if Current.isCatalyst, let logsURL = Current.Log.archiveURL() {
+                UIApplication.shared.open(logsURL)
+            } else {
+                showExportLogsShareSheet = true
+                feedbackGenerator.notificationOccurred(.success)
+            }
         }
     }
 

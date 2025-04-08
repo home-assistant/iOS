@@ -29,7 +29,7 @@ final class AudioOutputSensor: SensorProvider {
         let audioOutput = getAudioOutput().compactMap(\.type).joined(separator: ", ")
         sensors.append(.init(
             name: "Audio Output",
-            uniqueID: "iphone-audio-output",
+            uniqueID: WebhookSensorId.iPhoneAudioOutput.rawValue,
             icon: "mdi:volume-high",
             state: audioOutput
         ))

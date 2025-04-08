@@ -6,10 +6,6 @@ import Shared
 import SwiftUI
 
 class OnboardingAuth {
-    func successController(server: Server?) -> UIViewController {
-        OnboardingPermissionViewControllerFactory.next(server: server)
-    }
-
     func failureController(error: Error) -> UIViewController {
         UIHostingController(rootView: OnboardingErrorView(error: error))
     }

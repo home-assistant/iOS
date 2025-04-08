@@ -88,7 +88,10 @@ struct WatchHomeView: View {
             if viewModel.showError {
                 Text(viewModel.errorMessage)
                     .font(.footnote)
-                    .listRowBackground(Color.red.opacity(0.5).clipShape(RoundedRectangle(cornerRadius: 12)))
+                    .listRowBackground(
+                        Color.red.opacity(0.5)
+                            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+                    )
             }
             if viewModel.watchConfig.items.isEmpty {
                 Text(verbatim: L10n.Watch.Labels.noConfig)

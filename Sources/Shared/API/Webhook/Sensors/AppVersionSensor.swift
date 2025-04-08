@@ -10,7 +10,7 @@ final class AppVersionSensor: SensorProvider {
     func sensors() -> Promise<[WebhookSensor]> {
         let sensor = WebhookSensor(
             name: "App Version",
-            uniqueID: "app-version",
+            uniqueID: WebhookSensorId.appVersion.rawValue,
             icon: nil,
             state: AppConstants.version,
             entityCategory: "diagnostic"

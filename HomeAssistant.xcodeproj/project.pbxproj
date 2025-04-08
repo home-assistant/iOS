@@ -403,8 +403,6 @@
 		11CFD785273662DF0082D557 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CFD783273662DF0082D557 /* Server.swift */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */; };
-		11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */; };
-		11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */; };
 		11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */; };
@@ -415,7 +413,6 @@
 		11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E16399250B1B760076D612 /* OnboardingStateObservation.swift */; };
 		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
-		11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */; };
 		11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */; };
 		11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED439727265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift */; };
 		11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ED439927265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift */; };
@@ -587,6 +584,10 @@
 		4214388C2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		4214388D2CF5F1D700E2D44D /* ServerFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5CABB2B10AE1A00409816 /* ServerFixture.swift */; };
 		421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */; };
+		42196ACE2DA5A49600BD501E /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
+		42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42196AD02DA5AF3D00BD501E /* MockBonjour.swift */; };
+		42196ADA2DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42196AD52DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift */; };
+		42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */; };
 		421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */; };
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		4221ED352D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
@@ -631,6 +632,16 @@
 		424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
 		424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
+		42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */; };
+		42462E6D2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
+		42462E6E2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
+		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
+		42462E752DA53F7200ECC8A7 /* LocationPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */; };
+		42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
+		42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
+		42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
@@ -719,10 +730,26 @@
 		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
+		427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */; };
+		427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */; };
+		427FEE092D9C04050047C00C /* OnboardingServersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */; };
+		427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */; };
+		427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */; };
+		427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */; };
+		427FEE592D9D48120047C00C /* View+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE572D9D48120047C00C /* View+HA.swift */; };
+		427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */; };
+		427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */; };
+		427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */; };
 		428338442BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
+		428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */; };
+		428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */; };
+		428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */; };
+		4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */; };
+		4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */; };
+		4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626092DA5CD1B00D58D13 /* SpacesTests.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -862,7 +889,7 @@
 		42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */; };
 		42E95C552CA44FC90010ECE3 /* SafariWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C542CA44FC90010ECE3 /* SafariWebView.swift */; };
 		42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */; };
-		42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ActivityView.swift */; };
+		42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */; };
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
@@ -938,7 +965,6 @@
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
 		B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022212226DAC9D00E8DBFE /* ScaledFont.swift */; };
-		B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
@@ -1073,7 +1099,6 @@
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B613936924F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */; };
 		B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */; };
-		B616B299227ED68E00828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
 		B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */; };
@@ -1104,9 +1129,7 @@
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB69226BBDA900E541DD /* SettingsViewController.swift */; };
 		B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */; };
-		B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
-		B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
@@ -1847,8 +1870,6 @@
 		11CFD783273662DF0082D557 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		11D826F024E39F2D005B8A86 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
-		11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionWorkflowController.swift; sourceTree = "<group>"; };
-		11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionViewController.swift; sourceTree = "<group>"; };
 		11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingURLHandler.swift; sourceTree = "<group>"; };
 		11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Additions.swift"; sourceTree = "<group>"; };
 		11DE9D8325B6103C0081C0ED /* Home Assistant Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1858,7 +1879,6 @@
 		11DE9F3925B614EB0081C0ED /* Application.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Application.xib; sourceTree = "<group>"; };
 		11E16399250B1B760076D612 /* OnboardingStateObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStateObservation.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
-		11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTerminalViewController.swift; sourceTree = "<group>"; };
 		11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepModels.test.swift; sourceTree = "<group>"; };
 		11ED439727265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepNotify.test.swift; sourceTree = "<group>"; };
 		11ED439927265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepRegister.test.swift; sourceTree = "<group>"; };
@@ -1980,6 +2000,9 @@
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* WidgetBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderView.swift; sourceTree = "<group>"; };
 		4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistViewTintedWrapper.swift; sourceTree = "<group>"; };
+		42196AD02DA5AF3D00BD501E /* MockBonjour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBonjour.swift; sourceTree = "<group>"; };
+		42196AD52DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListViewModelTests.swift; sourceTree = "<group>"; };
+		42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationTests.swift; sourceTree = "<group>"; };
 		421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderViewModel.swift; sourceTree = "<group>"; };
 		421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifier.swift"; sourceTree = "<group>"; };
 		4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseUpdater.swift; sourceTree = "<group>"; };
@@ -2038,6 +2061,11 @@
 		4242A2D02B2B5C9F00E9F001 /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-ES"; path = "es-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewTintedWrapper.swift; sourceTree = "<group>"; };
+		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
+		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
+		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
+		42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionViewModel.swift; sourceTree = "<group>"; };
+		42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizes.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
@@ -2126,11 +2154,27 @@
 		42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLikeBottomSheet.swift; sourceTree = "<group>"; };
 		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
+		427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListView.swift; sourceTree = "<group>"; };
+		427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.swift; sourceTree = "<group>"; };
+		427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListViewModel.swift; sourceTree = "<group>"; };
+		427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersScanAnimationView.swift; sourceTree = "<group>"; };
+		427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualURLEntryView.swift; sourceTree = "<group>"; };
+		427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationView.swift; sourceTree = "<group>"; };
+		427FEE572D9D48120047C00C /* View+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HA.swift"; sourceTree = "<group>"; };
+		427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationViewModel.swift; sourceTree = "<group>"; };
+		427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationView.swift; sourceTree = "<group>"; };
+		427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyNoteView.swift; sourceTree = "<group>"; };
 		42805A132B0226050095414C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4283383F2BA1B17C004798C2 /* AssistRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRequests.swift; sourceTree = "<group>"; };
 		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
 		4285C5502D355F9900DADE45 /* WidgetCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationView.swift; sourceTree = "<group>"; };
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
+		428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleViewTests.swift; sourceTree = "<group>"; };
+		428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkButtonTests.swift; sourceTree = "<group>"; };
+		428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStylesTests.swift; sourceTree = "<group>"; };
+		428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizesTests.swift; sourceTree = "<group>"; };
+		428626092DA5CD1B00D58D13 /* SpacesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesTests.swift; sourceTree = "<group>"; };
+		4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorIdTests.swift; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
@@ -2249,7 +2293,7 @@
 		42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManagerViewModel.swift; sourceTree = "<group>"; };
 		42E95C542CA44FC90010ECE3 /* SafariWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebView.swift; sourceTree = "<group>"; };
 		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
-		42E95C582CA46AD50010ECE3 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetAllCustomWidgetConfirmationAppIntent.swift; sourceTree = "<group>"; };
@@ -2343,7 +2387,6 @@
 		B086E41966E89AE531E3C1A5 /* Pods-iOS-Extensions-Widgets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.debug.xcconfig"; sourceTree = "<group>"; };
 		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
 		B6022212226DAC9D00E8DBFE /* ScaledFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaledFont.swift; sourceTree = "<group>"; };
-		B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationViewController.swift; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B60247FF1FBD343000998205 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B60248011FBD349000998205 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -2571,9 +2614,7 @@
 		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
 		B661FB69226BBDA900E541DD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsViewController.swift; sourceTree = "<group>"; };
-		B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManualURLViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
-		B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningViewController.swift; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		B66C58A9215086F0004AB261 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2929,6 +2970,9 @@
 			children = (
 				B657A8E81CA646EB00121384 /* App */,
 				FD3BC66429BA000A00B19FBE /* CarPlay */,
+				42A47A8E2C4548BC00C9B43D /* Improv */,
+				42FCCFF72B9B1C310057783F /* Thread */,
+				42462E6A2DA3CF8500ECC8A7 /* Watch */,
 				111501A72528412C00DCFA94 /* Extensions */,
 				11DE9D8425B6103C0081C0ED /* Launcher */,
 				1167402325198F9A00F51626 /* MacBridge */,
@@ -2959,6 +3003,7 @@
 		111501A82528414000DCFA94 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				42196AD12DA5AF3D00BD501E /* Mocks */,
 				420E64B72D676A4200A31E86 /* Widgets */,
 				B657A8FF1CA646EB00121384 /* App */,
 				D03D894320E0BC1800D4F28D /* Shared */,
@@ -3096,16 +3141,12 @@
 		1168BF35271811C200DD4D15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				429821122CD0DD71005ECD39 /* Bluetooth */,
-				B661FC87226D478300E541DD /* OnboardingScanningViewController.swift */,
-				11DA6B4E2713912F008ADFAF /* OnboardingPermissionViewController.swift */,
-				B661FB79226C197900E541DD /* OnboardingManualURLViewController.swift */,
-				11E99A4F27156854003C8A65 /* OnboardingTerminalViewController.swift */,
-				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
 				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
-				42E95C582CA46AD50010ECE3 /* ActivityView.swift */,
+				427FEE052D9C03C50047C00C /* OnboardingServersList */,
+				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
+				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
+				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
 				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
-				42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -3113,8 +3154,8 @@
 		1168BF36271811D800DD4D15 /* Container */ = {
 			isa = PBXGroup;
 			children = (
-				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
-				11DA6B4C2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift */,
+				427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */,
+				427FEE622D9EA1400047C00C /* OnboardingNavigationViewModel.swift */,
 			);
 			path = Container;
 			sourceTree = "<group>";
@@ -3438,7 +3479,6 @@
 				11AF4D24249D1931006C74C0 /* LastUpdateSensor.swift */,
 				11AF4D18249C8253006C74C0 /* PedometerSensor.swift */,
 				119385A3249E8E360097F497 /* StorageSensor.swift */,
-				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
 				B613936824F728F8002B8C5D /* InputOutputDeviceSensor.swift */,
 				11358AEB24FC9F300074C4E2 /* ActiveSensor.swift */,
 				110ED56225A563D600489AF7 /* DisplaySensor.swift */,
@@ -3922,6 +3962,31 @@
 			path = AppIcon;
 			sourceTree = "<group>";
 		};
+		42196AD12DA5AF3D00BD501E /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				42196AD02DA5AF3D00BD501E /* MockBonjour.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		42196AD62DA5AF7A00BD501E /* ServersList */ = {
+			isa = PBXGroup;
+			children = (
+				42196AD52DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift */,
+			);
+			path = ServersList;
+			sourceTree = "<group>";
+		};
+		42196AD92DA5AF7A00BD501E /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */,
+				42196AD62DA5AF7A00BD501E /* ServersList */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		421B1C142BD65238001ED18C /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -4023,6 +4088,23 @@
 				42755FF22CD913C700CB0032 /* MagicItemProviderTests.swift */,
 			);
 			path = MagicItem;
+			sourceTree = "<group>";
+		};
+		42462E6A2DA3CF8500ECC8A7 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
+		42462E6B2DA3D05500ECC8A7 /* PermissionScreen */ = {
+			isa = PBXGroup;
+			children = (
+				42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */,
+				429821122CD0DD71005ECD39 /* Bluetooth */,
+			);
+			path = PermissionScreen;
 			sourceTree = "<group>";
 		};
 		4251AA972C6B9D30004CCC9D /* Edit */ = {
@@ -4199,10 +4281,42 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		427FEE052D9C03C50047C00C /* OnboardingServersList */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE0C2D9C221D0047C00C /* ManualURLEntry */,
+				427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */,
+				427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */,
+				427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */,
+				427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */,
+			);
+			path = OnboardingServersList;
+			sourceTree = "<group>";
+		};
+		427FEE0C2D9C221D0047C00C /* ManualURLEntry */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */,
+			);
+			path = ManualURLEntry;
+			sourceTree = "<group>";
+		};
+		427FEE642D9EBC340047C00C /* OnboardingPermissions */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */,
+				42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */,
+				42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */,
+			);
+			path = OnboardingPermissions;
+			sourceTree = "<group>";
+		};
 		428338412BA1BAF3004798C2 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
 				428338422BA1BAFB004798C2 /* Spaces.swift */,
+				42462E702DA4114800ECC8A7 /* Sizes.swift */,
+				42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -4217,6 +4331,41 @@
 				42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */,
 			);
 			path = Builder;
+			sourceTree = "<group>";
+		};
+		428626002DA5CC8400D58D13 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				428626012DA5CC8B00D58D13 /* Components */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		428626012DA5CC8B00D58D13 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */,
+				428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */,
+				428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		4286260A2DA5CD1B00D58D13 /* Sizes */ = {
+			isa = PBXGroup;
+			children = (
+				428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */,
+				428626092DA5CD1B00D58D13 /* SpacesTests.swift */,
+			);
+			path = Sizes;
+			sourceTree = "<group>";
+		};
+		4286260C2DA5CD1B00D58D13 /* Webhook */ = {
+			isa = PBXGroup;
+			children = (
+				4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */,
+			);
+			path = Webhook;
 			sourceTree = "<group>";
 		};
 		4289DDAC2C85D595003591C2 /* Scene */ = {
@@ -4421,6 +4570,7 @@
 				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
 				42B74A5C2D36A47E00C37304 /* CloseButton.swift */,
 				42C131CF2D66084C00AF48E6 /* PillView.swift */,
+				427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -4992,24 +5142,22 @@
 		B657A8E81CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
+				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
+				422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */,
+				11EFCDD424F5FA7E00314D85 /* Scenes */,
+				11AF1ED82528FBAA00AAE364 /* Onboarding */,
+				11AD2E2A2528FDB700FBC437 /* WebView */,
+				42462E6B2DA3D05500ECC8A7 /* PermissionScreen */,
 				42B94BD92B9606CD00DEE060 /* Assist */,
 				42FCCFDD2B9B1AB00057783F /* BarcodeScanner */,
-				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */,
-				42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
-				42A47A8E2C4548BC00C9B43D /* Improv */,
-				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				117EB13E2569AD3000049541 /* Notifications */,
-				11AF1ED82528FBAA00AAE364 /* Onboarding */,
-				B69933961E232AF50054453D /* Resources */,
-				11EFCDD424F5FA7E00314D85 /* Scenes */,
 				B661FB6B226BCC8500E541DD /* Settings */,
 				11B7ECD9274DA521009AD634 /* Servers */,
-				42FCCFF72B9B1C310057783F /* Thread */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
-				11AD2E2A2528FDB700FBC437 /* WebView */,
 				11A71C6924A463EE00D9565F /* ZoneManager */,
+				B69933961E232AF50054453D /* Resources */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -5017,6 +5165,10 @@
 		B657A8FF1CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				4286260A2DA5CD1B00D58D13 /* Sizes */,
+				4286260C2DA5CD1B00D58D13 /* Webhook */,
+				428626002DA5CC8400D58D13 /* DesignSystem */,
+				42196AD92DA5AF7A00BD501E /* Onboarding */,
 				42E3B8BB2D8ACDC100F5D084 /* Extensions */,
 				46F103242D7214F7002BC586 /* ClientEvents */,
 				422E626A2CDCF00000987BD0 /* Area */,
@@ -5215,6 +5367,8 @@
 		B6E91C212232482A0014CB8D /* Webhook */ = {
 			isa = PBXGroup;
 			children = (
+				42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */,
+				1109F81E24A1C011002590F2 /* SensorProvider.swift */,
 				11AF4D0F249C7DD8006C74C0 /* Sensors */,
 				B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */,
 				1141182824AFA0F000E6525C /* Networking */,
@@ -5385,6 +5539,7 @@
 				D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */,
 				D0DD2CED213BCA8900C3D9F7 /* URL+Extensions.swift */,
 				D0EEF302214D8F0300D1D360 /* String+HA.swift */,
+				427FEE572D9D48120047C00C /* View+HA.swift */,
 				42D996E42D89863A001737A0 /* Bool+HA.swift */,
 				42E3B8B82D8AC63300F5D084 /* Float+HA.swift */,
 				D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */,
@@ -6716,9 +6871,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6905,9 +7064,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7030,9 +7193,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7047,9 +7214,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7246,7 +7417,7 @@
 				425573E92B58396600145217 /* HAEntity+CarPlay.swift in Sources */,
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
 				423B5E0D2D677BB90000CB95 /* WidgetContentMargin.swift in Sources */,
-				B616B299227ED68E00828165 /* Bonjour.swift in Sources */,
+				42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
@@ -7256,6 +7427,7 @@
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
+				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
@@ -7270,12 +7442,12 @@
 				421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */,
 				42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
-				11DA6B4F2713912F008ADFAF /* OnboardingPermissionViewController.swift in Sources */,
 				42FCCFFB2B9B1C310057783F /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
 				42070EE82BAC43240031E96F /* AssistSession.swift in Sources */,
+				427FEE092D9C04050047C00C /* OnboardingServersListViewModel.swift in Sources */,
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
@@ -7286,8 +7458,8 @@
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
-				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				424123882CDCEB66007EDE70 /* AreaProvider.swift in Sources */,
+				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
@@ -7321,6 +7493,7 @@
 				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
+				42462E752DA53F7200ECC8A7 /* LocationPermissionViewModel.swift in Sources */,
 				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
@@ -7358,7 +7531,6 @@
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
-				11E99A5027156854003C8A65 /* OnboardingTerminalViewController.swift in Sources */,
 				422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */,
 				1101568424D770B2009424C9 /* NFCWriter.swift in Sources */,
 				42B74A662D37C2C000C37304 /* WidgetCreationViewModel.swift in Sources */,
@@ -7374,6 +7546,7 @@
 				42EF0AD22D4D1A920088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
 				429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */,
+				427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */,
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
@@ -7381,6 +7554,7 @@
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
+				427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
 				42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
@@ -7400,15 +7574,16 @@
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
-				B661FC88226D478300E541DD /* OnboardingScanningViewController.swift in Sources */,
+				427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
+				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */,
 				42E95C572CA45EFA0010ECE3 /* OnboardingErrorView.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				420C57C72D0A6DE700D2D9AC /* NoActiveURLView.swift in Sources */,
-				42E95C592CA46AD50010ECE3 /* ActivityView.swift in Sources */,
+				42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
@@ -7453,9 +7628,10 @@
 				429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */,
 				4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
+				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
-				11DA6B4D2713900E008ADFAF /* OnboardingPermissionWorkflowController.swift in Sources */,
+				427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
 				4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
@@ -7465,7 +7641,7 @@
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
-				B661FB7A226C197900E541DD /* OnboardingManualURLViewController.swift in Sources */,
+				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
 				42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
@@ -7505,6 +7681,9 @@
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */,
 				46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */,
+				4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */,
+				4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */,
+				4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
@@ -7512,14 +7691,20 @@
 				42E3B8C02D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */,
 				42FCD0032B9B1CB70057783F /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				42FCD0042B9B1CB70057783F /* ThreadCredentialsSharing.test.swift in Sources */,
+				42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */,
 				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
+				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,
+				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
+				428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
+				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
 				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
+				42196ADA2DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift in Sources */,
 				42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */,
 				420E64BA2D676A5800A31E86 /* WidgetsSnapshot.test.swift in Sources */,
 				11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */,
@@ -7640,6 +7825,7 @@
 				11B38EF5275C54A300205C7B /* GetCameraImageIntentHandler.swift in Sources */,
 				42CE8FB72B46D14C00C707F9 /* FrontendStrings+Values.swift in Sources */,
 				11521BBD25400284009C5C72 /* CrashReporter.swift in Sources */,
+				42462E6E2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */,
 				424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
 				113A8D4A283C7B1700B9DA32 /* PeriodicUpdateManager.swift in Sources */,
 				4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */,
@@ -7658,6 +7844,7 @@
 				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
 				11F20BC8274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
+				42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* AppConstants.swift in Sources */,
 				11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
@@ -7717,6 +7904,7 @@
 				1104FD06253292CD00B8BE34 /* Guarantee+Additions.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */,
+				42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
@@ -7835,6 +8023,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
 				4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */,
@@ -7861,6 +8050,7 @@
 				42790C462C4808FA00E31B38 /* AppleLikeBottomSheet.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
+				427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */,
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,
@@ -7890,6 +8080,7 @@
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
 				42FCCFA82B9A05400057783F /* View+RoundedCorner.swift in Sources */,
+				427FEE592D9D48120047C00C /* View+HA.swift in Sources */,
 				1164D9DE25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
@@ -7906,6 +8097,7 @@
 				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11F2F25E25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */,
+				42196ACE2DA5A49600BD501E /* Bonjour.swift in Sources */,
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
@@ -8009,6 +8201,7 @@
 				116570772702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
+				42462E6D2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				119EC3C724D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
@@ -8040,6 +8233,7 @@
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
 				11B38EE6275C54A200205C7B /* CallServiceIntentHandler.swift in Sources */,
 				4254C4CD2D103F7B00245021 /* ExternalLinkButton.swift in Sources */,
+				42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */,
@@ -8495,7 +8689,6 @@
 				B657A8F51CA646EB00121384 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			path = .;
 			sourceTree = "<group>";
 		};
 		B678DB351EA9999C0045312F /* MainInterface.storyboard */ = {
@@ -8545,7 +8738,6 @@
 				42F1DA672B4D993B002729BC /* bg */,
 			);
 			name = Localizable.strings;
-			path = .;
 			sourceTree = "<group>";
 		};
 		B6CC5D842159D10D00833E5D /* Interface.storyboard */ = {

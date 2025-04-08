@@ -35,7 +35,7 @@ final class ActiveSensor: SensorProvider {
 
         let sensor = WebhookSensor(
             name: "Active",
-            uniqueID: "active",
+            uniqueID: WebhookSensorId.active.rawValue,
             icon: isActive ? "mdi:monitor" : "mdi:monitor-off",
             state: isActive
         )

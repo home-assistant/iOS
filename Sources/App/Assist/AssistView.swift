@@ -173,7 +173,7 @@ struct AssistView: View {
                 .frame(height: 45)
                 .padding(.horizontal, viewModel.isRecording ? .zero : Spaces.two)
                 .overlay(content: {
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: CornerRadiusSizes.one)
                         .stroke(.gray)
                 })
                 .opacity(viewModel.isRecording ? 0 : 1)

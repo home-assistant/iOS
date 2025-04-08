@@ -143,21 +143,21 @@ public class InputOutputDeviceSensor: SensorProvider {
 
         return Self.sensors(
             name: "Camera",
-            uniqueID: "camera",
+            uniqueID: WebhookSensorId.camera.rawValue,
             iconOn: "mdi:camera",
             iconOff: "mdi:camera-off",
             all: cameras.map { $0.name ?? cameraFallback },
             active: cameras.filter(\.isOn).map { $0.name ?? cameraFallback }
         ) + Self.sensors(
             name: "Audio Input",
-            uniqueID: "microphone",
+            uniqueID: WebhookSensorId.microphone.rawValue,
             iconOn: "mdi:microphone",
             iconOff: "mdi:microphone-off",
             all: audioInputs.map { $0.name ?? audioInputFallback },
             active: audioInputs.filter(\.isOn).map { $0.name ?? audioInputFallback }
         ) + Self.sensors(
             name: "Audio Output",
-            uniqueID: "audio_output",
+            uniqueID: WebhookSensorId.audioOutput.rawValue,
             iconOn: "mdi:volume-high",
             iconOff: "mdi:volume-low",
             all: audioOutputs.map { $0.name ?? audioOutputFallback },
