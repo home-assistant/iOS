@@ -104,38 +104,11 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
         #if targetEnvironment(macCatalyst)
         WindowScenesManager.shared.didDiscardScene(scene)
         #endif
-
-        DataWidgetsUpdater.update()
-    }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        if #available(iOS 17.0, *) {
-            // if a widget is pending confirmation to execute it's action
-            // this will reset that and the widget will be restored to default state
-            _ = ResetAllCustomWidgetConfirmationAppIntent()
-        }
-        DataWidgetsUpdater.update()
-        Current.modelManager.unsubscribe()
-        Current.appDatabaseUpdater.stop()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        Current.modelManager.cleanup().cauterize()
-        Current.modelManager.subscribe(isAppInForeground: {
-            UIApplication.shared.applicationState == .active
-        })
-
-        Current.appDatabaseUpdater.update()
-        Current.panelsUpdater.update()
-
-        let widgetsCacheFile = AppConstants.widgetsCacheURL
-
-        // Clean up widgets cache file
-        do {
-            try FileManager.default.removeItem(at: widgetsCacheFile)
-        } catch {
-            Current.Log.error("Failed to remove widgets cache file: \(error)")
-        }
+        updateAppDatabase()
+        removeWidgetsCache()
     }
 
     func windowScene(
@@ -163,5 +136,25 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         urlHandler?.handle(userActivity: userActivity)
+    }
+}
+
+// MARK: - App database & cache
+
+extension WebViewSceneDelegate {
+    private func updateAppDatabase() {
+        Current.appDatabaseUpdater.update()
+        Current.panelsUpdater.update()
+    }
+
+    private func removeWidgetsCache() {
+        let widgetsCacheFile = AppConstants.widgetsCacheURL
+
+        // Clean up widgets cache file
+        do {
+            try FileManager.default.removeItem(at: widgetsCacheFile)
+        } catch {
+            Current.Log.info("Did not remove widgets cache file: \(error)")
+        }
     }
 }
