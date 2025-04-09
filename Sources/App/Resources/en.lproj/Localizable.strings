@@ -479,13 +479,13 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.permissions.notification.grant_description" = "Allow notification permission to create a notify service for your device.";
 "onboarding.permissions.notification.title" = "Notifications";
 "onboarding.scanning.discovered_announcement" = "Discovered: %@";
-"onboarding.scanning.manual" = "Enter Address Manually";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Not finding your server?";
 "onboarding.scanning.title" = "Scanning for Servers";
 "onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
-"onboarding.welcome.get_started" = "Get started with Home Assistant";
+"onboarding.welcome.learn_more" = "Learn more about Home Assistant";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.docs.read" = "Read documentation";
 "open_label" = "Open";

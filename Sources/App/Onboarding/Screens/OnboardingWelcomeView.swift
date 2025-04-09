@@ -69,7 +69,7 @@ struct OnboardingWelcomeView: View {
             }
             .buttonStyle(.primaryButton)
             .padding(.horizontal, Spaces.two)
-            Button(L10n.Onboarding.Welcome.getStarted) {
+            Button(L10n.Onboarding.Welcome.learnMore) {
                 showLearnMore = true
             }
             .tint(Color.asset(Asset.Colors.haPrimary))
