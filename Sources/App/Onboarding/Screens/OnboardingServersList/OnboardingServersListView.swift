@@ -125,7 +125,7 @@ struct OnboardingServersListView: View {
                 Button(action: {
                     showManualInput = true
                 }) {
-                    Text(L10n.Onboarding.Scanning.manual)
+                    Text(L10n.Onboarding.Scanning.Manual.Button.title)
                 }
                 .buttonStyle(.primaryButton)
                 .sheet(isPresented: $showManualInput) {

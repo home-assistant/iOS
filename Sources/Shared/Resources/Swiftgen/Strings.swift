@@ -1820,12 +1820,16 @@ public enum L10n {
       public static func discoveredAnnouncement(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.scanning.discovered_announcement", String(describing: p1))
       }
-      /// Enter Address Manually
-      public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
       /// Not finding your server?
       public static var manualHint: String { return L10n.tr("Localizable", "onboarding.scanning.manual_hint") }
       /// Scanning for Servers
       public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
+      public enum Manual {
+        public enum Button {
+          /// Enter address manually
+          public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.manual.button.title") }
+        }
+      }
     }
     public enum Servers {
       public enum Docs {
@@ -1842,8 +1846,8 @@ public enum L10n {
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
-      /// Get started with Home Assistant
-      public static var getStarted: String { return L10n.tr("Localizable", "onboarding.welcome.get_started") }
+      /// Learn more about Home Assistant
+      public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
     }
   }
 
