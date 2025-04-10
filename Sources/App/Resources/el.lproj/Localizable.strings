@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Είστε σίγουρος/η;";
 "connection.permission.internal_url.title" = "Αδεια πρόσβασης";
 "connection_error.advanced_section.title" = "Για προχωρημένους";
+"connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Ανοιγμα ρυθμίσεων";
 "continue_label" = "Συνέχεια";
 "copy_label" = "Αντιγραφή";
@@ -443,9 +444,21 @@
 "onboarding.manual_setup.couldnt_make_url.message" = "Η τιμή '%@' δεν ήταν έγκυρη διεύθυνση URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL";
 "onboarding.manual_setup.description" = "Η διεύθυνση URL του διακομιστή Home Assistant. Βεβαιωθείτε ότι περιλαμβάνει το πρωτόκολλο και τη θύρα.";
+"onboarding.manual_setup.helper_section.title" = "Did you mean...";
+"onboarding.manual_setup.input_error.message" = "Make sure you have entered a valid URL.";
+"onboarding.manual_setup.input_error.title" = "Invalid URL";
 "onboarding.manual_setup.no_scheme.message" = "Θα πρέπει να προσπαθήσουμε να συνδεθούμε χρησιμοποιώντας http:// ή https://;";
 "onboarding.manual_setup.no_scheme.title" = "Η διεύθυνση URL καταχωρήθηκε χωρίς σχήμα";
+"onboarding.manual_setup.text_field.placeholder" = "e.g. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Your Home Assistant URL";
 "onboarding.manual_setup.title" = "Εισαγωγή διεύθυνσης URL";
+"onboarding.permission.location.buttons.allow_and_share" = "Αποδοχή και κοινή χρήση με το Home Assistant";
+"onboarding.permission.location.buttons.allow_for_app" = "Να επιτρέπεται μόνο για χρήση εφαρμογής";
+"onboarding.permission.location.buttons.deny" = "Αρνηση";
+"onboarding.permission.location.deny.alert.message" = "Χωρίς την άδεια της τοποθεσίας, οι μελλοντικές εκδόσεις της εφαρμογής ενδέχεται να αρνηθούν την πρόσβαση στον τοπικό διακομιστή του Home Assistant σας λόγω ανησυχιών για το απόρρητο. Εάν είστε σίγουρος/η, παρακαλώ συνεχίστε, πατώντας 'Αρνηση' και στο επόμενο αναδυόμενο παράθυρο. Οταν το κάνετε αυτό, συνιστάται να χρησιμοποιήσετε την εσωτερική σας διεύθυνση URL ως εξωτερική, καθώς είναι η μόνη διεύθυνση URL στην οποία θα προσπαθήσει η εφαρμογή να αποκτήσει πρόσβαση.";
+"onboarding.permission.location.deny.alert.title" = "Είσαι σίγουρος/η;";
+"onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Επιτρέπω";
 "onboarding.permissions.allowed" = "Έγινε";
 "onboarding.permissions.change_later_note" = "Μπορείτε να αλλάξετε αυτό το δικαίωμα αργότερα στις Ρυθμίσεις";
@@ -474,18 +487,25 @@
 "onboarding.permissions.notification.title" = "Ειδοποιήσεις";
 "onboarding.scanning.discovered_announcement" = "Ανακαλύφθηκε: %@";
 "onboarding.scanning.manual" = "Εισαγωγή διεύθυνσης χειροκίνητα";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Δεν βρίσκετε τον διακομιστή σας;";
 "onboarding.scanning.title" = "Σάρωση για διακομιστές";
+"onboarding.servers.docs.read" = "Read documentation";
+"onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.welcome.description" = "Αυτή η εφαρμογή συνδέεται με τον διακομιστή Home Assistant και επιτρέπει την ενσωμάτωση δεδομένων σχετικά με εσάς και το τηλέφωνό σας. \
 \
  Το Home Assistant είναι δωρεάν και ανοιχτού κώδικα λογισμικό αυτοματισμού σπιτιού με έμφαση στον τοπικό έλεγχο και την ιδιωτικότητα.";
+"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Μάθετε περισσότερα";
 "onboarding.welcome.title" = "Καλώς ορίσατε στο Home Assistant %@!";
 "open_label" = "Άνοιγμα";
 "permission.screen.bluetooth.secondary_button" = "Παράλειψη";
 "permission.screen.bluetooth.subtitle" = "Η εφαρμογή Home Assistant μπορεί να βρει συσκευές χρησιμοποιώντας το Bluetooth αυτής της συσκευής. Επιτρέψτε την πρόσβαση Bluetooth για την εφαρμογή Home Assistant.";
 "permission.screen.bluetooth.title" = "Αναζήτηση συσκευών";
+"post_onboarding.permission.notification.message" = "Οι ειδοποιήσεις μπορεί να είναι χρήσιμες στους αυτοματισμούς σας. Πατήστε το εικονίδιο για να επιτρέψετε ή να αρνηθείτε.";
+"post_onboarding.permission.notification.title" = "Θέλετε να λαμβάνετε ειδοποιήσεις;";
 "preview_output" = "Έξοδος προεπισκόπησης";
+"privacyLabel" = "Privacy";
 "reload_label" = "Επαναφόρτωση";
 "requires_version" = "Απαιτεί %@ ή μεταγενέστερη έκδοση.";
 "retry_label" = "Επανάληψη";

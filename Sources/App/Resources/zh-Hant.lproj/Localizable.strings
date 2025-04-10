@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "確定？";
 "connection.permission.internal_url.title" = "權限存取";
 "connection_error.advanced_section.title" = "進階";
+"connection_error.more_details_section.title" = "更多資訊";
 "connection_error.open_settings.title" = "開啟設定";
 "continue_label" = "繼續";
 "copy_label" = "複製";
@@ -443,9 +444,21 @@
 "onboarding.manual_setup.couldnt_make_url.message" = "數值 '%@' 並非有效 URL。";
 "onboarding.manual_setup.couldnt_make_url.title" = "無法製作 URL";
 "onboarding.manual_setup.description" = "Home Assistant 伺服器 URL、記得包含協定與通訊埠。";
+"onboarding.manual_setup.helper_section.title" = "是否為...";
+"onboarding.manual_setup.input_error.message" = "確保輸入有效的網址。";
+"onboarding.manual_setup.input_error.title" = "網址無效";
 "onboarding.manual_setup.no_scheme.message" = "是否要嘗試以 http:// 或 https:// 進行連線？";
 "onboarding.manual_setup.no_scheme.title" = "所輸入 URL 不符結構";
+"onboarding.manual_setup.text_field.placeholder" = "例如、http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Home Assistant 網址";
 "onboarding.manual_setup.title" = "輸入 URL";
+"onboarding.permission.location.buttons.allow_and_share" = "允許並與 Home Assistant 共享";
+"onboarding.permission.location.buttons.allow_for_app" = "僅允許應用程式使用";
+"onboarding.permission.location.buttons.deny" = "拒絕";
+"onboarding.permission.location.deny.alert.message" = "如果沒有獲得位置權限、未來版本的應用程式可能會因為隱私問題而拒絕存取本地端的 Home Assistant 伺服器，。假如確定，請繼續並在下一個彈出視窗中點擊 '拒絕'。如果這樣做，建議您將內部網址作為外部網址使用，因為將是應用程式唯一會嘗試存取的網址。";
+"onboarding.permission.location.deny.alert.title" = "確認？";
+"onboarding.permission.location.description" = "為了識別否在家並透過本地端連線至 Home Assistant、Apple 要求必須請求使用者允許位置權限。";
+"onboarding.permission.location.privacy_note" = "除非選擇 “允許並與 Home Assistant 共享”，否則位置不會與本地端 Home Assistant 伺服器共享。您可也以稍後於 Companion App 中的設定 > 感測器中選擇共享。";
 "onboarding.permissions.allow" = "允許";
 "onboarding.permissions.allowed" = "完成";
 "onboarding.permissions.change_later_note" = "可稍後於設定中變更權限";
@@ -474,18 +487,25 @@
 "onboarding.permissions.notification.title" = "通知";
 "onboarding.scanning.discovered_announcement" = "已掃描：%@";
 "onboarding.scanning.manual" = "手動輸入位址";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "找不到伺服器？";
 "onboarding.scanning.title" = "掃描伺服器";
+"onboarding.servers.docs.read" = "閱讀文件";
+"onboarding.servers.search.message" = "正在搜尋周圍的伺服器...";
 "onboarding.welcome.description" = "App 將連線至 Home Assistant 伺服器並允許整合關於你與手機的資料。\
 \
 Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本地端控制與隱私議題。";
+"onboarding.welcome.get_started" = "開始使用 Home Assistant";
 "onboarding.welcome.learn_more" = "了解更多";
 "onboarding.welcome.title" = "歡迎使用 Home Assistant %@！";
 "open_label" = "開啟";
 "permission.screen.bluetooth.secondary_button" = "跳過";
 "permission.screen.bluetooth.subtitle" = "Home Assistant 應用程式可使用裝置的藍牙來搜尋裝置。請允許 Home Assistant 應用程式存取藍牙權限。";
 "permission.screen.bluetooth.title" = "搜尋裝置";
+"post_onboarding.permission.notification.message" = "通知對於自動化相當有用。點擊圖示以允許或拒絕。";
+"post_onboarding.permission.notification.title" = "是否要接收通知？";
 "preview_output" = "預覽輸出";
+"privacyLabel" = "隱私權";
 "reload_label" = "重新載入";
 "requires_version" = "需要 %@ 或更新版本。";
 "retry_label" = "重試";

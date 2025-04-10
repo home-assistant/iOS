@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Sei sicuro?";
 "connection.permission.internal_url.title" = "Accesso ai permessi";
 "connection_error.advanced_section.title" = "Advanced";
+"connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Open settings";
 "continue_label" = "Continua";
 "copy_label" = "Copia";
@@ -443,9 +444,21 @@
 "onboarding.manual_setup.couldnt_make_url.message" = "Il valore \"%@\" non era un URL valido.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossibile creare un URL";
 "onboarding.manual_setup.description" = "L'URL del tuo server Home Assistant. Assicurati che includa il protocollo e la porta.";
+"onboarding.manual_setup.helper_section.title" = "Did you mean...";
+"onboarding.manual_setup.input_error.message" = "Make sure you have entered a valid URL.";
+"onboarding.manual_setup.input_error.title" = "Invalid URL";
 "onboarding.manual_setup.no_scheme.message" = "Dovremmo provare a collegarci usando http: // o https: //?";
 "onboarding.manual_setup.no_scheme.title" = "E' stato inserito un URL senza schema";
+"onboarding.manual_setup.text_field.placeholder" = "e.g. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Your Home Assistant URL";
 "onboarding.manual_setup.title" = "Inserisci l'URL";
+"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
+"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
+"onboarding.permission.location.buttons.deny" = "Deny";
+"onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
+"onboarding.permission.location.deny.alert.title" = "Are you sure?";
+"onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Consenti";
 "onboarding.permissions.allowed" = "Fatto";
 "onboarding.permissions.change_later_note" = "Puoi cambiare questo permesso nelle impostazioni";
@@ -474,18 +487,25 @@
 "onboarding.permissions.notification.title" = "Notifiche";
 "onboarding.scanning.discovered_announcement" = "Scoperto: %@";
 "onboarding.scanning.manual" = "Inserisci l'indirizzo manualmente";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Non trovi il tuo server?";
 "onboarding.scanning.title" = "Scansione per server";
+"onboarding.servers.docs.read" = "Read documentation";
+"onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.welcome.description" = "Questa app si connette al tuo server Home Assistant e consente di integrare i dati su di te e sul tuo telefono. \
 \
  Home Assistant è un software di automazione domestica gratuito e open source con particolare attenzione al controllo locale e alla privacy.";
+"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Scopri di più";
 "onboarding.welcome.title" = "Benvenuto in Home Assistant %@ !";
 "open_label" = "Aperto";
 "permission.screen.bluetooth.secondary_button" = "Salta";
 "permission.screen.bluetooth.subtitle" = "L'app Home Assistant può trovare dispositivi utilizzando il Bluetooth di questo dispositivo. Consenti l'accesso Bluetooth per l'app Home Assistant.";
 "permission.screen.bluetooth.title" = "Cerca dispositivi";
+"post_onboarding.permission.notification.message" = "Notifications can be useful in your automations. Tap the icon to allow or deny.";
+"post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
 "preview_output" = "Anteprima dell'output";
+"privacyLabel" = "Privacy";
 "reload_label" = "Ricarica";
 "requires_version" = "Richiede %@ o successivo";
 "retry_label" = "Riprova";

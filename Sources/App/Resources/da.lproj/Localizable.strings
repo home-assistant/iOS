@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Er du sikker?";
 "connection.permission.internal_url.title" = "Tilladelsesadgang";
 "connection_error.advanced_section.title" = "Advanced";
+"connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Open settings";
 "continue_label" = "Fortsæt";
 "copy_label" = "Kopiér";
@@ -443,9 +444,21 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.manual_setup.couldnt_make_url.message" = "Værdien '%@' var ikke en gyldig webadresse.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kunne ikke oprette en webadresse";
 "onboarding.manual_setup.description" = "Webadressen til din Home Assistant-server. Sørg for, at den indeholder protokollen og porten.";
+"onboarding.manual_setup.helper_section.title" = "Did you mean...";
+"onboarding.manual_setup.input_error.message" = "Make sure you have entered a valid URL.";
+"onboarding.manual_setup.input_error.title" = "Invalid URL";
 "onboarding.manual_setup.no_scheme.message" = "Skal vi prøve at forbinde ved hjælp af http:// eller https://?";
 "onboarding.manual_setup.no_scheme.title" = "Webadresse-adresse angivet uden scheme";
+"onboarding.manual_setup.text_field.placeholder" = "e.g. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Your Home Assistant URL";
 "onboarding.manual_setup.title" = "Indtast webadresse";
+"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
+"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
+"onboarding.permission.location.buttons.deny" = "Deny";
+"onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
+"onboarding.permission.location.deny.alert.title" = "Are you sure?";
+"onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Tillad";
 "onboarding.permissions.allowed" = "Udført";
 "onboarding.permissions.change_later_note" = "Du kan ændre denne tilladelse senere i Indstillinger";
@@ -474,18 +487,25 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.permissions.notification.title" = "Notifikationer";
 "onboarding.scanning.discovered_announcement" = "Fandt: %@";
 "onboarding.scanning.manual" = "Indtast adresse manuelt";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Kan du ikke finde din server?";
 "onboarding.scanning.title" = "Søger efter servere";
+"onboarding.servers.docs.read" = "Read documentation";
+"onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.welcome.description" = "Denne app forbinder til din Home Assistant-server og giver mulighed for at integrere data om dig og din telefon. \
 \
 Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus på lokal kontrol og privatliv.";
+"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Lær mere";
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@!";
 "open_label" = "Åbn";
 "permission.screen.bluetooth.secondary_button" = "Spring over";
 "permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
 "permission.screen.bluetooth.title" = "Søg enheder";
+"post_onboarding.permission.notification.message" = "Notifications can be useful in your automations. Tap the icon to allow or deny.";
+"post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
 "preview_output" = "Forhåndsvisning af output";
+"privacyLabel" = "Privacy";
 "reload_label" = "Genindlæs";
 "requires_version" = "Kræver %@ eller nyere.";
 "retry_label" = "Prøv igen";
