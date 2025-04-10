@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
 "connection_error.advanced_section.title" = "Zaawansowane";
+"connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Otwórz ustawienia";
 "continue_label" = "Kontynuuj";
 "copy_label" = "Kopiuj";
@@ -441,9 +442,21 @@
 "onboarding.manual_setup.couldnt_make_url.message" = "Wartość „ %@ ” nie jest prawidłowym adresem URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nie udało się utworzyć adresu URL";
 "onboarding.manual_setup.description" = "Adres URL serwera Asystenta Domowego. Upewnij się, że zawiera on protokół i port.";
+"onboarding.manual_setup.helper_section.title" = "Did you mean...";
+"onboarding.manual_setup.input_error.message" = "Make sure you have entered a valid URL.";
+"onboarding.manual_setup.input_error.title" = "Invalid URL";
 "onboarding.manual_setup.no_scheme.message" = "Czy powinniśmy spróbować połączyć się za pomocą http:// czy https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL wprowadzony bez schematu";
+"onboarding.manual_setup.text_field.placeholder" = "e.g. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Your Home Assistant URL";
 "onboarding.manual_setup.title" = "Wpisz adres URL";
+"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
+"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
+"onboarding.permission.location.buttons.deny" = "Deny";
+"onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
+"onboarding.permission.location.deny.alert.title" = "Are you sure?";
+"onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Zezwól";
 "onboarding.permissions.allowed" = "Gotowe";
 "onboarding.permissions.change_later_note" = "You can change this permission later in Settings";
@@ -472,18 +485,25 @@
 "onboarding.permissions.notification.title" = "Powiadomienia";
 "onboarding.scanning.discovered_announcement" = "Odkryto: %@";
 "onboarding.scanning.manual" = "Wprowadź adres ręcznie";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Nie możesz znaleźć swojego serwera?";
 "onboarding.scanning.title" = "Wyszukiwanie serwerów Home Assistanta";
+"onboarding.servers.docs.read" = "Read documentation";
+"onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
+"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.title" = "Witamy w aplikacji Home Assistant %@!";
 "open_label" = "Otwórz";
 "permission.screen.bluetooth.secondary_button" = "Skip";
 "permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
 "permission.screen.bluetooth.title" = "Search devices";
+"post_onboarding.permission.notification.message" = "Notifications can be useful in your automations. Tap the icon to allow or deny.";
+"post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
 "preview_output" = "Podgląd wyników";
+"privacyLabel" = "Privacy";
 "reload_label" = "Wczytaj ponownie";
 "requires_version" = "Wymaga wersji %@ lub nowszej.";
 "retry_label" = "Ponów próbę";

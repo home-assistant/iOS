@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Weet je het zeker?";
 "connection.permission.internal_url.title" = "Toestemming toegang";
 "connection_error.advanced_section.title" = "Geavanceerd";
+"connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Instellingen openen";
 "continue_label" = "Ga verder";
 "copy_label" = "Kopiëren";
@@ -443,9 +444,21 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.manual_setup.couldnt_make_url.message" = "De waarde '%@' was geen geldige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan geen URL maken";
 "onboarding.manual_setup.description" = "De URL van je Home Assistant-server. Zorg ervoor dat het protocol en de poort erin staan.";
+"onboarding.manual_setup.helper_section.title" = "Did you mean...";
+"onboarding.manual_setup.input_error.message" = "Make sure you have entered a valid URL.";
+"onboarding.manual_setup.input_error.title" = "Invalid URL";
 "onboarding.manual_setup.no_scheme.message" = "Moeten we proberen verbinding te maken via http:// of https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL ingevoerd zonder schema";
+"onboarding.manual_setup.text_field.placeholder" = "e.g. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Your Home Assistant URL";
 "onboarding.manual_setup.title" = "URL invoeren";
+"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
+"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
+"onboarding.permission.location.buttons.deny" = "Deny";
+"onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
+"onboarding.permission.location.deny.alert.title" = "Are you sure?";
+"onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Toestaan";
 "onboarding.permissions.allowed" = "Klaar";
 "onboarding.permissions.change_later_note" = "Je kunt deze toestemming later wijzigen in instellingen";
@@ -474,18 +487,25 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.permissions.notification.title" = "Meldingen";
 "onboarding.scanning.discovered_announcement" = "Ontdekt: %@";
 "onboarding.scanning.manual" = "Voer handmatig een adres in";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Kun je je server niet vinden?";
 "onboarding.scanning.title" = "Scannen naar servers";
+"onboarding.servers.docs.read" = "Read documentation";
+"onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.welcome.description" = "Deze app maakt verbinding met je Home Assistant-server en maakt het mogelijk gegevens over jou en je telefoon te integreren.\
 \
 Home Assistant is gratis en open source domotica-software met een focus op lokale controle en privacy.";
+"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Meer informatie";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";
 "permission.screen.bluetooth.secondary_button" = "Overslaan";
 "permission.screen.bluetooth.subtitle" = "De Home Assistant app kan apparaten vinden via Bluetooth van dit apparaat. Sta Bluetooth-toegang toe voor de Home Assistant app.";
 "permission.screen.bluetooth.title" = "Zoek apparaten";
+"post_onboarding.permission.notification.message" = "Notifications can be useful in your automations. Tap the icon to allow or deny.";
+"post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
 "preview_output" = "Voorbeeld Output";
+"privacyLabel" = "Privacy";
 "reload_label" = "Herladen";
 "requires_version" = "Vereist %@ of hoger.";
 "retry_label" = "Probeer opnieuw";

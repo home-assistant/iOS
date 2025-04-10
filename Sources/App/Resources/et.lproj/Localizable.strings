@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Kas oled kindel?";
 "connection.permission.internal_url.title" = "Juurdepääsuluba";
 "connection_error.advanced_section.title" = "Täpsem";
+"connection_error.more_details_section.title" = "Rohkem teavet";
 "connection_error.open_settings.title" = "Ava sätted";
 "continue_label" = "Jätka";
 "copy_label" = "Kopeeri";
@@ -443,9 +444,21 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.manual_setup.couldnt_make_url.message" = "Väärtus \"%@\" ei olnud sobiv URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Ei saanud luua URL-i";
 "onboarding.manual_setup.description" = "Home Assistanti serveri URL. Veenduge, et see sisaldaks protokolli ja porti.";
+"onboarding.manual_setup.helper_section.title" = "Kas mõtlesid...";
+"onboarding.manual_setup.input_error.message" = "Veendu, et oled sisestanud kehtiva URL-i.";
+"onboarding.manual_setup.input_error.title" = "Kehtetu URL";
 "onboarding.manual_setup.no_scheme.message" = "Kas peaks proovima ühendust luua kasutades http:// või https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL sisestatud ilma skeemita";
+"onboarding.manual_setup.text_field.placeholder" = "nt http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Home Assistanti URL";
 "onboarding.manual_setup.title" = "Sisesta URL";
+"onboarding.permission.location.buttons.allow_and_share" = "Luba ja jaga Home Assistantiga";
+"onboarding.permission.location.buttons.allow_for_app" = "Luba ainult rakenduses kasutamiseks";
+"onboarding.permission.location.buttons.deny" = "Keeldu";
+"onboarding.permission.location.deny.alert.message" = "Ilma asukoha loata võivad rakenduse tulevased versioonid keelata juurdepääsu kohalikule Home Assistant'i serverile privaatsusprobleemide tõttu. Kui oled kindel, jätka ja puuduta ka järgmises hüpikaknas valikut \"Keelata\". Seda tehes soovitame kasutada oma sisemist URL-i välisena, kuna see on ainus URL, millele rakendus üritab ligi pääseda.";
+"onboarding.permission.location.deny.alert.title" = "Kas oled kindel?";
+"onboarding.permission.location.description" = "Selleks, et tuvastada, kas oled kodus ja ühendud lokaalselt Home Assistantiga, nõuab Apple, et me küsiksime asukoha luba.";
+"onboarding.permission.location.privacy_note" = "Asukohta ei jagata kohaliku Home Assistant'i serverig, kui te ei vali valikut \"Luba ja jaga Home Assistant'iga\". Jagamise saab valida hiljem kaaslase rakenduse seadetes > andurid.";
 "onboarding.permissions.allow" = "Luba";
 "onboarding.permissions.allowed" = "Valmis";
 "onboarding.permissions.change_later_note" = "Seda luba saad hiljem muuta seadetes";
@@ -474,18 +487,25 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.permissions.notification.title" = "Teavitused";
 "onboarding.scanning.discovered_announcement" = "Avastatud: %@";
 "onboarding.scanning.manual" = "Sisesta aadress käsitsi";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Ei leia oma serverit?";
 "onboarding.scanning.title" = "Serverite otsimine";
+"onboarding.servers.docs.read" = "Loe dokumentatsiooni";
+"onboarding.servers.search.message" = "Otsin läheduses olevaid servereid...";
 "onboarding.welcome.description" = "See rakendus loob ühenduse Home Assistanti serveriga ja võimaldab integreerida teie ja teie telefoni andmeid. \
 \
  Home Assistant on tasuta avatud lähtekoodiga koduautomaatika tarkvara, mis keskendub kohalikule juhtimisele ja privaatsusele.";
+"onboarding.welcome.get_started" = "Alusta Home Assistantiga";
 "onboarding.welcome.learn_more" = "Lisateave";
 "onboarding.welcome.title" = "Tere tulemast Home Assistanti %@!";
 "open_label" = "Avatud";
 "permission.screen.bluetooth.secondary_button" = "Jäta vahele";
 "permission.screen.bluetooth.subtitle" = "Home Assistant'i rakendus suudab selle seadme Bluetoothiga seadmeid leida. Luba rakenduse Home Assistant jaoks Bluetooth-juurdepääs.";
 "permission.screen.bluetooth.title" = "Otsi seadmeid";
+"post_onboarding.permission.notification.message" = "Märguanded võivad olla kasulikud automatiseerimistes. Koputa ikooni, et lubada või keelata.";
+"post_onboarding.permission.notification.title" = "Kas soovid märguandeid saada?";
 "preview_output" = "Kujunduse eelvaade";
+"privacyLabel" = "Privaatsus";
 "reload_label" = "Taaslae";
 "requires_version" = "Nõuab %@ või uuemat versiooni.";
 "retry_label" = "Proovi uuesti";

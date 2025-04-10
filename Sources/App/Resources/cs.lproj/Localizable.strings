@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Jste si jisti?";
 "connection.permission.internal_url.title" = "Povolení přístupu";
 "connection_error.advanced_section.title" = "Rozšířené";
+"connection_error.more_details_section.title" = "Více informací";
 "connection_error.open_settings.title" = "Otevřít nastavení";
 "continue_label" = "Pokračovat";
 "copy_label" = "Kopírovat";
@@ -443,9 +444,21 @@
 "onboarding.manual_setup.couldnt_make_url.message" = "Hodnota \"%@\" není platná URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nelze vytvořit URL.";
 "onboarding.manual_setup.description" = "URL Vašeho serveru Home Assistanta. Ujistěte se, že obsahuje protokol a port.";
+"onboarding.manual_setup.helper_section.title" = "Mysleli jste...";
+"onboarding.manual_setup.input_error.message" = "Ujistěte se, že jste zadali platnou adresu URL.";
+"onboarding.manual_setup.input_error.title" = "Neplatná URL adresa";
 "onboarding.manual_setup.no_scheme.message" = "Zkusit se připojit přes http:// nebo https://?";
 "onboarding.manual_setup.no_scheme.title" = "URL zadána bez schématu";
+"onboarding.manual_setup.text_field.placeholder" = "např. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Adresa URL Home Assistanta";
 "onboarding.manual_setup.title" = "Zadat URL";
+"onboarding.permission.location.buttons.allow_and_share" = "Povolit a sdílet s Home Assistantem";
+"onboarding.permission.location.buttons.allow_for_app" = "Povolit jen použití aplikace";
+"onboarding.permission.location.buttons.deny" = "Odmítnout";
+"onboarding.permission.location.deny.alert.message" = "Bez povolení k poloze mohou budoucí verze aplikace odepřít přístup k vašemu místnímu serveru Home Assistant z důvodu ochrany soukromí. Pokud jste si jisti, pokračujte a v dalším vyskakovacím okně klepněte na \"Odmítnout\". Pokud tak učiníte, doporučujeme použít svou interní adresu URL jako externí, protože je to jediná adresa URL, ke které se aplikace pokusí získat přístup.";
+"onboarding.permission.location.deny.alert.title" = "Jste si jisti?";
+"onboarding.permission.location.description" = "Aby bylo možné zjistit, zda jste doma, a připojit se místně k Home Assistantovi, Apple vyžaduje, abychom vás požádali o povolení k poloze.";
+"onboarding.permission.location.privacy_note" = "Vaše poloha nebude sdílena s vaším místním serverem Home Assistant, pokud nezvolíte \"Povolit a sdílet s Home Assistantem\". Sdílení můžete zvolit později doprovodné aplikaci v Nastavení > Senzory.";
 "onboarding.permissions.allow" = "Povolit";
 "onboarding.permissions.allowed" = "Hotovo";
 "onboarding.permissions.change_later_note" = "Toto oprávnění můžete později změnit v Nastavení";
@@ -474,18 +487,25 @@
 "onboarding.permissions.notification.title" = "Oznámení";
 "onboarding.scanning.discovered_announcement" = "Zjištěno: %@";
 "onboarding.scanning.manual" = "Zadejte adresu ručně";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Nenašli jste svůj server?";
 "onboarding.scanning.title" = "Vyhledávání serverů";
+"onboarding.servers.docs.read" = "Přečíst si dokumentaci";
+"onboarding.servers.search.message" = "Hledání serverů v okolí...";
 "onboarding.welcome.description" = "Tato aplikace se připojí k Vašemu Home Assistantovi a umožní Vám propojení s Vašim telefonem.\
 \
 Home Assistant je bezplatný a otevřený software pro domácí automatizaci se zaměřením na místní ovládání a soukromí.";
+"onboarding.welcome.get_started" = "Začněte s Home Assistantem";
 "onboarding.welcome.learn_more" = "Více informací";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
 "open_label" = "Otevřít";
 "permission.screen.bluetooth.secondary_button" = "Přeskočit";
 "permission.screen.bluetooth.subtitle" = "Aplikace Home Assistant dokáže najít zařízení pomocí Bluetooth tohoto zařízení. Povolte aplikaci Home Assistant přístup přes Bluetooth.";
 "permission.screen.bluetooth.title" = "Hledat zařízení";
+"post_onboarding.permission.notification.message" = "Oznámení mohou být užitečná při automatizaci. Klepnutím na ikonu je můžete povolit nebo zakázat.";
+"post_onboarding.permission.notification.title" = "Chcete dostávat oznámení?";
 "preview_output" = "Náhled výstupu";
+"privacyLabel" = "Soukromí";
 "reload_label" = "Znovu načíst";
 "requires_version" = "Vyžaduje %@ nebo novější.";
 "retry_label" = "Opakovat";

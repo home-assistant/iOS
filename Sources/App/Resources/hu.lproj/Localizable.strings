@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Biztos benne?";
 "connection.permission.internal_url.title" = "Hozzáférési engedély";
 "connection_error.advanced_section.title" = "Haladó";
+"connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "Beállítások megnyitása";
 "continue_label" = "Tovább";
 "copy_label" = "Másolás";
@@ -443,9 +444,21 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.manual_setup.couldnt_make_url.message" = "%@ nem érvényes URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nem sikerült létrehozni URL-t";
 "onboarding.manual_setup.description" = "A Home Assistant szerver URL-je. Győződjön meg arról, hogy tartalmazza a protokollt és a portot.";
+"onboarding.manual_setup.helper_section.title" = "Did you mean...";
+"onboarding.manual_setup.input_error.message" = "Make sure you have entered a valid URL.";
+"onboarding.manual_setup.input_error.title" = "Invalid URL";
 "onboarding.manual_setup.no_scheme.message" = "http:// vagy https:// segítségével csatlakozna?";
 "onboarding.manual_setup.no_scheme.title" = "Séma nélkül megadott URL";
+"onboarding.manual_setup.text_field.placeholder" = "e.g. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Your Home Assistant URL";
 "onboarding.manual_setup.title" = "URL megadása";
+"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
+"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
+"onboarding.permission.location.buttons.deny" = "Deny";
+"onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
+"onboarding.permission.location.deny.alert.title" = "Are you sure?";
+"onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
+"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Engedélyezés";
 "onboarding.permissions.allowed" = "Kész";
 "onboarding.permissions.change_later_note" = "Ezt az engedélyt később módosíthatja a beállításokban";
@@ -474,18 +487,25 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.permissions.notification.title" = "Értesítések";
 "onboarding.scanning.discovered_announcement" = "Felfedezve: %@";
 "onboarding.scanning.manual" = "Cím kézi megadása";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Nem találja a szerverét?";
 "onboarding.scanning.title" = "Szerverek keresése";
+"onboarding.servers.docs.read" = "Read documentation";
+"onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.welcome.description" = "Ez az alkalmazás csatlakozik a Home Assistant szerverhez és lehetővé teszi az Önre és telefonjára vonatkozó adatok integrálását.\
 \
 A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási szoftver, amely a vezérlés helyben történő kivitelezésére és az adatvédelemre összpontosít.";
+"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Tudjon meg többet";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "open_label" = "Megnyitás";
 "permission.screen.bluetooth.secondary_button" = "Kihagyás";
 "permission.screen.bluetooth.subtitle" = "A Home Assistant alkalmazás Bluetooth-on keresztül képes megkeresni az eszköz Bluetooth-kapcsolatát használó eszközöket. Engedélyezze a Bluetooth-hozzáférést a Home Assistant alkalmazás számára.";
 "permission.screen.bluetooth.title" = "Eszközök keresése";
+"post_onboarding.permission.notification.message" = "Notifications can be useful in your automations. Tap the icon to allow or deny.";
+"post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
 "preview_output" = "Eredmény előnézete";
+"privacyLabel" = "Privacy";
 "reload_label" = "Újratöltés";
 "requires_version" = "%@ vagy újabb szükséges.";
 "retry_label" = "Újra";

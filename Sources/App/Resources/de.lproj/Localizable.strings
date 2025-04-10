@@ -214,6 +214,7 @@
 "connection.permission.internal_url.ignore.alert.title" = "Bist du sicher?";
 "connection.permission.internal_url.title" = "Berechtigungszugriff";
 "connection_error.advanced_section.title" = "Erweitert";
+"connection_error.more_details_section.title" = "Mehr Details";
 "connection_error.open_settings.title" = "Einstellungen öffnen";
 "continue_label" = "Weiter";
 "copy_label" = "Kopieren";
@@ -443,9 +444,21 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.manual_setup.couldnt_make_url.message" = "Der Wert ' %@ ' war keine gültige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL konnte nicht erstellt werden";
 "onboarding.manual_setup.description" = "Die URL deines Home Assistant-Servers. Achte darauf, dass sie das Protokoll und den Port enthält.";
+"onboarding.manual_setup.helper_section.title" = "Meintest du …";
+"onboarding.manual_setup.input_error.message" = "Stelle sicher, dass du eine gültige URL eingegeben hast.";
+"onboarding.manual_setup.input_error.title" = "Ungültige URL";
 "onboarding.manual_setup.no_scheme.message" = "Sollen wir versuchen, eine Verbindung über http:// oder https:// herzustellen?";
 "onboarding.manual_setup.no_scheme.title" = "URL ohne Schema eingegeben";
+"onboarding.manual_setup.text_field.placeholder" = "z.B. http://homeassistant.local:8123";
+"onboarding.manual_setup.text_field.title" = "Deine Home Assistant-URL";
 "onboarding.manual_setup.title" = "URL eingeben";
+"onboarding.permission.location.buttons.allow_and_share" = "Zulassen und mit Home Assistant teilen";
+"onboarding.permission.location.buttons.allow_for_app" = "Nur für App-Nutzung zulassen";
+"onboarding.permission.location.buttons.deny" = "Ablehnen";
+"onboarding.permission.location.deny.alert.message" = "Ohne Standortberechtigung können zukünftige Versionen der App den Zugriff auf deinen lokalen Home Assistant-Server aus Datenschutzgründen verweigern. Wenn du sicher bist, fahre bitte fort und tippe im nächsten Popup ebenfalls auf „Ablehnen“. Wir empfehlen, deine interne URL als externe URL zu verwenden, da die App nur auf diese URL zugreifen kann.";
+"onboarding.permission.location.deny.alert.title" = "Bist du sicher?";
+"onboarding.permission.location.description" = "Um festzustellen, ob du zuhause bist und dich lokal mit Home Assistant verbindest, müssen wir dich um die Berechtigung für deinen Standort bitten.";
+"onboarding.permission.location.privacy_note" = "Dein Standort wird nicht mit deinem lokalen Home Assistant-Server geteilt, es sei denn, du wählst „Zulassen und mit Home Assistant teilen“. Du kannst die Freigabe später in den Einstellungen der Companion-App > Sensoren auswählen.";
 "onboarding.permissions.allow" = "Erlauben";
 "onboarding.permissions.allowed" = "Beendet";
 "onboarding.permissions.change_later_note" = "Diese Berechtigung kann später in den Einstellungen geändert werden";
@@ -474,18 +487,25 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.notification.title" = "Benachrichtigungen";
 "onboarding.scanning.discovered_announcement" = "Entdeckt: %@";
 "onboarding.scanning.manual" = "Adresse manuell eingeben";
+"onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Wird dein Server nicht gefunden?";
 "onboarding.scanning.title" = "Server werden gesucht";
+"onboarding.servers.docs.read" = "Dokumentation lesen";
+"onboarding.servers.search.message" = "Suche nach Servern in der Nähe …";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
 Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
+"onboarding.welcome.get_started" = "Erste Schritte mit Home Assistant";
 "onboarding.welcome.learn_more" = "Mehr erfahren";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";
 "permission.screen.bluetooth.secondary_button" = "Überspringen";
 "permission.screen.bluetooth.subtitle" = "Die Home Assistant-App kann Geräte über Bluetooth dieses Geräts finden. Erlaube der Home Assistant-App den Bluetooth-Zugriff.";
 "permission.screen.bluetooth.title" = "Geräte suchen";
+"post_onboarding.permission.notification.message" = "Benachrichtigungen können in deinen Automationen nützlich sein. Tippe auf das Symbol, um sie zuzulassen oder abzulehnen.";
+"post_onboarding.permission.notification.title" = "Möchtest du Benachrichtigungen erhalten?";
 "preview_output" = "Vorschau der Ausgabe";
+"privacyLabel" = "Datenschutz";
 "reload_label" = "Neu laden";
 "requires_version" = "Erfordert %@ oder neuer.";
 "retry_label" = "Erneut versuchen";

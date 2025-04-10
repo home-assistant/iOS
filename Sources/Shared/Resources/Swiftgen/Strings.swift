@@ -870,6 +870,10 @@ public enum L10n {
   }
 
   public enum ConnectionError {
+    public enum AdvancedSection {
+      /// Advanced
+      public static var title: String { return L10n.tr("Localizable", "connection_error.advanced_section.title") }
+    }
     public enum MoreDetailsSection {
       /// More details
       public static var title: String { return L10n.tr("Localizable", "connection_error.more_details_section.title") }
@@ -1820,6 +1824,8 @@ public enum L10n {
       public static func discoveredAnnouncement(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.scanning.discovered_announcement", String(describing: p1))
       }
+      /// Enter Address Manually
+      public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
       /// Not finding your server?
       public static var manualHint: String { return L10n.tr("Localizable", "onboarding.scanning.manual_hint") }
       /// Scanning for Servers
@@ -1846,8 +1852,14 @@ public enum L10n {
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
-      /// Learn more about Home Assistant
+      /// Get started with Home Assistant
+      public static var getStarted: String { return L10n.tr("Localizable", "onboarding.welcome.get_started") }
+      /// Learn more
       public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
+      /// Welcome to Home Assistant %@!
+      public static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
+      }
     }
   }
 
