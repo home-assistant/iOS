@@ -19,19 +19,30 @@ struct OnboardingServersListView: View {
         List {
             headerView
             list
+            manualInputButton
         }
         .animation(.easeInOut, value: viewModel.discoveredInstances.count)
-        .safeAreaInset(edge: .bottom) {
-            bottomButtons
-        }
         .navigationTitle(L10n.Onboarding.Scanning.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .opacity(viewModel.isLoading ? 1 : 0)
-                    .animation(.easeInOut, value: viewModel.isLoading)
+                // Loading happens when URL is manually inputed by user
+                if viewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                } else {
+                    Button(action: {
+                        showDocumentation = true
+                    }, label: {
+                        Image(uiImage: MaterialDesignIcons.bookOpenPageVariantIcon.image(
+                            ofSize: .init(width: 25, height: 25),
+                            color: .accent
+                        ))
+                    })
+                    .fullScreenCover(isPresented: $showDocumentation) {
+                        SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
+                    }
+                }
             }
         })
         .onAppear {
@@ -42,6 +53,15 @@ struct OnboardingServersListView: View {
         }
         .sheet(isPresented: $viewModel.showError) {
             errorView
+        }
+        .sheet(isPresented: $showManualInput) {
+            ManualURLEntryView { connectURL in
+                viewModel.isLoading = true
+                viewModel.selectInstance(
+                    .init(manualURL: connectURL),
+                    controller: hostingProvider.viewController
+                )
+            }
         }
         .fullScreenCover(isPresented: .init(get: {
             viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
@@ -119,38 +139,38 @@ struct OnboardingServersListView: View {
         .tint(Color(uiColor: .label))
     }
 
-    private var bottomButtons: some View {
+    private var manualInputButton: some View {
         VStack {
-            VStack {
-                Button(action: {
-                    showManualInput = true
-                }) {
-                    Text(L10n.Onboarding.Scanning.Manual.Button.title)
-                }
-                .buttonStyle(.primaryButton)
-                .sheet(isPresented: $showManualInput) {
-                    ManualURLEntryView { connectURL in
-                        viewModel.isLoading = true
-                        viewModel.selectInstance(
-                            .init(manualURL: connectURL),
-                            controller: hostingProvider.viewController
-                        )
-                    }
-                }
-                Button(action: {
-                    showDocumentation = true
-                }) {
-                    Text(L10n.Onboarding.Servers.Docs.read)
-                }
-                .buttonStyle(.secondaryButton)
-                .fullScreenCover(isPresented: $showDocumentation) {
-                    SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
-                }
+            if !viewModel.discoveredInstances.isEmpty {
+                orDivider
             }
-            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+            Button(action: {
+                showManualInput = true
+            }) {
+                Text(L10n.Onboarding.Scanning.Manual.Button.title)
+            }
+            .buttonStyle(.linkButton)
+            .padding()
         }
-        .frame(maxWidth: .infinity)
-        .padding([.horizontal, .top])
-        .background(.ultraThinMaterial)
+        .listRowBackground(Color.clear)
+    }
+
+    // Divider between the list and manual input button providing alternative
+    private var orDivider: some View {
+        HStack {
+            line()
+            Text(L10n.Onboarding.Scanning.Manual.Button.Divider.title)
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+            line()
+        }
+        .padding(.vertical, Spaces.one)
+        .opacity(0.5)
+    }
+
+    private func line() -> some View {
+        Rectangle()
+            .frame(maxWidth: .infinity)
+            .frame(height: 1)
+            .foregroundStyle(Color(uiColor: .secondaryLabel))
     }
 }
