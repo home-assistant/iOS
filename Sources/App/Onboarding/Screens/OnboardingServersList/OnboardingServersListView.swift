@@ -28,10 +28,20 @@ struct OnboardingServersListView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .opacity(viewModel.isLoading ? 1 : 0)
-                    .animation(.easeInOut, value: viewModel.isLoading)
+                // Loading happens when URL is manually inputed by user
+                if viewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                } else {
+                    Button(action: {
+                        showDocumentation = true
+                    }, label: {
+                        Image(uiImage: MaterialDesignIcons.bookOpenPageVariantIcon.image(ofSize: .init(width: 25, height: 25), color: .accent))
+                    })
+                    .fullScreenCover(isPresented: $showDocumentation) {
+                        SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
+                    }
+                }
             }
         })
         .onAppear {
@@ -136,15 +146,6 @@ struct OnboardingServersListView: View {
                             controller: hostingProvider.viewController
                         )
                     }
-                }
-                Button(action: {
-                    showDocumentation = true
-                }) {
-                    Text(L10n.Onboarding.Servers.Docs.read)
-                }
-                .buttonStyle(.secondaryButton)
-                .fullScreenCover(isPresented: $showDocumentation) {
-                    SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
                 }
             }
             .frame(maxWidth: Sizes.maxWidthForLargerScreens)
