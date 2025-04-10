@@ -1828,6 +1828,10 @@ public enum L10n {
         public enum Button {
           /// Enter address manually
           public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.manual.button.title") }
+          public enum Divider {
+            /// or
+            public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.manual.button.divider.title") }
+          }
         }
       }
     }
