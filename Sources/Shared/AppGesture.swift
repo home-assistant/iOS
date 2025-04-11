@@ -1,12 +1,36 @@
 import Foundation
 import UIKit
 
+public enum HAGestureActionCategory: String, CaseIterable {
+    case homeAssistant
+    case page
+    case servers
+    case app
+    case other
+
+    public var localizedString: String {
+        switch self {
+        case .homeAssistant:
+            L10n.Gestures.Category.homeAssistant
+        case .page:
+            L10n.Gestures.Category.page
+        case .servers:
+            L10n.Gestures.Category.homeAssistant
+        case .app:
+            L10n.Gestures.Category.app
+        case .other:
+            L10n.Gestures.Category.other
+        }
+    }
+}
+
 public enum HAGestureAction: String, Codable, CaseIterable {
+    // Home Assistant
     case showSidebar
+    case searchEntities
     // Page
     case backPage
     case nextPage
-    case searchEntities
     // Servers
     case showServersList
     case nextServer
@@ -14,55 +38,71 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // App screens
     case showSettings
     case openDebug
+    // Other
     case none
+
+    public var category: HAGestureActionCategory {
+        switch self {
+        case .showSidebar, .searchEntities:
+            .homeAssistant
+        case .backPage, .nextPage:
+            .page
+        case .showServersList, .nextServer, .previousServer:
+            .servers
+        case .showSettings, .openDebug:
+            .app
+        case .none:
+            .other
+        }
+    }
 
     public var localizedString: String {
         switch self {
         case .showSidebar:
-            return L10n.Gestures.Value.Option.showSidebar
+            L10n.Gestures.Value.Option.showSidebar
         case .backPage:
-            return L10n.Gestures.Value.Option.backPage
+            L10n.Gestures.Value.Option.backPage
         case .nextPage:
-            return L10n.Gestures.Value.Option.nextPage
+            L10n.Gestures.Value.Option.nextPage
         case .searchEntities:
-            return "Search entities"
+            L10n.Gestures.Value.Option.searchEntities
         case .showServersList:
-            return L10n.Gestures.Value.Option.serversList
+            L10n.Gestures.Value.Option.serversList
         case .nextServer:
-            return L10n.Gestures.Value.Option.nextServer
+            L10n.Gestures.Value.Option.nextServer
         case .previousServer:
-            return L10n.Gestures.Value.Option.previousServer
+            L10n.Gestures.Value.Option.previousServer
         case .showSettings:
-            return L10n.Gestures.Value.Option.showSettings
+            L10n.Gestures.Value.Option.showSettings
         case .none:
-            return L10n.Gestures.Value.Option.none
+            L10n.Gestures.Value.Option.none
         case .openDebug:
-            return L10n.Gestures.Value.Option.openDebug
+            L10n.Gestures.Value.Option.openDebug
         }
     }
 
     public var moreInfo: String? {
         switch self {
         case .showSidebar:
-            return nil
+            nil
         case .backPage:
-            return nil
+            nil
         case .nextPage:
-            return nil
+            nil
         case .searchEntities:
-            return "The same keyboard 'e' shortcut on browser which opens search entities."
+            L10n.Gestures.Value.Option.MoreInfo.searchEntities
         case .showServersList:
-            return nil
+            nil
         case .nextServer:
-            return nil
+            nil
         case .previousServer:
-            return nil
+            nil
         case .showSettings:
-            return nil
+            nil
         case .none:
-            return nil
+            nil
         case .openDebug:
-            return nil
+            nil
         }
     }
 }

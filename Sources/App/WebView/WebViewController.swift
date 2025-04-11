@@ -1329,7 +1329,7 @@ extension WebViewController {
 
     private func showSearchEntities() {
         webView.evaluateJavaScript(WebViewJavascriptCommands.searchEntitiesKeyEvent) { _, error in
-            if let error = error {
+            if let error {
                 Current.Log.error("JavaScript error while trying to open entities search: \(error)")
             } else {
                 Current.Log.info("Open entities search command sent to webview")

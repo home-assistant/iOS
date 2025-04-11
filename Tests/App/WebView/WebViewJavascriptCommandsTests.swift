@@ -9,7 +9,6 @@
 import Testing
 
 struct WebViewJavascriptCommandsTests {
-
     @Test func testWebViewJavascriptCommandsSearchEntities() async throws {
         assert(WebViewJavascriptCommands.searchEntitiesKeyEvent == """
         var event = new KeyboardEvent('keydown', {
@@ -23,5 +22,4 @@ struct WebViewJavascriptCommandsTests {
         document.dispatchEvent(event);
         """)
     }
-
 }

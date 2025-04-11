@@ -1004,6 +1004,18 @@ public enum L10n {
       /// 3 👆 swipe up
       public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_up.title") }
     }
+    public enum Category {
+      /// App
+      public static var app: String { return L10n.tr("Localizable", "gestures.category.app") }
+      /// Home Assistant
+      public static var homeAssistant: String { return L10n.tr("Localizable", "gestures.category.homeAssistant") }
+      /// Other
+      public static var other: String { return L10n.tr("Localizable", "gestures.category.other") }
+      /// Navigation
+      public static var page: String { return L10n.tr("Localizable", "gestures.category.page") }
+      /// Servers
+      public static var servers: String { return L10n.tr("Localizable", "gestures.category.servers") }
+    }
     public enum Footer {
       /// Customize gestures to be used on the frontend.
       public static var title: String { return L10n.tr("Localizable", "gestures.footer.title") }
@@ -1040,12 +1052,18 @@ public enum L10n {
         public static var openDebug: String { return L10n.tr("Localizable", "gestures.value.option.open_debug") }
         /// Previous server
         public static var previousServer: String { return L10n.tr("Localizable", "gestures.value.option.previous_server") }
+        /// Search entities
+        public static var searchEntities: String { return L10n.tr("Localizable", "gestures.value.option.search_entities") }
         /// Servers list
         public static var serversList: String { return L10n.tr("Localizable", "gestures.value.option.servers_list") }
         /// Open App settings
         public static var showSettings: String { return L10n.tr("Localizable", "gestures.value.option.show_settings") }
         /// Show sidebar
         public static var showSidebar: String { return L10n.tr("Localizable", "gestures.value.option.show_sidebar") }
+        public enum MoreInfo {
+          /// Search entities
+          public static var searchEntities: String { return L10n.tr("Localizable", "gestures.value.option.more_info.search_entities") }
+        }
       }
     }
   }
