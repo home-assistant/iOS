@@ -487,6 +487,7 @@
 "onboarding.permissions.notification.title" = "Bildirimler";
 "onboarding.scanning.discovered_announcement" = "Bulundu:%@";
 "onboarding.scanning.manual" = "Adresi El ile Girin";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Sunucunuzu bulamıyor musunuz?";
 "onboarding.scanning.title" = "Sunucular için Tarama";

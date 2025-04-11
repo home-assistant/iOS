@@ -487,6 +487,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.permissions.notification.title" = "Notificacions";
 "onboarding.scanning.discovered_announcement" = "S'ha descobert: %@";
 "onboarding.scanning.manual" = "Introduïu l'adreça manualment";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "No trobeu el vostre servidor?";
 "onboarding.scanning.title" = "S'està cercant servidors";

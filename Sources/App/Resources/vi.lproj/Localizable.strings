@@ -487,6 +487,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.permissions.notification.title" = "Thông báo";
 "onboarding.scanning.discovered_announcement" = "Đã phát hiện: %@";
 "onboarding.scanning.manual" = "Nhập đường dẫn thủ công";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Không tìm thấy máy chủ nào.";
 "onboarding.scanning.title" = "Đang quét tìm máy chủ";

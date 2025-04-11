@@ -487,7 +487,8 @@
 "onboarding.permissions.notification.title" = "通知";
 "onboarding.scanning.discovered_announcement" = "已掃描：%@";
 "onboarding.scanning.manual" = "手動輸入位址";
-"onboarding.scanning.manual.button.title" = "Enter address manually";
+"onboarding.scanning.manual.button.divider.title" = "or";
+"onboarding.scanning.manual.button.title" = "手動輸入位址";
 "onboarding.scanning.manual_hint" = "找不到伺服器？";
 "onboarding.scanning.title" = "掃描伺服器";
 "onboarding.servers.docs.read" = "閱讀文件";

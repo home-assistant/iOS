@@ -485,6 +485,7 @@
 "onboarding.permissions.notification.title" = "Powiadomienia";
 "onboarding.scanning.discovered_announcement" = "Odkryto: %@";
 "onboarding.scanning.manual" = "Wprowadź adres ręcznie";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Nie możesz znaleźć swojego serwera?";
 "onboarding.scanning.title" = "Wyszukiwanie serwerów Home Assistanta";

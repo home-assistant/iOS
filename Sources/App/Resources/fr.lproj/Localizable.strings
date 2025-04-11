@@ -487,6 +487,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.permissions.notification.title" = "Notifications";
 "onboarding.scanning.discovered_announcement" = "Découvert %@";
 "onboarding.scanning.manual" = "Saisir l'adresse manuellement";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Vous ne trouvez pas votre serveur?";
 "onboarding.scanning.title" = "Recherche de serveurs";

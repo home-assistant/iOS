@@ -487,6 +487,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.permissions.notification.title" = "Notifikationer";
 "onboarding.scanning.discovered_announcement" = "Fandt: %@";
 "onboarding.scanning.manual" = "Indtast adresse manuelt";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Kan du ikke finde din server?";
 "onboarding.scanning.title" = "Søger efter servere";

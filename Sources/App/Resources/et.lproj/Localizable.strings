@@ -487,7 +487,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.permissions.notification.title" = "Teavitused";
 "onboarding.scanning.discovered_announcement" = "Avastatud: %@";
 "onboarding.scanning.manual" = "Sisesta aadress käsitsi";
-"onboarding.scanning.manual.button.title" = "Enter address manually";
+"onboarding.scanning.manual.button.divider.title" = "or";
+"onboarding.scanning.manual.button.title" = "Sisesta aadress käsitsi";
 "onboarding.scanning.manual_hint" = "Ei leia oma serverit?";
 "onboarding.scanning.title" = "Serverite otsimine";
 "onboarding.servers.docs.read" = "Loe dokumentatsiooni";

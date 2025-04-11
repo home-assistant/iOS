@@ -487,6 +487,7 @@
 "onboarding.permissions.notification.title" = "Сповіщення";
 "onboarding.scanning.discovered_announcement" = "Discovered: %@";
 "onboarding.scanning.manual" = "Ввести адресу вручну";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Не знайшли свій сервер?";
 "onboarding.scanning.title" = "Сканування серверів";
