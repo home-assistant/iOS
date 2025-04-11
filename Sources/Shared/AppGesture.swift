@@ -3,11 +3,15 @@ import UIKit
 
 public enum HAGestureAction: String, Codable, CaseIterable {
     case showSidebar
+    // Page
     case backPage
     case nextPage
+    case searchEntities
+    // Servers
     case showServersList
     case nextServer
     case previousServer
+    // App screens
     case showSettings
     case openDebug
     case none
@@ -20,6 +24,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             return L10n.Gestures.Value.Option.backPage
         case .nextPage:
             return L10n.Gestures.Value.Option.nextPage
+        case .searchEntities:
+            return "Search entities"
         case .showServersList:
             return L10n.Gestures.Value.Option.serversList
         case .nextServer:
@@ -32,6 +38,31 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             return L10n.Gestures.Value.Option.none
         case .openDebug:
             return L10n.Gestures.Value.Option.openDebug
+        }
+    }
+
+    public var moreInfo: String? {
+        switch self {
+        case .showSidebar:
+            return nil
+        case .backPage:
+            return nil
+        case .nextPage:
+            return nil
+        case .searchEntities:
+            return "The same keyboard 'e' shortcut on browser which opens search entities."
+        case .showServersList:
+            return nil
+        case .nextServer:
+            return nil
+        case .previousServer:
+            return nil
+        case .showSettings:
+            return nil
+        case .none:
+            return nil
+        case .openDebug:
+            return nil
         }
     }
 }
