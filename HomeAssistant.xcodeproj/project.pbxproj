@@ -765,6 +765,10 @@
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
+		429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */; };
+		429481EB2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */; };
+		429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EC2DA943E700A8B468 /* ListPicker.swift */; };
+		429481EF2DA94B9900A8B468 /* ListPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EE2DA94B9900A8B468 /* ListPickerTests.swift */; };
 		4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */; };
 		4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36C2B90DB630051B63C /* PerformAction.swift */; };
 		4296C3762B91F0F50051B63C /* WidgetActionsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */; };
@@ -2187,6 +2191,10 @@
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		4291068D2BA9D93500D452F9 /* AssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistService.swift; sourceTree = "<group>"; };
+		429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptCommands.swift; sourceTree = "<group>"; };
+		429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptCommandsTests.swift; sourceTree = "<group>"; };
+		429481EC2DA943E700A8B468 /* ListPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPicker.swift; sourceTree = "<group>"; };
+		429481EE2DA94B9900A8B468 /* ListPickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPickerTests.swift; sourceTree = "<group>"; };
 		4296C36B2B90DB630051B63C /* IntentActionAppEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntentActionAppEntity.swift; sourceTree = "<group>"; };
 		4296C36C2B90DB630051B63C /* PerformAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
@@ -3343,6 +3351,7 @@
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
 				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				420C57C62D0A6DE700D2D9AC /* NoActiveURLView.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
@@ -3773,6 +3782,7 @@
 				42A47A882C452D7C00C9B43D /* Mocks */,
 				42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */,
 				42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */,
+				429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -4268,6 +4278,7 @@
 				4278CB802D01E61D00CFAAC9 /* GesturesSetupView.swift */,
 				4278CB842D01F0B200CFAAC9 /* GesturesSetupViewModel.swift */,
 				4278CB872D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift */,
+				429481EC2DA943E700A8B468 /* ListPicker.swift */,
 			);
 			path = Gestures;
 			sourceTree = "<group>";
@@ -4347,6 +4358,7 @@
 				428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */,
 				428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */,
 				428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */,
+				429481EE2DA94B9900A8B468 /* ListPickerTests.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -7428,6 +7440,7 @@
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
+				429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
@@ -7629,6 +7642,7 @@
 				4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
 				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
+				429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
 				427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */,
@@ -7689,6 +7703,7 @@
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
 				11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */,
 				42E3B8C02D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */,
+				429481EF2DA94B9900A8B468 /* ListPickerTests.swift in Sources */,
 				42FCD0032B9B1CB70057783F /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				42FCD0042B9B1CB70057783F /* ThreadCredentialsSharing.test.swift in Sources */,
 				42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */,
@@ -7722,6 +7737,7 @@
 				11ED439C2726600000B5FD45 /* OnboardingAuthStepSensors.test.swift in Sources */,
 				42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */,
 				11A71C7324A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift in Sources */,
+				429481EB2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift in Sources */,
 				119C786725CF845800D41734 /* LocalizedStrings.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

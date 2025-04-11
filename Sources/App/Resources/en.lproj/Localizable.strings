@@ -263,6 +263,13 @@
 "gestures.value.option.servers_list" = "Servers list";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Show sidebar";
+"gestures.value.option.search_entities" = "Search entities";
+"gestures.value.option.more_info.search_entities" = "Search entities";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
+"gestures.category.app" = "App";
+"gestures.category.other" = "Other";
 "grdb.config.migration_error.failed_access_grdb" = "Failed to access database (GRDB), error: %@";
 "grdb.config.migration_error.failed_to_save" = "Failed to save new config, error: %@";
 "ha_api.api_error.cant_build_url" = "Cant build API URL";

@@ -1322,6 +1322,18 @@ extension WebViewController {
             break
         case .openDebug:
             openDebug()
+        case .searchEntities:
+            showSearchEntities()
+        }
+    }
+
+    private func showSearchEntities() {
+        webView.evaluateJavaScript(WebViewJavascriptCommands.searchEntitiesKeyEvent) { _, error in
+            if let error {
+                Current.Log.error("JavaScript error while trying to open entities search: \(error)")
+            } else {
+                Current.Log.info("Open entities search command sent to webview")
+            }
         }
     }
 
