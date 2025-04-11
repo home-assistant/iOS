@@ -487,7 +487,8 @@
 "onboarding.permissions.notification.title" = "Oznámení";
 "onboarding.scanning.discovered_announcement" = "Zjištěno: %@";
 "onboarding.scanning.manual" = "Zadejte adresu ručně";
-"onboarding.scanning.manual.button.title" = "Enter address manually";
+"onboarding.scanning.manual.button.divider.title" = "or";
+"onboarding.scanning.manual.button.title" = "Zadat adresu ručně";
 "onboarding.scanning.manual_hint" = "Nenašli jste svůj server?";
 "onboarding.scanning.title" = "Vyhledávání serverů";
 "onboarding.servers.docs.read" = "Přečíst si dokumentaci";

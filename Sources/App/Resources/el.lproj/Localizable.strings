@@ -487,6 +487,7 @@
 "onboarding.permissions.notification.title" = "Ειδοποιήσεις";
 "onboarding.scanning.discovered_announcement" = "Ανακαλύφθηκε: %@";
 "onboarding.scanning.manual" = "Εισαγωγή διεύθυνσης χειροκίνητα";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Δεν βρίσκετε τον διακομιστή σας;";
 "onboarding.scanning.title" = "Σάρωση για διακομιστές";

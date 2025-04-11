@@ -487,6 +487,7 @@
 "onboarding.permissions.notification.title" = "通知";
 "onboarding.scanning.discovered_announcement" = "発見: %@";
 "onboarding.scanning.manual" = "アドレスを手動で入力";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "サーバーが見つかりませんか？";
 "onboarding.scanning.title" = "サーバーのスキャン";

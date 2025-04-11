@@ -487,6 +487,7 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.permissions.notification.title" = "Notifications";
 "onboarding.scanning.discovered_announcement" = "Discovered: %@";
 "onboarding.scanning.manual" = "Enter Address Manually";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Not finding your server?";
 "onboarding.scanning.title" = "Scanning for Servers";

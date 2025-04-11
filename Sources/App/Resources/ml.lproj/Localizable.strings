@@ -487,6 +487,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.permissions.notification.title" = "അറിയിപ്പുകൾ";
 "onboarding.scanning.discovered_announcement" = "കണ്ടെത്തി: %@";
 "onboarding.scanning.manual" = "വിലാസം മാനുവലായി നൽകുക";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "നിങ്ങളുടെ സെർവർ കണ്ടെത്തുന്നില്ലേ?";
 "onboarding.scanning.title" = "സെർവറുകൾക്കായി സ്കാൻ ചെയ്യുന്നു";

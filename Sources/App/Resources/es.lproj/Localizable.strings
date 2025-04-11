@@ -487,6 +487,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.permissions.notification.title" = "Notificaciones";
 "onboarding.scanning.discovered_announcement" = "Se ha descubierto: %@";
 "onboarding.scanning.manual" = "Introduzca la dirección manualmente";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "¿No encontráis vuestro servidor?";
 "onboarding.scanning.title" = "Se está buscando servidores";

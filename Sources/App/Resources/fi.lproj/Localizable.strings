@@ -487,6 +487,7 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.permissions.notification.title" = "Ilmoitukset";
 "onboarding.scanning.discovered_announcement" = "Löydetty: %@";
 "onboarding.scanning.manual" = "Syötä osoite manuaalisesti";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Etkö löydä palvelinta?";
 "onboarding.scanning.title" = "Etsitään palvelimia";

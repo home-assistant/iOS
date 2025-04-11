@@ -487,6 +487,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.permissions.notification.title" = "Meldingen";
 "onboarding.scanning.discovered_announcement" = "Ontdekt: %@";
 "onboarding.scanning.manual" = "Voer handmatig een adres in";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Kun je je server niet vinden?";
 "onboarding.scanning.title" = "Scannen naar servers";

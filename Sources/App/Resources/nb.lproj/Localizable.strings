@@ -487,6 +487,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.permissions.notification.title" = "Varslinger";
 "onboarding.scanning.discovered_announcement" = "Oppdaget: %@";
 "onboarding.scanning.manual" = "Skriv inn adressen manuelt";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Finner du ikke serveren din?";
 "onboarding.scanning.title" = "Søker etter servere";

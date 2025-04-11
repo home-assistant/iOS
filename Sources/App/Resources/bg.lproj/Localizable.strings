@@ -487,6 +487,7 @@
 "onboarding.permissions.notification.title" = "Notifications";
 "onboarding.scanning.discovered_announcement" = "Открити: %@";
 "onboarding.scanning.manual" = "Въведете адрес ръчно";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Не намирате сървъра си?";
 "onboarding.scanning.title" = "Сканиране за сървъри";

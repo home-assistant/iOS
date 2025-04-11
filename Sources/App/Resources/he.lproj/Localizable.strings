@@ -487,6 +487,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.permissions.notification.title" = "הודעות";
 "onboarding.scanning.discovered_announcement" = "התגלה: %@";
 "onboarding.scanning.manual" = "מילוי כתובת באופן ידני";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "לא מצאת את השרת שלך?";
 "onboarding.scanning.title" = "סריקה לאיתור שרתים";

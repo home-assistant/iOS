@@ -487,6 +487,7 @@
 "onboarding.permissions.notification.title" = "Notificações";
 "onboarding.scanning.discovered_announcement" = "Descoberto: %@";
 "onboarding.scanning.manual" = "Digite o endereço manualmente";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Não encontrou seu servidor?";
 "onboarding.scanning.title" = "Escaneando servidores";
