@@ -15,7 +15,7 @@ public enum HAGestureActionCategory: String, CaseIterable {
         case .page:
             L10n.Gestures.Category.page
         case .servers:
-            L10n.Gestures.Category.homeAssistant
+            L10n.Gestures.Category.servers
         case .app:
             L10n.Gestures.Category.app
         case .other:
