@@ -13,11 +13,11 @@ struct ListPickerTests {
 
     @MainActor
     @Test func testLitPickerUI() async throws {
-        assertLightDarkSnapshots(of: ListPickerPreview.standard)
+        assertLightDarkSnapshots(of: ListPickerPreview.standard, drawHierarchyInKeyWindow: true)
     }
 
     @MainActor
     @Test func testLitPickerContentUI() async throws {
-        assertLightDarkSnapshots(of: ListPickerPreview.content)
+        assertLightDarkSnapshots(of: ListPickerPreview.content, drawHierarchyInKeyWindow: true)
     }
 }
