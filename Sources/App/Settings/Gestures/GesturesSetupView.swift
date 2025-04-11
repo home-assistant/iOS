@@ -19,25 +19,33 @@ struct GesturesSetupView: View {
                     AppGesture.allCases.sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
                     id: \.self
                 ) { gesture in
-                    Picker(gesture.localizedString, selection: .init(get: {
-                        viewModel.selection(for: gesture)
-                    }, set: { newValue in
-                        viewModel.setSelection(for: gesture, newValue: newValue)
-                    })) {
-                        ForEach(HAGestureAction.allCases, id: \.self) { action in
-                            makeRow(gestureAction: action)
-                        }
-                    }
-                    .modify({ view in
-                        if #available(iOS 16.0, *) {
-                            view.pickerStyle(.navigationLink)
-                        } else {
-                            view.pickerStyle(.menu)
-                        }
-                    })
+                    let selection = viewModel.selection(for: gesture)
+                    ListPicker(
+                        title: gesture.localizedString,
+                        selection: .init(get: {
+                            .init(id: selection.rawValue, title: selection.localizedString)
+                        }, set: { selectedItem in
+                            guard let newValue = HAGestureAction(rawValue: selectedItem.id) else {
+                                return
+                            }
+                            viewModel.setSelection(for: gesture, newValue: newValue)
+                        }),
+                        content: gestureActionsPickerContent
+                    )
                 }
             }
         }
+    }
+
+    private var gestureActionsPickerContent: ListPickerContent {
+        var sections: [ListPickerContent.Section] = []
+        for category in HAGestureActionCategory.allCases {
+            let items = HAGestureAction.allCases.filter({ $0.category == category }).map { action in
+                ListPickerContent.Item(id: action.rawValue, title: action.localizedString)
+            }
+            sections.append(.init(id: category.rawValue, title: category.localizedString, items: items))
+        }
+        return .init(sections: sections)
     }
 
     private func makeRow(gestureAction: HAGestureAction) -> some View {
