@@ -27,7 +27,7 @@ struct ListPicker: View {
 
     var body: some View {
         NavigationLink {
-            ListPickerContentView(selection: $selection, content: content)
+            ListPickerContentView(title: title, selection: $selection, content: content)
         } label: {
             HStack {
                 Text(title)
@@ -40,6 +40,7 @@ struct ListPicker: View {
 }
 
 struct ListPickerContentView: View {
+    let title: String
     @Binding var selection: ListPickerContent.Item
     let content: ListPickerContent
 
@@ -64,6 +65,8 @@ struct ListPickerContentView: View {
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(title)
     }
 }
 
@@ -102,22 +105,25 @@ enum ListPickerPreview {
     }
 
     static var content: some View {
-        ListPickerContentView(
-            selection: .constant(.init(id: "2", title: "aaaa")),
-            content: .init(sections: [
-                .init(id: "1", title: "Section 1", items: [
-                    .init(id: "1", title: "Abc"),
-                    .init(id: "2", title: "aaaa"),
-                    .init(id: "3", title: "bbbb"),
-                    .init(id: "4", title: "ccccc"),
-                ]),
-                .init(id: "2", title: "Section 2", items: [
-                    .init(id: "5", title: "Abc"),
-                    .init(id: "6", title: "aaaa"),
-                    .init(id: "7", title: "bbbb"),
-                    .init(id: "8", title: "ccccc"),
-                ]),
-            ])
-        )
+        NavigationView {
+            ListPickerContentView(
+                title: "Title 1",
+                selection: .constant(.init(id: "2", title: "aaaa")),
+                content: .init(sections: [
+                    .init(id: "1", title: "Section 1", items: [
+                        .init(id: "1", title: "Abc"),
+                        .init(id: "2", title: "aaaa"),
+                        .init(id: "3", title: "bbbb"),
+                        .init(id: "4", title: "ccccc"),
+                    ]),
+                    .init(id: "2", title: "Section 2", items: [
+                        .init(id: "5", title: "Abc"),
+                        .init(id: "6", title: "aaaa"),
+                        .init(id: "7", title: "bbbb"),
+                        .init(id: "8", title: "ccccc"),
+                    ]),
+                ])
+            )
+        }
     }
 }
