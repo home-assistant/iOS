@@ -6,11 +6,10 @@
 //  Copyright © 2025 Home Assistant. All rights reserved.
 //
 @testable import HomeAssistant
-import Testing
 import SnapshotTesting
+import Testing
 
 struct ListPickerTests {
-
     @MainActor
     @Test func testLitPickerUI() async throws {
         assertLightDarkSnapshots(of: ListPickerPreview.standard, drawHierarchyInKeyWindow: true)

@@ -70,6 +70,7 @@ struct ListPickerContentView: View {
 #Preview("List picker") {
     ListPickerPreview.standard
 }
+
 #Preview("List picker content") {
     ListPickerPreview.content
 }
