@@ -15,7 +15,7 @@ struct LocationPermissionView: View {
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding()
         .alert(
-            L10n.Onboarding.Permission.Location.Deny.Alert.title,
+            L10n.Onboarding.Permission.Location.Deny.Alert.header,
             isPresented: $viewModel.showDenyAlert,
             actions: {
                 Button(L10n.continueLabel, role: .destructive) {
@@ -23,7 +23,7 @@ struct LocationPermissionView: View {
                 }
             },
             message: {
-                Text(verbatim: L10n.Onboarding.Permission.Location.Deny.Alert.message)
+                Text(verbatim: L10n.Onboarding.Permission.Location.Deny.Alert.body)
             }
         )
         .onChange(of: viewModel.shouldComplete) { newValue in

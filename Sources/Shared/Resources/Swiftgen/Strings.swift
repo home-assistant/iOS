@@ -1759,10 +1759,10 @@ public enum L10n {
         }
         public enum Deny {
           public enum Alert {
-            /// Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.
-            public static var message: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.message") }
-            /// Are you sure?
-            public static var title: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.title") }
+            /// If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.
+            public static var body: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.body") }
+            /// Information
+            public static var header: String { return L10n.tr("Localizable", "onboarding.permission.location.deny.alert.header") }
           }
         }
       }

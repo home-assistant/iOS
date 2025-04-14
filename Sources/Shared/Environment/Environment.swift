@@ -420,6 +420,10 @@ public class AppEnvironment {
         ) -> Promise<CLLocation> = {
             CLLocationManager.oneShotLocation(timeout: $0.oneShotTimeout(maximum: $1))
         }
+
+        public var permissionStatus: CLAuthorizationStatus {
+            CLLocationManager().authorizationStatus
+        }
     }
 
     public var location = Location()
