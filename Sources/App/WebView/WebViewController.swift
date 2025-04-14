@@ -27,6 +27,55 @@ protocol WebViewControllerProtocol: AnyObject {
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
+    enum RestorationType {
+        case userActivity(NSUserActivity)
+        case coder(NSCoder)
+        case server(Server)
+
+        init?(_ userActivity: NSUserActivity?) {
+            if let userActivity {
+                self = .userActivity(userActivity)
+            } else {
+                return nil
+            }
+        }
+
+        var initialURL: URL? {
+            switch self {
+            case let .userActivity(userActivity):
+                return userActivity.userInfo?[RestorableStateKey.lastURL.rawValue] as? URL
+            case let .coder(coder):
+                return coder.decodeObject(of: NSURL.self, forKey: RestorableStateKey.lastURL.rawValue) as URL?
+            case .server:
+                return nil
+            }
+        }
+
+        var server: Server? {
+            let serverRawValue: String?
+
+            switch self {
+            case let .userActivity(userActivity):
+                serverRawValue = userActivity.userInfo?[RestorableStateKey.server.rawValue] as? String
+            case let .coder(coder):
+                serverRawValue = coder.decodeObject(
+                    of: NSString.self,
+                    forKey: RestorableStateKey.server.rawValue
+                ) as String?
+            case let .server(server):
+                return server
+            }
+
+            return Current.servers.server(forServerIdentifier: serverRawValue)
+        }
+    }
+
+    private enum WebViewSettingsUpdateReason {
+        case initial
+        case settingChange
+        case load
+    }
+
     var webView: WKWebView!
 
     let server: Server
@@ -41,6 +90,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
+    private var lastNavigationWasServerError = false
+    private var reconnectBackgroundTimer: Timer? {
+        willSet {
+            if reconnectBackgroundTimer != newValue {
+                reconnectBackgroundTimer?.invalidate()
+            }
+        }
+    }
+
+    private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     enum RestorableStateKey: String {
         case lastURL
@@ -54,6 +113,56 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override var prefersHomeIndicatorAutoHidden: Bool {
         Current.settingsStore.fullScreen
     }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        underlyingPreferredStatusBarStyle
+    }
+
+    init(server: Server, shouldLoadImmediately: Bool = false) {
+        self.server = server
+        self.sidebarGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
+            $0.edges = .left
+        }
+        self.rightEdgeGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
+            $0.edges = .right
+        }
+
+        super.init(nibName: nil, bundle: nil)
+
+        userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
+            $0.isEligibleForHandoff = true
+        }
+
+        sidebarGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
+        rightEdgeGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
+
+        if shouldLoadImmediately {
+            loadViewIfNeeded()
+            loadActiveURLIfNeeded()
+        }
+    }
+
+    convenience init?(restoring: RestorationType?, shouldLoadImmediately: Bool = false) {
+        if let server = restoring?.server ?? Current.servers.all.first {
+            self.init(server: server)
+        } else {
+            return nil
+        }
+
+        self.initialURL = restoring?.initialURL
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        self.urlObserver = nil
+        self.tokens.forEach { $0.cancel() }
+    }
+
+    // MARK: - View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -131,6 +240,41 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         postOnboardingNotificationPermission()
     }
+
+    // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.webView?.setNeedsLayout()
+            self.webView?.layoutIfNeeded()
+        }, completion: nil)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadActiveURLIfNeeded()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        userActivity?.resignCurrent()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        }
+    }
+
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            let action = Current.settingsStore.gestures[.shake] ?? .openDebug
+            handleGestureAction(action)
+        }
+    }
+
+    // MARK: - Private
 
     private func observeConnectionNotifications() {
         for name: Notification.Name in [
@@ -314,137 +458,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    @objc private func openServerInSafari() {
-        if let url = webView.url {
-            guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-                return
-            }
-            // Remove external_auth=1 query item from URL
-            urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
-
-            if let url = urlComponents.url {
-                UIApplication.shared.open(url)
-            }
-        }
-    }
-
-    public func showSettingsViewController() {
-        getLatestConfig()
-        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            let settingsView = SettingsViewController()
-            settingsView.hidesBottomBarWhenPushed = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            presentOverlayController(controller: navController, animated: true)
-        }
-    }
-
-    // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { _ in
-            self.webView?.setNeedsLayout()
-            self.webView?.layoutIfNeeded()
-        }, completion: nil)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        loadActiveURLIfNeeded()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        userActivity?.resignCurrent()
-    }
-
-    enum RestorationType {
-        case userActivity(NSUserActivity)
-        case coder(NSCoder)
-        case server(Server)
-
-        init?(_ userActivity: NSUserActivity?) {
-            if let userActivity {
-                self = .userActivity(userActivity)
-            } else {
-                return nil
-            }
-        }
-
-        var initialURL: URL? {
-            switch self {
-            case let .userActivity(userActivity):
-                return userActivity.userInfo?[RestorableStateKey.lastURL.rawValue] as? URL
-            case let .coder(coder):
-                return coder.decodeObject(of: NSURL.self, forKey: RestorableStateKey.lastURL.rawValue) as URL?
-            case .server:
-                return nil
-            }
-        }
-
-        var server: Server? {
-            let serverRawValue: String?
-
-            switch self {
-            case let .userActivity(userActivity):
-                serverRawValue = userActivity.userInfo?[RestorableStateKey.server.rawValue] as? String
-            case let .coder(coder):
-                serverRawValue = coder.decodeObject(
-                    of: NSString.self,
-                    forKey: RestorableStateKey.server.rawValue
-                ) as String?
-            case let .server(server):
-                return server
-            }
-
-            return Current.servers.server(forServerIdentifier: serverRawValue)
-        }
-    }
-
-    init(server: Server, shouldLoadImmediately: Bool = false) {
-        self.server = server
-        self.sidebarGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
-            $0.edges = .left
-        }
-        self.rightEdgeGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
-            $0.edges = .right
-        }
-
-        super.init(nibName: nil, bundle: nil)
-
-        userActivity = with(NSUserActivity(activityType: "\(AppConstants.BundleID).frontend")) {
-            $0.isEligibleForHandoff = true
-        }
-
-        sidebarGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
-        rightEdgeGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
-
-        if shouldLoadImmediately {
-            loadViewIfNeeded()
-            loadActiveURLIfNeeded()
-        }
-    }
-
-    convenience init?(restoring: RestorationType?, shouldLoadImmediately: Bool = false) {
-        if let server = restoring?.server ?? Current.servers.all.first {
-            self.init(server: server)
-        } else {
-            return nil
-        }
-
-        self.initialURL = restoring?.initialURL
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        self.urlObserver = nil
-        self.tokens.forEach { $0.cancel() }
-    }
-
     private func styleUI() {
         precondition(isViewLoaded && webView != nil)
 
@@ -469,13 +482,324 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setNeedsStatusBarAppearanceUpdate()
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
+    private func swiftMessagesConfig() -> SwiftMessages.Config {
+        var config = SwiftMessages.Config()
 
-        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
-            webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        config.presentationContext = .viewController(self)
+        config.duration = .forever
+        config.presentationStyle = .bottom
+        config.dimMode = .gray(interactive: true)
+        config.dimModeAccessibilityLabel = L10n.cancelLabel
+
+        return config
+    }
+
+    private func showNoActiveURLError() {
+        Current.Log.info("Showing noActiveURLError")
+        webView.scrollView.refreshControl?.endRefreshing()
+        guard !(overlayedController is NoActiveURLViewController) else { return }
+        presentOverlayController(controller: NoActiveURLViewController(server: server), animated: true)
+    }
+
+    private func getLatestConfig() {
+        _ = Current.api(for: server)?.getConfig()
+    }
+
+    private func showActionAutomationEditorNotAvailable() {
+        let alert = UIAlertController(
+            title: L10n.Alerts.ActionAutomationEditor.Unavailable.title,
+            message: L10n.Alerts.ActionAutomationEditor.Unavailable.body,
+            preferredStyle: .alert
+        )
+        alert.addAction(.init(title: L10n.okLabel, style: .default))
+        present(alert, animated: true)
+    }
+
+    private func updateWebViewSettings(reason: WebViewSettingsUpdateReason) {
+        Current.Log.info("updating web view settings for \(reason)")
+
+        // iOS 14's `pageZoom` property is almost this, but not quite - it breaks the layout as well
+        // This is quasi-private API that has existed since pre-iOS 10, but the implementation
+        // changed in iOS 12 to be like the +/- zoom buttons in Safari, which scale content without
+        // resizing the scrolling viewport.
+        let viewScale = Current.settingsStore.pageZoom.viewScaleValue
+        Current.Log.info("setting view scale to \(viewScale)")
+        webView.setValue(viewScale, forKey: "viewScale")
+
+        if !Current.isCatalyst {
+            let zoomValue = Current.settingsStore.pinchToZoom ? "true" : "false"
+            webView.evaluateJavaScript("setOverrideZoomEnabled(\(zoomValue))", completionHandler: nil)
+        }
+
+        if reason == .settingChange {
+            setNeedsStatusBarAppearanceUpdate()
+            setNeedsUpdateOfHomeIndicatorAutoHidden()
         }
     }
+
+    // MARK: - @objc
+
+    @objc private func connectionInfoDidChange() {
+        DispatchQueue.main.async { [self] in
+            loadActiveURLIfNeeded()
+        }
+    }
+
+    @objc private func loadActiveURLIfNeeded() {
+        guard let webviewURL = server.info.connection.webviewURL() else {
+            Current.Log.info("not loading, no url")
+            showNoActiveURLError()
+            return
+        }
+
+        guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
+            // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
+            webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
+            return
+        }
+
+        guard UIApplication.shared.applicationState != .background else {
+            Current.Log.info("not loading, in background")
+            return
+        }
+
+        // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
+        let request: URLRequest
+
+        if Current.settingsStore.restoreLastURL,
+           let initialURL, initialURL.baseIsEqual(to: webviewURL) {
+            Current.Log.info("restoring initial url path: \(initialURL.path)")
+            request = URLRequest(url: initialURL)
+        } else {
+            Current.Log.info("loading default url path: \(webviewURL.path)")
+            request = URLRequest(url: webviewURL)
+        }
+
+        webView.load(request)
+    }
+
+    @objc private func refresh() {
+        // called via menu/keyboard shortcut too
+        if let webviewURL = server.info.connection.webviewURL() {
+            if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
+                webView.reload()
+            } else {
+                webView.load(URLRequest(url: webviewURL))
+            }
+        } else {
+            showNoActiveURLError()
+        }
+    }
+
+    @objc private func swipe(_ gesture: UISwipeGestureRecognizer) {
+        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: 2)
+        handleGestureAction(action)
+    }
+
+    @objc private func screenEdgeGestureRecognizerAction(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        guard gesture.state == .ended else {
+            return
+        }
+        let gesture: AppGesture = gesture.edges == .left ? .swipeRight : .swipeLeft
+        let action = Current.settingsStore.gestures[gesture] ?? .none
+        handleGestureAction(action)
+    }
+
+    @objc private func updateSensors() {
+        // called via menu/keyboard shortcut too
+        firstly {
+            HomeAssistantAPI.manuallyUpdate(
+                applicationState: UIApplication.shared.applicationState,
+                type: .userRequested
+            )
+        }.catch { error in
+            Current.Log.error("Error when updating sensors from WKWebView reload: \(error)")
+        }
+    }
+
+    @objc func pullToRefresh(_ sender: UIRefreshControl) {
+        refresh()
+        updateSensors()
+    }
+
+    @objc func openSettingsView(_ sender: UIButton) {
+        showSettingsViewController()
+    }
+
+    @objc private func openServerInSafari() {
+        if let url = webView.url {
+            guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                return
+            }
+            // Remove external_auth=1 query item from URL
+            urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
+
+            if let url = urlComponents.url {
+                UIApplication.shared.open(url)
+            }
+        }
+    }
+
+    @objc private func scheduleReconnectBackgroundTimer() {
+        precondition(Thread.isMainThread)
+
+        guard isViewLoaded, server.info.version >= .externalBusCommandRestart else { return }
+
+        // On iOS 15, Apple switched to using NSURLSession's WebSocket implementation, which is pretty bad at detecting
+        // any kind of networking failure. Even more troubling, it doesn't realize there's a failure due to background
+        // so it spends dozens of seconds waiting for a connection reset externally.
+        //
+        // We work around this by detecting being in the background for long enough that it's likely the connection will
+        // need to reconnect, anyway (similar to how we do it in HAKit). When this happens, we ask the frontend to
+        // reset its WebSocket connection, thus eliminating the wait.
+        //
+        // It's likely this doesn't apply before iOS 15, but it may improve the reconnect timing there anyhow.
+
+        reconnectBackgroundTimer = Timer.scheduledTimer(
+            withTimeInterval: 5.0,
+            repeats: true,
+            block: { [weak self] timer in
+                if let self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
+                    webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
+                }
+
+                if UIApplication.shared.applicationState == .active {
+                    timer.invalidate()
+                }
+            }
+        )
+    }
+
+    @objc private func updateWebViewSettingsForNotification() {
+        updateWebViewSettings(reason: .settingChange)
+    }
+
+    func show(alert: ServerAlert) {
+        Current.Log.info("showing alert \(alert)")
+
+        var config = swiftMessagesConfig()
+        config.eventListeners.append({ event in
+            switch event {
+            case .didHide:
+                Current.serverAlerter.markHandled(alert: alert)
+            default:
+                break
+            }
+        })
+
+        let view = MessageView.viewFromNib(layout: .messageView)
+        view.configureTheme(
+            backgroundColor: UIColor(red: 1.000, green: 0.596, blue: 0.000, alpha: 1.0),
+            foregroundColor: .white
+        )
+        view.configureContent(
+            title: nil,
+            body: alert.message,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: nil,
+            buttonTitle: L10n.openLabel,
+            buttonTapHandler: { _ in
+                UIApplication.shared.open(alert.url, options: [:], completionHandler: nil)
+                SwiftMessages.hide()
+            }
+        )
+
+        SwiftMessages.show(config: config, view: view)
+    }
+
+    func showSwiftMessage(error: Error, duration: SwiftMessages.Duration = .seconds(seconds: 15)) {
+        Current.Log.error(error)
+        var config = swiftMessagesConfig()
+        config.duration = duration
+
+        let view = MessageView.viewFromNib(layout: .messageView)
+        view.configureContent(
+            title: L10n.Connection.Error.genericTitle,
+            body: error.localizedDescription,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: MaterialDesignIcons.helpCircleIcon.image(
+                ofSize: .init(width: 35, height: 35),
+                color: Asset.Colors.haPrimary.color
+            ),
+            buttonTitle: nil,
+            buttonTapHandler: { [weak self] _ in
+                SwiftMessages.hide()
+                guard let self else { return }
+                presentOverlayController(
+                    controller: UIHostingController(rootView: ConnectionErrorDetailsView(server: server, error: error)),
+                    animated: true
+                )
+            }
+        )
+        view.titleLabel?.numberOfLines = 0
+        view.bodyLabel?.numberOfLines = 0
+
+        SwiftMessages.show(config: config, view: view)
+    }
+
+    func showReAuthPopup(serverId: String, code: Int) {
+        guard serverId == server.identifier.rawValue else {
+            return
+        }
+        var config = swiftMessagesConfig()
+        config.duration = .forever
+        let view = MessageView.viewFromNib(layout: .messageView)
+        view.configureTheme(.warning)
+        view.configureContent(
+            title: L10n.Unauthenticated.Message.title,
+            body: L10n.Unauthenticated.Message.body,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: MaterialDesignIcons.cogIcon.image(
+                ofSize: CGSize(width: 24, height: 24),
+                color: Asset.Colors.haPrimary.color
+            ),
+            buttonTitle: nil,
+            buttonTapHandler: { [weak self] _ in
+                self?.showSettingsViewController()
+            }
+        )
+        view.titleLabel?.numberOfLines = 0
+        view.bodyLabel?.numberOfLines = 0
+
+        // Avoid retrying from Home Assistant UI since this is a dead end
+        webView.load(URLRequest(url: URL(string: "about:blank")!))
+        SwiftMessages.show(config: config, view: view)
+    }
+
+    func openDebug() {
+        let controller = UIHostingController(rootView: AnyView(
+            NavigationView {
+                VStack {
+                    HStack(spacing: Spaces.half) {
+                        Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
+                        Toggle(isOn: .init(get: {
+                            Current.settingsStore.gestures[.shake] == .openDebug
+                        }, set: { newValue in
+                            Current.settingsStore.gestures[.shake] = newValue ? .openDebug : HAGestureAction.none
+                        }), label: { EmptyView() })
+                    }
+                    .padding()
+                    .background(Color.asset(Asset.Colors.haPrimary).opacity(0.2))
+                    .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+                    .padding(Spaces.one)
+                    DebugView()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                CloseButton { [weak self] in
+                                    self?.dismissOverlayController(animated: true, completion: nil)
+                                }
+                            }
+                        }
+                }
+            }
+        ))
+        presentOverlayController(controller: controller, animated: true)
+    }
+
+    // MARK: - Public
 
     /// avoidUnecessaryReload Avoids reloading when the URL is the same as the current one
     public func open(inline url: URL, avoidUnecessaryReload: Bool = false) {
@@ -504,7 +828,48 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    private var lastNavigationWasServerError = false
+    public func showSettingsViewController() {
+        getLatestConfig()
+        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
+            Current.sceneManager.activateAnyScene(for: .settings)
+        } else {
+            let settingsView = SettingsViewController()
+            settingsView.hidesBottomBarWhenPushed = true
+            let navController = UINavigationController(rootViewController: settingsView)
+            presentOverlayController(controller: navController, animated: true)
+        }
+    }
+
+    public func openActionAutomationEditor(actionId: String) {
+        guard server.info.version >= .externalBusCommandAutomationEditor else {
+            showActionAutomationEditorNotAvailable()
+            return
+        }
+        webViewExternalMessageHandler.sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
+            payload: [
+                "config": [
+                    "trigger": [
+                        [
+                            "platform": "event",
+                            "event_type": "ios.action_fired",
+                            "event_data": [
+                                "actionID": actionId,
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ))
+    }
+}
+
+// MARK: - WebView
+
+extension WebViewController {
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        webViewExternalMessageHandler.stopImprovScanIfNeeded()
+    }
 
     func webView(
         _ webView: WKWebView,
@@ -715,360 +1080,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         decisionHandler: @escaping (WKPermissionDecision) -> Void
     ) {
         decisionHandler(.grant)
-    }
-
-    private func showNoActiveURLError() {
-        Current.Log.info("Showing noActiveURLError")
-        webView.scrollView.refreshControl?.endRefreshing()
-        guard !(overlayedController is NoActiveURLViewController) else { return }
-        presentOverlayController(controller: NoActiveURLViewController(server: server), animated: true)
-    }
-
-    @objc private func connectionInfoDidChange() {
-        DispatchQueue.main.async { [self] in
-            loadActiveURLIfNeeded()
-        }
-    }
-
-    @objc private func loadActiveURLIfNeeded() {
-        guard let webviewURL = server.info.connection.webviewURL() else {
-            Current.Log.info("not loading, no url")
-            showNoActiveURLError()
-            return
-        }
-
-        guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
-            // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
-            webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
-            return
-        }
-
-        guard UIApplication.shared.applicationState != .background else {
-            Current.Log.info("not loading, in background")
-            return
-        }
-
-        // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
-        let request: URLRequest
-
-        if Current.settingsStore.restoreLastURL,
-           let initialURL, initialURL.baseIsEqual(to: webviewURL) {
-            Current.Log.info("restoring initial url path: \(initialURL.path)")
-            request = URLRequest(url: initialURL)
-        } else {
-            Current.Log.info("loading default url path: \(webviewURL.path)")
-            request = URLRequest(url: webviewURL)
-        }
-
-        webView.load(request)
-    }
-
-    @objc private func refresh() {
-        // called via menu/keyboard shortcut too
-        if let webviewURL = server.info.connection.webviewURL() {
-            if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
-                webView.reload()
-            } else {
-                webView.load(URLRequest(url: webviewURL))
-            }
-        } else {
-            showNoActiveURLError()
-        }
-    }
-
-    @objc private func swipe(_ gesture: UISwipeGestureRecognizer) {
-        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: 2)
-        handleGestureAction(action)
-    }
-
-    @objc private func screenEdgeGestureRecognizerAction(_ gesture: UIScreenEdgePanGestureRecognizer) {
-        guard gesture.state == .ended else {
-            return
-        }
-        let gesture: AppGesture = gesture.edges == .left ? .swipeRight : .swipeLeft
-        let action = Current.settingsStore.gestures[gesture] ?? .none
-        handleGestureAction(action)
-    }
-
-    @objc private func updateSensors() {
-        // called via menu/keyboard shortcut too
-        firstly {
-            HomeAssistantAPI.manuallyUpdate(
-                applicationState: UIApplication.shared.applicationState,
-                type: .userRequested
-            )
-        }.catch { error in
-            Current.Log.error("Error when updating sensors from WKWebView reload: \(error)")
-        }
-    }
-
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        if motion == .motionShake {
-            let action = Current.settingsStore.gestures[.shake] ?? .openDebug
-            handleGestureAction(action)
-        }
-    }
-
-    @objc func pullToRefresh(_ sender: UIRefreshControl) {
-        refresh()
-        updateSensors()
-    }
-
-    private func swiftMessagesConfig() -> SwiftMessages.Config {
-        var config = SwiftMessages.Config()
-
-        config.presentationContext = .viewController(self)
-        config.duration = .forever
-        config.presentationStyle = .bottom
-        config.dimMode = .gray(interactive: true)
-        config.dimModeAccessibilityLabel = L10n.cancelLabel
-
-        return config
-    }
-
-    func show(alert: ServerAlert) {
-        Current.Log.info("showing alert \(alert)")
-
-        var config = swiftMessagesConfig()
-        config.eventListeners.append({ event in
-            switch event {
-            case .didHide:
-                Current.serverAlerter.markHandled(alert: alert)
-            default:
-                break
-            }
-        })
-
-        let view = MessageView.viewFromNib(layout: .messageView)
-        view.configureTheme(
-            backgroundColor: UIColor(red: 1.000, green: 0.596, blue: 0.000, alpha: 1.0),
-            foregroundColor: .white
-        )
-        view.configureContent(
-            title: nil,
-            body: alert.message,
-            iconImage: nil,
-            iconText: nil,
-            buttonImage: nil,
-            buttonTitle: L10n.openLabel,
-            buttonTapHandler: { _ in
-                UIApplication.shared.open(alert.url, options: [:], completionHandler: nil)
-                SwiftMessages.hide()
-            }
-        )
-
-        SwiftMessages.show(config: config, view: view)
-    }
-
-    func showSwiftMessage(error: Error, duration: SwiftMessages.Duration = .seconds(seconds: 15)) {
-        Current.Log.error(error)
-        var config = swiftMessagesConfig()
-        config.duration = duration
-
-        let view = MessageView.viewFromNib(layout: .messageView)
-        view.configureContent(
-            title: L10n.Connection.Error.genericTitle,
-            body: error.localizedDescription,
-            iconImage: nil,
-            iconText: nil,
-            buttonImage: MaterialDesignIcons.helpCircleIcon.image(
-                ofSize: .init(width: 35, height: 35),
-                color: Asset.Colors.haPrimary.color
-            ),
-            buttonTitle: nil,
-            buttonTapHandler: { [weak self] _ in
-                SwiftMessages.hide()
-                guard let self else { return }
-                presentOverlayController(
-                    controller: UIHostingController(rootView: ConnectionErrorDetailsView(server: server, error: error)),
-                    animated: true
-                )
-            }
-        )
-        view.titleLabel?.numberOfLines = 0
-        view.bodyLabel?.numberOfLines = 0
-
-        SwiftMessages.show(config: config, view: view)
-    }
-
-    @objc func openSettingsView(_ sender: UIButton) {
-        showSettingsViewController()
-    }
-
-    private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        underlyingPreferredStatusBarStyle
-    }
-
-    @objc private func updateWebViewSettingsForNotification() {
-        updateWebViewSettings(reason: .settingChange)
-    }
-
-    private enum WebViewSettingsUpdateReason {
-        case initial
-        case settingChange
-        case load
-    }
-
-    private func updateWebViewSettings(reason: WebViewSettingsUpdateReason) {
-        Current.Log.info("updating web view settings for \(reason)")
-
-        // iOS 14's `pageZoom` property is almost this, but not quite - it breaks the layout as well
-        // This is quasi-private API that has existed since pre-iOS 10, but the implementation
-        // changed in iOS 12 to be like the +/- zoom buttons in Safari, which scale content without
-        // resizing the scrolling viewport.
-        let viewScale = Current.settingsStore.pageZoom.viewScaleValue
-        Current.Log.info("setting view scale to \(viewScale)")
-        webView.setValue(viewScale, forKey: "viewScale")
-
-        if !Current.isCatalyst {
-            let zoomValue = Current.settingsStore.pinchToZoom ? "true" : "false"
-            webView.evaluateJavaScript("setOverrideZoomEnabled(\(zoomValue))", completionHandler: nil)
-        }
-
-        if reason == .settingChange {
-            setNeedsStatusBarAppearanceUpdate()
-            setNeedsUpdateOfHomeIndicatorAutoHidden()
-        }
-    }
-
-    private var reconnectBackgroundTimer: Timer? {
-        willSet {
-            if reconnectBackgroundTimer != newValue {
-                reconnectBackgroundTimer?.invalidate()
-            }
-        }
-    }
-
-    @objc private func scheduleReconnectBackgroundTimer() {
-        precondition(Thread.isMainThread)
-
-        guard isViewLoaded, server.info.version >= .externalBusCommandRestart else { return }
-
-        // On iOS 15, Apple switched to using NSURLSession's WebSocket implementation, which is pretty bad at detecting
-        // any kind of networking failure. Even more troubling, it doesn't realize there's a failure due to background
-        // so it spends dozens of seconds waiting for a connection reset externally.
-        //
-        // We work around this by detecting being in the background for long enough that it's likely the connection will
-        // need to reconnect, anyway (similar to how we do it in HAKit). When this happens, we ask the frontend to
-        // reset its WebSocket connection, thus eliminating the wait.
-        //
-        // It's likely this doesn't apply before iOS 15, but it may improve the reconnect timing there anyhow.
-
-        reconnectBackgroundTimer = Timer.scheduledTimer(
-            withTimeInterval: 5.0,
-            repeats: true,
-            block: { [weak self] timer in
-                if let self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
-                    webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
-                }
-
-                if UIApplication.shared.applicationState == .active {
-                    timer.invalidate()
-                }
-            }
-        )
-    }
-
-    public func openActionAutomationEditor(actionId: String) {
-        guard server.info.version >= .externalBusCommandAutomationEditor else {
-            showActionAutomationEditorNotAvailable()
-            return
-        }
-        webViewExternalMessageHandler.sendExternalBus(message: .init(
-            command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
-            payload: [
-                "config": [
-                    "trigger": [
-                        [
-                            "platform": "event",
-                            "event_type": "ios.action_fired",
-                            "event_data": [
-                                "actionID": actionId,
-                            ],
-                        ],
-                    ],
-                ],
-            ]
-        ))
-    }
-
-    private func getLatestConfig() {
-        _ = Current.api(for: server)?.getConfig()
-    }
-
-    private func showActionAutomationEditorNotAvailable() {
-        let alert = UIAlertController(
-            title: L10n.Alerts.ActionAutomationEditor.Unavailable.title,
-            message: L10n.Alerts.ActionAutomationEditor.Unavailable.body,
-            preferredStyle: .alert
-        )
-        alert.addAction(.init(title: L10n.okLabel, style: .default))
-        present(alert, animated: true)
-    }
-
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        webViewExternalMessageHandler.stopImprovScanIfNeeded()
-    }
-
-    func showReAuthPopup(serverId: String, code: Int) {
-        guard serverId == server.identifier.rawValue else {
-            return
-        }
-        var config = swiftMessagesConfig()
-        config.duration = .forever
-        let view = MessageView.viewFromNib(layout: .messageView)
-        view.configureTheme(.warning)
-        view.configureContent(
-            title: L10n.Unauthenticated.Message.title,
-            body: L10n.Unauthenticated.Message.body,
-            iconImage: nil,
-            iconText: nil,
-            buttonImage: MaterialDesignIcons.cogIcon.image(
-                ofSize: CGSize(width: 24, height: 24),
-                color: Asset.Colors.haPrimary.color
-            ),
-            buttonTitle: nil,
-            buttonTapHandler: { [weak self] _ in
-                self?.showSettingsViewController()
-            }
-        )
-        view.titleLabel?.numberOfLines = 0
-        view.bodyLabel?.numberOfLines = 0
-
-        // Avoid retrying from Home Assistant UI since this is a dead end
-        webView.load(URLRequest(url: URL(string: "about:blank")!))
-        SwiftMessages.show(config: config, view: view)
-    }
-
-    func openDebug() {
-        let controller = UIHostingController(rootView: AnyView(
-            NavigationView {
-                VStack {
-                    HStack(spacing: Spaces.half) {
-                        Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
-                        Toggle(isOn: .init(get: {
-                            Current.settingsStore.gestures[.shake] == .openDebug
-                        }, set: { newValue in
-                            Current.settingsStore.gestures[.shake] = newValue ? .openDebug : HAGestureAction.none
-                        }), label: { EmptyView() })
-                    }
-                    .padding()
-                    .background(Color.asset(Asset.Colors.haPrimary).opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
-                    .padding(Spaces.one)
-                    DebugView()
-                        .toolbar {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                CloseButton { [weak self] in
-                                    self?.dismissOverlayController(animated: true, completion: nil)
-                                }
-                            }
-                        }
-                }
-            }
-        ))
-        presentOverlayController(controller: controller, animated: true)
     }
 }
 
