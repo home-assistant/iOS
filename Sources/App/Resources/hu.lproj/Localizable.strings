@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 csúsztassa balra";
 "gestures.3_fingers_swipe_right.title" = "3 👆 csúsztassa jobbra";
 "gestures.3_fingers_swipe_up.title" = "3 👆 csúsztassa felfelé";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "A gesztusok testreszabása a felhasználói felületen való használathoz.";
 "gestures.screen.body" = "Az alábbi gesztusok akkor lesznek alkalmazva, amikor a Home Assistant fő felhasználói felületét használja.";
 "gestures.screen.title" = "Gesztusok";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Csúsztassa balra";
 "gestures.swipe_right.title" = "Csúsztassa jobbra";
 "gestures.value.option.back_page" = "Vissza az előző oldalra";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Tovább a következő oldalra";
 "gestures.value.option.next_server" = "Következő szerver";
 "gestures.value.option.none" = "Nincs";
 "gestures.value.option.open_debug" = "Hibakeresés megnyitása";
 "gestures.value.option.previous_server" = "Előző szerver";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Szerverek listája";
 "gestures.value.option.show_settings" = "Alkalmazásbeállítások megnyitása";
 "gestures.value.option.show_sidebar" = "Oldalsáv megjelenítése";
@@ -487,6 +494,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.permissions.notification.title" = "Értesítések";
 "onboarding.scanning.discovered_announcement" = "Felfedezve: %@";
 "onboarding.scanning.manual" = "Cím kézi megadása";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Nem találja a szerverét?";
 "onboarding.scanning.title" = "Szerverek keresése";

@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 左にスワイプ";
 "gestures.3_fingers_swipe_right.title" = "3 👆 右にスワイプ";
 "gestures.3_fingers_swipe_up.title" = "3 👆 上にスワイプ";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "フロントエンドで使用するジェスチャーをカスタマイズ。";
 "gestures.screen.body" = "以下のジェスチャは、Home Assistant のメイン UI を使用するときはいつでも適用されます。";
 "gestures.screen.title" = "ジェスチャー";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "左にスワイプ";
 "gestures.swipe_right.title" = "右にスワイプ";
 "gestures.value.option.back_page" = "前のページへ";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "次のページへ";
 "gestures.value.option.next_server" = "次のサーバー";
 "gestures.value.option.none" = "なし";
 "gestures.value.option.open_debug" = "デバッグを開く";
 "gestures.value.option.previous_server" = "前のサーバー";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "サーバーリスト";
 "gestures.value.option.show_settings" = "アプリの設定を開く";
 "gestures.value.option.show_sidebar" = "サイドバーを表示";
@@ -487,6 +494,7 @@
 "onboarding.permissions.notification.title" = "通知";
 "onboarding.scanning.discovered_announcement" = "発見: %@";
 "onboarding.scanning.manual" = "アドレスを手動で入力";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "サーバーが見つかりませんか？";
 "onboarding.scanning.title" = "サーバーのスキャン";

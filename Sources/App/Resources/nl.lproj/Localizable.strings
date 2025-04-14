@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 veeg naar links";
 "gestures.3_fingers_swipe_right.title" = "3 👆 veeg naar rechts";
 "gestures.3_fingers_swipe_up.title" = "3 👆 veeg omhoog";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Pas gebaren aan die op de frontend gebruikt kunnen worden.";
 "gestures.screen.body" = "De onderstaande gebaren kun je gebruiken wanneer je de hoofdinterface van Home Assistant gebruikt.";
 "gestures.screen.title" = "Gebaren";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Veeg naar links";
 "gestures.swipe_right.title" = "Veeg naar rechts";
 "gestures.value.option.back_page" = "Vorige pagina";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Volgende pagina";
 "gestures.value.option.next_server" = "Volgende server";
 "gestures.value.option.none" = "Geen";
 "gestures.value.option.open_debug" = "Debug openen";
 "gestures.value.option.previous_server" = "Vorige server";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Serverlijst";
 "gestures.value.option.show_settings" = "Open app-instellingen";
 "gestures.value.option.show_sidebar" = "Toon zijbalk";
@@ -487,6 +494,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.permissions.notification.title" = "Meldingen";
 "onboarding.scanning.discovered_announcement" = "Ontdekt: %@";
 "onboarding.scanning.manual" = "Voer handmatig een adres in";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Kun je je server niet vinden?";
 "onboarding.scanning.title" = "Scannen naar servers";

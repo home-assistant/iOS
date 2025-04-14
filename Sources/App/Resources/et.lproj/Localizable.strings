@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 pühi vasakule";
 "gestures.3_fingers_swipe_right.title" = "3 👆 pühi paremale";
 "gestures.3_fingers_swipe_up.title" = "3 👆 pühi üles";
+"gestures.category.app" = "Rakendus";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Muu";
+"gestures.category.page" = "Navigeerimine";
+"gestures.category.servers" = "Serverid";
 "gestures.footer.title" = "Kohanda esipaneelil kasutatavaid žeste.";
 "gestures.screen.body" = "Allolevaid žeste rakendatakse alati kui kasutad Home Assistanti peamist kasutajaliidest.";
 "gestures.screen.title" = "Žestid";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Pühi vasakule";
 "gestures.swipe_right.title" = "Pühi paremale";
 "gestures.value.option.back_page" = "Tagasi eelmisele lehele";
+"gestures.value.option.more_info.search_entities" = "Otsi olemeid";
 "gestures.value.option.next_page" = "Mine järgmisele lehele";
 "gestures.value.option.next_server" = "Järgmine server";
 "gestures.value.option.none" = "Puudub";
 "gestures.value.option.open_debug" = "Ava silumine";
 "gestures.value.option.previous_server" = "Eelmine server";
+"gestures.value.option.search_entities" = "Otsi olemeid";
 "gestures.value.option.servers_list" = "Serverite loend";
 "gestures.value.option.show_settings" = "Ava rakenduse seaded";
 "gestures.value.option.show_sidebar" = "Kuva külgriba";
@@ -487,7 +494,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.permissions.notification.title" = "Teavitused";
 "onboarding.scanning.discovered_announcement" = "Avastatud: %@";
 "onboarding.scanning.manual" = "Sisesta aadress käsitsi";
-"onboarding.scanning.manual.button.title" = "Enter address manually";
+"onboarding.scanning.manual.button.divider.title" = "või";
+"onboarding.scanning.manual.button.title" = "Sisesta aadress käsitsi";
 "onboarding.scanning.manual_hint" = "Ei leia oma serverit?";
 "onboarding.scanning.title" = "Serverite otsimine";
 "onboarding.servers.docs.read" = "Loe dokumentatsiooni";

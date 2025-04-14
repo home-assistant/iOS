@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
 "gestures.3_fingers_swipe_up.title" = "3 👆 swipe up";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Go to next page";
 "gestures.value.option.next_server" = "Next server";
 "gestures.value.option.none" = "None";
 "gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.previous_server" = "Previous server";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Servers list";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Show sidebar";
@@ -487,6 +494,7 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.permissions.notification.title" = "Notifications";
 "onboarding.scanning.discovered_announcement" = "Discovered: %@";
 "onboarding.scanning.manual" = "Enter Address Manually";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Not finding your server?";
 "onboarding.scanning.title" = "Scanning for Servers";

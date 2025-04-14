@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 gesek ke kiri";
 "gestures.3_fingers_swipe_right.title" = "3 👆 gesek ke kanan";
 "gestures.3_fingers_swipe_up.title" = "3 👆 gesek ke atas";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Sesuaikan gerakan yang akan digunakan di antarmuka.";
 "gestures.screen.body" = "Gerakan di bawah ini akan diterapkan setiap Anda menggunakan antarmuka utama Home Assistant.";
 "gestures.screen.title" = "Gerakan";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Gesek Kiri";
 "gestures.swipe_right.title" = "Gesek Kanan";
 "gestures.value.option.back_page" = "Buka halaman sebelumnya";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Buka halaman berikutnya";
 "gestures.value.option.next_server" = "Server berikutnya";
 "gestures.value.option.none" = "Tidak ada";
 "gestures.value.option.open_debug" = "Buka debug";
 "gestures.value.option.previous_server" = "Server sebelumnya";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Daftar server";
 "gestures.value.option.show_settings" = "Buka pengaturan Aplikasi";
 "gestures.value.option.show_sidebar" = "Tampilkan bilah sisi";
@@ -487,6 +494,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.permissions.notification.title" = "Notifikasi";
 "onboarding.scanning.discovered_announcement" = "Ditemukan: %@";
 "onboarding.scanning.manual" = "Masukkan Alamat Secara Manual";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Tidak menemukan server Anda?";
 "onboarding.scanning.title" = "Memindai Server";

@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
 "gestures.3_fingers_swipe_up.title" = "3 👆 swipe up";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestes";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Go to next page";
 "gestures.value.option.next_server" = "Serveur suivant";
 "gestures.value.option.none" = "Aucun";
 "gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.previous_server" = "Serveur précédent";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Liste des serveurs";
 "gestures.value.option.show_settings" = "Open App settings";
 "gestures.value.option.show_sidebar" = "Afficher la barre latérale";
@@ -487,6 +494,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.permissions.notification.title" = "Notifications";
 "onboarding.scanning.discovered_announcement" = "Découvert %@";
 "onboarding.scanning.manual" = "Saisir l'adresse manuellement";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Vous ne trouvez pas votre serveur?";
 "onboarding.scanning.title" = "Recherche de serveurs";
