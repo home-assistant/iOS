@@ -12,7 +12,7 @@ public struct ConnectionInfo: Codable, Equatable {
     public static var shouldFallbackToInternalURL = true
 
     private var externalURL: URL?
-    private var internalURL: URL?
+    public private(set) var internalURL: URL?
     private var remoteUIURL: URL?
     public var webhookID: String
     public var webhookSecret: String?
