@@ -79,6 +79,17 @@ public enum AppConstants {
         )
     }
 
+    public static func openPageDeeplinkURL(path: String, serverId: String) -> URL? {
+        if #available(iOS 16.0, watchOS 9.0, *) {
+            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
+                .appending(queryItems: [
+                    .init(name: "openPageIntent", value: "true"),
+                ])
+        } else {
+            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)
+        }
+    }
+
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"

@@ -112,11 +112,15 @@ final class WebViewWindowController {
         return currentController
     }
 
-    func navigate(to url: URL, on server: Server, avoidUnecessaryReload: Bool = false) {
+    func navigate(to url: URL, on server: Server, avoidUnecessaryReload: Bool = false, isOpenPageIntent: Bool) {
         open(server: server).done { webViewController in
             // Dismiss any overlayed controllers
             webViewController.dismissOverlayController(animated: true, completion: nil)
-            webViewController.open(inline: url, avoidUnecessaryReload: avoidUnecessaryReload)
+            if isOpenPageIntent {
+                webViewController.openPanel(url)
+            } else {
+                webViewController.open(inline: url, avoidUnecessaryReload: avoidUnecessaryReload)
+            }
         }
     }
 
@@ -205,7 +209,8 @@ final class WebViewWindowController {
         from: OpenSource,
         urlString openUrlRaw: String,
         skipConfirm: Bool = false,
-        queryParameters: [URLQueryItem]? = nil
+        queryParameters: [URLQueryItem]? = nil,
+        isOpenPageIntent: Bool
     ) {
         let serverNameOrId = queryParameters?.first(where: { $0.name == "server" })?.value
         let avoidUnecessaryReload = {
@@ -224,7 +229,8 @@ final class WebViewWindowController {
                     from: from,
                     server: first,
                     urlString: openUrlRaw,
-                    skipConfirm: skipConfirm
+                    skipConfirm: skipConfirm,
+                    isOpenPageIntent: isOpenPageIntent
                 )
             } else {
                 if let selectedServer = servers.first(where: { server in
@@ -236,7 +242,8 @@ final class WebViewWindowController {
                         server: selectedServer,
                         urlString: openUrlRaw,
                         skipConfirm: skipConfirm,
-                        avoidUnecessaryReload: avoidUnecessaryReload
+                        avoidUnecessaryReload: avoidUnecessaryReload,
+                        isOpenPageIntent: isOpenPageIntent
                     )
                 } else {
                     open(
@@ -244,7 +251,8 @@ final class WebViewWindowController {
                         server: first,
                         urlString: openUrlRaw,
                         skipConfirm: skipConfirm,
-                        avoidUnecessaryReload: avoidUnecessaryReload
+                        avoidUnecessaryReload: avoidUnecessaryReload,
+                        isOpenPageIntent: isOpenPageIntent
                     )
                 }
             }
@@ -259,7 +267,13 @@ final class WebViewWindowController {
 
             selectServer(prompt: prompt).done { [self] server in
                 if let server {
-                    open(from: from, server: server, urlString: openUrlRaw, skipConfirm: true)
+                    open(
+                        from: from,
+                        server: server,
+                        urlString: openUrlRaw,
+                        skipConfirm: true,
+                        isOpenPageIntent: isOpenPageIntent
+                    )
                 }
             }.catch { error in
                 Current.Log.error("failed to select server: \(error)")
@@ -272,7 +286,8 @@ final class WebViewWindowController {
         server: Server,
         urlString openUrlRaw: String,
         skipConfirm: Bool = false,
-        avoidUnecessaryReload: Bool = false
+        avoidUnecessaryReload: Bool = false,
+        isOpenPageIntent: Bool
     ) {
         let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
         let externalURL = URL(string: openUrlRaw)
@@ -284,7 +299,8 @@ final class WebViewWindowController {
             webviewURL: webviewURL,
             externalURL: externalURL,
             skipConfirm: skipConfirm,
-            avoidUnecessaryReload: avoidUnecessaryReload
+            avoidUnecessaryReload: avoidUnecessaryReload,
+            isOpenPageIntent: isOpenPageIntent
         )
     }
 
@@ -299,7 +315,8 @@ final class WebViewWindowController {
         webviewURL: URL?,
         externalURL: URL?,
         skipConfirm: Bool,
-        avoidUnecessaryReload: Bool = false
+        avoidUnecessaryReload: Bool = false,
+        isOpenPageIntent: Bool
     ) {
         guard webviewURL != nil || externalURL != nil else {
             return
@@ -307,7 +324,12 @@ final class WebViewWindowController {
 
         let triggerOpen = { [self] in
             if let webviewURL {
-                navigate(to: webviewURL, on: server, avoidUnecessaryReload: avoidUnecessaryReload)
+                navigate(
+                    to: webviewURL,
+                    on: server,
+                    avoidUnecessaryReload: avoidUnecessaryReload,
+                    isOpenPageIntent: isOpenPageIntent
+                )
             } else if let externalURL {
                 openURLInBrowser(externalURL, presentedViewController)
             }

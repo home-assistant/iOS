@@ -248,7 +248,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if let url = urlString(from: response) {
             Current.Log.info("launching URL \(url)")
             Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, server: server, urlString: url)
+                $0.open(from: .notification, server: server, urlString: url, isOpenPageIntent: false)
             }
         }
 

@@ -67,6 +67,13 @@ class IncomingURLHandler {
                 let queryParameters = components.queryItems
                 let isFromWidget = components.popWidgetAuthenticity()
                 let server = components.popWidgetServer(isFromWidget: isFromWidget)
+                let isOpenPageIntent: Bool = {
+                    if let value = queryParameters?.first(where: { $0.name == "openPageIntent" })?.value {
+                        return Bool(value) ?? false
+                    } else {
+                        return false
+                    }
+                }()
 
                 guard let rawURL = components.url?.absoluteString else {
                     return false
@@ -81,17 +88,25 @@ class IncomingURLHandler {
                             from: .deeplink,
                             urlString: rawURL,
                             skipConfirm: true,
-                            queryParameters: queryParameters
+                            queryParameters: queryParameters,
+                            isOpenPageIntent: false
                         )
                     })
                 } else if let server {
-                    windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
+                    windowController.open(
+                        from: .deeplink,
+                        server: server,
+                        urlString: rawURL,
+                        skipConfirm: isFromWidget,
+                        isOpenPageIntent: isOpenPageIntent
+                    )
                 } else {
                     windowController.openSelectingServer(
                         from: .deeplink,
                         urlString: rawURL,
                         skipConfirm: isFromWidget,
-                        queryParameters: queryParameters
+                        queryParameters: queryParameters,
+                        isOpenPageIntent: isOpenPageIntent
                     )
                 }
             case .assist:
@@ -210,13 +225,15 @@ class IncomingURLHandler {
                             from: .deeplink,
                             server: server,
                             urlString: urlString,
-                            skipConfirm: true
+                            skipConfirm: true,
+                            isOpenPageIntent: false
                         )
                     } else {
                         windowController.openSelectingServer(
                             from: .deeplink,
                             urlString: urlString,
-                            skipConfirm: true
+                            skipConfirm: true,
+                            isOpenPageIntent: false
                         )
                     }
                     return true
