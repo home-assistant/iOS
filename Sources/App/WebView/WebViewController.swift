@@ -828,6 +828,19 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    /// Used for OpenPage intent
+    public func openPanel(_ url: URL) {
+        loadViewIfNeeded()
+        if #available(iOS 16.0, *),
+           let webViewURL = webView.url,
+           webViewURL.path().contains(url.path()) {
+            Current.Log.info("Open page did not reload webview because path component matches current URL")
+            return
+        } else {
+            webView.load(URLRequest(url: url))
+        }
+    }
+
     public func showSettingsViewController() {
         getLatestConfig()
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {

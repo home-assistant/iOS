@@ -24,10 +24,9 @@ struct OpenPageAppIntent: AppIntent {
               .servers.all.first else { return .result() }
         #if !WIDGET_EXTENSION
         if let url =
-            AppConstants.navigateDeeplinkURL(
+            AppConstants.openPageDeeplinkURL(
                 path: page.panel.path,
-                serverId: server.identifier.rawValue,
-                avoidUnecessaryReload: true
+                serverId: server.identifier.rawValue
             ) {
             DispatchQueue.main.async {
                 UIApplication.shared.open(url)
