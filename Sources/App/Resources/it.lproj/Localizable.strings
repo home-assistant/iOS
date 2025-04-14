@@ -125,7 +125,7 @@
 "carPlay.labels.settings.advanced.section.button.detail" = "Utilizza questa opzione se i dati del tuo server non vengono caricati correttamente.";
 "carPlay.labels.settings.advanced.section.button.title" = "Riavvia l'app";
 "carPlay.labels.settings.advanced.section.title" = "Avanzato";
-"carPlay.labels.tab.settings" = "impostazioni";
+"carPlay.labels.tab.settings" = "Impostazioni";
 "carPlay.lock.confirmation.title" = "Sei sicuro di voler eseguire l'azione di blocco su %@?";
 "carPlay.navigation.button.next" = "Avanti";
 "carPlay.navigation.button.previous" = "Precedente";
@@ -181,7 +181,7 @@
 "client_events.event_type.notification" = "Notifica";
 "client_events.event_type.notification.title" = "Ricevuta una notifica push: %@";
 "client_events.event_type.service_call" = "Chiamata di servizio";
-"client_events.event_type.settings" = "impostazioni";
+"client_events.event_type.settings" = "Impostazioni";
 "client_events.event_type.unknown" = "Sconosciuto";
 "client_events.no_events" = "Nessun evento";
 "client_events.view.clear" = "Pulisci";
@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 verso sinistra";
 "gestures.3_fingers_swipe_right.title" = "3 👆 verso destra";
 "gestures.3_fingers_swipe_up.title" = "3 👆 verso l'alto";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Personalizza i gesti da utilizzare nel frontend.";
 "gestures.screen.body" = "I gesti indicati di seguito verranno applicati ogni volta che utilizzi l'interfaccia utente principale di Home Assistant.";
 "gestures.screen.title" = "Gesti";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Scorri verso sinistra";
 "gestures.swipe_right.title" = "Scorri verso destra";
 "gestures.value.option.back_page" = "Torna alla pagina precedente";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Vai alla pagina successiva";
 "gestures.value.option.next_server" = "Server successivo";
 "gestures.value.option.none" = "Nessuno";
 "gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.previous_server" = "Server precedente";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Elenco dei server";
 "gestures.value.option.show_settings" = "Apri le impostazioni dell'app";
 "gestures.value.option.show_sidebar" = "Mostra la barra laterale";
@@ -487,6 +494,7 @@
 "onboarding.permissions.notification.title" = "Notifiche";
 "onboarding.scanning.discovered_announcement" = "Scoperto: %@";
 "onboarding.scanning.manual" = "Inserisci l'indirizzo manualmente";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Non trovi il tuo server?";
 "onboarding.scanning.title" = "Scansione per server";
@@ -608,7 +616,7 @@
 "settings.location_history.empty" = "Nessuna cronologia di localizzazione";
 "settings.location_history.title" = "Cronologia di localizzazione";
 "settings.navigation_bar.about_button.title" = "Informazioni";
-"settings.navigation_bar.title" = "impostazioni";
+"settings.navigation_bar.title" = "Impostazioni";
 "settings.reset_section.reset_alert.message" = "Le impostazioni dell'app saranno resettate, verranno disattivate le notifiche push e il dispositivo sarà rimosso dalla configurazione di Home Assistant.";
 "settings.reset_section.reset_alert.progress_message" = "Ripristino …";
 "settings.reset_section.reset_alert.title" = "Reset";

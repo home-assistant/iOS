@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
 "gestures.3_fingers_swipe_up.title" = "3 👆 swipe up";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Bevægelser";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Tilbage til tidligere side";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Gå til næste side";
 "gestures.value.option.next_server" = "Næste server";
 "gestures.value.option.none" = "Ingen";
 "gestures.value.option.open_debug" = "Open debug";
 "gestures.value.option.previous_server" = "Tidligere server";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Server liste";
 "gestures.value.option.show_settings" = "Åben app indstillinger";
 "gestures.value.option.show_sidebar" = "Vis side menu";
@@ -487,6 +494,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.permissions.notification.title" = "Notifikationer";
 "onboarding.scanning.discovered_announcement" = "Fandt: %@";
 "onboarding.scanning.manual" = "Indtast adresse manuelt";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Kan du ikke finde din server?";
 "onboarding.scanning.title" = "Søger efter servere";

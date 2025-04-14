@@ -94,7 +94,7 @@
 "component::humidifier::entity_component::_::state_attributes::mode::state::home" = "Otthon";
 "component::improv_ble::config::abort::already_configured" = "Az eszköz már konfigurálva van";
 "component::improv_ble::config::abort::cannot_connect" = "Sikertelen csatlakozás";
-"component::improv_ble::config::abort::characteristic_missing" = "Az eszköz vagy már csatlakozik a Wi-Fi-hez, vagy már nem tud csatlakozni a Wi-Fi-hez. Ha másik hálózathoz szeretné csatlakoztatni, először próbálja meg visszaállítani a gyári beállításokat.";
+"component::improv_ble::config::abort::characteristic_missing" = "Az eszköz vagy már csatlakozik a Wi-Fi-hez vagy már nem tud csatlakozni a Wi-Fi-hez. Ha másik hálózathoz szeretné csatlakoztatni, először próbálja meg visszaállítani a gyári beállításokat.";
 "component::improv_ble::config::abort::no_devices_found" = "Nem található eszköz a hálózaton";
 "component::improv_ble::config::abort::provision_successful" = "Az eszköz sikeresen csatlakozott a Wi-Fi hálózathoz.";
 "component::improv_ble::config::abort::provision_successful_url" = "Az eszköz sikeresen csatlakozott a Wi-Fi hálózathoz. \
@@ -103,7 +103,7 @@
 "component::improv_ble::config::abort::unknown" = "Váratlan hiba";
 "component::improv_ble::config::error::unable_to_connect" = "A készülék nem tudott csatlakozni a Wi-Fi hálózathoz. Ellenőrizze, hogy az SSID és a jelszó helyes-e, és próbálja meg újra.";
 "component::improv_ble::config::flow_title" = "{name}";
-"component::improv_ble::config::progress::authorize" = "Az eszköz engedélyezést igényel, nyomja meg az engedélyezési gombot, vagy olvassa el az eszköz kézikönyvét a további lépésekért.";
+"component::improv_ble::config::progress::authorize" = "Az eszköz engedélyezést igényel, nyomja meg az engedélyezési gombot vagy olvassa el az eszköz kézikönyvét a további lépésekért.";
 "component::improv_ble::config::progress::provisioning" = "Az eszköz csatlakozik a Wi-Fi hálózathoz.";
 "component::improv_ble::config::step::bluetooth_confirm::description" = "Szeretné beállítani a(z) {name} eszközt?";
 "component::improv_ble::config::step::identify::description" = "A készülék most azonosítja magát, például villogással vagy hangjelzéssel.";

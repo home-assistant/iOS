@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 nach links wischen";
 "gestures.3_fingers_swipe_right.title" = "3 👆 nach rechts wischen";
 "gestures.3_fingers_swipe_up.title" = "3 👆 nach oben wischen";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Gesten für die Verwendung im Frontend anpassen.";
 "gestures.screen.body" = "Die folgenden Gesten werden immer angewendet, wenn du die Hauptbenutzeroberfläche von Home Assistant verwendest.";
 "gestures.screen.title" = "Gesten";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Nach links wischen";
 "gestures.swipe_right.title" = "Nach rechts wischen";
 "gestures.value.option.back_page" = "Zurück zur vorherigen Seite";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Weiter zur nächsten Seite";
 "gestures.value.option.next_server" = "Nächster Server";
 "gestures.value.option.none" = "Kein";
 "gestures.value.option.open_debug" = "Debuggen öffnen";
 "gestures.value.option.previous_server" = "Vorheriger Server";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Serverliste";
 "gestures.value.option.show_settings" = "App-Einstellungen öffnen";
 "gestures.value.option.show_sidebar" = "Seitenleiste einblenden";
@@ -487,6 +494,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.notification.title" = "Benachrichtigungen";
 "onboarding.scanning.discovered_announcement" = "Entdeckt: %@";
 "onboarding.scanning.manual" = "Adresse manuell eingeben";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Wird dein Server nicht gefunden?";
 "onboarding.scanning.title" = "Server werden gesucht";

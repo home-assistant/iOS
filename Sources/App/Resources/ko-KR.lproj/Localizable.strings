@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 왼쪽으로 스와이프";
 "gestures.3_fingers_swipe_right.title" = "3 👆 오른쪽으로 스와이프";
 "gestures.3_fingers_swipe_up.title" = "3 👆 위로 스와이프";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "프론트엔드에서 사용할 제스처를 사용자 지정합니다.";
 "gestures.screen.body" = "아래 제스처는 Home Assistant 기본 UI를 사용할 때마다 적용됩니다.";
 "gestures.screen.title" = "제스처";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "왼쪽으로 스와이프할 때";
 "gestures.swipe_right.title" = "오른쪽으로 스와이프할 때";
 "gestures.value.option.back_page" = "이전 페이지로 돌아가기";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "다음 페이지로 이동";
 "gestures.value.option.next_server" = "다음 서버";
 "gestures.value.option.none" = "없음";
 "gestures.value.option.open_debug" = "디버그 열기";
 "gestures.value.option.previous_server" = "이전 서버";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "서버 목록";
 "gestures.value.option.show_settings" = "앱 설정 열기";
 "gestures.value.option.show_sidebar" = "사이드바 표시";
@@ -487,6 +494,7 @@
 "onboarding.permissions.notification.title" = "알림";
 "onboarding.scanning.discovered_announcement" = "발견됨: %@";
 "onboarding.scanning.manual" = "주소 수동 입력";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "서버를 찾을 수 없습니까?";
 "onboarding.scanning.title" = "서버를 찾는 중";

@@ -248,6 +248,11 @@
 "gestures.3_fingers_swipe_left.title" = "3 👆 sola kaydırın";
 "gestures.3_fingers_swipe_right.title" = "3 👆 sağa kaydırın";
 "gestures.3_fingers_swipe_up.title" = "3 👆 yukarı kaydırın";
+"gestures.category.app" = "App";
+"gestures.category.homeAssistant" = "Home Assistant";
+"gestures.category.other" = "Other";
+"gestures.category.page" = "Navigation";
+"gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Önyüzde kullanılacak hareketleri özelleştirin.";
 "gestures.screen.body" = "Aşağıdaki hareketler Home Assistant ana kullanıcı arayüzünü kullandığınızda uygulanacaktır.";
 "gestures.screen.title" = "Hareket";
@@ -255,11 +260,13 @@
 "gestures.swipe_left.title" = "Sola Kaydır";
 "gestures.swipe_right.title" = "Sağa Kaydır";
 "gestures.value.option.back_page" = "Önceki sayfaya dön";
+"gestures.value.option.more_info.search_entities" = "Search entities";
 "gestures.value.option.next_page" = "Sonraki sayfaya git";
 "gestures.value.option.next_server" = "Sonraki sunucu";
 "gestures.value.option.none" = "Hiçbiri";
 "gestures.value.option.open_debug" = "Hata ayıklamayı aç";
 "gestures.value.option.previous_server" = "Önceki sunucu";
+"gestures.value.option.search_entities" = "Search entities";
 "gestures.value.option.servers_list" = "Sunucu listesi";
 "gestures.value.option.show_settings" = "Uygulama ayarlarını aç";
 "gestures.value.option.show_sidebar" = "Kenar çubuğunu göster";
@@ -487,6 +494,7 @@
 "onboarding.permissions.notification.title" = "Bildirimler";
 "onboarding.scanning.discovered_announcement" = "Bulundu:%@";
 "onboarding.scanning.manual" = "Adresi El ile Girin";
+"onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Sunucunuzu bulamıyor musunuz?";
 "onboarding.scanning.title" = "Sunucular için Tarama";
