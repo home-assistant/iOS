@@ -107,7 +107,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                     Current.Log.error("Failed to create placeholder entity for magic item id: \(magicItem.id)")
                     return .init(text: "", detailText: "")
                 }
-                let entityProvider = CarPlayEntityListItem(serverId: magicItem.serverId, entity: placeholderItem)
+                let entityProvider = CarPlayEntityListItem(
+                    serverId: magicItem.serverId,
+                    entity: placeholderItem,
+                    magicItem: magicItem,
+                    magicItemInfo: info
+                )
                 let listItem = entityProvider.template
                 listItem.handler = { [weak self] _, _ in
                     self?.itemTap(

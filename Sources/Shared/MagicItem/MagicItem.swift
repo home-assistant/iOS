@@ -3,7 +3,7 @@ import GRDB
 import HAKit
 import PromiseKit
 
-/// Object that represents iOS item that can be displayed in Watch and Widgets and perform different action types
+/// Object that represents iOS item that can be displayed in Watch, Widgets, CarPlay and perform different action types
 public struct MagicItem: Codable, Equatable, Hashable {
     public static func == (lhs: MagicItem, rhs: MagicItem) -> Bool {
         lhs.id == rhs.id && lhs.serverId == rhs.serverId
