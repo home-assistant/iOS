@@ -524,6 +524,10 @@
 		4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */; };
 		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		420461692C8F29440062E89F /* ControlLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420461682C8F29440062E89F /* ControlLight.swift */; };
+		4206FFB42DAD58140087626C /* WebViewController+PostOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */; };
+		4206FFB62DAD58520087626C /* WebViewController+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */; };
+		4206FFB82DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */; };
+		4206FFBA2DAD58DB0087626C /* ConnectionInfo+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */; };
 		42070EE82BAC43240031E96F /* AssistSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE72BAC43240031E96F /* AssistSession.swift */; };
 		42070EEB2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
 		42070EEC2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */; };
@@ -1969,6 +1973,10 @@
 		4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetDetailsAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Details/WidgetDetailsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		420461682C8F29440062E89F /* ControlLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLight.swift; sourceTree = "<group>"; };
+		4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+PostOnboarding.swift"; sourceTree = "<group>"; };
+		4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Gestures.swift"; sourceTree = "<group>"; };
+		4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewControllerProtocol+Implementation.swift"; sourceTree = "<group>"; };
+		4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConnectionInfo+WebView.swift"; sourceTree = "<group>"; };
 		42070EE72BAC43240031E96F /* AssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSession.swift; sourceTree = "<group>"; };
 		42070EE92BAC49D70031E96F /* AssistInAppIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistInAppIntentHandler.swift; sourceTree = "<group>"; };
 		4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRowViewModel.swift; sourceTree = "<group>"; };
@@ -3351,6 +3359,10 @@
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */,
+				4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */,
+				4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */,
+				4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */,
 				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
 				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				420C57C62D0A6DE700D2D9AC /* NoActiveURLView.swift */,
@@ -7441,6 +7453,7 @@
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
 				429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */,
+				4206FFB82DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
@@ -7597,6 +7610,7 @@
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				420C57C72D0A6DE700D2D9AC /* NoActiveURLView.swift in Sources */,
 				42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */,
+				4206FFB62DAD58520087626C /* WebViewController+Gestures.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
@@ -7663,6 +7677,7 @@
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
 				11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */,
 				403AE90E2C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
+				4206FFB42DAD58140087626C /* WebViewController+PostOnboarding.swift in Sources */,
 				42FCCFFF2B9B1C310057783F /* ThreadCredentialsSharingView.swift in Sources */,
 				429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
@@ -7677,6 +7692,7 @@
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,
+				4206FFBA2DAD58DB0087626C /* ConnectionInfo+WebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
