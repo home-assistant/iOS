@@ -8,40 +8,55 @@ extension WebViewController {
     func handleGestureAction(_ action: HAGestureAction) {
         switch action {
         case .showSidebar:
-            webViewExternalMessageHandler.sendExternalBus(message: .init(command: "sidebar/show"))
+            showSidebar()
         case .backPage:
-            if webView.canGoBack {
-                webView.goBack()
-            }
+            webViewNavigateBack()
         case .nextPage:
-            if webView.canGoForward {
-                webView.goForward()
-            }
+            webViewNavigateForward()
         case .showServersList:
-            Current.sceneManager.webViewWindowControllerPromise.done { controller in
-                controller.selectServer(includeSettings: true).done { server in
-                    if let server {
-                        controller.open(server: server)
-                    }
-                }.catch { error in
-                    Current.Log.error("failed to select server: \(error)")
-                }
-            }
+            showServersList()
         case .nextServer:
             moveToServer(next: true)
-            displayChangeServerHUD(next: true)
         case .previousServer:
             moveToServer(next: false)
-            displayChangeServerHUD(next: false)
         case .showSettings:
             showSettingsViewController()
-        case .none:
-            /* no-op */
-            break
         case .openDebug:
             openDebug()
         case .searchEntities:
             showSearchEntities()
+        case .none:
+            /* no-op */
+            break
+        }
+    }
+
+    private func showSidebar() {
+        webViewExternalMessageHandler
+            .sendExternalBus(message: .init(command: WebViewExternalBusMessage.showSidebar.rawValue))
+    }
+
+    private func webViewNavigateBack() {
+        if webView.canGoBack {
+            webView.goBack()
+        }
+    }
+
+    private func webViewNavigateForward() {
+        if webView.canGoForward {
+            webView.goForward()
+        }
+    }
+
+    private func showServersList() {
+        Current.sceneManager.webViewWindowControllerPromise.done { controller in
+            controller.selectServer(includeSettings: true).done { server in
+                if let server {
+                    controller.open(server: server)
+                }
+            }.catch { error in
+                Current.Log.error("failed to select server: \(error)")
+            }
         }
     }
 
@@ -77,16 +92,5 @@ extension WebViewController {
                 hud.hide(animated: true, afterDelay: 1.0)
             }
         }
-    }
-
-    private func displayChangeServerHUD(next: Bool) {
-        let icon: MaterialDesignIcons = next ? .arrowRightIcon : .arrowLeftIcon
-        let hud = MBProgressHUD.showAdded(to: view, animated: true)
-        hud.isUserInteractionEnabled = false
-        hud.customView = with(IconImageView(frame: CGRect(x: 0, y: 0, width: 37, height: 37))) {
-            $0.iconDrawable = icon
-        }
-        hud.mode = .customView
-        hud.hide(animated: true, afterDelay: 1.0)
     }
 }
