@@ -918,6 +918,38 @@ public class HomeAssistantAPI {
         }
     }
     #endif
+
+    public func profilePictureURL(completion: @escaping (URL?) -> Void) {
+        connection.caches.user.once { [weak self] user in
+            guard let self else {
+                Current.Log.error("Failed to retrieve profile picture URL: self is nil")
+                completion(nil)
+                return
+            }
+            connection.caches.states().once { [weak self] states in
+                let states = states.all
+                guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
+                    Current.Log.error("Profile picture: No person found for user \(user.id)")
+                    completion(nil)
+                    return
+                }
+
+                guard let path = person.attributes["entity_picture"] as? String else {
+                    Current.Log.error("Profile picture: Missing URL for user entity picture, user id \(user.id)")
+                    completion(nil)
+                    return
+                }
+
+                guard let url = self?.server.info.connection.activeURL()?.appendingPathComponent(path) else {
+                    Current.Log.error("Profile picture: Missing active URL for user entity picture, user id \(user.id)")
+                    completion(nil)
+                    return
+                }
+
+                completion(url)
+            }
+        }
+    }
 }
 
 extension HomeAssistantAPI.APIError: LocalizedError {

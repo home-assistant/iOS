@@ -349,7 +349,6 @@
 		11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */; };
 		11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */; };
 		11B7DC1F266C5D3E0090BD3B /* LocalPushManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */; };
-		11B7ECDB274DA531009AD634 /* ServerSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7ECDA274DA531009AD634 /* ServerSelectViewController.swift */; };
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
@@ -845,6 +844,8 @@
 		42C131D02D66084C00AF48E6 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C131CF2D66084C00AF48E6 /* PillView.swift */; };
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42C373B22BC5382900898990 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C373B12BC5382900898990 /* HostingController.swift */; };
+		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
+		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -1838,7 +1839,6 @@
 		11B7DBFB266BE7540090BD3B /* LocalPushEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.swift; sourceTree = "<group>"; };
 		11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.test.swift; sourceTree = "<group>"; };
 		11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.test.swift; sourceTree = "<group>"; };
-		11B7ECDA274DA531009AD634 /* ServerSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectViewController.swift; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-PushProvider.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2268,6 +2268,8 @@
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
+		42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectView.swift; sourceTree = "<group>"; };
+		42CB330E2DAE530400491DCE /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
@@ -3575,7 +3577,7 @@
 		11B7ECD9274DA521009AD634 /* Servers */ = {
 			isa = PBXGroup;
 			children = (
-				11B7ECDA274DA531009AD634 /* ServerSelectViewController.swift */,
+				42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */,
 			);
 			path = Servers;
 			sourceTree = "<group>";
@@ -4593,6 +4595,7 @@
 				42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */,
 				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
 				42B74A5C2D36A47E00C37304 /* CloseButton.swift */,
+				42CB330E2DAE530400491DCE /* SettingsButton.swift */,
 				42C131CF2D66084C00AF48E6 /* PillView.swift */,
 				427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */,
 			);
@@ -7541,7 +7544,6 @@
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
 				42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */,
 				119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */,
-				11B7ECDB274DA531009AD634 /* ServerSelectViewController.swift in Sources */,
 				113199DC28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift in Sources */,
 				11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */,
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
@@ -7649,6 +7651,7 @@
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */,
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
+				42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */,
 				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
 				465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */,
@@ -8251,6 +8254,7 @@
 				4264906B2C0F1B5F002155CC /* AssistChatItem.swift in Sources */,
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
 				115BC82E2677093900452430 /* FocusStatusWrapper.swift in Sources */,
+				42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				119385A4249E8E360097F497 /* StorageSensor.swift in Sources */,

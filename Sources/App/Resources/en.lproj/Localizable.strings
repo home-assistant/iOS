@@ -1209,3 +1209,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+"servers_selection.title" = "Servers";
