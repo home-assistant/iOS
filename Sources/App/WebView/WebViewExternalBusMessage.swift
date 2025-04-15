@@ -1,7 +1,6 @@
 import Foundation
 
 enum WebViewExternalBusMessage: String, CaseIterable {
-    case showSidebar = "sidebar/show"
     case configGet = "config/get"
     case configScreenShow = "config_screen/show"
     case haptic
@@ -21,6 +20,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
 }
 
 enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
+    case showSidebar = "sidebar/show"
     case showAutomationEditor = "automation/editor/show"
     case barCodeScanResult = "bar_code/scan_result"
     case barCodeScanAborted = "bar_code/aborted"

@@ -3,7 +3,6 @@ import XCTest
 
 final class WebViewExternalBusMessageTests: XCTestCase {
     func test_externalBus_messageKeys() {
-        XCTAssertEqual(WebViewExternalBusMessage.showSidebar.rawValue, "sidebar/show")
         XCTAssertEqual(WebViewExternalBusMessage.configGet.rawValue, "config/get")
         XCTAssertEqual(WebViewExternalBusMessage.configScreenShow.rawValue, "config_screen/show")
         XCTAssertEqual(WebViewExternalBusMessage.haptic.rawValue, "haptic")
@@ -27,10 +26,11 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.scanForImprov.rawValue, "improv/scan")
         XCTAssertEqual(WebViewExternalBusMessage.improvConfigureDevice.rawValue, "improv/configure_device")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 17)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 16)
     }
 
     func test_externalBus_outgoing_messageKeys() {
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.showSidebar.rawValue, "sidebar/show")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue, "automation/editor/show")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanResult.rawValue, "bar_code/scan_result")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanAborted.rawValue, "bar_code/aborted")
@@ -40,6 +40,6 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             "improv/device_setup_done"
         )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 5)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 6)
     }
 }

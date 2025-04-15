@@ -1924,6 +1924,11 @@ public enum L10n {
     }
   }
 
+  public enum ServersSelection {
+    /// Servers
+    public static var title: String { return L10n.tr("Localizable", "servers_selection.title") }
+  }
+
   public enum Settings {
     public enum ConnectionSection {
       /// Activate

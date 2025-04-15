@@ -33,7 +33,7 @@ extension WebViewController {
 
     private func showSidebar() {
         webViewExternalMessageHandler
-            .sendExternalBus(message: .init(command: WebViewExternalBusMessage.showSidebar.rawValue))
+            .sendExternalBus(message: .init(command: WebViewExternalBusOutgoingMessage.showSidebar.rawValue))
     }
 
     private func webViewNavigateBack() {
@@ -50,12 +50,8 @@ extension WebViewController {
 
     private func showServersList() {
         Current.sceneManager.webViewWindowControllerPromise.done { controller in
-            controller.selectServer(includeSettings: true).done { server in
-                if let server {
-                    controller.open(server: server)
-                }
-            }.catch { error in
-                Current.Log.error("failed to select server: \(error)")
+            controller.selectServer(includeSettings: true) { server in
+                controller.open(server: server)
             }
         }
     }

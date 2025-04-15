@@ -172,37 +172,16 @@ final class WebViewWindowController {
         }
     }
 
-    func selectServer(prompt: String? = nil, includeSettings: Bool = false) -> Promise<Server?> {
-        let select = ServerSelectViewController()
-        if let prompt {
-            select.prompt = prompt
-        }
-        if includeSettings {
-            select.navigationItem.rightBarButtonItems = [
-                with(UIBarButtonItem(icon: .cogIcon, target: self, action: #selector(openSettings(_:)))) {
-                    $0.accessibilityLabel = L10n.Settings.NavigationBar.title
-                },
-            ]
-        }
-        let promise = select.result.ensureThen { [weak select] in
-            Guarantee { seal in
-                if let select, select.presentingViewController != nil {
-                    select.dismiss(animated: true, completion: {
-                        seal(())
-                    })
-                } else {
-                    seal(())
-                }
-            }
-        }
-        present(UINavigationController(rootViewController: select))
-        return promise.map {
-            if case let .server(server) = $0 {
-                return server
-            } else {
-                return nil
-            }
-        }
+    func selectServer(prompt: String? = nil, includeSettings: Bool = false, completion: @escaping (Server) -> Void) {
+        let serverSelectView = UIHostingController(rootView: ServerSelectView(
+            prompt: prompt,
+            includeSettings: includeSettings,
+            selectAction: completion
+        ))
+        serverSelectView.view.backgroundColor = .clear
+        serverSelectView.modalPresentationStyle = .overFullScreen
+        serverSelectView.modalTransitionStyle = .crossDissolve
+        present(serverSelectView, animated: false, completion: nil)
     }
 
     func openSelectingServer(
@@ -265,18 +244,14 @@ final class WebViewWindowController {
                 prompt = from.message(with: openUrlRaw)
             }
 
-            selectServer(prompt: prompt).done { [self] server in
-                if let server {
-                    open(
-                        from: from,
-                        server: server,
-                        urlString: openUrlRaw,
-                        skipConfirm: true,
-                        isOpenPageIntent: isOpenPageIntent
-                    )
-                }
-            }.catch { error in
-                Current.Log.error("failed to select server: \(error)")
+            selectServer(prompt: prompt) { [self] server in
+                open(
+                    from: from,
+                    server: server,
+                    urlString: openUrlRaw,
+                    skipConfirm: true,
+                    isOpenPageIntent: isOpenPageIntent
+                )
             }
         }
     }
