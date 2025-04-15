@@ -70,5 +70,8 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetSensors()
         WidgetActions()
         WidgetOpenPage()
+
+        // Live activity
+        ProgressLiveActivity()
     }
 }
