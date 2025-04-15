@@ -388,10 +388,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = Realm.live()
         Action.setupObserver()
         NotificationCategory.setupObserver()
-        Current.modelManager.cleanup().cauterize()
-        Current.modelManager.subscribe(isAppInForeground: {
-            UIApplication.shared.applicationState == .active
-        })
     }
 
     private func setupMenus() {
