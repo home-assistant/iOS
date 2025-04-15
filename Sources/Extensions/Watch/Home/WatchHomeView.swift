@@ -76,7 +76,7 @@ struct WatchHomeView: View {
             ProgressView()
                 .progressViewStyle(.circular)
                 .scaleEffect(2)
-            Button(L10n.Watch.Home.CancelAndUseCache.title) {
+            Button(L10n.Watch.Home.Loading.Skip.title) {
                 viewModel.loadCache()
             }
         }

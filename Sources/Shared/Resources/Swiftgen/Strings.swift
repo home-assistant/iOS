@@ -3450,9 +3450,11 @@ public enum L10n {
       }
     }
     public enum Home {
-      public enum CancelAndUseCache {
-        /// Cancel and use cache
-        public static var title: String { return L10n.tr("Localizable", "watch.home.cancel_and_use_cache.title") }
+      public enum Loading {
+        public enum Skip {
+          /// Skip
+          public static var title: String { return L10n.tr("Localizable", "watch.home.loading.skip.title") }
+        }
       }
       public enum Run {
         public enum Confirmation {
