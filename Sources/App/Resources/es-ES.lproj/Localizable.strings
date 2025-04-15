@@ -462,6 +462,8 @@ Las etiquetas funcionarán en cualquier dispositivo con Home Assistant instalado
 "onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
 "onboarding.permission.location.buttons.deny" = "Deny";
+"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
 "onboarding.permission.location.deny.alert.title" = "Are you sure?";
 "onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";

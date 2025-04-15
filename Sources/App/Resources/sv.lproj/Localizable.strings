@@ -462,6 +462,8 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.permission.location.buttons.allow_and_share" = "Tillåt samt dela med Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Tillåt endast i appanvändning";
 "onboarding.permission.location.buttons.deny" = "Neka";
+"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Utan platsbehörighet kan framtida versioner av appen neka åtkomst till din lokala Home Assistant-server på grund av integritetsproblem. Om du är säker, fortsätt och tryck på \"Neka\" i nästa popup också. I så fall rekommenderas att du använder den interna URL:en som extern, eftersom det är den enda URL som appen kommer att ansluta till.";
 "onboarding.permission.location.deny.alert.title" = "Är du säker?";
 "onboarding.permission.location.description" = "För att identifiera om du är hemma och ansluta lokalt till Home Assistant kräver Apple att vi ber om din platsbehörighet.";

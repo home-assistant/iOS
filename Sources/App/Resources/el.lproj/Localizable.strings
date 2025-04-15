@@ -462,6 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "Αποδοχή και κοινή χρήση με το Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Να επιτρέπεται μόνο για χρήση εφαρμογής";
 "onboarding.permission.location.buttons.deny" = "Αρνηση";
+"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Χωρίς την άδεια της τοποθεσίας, οι μελλοντικές εκδόσεις της εφαρμογής ενδέχεται να αρνηθούν την πρόσβαση στον τοπικό διακομιστή του Home Assistant σας λόγω ανησυχιών για το απόρρητο. Εάν είστε σίγουρος/η, παρακαλώ συνεχίστε, πατώντας 'Αρνηση' και στο επόμενο αναδυόμενο παράθυρο. Οταν το κάνετε αυτό, συνιστάται να χρησιμοποιήσετε την εσωτερική σας διεύθυνση URL ως εξωτερική, καθώς είναι η μόνη διεύθυνση URL στην οποία θα προσπαθήσει η εφαρμογή να αποκτήσει πρόσβαση.";
 "onboarding.permission.location.deny.alert.title" = "Είσαι σίγουρος/η;";
 "onboarding.permission.location.description" = "Για να εντοπίσουμε αν βρίσκεστε στο σπίτι και να συνδεθείτε τοπικά στο Home Assistant, η Apple απαιτεί να ζητήσουμε την άδεια για την τοποθεσία σας.";

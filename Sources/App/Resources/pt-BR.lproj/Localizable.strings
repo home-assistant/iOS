@@ -462,6 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "Permitir e compartilhar com o Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Permitir apenas o uso do aplicativo";
 "onboarding.permission.location.buttons.deny" = "Negar";
+"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Sem a permissão de localização, versões futuras do aplicativo podem negar acesso ao seu servidor local do Home Assistant devido a questões de privacidade. Se tiver certeza, continue e toque em \"Negar\" no próximo pop-up. Ao fazer isso, recomendamos que você use sua URL interna como externa, pois é a única URL que o aplicativo tentará acessar.";
 "onboarding.permission.location.deny.alert.title" = "Tem certeza?";
 "onboarding.permission.location.description" = "Para identificar se você está em casa e se conectar localmente ao Home Assistant, a Apple exige que peçamos sua permissão de localização.";

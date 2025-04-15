@@ -462,6 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "Povolit a sdílet s Home Assistantem";
 "onboarding.permission.location.buttons.allow_for_app" = "Povolit jen použití aplikace";
 "onboarding.permission.location.buttons.deny" = "Odmítnout";
+"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Bez povolení k poloze mohou budoucí verze aplikace odepřít přístup k vašemu místnímu serveru Home Assistant z důvodu ochrany soukromí. Pokud jste si jisti, pokračujte a v dalším vyskakovacím okně klepněte na \"Odmítnout\". Pokud tak učiníte, doporučujeme použít svou interní adresu URL jako externí, protože je to jediná adresa URL, ke které se aplikace pokusí získat přístup.";
 "onboarding.permission.location.deny.alert.title" = "Jste si jisti?";
 "onboarding.permission.location.description" = "Aby bylo možné zjistit, zda jste doma, a připojit se místně k Home Assistantovi, Apple vyžaduje, abychom vás požádali o povolení k poloze.";
