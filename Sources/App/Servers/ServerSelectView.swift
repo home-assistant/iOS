@@ -42,11 +42,7 @@ struct ServerSelectView: View {
                 }
                 Section {
                     ForEach(Current.servers.all, id: \.identifier) { server in
-                        ServerSelectViewRow(
-                            name: server.info.name,
-                            userName: "Unknown",
-                            selected: false
-                        ) {
+                        ServerSelectViewRow(server: server) {
                             selectAction(server)
                             dismiss()
                         }
@@ -79,9 +75,11 @@ struct ServerSelectView: View {
 }
 
 struct ServerSelectViewRow: View {
-    let name: String
-    let userName: String
-    let selected: Bool
+    @State private var userName: String = ""
+    @State private var profilePictureURL: URL?
+    @State private var selected = false
+
+    let server: Server
     let action: () -> Void
 
     var body: some View {
@@ -92,7 +90,7 @@ struct ServerSelectViewRow: View {
                 profilePicture
                 VStack {
                     Group {
-                        Text(name)
+                        Text(server.info.name)
                             .font(.headline)
                             .foregroundStyle(Color(uiColor: .label))
                         Text(userName)
@@ -106,16 +104,46 @@ struct ServerSelectViewRow: View {
             }
         })
         .tint(Color.asset(Asset.Colors.haPrimary))
+        .onAppear {
+            updateSelectionIndicator()
+            loadUserNameAndProfilePicture()
+        }
     }
 
     private var profilePicture: some View {
-        ZStack {
-            Image(systemSymbol: .circleFill)
+        AsyncImage(url: profilePictureURL) { image in
+            image
                 .resizable()
-                .frame(width: 40, height: 40)
-            Text(String(userName.first ?? Character("")))
-                .foregroundStyle(.white)
-                .font(.body.bold())
+        } placeholder: {
+            ZStack {
+                Image(systemSymbol: .circleFill)
+                    .resizable()
+                Text(String(userName.first ?? Character(" ")))
+                    .foregroundStyle(.white)
+                    .font(.body.bold())
+            }
+        }
+        .frame(width: 40, height: 40)
+        .clipShape(Circle())
+        .overlay(
+            Circle()
+                .stroke(Color.asset(Asset.Colors.haPrimary), lineWidth: 2)
+        )
+    }
+
+    private func updateSelectionIndicator() {
+        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
+            selected = controller.server == server
+        }
+    }
+
+    private func loadUserNameAndProfilePicture() {
+        Current.api(for: server)?.connection.caches.user.once { user in
+            userName = user.name.orEmpty
+        }
+
+        Current.api(for: server)?.profilePictureURL { url in
+            profilePictureURL = url
         }
     }
 }
@@ -130,14 +158,6 @@ struct ServerSelectViewRow: View {
 
 #Preview("Rows") {
     List {
-        ServerSelectViewRow(
-            name: "Home", userName: "Bruno", selected: false
-        ) {}
-        ServerSelectViewRow(
-            name: "Family", userName: "Andrea", selected: true
-        ) {}
-        ServerSelectViewRow(
-            name: "Vacation home", userName: "Sonia", selected: false
-        ) {}
+        ServerSelectViewRow(server: ServerFixture.standard) {}
     }
 }
