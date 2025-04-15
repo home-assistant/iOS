@@ -250,9 +250,9 @@
 "gestures.3_fingers_swipe_up.title" = "3 👆 nach oben wischen";
 "gestures.category.app" = "App";
 "gestures.category.homeAssistant" = "Home Assistant";
-"gestures.category.other" = "Other";
+"gestures.category.other" = "Andere";
 "gestures.category.page" = "Navigation";
-"gestures.category.servers" = "Servers";
+"gestures.category.servers" = "Server";
 "gestures.footer.title" = "Gesten für die Verwendung im Frontend anpassen.";
 "gestures.screen.body" = "Die folgenden Gesten werden immer angewendet, wenn du die Hauptbenutzeroberfläche von Home Assistant verwendest.";
 "gestures.screen.title" = "Gesten";
@@ -260,13 +260,13 @@
 "gestures.swipe_left.title" = "Nach links wischen";
 "gestures.swipe_right.title" = "Nach rechts wischen";
 "gestures.value.option.back_page" = "Zurück zur vorherigen Seite";
-"gestures.value.option.more_info.search_entities" = "Search entities";
+"gestures.value.option.more_info.search_entities" = "Entitäten durchsuchen";
 "gestures.value.option.next_page" = "Weiter zur nächsten Seite";
 "gestures.value.option.next_server" = "Nächster Server";
 "gestures.value.option.none" = "Kein";
 "gestures.value.option.open_debug" = "Debuggen öffnen";
 "gestures.value.option.previous_server" = "Vorheriger Server";
-"gestures.value.option.search_entities" = "Search entities";
+"gestures.value.option.search_entities" = "Entitäten durchsuchen";
 "gestures.value.option.servers_list" = "Serverliste";
 "gestures.value.option.show_settings" = "App-Einstellungen öffnen";
 "gestures.value.option.show_sidebar" = "Seitenleiste einblenden";
@@ -462,6 +462,8 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permission.location.buttons.allow_and_share" = "Zulassen und mit Home Assistant teilen";
 "onboarding.permission.location.buttons.allow_for_app" = "Nur für App-Nutzung zulassen";
 "onboarding.permission.location.buttons.deny" = "Ablehnen";
+"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Ohne Standortberechtigung können zukünftige Versionen der App den Zugriff auf deinen lokalen Home Assistant-Server aus Datenschutzgründen verweigern. Wenn du sicher bist, fahre bitte fort und tippe im nächsten Popup ebenfalls auf „Ablehnen“. Wir empfehlen, deine interne URL als externe URL zu verwenden, da die App nur auf diese URL zugreifen kann.";
 "onboarding.permission.location.deny.alert.title" = "Bist du sicher?";
 "onboarding.permission.location.description" = "Um festzustellen, ob du zuhause bist und dich lokal mit Home Assistant verbindest, müssen wir dich um die Berechtigung für deinen Standort bitten.";
@@ -494,8 +496,8 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permissions.notification.title" = "Benachrichtigungen";
 "onboarding.scanning.discovered_announcement" = "Entdeckt: %@";
 "onboarding.scanning.manual" = "Adresse manuell eingeben";
-"onboarding.scanning.manual.button.divider.title" = "or";
-"onboarding.scanning.manual.button.title" = "Enter address manually";
+"onboarding.scanning.manual.button.divider.title" = "oder";
+"onboarding.scanning.manual.button.title" = "Adresse manuell eingeben";
 "onboarding.scanning.manual_hint" = "Wird dein Server nicht gefunden?";
 "onboarding.scanning.title" = "Server werden gesucht";
 "onboarding.servers.docs.read" = "Dokumentation lesen";

@@ -462,6 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "允許並與 Home Assistant 共享";
 "onboarding.permission.location.buttons.allow_for_app" = "僅允許應用程式使用";
 "onboarding.permission.location.buttons.deny" = "拒絕";
+"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "如果沒有獲得位置權限、未來版本的應用程式可能會因為隱私問題而拒絕存取本地端的 Home Assistant 伺服器，。假如確定，請繼續並在下一個彈出視窗中點擊 '拒絕'。如果這樣做，建議您將內部網址作為外部網址使用，因為將是應用程式唯一會嘗試存取的網址。";
 "onboarding.permission.location.deny.alert.title" = "確認？";
 "onboarding.permission.location.description" = "為了識別否在家並透過本地端連線至 Home Assistant、Apple 要求必須請求使用者允許位置權限。";
