@@ -15,13 +15,14 @@ public enum GRDBDatabaseTable: String {
 }
 
 public enum DatabaseTables {
-    public enum AppEntity: String {
+    public enum AppEntity: String, CaseIterable {
         case id
         case entityId
         case serverId
         case domain
         case name
         case icon
+        case rawDeviceClass
     }
 
     public enum WatchConfig: String {
