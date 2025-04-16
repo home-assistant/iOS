@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 import UIKit
 
 public enum Domain: String, CaseIterable {
@@ -60,37 +61,72 @@ public enum Domain: String, CaseIterable {
         return states
     }
 
-    public var icon: MaterialDesignIcons {
-        var image = MaterialDesignIcons.bookmarkIcon
+    public func icon(deviceClass: String? = nil, state: State? = nil) -> MaterialDesignIcons {
+        let deviceClass = DeviceClass(rawValue: deviceClass ?? "")
+        var image: MaterialDesignIcons = .bookmarkIcon
         switch self {
         case .button:
             image = MaterialDesignIcons.gestureTapButtonIcon
         case .cover:
-            image = MaterialDesignIcons.curtainsIcon
+            image = imageForCover(deviceClass: deviceClass ?? .unknown, state: state ?? .unknown)
         case .inputBoolean:
-            image = MaterialDesignIcons.toggleSwitchOutlineIcon
+            image = .toggleSwitchOutlineIcon
         case .inputButton:
-            image = MaterialDesignIcons.gestureTapButtonIcon
+            image = .gestureTapButtonIcon
         case .light:
-            image = MaterialDesignIcons.lightbulbIcon
+            image = .lightbulbIcon
         case .lock:
-            image = MaterialDesignIcons.lockIcon
+            image = .lockIcon
         case .scene:
-            image = MaterialDesignIcons.paletteOutlineIcon
+            image = .paletteOutlineIcon
         case .script:
-            image = MaterialDesignIcons.scriptTextOutlineIcon
+            image = .scriptTextOutlineIcon
         case .switch:
-            image = MaterialDesignIcons.lightSwitchIcon
+            image = .lightSwitchIcon
         case .sensor:
-            image = MaterialDesignIcons.eyeIcon
+            image = .eyeIcon
         case .binarySensor:
-            image = MaterialDesignIcons.eyeIcon
+            image = .eyeIcon
         case .zone:
-            image = MaterialDesignIcons.mapIcon
+            image = .mapIcon
         case .person:
-            image = MaterialDesignIcons.accountIcon
+            image = .accountIcon
         }
         return image
+    }
+
+    private func imageForCover(deviceClass: DeviceClass, state: State) -> MaterialDesignIcons {
+        if state == .closed {
+            switch deviceClass {
+            case .garage:
+                return MaterialDesignIcons.garageIcon
+            case .gate:
+                return MaterialDesignIcons.gateIcon
+            case .shutter:
+                return MaterialDesignIcons.windowShutterIcon
+            case .blind:
+                return MaterialDesignIcons.blindsVerticalClosedIcon
+            case .shade:
+                return MaterialDesignIcons.rollerShadeClosedIcon
+            default:
+                return MaterialDesignIcons.curtainsClosedIcon
+            }
+        } else {
+            switch deviceClass {
+            case .garage:
+                return MaterialDesignIcons.garageOpenIcon
+            case .gate:
+                return MaterialDesignIcons.gateOpenIcon
+            case .shutter:
+                return MaterialDesignIcons.windowShutterOpenIcon
+            case .blind:
+                return MaterialDesignIcons.blindsOpenIcon
+            case .shade:
+                return MaterialDesignIcons.rollerShadeIcon
+            default:
+                return MaterialDesignIcons.curtainsIcon
+            }
+        }
     }
 
     public var localizedDescription: String {

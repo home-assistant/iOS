@@ -193,10 +193,11 @@ struct MagicItemAddView: View {
                     title: entity.name,
                     subtitle: entity.entityId,
                     entityIcon: {
-                        if let entityId = entity.icon {
-                            return MaterialDesignIcons(serversideValueNamed: entityId, fallback: .dotsGridIcon)
+                        if let entityIconName = entity.icon {
+                            return MaterialDesignIcons(serversideValueNamed: entityIconName, fallback: .dotsGridIcon)
                         } else {
-                            return Domain(rawValue: entity.domain)?.icon ?? .dotsGridIcon
+                            return Domain(rawValue: entity.domain)?
+                                .icon(deviceClass: entity.deviceClass.rawValue) ?? .dotsGridIcon
                         }
                     }()
                 )

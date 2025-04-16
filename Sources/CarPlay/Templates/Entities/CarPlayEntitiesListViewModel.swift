@@ -40,7 +40,7 @@ final class CarPlayEntitiesListViewModel {
             let state1 = e1.state
             let state2 = e2.state
 
-            let deviceClassOrder: [HAEntity.DeviceClass] = [.garage, .gate]
+            let deviceClassOrder: [DeviceClass] = [.garage, .gate]
 
             if lowPriorityStates.contains(state1), !lowPriorityStates.contains(state2) {
                 return false

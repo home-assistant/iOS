@@ -29,5 +29,15 @@ public enum DeviceClass: String, CaseIterable {
     case timestamp
     case vibration
     case window
+    case gate
+    case damper
+    case shutter
+    case curtain
+    case blind
+    case shade
+    case restart
+    case update
+    case outlet
+    case `switch`
     case unknown
 }
