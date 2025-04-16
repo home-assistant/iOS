@@ -168,7 +168,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 id: entityItem.id,
                 name: entityItem.name,
                 iconName: entityItem.icon ??
-                    Domain(rawValue: entityItem.domain)?.icon(deviceClass: entityItem.deviceClass?.rawValue).name ??
+                    Domain(rawValue: entityItem.domain)?.icon(deviceClass: entityItem.rawDeviceClass).name ??
                     MaterialDesignIcons.dotsGridIcon.name,
                 customization: item.customization
             )

@@ -62,7 +62,7 @@ public enum Domain: String, CaseIterable {
     }
 
     public func icon(deviceClass: String? = nil, state: State? = nil) -> MaterialDesignIcons {
-        let deviceClass = HAEntity.DeviceClass(rawValue: deviceClass ?? "")
+        let deviceClass = DeviceClass(rawValue: deviceClass ?? "")
         var image: MaterialDesignIcons = .bookmarkIcon
         switch self {
         case .button:
@@ -95,7 +95,7 @@ public enum Domain: String, CaseIterable {
         return image
     }
 
-    private func imageForCover(deviceClass: HAEntity.DeviceClass, state: State) -> MaterialDesignIcons {
+    private func imageForCover(deviceClass: DeviceClass, state: State) -> MaterialDesignIcons {
         if state == .closed {
             switch deviceClass {
             case .garage:

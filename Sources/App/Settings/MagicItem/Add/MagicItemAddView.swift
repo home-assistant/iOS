@@ -197,7 +197,7 @@ struct MagicItemAddView: View {
                             return MaterialDesignIcons(serversideValueNamed: entityIconName, fallback: .dotsGridIcon)
                         } else {
                             return Domain(rawValue: entity.domain)?
-                                .icon(deviceClass: entity.deviceClass?.rawValue) ?? .dotsGridIcon
+                                .icon(deviceClass: entity.deviceClass.rawValue) ?? .dotsGridIcon
                         }
                     }()
                 )
