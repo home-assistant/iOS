@@ -945,6 +945,8 @@
 		42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD00E2B9B29740057783F /* ThreadCredentialsManagementViewModel.swift */; };
 		42FCD0142B9B29740057783F /* ThreadCredentialDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD00F2B9B29740057783F /* ThreadCredentialDetailsView.swift */; };
 		42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */; };
+		42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
+		42FDA9372DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -2359,6 +2361,7 @@
 		42FCD00E2B9B29740057783F /* ThreadCredentialsManagementViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsManagementViewModel.swift; sourceTree = "<group>"; };
 		42FCD00F2B9B29740057783F /* ThreadCredentialDetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialDetailsView.swift; sourceTree = "<group>"; };
 		42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsManagementView.swift; sourceTree = "<group>"; };
+		42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClass.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingHelper.swift; sourceTree = "<group>"; };
@@ -4617,6 +4620,7 @@
 			isa = PBXGroup;
 			children = (
 				42CE8FAC2B46C12C00C707F9 /* Domain.swift */,
+				42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -7998,6 +8002,7 @@
 				1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */,
 				B67CE89D22200F220034C1D0 /* ConfigResponse.swift in Sources */,
+				42FDA9372DAFEA4E00111F22 /* DeviceClass.swift in Sources */,
 				11F855D924DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */,
 				11AF4D20249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
@@ -8212,6 +8217,7 @@
 				11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
+				42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */,
 				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,
 				42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */,
 				420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */,

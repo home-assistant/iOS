@@ -52,7 +52,8 @@ struct MagicItemProviderTests {
                     serverId: "2",
                     domain: "script",
                     name: "Script One",
-                    icon: nil
+                    icon: nil,
+                    rawDeviceClass: ""
                 ),
                 .init(
                     id: "2-scene.one",
@@ -60,7 +61,8 @@ struct MagicItemProviderTests {
                     serverId: "2",
                     domain: "scene",
                     name: "Scene One",
-                    icon: nil
+                    icon: nil,
+                    rawDeviceClass: ""
                 ),
             ],
         ]

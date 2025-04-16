@@ -29,8 +29,8 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.rawDeviceClass = rawDeviceClass
     }
 
-    public var deviceClass: HAEntity.DeviceClass? {
-        HAEntity.DeviceClass(rawValue: rawDeviceClass ?? "") ?? .unknown
+    public var deviceClass: DeviceClass {
+        DeviceClass(rawValue: rawDeviceClass ?? "") ?? .unknown
     }
 
     public static func config() throws -> [HAAppEntity]? {
