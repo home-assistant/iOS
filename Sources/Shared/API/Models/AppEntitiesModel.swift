@@ -74,7 +74,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
             domain: $0.domain,
             name: $0.attributes.friendlyName ?? $0.entityId,
             icon: $0.attributes.icon,
-            rawDeviceClass: $0.attributes.dictionary["device_class"] as? String,
+            rawDeviceClass: $0.attributes.dictionary["device_class"] as? String
         ) }).sorted(by: { $0.id < $1.id })
 
         do {
