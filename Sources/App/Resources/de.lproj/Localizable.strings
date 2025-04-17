@@ -462,7 +462,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.permission.location.buttons.allow_and_share" = "Zulassen und mit Home Assistant teilen";
 "onboarding.permission.location.buttons.allow_for_app" = "Nur für App-Nutzung zulassen";
 "onboarding.permission.location.buttons.deny" = "Ablehnen";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.body" = "Wenn du dir sicher bist, fahre fort und tippe auch im nächsten Popup auf „Ablehnen“. Falls du keine Remote-Verbindung konfiguriert hast, verwendet die App deine Konfiguration der lokalen Verbindung, um auf Home Assistant zuzugreifen.";
 "onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Ohne Standortberechtigung können zukünftige Versionen der App den Zugriff auf deinen lokalen Home Assistant-Server aus Datenschutzgründen verweigern. Wenn du sicher bist, fahre bitte fort und tippe im nächsten Popup ebenfalls auf „Ablehnen“. Wir empfehlen, deine interne URL als externe URL zu verwenden, da die App nur auf diese URL zugreifen kann.";
 "onboarding.permission.location.deny.alert.title" = "Bist du sicher?";
@@ -522,6 +522,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "save_label" = "Speichern";
 "sensors.active.setting.time_until_idle" = "Zeit bis zum Leerlauf";
 "sensors.geocoded_location.setting.use_zones" = "Verwende den Zonennamen";
+"servers_selection.title" = "Server";
 "settings.connection_section.activate_server" = "Aktivieren";
 "settings.connection_section.activate_swipe_hint" = "Schnelle Aktivierung mit einem Drei-Finger-Wischen nach links oder rechts beim Anzeigen eines Servers.";
 "settings.connection_section.add_server" = "Server hinzufügen";
@@ -968,6 +969,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "watch.debug.delete_db.reset.title" = "Konfiguration zurücksetzen";
 "watch.debug.delete_db.title" = "Watch-Konfiguration löschen";
 "watch.home.cancel_and_use_cache.title" = "Abbrechen und Cache verwenden";
+"watch.home.loading.skip.title" = "Überspringen";
 "watch.home.run.confirmation.title" = "Möchtest du „%@“ wirklich ausführen?";
 "watch.labels.complication_group.circular_small.description" = "Verwende kreisförmige kleine Komplikationen, um den Inhalt in den Ecken des Zifferblatts Farben anzuzeigen.";
 "watch.labels.complication_group.circular_small.name" = "Kreisförmig klein";

@@ -522,6 +522,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "save_label" = "保存";
 "sensors.active.setting.time_until_idle" = "アイドルまでの時間";
 "sensors.geocoded_location.setting.use_zones" = "ゾーン名を使用";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "アクティベート";
 "settings.connection_section.activate_swipe_hint" = "サーバーを表示しているときに、3本指で左右にスワイプすることですばやくアクティブ化できます。";
 "settings.connection_section.add_server" = "サーバーの追加";
@@ -967,6 +968,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "watch.debug.delete_db.reset.title" = "設定をリセット";
 "watch.debug.delete_db.title" = "ウォッチ設定を削除する";
 "watch.home.cancel_and_use_cache.title" = "キャンセルしてキャッシュを使用する";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "「 %@ 」を実行してもよろしいですか?";
 "watch.labels.complication_group.circular_small.description" = "円形の小さなコンプリケーションを使用して、カラー ウォッチフェイスの隅にコンテンツを表示します。";
 "watch.labels.complication_group.circular_small.name" = "サーキュラー スモール";

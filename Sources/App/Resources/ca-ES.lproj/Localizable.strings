@@ -522,6 +522,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Temps fins que estigui inactiu";
 "sensors.geocoded_location.setting.use_zones" = "Utilitza el nom de la zona";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Activa";
 "settings.connection_section.activate_swipe_hint" = "Activeu-lo ràpidament fent lliscar tres dits cap a l'esquerra o cap a la dreta quan visualitzeu un servidor.";
 "settings.connection_section.add_server" = "Afegir Servidor";
@@ -967,6 +968,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Utilitzeu petites complicacions circulars per mostrar contingut a les cantonades de la cara del rellotge Color.";
 "watch.labels.complication_group.circular_small.name" = "Circular Petita";

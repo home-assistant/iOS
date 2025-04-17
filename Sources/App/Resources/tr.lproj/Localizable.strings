@@ -522,6 +522,7 @@
 "save_label" = "Kaydet";
 "sensors.active.setting.time_until_idle" = "Boşta Kalana Kadar Geçen Süre";
 "sensors.geocoded_location.setting.use_zones" = "Bölge Adını Kullan";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Etkinleştir";
 "settings.connection_section.activate_swipe_hint" = "Bir sunucuyu görüntülerken üç parmakla sola veya sağa kaydırmayı kullanarak hızla etkinleştirin.";
 "settings.connection_section.add_server" = "Sunucu Ekle";
@@ -967,6 +968,7 @@
 "watch.debug.delete_db.reset.title" = "Yapılandırmayı sıfırla";
 "watch.debug.delete_db.title" = "İzleme yapılandırmasını sil";
 "watch.home.cancel_and_use_cache.title" = "İptal et ve önbelleği kullan";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "\" %@ \" çalıştırmak istediğinizden emin misiniz?";
 "watch.labels.complication_group.circular_small.description" = "İçeriği Renkli saat yüzünün köşelerinde görüntülemek için dairesel küçük komplikasyonlar kullanın.";
 "watch.labels.complication_group.circular_small.name" = "Dairesel Küçük";

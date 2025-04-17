@@ -61,10 +61,10 @@
 "app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "Avec la voix";
 "app_intents.controls.assist.title" = "Assist in app";
-"app_intents.cover.title" = "Cover";
+"app_intents.cover.title" = "Ouverture";
 "app_intents.haptic_confirmation.title" = "Confirmation haptique";
 "app_intents.icon.title" = "Icône";
-"app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.cover.title" = "Contrôler l'ouverture";
 "app_intents.intent.light.title" = "Control light";
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Statut de la cible";
@@ -522,6 +522,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Temps jusqu'à l'inactivité";
 "sensors.geocoded_location.setting.use_zones" = "Utiliser le nom de la zone";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Activer";
 "settings.connection_section.activate_swipe_hint" = "Activez rapidement à l'aide d'un balayage à trois doigts vers la gauche ou la droite lors de l'affichage d'un serveur.";
 "settings.connection_section.add_server" = "Ajouter un serveur";
@@ -967,6 +968,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Supprimer la configuration de la montre";
 "watch.home.cancel_and_use_cache.title" = "Annuler et utiliser le cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Êtes-vous sûr de vouloir exécuter « %@ » ?";
 "watch.labels.complication_group.circular_small.description" = "Utilisez des petites complications circulaires pour afficher le contenu dans les coins du cadran Couleur.";
 "watch.labels.complication_group.circular_small.name" = "Petit cercle";
@@ -1139,9 +1141,9 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choisir un canal";
 "widgets.controls.assist.title" = "Assist";
-"widgets.controls.cover.description" = "Toggle cover";
-"widgets.controls.cover.placeholder_title" = "Choose cover";
-"widgets.controls.cover.title" = "Cover";
+"widgets.controls.cover.description" = "Ouvrir/fermer l'ouverture";
+"widgets.controls.cover.placeholder_title" = "Choisir l'ouverture";
+"widgets.controls.cover.title" = "Ouverture";
 "widgets.controls.light.description" = "Allumer/éteindre votre lumière";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Lumière";

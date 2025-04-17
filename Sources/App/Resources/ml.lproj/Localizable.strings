@@ -522,6 +522,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Time Until Idle";
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "പ്രവർത്തകമാക്കുക";
 "settings.connection_section.activate_swipe_hint" = "ഒരു സെർവർ കാണുമ്പോൾ ഇടത്തോട്ടോ വലത്തോട്ടോ മൂന്ന് വിരലുകളുള്ള സ്വൈപ്പ് ഉപയോഗിച്ച് വേഗത്തിൽ സജീവമാക്കുക.";
 "settings.connection_section.add_server" = "സെർവർ ചേർക്കുക";
@@ -967,6 +968,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Use circular small complications to display content in the corners of the Color watch face.";
 "watch.labels.complication_group.circular_small.name" = "Circular Small";

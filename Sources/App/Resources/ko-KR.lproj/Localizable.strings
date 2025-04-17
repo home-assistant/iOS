@@ -522,6 +522,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "save_label" = "저장하기";
 "sensors.active.setting.time_until_idle" = "유휴 상태까지의 시간";
 "sensors.geocoded_location.setting.use_zones" = "지역 이름 사용";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "활성화";
 "settings.connection_section.activate_swipe_hint" = "서버를 볼 때 세 손가락으로 왼쪽이나 오른쪽으로 스와이프하여 빠르게 활성화합니다.";
 "settings.connection_section.add_server" = "서버 추가";
@@ -967,6 +968,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "watch.debug.delete_db.reset.title" = "구성 초기화";
 "watch.debug.delete_db.title" = "시계 구성 삭제";
 "watch.home.cancel_and_use_cache.title" = "취소하고 캐시를 사용하세요";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "\"%@\" 실행하시겠습니까?";
 "watch.labels.complication_group.circular_small.description" = "원형 소형 컴플리케이션을 사용하여 컬러 시계 페이스의 모서리에 콘텐츠를 표시합니다.";
 "watch.labels.complication_group.circular_small.name" = "원형 소형";

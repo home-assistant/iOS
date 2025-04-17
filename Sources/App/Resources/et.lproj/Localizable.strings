@@ -462,8 +462,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.permission.location.buttons.allow_and_share" = "Luba ja jaga Home Assistantiga";
 "onboarding.permission.location.buttons.allow_for_app" = "Luba ainult rakenduses kasutamiseks";
 "onboarding.permission.location.buttons.deny" = "Keeldu";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
-"onboarding.permission.location.deny.alert.header" = "Information";
+"onboarding.permission.location.deny.alert.body" = "Kui oled kindel, jätka ja koputa ka järgmisel hüpikaknas nuppu \"Keela\", juhul kui pole kaugühendust konfigureeritud, kasutab rakendus kohaliku ühenduse konfiguratsiooni, et pääseda ligi Home Assistantile.";
+"onboarding.permission.location.deny.alert.header" = "Teave";
 "onboarding.permission.location.deny.alert.message" = "Ilma asukoha loata võivad rakenduse tulevased versioonid keelata juurdepääsu kohalikule Home Assistant'i serverile privaatsusprobleemide tõttu. Kui oled kindel, jätka ja puuduta ka järgmises hüpikaknas valikut \"Keelata\". Seda tehes soovitame kasutada oma sisemist URL-i välisena, kuna see on ainus URL, millele rakendus üritab ligi pääseda.";
 "onboarding.permission.location.deny.alert.title" = "Kas oled kindel?";
 "onboarding.permission.location.description" = "Selleks, et tuvastada, kas oled kodus ja ühendud lokaalselt Home Assistantiga, nõuab Apple, et me küsiksime asukoha luba.";
@@ -522,6 +522,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "save_label" = "Salvesta";
 "sensors.active.setting.time_until_idle" = "Aeg jõudeolekuni";
 "sensors.geocoded_location.setting.use_zones" = "Kasuta tsooni nime";
+"servers_selection.title" = "Serverid";
 "settings.connection_section.activate_server" = "Aktiveeri";
 "settings.connection_section.activate_swipe_hint" = "Serveri vaatamisel saate kiiresti aktiveerida järgmise kolme sõrmega vasakule või paremale libistades.";
 "settings.connection_section.add_server" = "Lisa server";
@@ -967,6 +968,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.debug.delete_db.reset.title" = "Lähtesta konfiguratsioon";
 "watch.debug.delete_db.title" = "Kustuta kella konfiguratsioon";
 "watch.home.cancel_and_use_cache.title" = "Tühista ja kasuta vahemälu";
+"watch.home.loading.skip.title" = "Jäta vahele";
 "watch.home.run.confirmation.title" = "Kas oled kindel, et soovid käivitada \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Kellakuva Color nurkades sisu kuvamiseks kasuta ümmargusi väikseid elemente.";
 "watch.labels.complication_group.circular_small.name" = "Ümmargune väike";

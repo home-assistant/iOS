@@ -522,6 +522,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Tid indtil inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Brug zonenavn";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Aktivér";
 "settings.connection_section.activate_swipe_hint" = "Aktiver hurtigt ved at stryge til venstre eller højre med tre fingre, når du ser en server.";
 "settings.connection_section.add_server" = "Tilføj server";
@@ -967,6 +968,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "watch.debug.delete_db.reset.title" = "Nulstil konfiguration";
 "watch.debug.delete_db.title" = "Slet watch konfiguration";
 "watch.home.cancel_and_use_cache.title" = "Annuller og brug cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Er du sikker på at du vil køre %@?";
 "watch.labels.complication_group.circular_small.description" = "Brug cirkulære små komplikationer til at vise indhold i hjørnerne af Farve-urskiven.";
 "watch.labels.complication_group.circular_small.name" = "Cirkulær lille";

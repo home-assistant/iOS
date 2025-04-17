@@ -522,6 +522,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Tiempo hasta que esté inactivo";
 "sensors.geocoded_location.setting.use_zones" = "Usar nombre de zona";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Activa";
 "settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Añadir Servidor";
@@ -967,6 +968,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Utilice las complicaciones circulares pequeñas para mostrar el contenido en las esquinas de la cara del relojes de color.";
 "watch.labels.complication_group.circular_small.name" = "Circular pequeño";

@@ -57,7 +57,7 @@
 "component::counter::entity_component::_::state_attributes::editable::state::true" = "Oui";
 "component::cover::entity_component::_::state::closed" = "Fermé";
 "component::cover::entity_component::_::state::open" = "Ouvert";
-"component::cover::title" = "Volet";
+"component::cover::title" = "Ouverture";
 "component::deluge::entity::sensor::status::state::idle" = "Inactif";
 "component::demo::entity::climate::ubercool::state_attributes::swing_mode::state::off" = "Désactivée";
 "component::demo::entity::sensor::thermostat_mode::state::away" = "Absent";

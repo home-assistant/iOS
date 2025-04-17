@@ -462,8 +462,8 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.permission.location.buttons.allow_and_share" = "Engedélyezés és megosztás a Home Assistanttal";
 "onboarding.permission.location.buttons.allow_for_app" = "Csak az alkalmazás használatához engedélyezés";
 "onboarding.permission.location.buttons.deny" = "Elutasítás";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
-"onboarding.permission.location.deny.alert.header" = "Information";
+"onboarding.permission.location.deny.alert.body" = "Ha biztos benne, kérjük, folytassa, és a következő felugró ablaknál is koppintson a „Tiltás” gombra. Amennyiben nincs beállítva távoli kapcsolat, az alkalmazás a helyi kapcsolat beállításait fogja használni a Home Assistant eléréséhez.";
+"onboarding.permission.location.deny.alert.header" = "Információ";
 "onboarding.permission.location.deny.alert.message" = "Ha nem ad helymeghatározási engedélyt, a jövőbeli verziók adatvédelmi okokból megtagadhatják a helyi Home Assistant kiszolgáló elérését. Ha biztos a döntésében, folytassa, és a következő felugró ablakban válassza az 'Elutasítás' lehetőséget. Ebben az esetben javasoljuk, hogy a belső URL-címét használja külsőként, mivel az alkalmazás csak ezt próbálja majd elérni.";
 "onboarding.permission.location.deny.alert.title" = "Biztos benne?";
 "onboarding.permission.location.description" = "A tartózkodási helye azonosításához, valamint a Home Assistant helyi kapcsolódásához az Apple előírja, hogy engedélyt kérjünk a tartózkodási hely elérésére.";
@@ -522,6 +522,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "save_label" = "Mentés";
 "sensors.active.setting.time_until_idle" = "Idő üresjáratig";
 "sensors.geocoded_location.setting.use_zones" = "Zónanév használata";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Aktiválás";
 "settings.connection_section.activate_swipe_hint" = "Gyorsan aktiválja három ujjal balra vagy jobbra csúsztatással, amikor egy szervert választ.";
 "settings.connection_section.add_server" = "Szerver hozzáadása";
@@ -967,6 +968,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "watch.debug.delete_db.reset.title" = "Konfiguráció visszaállítása";
 "watch.debug.delete_db.title" = "Watch konfiguráció törlése";
 "watch.home.cancel_and_use_cache.title" = "Mégse és gyorsítótár használata";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Biztosan futtatni szeretné: \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Használj kör alakú kis modulokat a tartalom megjelenítéséhez a színes órafelület sarkában.";
 "watch.labels.complication_group.circular_small.name" = "Kör alakú kicsi";

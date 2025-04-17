@@ -462,8 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "Povolit a sdílet s Home Assistantem";
 "onboarding.permission.location.buttons.allow_for_app" = "Povolit jen použití aplikace";
 "onboarding.permission.location.buttons.deny" = "Odmítnout";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
-"onboarding.permission.location.deny.alert.header" = "Information";
+"onboarding.permission.location.deny.alert.body" = "Pokud jste si jisti, pokračujte a v dalším vyskakovacím okně klepněte na \"Odmítnout\", protože v případě, že nemáte nastavené vzdálené připojení, použije aplikace pro přístup k aplikaci Home Assistant nastavení místního připojení.";
+"onboarding.permission.location.deny.alert.header" = "Informace";
 "onboarding.permission.location.deny.alert.message" = "Bez povolení k poloze mohou budoucí verze aplikace odepřít přístup k vašemu místnímu serveru Home Assistant z důvodu ochrany soukromí. Pokud jste si jisti, pokračujte a v dalším vyskakovacím okně klepněte na \"Odmítnout\". Pokud tak učiníte, doporučujeme použít svou interní adresu URL jako externí, protože je to jediná adresa URL, ke které se aplikace pokusí získat přístup.";
 "onboarding.permission.location.deny.alert.title" = "Jste si jisti?";
 "onboarding.permission.location.description" = "Aby bylo možné zjistit, zda jste doma, a připojit se místně k Home Assistantovi, Apple vyžaduje, abychom vás požádali o povolení k poloze.";
@@ -522,6 +522,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "save_label" = "Uložit";
 "sensors.active.setting.time_until_idle" = "Čas do nečinnosti";
 "sensors.geocoded_location.setting.use_zones" = "Použít název zóny";
+"servers_selection.title" = "Servery";
 "settings.connection_section.activate_server" = "Aktivovat";
 "settings.connection_section.activate_swipe_hint" = "Při prohlížení serveru rychle aktivujte přejetím třemi prsty doleva nebo doprava.";
 "settings.connection_section.add_server" = "Přidat server";
@@ -967,6 +968,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.debug.delete_db.reset.title" = "Resetovat nastavení";
 "watch.debug.delete_db.title" = "Smazat nastavení hodinek";
 "watch.home.cancel_and_use_cache.title" = "Zrušit a použít mezipaměť";
+"watch.home.loading.skip.title" = "Přeskočit";
 "watch.home.run.confirmation.title" = "Opravdu chcete spustit \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Použije malé kruhové komplikace k zobrazení obsahu v rozích ciferníku Color.";
 "watch.labels.complication_group.circular_small.name" = "Malé kruhové";

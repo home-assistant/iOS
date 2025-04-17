@@ -462,8 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "允許並與 Home Assistant 共享";
 "onboarding.permission.location.buttons.allow_for_app" = "僅允許應用程式使用";
 "onboarding.permission.location.buttons.deny" = "拒絕";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
-"onboarding.permission.location.deny.alert.header" = "Information";
+"onboarding.permission.location.deny.alert.body" = "如果確定，請繼續並於下一個彈出視窗點擊 '拒絕'。假如沒有設定遠端連線，應用程式將使用本地端連接設定以訪問 Home Assistant。";
+"onboarding.permission.location.deny.alert.header" = "資訊";
 "onboarding.permission.location.deny.alert.message" = "如果沒有獲得位置權限、未來版本的應用程式可能會因為隱私問題而拒絕存取本地端的 Home Assistant 伺服器，。假如確定，請繼續並在下一個彈出視窗中點擊 '拒絕'。如果這樣做，建議您將內部網址作為外部網址使用，因為將是應用程式唯一會嘗試存取的網址。";
 "onboarding.permission.location.deny.alert.title" = "確認？";
 "onboarding.permission.location.description" = "為了識別否在家並透過本地端連線至 Home Assistant、Apple 要求必須請求使用者允許位置權限。";
@@ -522,6 +522,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "save_label" = "儲存";
 "sensors.active.setting.time_until_idle" = "閒置前時間";
 "sensors.geocoded_location.setting.use_zones" = "使用區域名稱";
+"servers_selection.title" = "伺服器";
 "settings.connection_section.activate_server" = "啟用";
 "settings.connection_section.activate_swipe_hint" = "當檢視伺服器時、使用三指向左或向右滑可快速啟用。";
 "settings.connection_section.add_server" = "新增伺服器";
@@ -967,6 +968,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "watch.debug.delete_db.reset.title" = "重置設定";
 "watch.debug.delete_db.title" = "刪除手錶設定";
 "watch.home.cancel_and_use_cache.title" = "取消並使用快取";
+"watch.home.loading.skip.title" = "跳過";
 "watch.home.run.confirmation.title" = "確定要執行 \"%@\"？";
 "watch.labels.complication_group.circular_small.description" = "使用小型圓形複雜功能於彩色錶面的四個角落顯示內容。";
 "watch.labels.complication_group.circular_small.name" = "小型圓形";

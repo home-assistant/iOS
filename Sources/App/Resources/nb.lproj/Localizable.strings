@@ -522,6 +522,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Tid til inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Bruk sone-navn";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Aktiver";
 "settings.connection_section.activate_swipe_hint" = "Aktiver raskt ved hjelp av et sveip med tre fingre mot venstre eller høyre når du viser en server.";
 "settings.connection_section.add_server" = "Legg til server";
@@ -967,6 +968,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Bruk sirkulære små komplikasjoner for å vise innhold i hjørner av fargeklokke-urskiven.";
 "watch.labels.complication_group.circular_small.name" = "Liten sirkel";
