@@ -522,6 +522,7 @@
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Tempo fino all'inattività";
 "sensors.geocoded_location.setting.use_zones" = "Usa il nome della zona";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Attiva";
 "settings.connection_section.activate_swipe_hint" = "Attiva rapidamente utilizzando uno scorrimento a tre dita verso sinistra o destra durante la visualizzazione di un server.";
 "settings.connection_section.add_server" = "Aggiungi server";
@@ -967,6 +968,7 @@
 "watch.debug.delete_db.reset.title" = "Ripristina configurazione";
 "watch.debug.delete_db.title" = "Elimina configurazione orologio";
 "watch.home.cancel_and_use_cache.title" = "Annulla e usa la cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Sei sicuro di voler eseguire \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Usa piccole complicazioni circolari per visualizzare il contenuto negli angoli del quadrante a colori.";
 "watch.labels.complication_group.circular_small.name" = "Circolare Piccolo";

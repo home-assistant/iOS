@@ -462,7 +462,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.permission.location.buttons.allow_and_share" = "Tillåt samt dela med Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Tillåt endast i appanvändning";
 "onboarding.permission.location.buttons.deny" = "Neka";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
+"onboarding.permission.location.deny.alert.body" = "Om du är säker: fortsätt och tryck på \"Neka\" i nästa popup-fönster också. Om du inte har en fjärranslutning konfigurerad kommer appen att använda din lokala anslutningskonfiguration för att komma åt Home Assistant.";
 "onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Utan platsbehörighet kan framtida versioner av appen neka åtkomst till din lokala Home Assistant-server på grund av integritetsproblem. Om du är säker, fortsätt och tryck på \"Neka\" i nästa popup också. I så fall rekommenderas att du använder den interna URL:en som extern, eftersom det är den enda URL som appen kommer att ansluta till.";
 "onboarding.permission.location.deny.alert.title" = "Är du säker?";
@@ -522,6 +522,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "save_label" = "Spara";
 "sensors.active.setting.time_until_idle" = "Tid till inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Använd zonnamn";
+"servers_selection.title" = "Servrar";
 "settings.connection_section.activate_server" = "Aktivera";
 "settings.connection_section.activate_swipe_hint" = "Svep med tre fingrar åt vänster eller höger för att snabbt aktivera när du visar en server.";
 "settings.connection_section.add_server" = "Lägg till server";
@@ -968,6 +969,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.debug.delete_db.reset.title" = "Nollställ konfiguration";
 "watch.debug.delete_db.title" = "Ta bort klockans konfiguration";
 "watch.home.cancel_and_use_cache.title" = "Avbryt och använd cache";
+"watch.home.loading.skip.title" = "Hoppa över";
 "watch.home.run.confirmation.title" = "Är du säker på att du vill köra \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Använd cirkulära små komplikationer för att visa innehåll i hörnen av urtavlan Färger.";
 "watch.labels.complication_group.circular_small.name" = "Cirkulär liten";

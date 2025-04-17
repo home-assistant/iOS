@@ -522,6 +522,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "save_label" = "Opslaan";
 "sensors.active.setting.time_until_idle" = "Tijd tot inactief";
 "sensors.geocoded_location.setting.use_zones" = "Gebruik tijdzone naam";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Activeer";
 "settings.connection_section.activate_swipe_hint" = "Snel activeren door met drie vingers naar links of rechts te vegen wanneer je een server bekijkt.";
 "settings.connection_section.add_server" = "Voeg server toe";
@@ -967,6 +968,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "watch.debug.delete_db.reset.title" = "Configuratie resetten";
 "watch.debug.delete_db.title" = "Watch-configuratie verwijderen";
 "watch.home.cancel_and_use_cache.title" = "Annuleer en gebruik cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Weet je zeker dat je \"%@\" wilt uitvoeren?";
 "watch.labels.complication_group.circular_small.description" = "Gebruik cirkelvormige kleine complicaties om inhoud weer te geven in de hoeken van de wijzerplaat van de kleur.";
 "watch.labels.complication_group.circular_small.name" = "Circulair klein";

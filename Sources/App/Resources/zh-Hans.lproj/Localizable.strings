@@ -462,8 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "允许并与 Home Assistant 共享";
 "onboarding.permission.location.buttons.allow_for_app" = "仅限应用使用";
 "onboarding.permission.location.buttons.deny" = "拒绝";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
-"onboarding.permission.location.deny.alert.header" = "Information";
+"onboarding.permission.location.deny.alert.body" = "如果您确定，请继续并在下一个弹出窗口中点击“拒绝”，如果您没有配置远程连接，应用将使用您的本地连接配置来访问 Home Assistant 。";
+"onboarding.permission.location.deny.alert.header" = "信息";
 "onboarding.permission.location.deny.alert.message" = "如果没有位置权限，本应用的未来版本可能会出于隐私考虑拒绝访问您的本地 Home Assistant 服务器。如果您确定，请继续并在下一个弹出窗口中点击“拒绝”。为此，我们建议您将内部网址用作外部网址，因为这是应用尝试访问的唯一网址。";
 "onboarding.permission.location.deny.alert.title" = "您确定吗 ？";
 "onboarding.permission.location.description" = "为了识别您是否在家并在本地连接到 Home Assistant ，Apple 要求我们请求您的位置许可权限。";
@@ -520,6 +520,7 @@
 "save_label" = "保存";
 "sensors.active.setting.time_until_idle" = "直到空闲的时间";
 "sensors.geocoded_location.setting.use_zones" = "使用区域名称";
+"servers_selection.title" = "服务器";
 "settings.connection_section.activate_server" = "激活";
 "settings.connection_section.activate_swipe_hint" = "查看服务器时使用三根手指向左或向右滑动即可快速激活。";
 "settings.connection_section.add_server" = "添加服务器";
@@ -967,6 +968,7 @@
 "watch.debug.delete_db.reset.title" = "重置配置";
 "watch.debug.delete_db.title" = "删除手表配置";
 "watch.home.cancel_and_use_cache.title" = "取消并使用缓存";
+"watch.home.loading.skip.title" = "跳过";
 "watch.home.run.confirmation.title" = "您确定要运行“%@”吗 ？";
 "watch.labels.complication_group.circular_small.description" = "使用圆形小复杂功能在Color表盘的角落显示内容。";
 "watch.labels.complication_group.circular_small.name" = "圆形小";

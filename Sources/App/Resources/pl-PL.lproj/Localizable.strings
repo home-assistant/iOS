@@ -520,6 +520,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "save_label" = "Save";
 "sensors.active.setting.time_until_idle" = "Czas do stanu bezczynności";
 "sensors.geocoded_location.setting.use_zones" = "Użyj nazwy strefy";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Aktywuj";
 "settings.connection_section.activate_swipe_hint" = "Szybko aktywuj, przesuwając trzema palcami w lewo lub w prawo podczas przeglądania serwera.";
 "settings.connection_section.add_server" = "Dodaj serwer";
@@ -965,6 +966,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Use circular small complications to display content in the corners of the Color watch face.";
 "watch.labels.complication_group.circular_small.name" = "Okrągły Mały";

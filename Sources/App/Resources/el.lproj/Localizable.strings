@@ -462,8 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "Αποδοχή και κοινή χρήση με το Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Να επιτρέπεται μόνο για χρήση εφαρμογής";
 "onboarding.permission.location.buttons.deny" = "Αρνηση";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
-"onboarding.permission.location.deny.alert.header" = "Information";
+"onboarding.permission.location.deny.alert.body" = "Αν είστε σίγουρος/η, συνεχίστε και πατήστε 'Άρνηση' και στο επόμενο αναδυόμενο παράθυρο, σε περίπτωση που δεν έχετε διαμορφώσει απομακρυσμένη σύνδεση, η εφαρμογή θα χρησιμοποιήσει τη διαμόρφωση της τοπικής σας σύνδεσης για να αποκτήσει πρόσβαση στο Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Πληροφορίες";
 "onboarding.permission.location.deny.alert.message" = "Χωρίς την άδεια της τοποθεσίας, οι μελλοντικές εκδόσεις της εφαρμογής ενδέχεται να αρνηθούν την πρόσβαση στον τοπικό διακομιστή του Home Assistant σας λόγω ανησυχιών για το απόρρητο. Εάν είστε σίγουρος/η, παρακαλώ συνεχίστε, πατώντας 'Αρνηση' και στο επόμενο αναδυόμενο παράθυρο. Οταν το κάνετε αυτό, συνιστάται να χρησιμοποιήσετε την εσωτερική σας διεύθυνση URL ως εξωτερική, καθώς είναι η μόνη διεύθυνση URL στην οποία θα προσπαθήσει η εφαρμογή να αποκτήσει πρόσβαση.";
 "onboarding.permission.location.deny.alert.title" = "Είσαι σίγουρος/η;";
 "onboarding.permission.location.description" = "Για να εντοπίσουμε αν βρίσκεστε στο σπίτι και να συνδεθείτε τοπικά στο Home Assistant, η Apple απαιτεί να ζητήσουμε την άδεια για την τοποθεσία σας.";
@@ -522,6 +522,7 @@
 "save_label" = "Αποθήκευση";
 "sensors.active.setting.time_until_idle" = "Χρόνος μέχρι την αδράνεια";
 "sensors.geocoded_location.setting.use_zones" = "Χρήση ονόματος ζώνης";
+"servers_selection.title" = "Διακομιστές";
 "settings.connection_section.activate_server" = "Ενεργοποίηση";
 "settings.connection_section.activate_swipe_hint" = "Γρήγορη ενεργοποίηση με σάρωση τριών δακτύλων προς τα αριστερά ή προς τα δεξιά κατά την προβολή ενός διακομιστή.";
 "settings.connection_section.add_server" = "Προσθήκη διακομιστή";
@@ -967,6 +968,7 @@
 "watch.debug.delete_db.reset.title" = "Επαναφορά διαμόρφωσης";
 "watch.debug.delete_db.title" = "Διαγραφή διαμόρφωσης ρολογιού";
 "watch.home.cancel_and_use_cache.title" = "Ακύρωση και χρήση μνήμης cache";
+"watch.home.loading.skip.title" = "Παράλειψη";
 "watch.home.run.confirmation.title" = "Θέλετε σίγουρα να εκτελέσετε το \"%@\";";
 "watch.labels.complication_group.circular_small.description" = "Χρησιμοποιήστε κυκλικές μικρές σύνθετες πληροφορίες για την εμφάνιση περιεχομένου στις γωνίες της χρωματικής πρόσοψης ρολογιού.";
 "watch.labels.complication_group.circular_small.name" = "Κυκλικό μικρό";

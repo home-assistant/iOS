@@ -522,6 +522,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "save_label" = "Simpan";
 "sensors.active.setting.time_until_idle" = "Waktu Hingga Menganggur";
 "sensors.geocoded_location.setting.use_zones" = "Gunakan Nama Zona";
+"servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Aktifkan";
 "settings.connection_section.activate_swipe_hint" = "Aktifkan dengan cepat menggunakan sapuan tiga jari ke kiri atau ke kanan saat melihat server.";
 "settings.connection_section.add_server" = "Tambah Server";
@@ -967,6 +968,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "watch.debug.delete_db.reset.title" = "Setel ulang konfigurasi";
 "watch.debug.delete_db.title" = "Hapus konfigurasi Watch";
 "watch.home.cancel_and_use_cache.title" = "Batalkan dan gunakan cache";
+"watch.home.loading.skip.title" = "Skip";
 "watch.home.run.confirmation.title" = "Yakin ingin menjalankan \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Gunakan komplikasi kecil melingkar untuk menampilkan konten di sudut face Warna.";
 "watch.labels.complication_group.circular_small.name" = "Lingkaran Kecil";
