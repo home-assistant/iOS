@@ -84,7 +84,7 @@ jobs:
       - name: Run tests
         run: bundle exec fastlane test
 
-      - uses: codecov/codecov-action@v5.4.0
+      - uses: codecov/codecov-action@v5.4.2
         name: "Upload Code Coverage"
         with:
           xcode: true
