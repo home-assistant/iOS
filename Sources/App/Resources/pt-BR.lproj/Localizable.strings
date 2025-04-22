@@ -462,8 +462,8 @@
 "onboarding.permission.location.buttons.allow_and_share" = "Permitir e compartilhar com o Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Permitir apenas o uso do aplicativo";
 "onboarding.permission.location.buttons.deny" = "Negar";
-"onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
-"onboarding.permission.location.deny.alert.header" = "Information";
+"onboarding.permission.location.deny.alert.body" = "Se tiver certeza, continue e toque em \"Negar\" no próximo pop-up também. Caso você não tenha uma conexão remota configurada, o aplicativo usará sua configuração de conexão local para acessar o Home Assistant.";
+"onboarding.permission.location.deny.alert.header" = "Informação";
 "onboarding.permission.location.deny.alert.message" = "Sem a permissão de localização, versões futuras do aplicativo podem negar acesso ao seu servidor local do Home Assistant devido a questões de privacidade. Se tiver certeza, continue e toque em \"Negar\" no próximo pop-up. Ao fazer isso, recomendamos que você use sua URL interna como externa, pois é a única URL que o aplicativo tentará acessar.";
 "onboarding.permission.location.deny.alert.title" = "Tem certeza?";
 "onboarding.permission.location.description" = "Para identificar se você está em casa e se conectar localmente ao Home Assistant, a Apple exige que peçamos sua permissão de localização.";
@@ -522,7 +522,7 @@
 "save_label" = "Salvar";
 "sensors.active.setting.time_until_idle" = "Tempo até ocioso";
 "sensors.geocoded_location.setting.use_zones" = "Usar nome da zona";
-"servers_selection.title" = "Servers";
+"servers_selection.title" = "Servidores";
 "settings.connection_section.activate_server" = "Ativar";
 "settings.connection_section.activate_swipe_hint" = "Ative rapidamente usando um deslize de três dedos para a esquerda ou para a direita ao visualizar um servidor.";
 "settings.connection_section.add_server" = "Adicionar servidor";
@@ -968,7 +968,7 @@
 "watch.debug.delete_db.reset.title" = "Redefinir configuração";
 "watch.debug.delete_db.title" = "Excluir configuração do relógio";
 "watch.home.cancel_and_use_cache.title" = "Cancelar e usar cache";
-"watch.home.loading.skip.title" = "Skip";
+"watch.home.loading.skip.title" = "Pular";
 "watch.home.run.confirmation.title" = "Tem certeza de que deseja executar \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Use pequenas complicações circulares para exibir o conteúdo nos cantos do mostrador do relógio em cores.";
 "watch.labels.complication_group.circular_small.name" = "Circular Pequeno";

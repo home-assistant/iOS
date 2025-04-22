@@ -522,7 +522,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "save_label" = "Mentés";
 "sensors.active.setting.time_until_idle" = "Idő üresjáratig";
 "sensors.geocoded_location.setting.use_zones" = "Zónanév használata";
-"servers_selection.title" = "Servers";
+"servers_selection.title" = "Szerverek";
 "settings.connection_section.activate_server" = "Aktiválás";
 "settings.connection_section.activate_swipe_hint" = "Gyorsan aktiválja három ujjal balra vagy jobbra csúsztatással, amikor egy szervert választ.";
 "settings.connection_section.add_server" = "Szerver hozzáadása";
@@ -968,7 +968,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "watch.debug.delete_db.reset.title" = "Konfiguráció visszaállítása";
 "watch.debug.delete_db.title" = "Watch konfiguráció törlése";
 "watch.home.cancel_and_use_cache.title" = "Mégse és gyorsítótár használata";
-"watch.home.loading.skip.title" = "Skip";
+"watch.home.loading.skip.title" = "Kihagyás";
 "watch.home.run.confirmation.title" = "Biztosan futtatni szeretné: \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Használj kör alakú kis modulokat a tartalom megjelenítéséhez a színes órafelület sarkában.";
 "watch.labels.complication_group.circular_small.name" = "Kör alakú kicsi";
