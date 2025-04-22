@@ -2406,6 +2406,8 @@ public enum L10n {
       }
     }
     public enum General {
+      /// Basic App configuration, App Icon and web page settings.
+      public static var body: String { return L10n.tr("Localizable", "settings_details.general.body") }
       /// General
       public static var title: String { return L10n.tr("Localizable", "settings_details.general.title") }
       public enum AppIcon {
@@ -2488,6 +2490,10 @@ public enum L10n {
         /// Launch App on Login
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.launch_on_login.title") }
       }
+      public enum Links {
+        /// Links
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.links.title") }
+      }
       public enum MenuBarText {
         /// Menu Bar Text
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.menu_bar_text.title") }
@@ -2513,6 +2519,10 @@ public enum L10n {
       public enum OpenInPrivateTab {
         /// Open in Private Tab
         public static var title: String { return L10n.tr("Localizable", "settings_details.general.open_in_private_tab.title") }
+      }
+      public enum Page {
+        /// Page
+        public static var title: String { return L10n.tr("Localizable", "settings_details.general.page.title") }
       }
       public enum PageZoom {
         /// %@ (Default)
@@ -3964,6 +3974,10 @@ public enum L10n {
     public enum ServerSelection {
       /// Choose server
       public static var title: String { return L10n.tr("Localizable", "web_view.server_selection.title") }
+    }
+    public enum UniqueServerSelection {
+      /// Choose one server
+      public static var title: String { return L10n.tr("Localizable", "web_view.unique_server_selection.title") }
     }
   }
 

@@ -79,9 +79,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.SettingsDetails.General.title
             $0.icon = .paletteOutlineIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = .general
-                return view
+                GeneralSettingsView().embeddedInHostingController()
             }, onDismiss: nil)
         }
     }

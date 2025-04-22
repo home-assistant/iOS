@@ -28,6 +28,7 @@ public struct ServersPickerPillList: View {
                                     selected: selectedServerId == server.identifier.rawValue
                                 )
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

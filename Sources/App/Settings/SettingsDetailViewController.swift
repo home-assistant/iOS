@@ -12,10 +12,8 @@ import Version
 enum SettingsDetailsGroup: String {
     case display
     case actions
-    case general
     case location
     case privacy
-    case carPlay
 }
 
 class SettingsDetailViewController: HAFormViewController, TypedRowControllerType {
@@ -45,7 +43,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         onDismissCallback?(self)
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -61,201 +58,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         }
 
         switch detailGroup {
-        case .general:
-            title = L10n.SettingsDetails.General.title
-
-            form
-                +++ Section {
-                    $0.hidden = .isCatalyst
-                }
-                <<< SettingsButtonRow {
-                    $0.hidden = .isCatalyst
-                    $0.title = L10n.SettingsDetails.General.AppIcon.title
-                    $0.icon = .squareRoundedIcon
-                    $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                        AppIconSelectorView.controller
-                    }, onDismiss: nil)
-                }
-
-                +++ Section {
-                    $0.hidden = .isNotCatalyst
-                }
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.General.LaunchOnLogin.title
-
-                    #if targetEnvironment(macCatalyst)
-                    let launcherIdentifier = AppConstants.BundleID.appending(".Launcher")
-                    $0.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
-                    $0.onChange { row in
-                        let success = Current.macBridge.setLoginItem(
-                            forBundleIdentifier: launcherIdentifier,
-                            enabled: row.value ?? false
-                        )
-                        if !success {
-                            row.value = Current.macBridge.isLoginItemEnabled(forBundleIdentifier: launcherIdentifier)
-                            row.updateCell()
-                        }
-                    }
-                    #endif
-                }
-
-                <<< PushRow<SettingsStore.LocationVisibility> {
-                    $0.tag = "locationVisibility"
-                    $0.title = L10n.SettingsDetails.General.Visibility.title
-                    $0.options = SettingsStore.LocationVisibility.allCases
-                    $0.value = Current.settingsStore.locationVisibility
-                    $0.displayValueFor = {
-                        switch $0 ?? .dock {
-                        case .dock: return L10n.SettingsDetails.General.Visibility.Options.dock
-                        case .dockAndMenuBar: return L10n.SettingsDetails.General.Visibility.Options.dockAndMenuBar
-                        case .menuBar: return L10n.SettingsDetails.General.Visibility.Options.menuBar
-                        }
-                    }
-                    $0.onChange { row in
-                        Current.settingsStore.locationVisibility = row.value ?? .dock
-                    }
-                }
-
-                <<< ButtonRow { row in
-                    row.title = L10n.SettingsDetails.General.MenuBarText.title
-                    row.cellStyle = .value1
-                    row.value = Current.settingsStore.menuItemTemplate?.template
-                    row.displayValueFor = { $0 }
-                    row.hidden = .function(["locationVisibility"], { form in
-                        if let row = form
-                            .rowBy(tag: "locationVisibility") as? PushRow<SettingsStore.LocationVisibility> {
-                            return row.value?.isStatusItemVisible == false
-                        } else {
-                            return true
-                        }
-                    })
-                    row.presentationMode = .show(controllerProvider: .callback(builder: {
-                        if let current = Current.settingsStore.menuItemTemplate {
-                            return TemplateEditViewController(
-                                server: current.server,
-                                initial: current.template,
-                                saveHandler: { Current.settingsStore.menuItemTemplate = ($0, $1) }
-                            )
-                        } else {
-                            return UIViewController()
-                        }
-                    }), onDismiss: { [weak self, row] _ in
-                        row.value = Current.settingsStore.menuItemTemplate?.template
-                        self?.navigationController?.popViewController(animated: true)
-                    })
-                }
-
-                +++
-                Section(
-                    footer: L10n.SettingsDetails.MacNativeFeatures.footer
-                ) {
-                    $0.hidden = .function([], { _ in !Current.isCatalyst })
-                }
-                <<< SwitchRow("macNativeFeaturesOnly") {
-                    $0.title = L10n.SettingsDetails.MacNativeFeatures.title
-                    $0.value = Current.settingsStore.macNativeFeaturesOnly
-                    $0.onChange { row in
-                        Current.settingsStore.macNativeFeaturesOnly = row.value ?? false
-                    }
-                }
-
-                +++ Section {
-                    $0.hidden = .function([], { _ in !Current.updater.isSupported })
-                }
-                <<< SwitchRow("checkForUpdates") {
-                    $0.title = L10n.SettingsDetails.Updates.CheckForUpdates.title
-                    $0.value = Current.settingsStore.privacy.updates
-                    $0.onChange { row in
-                        Current.settingsStore.privacy.updates = row.value ?? true
-                    }
-                }
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Updates.CheckForUpdates.includeBetas
-                    $0.value = Current.settingsStore.privacy.updatesIncludeBetas
-                    $0.onChange { row in
-                        Current.settingsStore.privacy.updatesIncludeBetas = row.value ?? true
-                    }
-                }
-
-                +++ PushRow<OpenInBrowser>("openInBrowser") {
-                    $0.hidden = .isCatalyst
-                    $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
-
-                    if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
-                       value.isInstalled {
-                        $0.value = value
-                    } else {
-                        $0.value = .Safari
-                    }
-                    $0.selectorTitle = $0.title
-                    $0.options = OpenInBrowser.allCases.filter(\.isInstalled)
-                    $0.displayValueFor = { $0?.title }
-                }.onChange { row in
-                    guard let browserChoice = row.value else { return }
-                    prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
-                }
-
-                <<< SwitchRow("openInPrivateTab") {
-                    $0.hidden = .function(["openInBrowser"], { form in
-                        if let row = form
-                            .rowBy(tag: "openInBrowser") as? PushRow<OpenInBrowser> {
-                            return row.value?.supportsPrivateTabs == false
-                        } else {
-                            return true
-                        }
-                    })
-                    $0.title = L10n.SettingsDetails.General.OpenInPrivateTab.title
-                    $0.value = prefs.bool(forKey: "openInPrivateTab")
-                }.onChange { row in
-                    prefs.setValue(row.value, forKey: "openInPrivateTab")
-                }
-
-                <<< SwitchRow("confirmBeforeOpeningUrl") {
-                    $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
-                    $0.value = prefs.bool(forKey: "confirmBeforeOpeningUrl")
-                }.onChange { row in
-                    prefs.setValue(row.value, forKey: "confirmBeforeOpeningUrl")
-                }
-
-                +++ SwitchRow {
-                    // mac has a system-level setting for state restoration
-                    $0.hidden = .isCatalyst
-
-                    $0.title = L10n.SettingsDetails.General.Restoration.title
-                    $0.value = Current.settingsStore.restoreLastURL
-                    $0.onChange { row in
-                        Current.settingsStore.restoreLastURL = row.value ?? false
-                    }
-                }
-
-                <<< PushRow<SettingsStore.PageZoom> { row in
-                    row.title = L10n.SettingsDetails.General.PageZoom.title
-                    row.options = SettingsStore.PageZoom.allCases
-
-                    row.value = Current.settingsStore.pageZoom
-                    row.onChange { row in
-                        Current.settingsStore.pageZoom = row.value ?? .default
-                    }
-                }
-
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.General.PinchToZoom.title
-                    $0.hidden = .isCatalyst
-                    $0.value = Current.settingsStore.pinchToZoom
-                    $0.onChange { row in
-                        Current.settingsStore.pinchToZoom = row.value ?? false
-                    }
-                }
-
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.General.FullScreen.title
-                    $0.hidden = .isCatalyst
-                    $0.value = Current.settingsStore.fullScreen
-                    $0.onChange { row in
-                        Current.settingsStore.fullScreen = row.value ?? false
-                    }
-                }
-
         case .location:
             title = L10n.SettingsDetails.Location.title
             form

@@ -99,7 +99,7 @@ public class SettingsStore {
     }
     #endif
 
-    public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible {
+    public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible, Hashable {
         public let zoom: Int
 
         init?(preference: Int) {
@@ -296,6 +296,14 @@ public class SettingsStore {
             switch self {
             case .dockAndMenuBar, .dock: return true
             case .menuBar: return false
+            }
+        }
+
+        public var title: String {
+            switch self {
+            case .dock: return L10n.SettingsDetails.General.Visibility.Options.dock
+            case .dockAndMenuBar: return L10n.SettingsDetails.General.Visibility.Options.dockAndMenuBar
+            case .menuBar: return L10n.SettingsDetails.General.Visibility.Options.menuBar
             }
         }
     }

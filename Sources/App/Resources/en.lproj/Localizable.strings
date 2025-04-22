@@ -710,10 +710,13 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
 "settings_details.general.restoration.title" = "Remember Last Page";
 "settings_details.general.title" = "General";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.visibility.options.dock" = "Dock";
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
 "settings_details.general.visibility.options.menu_bar" = "Menu Bar";
 "settings_details.general.visibility.title" = "Show App In…";
+"settings_details.general.links.title" = "Links";
+"settings_details.general.page.title" = "Page";
 "settings_details.legacy_actions.title" = "(Legacy) iOS Actions";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.location.background_refresh.enabled" = "Enabled";
@@ -1124,6 +1127,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "web_view.server_selection.title" = "Choose server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";
