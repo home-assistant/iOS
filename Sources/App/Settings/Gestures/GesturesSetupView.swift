@@ -32,7 +32,7 @@ struct GesturesSetupView: View {
                 }
             }
         }
-        .removeTopListPadding()
+        .removeListsPaddingWithAppleLikeHeader()
     }
 
     private var gestureActionsPickerContent: ListPickerContent {

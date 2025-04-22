@@ -46,7 +46,7 @@ struct GeneralSettingsView: View {
                 fullScreen
             }
         }
-        .removeTopListPadding()
+        .removeListsPaddingWithAppleLikeHeader()
         .id(redrawHelper)
     }
 
@@ -216,36 +216,19 @@ struct GeneralSettingsView: View {
     @ViewBuilder
     private var menuBarText: some View {
         if [.menuBar, .dockAndMenuBar].contains(Current.settingsStore.locationVisibility) {
-            // TODO: Create template editor
-            //
-            //                <<< ButtonRow { row in
-            //                    row.title = L10n.SettingsDetails.General.MenuBarText.title
-            //                    row.cellStyle = .value1
-            //                    row.value = Current.settingsStore.menuItemTemplate?.template
-            //                    row.displayValueFor = { $0 }
-            //                    row.hidden = .function(["locationVisibility"], { form in
-            //                        if let row = form
-            //                            .rowBy(tag: "locationVisibility") as? PushRow<SettingsStore.LocationVisibility> {
-            //                            return row.value?.isStatusItemVisible == false
-            //                        } else {
-            //                            return true
-            //                        }
-            //                    })
-            //                    row.presentationMode = .show(controllerProvider: .callback(builder: {
-            //                        if let current = Current.settingsStore.menuItemTemplate {
-            //                            return TemplateEditViewController(
-            //                                server: current.server,
-            //                                initial: current.template,
-            //                                saveHandler: { Current.settingsStore.menuItemTemplate = ($0, $1) }
-            //                            )
-            //                        } else {
-            //                            return UIViewController()
-            //                        }
-            //                    }), onDismiss: { [weak self, row] _ in
-            //                        row.value = Current.settingsStore.menuItemTemplate?.template
-            //                        self?.navigationController?.popViewController(animated: true)
-            //                    })
-            //                }
+            NavigationLink {
+                GeneralSettingsTemplateEditor()
+                    .onDisappear {
+                        redrawView()
+                    }
+            } label: {
+                HStack {
+                    Text(L10n.SettingsDetails.General.MenuBarText.title)
+                    Spacer()
+                    Text(Current.settingsStore.menuItemTemplate?.template ?? "")
+                        .foregroundColor(.secondary)
+                }
+            }
         }
     }
 

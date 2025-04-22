@@ -1127,6 +1127,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "web_view.server_selection.title" = "Choose server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";

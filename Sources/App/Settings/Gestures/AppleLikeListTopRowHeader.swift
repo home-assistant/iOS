@@ -44,13 +44,14 @@ struct AppleLikeListTopRowHeader: View {
             subtitle: "This is a text that represents the body"
         )
     }
-    .removeTopListPadding()
+    .removeListsPaddingWithAppleLikeHeader()
 }
 
 extension List {
-    func removeTopListPadding() -> some View {
+    /// Removes the top padding from a list with an Apple-like header unless iOS 17 is not available or it is a mac.
+    func removeListsPaddingWithAppleLikeHeader() -> some View {
         modify { view in
-            if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, *), !Current.isCatalyst {
                 view.contentMargins(.top, .zero)
             } else {
                 view

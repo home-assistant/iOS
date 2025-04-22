@@ -129,7 +129,7 @@ struct DebugView: View {
                 developerSection
             }
         }
-        .removeTopListPadding()
+        .removeListsPaddingWithAppleLikeHeader()
     }
 
     private func linkContent(

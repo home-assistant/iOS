@@ -3975,6 +3975,10 @@ public enum L10n {
       /// Choose server
       public static var title: String { return L10n.tr("Localizable", "web_view.server_selection.title") }
     }
+    public enum UniqueServerSelection {
+      /// Choose one server
+      public static var title: String { return L10n.tr("Localizable", "web_view.unique_server_selection.title") }
+    }
   }
 
   public enum Widgets {
