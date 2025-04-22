@@ -522,7 +522,7 @@ Home Assistant - это бесплатное программное обеспе
 "save_label" = "Сохранить";
 "sensors.active.setting.time_until_idle" = "Время до режима ожидания";
 "sensors.geocoded_location.setting.use_zones" = "Использовать название зоны";
-"servers_selection.title" = "Servers";
+"servers_selection.title" = "Серверы";
 "settings.connection_section.activate_server" = "Активировать";
 "settings.connection_section.activate_swipe_hint" = "Быстрая активация с помощью свайпа тремя пальцами влево или вправо при просмотре сервера.";
 "settings.connection_section.add_server" = "Добавить сервер";
@@ -968,7 +968,7 @@ Home Assistant - это бесплатное программное обеспе
 "watch.debug.delete_db.reset.title" = "Сбросить конфигурацию";
 "watch.debug.delete_db.title" = "Удалить конфигурацию Apple Watch";
 "watch.home.cancel_and_use_cache.title" = "Отменить и использовать кэш";
-"watch.home.loading.skip.title" = "Skip";
+"watch.home.loading.skip.title" = "Пропустить";
 "watch.home.run.confirmation.title" = "Вы уверены, что хотите запустить \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "«Круглое малое» расширение показывается на циферблате «Цвет».";
 "watch.labels.complication_group.circular_small.name" = "Круглое малое";
