@@ -43,7 +43,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         onDismissCallback?(self)
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
