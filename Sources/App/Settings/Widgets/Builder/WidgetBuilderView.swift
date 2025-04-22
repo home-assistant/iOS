@@ -44,6 +44,7 @@ struct WidgetBuilderView: View {
                 WidgetDocumentationLink()
             }
         }
+        .removeTopListPadding()
         .onAppear {
             viewModel.loadWidgets()
         }
@@ -51,7 +52,8 @@ struct WidgetBuilderView: View {
 
     private var header: some View {
         AppleLikeListTopRowHeader(
-            image: AnyView(
+            image: nil,
+            headerImageAlternativeView: AnyView(
                 ZStack(alignment: .topTrailing) {
                     Image(uiImage: MaterialDesignIcons.widgetsIcon.image(
                         ofSize: .init(width: 80, height: 80),

@@ -27,10 +27,7 @@ struct DebugView: View {
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: AnyView(Image(uiImage: MaterialDesignIcons.bugIcon.image(
-                    ofSize: .init(width: 120, height: 120),
-                    color: Asset.Colors.haPrimary.color
-                ))),
+                image: .bugIcon,
                 title: L10n.Settings.Debugging.Header.title,
                 subtitle: L10n.Settings.Debugging.Header.subtitle
             )
@@ -132,6 +129,7 @@ struct DebugView: View {
                 developerSection
             }
         }
+        .removeTopListPadding()
     }
 
     private func linkContent(
