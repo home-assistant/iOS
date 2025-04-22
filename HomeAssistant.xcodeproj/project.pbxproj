@@ -164,7 +164,6 @@
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
 		1164D9DE25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
 		1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164D9DD25FB1B9800515E8A /* UIBarButtonItem+Additions.swift */; };
-		1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */; };
 		1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */; };
 		11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
 		11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */; };
@@ -1684,7 +1683,6 @@
 		1164D9FE25FB417D00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Intents.strings; sourceTree = "<group>"; };
 		1164DA0025FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1164DA0125FB41AE00515E8A /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
-		1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditViewController.swift; sourceTree = "<group>"; };
 		1164DA3125FBF5D600515E8A /* UITextView+CodeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+CodeRow.swift"; sourceTree = "<group>"; };
 		1165704F270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLComponents+WidgetAuthenticity.swift"; sourceTree = "<group>"; };
 		1165705527018C4E003906A7 /* WidgetEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEmptyView.swift; sourceTree = "<group>"; };
@@ -5272,7 +5270,6 @@
 				B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */,
 				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
-				1164DA2025FBEE8600515E8A /* TemplateEditViewController.swift */,
 				42B19BD02D4A358B00B3262B /* DebugView.swift */,
 				420C1BB32CF7DBF300AF22E7 /* ClientEventsLogView */,
 				119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */,
@@ -7659,7 +7656,6 @@
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
-				1164DA2125FBEE8600515E8A /* TemplateEditViewController.swift in Sources */,
 				4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
 				3E02C0E22CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
