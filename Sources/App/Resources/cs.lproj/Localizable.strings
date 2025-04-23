@@ -692,9 +692,11 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.general.app_icon.enum.white" = "Bílá";
 "settings_details.general.app_icon.explanation.title" = "Každá ikona má 3 varianty (iOS 18+), výchozí, tmavou a zabarvenou, aby reagovala podle zvoleného stylu domovské obrazovky iOS. Některé ikony jsou stejné v tmavém režimu nebo je systém iOS zpracovává automaticky.";
 "settings_details.general.app_icon.title" = "Ikona aplikace";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Název zařízení";
 "settings_details.general.full_screen.title" = "Na celou obrazovku";
 "settings_details.general.launch_on_login.title" = "Spustit aplikaci při přihlášení";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Text na řádku nabídky";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Výchozí";
@@ -705,6 +707,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (v aplikaci)";
 "settings_details.general.open_in_browser.title" = "Otevřít odkazy v";
 "settings_details.general.open_in_private_tab.title" = "Otevřít na kartě Soukromé";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (výchozí)";
 "settings_details.general.page_zoom.title" = "Zvětšení stránky";
 "settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
@@ -1124,6 +1127,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.placeholder_complication_name" = "Zástupný symbol";
 "watch.settings.no_items.phone.title" = "Nejsou nastaveny žádné položky, vyberte položky níže.";
 "web_view.server_selection.title" = "Vyberte server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Výchozí";
 "widgets.action.name.navigate" = "Navigovat";

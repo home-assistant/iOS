@@ -692,9 +692,11 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.general.app_icon.enum.white" = "Valge";
 "settings_details.general.app_icon.explanation.title" = "Igal ikoonil on 3 varianti (iOS 18+), vaikimisi, tume ja toonitud, et reageerida vastavalt iOS-i avakuva valitud stiilile. Mõned ikoonid on tumedas režiimis samad või iOS neid käsitleb automaatselt.";
 "settings_details.general.app_icon.title" = "Rakenduse ikoon";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Seadme nimi";
 "settings_details.general.full_screen.title" = "Täisekraanil";
 "settings_details.general.launch_on_login.title" = "Käivita rakendus sisselogimisel";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menüüriba tekst";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Süsteemi vaikeseade";
@@ -705,6 +707,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (rakenduses)";
 "settings_details.general.open_in_browser.title" = "Ava lingid";
 "settings_details.general.open_in_private_tab.title" = "Ava privaatsel vahekaardil";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (vaikimisi)";
 "settings_details.general.page_zoom.title" = "Vaate suurendamine";
 "settings_details.general.pinch_to_zoom.title" = "Suurendamiseks nipsa";
@@ -1124,6 +1127,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.placeholder_complication_name" = "Kohatäide";
 "watch.settings.no_items.phone.title" = "Üksusi pole konfigureeritud, vali allolevad üksused.";
 "web_view.server_selection.title" = "Vali server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Abiline";
 "widgets.action.name.default" = "Vaikimisi";
 "widgets.action.name.navigate" = "Navigeeri";

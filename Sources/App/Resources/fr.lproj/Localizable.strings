@@ -692,9 +692,11 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.general.app_icon.enum.white" = "Blanc";
 "settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Icône de l'application";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Nom de l'appareil";
 "settings_details.general.full_screen.title" = "Plein écran";
 "settings_details.general.launch_on_login.title" = "Lancer l'application lors de la connexion";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Texte de la barre de menus";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Défaut du système";
@@ -705,6 +707,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (dans l'application)";
 "settings_details.general.open_in_browser.title" = "Ouvrir les liens dans";
 "settings_details.general.open_in_private_tab.title" = "Ouvrir dans un onglet privé";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (par défaut)";
 "settings_details.general.page_zoom.title" = "Zoom sur la page";
 "settings_details.general.pinch_to_zoom.title" = "Pincer pour zoomer";
@@ -1124,6 +1127,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "watch.placeholder_complication_name" = "Espace réservé";
 "watch.settings.no_items.phone.title" = "Aucun élément configuré, veuillez choisir les éléments ci-dessous.";
 "web_view.server_selection.title" = "Choose server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";

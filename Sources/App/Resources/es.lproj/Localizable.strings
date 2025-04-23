@@ -692,9 +692,11 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.general.app_icon.enum.white" = "Blanco";
 "settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Icono de la aplicación";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Nombre del dispositivo";
 "settings_details.general.full_screen.title" = "Pantalla completa";
 "settings_details.general.launch_on_login.title" = "Iniciar aplicación al iniciar sesión";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Texto de la barra de menús";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Sistema por defecto";
@@ -705,6 +707,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (en la aplicación)";
 "settings_details.general.open_in_browser.title" = "Abrir enlaces en";
 "settings_details.general.open_in_private_tab.title" = "Abrir en pestaña privada";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (Por defecto)";
 "settings_details.general.page_zoom.title" = "Zoom de página";
 "settings_details.general.pinch_to_zoom.title" = "Pinch to Zoom";
@@ -1124,6 +1127,7 @@ Home Assistant es un software de automatización del hogar gratuito y de código
 "watch.placeholder_complication_name" = "Contenedor";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "web_view.server_selection.title" = "Elegir servidor";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";

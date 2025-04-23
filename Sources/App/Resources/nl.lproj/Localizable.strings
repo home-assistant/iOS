@@ -692,9 +692,11 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.general.app_icon.enum.white" = "Wit";
 "settings_details.general.app_icon.explanation.title" = "Elk icoon heeft 3 varianten (iOS 18+), standaard, donker en getint om zich aan te passen op basis van de geselecteerde iOS-startschermstijl. Sommige iconen zijn hetzelfde in de donkere modus of worden automatisch door iOS aangepast.";
 "settings_details.general.app_icon.title" = "App icoon";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Apparaatnaam";
 "settings_details.general.full_screen.title" = "Volledig scherm";
 "settings_details.general.launch_on_login.title" = "Start de app bij het inloggen";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menubalk Tekst";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Systeem Standaard";
@@ -705,6 +707,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "Open links in";
 "settings_details.general.open_in_private_tab.title" = "Openen in een privé tabblad";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (Standaard)";
 "settings_details.general.page_zoom.title" = "Pagina zoom";
 "settings_details.general.pinch_to_zoom.title" = "Knijpen om te zoomen";
@@ -1124,6 +1127,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "watch.placeholder_complication_name" = "Tijdelijke aanduiding";
 "watch.settings.no_items.phone.title" = "Geen items geconfigureerd, kies hieronder items.";
 "web_view.server_selection.title" = "Server kiezen";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standaard";
 "widgets.action.name.navigate" = "Navigeer";

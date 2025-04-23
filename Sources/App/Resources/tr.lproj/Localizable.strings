@@ -692,9 +692,11 @@
 "settings_details.general.app_icon.enum.white" = "Beyaz";
 "settings_details.general.app_icon.explanation.title" = "Her simgenin 3 çeşidi vardır (iOS 18+), varsayılan, koyu ve seçili iOS ana ekran stiline göre tepki vermek için renklendirilmiş. Bazı simgeler koyu modda aynıdır veya iOS tarafından otomatik olarak işlenir.";
 "settings_details.general.app_icon.title" = "Uygulama Simgesi";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Cihaz adı";
 "settings_details.general.full_screen.title" = "Tam ekran";
 "settings_details.general.launch_on_login.title" = "Girişte Uygulamayı Başlat";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menü Çubuğu Metni";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Sistem varsayılanı";
@@ -705,6 +707,7 @@
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (uygulama içi)";
 "settings_details.general.open_in_browser.title" = "Bağlantıları Aç";
 "settings_details.general.open_in_private_tab.title" = "Gizli Sekmede Aç";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (Varsayılan)";
 "settings_details.general.page_zoom.title" = "Sayfa Yakınlaştırma";
 "settings_details.general.pinch_to_zoom.title" = "Yakınlaştırmak için kıstırın";
@@ -1124,6 +1127,7 @@
 "watch.placeholder_complication_name" = "Yer tutucu";
 "watch.settings.no_items.phone.title" = "Hiçbir öğe yapılandırılmadı, lütfen aşağıdaki öğeleri seçin.";
 "web_view.server_selection.title" = "Sunucu seç";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Asistan";
 "widgets.action.name.default" = "Varsayılan";
 "widgets.action.name.navigate" = "Gezin";

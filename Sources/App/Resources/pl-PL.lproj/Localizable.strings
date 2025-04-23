@@ -690,9 +690,11 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.white" = "Biała";
 "settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Ikona aplikacji";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Nazwa urządzenia";
 "settings_details.general.full_screen.title" = "Pełny ekran";
 "settings_details.general.launch_on_login.title" = "Uruchom aplikację po zalogowaniu";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Tekst Paska Menu";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Domyślne ustawienie systemowe";
@@ -703,6 +705,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (w aplikacji)";
 "settings_details.general.open_in_browser.title" = "Otwórz linki w";
 "settings_details.general.open_in_private_tab.title" = "Otwórz w zakładce prywatnej";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (domyślne)";
 "settings_details.general.page_zoom.title" = "Powiększenie";
 "settings_details.general.pinch_to_zoom.title" = "Uszczypnij, aby powiększyć";
@@ -1122,6 +1125,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.placeholder_complication_name" = "Tekst zastępczy";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "web_view.server_selection.title" = "Wybierz serwer";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";

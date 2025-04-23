@@ -692,9 +692,11 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.general.app_icon.enum.white" = "흰색";
 "settings_details.general.app_icon.explanation.title" = "각 아이콘에는 기본, 어둡게, 색조 등 3가지 변형(iOS 18세 이상)이 있으며, 선택한 iOS 홈 화면 스타일에 따라 반응합니다. 일부 아이콘은 어두운 모드에서 동일하거나 iOS에서 자동으로 처리됩니다.";
 "settings_details.general.app_icon.title" = "앱 아이콘";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "기기 이름";
 "settings_details.general.full_screen.title" = "전체 화면";
 "settings_details.general.launch_on_login.title" = "로그인 시 앱 실행";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "메뉴바 텍스트";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "시스템 기본값";
@@ -705,6 +707,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (인앱)";
 "settings_details.general.open_in_browser.title" = "다음에서 링크 열기";
 "settings_details.general.open_in_private_tab.title" = "비공개 탭에서 열기";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (기본값)";
 "settings_details.general.page_zoom.title" = "페이지 확대";
 "settings_details.general.pinch_to_zoom.title" = "핀치하여 확대";
@@ -1124,6 +1127,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "watch.placeholder_complication_name" = "자리 표시자";
 "watch.settings.no_items.phone.title" = "구성된 항목이 없으므로 아래에서 항목을 선택하세요.";
 "web_view.server_selection.title" = "서버 선택";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "기본값";
 "widgets.action.name.navigate" = "이동하기";
