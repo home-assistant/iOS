@@ -692,9 +692,11 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.app_icon.enum.white" = "White";
 "settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "App Icon";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Device Name";
 "settings_details.general.full_screen.title" = "Full Screen";
 "settings_details.general.launch_on_login.title" = "Iniciar aplicación al iniciar sesión";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "System Default";
@@ -705,6 +707,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "Open Links In";
 "settings_details.general.open_in_private_tab.title" = "Open in Private Tab";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (Default)";
 "settings_details.general.page_zoom.title" = "Page Zoom";
 "settings_details.general.pinch_to_zoom.title" = "Pellizcar para hacer zoom";
@@ -1124,6 +1127,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.placeholder_complication_name" = "Marcador de posición";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "web_view.server_selection.title" = "Choose server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";

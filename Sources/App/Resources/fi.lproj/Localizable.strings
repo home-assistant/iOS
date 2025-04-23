@@ -692,9 +692,11 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings_details.general.app_icon.enum.white" = "Valkoinen";
 "settings_details.general.app_icon.explanation.title" = "Each icon has 3 variants (iOS 18+), default, dark and tinted to react according to the selected iOS home screen style. Some icons are the same in dark mode or handled automatically by iOS.";
 "settings_details.general.app_icon.title" = "Sovelluksen kuvake";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Laitteen nimi";
 "settings_details.general.full_screen.title" = "Koko näyttö";
 "settings_details.general.launch_on_login.title" = "Käynnistä sovellus kirjautumisen yhteydessä";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menu Bar Text";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Järjestelmän oletus";
@@ -705,6 +707,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (sovelluksessa)";
 "settings_details.general.open_in_browser.title" = "Avaa linkit";
 "settings_details.general.open_in_private_tab.title" = "Avaa yksityisessä välilehdessä";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (oletus)";
 "settings_details.general.page_zoom.title" = "Sivun zoomaus";
 "settings_details.general.pinch_to_zoom.title" = "Suurenna nipistämällä";
@@ -1124,6 +1127,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "No items configured, please choose items below.";
 "web_view.server_selection.title" = "Choose server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.navigate" = "Navigate";

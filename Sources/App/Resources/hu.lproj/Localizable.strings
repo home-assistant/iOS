@@ -692,9 +692,11 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.general.app_icon.enum.white" = "Fehér";
 "settings_details.general.app_icon.explanation.title" = "Az egyes ikonoknak három változata van (iOS 18+): alapértelmezett, sötét és színezett, amelyek az iOS kezdőképernyő stílusához igazodnak. Néhány ikon azonos a sötét módban vagy automatikusan az iOS kezeli őket.";
 "settings_details.general.app_icon.title" = "Alkalmazás ikon";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Eszköznév";
 "settings_details.general.full_screen.title" = "Teljes képernyő";
 "settings_details.general.launch_on_login.title" = "Alkalmazás indítása bejelentkezéskor";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Menüsor szövege";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Rendszer alapértelmezett";
@@ -705,6 +707,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (alkalmazásban)";
 "settings_details.general.open_in_browser.title" = "Linkek megnyitása";
 "settings_details.general.open_in_private_tab.title" = "Megnyitás privát lapon";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (alapértelmezett)";
 "settings_details.general.page_zoom.title" = "Oldalnagyítás";
 "settings_details.general.pinch_to_zoom.title" = "Csippentés a nagyításhoz";
@@ -1124,6 +1127,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "watch.placeholder_complication_name" = "Helykitöltő";
 "watch.settings.no_items.phone.title" = "Nincsenek konfigurált elemek, kérjük, válasszon elemeket alább.";
 "web_view.server_selection.title" = "Szerver kiválasztása";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Alapértelmezett";
 "widgets.action.name.navigate" = "Ugrás";

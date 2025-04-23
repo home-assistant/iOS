@@ -692,9 +692,11 @@
 "settings_details.general.app_icon.enum.white" = "Branco";
 "settings_details.general.app_icon.explanation.title" = "Cada ícone tem 3 variantes (iOS 18+), padrão, escuro e colorido para reagir de acordo com o estilo de tela inicial do iOS selecionado. Alguns ícones são os mesmos no modo escuro ou manipulados automaticamente pelo iOS.";
 "settings_details.general.app_icon.title" = "Ícone do aplicativo";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Nome do dispositivo";
 "settings_details.general.full_screen.title" = "Tela cheia";
 "settings_details.general.launch_on_login.title" = "Inicie o aplicativo no login";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Texto da barra de menus";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Padrão do sistema";
@@ -705,6 +707,7 @@
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (no aplicativo)";
 "settings_details.general.open_in_browser.title" = "Abrir links em";
 "settings_details.general.open_in_private_tab.title" = "Abrir na guia privada";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (Padrão)";
 "settings_details.general.page_zoom.title" = "Zoom da página";
 "settings_details.general.pinch_to_zoom.title" = "Aperte para Zoom";
@@ -1124,6 +1127,7 @@
 "watch.placeholder_complication_name" = "Espaço reservado";
 "watch.settings.no_items.phone.title" = "Nenhum item configurado, escolha os itens abaixo.";
 "web_view.server_selection.title" = "Escolha o servidor";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Padrão";
 "widgets.action.name.navigate" = "Navegar";

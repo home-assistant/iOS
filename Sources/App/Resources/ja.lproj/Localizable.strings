@@ -692,9 +692,11 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.general.app_icon.enum.white" = "白";
 "settings_details.general.app_icon.explanation.title" = "各アイコンには、デフォルト、ダーク、色付きの 3 つのバリエーション (iOS 18 以降) があり、選択した iOS ホーム画面のスタイルに応じて反応します。一部のアイコンはダーク モードでも同じか、iOS によって自動的に処理されます。";
 "settings_details.general.app_icon.title" = "アプリアイコン";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "デバイス名";
 "settings_details.general.full_screen.title" = "フルスクリーン";
 "settings_details.general.launch_on_login.title" = "ログイン時にアプリを起動する";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "メニューバーのテキスト";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "システムのデフォルト";
@@ -705,6 +707,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari(アプリ内)";
 "settings_details.general.open_in_browser.title" = "リンクを開く";
 "settings_details.general.open_in_private_tab.title" = "プライベートタブで開く";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@(デフォルト)";
 "settings_details.general.page_zoom.title" = "ページズーム";
 "settings_details.general.pinch_to_zoom.title" = "ピンチしてズーム";
@@ -1124,6 +1127,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "watch.placeholder_complication_name" = "プレースホルダー";
 "watch.settings.no_items.phone.title" = "項目が設定されていません。以下の項目を選択してください。";
 "web_view.server_selection.title" = "サーバーの選択";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "アシスト";
 "widgets.action.name.default" = "デフォルト";
 "widgets.action.name.navigate" = "ナビゲート";

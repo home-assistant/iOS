@@ -692,9 +692,11 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.general.app_icon.enum.white" = "Vit";
 "settings_details.general.app_icon.explanation.title" = "Varje ikon har 3 varianter (iOS 18+), standard, mörk och tonad för att reagera enligt den valda iOS-startskärmsstilen. Vissa ikoner är desamma i mörkt läge eller hanteras automatiskt av iOS.";
 "settings_details.general.app_icon.title" = "App-ikon";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Namn på enheten";
 "settings_details.general.full_screen.title" = "Helskärm";
 "settings_details.general.launch_on_login.title" = "Starta appen när du loggar in";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Text i menyraden";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Systemstandard";
@@ -705,6 +707,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (i appen)";
 "settings_details.general.open_in_browser.title" = "Öppna länkar i";
 "settings_details.general.open_in_private_tab.title" = "Öppna i privat flik";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (standardinställning)";
 "settings_details.general.page_zoom.title" = "Sidzoom";
 "settings_details.general.pinch_to_zoom.title" = "Nyp för att zooma";
@@ -1125,6 +1128,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.placeholder_complication_name" = "Platshållare";
 "watch.settings.no_items.phone.title" = "Inga objekt konfigurerade, vänligen välj objekt nedan.";
 "web_view.server_selection.title" = "Välj server";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
 "widgets.action.name.navigate" = "Navigera";

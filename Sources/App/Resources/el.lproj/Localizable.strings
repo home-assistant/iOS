@@ -692,9 +692,11 @@
 "settings_details.general.app_icon.enum.white" = "Λευκό";
 "settings_details.general.app_icon.explanation.title" = "Κάθε εικονίδιο έχει 3 παραλλαγές (iOS 18+), προεπιλογή, σκούρο και χρωματισμένο για να αντιδρά σύμφωνα με το επιλεγμένο στυλ αρχικής οθόνης iOS. Ορισμένα εικονίδια είναι τα ίδια στη σκοτεινή λειτουργία ή αντιμετωπίζονται αυτόματα από το iOS.";
 "settings_details.general.app_icon.title" = "Εικονίδιο εφαρμογής";
+"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
 "settings_details.general.device_name.title" = "Όνομα συσκευής";
 "settings_details.general.full_screen.title" = "Πλήρης οθόνη";
 "settings_details.general.launch_on_login.title" = "Εκκίνηση εφαρμογής κατά τη σύνδεση";
+"settings_details.general.links.title" = "Links";
 "settings_details.general.menu_bar_text.title" = "Κείμενο Γραμμής Μενού";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "Προεπιλογή συστήματος";
@@ -705,6 +707,7 @@
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (στην εφαρμογή)";
 "settings_details.general.open_in_browser.title" = "Άνοιγμα συνδέσεων σε";
 "settings_details.general.open_in_private_tab.title" = "Άνοιγμα σε Ιδιωτική καρτέλα";
+"settings_details.general.page.title" = "Page";
 "settings_details.general.page_zoom.default" = "%@ (Προεπιλογή)";
 "settings_details.general.page_zoom.title" = "Ζουμ σελίδας";
 "settings_details.general.pinch_to_zoom.title" = "Κάντε σύγκλιση δαχτύλων για ζουμ";
@@ -1124,6 +1127,7 @@
 "watch.placeholder_complication_name" = "Σύμβολο κράτησης θέσης";
 "watch.settings.no_items.phone.title" = "Δεν έχουν διαμορφωθεί στοιχεία, παρακαλώ επιλέξτε στοιχεία παρακάτω.";
 "web_view.server_selection.title" = "Επιλέξτε διακομιστή";
+"web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Προεπιλογή";
 "widgets.action.name.navigate" = "Πλοήγηση";
