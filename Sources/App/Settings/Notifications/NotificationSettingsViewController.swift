@@ -121,21 +121,6 @@ class NotificationSettingsViewController: HAFormViewController {
                 }
             }
 
-            +++ Section()
-
-            <<< ButtonRow {
-                $0.title = L10n.SettingsDetails.Notifications.Categories.header
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    NotificationCategoryListViewController()
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-                })
-            }
-
-            <<< InfoLabelRow {
-                $0.title = L10n.SettingsDetails.Notifications.Categories.deprecatedNote
-            }
-
             +++ Section(
                 header: L10n.debugSectionLabel,
                 footer: nil
