@@ -599,6 +599,8 @@
 		422368912D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
+		4228CFFF2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228CFFE2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift */; };
+		4228D0012DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */; };
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */; };
@@ -2022,6 +2024,8 @@
 		4223688F2D40FCDE005911E4 /* CustomWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidget.swift; sourceTree = "<group>"; };
 		42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewModel.swift; sourceTree = "<group>"; };
+		4228CFFE2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+WKScriptMessageHandler.swift"; sourceTree = "<group>"; };
+		4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKUserContentControllerMessageTests.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
 		422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.test.swift; sourceTree = "<group>"; };
 		422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetToggleAppIntent.swift; sourceTree = "<group>"; };
@@ -3363,6 +3367,7 @@
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				4228CFFE2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift */,
 				4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */,
 				4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */,
 				4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */,
@@ -3796,6 +3801,7 @@
 				42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */,
 				42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */,
 				429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */,
+				4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -7443,6 +7449,8 @@
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
 				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
+				4228CFFF2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift in Sources */,
+				11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */,
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
 				1185DFB4271FF53800ED7D9A /* OnboardingAuthStepModels.swift in Sources */,
 				42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */,
@@ -7713,6 +7721,7 @@
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				46F103262D721516002BC586 /* LocationHistoryListViewSnapshot.test.swift in Sources */,
 				42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */,
+				4228D0012DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift in Sources */,
 				42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */,
 				116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */,
 				42755FF32CD913C700CB0032 /* MagicItemProviderTests.swift in Sources */,
