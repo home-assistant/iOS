@@ -20,6 +20,11 @@ extension WebViewController: WKScriptMessageHandler {
 
         Current.Log.verbose("message \(message.body)".replacingOccurrences(of: "\n", with: " "))
 
+        guard UIApplication.shared.applicationState != .background else {
+            Current.Log.verbose("Ignoring WKUserContentController message \(message.name) because app is in background")
+            return
+        }
+
         switch WKUserContentControllerMessage(rawValue: message.name) {
         case .externalBus:
             webViewExternalMessageHandler.handleExternalMessage(messageBody)
