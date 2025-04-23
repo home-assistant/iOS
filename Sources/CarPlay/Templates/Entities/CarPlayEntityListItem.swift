@@ -11,6 +11,12 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     var template: CPListItem
     weak var interfaceController: CPInterfaceController?
 
+    /// Whether the entity has a dynamic icon that changes based on state
+    private var entityHasDynamicIcon: Bool {
+        guard let entityDomain = Domain(entityId: entity.entityId) else { return false }
+        return [.cover, .inputBoolean, .light, .switch].contains(entityDomain)
+    }
+
     init(
         serverId: String,
         entity: HAEntity,
@@ -34,14 +40,16 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         if let magicItem, let magicItemInfo {
             displayText = magicItem.name(info: magicItemInfo)
 
-            var iconColor: UIColor?
-            if let iconColorString = magicItem.customization?.iconColor {
-                iconColor = UIColor(hex: iconColorString)
+            if !entityHasDynamicIcon {
+                var iconColor: UIColor?
+                if let iconColorString = magicItem.customization?.iconColor {
+                    iconColor = UIColor(hex: iconColorString)
+                }
+                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: iconColor)
             }
-            image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: iconColor)
         }
         template.setText(displayText)
-        template.setDetailText(entity.localizedState)
+        template.setDetailText(entity.localizedState.leadingCapitalized)
         template.setImage(image)
     }
 }
