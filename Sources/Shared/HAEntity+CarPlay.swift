@@ -122,17 +122,19 @@ public extension HAEntity {
     }
 
     private func getCoverIcon() -> MaterialDesignIcons {
-        let state = state
-
         guard let state = Domain.State(rawValue: state) else { return MaterialDesignIcons.bookmarkIcon }
 
         switch deviceClass {
         case .garage:
             switch state {
-            case .opening: return MaterialDesignIcons.arrowUpBoxIcon
-            case .closing: return MaterialDesignIcons.arrowDownBoxIcon
-            case .closed: return MaterialDesignIcons.garageIcon
-            default: return MaterialDesignIcons.garageOpenIcon
+            case .opening:
+                return MaterialDesignIcons.arrowUpBoxIcon
+            case .closing:
+                return MaterialDesignIcons.arrowDownBoxIcon
+            case .closed:
+                return MaterialDesignIcons.garageIcon
+            default:
+                return MaterialDesignIcons.garageOpenIcon
             }
         case .gate:
             switch state {
