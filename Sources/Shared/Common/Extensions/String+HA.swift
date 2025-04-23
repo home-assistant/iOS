@@ -18,6 +18,13 @@ public extension String {
         }
         return first.uppercased() + dropFirst()
     }
+
+    var leadingCapitalized: String {
+        guard let first else {
+            return self
+        }
+        return first.uppercased() + dropFirst()
+    }
 }
 
 public extension String? {
