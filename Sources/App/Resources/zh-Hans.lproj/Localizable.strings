@@ -690,11 +690,11 @@
 "settings_details.general.app_icon.enum.white" = "白色";
 "settings_details.general.app_icon.explanation.title" = "每个图标有 3 种变体（iOS 18+）：默认、深色和有色，可根据所选的 iOS 主屏幕样式做出反应。有些图标在深色模式下相同或由 iOS 自动处理。";
 "settings_details.general.app_icon.title" = "应用图标";
-"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
+"settings_details.general.body" = "基本应用配置、应用图标和页面设置。";
 "settings_details.general.device_name.title" = "设备名称";
 "settings_details.general.full_screen.title" = "全屏";
 "settings_details.general.launch_on_login.title" = "登录时启动应用程序";
-"settings_details.general.links.title" = "Links";
+"settings_details.general.links.title" = "链接";
 "settings_details.general.menu_bar_text.title" = "菜单栏文本";
 "settings_details.general.open_in_browser.chrome" = "谷歌浏览器";
 "settings_details.general.open_in_browser.default" = "系统默认";
@@ -705,7 +705,7 @@
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari（应用内）";
 "settings_details.general.open_in_browser.title" = "链接打开方式";
 "settings_details.general.open_in_private_tab.title" = "在“隐私标签页“中打开";
-"settings_details.general.page.title" = "Page";
+"settings_details.general.page.title" = "页面";
 "settings_details.general.page_zoom.default" = "%@（默认）";
 "settings_details.general.page_zoom.title" = "页面缩放";
 "settings_details.general.pinch_to_zoom.title" = "双指缩放";
@@ -1127,7 +1127,7 @@
 "watch.placeholder_complication_name" = "占位符";
 "watch.settings.no_items.phone.title" = "未配置任何项目，请选择下面的项目。";
 "web_view.server_selection.title" = "选择服务器";
-"web_view.unique_server_selection.title" = "Choose one server";
+"web_view.unique_server_selection.title" = "选择一台服务器";
 "widgets.action.name.assist" = "语音助手";
 "widgets.action.name.default" = "默认";
 "widgets.action.name.navigate" = "导航";

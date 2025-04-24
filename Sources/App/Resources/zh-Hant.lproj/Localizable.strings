@@ -692,11 +692,11 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.general.app_icon.enum.white" = "白色";
 "settings_details.general.app_icon.explanation.title" = "每個圖示都有 3 種變體 (iOS 18+)、預設、深色和不同色調，以根據所選的 iOS 主畫面風格做出反應。某些圖示在深色模式下是相同的或由 iOS 自動進行處理。";
 "settings_details.general.app_icon.title" = "App 圖示";
-"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
+"settings_details.general.body" = "基本 App 設定、App 圖示與網頁設定。";
 "settings_details.general.device_name.title" = "裝置名稱";
 "settings_details.general.full_screen.title" = "全螢幕";
 "settings_details.general.launch_on_login.title" = "登入時啟動 App";
-"settings_details.general.links.title" = "Links";
+"settings_details.general.links.title" = "連結";
 "settings_details.general.menu_bar_text.title" = "選單列文字";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "系統預設";
@@ -707,7 +707,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.general.open_in_browser.title" = "開啟連結方式";
 "settings_details.general.open_in_private_tab.title" = "以無痕式視窗開啟";
-"settings_details.general.page.title" = "Page";
+"settings_details.general.page.title" = "頁面";
 "settings_details.general.page_zoom.default" = "%@（預設）";
 "settings_details.general.page_zoom.title" = "頁面縮放";
 "settings_details.general.pinch_to_zoom.title" = "手指拖拉縮放";
@@ -1127,7 +1127,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "未設定項目、請於下方選擇項目。";
 "web_view.server_selection.title" = "選擇伺服器";
-"web_view.unique_server_selection.title" = "Choose one server";
+"web_view.unique_server_selection.title" = "選擇伺服器";
 "widgets.action.name.assist" = "助理";
 "widgets.action.name.default" = "預設";
 "widgets.action.name.navigate" = "導航至";
