@@ -41,7 +41,8 @@ extension WebViewController: WKScriptMessageHandler {
         }
     }
 
-    func handleThemeUpdate(_ messageBody: [String: Any]) {
+    /// Handle theme changes from frontend, updating local cache and UI
+    private func handleThemeUpdate(_ messageBody: [String: Any]) {
         ThemeColors.updateCache(with: messageBody, for: traitCollection)
         styleUI()
     }
