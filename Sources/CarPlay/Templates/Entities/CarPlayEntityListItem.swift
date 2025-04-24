@@ -17,6 +17,12 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         return [.cover, .inputBoolean, .light, .switch].contains(entityDomain)
     }
 
+    /// Whether the entity has a state that doesnt bring value to the user when accessing from the car
+    private var entityHasIrrelevantState: Bool {
+        guard let entityDomain = Domain(entityId: entity.entityId) else { return false }
+        return [.script, .scene].contains(entityDomain)
+    }
+
     init(
         serverId: String,
         entity: HAEntity,
@@ -49,7 +55,9 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
             }
         }
         template.setText(displayText)
-        template.setDetailText(entity.localizedState.leadingCapitalized)
+        if !entityHasIrrelevantState {
+            template.setDetailText(entity.localizedState.leadingCapitalized)
+        }
         template.setImage(image)
     }
 }

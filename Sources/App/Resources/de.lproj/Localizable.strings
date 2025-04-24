@@ -692,7 +692,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.general.app_icon.enum.white" = "Weiß";
 "settings_details.general.app_icon.explanation.title" = "Jedes Symbol hat 3 Varianten (iOS 18+), Standard, dunkel und getönt, um entsprechend dem ausgewählten Stil des iOS-Home-Bildschirms zu reagieren. Einige Symbole sind im dunklen Modus identisch oder werden automatisch von iOS erstellt.";
 "settings_details.general.app_icon.title" = "App-Symbol";
-"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
+"settings_details.general.body" = "Grundlegende App-Konfiguration, App-Symbol und Webseiteneinstellungen.";
 "settings_details.general.device_name.title" = "Gerätename";
 "settings_details.general.full_screen.title" = "Vollbild";
 "settings_details.general.launch_on_login.title" = "App bei Anmeldung starten";
@@ -707,7 +707,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in App)";
 "settings_details.general.open_in_browser.title" = "Links öffnen in";
 "settings_details.general.open_in_private_tab.title" = "In privatem Tab öffnen";
-"settings_details.general.page.title" = "Page";
+"settings_details.general.page.title" = "Seite";
 "settings_details.general.page_zoom.default" = "%@ (Standard)";
 "settings_details.general.page_zoom.title" = "Seitenzoom";
 "settings_details.general.pinch_to_zoom.title" = "2-Finger-Zoom";
@@ -1128,7 +1128,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "watch.placeholder_complication_name" = "Platzhalter";
 "watch.settings.no_items.phone.title" = "Keine Einträge konfiguriert. Bitte wähle untenstehende Einträge aus.";
 "web_view.server_selection.title" = "Server auswählen";
-"web_view.unique_server_selection.title" = "Choose one server";
+"web_view.unique_server_selection.title" = "Wähle einen Server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
 "widgets.action.name.navigate" = "Navigieren";
