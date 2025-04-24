@@ -150,14 +150,11 @@ public extension IntentPanel {
     }
 
     var widgetURL: URL {
-        var components = URLComponents()
-        components.scheme = "homeassistant"
-        components.host = "navigate"
-        components.path = "/" + (identifier ?? "lovelace")
-        if let server = Current.servers.server(for: self) {
-            components.insertWidgetServer(server: server)
-        }
-        return components.url!
+        let server = Current.servers.server(for: self) ?? Current.servers.all.first
+        return AppConstants.openPageDeeplinkURL(
+            path: identifier ?? "lovelace",
+            serverId: server?.identifier.rawValue ?? ""
+        ) ?? AppConstants.deeplinkURL
     }
 
     private static func materialDesignIcon(for name: String?) -> MaterialDesignIcons {
