@@ -692,11 +692,11 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.general.app_icon.enum.white" = "Белый";
 "settings_details.general.app_icon.explanation.title" = "Для каждого значка есть 3 варианта (iOS 18+): стандартный, темный и тонированный, чтобы он реагировал в соответствии с выбранным стилем главного экрана iOS. Некоторые значки остаются неизменными в темном режиме или автоматически обрабатываются iOS.";
 "settings_details.general.app_icon.title" = "Значок приложения";
-"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
+"settings_details.general.body" = "Базовая настройка приложения, значок приложения и параметры веб-страницы.";
 "settings_details.general.device_name.title" = "Название устройства";
 "settings_details.general.full_screen.title" = "Полноэкранный режим";
 "settings_details.general.launch_on_login.title" = "Запустить приложение при логине";
-"settings_details.general.links.title" = "Links";
+"settings_details.general.links.title" = "Ссылки";
 "settings_details.general.menu_bar_text.title" = "Текст панели меню";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.default" = "По умолчанию системы";
@@ -707,7 +707,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (в приложении)";
 "settings_details.general.open_in_browser.title" = "Открывать ссылки в";
 "settings_details.general.open_in_private_tab.title" = "Открыть в приватной вкладке";
-"settings_details.general.page.title" = "Page";
+"settings_details.general.page.title" = "Страница";
 "settings_details.general.page_zoom.default" = "%@ (По умолчанию)";
 "settings_details.general.page_zoom.title" = "Масштаб страницы";
 "settings_details.general.pinch_to_zoom.title" = "Жест масштабирования";
@@ -1127,7 +1127,7 @@ Home Assistant - это бесплатное программное обеспе
 "watch.placeholder_complication_name" = "Заглушка";
 "watch.settings.no_items.phone.title" = "Элементы не настроены, пожалуйста, выберите элементы ниже.";
 "web_view.server_selection.title" = "Выберите сервер";
-"web_view.unique_server_selection.title" = "Choose one server";
+"web_view.unique_server_selection.title" = "Выберите один сервер";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "По умолчанию";
 "widgets.action.name.navigate" = "Перейти на страницу";
