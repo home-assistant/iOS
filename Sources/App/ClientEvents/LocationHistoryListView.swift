@@ -126,7 +126,11 @@ struct LocationHistoryListView_Previews: PreviewProvider {
     }
 
     static var configuration: SnapshottablePreviewConfigurations<[LocationHistoryEntry]> = {
-        Current.date = { Date(timeIntervalSince1970: 1_740_766_173) }
+        Current.date = {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd-MM-yyyy 'T'HH:mm:ssZ"
+            return dateFormatter.date(from: "01-01-2025 T00:00:00Z")!
+        }
         return .init(
             configurations: [
                 .init(item: [], name: "LocationHistoryListView wo/ Locations"),
