@@ -22,11 +22,13 @@ final class OnboardingServersListViewModel: ObservableObject {
     /// Indicator for manual input loading
     @Published var isLoading = false
 
+    private var webhookSensors: [WebhookSensor] = []
     private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
 
     init() {
         discovery.observer = self
+        Current.sensors.register(observer: self)
     }
 
     func startDiscovery() {
@@ -106,7 +108,27 @@ final class OnboardingServersListViewModel: ObservableObject {
     private func authenticationSucceeded(server: Server) {
         discovery.stop()
         onboardingServer = server
+        disableNonEssentialSensors(server)
         showPermissionsFlow = true
+    }
+
+    private func disableNonEssentialSensors(_ server: Server) {
+        guard Current.servers.all.count == 1 else {
+            Current.Log.verbose("Avoid overriding sensors if user has already servers setup in place.")
+            return
+        }
+        let sensorsToKeepEnabled: [WebhookSensorId] = [
+            .appVersion,
+            .locationPermission,
+        ]
+        for sensor in webhookSensors {
+            if let uniqueId = sensor.UniqueID,
+               uniqueId.contains("battery") || sensorsToKeepEnabled.map(\.rawValue).contains(uniqueId) {
+                Current.sensors.setEnabled(true, for: sensor)
+            } else {
+                Current.sensors.setEnabled(false, for: sensor)
+            }
+        }
     }
 }
 
@@ -120,6 +142,21 @@ extension OnboardingServersListViewModel: BonjourObserver {
     func bonjour(_ bonjour: Bonjour, didRemoveInstanceWithName name: String) {
         DispatchQueue.main.async { [weak self] in
             self?.discoveredInstances.removeAll { $0.bonjourName == name }
+        }
+    }
+}
+
+extension OnboardingServersListViewModel: SensorObserver {
+    func sensorContainer(
+        _ container: Shared.SensorContainer,
+        didSignalForUpdateBecause reason: Shared.SensorContainerUpdateReason
+    ) {
+        /* no-op */
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors.done { [weak self] sensors in
+            self?.webhookSensors = sensors
         }
     }
 }
