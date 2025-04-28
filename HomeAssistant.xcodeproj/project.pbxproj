@@ -770,6 +770,7 @@
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
+		4291CD962DBA70930024F891 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291CD952DBA70930024F891 /* ActivityViewController.swift */; };
 		429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */; };
 		429481EB2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */; };
 		429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EC2DA943E700A8B468 /* ListPicker.swift */; };
@@ -2203,6 +2204,7 @@
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		4291068D2BA9D93500D452F9 /* AssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistService.swift; sourceTree = "<group>"; };
+		4291CD952DBA70930024F891 /* ActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
 		429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptCommands.swift; sourceTree = "<group>"; };
 		429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptCommandsTests.swift; sourceTree = "<group>"; };
 		429481EC2DA943E700A8B468 /* ListPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPicker.swift; sourceTree = "<group>"; };
@@ -4719,6 +4721,7 @@
 		42E6C0882CE4F4EC007CA622 /* DownloadManager */ = {
 			isa = PBXGroup;
 			children = (
+				4291CD952DBA70930024F891 /* ActivityViewController.swift */,
 				42E6C0892CE4F4FA007CA622 /* DownloadManagerView.swift */,
 				42E6C08B2CE4F7A8007CA622 /* DownloadManagerViewModel.swift */,
 			);
@@ -7672,6 +7675,7 @@
 				429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */,
 				4251AA992C6B9D4C004CCC9D /* MagicItemCustomizationView.swift in Sources */,
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDuplicate.swift in Sources */,
+				4291CD962DBA70930024F891 /* ActivityViewController.swift in Sources */,
 				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
 				429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,

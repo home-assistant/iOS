@@ -85,16 +85,19 @@ struct DownloadManagerView: View {
                     } label: {
                         Label(viewModel.fileName, systemSymbol: .folder)
                     }
+                    .buttonStyle(.primaryButton)
                 } else {
                     ShareLink(viewModel.fileName, item: url)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                         .padding()
                         .foregroundStyle(.white)
                         .background(Color.asset(Asset.Colors.haPrimary))
                         .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                         .padding()
-                        .onAppear(perform: {
+                        .onAppear {
                             shareWrapper = .init(url: url)
-                        })
+                        }
                         .sheet(item: $shareWrapper, onDismiss: {}, content: { data in
                             ActivityViewController(shareWrapper: data)
                         })
@@ -132,18 +135,4 @@ struct DownloadManagerView: View {
     } else {
         Text("Hey there")
     }
-}
-
-struct ShareWrapper: Identifiable {
-    let id = UUID()
-    let url: URL
-}
-
-struct ActivityViewController: UIViewControllerRepresentable {
-    let shareWrapper: ShareWrapper
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [shareWrapper.url], applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
