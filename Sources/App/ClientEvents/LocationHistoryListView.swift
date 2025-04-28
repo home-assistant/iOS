@@ -156,6 +156,8 @@ struct LocationHistoryListView_Previews: PreviewProvider {
                         locationHistory: configuration
                     )
                 }
+                // Simulating a typical iPhone screen size (e.g., iPhone 13/14/15)
+                .frame(width: 375, height: 812)
             }
         )
     }()
