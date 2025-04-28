@@ -20,6 +20,8 @@ public func assertSnapshot<Value>(
         of: value(),
         as: Snapshotting<Value, UIImage>.image(
             drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
+            precision: 0.96,
+            perceptualPrecision: 0.96,
             layout: layout,
             traits: traits
         ),

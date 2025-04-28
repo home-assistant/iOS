@@ -156,7 +156,6 @@ struct LocationHistoryListView_Previews: PreviewProvider {
                         locationHistory: configuration
                     )
                 }
-                .tint(.blue) // Adding tint here otherwise snapshot testinf fails in CI
             }
         )
     }()
