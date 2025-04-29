@@ -15,6 +15,7 @@ class OnboardingAuthDetails: Equatable {
         let scheme: String
         let clientID: String
 
+        // swiftlint:disable prohibit_environment_assignment
         if Current.appConfiguration == .debug {
             clientID = "https://home-assistant.io/iOS/dev-auth"
             redirectURI = "homeassistant-dev://auth-callback"
@@ -28,6 +29,7 @@ class OnboardingAuthDetails: Equatable {
             redirectURI = "homeassistant://auth-callback"
             scheme = "homeassistant"
         }
+        // swiftlint:enable prohibit_environment_assignment
 
         components.path += "/auth/authorize"
         components.queryItems = [

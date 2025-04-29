@@ -49,6 +49,7 @@ final class SceneManager {
     }
 
     init() {
+        // swiftlint:disable prohibit_environment_assignment
         Current.realmFatalPresentation = { [weak self] viewController in
             guard let self else { return }
 
@@ -62,6 +63,7 @@ final class SceneManager {
                 })
             }
         }
+        // swiftlint:enable prohibit_environment_assignment
     }
 
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
