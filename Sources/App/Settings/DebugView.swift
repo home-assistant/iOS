@@ -354,6 +354,7 @@ struct DebugView: View {
         var firstPinLatitude = "40.785091"
         var firstPinLongitude = "-73.968285"
 
+        // swiftlint:disable prohibit_environment_assignment
         if Current.appConfiguration == .fastlaneSnapshot,
            let lat = prefs.string(forKey: "mapPin1Latitude"),
            let lon = prefs.string(forKey: "mapPin1Longitude") {
@@ -370,6 +371,7 @@ struct DebugView: View {
             secondPinLatitude = lat
             secondPinLongitude = lon
         }
+        // swiftlint:enable prohibit_environment_assignment
 
         content.userInfo = [
             "homeassistant": [
