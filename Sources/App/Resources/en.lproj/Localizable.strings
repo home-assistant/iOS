@@ -765,8 +765,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.notifications.badge_section.automatic_setting.description" = "Resets the badge to 0 every time you launch the app.";
 "settings_details.notifications.badge_section.automatic_setting.title" = "Automatically";
 "settings_details.notifications.badge_section.button.title" = "Reset Badge";
-"settings_details.notifications.categories.deprecated_note" = "Categories are no longer required for actionable notifications and will be removed in a future release.";
-"settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.categories_synced.empty" = "No Synced Categories";
 "settings_details.notifications.categories_synced.footer" = "Categories defined in .yaml are not editable on device.";
 "settings_details.notifications.categories_synced.footer_no_categories" = "Categories may be also defined in the .yaml configuration.";

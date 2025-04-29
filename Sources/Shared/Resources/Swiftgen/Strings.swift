@@ -2724,12 +2724,6 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.badge_section.button.title") }
         }
       }
-      public enum Categories {
-        /// Categories are no longer required for actionable notifications and will be removed in a future release.
-        public static var deprecatedNote: String { return L10n.tr("Localizable", "settings_details.notifications.categories.deprecated_note") }
-        /// Categories
-        public static var header: String { return L10n.tr("Localizable", "settings_details.notifications.categories.header") }
-      }
       public enum CategoriesSynced {
         /// No Synced Categories
         public static var empty: String { return L10n.tr("Localizable", "settings_details.notifications.categories_synced.empty") }
