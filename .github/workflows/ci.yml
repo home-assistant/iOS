@@ -135,7 +135,7 @@ jobs:
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
 
   size:
-    needs: test
+    needs: check-swiftlint-disables
     if: |
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
