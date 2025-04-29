@@ -60,7 +60,7 @@ custom_rules:
   prohibit_environment_assignment:
     name: "Assigning to Environment variables is not allowed."
     regex: '\bCurrent\.[a-zA-Z_][a-zA-Z0-9_]*\s*=(?!=)'
-    message: "Avoid assigning to `Current` in production code. Use dependency injection or mocks."
+    message: "Avoid assigning to `Current`."
     severity: error
     excluded:
       - "Tests"
