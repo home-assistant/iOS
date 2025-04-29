@@ -126,6 +126,7 @@ struct LocationHistoryListView_Previews: PreviewProvider {
     }
 
     static var configuration: SnapshottablePreviewConfigurations<[LocationHistoryEntry]> = {
+        // swiftlint:disable prohibit_environment_assignment
         Current.date = { Date(timeIntervalSince1970: 1_740_766_173) }
         return .init(
             configurations: [
@@ -158,5 +159,6 @@ struct LocationHistoryListView_Previews: PreviewProvider {
                 }
             }
         )
+        // swiftlint:enable prohibit_environment_assignment
     }()
 }

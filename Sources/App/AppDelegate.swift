@@ -64,6 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setDefaults()
 
+        // swiftlint:disable prohibit_environment_assignment
         Current.backgroundTask = ApplicationBackgroundTaskRunner()
 
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
@@ -83,6 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #else
         Current.tags = iOSTagManager()
         #endif
+        // swiftlint:enable prohibit_environment_assignment
 
         notificationManager.setupNotifications()
         setupFirebase()
