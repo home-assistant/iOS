@@ -87,7 +87,7 @@ public class AppEnvironment {
     /// Crash reporting and related metadata gathering
     public var crashReporter: CrashReporter = CrashReporterImpl()
 
-    /// Provides URLs usable for storing data.
+    /// Provides current Date
     public var date: () -> Date = Date.init
     public var calendar: () -> Calendar = { Calendar.autoupdatingCurrent }
 

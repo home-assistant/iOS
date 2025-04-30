@@ -58,6 +58,8 @@ public enum L10n {
   public static var saveLabel: String { return L10n.tr("Localizable", "save_label") }
   /// Success
   public static var successLabel: String { return L10n.tr("Localizable", "success_label") }
+  /// Unknown
+  public static var unknownLabel: String { return L10n.tr("Localizable", "unknownLabel") }
   /// URL
   public static var urlLabel: String { return L10n.tr("Localizable", "url_label") }
   /// Username
@@ -2570,6 +2572,16 @@ public enum L10n {
         /// Background Refresh
         public static var title: String { return L10n.tr("Localizable", "settings_details.location.background_refresh.title") }
       }
+      public enum FocusPermission {
+        /// Denied
+        public static var denied: String { return L10n.tr("Localizable", "settings_details.location.focus_permission.denied") }
+        /// Enabled
+        public static var enabled: String { return L10n.tr("Localizable", "settings_details.location.focus_permission.enabled") }
+        /// Disabled
+        public static var needsRequest: String { return L10n.tr("Localizable", "settings_details.location.focus_permission.needs_request") }
+        /// Restricted
+        public static var restricted: String { return L10n.tr("Localizable", "settings_details.location.focus_permission.restricted") }
+      }
       public enum LocationAccuracy {
         /// Full
         public static var full: String { return L10n.tr("Localizable", "settings_details.location.location_accuracy.full") }
@@ -2597,6 +2609,8 @@ public enum L10n {
         public static var enabled: String { return L10n.tr("Localizable", "settings_details.location.motion_permission.enabled") }
         /// Disabled
         public static var needsRequest: String { return L10n.tr("Localizable", "settings_details.location.motion_permission.needs_request") }
+        /// Restricted
+        public static var restricted: String { return L10n.tr("Localizable", "settings_details.location.motion_permission.restricted") }
         /// Motion Permission
         public static var title: String { return L10n.tr("Localizable", "settings_details.location.motion_permission.title") }
       }
@@ -2922,6 +2936,8 @@ public enum L10n {
   }
 
   public enum SettingsSensors {
+    /// Decide which of your device sensors you want to share with Home Assistant.
+    public static var body: String { return L10n.tr("Localizable", "settings_sensors.body") }
     /// Disabled
     public static var disabledStateReplacement: String { return L10n.tr("Localizable", "settings_sensors.disabled_state_replacement") }
     /// Sensors
@@ -2943,10 +2959,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
     public enum LastUpdated {
-      /// Last Updated %@
-      public static func footer(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "settings_sensors.last_updated.footer", String(describing: p1))
-      }
+      /// Last Updated
+      public static var `prefix`: String { return L10n.tr("Localizable", "settings_sensors.last_updated.prefix") }
     }
     public enum LoadingError {
       /// Failed to load sensors
@@ -2961,6 +2975,14 @@ public enum L10n {
       public static var off: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.off") }
       /// Periodic Update
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.periodic_update.title") }
+    }
+    public enum Permissions {
+      /// Permissions
+      public static var header: String { return L10n.tr("Localizable", "settings_sensors.permissions.header") }
+    }
+    public enum Sensors {
+      /// Sensors
+      public static var header: String { return L10n.tr("Localizable", "settings_sensors.sensors.header") }
     }
     public enum Settings {
       /// Changes will be applied on the next update.

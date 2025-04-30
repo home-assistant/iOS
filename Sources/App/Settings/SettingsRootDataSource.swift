@@ -146,7 +146,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.SettingsSensors.title
             $0.icon = .formatListBulletedIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                SensorListViewController()
+                SensorListView().embeddedInHostingController()
             }, onDismiss: nil)
         }
     }
