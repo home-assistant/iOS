@@ -137,7 +137,7 @@ struct SensorListView: View {
         }
     }
 
-    private func periodicUodateDisplayText(for value: TimeInterval?) -> String {
+    private func periodicUpdateDisplayText(for value: TimeInterval?) -> String {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .full
         switch value {
