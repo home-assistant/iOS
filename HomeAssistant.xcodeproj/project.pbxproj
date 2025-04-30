@@ -835,6 +835,7 @@
 		42B980D52DC24E2C00BC5C08 /* SensorDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B980D42DC24E2C00BC5C08 /* SensorDetailView.swift */; };
 		42B980D72DC24E4500BC5C08 /* SensorDetailsDecimalStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B980D62DC24E4500BC5C08 /* SensorDetailsDecimalStepper.swift */; };
 		42B980D92DC24E5D00BC5C08 /* SensorDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B980D82DC24E5D00BC5C08 /* SensorDetailViewModel.swift */; };
+		42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B980DB2DC256A300BC5C08 /* SensorRow.test.swift */; };
 		42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
 		42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */; };
 		42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
@@ -2270,6 +2271,7 @@
 		42B980D42DC24E2C00BC5C08 /* SensorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailView.swift; sourceTree = "<group>"; };
 		42B980D62DC24E4500BC5C08 /* SensorDetailsDecimalStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailsDecimalStepper.swift; sourceTree = "<group>"; };
 		42B980D82DC24E5D00BC5C08 /* SensorDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewModel.swift; sourceTree = "<group>"; };
+		42B980DB2DC256A300BC5C08 /* SensorRow.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorRow.test.swift; sourceTree = "<group>"; };
 		42BA1BC72C8864C200A2FC36 /* OpenPageAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPageAppIntent.swift; sourceTree = "<group>"; };
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
 		42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.test.swift; sourceTree = "<group>"; };
@@ -4601,6 +4603,14 @@
 			path = Details;
 			sourceTree = "<group>";
 		};
+		42B980DA2DC2567F00BC5C08 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				42B980DB2DC256A300BC5C08 /* SensorRow.test.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		42BE698B2C4691E000745ECA /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -5263,6 +5273,7 @@
 				42196AD92DA5AF7A00BD501E /* Onboarding */,
 				11AD2EA7252900AA00FBC437 /* Resources */,
 				39A32EDE2C0E36E900985722 /* Scenes */,
+				42B980DA2DC2567F00BC5C08 /* Settings */,
 				4286260A2DA5CD1B00D58D13 /* Sizes */,
 				39A32EDF2C0E37FC00985722 /* Thread */,
 				46C3EB192D721000009A893F /* Utilities */,
@@ -7835,6 +7846,7 @@
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
 				422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
+				42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */,
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
 				420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */,
 				11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */,
