@@ -64,7 +64,7 @@ struct SensorListView: View {
                 label: Text(L10n.SettingsSensors.PeriodicUpdate.title)
             ) {
                 ForEach(periodicOptions, id: \.self) { option in
-                    Text(periodicUodateDisplayText(for: option)).tag(option)
+                    Text(periodicUpdateDisplayText(for: option)).tag(option)
                 }
             }
             .pickerStyle(.menu)
