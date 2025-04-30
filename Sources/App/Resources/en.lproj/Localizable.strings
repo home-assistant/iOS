@@ -32,6 +32,7 @@
 "actions_configurator.visual_section.scene_hint_footer" = "You can also change these by customizing the Scene attributes: %@";
 "actions_configurator.visual_section.server_defined" = "The appearance of this action is controlled by the server configuration.";
 "addButtonLabel" = "Add";
+"unknownLabel" = "Unknown";
 "alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
 "alert.confirmation.generic.title" = "Are you sure?";
 "alerts.action_automation_editor.unavailable.body" = "To automatically create an automation for an Action please update your Home Assistant to at least version 2024.2";
@@ -730,8 +731,13 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.location.location_permission.title" = "Location Permission";
 "settings_details.location.location_permission.while_in_use" = "While In Use";
 "settings_details.location.motion_permission.denied" = "Denied";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.enabled" = "Enabled";
 "settings_details.location.motion_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.restricted" = "Restricted";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
 "settings_details.location.motion_permission.title" = "Motion Permission";
 "settings_details.location.notifications.background_fetch.title" = "Background Fetch Notifications";
 "settings_details.location.notifications.beacon_enter.title" = "Enter Zone via iBeacon Notifications";
@@ -837,7 +843,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_sensors.detail.state" = "State";
 "settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.focus_permission.title" = "Focus Permission";
-"settings_sensors.last_updated.footer" = "Last Updated %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Failed to load sensors";
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update with this frequency while the app is open in the foreground.";
 "settings_sensors.periodic_update.description_mac" = "When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.";
@@ -846,6 +852,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_sensors.settings.footer" = "Changes will be applied on the next update.";
 "settings_sensors.settings.header" = "Settings";
 "settings_sensors.title" = "Sensors";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "share_extension.entered_placeholder" = "'entered' in event";
 "share_extension.error.title" = "Couldn't Send";
 "shortcut_item.open_settings.title" = "Open Settings";

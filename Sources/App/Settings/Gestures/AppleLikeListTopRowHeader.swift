@@ -5,9 +5,14 @@ struct AppleLikeListTopRowHeader: View {
     let image: MaterialDesignIcons?
     let headerImageAlternativeView: AnyView?
     let title: String
-    let subtitle: String
+    let subtitle: String?
 
-    init(image: MaterialDesignIcons?, headerImageAlternativeView: AnyView? = nil, title: String, subtitle: String) {
+    init(
+        image: MaterialDesignIcons?,
+        headerImageAlternativeView: AnyView? = nil,
+        title: String,
+        subtitle: String? = nil
+    ) {
         self.image = image
         self.headerImageAlternativeView = headerImageAlternativeView
         self.title = title
@@ -25,11 +30,13 @@ struct AppleLikeListTopRowHeader: View {
             VStack(spacing: Spaces.half) {
                 Text(title)
                     .font(.title3.bold())
-                Text(subtitle)
-                    .foregroundStyle(Color(uiColor: .secondaryLabel))
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                if let subtitle {
+                    Text(subtitle)
+                        .foregroundStyle(Color(uiColor: .secondaryLabel))
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
             }
         }
         .padding(.vertical, Spaces.half)
