@@ -10,7 +10,7 @@ import UserNotifications
 import Version
 import XCGLogger
 
-public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
+public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {
     case fastlaneSnapshot
     case debug
     case beta

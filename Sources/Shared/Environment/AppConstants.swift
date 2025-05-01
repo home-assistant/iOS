@@ -11,6 +11,17 @@ public enum AppConstants {
         public static var companionAppDocs = URL(string: "https://companion.home-assistant.io")!
         public static var companionAppDocsTroubleshooting =
             URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors")!
+        public static var beta = URL(string: "https://companion.home-assistant.io/app/ios/beta")!
+        public static var betaMac = URL(string: "https://companion.home-assistant.io/app/ios/beta_mac")!
+        public static var review = URL(string: "https://companion.home-assistant.io/app/ios/review")!
+        public static var reviewMac = URL(string: "https://companion.home-assistant.io/app/ios/review_mac")!
+        public static var translate = URL(string: "https://companion.home-assistant.io/app/ios/translate")!
+        public static var forums = URL(string: "https://community.home-assistant.io/")!
+        public static var chat = URL(string: "https://companion.home-assistant.io/app/ios/chat")!
+        public static var twitter = URL(string: "https://twitter.com/home_assistant")!
+        public static var facebook = URL(string: "https://www.facebook.com/292963007723872")!
+        public static var repo = URL(string: "https://companion.home-assistant.io/app/ios/repo")!
+        public static var issues = URL(string: "https://companion.home-assistant.io/app/ios/issues")!
     }
 
     /// Home Assistant Blue

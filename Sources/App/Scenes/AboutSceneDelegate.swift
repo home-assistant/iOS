@@ -6,7 +6,7 @@ import UIKit
     override func basicConfig(in traitCollection: UITraitCollection) -> BasicSceneDelegate.BasicConfig {
         .init(
             title: L10n.About.title,
-            rootViewController: UINavigationController(rootViewController: AboutViewController())
+            rootViewController: UINavigationController(rootViewController: AboutView().embeddedInHostingController())
         )
     }
 }
