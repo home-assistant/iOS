@@ -936,6 +936,7 @@
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */; };
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
 		42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589D2BB4705E00497981 /* WidgetAssistView.swift */; };
@@ -2366,6 +2367,7 @@
 		42F1DA6F2B4EE2E8002729BC /* HAAreaResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAreaResponse.swift; sourceTree = "<group>"; };
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
+		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
 		42F9589D2BB4705E00497981 /* WidgetAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistView.swift; sourceTree = "<group>"; };
@@ -3390,21 +3392,21 @@
 				42B942F42CAA1E4400E36E02 /* Payload */,
 				42BE698B2C4691E000745ECA /* Views */,
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
+				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
 				4228CFFE2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift */,
-				4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */,
 				4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */,
 				4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */,
 				4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */,
+				4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */,
 				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
 				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				420C57C62D0A6DE700D2D9AC /* NoActiveURLView.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
 				42A47A8B2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift */,
 				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
-				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 			);
 			path = WebView;
@@ -4615,6 +4617,7 @@
 				42B980DB2DC256A300BC5C08 /* SensorRow.test.swift */,
 				42A42A692DC37311000ABBAF /* PrivacyView.test.swift */,
 				42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */,
+				42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -7843,6 +7846,7 @@
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
 				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
+				42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
 				42196ADA2DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift in Sources */,

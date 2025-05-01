@@ -84,7 +84,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var tokens = [HACancellable]()
 
     private let refreshControl = UIRefreshControl()
-    private let sidebarGestureRecognizer: UIScreenEdgePanGestureRecognizer
+    private let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
     let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
 
@@ -120,7 +120,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     init(server: Server, shouldLoadImmediately: Bool = false) {
         self.server = server
-        self.sidebarGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
+        self.leftEdgePanGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
         self.rightEdgeGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
@@ -133,7 +133,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             $0.isEligibleForHandoff = true
         }
 
-        sidebarGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
+        leftEdgePanGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
         rightEdgeGestureRecognizer.addTarget(self, action: #selector(screenEdgeGestureRecognizerAction(_:)))
 
         if shouldLoadImmediately {
@@ -214,7 +214,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.isOpaque = false
         view!.addSubview(webView)
 
-        setupGestures()
+        setupGestures(numberOfTouchesRequired: 2)
+        setupGestures(numberOfTouchesRequired: 3)
+        setupEgdeGestures()
         setupURLObserver()
 
         webView.navigationDelegate = self
@@ -352,15 +354,23 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    private func setupGestures() {
-        for direction: UISwipeGestureRecognizer.Direction in [.left, .right, .up, .down] {
-            webView.addGestureRecognizer(with(UISwipeGestureRecognizer(target: self, action: #selector(swipe(_:)))) {
-                $0.numberOfTouchesRequired = 2
-                $0.direction = direction
-            })
+    private func setupGestures(numberOfTouchesRequired: Int) {
+        let gestures = [.left, .right, .up, .down].map { (direction: UISwipeGestureRecognizer.Direction) in
+            let gesture = UISwipeGestureRecognizer()
+            gesture.numberOfTouchesRequired = numberOfTouchesRequired
+            gesture.direction = direction
+            gesture.addTarget(self, action: #selector(swipe(_:)))
+            gesture.delegate = self
+            return gesture
         }
 
-        webView.addGestureRecognizer(sidebarGestureRecognizer)
+        for gesture in gestures {
+            view.addGestureRecognizer(gesture)
+        }
+    }
+
+    private func setupEgdeGestures() {
+        webView.addGestureRecognizer(leftEdgePanGestureRecognizer)
         webView.addGestureRecognizer(rightEdgeGestureRecognizer)
     }
 
@@ -592,7 +602,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     @objc private func swipe(_ gesture: UISwipeGestureRecognizer) {
-        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: 2)
+        guard gesture.state == .ended else {
+            return
+        }
+        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: gesture.numberOfTouches)
         handleGestureAction(action)
     }
 
@@ -1102,5 +1115,14 @@ extension WebViewController: UIScrollViewDelegate {
         if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
             scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
         }
+    }
+}
+
+extension WebViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
+        true
     }
 }

@@ -974,37 +974,17 @@ public enum L10n {
   }
 
   public enum Gestures {
-    public enum _2FingersSwipeDown {
-      /// 2 👆 swipe down
-      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_down.title") }
+    public enum _1Finger {
+      /// Using one finger
+      public static var title: String { return L10n.tr("Localizable", "gestures.1_finger.title") }
     }
-    public enum _2FingersSwipeLeft {
-      /// 2 👆 swipe left
-      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_left.title") }
+    public enum _2Fingers {
+      /// Using two fingers
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers.title") }
     }
-    public enum _2FingersSwipeRight {
-      /// 2 👆 swipe right
-      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_right.title") }
-    }
-    public enum _2FingersSwipeUp {
-      /// 2 👆 swipe up
-      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_up.title") }
-    }
-    public enum _3FingersSwipeDown {
-      /// 3 👆 swipe down
-      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_down.title") }
-    }
-    public enum _3FingersSwipeLeft {
-      /// 3 👆 swipe left
-      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_left.title") }
-    }
-    public enum _3FingersSwipeRight {
-      /// 3 👆 swipe right
-      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_right.title") }
-    }
-    public enum _3FingersSwipeUp {
-      /// 3 👆 swipe up
-      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_up.title") }
+    public enum _3Fingers {
+      /// Using three fingers
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers.title") }
     }
     public enum Category {
       /// App
@@ -1022,6 +1002,10 @@ public enum L10n {
       /// Customize gestures to be used on the frontend.
       public static var title: String { return L10n.tr("Localizable", "gestures.footer.title") }
     }
+    public enum Reset {
+      /// Reset
+      public static var title: String { return L10n.tr("Localizable", "gestures.reset.title") }
+    }
     public enum Screen {
       /// Gestures below will be applied whenever you are using Home Assistant main UI.
       public static var body: String { return L10n.tr("Localizable", "gestures.screen.body") }
@@ -1031,6 +1015,24 @@ public enum L10n {
     public enum Shake {
       /// Shake
       public static var title: String { return L10n.tr("Localizable", "gestures.shake.title") }
+    }
+    public enum Swipe {
+      public enum Down {
+        /// Swipe down
+        public static var header: String { return L10n.tr("Localizable", "gestures.swipe.down.header") }
+      }
+      public enum Left {
+        /// Swipe left
+        public static var header: String { return L10n.tr("Localizable", "gestures.swipe.left.header") }
+      }
+      public enum Right {
+        /// Swipe right
+        public static var header: String { return L10n.tr("Localizable", "gestures.swipe.right.header") }
+      }
+      public enum Up {
+        /// Swipe up
+        public static var header: String { return L10n.tr("Localizable", "gestures.swipe.up.header") }
+      }
     }
     public enum SwipeLeft {
       /// Swipe Left

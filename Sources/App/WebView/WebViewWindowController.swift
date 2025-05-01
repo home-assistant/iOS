@@ -42,8 +42,6 @@ final class WebViewWindowController {
             } else {
                 webViewControllerSeal(newWebViewController)
             }
-
-            update(webViewController: newWebViewController)
         } else if webViewControllerPromise.isFulfilled {
             // replacing one, so set up a new promise if necessary
             (webViewControllerPromise, webViewControllerSeal) = Guarantee<WebViewController>.pending()
@@ -343,62 +341,6 @@ final class WebViewWindowController {
         } else {
             triggerOpen()
         }
-    }
-
-    private lazy var serverChangeGestures: [UIGestureRecognizer] = {
-        class InlineDelegate: NSObject, UIGestureRecognizerDelegate {
-            func gestureRecognizer(
-                _ gestureRecognizer: UIGestureRecognizer,
-                shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-            ) -> Bool {
-                if let gestureRecognizer = gestureRecognizer as? UISwipeGestureRecognizer {
-                    return gestureRecognizer.direction == .up
-                } else {
-                    return false
-                }
-            }
-        }
-
-        var delegate = InlineDelegate()
-
-        return [.left, .right, .up, .down].map { (direction: UISwipeGestureRecognizer.Direction) in
-            with(UISwipeGestureRecognizer()) {
-                $0.numberOfTouchesRequired = 3
-                $0.direction = direction
-                $0.addTarget(self, action: #selector(gestureHandler(_:)))
-                $0.delegate = delegate
-
-                after(life: $0).done {
-                    withExtendedLifetime(delegate) {
-                        //
-                    }
-                }
-            }
-        }
-    }()
-
-    private func update(webViewController: WebViewController) {
-        for gesture in serverChangeGestures {
-            webViewController.view.addGestureRecognizer(gesture)
-        }
-    }
-
-    @objc private func openSettings(_ sender: UIBarButtonItem) {
-        presentedViewController?.dismiss(animated: true, completion: { [self] in
-            webViewControllerPromise.done { controller in
-                controller.showSettingsViewController()
-            }
-        })
-    }
-
-    @objc private func gestureHandler(_ gesture: UISwipeGestureRecognizer) {
-        guard gesture.state == .ended else {
-            return
-        }
-        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: 3)
-        webViewControllerPromise.done({ controller in
-            controller.handleGestureAction(action)
-        })
     }
 }
 
