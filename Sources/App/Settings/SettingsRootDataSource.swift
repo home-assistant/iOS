@@ -90,7 +90,7 @@ enum SettingsRootDataSource {
             $0.icon = .gestureIcon
             $0.isAvailableForMac = false
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                UIHostingController(rootView: GesturesSetupView())
+                GesturesSetupView().embeddedInHostingController()
             }, onDismiss: nil)
         }
     }
@@ -124,7 +124,7 @@ enum SettingsRootDataSource {
             $0.isAvailableForMac = false
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 guard #available(iOS 17, *) else { return UIViewController() }
-                return UIHostingController(rootView: ThreadCredentialsManagementView())
+                return ThreadCredentialsManagementView().embeddedInHostingController()
             }, onDismiss: nil)
         }
     }
@@ -157,7 +157,7 @@ enum SettingsRootDataSource {
             $0.icon = .watchVariantIcon
             $0.hidden = .isCatalyst
             $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                let controller = UIHostingController(rootView: WatchConfigurationView())
+                let controller = WatchConfigurationView().embeddedInHostingController()
                 controller.overrideUserInterfaceStyle = .dark
                 return controller
             }, onDismiss: { _ in
@@ -172,7 +172,7 @@ enum SettingsRootDataSource {
             $0.icon = .carBackIcon
             $0.hidden = .isCatalyst
             $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                let controller = UIHostingController(rootView: CarPlayConfigurationView())
+                let controller = CarPlayConfigurationView().embeddedInHostingController()
                 controller.overrideUserInterfaceStyle = .dark
                 return controller
             }, onDismiss: { _ in
@@ -210,7 +210,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.Widgets.title
             $0.icon = .widgetsIcon
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                UIHostingController(rootView: WidgetBuilderView())
+                WidgetBuilderView().embeddedInHostingController()
             }, onDismiss: nil)
         }
     }
@@ -233,9 +233,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.SettingsDetails.Privacy.title
             $0.icon = .lockOutlineIcon
             $0.presentationMode = .show(controllerProvider: .callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = .privacy
-                return view
+                PrivacyView().embeddedInHostingController()
             }, onDismiss: nil)
         }
     }
@@ -245,7 +243,7 @@ enum SettingsRootDataSource {
             $0.title = L10n.Settings.Debugging.title
             $0.icon = .bugIcon
             $0.presentationMode = .show(controllerProvider: .callback {
-                UIHostingController(rootView: DebugView())
+                DebugView().embeddedInHostingController()
             }, onDismiss: nil)
         }
     }

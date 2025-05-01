@@ -13,7 +13,6 @@ enum SettingsDetailsGroup: String {
     case display
     case actions
     case location
-    case privacy
 }
 
 class SettingsDetailViewController: HAFormViewController, TypedRowControllerType {
@@ -301,48 +300,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                     Self.getSceneRows($0)
                 }
             )
-
-        case .privacy:
-            title = L10n.SettingsDetails.Privacy.title
-
-            form
-                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Messaging.description)
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Privacy.Messaging.title
-                    $0.value = Current.settingsStore.privacy.messaging
-                }.onChange { row in
-                    Current.settingsStore.privacy.messaging = row.value ?? true
-                    Messaging.messaging().isAutoInitEnabled = Current.settingsStore.privacy.messaging
-                }
-                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Alerts.description)
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Privacy.Alerts.title
-                    $0.value = Current.settingsStore.privacy.alerts
-                }.onChange { row in
-                    Current.settingsStore.privacy.alerts = row.value ?? true
-                }
-                +++ Section(
-                    header: nil,
-                    footer: L10n.SettingsDetails.Privacy.CrashReporting.description
-                ) {
-                    $0.hidden = .init(booleanLiteral: !Current.crashReporter.hasCrashReporter)
-                }
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Privacy.CrashReporting.title
-                    $0.value = Current.settingsStore.privacy.crashes
-                }.onChange { row in
-                    Current.settingsStore.privacy.crashes = row.value ?? true
-                }
-                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Analytics.genericDescription) {
-                    $0.hidden = .init(booleanLiteral: !Current.crashReporter.hasAnalytics)
-                }
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Privacy.Analytics.genericTitle
-                    $0.value = Current.settingsStore.privacy.analytics
-                }.onChange { row in
-                    Current.settingsStore.privacy.analytics = row.value ?? true
-                }
-
         default:
             Current.Log.warning("Something went wrong, no settings detail group named \(detailGroup)")
         }

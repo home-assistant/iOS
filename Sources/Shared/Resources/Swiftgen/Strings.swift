@@ -2874,6 +2874,8 @@ public enum L10n {
       }
     }
     public enum Privacy {
+      /// You are in control of your data.
+      public static var body: String { return L10n.tr("Localizable", "settings_details.privacy.body") }
       /// Privacy
       public static var title: String { return L10n.tr("Localizable", "settings_details.privacy.title") }
       public enum Alerts {
