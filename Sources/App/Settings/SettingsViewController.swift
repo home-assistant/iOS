@@ -171,10 +171,8 @@ class SettingsViewController: HAFormViewController {
     }
 
     @objc func openAbout(_ sender: UIButton) {
-        let aboutView = AboutViewController()
-
-        let navController = UINavigationController(rootViewController: aboutView)
-        show(navController, sender: nil)
+        let aboutView = AboutView().embeddedInHostingController()
+        show(aboutView, sender: nil)
     }
 
     @objc func closeSettings(_ sender: UIButton) {
