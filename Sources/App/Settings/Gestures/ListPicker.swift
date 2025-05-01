@@ -31,9 +31,12 @@ struct ListPicker: View {
         } label: {
             HStack {
                 Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text(selection.title)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .frame(alignment: .trailing)
                     .foregroundColor(Color(uiColor: .secondaryLabel))
+                    .truncationMode(.middle)
+                    .lineLimit(1)
             }
         }
     }

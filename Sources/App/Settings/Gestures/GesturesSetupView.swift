@@ -4,6 +4,11 @@ import SwiftUI
 struct GesturesSetupView: View {
     @StateObject private var viewModel = GesturesSetupViewModel()
     @State private var swipeRightState = HAGestureAction.showSidebar
+
+    @State var directions: [UISwipeGestureRecognizer.Direction] = [
+        .left, .right, .up,
+    ]
+
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
@@ -11,9 +16,11 @@ struct GesturesSetupView: View {
                 title: L10n.Gestures.Screen.title,
                 subtitle: L10n.Gestures.Screen.body
             )
+
             Section {
                 ForEach(
-                    AppGesture.allCases.sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
+                    AppGesture.allCases.filter({ $0.direction == nil })
+                        .sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
                     id: \.self
                 ) { gesture in
                     let selection = viewModel.selection(for: gesture)
@@ -31,8 +38,41 @@ struct GesturesSetupView: View {
                     )
                 }
             }
+
+            ForEach(directions, id: \.rawValue) { direction in
+                Section(title(for: direction)) {
+                    ForEach(
+                        AppGesture.allCases.filter({ $0.direction == direction })
+                            .sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
+                        id: \.self
+                    ) { gesture in
+                        let selection = viewModel.selection(for: gesture)
+                        ListPicker(
+                            title: gesture.localizedString,
+                            selection: .init(get: {
+                                .init(id: selection.rawValue, title: selection.localizedString)
+                            }, set: { selectedItem in
+                                guard let newValue = HAGestureAction(rawValue: selectedItem.id) else {
+                                    return
+                                }
+                                viewModel.setSelection(for: gesture, newValue: newValue)
+                            }),
+                            content: gestureActionsPickerContent
+                        )
+                    }
+                }
+            }
         }
         .removeListsPaddingWithAppleLikeHeader()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(role: .destructive) {
+                    viewModel.resetGestures()
+                } label: {
+                    Text(L10n.Gestures.Reset.title)
+                }
+            }
+        }
     }
 
     private var gestureActionsPickerContent: ListPickerContent {
@@ -48,6 +88,21 @@ struct GesturesSetupView: View {
 
     private func makeRow(gestureAction: HAGestureAction) -> some View {
         Text(gestureAction.localizedString).tag(gestureAction)
+    }
+
+    private func title(for direction: UISwipeGestureRecognizer.Direction) -> String {
+        switch direction {
+        case .up:
+            return L10n.Gestures.Swipe.Up.header
+        case .down:
+            return L10n.Gestures.Swipe.Down.header
+        case .left:
+            return L10n.Gestures.Swipe.Left.header
+        case .right:
+            return L10n.Gestures.Swipe.Right.header
+        default:
+            return ""
+        }
     }
 }
 

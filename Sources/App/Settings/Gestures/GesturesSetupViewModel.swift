@@ -14,6 +14,15 @@ final class GesturesSetupViewModel: ObservableObject {
 
     func setSelection(for gesture: AppGesture, newValue: HAGestureAction) {
         Current.settingsStore.gestures[gesture] = newValue
+        sync()
+    }
+
+    func resetGestures() {
+        Current.settingsStore.gestures = .defaultGestures
+        sync()
+    }
+
+    private func sync() {
         settings = Current.settingsStore.gestures
     }
 }

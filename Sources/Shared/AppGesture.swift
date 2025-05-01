@@ -111,37 +111,23 @@ public enum AppGesture: CaseIterable, Codable {
     case swipeRight
     case swipeLeft
     case _3FingersSwipeUp
-    //    case _3FingersSwipeDown
     case _3FingersSwipeLeft
     case _3FingersSwipeRight
-    //    case _2FingersSwipeUp
-    //    case _2FingersSwipeDown
     case _2FingersSwipeLeft
     case _2FingersSwipeRight
     case shake
 
     public var localizedString: String {
         switch self {
-        case .swipeRight:
-            return L10n.Gestures.SwipeRight.title
-        case .swipeLeft:
-            return L10n.Gestures.SwipeLeft.title
-        case ._3FingersSwipeUp:
-            return L10n.Gestures._3FingersSwipeUp.title
-        //        case ._3FingersSwipeDown:
-        //            return L10n.Gestures._3FingersSwipeDown.title
-        case ._3FingersSwipeLeft:
-            return L10n.Gestures._3FingersSwipeLeft.title
-        case ._3FingersSwipeRight:
-            return L10n.Gestures._3FingersSwipeRight.title
-        //        case ._2FingersSwipeUp:
-        //            return L10n.Gestures._2FingersSwipeUp.title
-        //        case ._2FingersSwipeDown:
-        //            return L10n.Gestures._2FingersSwipeDown.title
-        case ._2FingersSwipeLeft:
-            return L10n.Gestures._2FingersSwipeLeft.title
-        case ._2FingersSwipeRight:
-            return L10n.Gestures._2FingersSwipeRight.title
+        case .swipeRight, .swipeLeft:
+            return L10n.Gestures._1Finger.title
+        case ._2FingersSwipeLeft,
+             ._2FingersSwipeRight:
+            return L10n.Gestures._2Fingers.title
+        case ._3FingersSwipeUp,
+             ._3FingersSwipeLeft,
+             ._3FingersSwipeRight:
+            return L10n.Gestures._3Fingers.title
         case .shake:
             return L10n.Gestures.Shake.title
         }
@@ -153,24 +139,39 @@ public enum AppGesture: CaseIterable, Codable {
             0
         case .swipeLeft:
             1
-        //        case ._2FingersSwipeUp:
-        //            2
-        //        case ._2FingersSwipeDown:
-        //            3
         case ._2FingersSwipeRight:
-            4
+            2
         case ._2FingersSwipeLeft:
-            5
+            3
         case ._3FingersSwipeUp:
-            6
-        //        case ._3FingersSwipeDown:
-        //            7
+            4
         case ._3FingersSwipeRight:
-            8
+            5
         case ._3FingersSwipeLeft:
-            9
+            6
         case .shake:
-            10
+            7
+        }
+    }
+
+    public var direction: UISwipeGestureRecognizer.Direction? {
+        switch self {
+        case .swipeRight:
+            .right
+        case .swipeLeft:
+            .left
+        case ._2FingersSwipeRight:
+            .right
+        case ._2FingersSwipeLeft:
+            .left
+        case ._3FingersSwipeUp:
+            .up
+        case ._3FingersSwipeRight:
+            .right
+        case ._3FingersSwipeLeft:
+            .left
+        default:
+            nil
         }
     }
 }
