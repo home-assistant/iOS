@@ -1,10 +1,10 @@
 @testable import HomeAssistant
-import Testing
 import SwiftUI
+import Testing
 
 struct GesturesSetupViewTests {
     @MainActor
     @Test func testUI() async throws {
-        assertLightDarkSnapshots(of: NavigationView {GesturesSetupView()}, drawHierarchyInKeyWindow: true)
+        assertLightDarkSnapshots(of: NavigationView { GesturesSetupView() }, drawHierarchyInKeyWindow: true)
     }
 }
