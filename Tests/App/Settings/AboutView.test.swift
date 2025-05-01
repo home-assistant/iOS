@@ -4,6 +4,6 @@ import Testing
 struct AboutViewTests {
     @MainActor
     @Test func testUI() async throws {
-        assertLightDarkSnapshots(of: AboutView())
+        assertLightDarkSnapshots(of: AboutView(), drawHierarchyInKeyWindow: true)
     }
 }
