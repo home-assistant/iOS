@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entidade ' %@ ' não encontrada!";
 "extensions.notification_content.error.request.hls_unavailable" = "Fluxo HLS indisponível";
 "extensions.notification_content.error.request.other" = "Código de status diferente de 200 ( %li )";
+"gestures.1_finger.title" = "Usando um dedo";
+"gestures.2_fingers.title" = "Use dois dedos";
 "gestures.2_fingers_swipe_down.title" = "2 👆 deslize para baixo";
 "gestures.2_fingers_swipe_left.title" = "2 👆 deslize para a esquerda";
 "gestures.2_fingers_swipe_right.title" = "2 👆 deslize para a direita";
 "gestures.2_fingers_swipe_up.title" = "2 👆 deslize para cima";
+"gestures.3_fingers.title" = "Use três dedos";
 "gestures.3_fingers_swipe_down.title" = "3 👆 deslize para baixo";
 "gestures.3_fingers_swipe_left.title" = "3 👆 deslize para a esquerda";
 "gestures.3_fingers_swipe_right.title" = "3 👆 deslize para a direita";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navegação";
 "gestures.category.servers" = "Servidores";
 "gestures.footer.title" = "Personalize gestos para serem usados no frontend.";
+"gestures.reset.title" = "Redefinir";
 "gestures.screen.body" = "Os gestos abaixo serão aplicados sempre que você estiver usando a interface principal de usuário do Home Assistant.";
 "gestures.screen.title" = "Gestos";
 "gestures.shake.title" = "Agitar";
+"gestures.swipe.down.header" = "Deslize para baixo";
+"gestures.swipe.left.header" = "Deslize para a esquerda";
+"gestures.swipe.right.header" = "Deslize para a direita";
+"gestures.swipe.up.header" = "Deslize para cima";
 "gestures.swipe_left.title" = "Deslize para a esquerda";
 "gestures.swipe_right.title" = "Desliza para a direita";
 "gestures.value.option.back_page" = "Voltar para a página anterior";
@@ -692,7 +700,7 @@
 "settings_details.general.app_icon.enum.white" = "Branco";
 "settings_details.general.app_icon.explanation.title" = "Cada ícone tem 3 variantes (iOS 18+), padrão, escuro e colorido para reagir de acordo com o estilo de tela inicial do iOS selecionado. Alguns ícones são os mesmos no modo escuro ou manipulados automaticamente pelo iOS.";
 "settings_details.general.app_icon.title" = "Ícone do aplicativo";
-"settings_details.general.body" = "Basic App configuration, App Icon and web page settings.";
+"settings_details.general.body" = "Configuração básica do aplicativo, ícone do aplicativo e configurações da página da web.";
 "settings_details.general.device_name.title" = "Nome do dispositivo";
 "settings_details.general.full_screen.title" = "Tela cheia";
 "settings_details.general.launch_on_login.title" = "Inicie o aplicativo no login";
@@ -707,7 +715,7 @@
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (no aplicativo)";
 "settings_details.general.open_in_browser.title" = "Abrir links em";
 "settings_details.general.open_in_private_tab.title" = "Abrir na guia privada";
-"settings_details.general.page.title" = "Page";
+"settings_details.general.page.title" = "Página";
 "settings_details.general.page_zoom.default" = "%@ (Padrão)";
 "settings_details.general.page_zoom.title" = "Zoom da página";
 "settings_details.general.pinch_to_zoom.title" = "Aperte para Zoom";
@@ -721,6 +729,10 @@
 "settings_details.location.background_refresh.disabled" = "Desativado";
 "settings_details.location.background_refresh.enabled" = "Habilitado";
 "settings_details.location.background_refresh.title" = "Atualização em segundo plano";
+"settings_details.location.focus_permission.denied" = "Negado";
+"settings_details.location.focus_permission.enabled" = "Habilitado";
+"settings_details.location.focus_permission.needs_request" = "Desabilitado";
+"settings_details.location.focus_permission.restricted" = "Restrito";
 "settings_details.location.location_accuracy.full" = "Completa";
 "settings_details.location.location_accuracy.reduced" = "Reduzido";
 "settings_details.location.location_accuracy.title" = "Precisão da localização";
@@ -732,6 +744,7 @@
 "settings_details.location.motion_permission.denied" = "Negado";
 "settings_details.location.motion_permission.enabled" = "Habilitado";
 "settings_details.location.motion_permission.needs_request" = "Desativado";
+"settings_details.location.motion_permission.restricted" = "Restrito";
 "settings_details.location.motion_permission.title" = "Permissão de movimento";
 "settings_details.location.notifications.background_fetch.title" = "Busca por notificações em segundo plano";
 "settings_details.location.notifications.beacon_enter.title" = "Nnotificações de entrada de zona do iBeacon";
@@ -817,6 +830,7 @@
 "settings_details.privacy.alerts.title" = "Alertas";
 "settings_details.privacy.analytics.generic_description" = "Permite a coleta de informações básicas sobre seu dispositivo e interações com o aplicativo. Nenhum dado de identificação do usuário é compartilhado, incluindo seus URLs e tokens do Home Assistant. Você deve reiniciar o aplicativo para que as alterações nessa configuração tenham efeito.";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.body" = "Você no controle dos seus dados.";
 "settings_details.privacy.crash_reporting.description" = "Permite um rastreamento mais profundo de falhas e outros erros no aplicativo, levando à publicação de correções mais rápidas. Nenhuma informação de identificação do usuário é enviada, exceto as informações básicas do dispositivo. Você deve reiniciar o aplicativo para que as alterações nessa configuração tenham efeito.";
 "settings_details.privacy.crash_reporting.sentry" = "Este recurso atualmente usa o Sentry como destino do relatório.";
 "settings_details.privacy.crash_reporting.title" = "Relatório de falhas";
@@ -830,6 +844,7 @@
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Isso recarregará todos os cronogramas de widgets. Use-o caso seus widgets fiquem presos em um estado em branco ou não sejam atualizados por algum motivo.";
 "settings_details.widgets.reload_all.title" = "Recarregar todos os widgets";
+"settings_sensors.body" = "Decida quais sensores do seu dispositivo você deseja compartilhar com o Home Assistant.";
 "settings_sensors.detail.attributes" = "Atributos";
 "settings_sensors.detail.device_class" = "Classe do dispositivo";
 "settings_sensors.detail.enabled" = "Habilitado";
@@ -838,11 +853,14 @@
 "settings_sensors.disabled_state_replacement" = "Desativado";
 "settings_sensors.focus_permission.title" = "Permissão de foco";
 "settings_sensors.last_updated.footer" = "Última atualização %@";
+"settings_sensors.last_updated.prefix" = "Última atualização";
 "settings_sensors.loading_error.title" = "Falha ao carregar os sensores";
 "settings_sensors.periodic_update.description" = "Quando ativados, esses sensores serão atualizados com essa frequência enquanto o aplicativo estiver aberto em primeiro plano.";
 "settings_sensors.periodic_update.description_mac" = "Quando ativados, esses sensores serão atualizados com essa frequência enquanto o aplicativo estiver aberto. Alguns sensores serão atualizados automaticamente com mais frequência.";
 "settings_sensors.periodic_update.off" = "Desligado";
 "settings_sensors.periodic_update.title" = "Atualização periódica";
+"settings_sensors.permissions.header" = "Permissões";
+"settings_sensors.sensors.header" = "Sensores";
 "settings_sensors.settings.footer" = "As alterações serão aplicadas na próxima atualização.";
 "settings_sensors.settings.header" = "Configurações";
 "settings_sensors.title" = "Sensores";
@@ -877,6 +895,7 @@
 "token_error.token_unavailable" = "O token não está disponível.";
 "unauthenticated.message.body" = "Isso pode ser temporário se você estiver atrás de um proxy ou restrição de rede. Caso contrário, se persistir, remova seu servidor e adicione-o novamente.";
 "unauthenticated.message.title" = "Você não está autenticado";
+"unknownLabel" = "Desconhecido";
 "updater.check_for_updates_menu.title" = "Verifique se há atualizações...";
 "updater.no_updates_available.on_latest_version" = "Você está na versão mais recente!";
 "updater.no_updates_available.title" = "Verificar atualizações";
@@ -1127,7 +1146,7 @@
 "watch.placeholder_complication_name" = "Espaço reservado";
 "watch.settings.no_items.phone.title" = "Nenhum item configurado, escolha os itens abaixo.";
 "web_view.server_selection.title" = "Escolha o servidor";
-"web_view.unique_server_selection.title" = "Choose one server";
+"web_view.unique_server_selection.title" = "Escolha um servidor";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Padrão";
 "widgets.action.name.navigate" = "Navegar";

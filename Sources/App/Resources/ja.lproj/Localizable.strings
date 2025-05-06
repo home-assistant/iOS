@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "エンティティ '%@' が見つかりません！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLSストリームは利用できません";
 "extensions.notification_content.error.request.other" = "200以外のステータスコードを取得しました (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 下にスワイプ";
 "gestures.2_fingers_swipe_left.title" = "2 👆 左にスワイプ";
 "gestures.2_fingers_swipe_right.title" = "2 👆 右にスワイプ";
 "gestures.2_fingers_swipe_up.title" = "2 👆 上にスワイプ";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 下にスワイプ";
 "gestures.3_fingers_swipe_left.title" = "3 👆 左にスワイプ";
 "gestures.3_fingers_swipe_right.title" = "3 👆 右にスワイプ";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "フロントエンドで使用するジェスチャーをカスタマイズ。";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "以下のジェスチャは、Home Assistant のメイン UI を使用するときはいつでも適用されます。";
 "gestures.screen.title" = "ジェスチャー";
 "gestures.shake.title" = "シェイク";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "左にスワイプ";
 "gestures.swipe_right.title" = "右にスワイプ";
 "gestures.value.option.back_page" = "前のページへ";
@@ -721,6 +729,10 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.location.background_refresh.disabled" = "無効";
 "settings_details.location.background_refresh.enabled" = "有効";
 "settings_details.location.background_refresh.title" = "バックグラウンドで更新";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "フル";
 "settings_details.location.location_accuracy.reduced" = "減少";
 "settings_details.location.location_accuracy.title" = "位置精度";
@@ -732,6 +744,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.location.motion_permission.denied" = "拒否";
 "settings_details.location.motion_permission.enabled" = "有効";
 "settings_details.location.motion_permission.needs_request" = "無効";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "モーション許可";
 "settings_details.location.notifications.background_fetch.title" = "バックグラウンド フェッチ通知";
 "settings_details.location.notifications.beacon_enter.title" = "iBeacon 通知を介してゾーンに入る";
@@ -817,6 +830,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.privacy.alerts.title" = "アラート";
 "settings_details.privacy.analytics.generic_description" = "デバイスとアプリとのやり取りに関する基本情報の収集を許可します。Home Assistantの URL やトークンなど、ユーザーを特定できるデータは共有されません。この設定の変更を有効にするには、アプリを再起動する必要があります。";
 "settings_details.privacy.analytics.generic_title" = "分析";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "アプリのクラッシュやその他のエラーをより詳細に追跡できるため、より迅速に修正を公開できます。基本的なデバイス情報以外に、ユーザーを特定できる情報は送信されません。この設定の変更を有効にするには、アプリを再起動する必要があります。";
 "settings_details.privacy.crash_reporting.sentry" = "この機能は現在、レポートの送信先としてSentryを使用しています。";
 "settings_details.privacy.crash_reporting.title" = "クラッシュレポート";
@@ -830,6 +844,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "これにより、すべてのウィジェットのタイムラインが再読み込みされます。ウィジェットが空白の状態のままになったり、何らかの理由で更新されなかったりする場合に使用します。";
 "settings_details.widgets.reload_all.title" = "すべてのウィジェットを再読み込み";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "属性";
 "settings_sensors.detail.device_class" = "デバイスクラス";
 "settings_sensors.detail.enabled" = "有効";
@@ -838,11 +853,14 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_sensors.disabled_state_replacement" = "無効";
 "settings_sensors.focus_permission.title" = "フォーカス許可";
 "settings_sensors.last_updated.footer" = "最終更新日 %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "センサーの読み込みに失敗しました";
 "settings_sensors.periodic_update.description" = "有効にすると、アプリがフォアグラウンドで開いている間、これらのセンサーはこの頻度で更新されます。";
 "settings_sensors.periodic_update.description_mac" = "有効にすると、これらのセンサーは、アプリが開いている間、この頻度で更新されます。一部のセンサーは、より頻繁に自動的に更新されます。";
 "settings_sensors.periodic_update.off" = "オフ";
 "settings_sensors.periodic_update.title" = "定期的な更新";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "変更は次回のアップデート時に適用されます。";
 "settings_sensors.settings.header" = "設定";
 "settings_sensors.title" = "センサー";
@@ -877,6 +895,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "token_error.token_unavailable" = "トークンが利用できません。";
 "unauthenticated.message.body" = "プロキシやネットワーク制限に引っかかっている場合は一時的なものかもしれませんが、そうでない場合はサーバーを一旦削除し、再度追加してください。";
 "unauthenticated.message.title" = "あなたは認証されていません";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "アップデートを確認する…";
 "updater.no_updates_available.on_latest_version" = "あなたは最新バージョンを使用しています！";
 "updater.no_updates_available.title" = "アップデートを確認する";

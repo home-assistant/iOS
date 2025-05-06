@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Nie znaleziono encji \"%@\"!";
 "extensions.notification_content.error.request.hls_unavailable" = "Strumień HLS niedostępny";
 "extensions.notification_content.error.request.other" = "Otrzymano kod inny niż 200 (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
 "gestures.2_fingers_swipe_left.title" = "2 👆 swipe left";
 "gestures.2_fingers_swipe_right.title" = "2 👆 swipe right";
 "gestures.2_fingers_swipe_up.title" = "2 👆 swipe up";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 swipe down";
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Serwery";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gesty";
 "gestures.shake.title" = "Shake";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
@@ -719,6 +727,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.location.background_refresh.disabled" = "Wyłączony";
 "settings_details.location.background_refresh.enabled" = "Włączony";
 "settings_details.location.background_refresh.title" = "Odświeżanie w tle";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Pełna";
 "settings_details.location.location_accuracy.reduced" = "Zredukowana";
 "settings_details.location.location_accuracy.title" = "Dokładność lokalizacji";
@@ -730,6 +742,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.location.motion_permission.denied" = "Odmowa dostępu";
 "settings_details.location.motion_permission.enabled" = "Włączone";
 "settings_details.location.motion_permission.needs_request" = "Wyłączone";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Dostęp do ruchu";
 "settings_details.location.notifications.background_fetch.title" = "Pobieranie powiadomień w tle";
 "settings_details.location.notifications.beacon_enter.title" = "Powiadomienia z iBeacon dotyczące wejścia do strefy";
@@ -815,6 +828,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.privacy.alerts.title" = "Alerty";
 "settings_details.privacy.analytics.generic_description" = "Umożliwia gromadzenie podstawowych informacji o urządzeniu i interakcjach z aplikacją. Nie są udostępniane żadne dane identyfikujące użytkownika, w tym adresy URL Home Assistant'a i tokeny. Aby zmiany w tym ustawieniu zaczęły obowiązywać, należy uruchomić aplikację ponownie.";
 "settings_details.privacy.analytics.generic_title" = "Analityka";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Pozwala na głębsze śledzenie awarii i innych błędów w aplikacji, co prowadzi do szybszego publikowania poprawek. Nie są wysyłane żadne informacje identyfikujące użytkownika, inne niż podstawowe informacje o urządzeniu. Aby zmiany w tym ustawieniu zaczęły obowiązywać, należy uruchomić aplikację ponownie.";
 "settings_details.privacy.crash_reporting.sentry" = "Ta funkcja obecnie używa Sentry jako miejsca docelowego raportu.";
 "settings_details.privacy.crash_reporting.title" = "Zgłaszanie awarii";
@@ -828,6 +842,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.watch.title" = "Zegarek Apple Watch";
 "settings_details.widgets.reload_all.description" = "Spowoduje to ponowne wczytanie wszystkich osi czasu widżetów, użyj tego w przypadku, gdy widżety utknęły w pustym stanie lub z jakiegoś powodu nie aktualizują się.";
 "settings_details.widgets.reload_all.title" = "Wczytaj ponownie wszystkie widżety";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Atrybuty";
 "settings_sensors.detail.device_class" = "Klasa urządzenia";
 "settings_sensors.detail.enabled" = "Włączone";
@@ -836,11 +851,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_sensors.disabled_state_replacement" = "Wyłączone";
 "settings_sensors.focus_permission.title" = "Uprawnienia skupienia";
 "settings_sensors.last_updated.footer" = "Ostatnia aktualizacja %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Nie udało się załadować sensorów";
 "settings_sensors.periodic_update.description" = "Po włączeniu te sensory będą aktualizować się z tą częstotliwością, gdy aplikacja jest otwarta na pierwszym planie.";
 "settings_sensors.periodic_update.description_mac" = "Po włączeniu, te sensory będą aktualizować się z tą częstotliwością, gdy aplikacja jest otwarta. Niektóre sensory będą aktualizować się częściej.";
 "settings_sensors.periodic_update.off" = "Wyłączona";
 "settings_sensors.periodic_update.title" = "Okresowa aktualizacja";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Zmiany zostaną zastosowane przy kolejnej aktualizacji.";
 "settings_sensors.settings.header" = "Ustawienia";
 "settings_sensors.title" = "Sensory";
@@ -875,6 +893,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "token_error.token_unavailable" = "Token jest niedostępny.";
 "unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
 "unauthenticated.message.title" = "You are unauthenticated";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Sprawdź aktualizacje…";
 "updater.no_updates_available.on_latest_version" = "Masz najnowszą wersję!";
 "updater.no_updates_available.title" = "Sprawdź aktualizacje";

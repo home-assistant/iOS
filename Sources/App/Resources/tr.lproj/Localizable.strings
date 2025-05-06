@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Varlık ' %@ ' bulunamadı!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS akışı kullanılamıyor";
 "extensions.notification_content.error.request.other" = "200 olmayan durum kodu var ( %li )";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 aşağı kaydırın";
 "gestures.2_fingers_swipe_left.title" = "2 👆 sola kaydırın";
 "gestures.2_fingers_swipe_right.title" = "2 👆 sağa kaydırın";
 "gestures.2_fingers_swipe_up.title" = "2 👆 yukarı kaydırın";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 aşağı kaydırın";
 "gestures.3_fingers_swipe_left.title" = "3 👆 sola kaydırın";
 "gestures.3_fingers_swipe_right.title" = "3 👆 sağa kaydırın";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Önyüzde kullanılacak hareketleri özelleştirin.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Aşağıdaki hareketler Home Assistant ana kullanıcı arayüzünü kullandığınızda uygulanacaktır.";
 "gestures.screen.title" = "Hareket";
 "gestures.shake.title" = "Salla";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Sola Kaydır";
 "gestures.swipe_right.title" = "Sağa Kaydır";
 "gestures.value.option.back_page" = "Önceki sayfaya dön";
@@ -721,6 +729,10 @@
 "settings_details.location.background_refresh.disabled" = "Devre dışı";
 "settings_details.location.background_refresh.enabled" = "Etkin";
 "settings_details.location.background_refresh.title" = "Arkaplan Yenileme";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Tam";
 "settings_details.location.location_accuracy.reduced" = "Azaltılmış";
 "settings_details.location.location_accuracy.title" = "Konum Doğruluğu";
@@ -732,6 +744,7 @@
 "settings_details.location.motion_permission.denied" = "Reddedildi";
 "settings_details.location.motion_permission.enabled" = "Etkin";
 "settings_details.location.motion_permission.needs_request" = "Devre dışı";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Hareket İzni";
 "settings_details.location.notifications.background_fetch.title" = "Arka Plan Getirme Bildirimleri";
 "settings_details.location.notifications.beacon_enter.title" = "iBeacon Bildirimleri ile Bölgeye Girin";
@@ -817,6 +830,7 @@
 "settings_details.privacy.alerts.title" = "Uyarılar";
 "settings_details.privacy.analytics.generic_description" = "Cihazınız ve uygulama ile etkileşimleriniz hakkında temel bilgilerin toplanmasına izin verir. Ev Asistanı URL'leriniz ve belirteçleriniz dahil olmak üzere hiçbir kullanıcı tanımlanabilir veri paylaşılmaz. Bu ayarda yapılan değişikliklerin etkili olması için uygulamayı yeniden başlatmalısınız.";
 "settings_details.privacy.analytics.generic_title" = "Analitik";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Uygulamadaki kilitlenmelerin ve diğer hataların daha derin bir şekilde izlenmesine izin vererek düzeltmelerin daha hızlı yayınlanmasını sağlar. Temel cihaz bilgileri dışında hiçbir kullanıcı tanımlayıcı bilgi gönderilmez. Bu ayarda yapılan değişikliklerin etkili olması için uygulamayı yeniden başlatmalısınız.";
 "settings_details.privacy.crash_reporting.sentry" = "Bu özellik şu anda rapor hedefi olarak Sentry'yi kullanıyor.";
 "settings_details.privacy.crash_reporting.title" = "Kilitlenme Raporlama";
@@ -830,6 +844,7 @@
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Bu, tüm widget'ların zaman çizelgelerini yeniden yükleyecektir; widget'larınızın boş durumda kalması veya herhangi bir nedenle güncellenmemesi durumunda bunu kullanın.";
 "settings_details.widgets.reload_all.title" = "Tüm widget'ları yeniden yükle";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Nitelikler";
 "settings_sensors.detail.device_class" = "Cihaz Sınıfı";
 "settings_sensors.detail.enabled" = "Etkin";
@@ -838,11 +853,14 @@
 "settings_sensors.disabled_state_replacement" = "Devre dışı";
 "settings_sensors.focus_permission.title" = "Odaklama İzni";
 "settings_sensors.last_updated.footer" = "Son Güncelleme %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Sensörler yüklenemedi";
 "settings_sensors.periodic_update.description" = "Etkinleştirildiğinde, bu sensörler, uygulama ön planda açıkken bu sıklıkta güncellenir.";
 "settings_sensors.periodic_update.description_mac" = "Etkinleştirildiğinde, bu sensörler uygulama açıkken bu sıklıkta güncellenir. Bazı sensörler otomatik olarak daha sık güncellenir.";
 "settings_sensors.periodic_update.off" = "Kapalı";
 "settings_sensors.periodic_update.title" = "Periyodik Güncelleme";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Değişiklikler bir sonraki güncellemede uygulanacaktır.";
 "settings_sensors.settings.header" = "Ayarlar";
 "settings_sensors.title" = "Sensörler";
@@ -877,6 +895,7 @@
 "token_error.token_unavailable" = "Anahtar kullanılamıyor.";
 "unauthenticated.message.body" = "Eğer bir proxy veya ağ kısıtlaması varsa bu geçici olabilir, aksi takdirde devam ederse sunucunuzu kaldırıp tekrar ekleyin.";
 "unauthenticated.message.title" = "Kimliğiniz doğrulanmadı";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Güncellemeleri kontrol edin…";
 "updater.no_updates_available.on_latest_version" = "En son sürümü kullanıyorsunuz!";
 "updater.no_updates_available.title" = "Güncelleştirmeleri Denetle";

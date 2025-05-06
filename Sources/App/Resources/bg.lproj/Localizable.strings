@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
 "gestures.2_fingers_swipe_left.title" = "2 👆 swipe left";
 "gestures.2_fingers_swipe_right.title" = "2 👆 swipe right";
 "gestures.2_fingers_swipe_up.title" = "2 👆 swipe up";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 swipe down";
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
 "gestures.shake.title" = "Shake";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
@@ -721,6 +729,10 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.location.background_refresh.disabled" = "Деактивирано";
 "settings_details.location.background_refresh.enabled" = "Активирано";
 "settings_details.location.background_refresh.title" = "Обновяване на фона";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Пълна";
 "settings_details.location.location_accuracy.reduced" = "Намалена";
 "settings_details.location.location_accuracy.title" = "Точност на местоположението";
@@ -732,6 +744,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.location.motion_permission.denied" = "Отказано";
 "settings_details.location.motion_permission.enabled" = "Активирано";
 "settings_details.location.motion_permission.needs_request" = "Деактивирано";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Разрешение за движение";
 "settings_details.location.notifications.background_fetch.title" = "Известия за извличане на информация на заден план";
 "settings_details.location.notifications.beacon_enter.title" = "Влизане в зона чрез iBeacon известия";
@@ -817,6 +830,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.privacy.alerts.title" = "Сигнали";
 "settings_details.privacy.analytics.generic_description" = "Позволява събирането на основна информация за вашето устройство и взаимодействията с приложението. Не се споделят данни, които могат да идентифицират потребителя, включително URL адресите и токените ви в Home Assistant. Трябва да рестартирате приложението, за да влязат в сила промените в тази настройка.";
 "settings_details.privacy.analytics.generic_title" = "Аналитика";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Позволява по-детайлно проследяване на сривове и други грешки в приложението, което води до по-бързо публикуване на корекции. Не се изпраща информация, която може да идентифицира потребителя, освен основна информация за устройството. Трябва да рестартирате приложението, за да влязат в сила промените в тази настройка.";
 "settings_details.privacy.crash_reporting.sentry" = "Тази функция в момента използва Sentry като дестинация за докладване.";
 "settings_details.privacy.crash_reporting.title" = "Отчет за сривове";
@@ -830,6 +844,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
 "settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Атрибути";
 "settings_sensors.detail.device_class" = "Клас на устройството";
 "settings_sensors.detail.enabled" = "Активиран";
@@ -838,11 +853,14 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings_sensors.disabled_state_replacement" = "Деактивирано";
 "settings_sensors.focus_permission.title" = "Разрешение за фокусиране";
 "settings_sensors.last_updated.footer" = "Последно обновено %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Неуспешно зареждане на сензори";
 "settings_sensors.periodic_update.description" = "Когато са активирани, тези сензори ще се актуализират с тази честота, докато приложението е отворено на преден план.";
 "settings_sensors.periodic_update.description_mac" = "Когато са активирани, тези сензори ще се актуализират с тази честота, докато приложението е отворено. Някои сензори ще се актуализират автоматично по-често.";
 "settings_sensors.periodic_update.off" = "Изключено";
 "settings_sensors.periodic_update.title" = "Периодично обновяване";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Промените ще бъдат приложени при следващото обновяване.";
 "settings_sensors.settings.header" = "Настройки";
 "settings_sensors.title" = "Сензори";
@@ -877,6 +895,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "token_error.token_unavailable" = "Token is unavailable.";
 "unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
 "unauthenticated.message.title" = "You are unauthenticated";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Check for Updates…";
 "updater.no_updates_available.on_latest_version" = "You're on the latest version!";
 "updater.no_updates_available.title" = "Check for Updates";

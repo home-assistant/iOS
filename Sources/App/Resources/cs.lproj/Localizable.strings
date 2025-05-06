@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entita \"%@\" nebyla nalezena!";
 "extensions.notification_content.error.request.hls_unavailable" = "Proud HLS je nedostupný";
 "extensions.notification_content.error.request.other" = "Stavový kód jiný než 200 (%li)";
+"gestures.1_finger.title" = "Použití jednoho prstu";
+"gestures.2_fingers.title" = "Použití dvou prstů";
 "gestures.2_fingers_swipe_down.title" = "2 👆 přejedou dolů";
 "gestures.2_fingers_swipe_left.title" = "2 👆 přejedou vlevo";
 "gestures.2_fingers_swipe_right.title" = "2 👆 přejedou vpravo";
 "gestures.2_fingers_swipe_up.title" = "2 👆 přejedou nahoru";
+"gestures.3_fingers.title" = "Použití tří prstů";
 "gestures.3_fingers_swipe_down.title" = "3 👆 přejedou dolů";
 "gestures.3_fingers_swipe_left.title" = "3 👆 přejedou vlevo";
 "gestures.3_fingers_swipe_right.title" = "3 👆 přejedou vpravo";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigace";
 "gestures.category.servers" = "Servery";
 "gestures.footer.title" = "Přizpůsobte si gesta, která se mají používat na frontendu.";
+"gestures.reset.title" = "Resetovat";
 "gestures.screen.body" = "Níže uvedená gesta se použijí vždy, když používáte hlavní uživatelské rozhraní Home Assistanta.";
 "gestures.screen.title" = "Gesta";
 "gestures.shake.title" = "Zatřást";
+"gestures.swipe.down.header" = "Přejetí dolů";
+"gestures.swipe.left.header" = "Přejetí vlevo";
+"gestures.swipe.right.header" = "Přejetí vpravo";
+"gestures.swipe.up.header" = "Přejetí nahoru";
 "gestures.swipe_left.title" = "Přejetí vlevo";
 "gestures.swipe_right.title" = "Přejetí vpravo";
 "gestures.value.option.back_page" = "Zpět na předchozí stránku";
@@ -721,6 +729,10 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.location.background_refresh.disabled" = "Zakázáno";
 "settings_details.location.background_refresh.enabled" = "Povoleno";
 "settings_details.location.background_refresh.title" = "Aktualizace na pozadí";
+"settings_details.location.focus_permission.denied" = "Odmítnuto";
+"settings_details.location.focus_permission.enabled" = "Povoleno";
+"settings_details.location.focus_permission.needs_request" = "Zakázáno";
+"settings_details.location.focus_permission.restricted" = "Omezeno";
 "settings_details.location.location_accuracy.full" = "Plná";
 "settings_details.location.location_accuracy.reduced" = "Omezená";
 "settings_details.location.location_accuracy.title" = "Přesnost polohy";
@@ -732,6 +744,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.location.motion_permission.denied" = "Odmítnuto";
 "settings_details.location.motion_permission.enabled" = "Povoleno";
 "settings_details.location.motion_permission.needs_request" = "Zakázáno";
+"settings_details.location.motion_permission.restricted" = "Omezeno";
 "settings_details.location.motion_permission.title" = "Oprávnění pohybu";
 "settings_details.location.notifications.background_fetch.title" = "Oznámení o načítání na pozadí";
 "settings_details.location.notifications.beacon_enter.title" = "Oznámení přes iBeacon při vstupu do zóny";
@@ -817,6 +830,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.privacy.alerts.title" = "Výstrahy";
 "settings_details.privacy.analytics.generic_description" = "Umožňuje shromažďování základních informací o Vašem zařízení a interakcích s aplikací. Nejsou sdílena žádná uživatelsky identifikovatelná data, včetně URL a tokenů Home Assistanta. Změna tohoto nastavení se projeví až po restartování aplikace.";
 "settings_details.privacy.analytics.generic_title" = "Analýza";
+"settings_details.privacy.body" = "Máte kontrolu nad svými daty.";
 "settings_details.privacy.crash_reporting.description" = "Umožňuje hlubší sledování chyb a dalších chyb v aplikaci, což vede k rychlejšímu publikování oprav. Nejsou odesílány žádné uživatelsky identifikovatelné informace, kromě základních informací o zařízení. Změny tohoto nastavení se projeví až po restartování aplikace.";
 "settings_details.privacy.crash_reporting.sentry" = "Tato funkce aktuálně používá Sentry jako cíl sestavy.";
 "settings_details.privacy.crash_reporting.title" = "Hlášení chyb";
@@ -830,6 +844,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Tím se znovu načtou všechny časové osy widgetů; toto použijte v případě, že jsou vaše widgety zaseknuté v prázdném stavu nebo se z nějakého důvodu neaktualizují.";
 "settings_details.widgets.reload_all.title" = "Znovu načíst všechny widgety";
+"settings_sensors.body" = "Rozhodněte se, které senzory zařízení chcete sdílet s Home Assistantem.";
 "settings_sensors.detail.attributes" = "Atributy";
 "settings_sensors.detail.device_class" = "Třída zařízení";
 "settings_sensors.detail.enabled" = "Povoleno";
@@ -838,11 +853,14 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings_sensors.disabled_state_replacement" = "Zakázáno";
 "settings_sensors.focus_permission.title" = "Oprávnění pro zaměření";
 "settings_sensors.last_updated.footer" = "Naposledy aktualizováno %@";
+"settings_sensors.last_updated.prefix" = "Naposledy aktualizováno";
 "settings_sensors.loading_error.title" = "Načtení senzorů se nezdařilo";
 "settings_sensors.periodic_update.description" = "Pokud je tato funkce povolena a aplikace je otevřená v popředí, budou se tyto senzory aktualizovat s touto frekvencí.";
 "settings_sensors.periodic_update.description_mac" = "Pokud je tato funkce povolena a aplikace je otevřená, budou se tyto senzory aktualizovat s touto frekvencí. Některé senzory se budou automaticky aktualizovat častěji.";
 "settings_sensors.periodic_update.off" = "Vypnuto";
 "settings_sensors.periodic_update.title" = "Pravidelná aktualizace";
+"settings_sensors.permissions.header" = "Oprávnění";
+"settings_sensors.sensors.header" = "Senzory";
 "settings_sensors.settings.footer" = "Změny budou použity při příští aktualizaci.";
 "settings_sensors.settings.header" = "Nastavení";
 "settings_sensors.title" = "Senzory";
@@ -877,6 +895,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "token_error.token_unavailable" = "Token není k dispozici.";
 "unauthenticated.message.body" = "To může být dočasné, pokud jste za omezením proxy nebo sítě. V opačném případě a pokud problém přetrvává, odeberte server a přidejte jej zpět.";
 "unauthenticated.message.title" = "Nejste ověřeni";
+"unknownLabel" = "Neznámé";
 "updater.check_for_updates_menu.title" = "Vyhledávání aktualizací…";
 "updater.no_updates_available.on_latest_version" = "Již máte nejnovější verzi!";
 "updater.no_updates_available.title" = "Vyhledat aktualizace";

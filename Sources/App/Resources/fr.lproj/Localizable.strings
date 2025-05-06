@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entité '%@' introuvable !";
 "extensions.notification_content.error.request.hls_unavailable" = "Le flux HLS n'est pas disponible";
 "extensions.notification_content.error.request.other" = "Code de statut non-200 (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
 "gestures.2_fingers_swipe_left.title" = "2 👆 swipe left";
 "gestures.2_fingers_swipe_right.title" = "2 👆 swipe right";
 "gestures.2_fingers_swipe_up.title" = "2 👆 swipe up";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 swipe down";
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestes";
 "gestures.shake.title" = "Shake";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
@@ -721,6 +729,10 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.location.background_refresh.disabled" = "Désactivé";
 "settings_details.location.background_refresh.enabled" = "Activé";
 "settings_details.location.background_refresh.title" = "Actualisation en arrière-plan";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Complet";
 "settings_details.location.location_accuracy.reduced" = "Réduit";
 "settings_details.location.location_accuracy.title" = "Précision de l'emplacement";
@@ -732,6 +744,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.location.motion_permission.denied" = "Refusé";
 "settings_details.location.motion_permission.enabled" = "Activé";
 "settings_details.location.motion_permission.needs_request" = "Désactivé";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Autorisation de mouvement";
 "settings_details.location.notifications.background_fetch.title" = "Actualisation en arrière-plan";
 "settings_details.location.notifications.beacon_enter.title" = "Entrée dans la zone via iBeacon";
@@ -817,6 +830,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.privacy.alerts.title" = "Alertes";
 "settings_details.privacy.analytics.generic_description" = "Permet la collecte d'informations de base sur votre appareil et les interactions avec l'application. Aucune donnée identifiable par l'utilisateur n'est partagée, y compris vos URL et jetons Home Assistant. Vous devez redémarrer l'application pour que les modifications apportées à ce paramètre prennent effet.";
 "settings_details.privacy.analytics.generic_title" = "Analytique";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Permet un suivi plus approfondi des plantages et autres erreurs dans l'application, ce qui accélère la publication des correctifs. Aucune information identifiable par l'utilisateur n'est envoyée, à l'exception des informations de base sur l'appareil. Vous devez redémarrer l'application pour que les modifications apportées à ce paramètre prennent effet.";
 "settings_details.privacy.crash_reporting.sentry" = "Cette fonction utilise actuellement Sentry comme destination du rapport.";
 "settings_details.privacy.crash_reporting.title" = "Rapports de crash";
@@ -830,6 +844,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Cela rechargera toutes les chronologies des widgets, utilisez-le au cas où vos widgets seraient bloqués dans un état vide ou ne seraient pas mis à jour pour une raison quelconque.";
 "settings_details.widgets.reload_all.title" = "Recharger tous les widgets";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Attributs";
 "settings_sensors.detail.device_class" = "Classe d'appareil";
 "settings_sensors.detail.enabled" = "Activé";
@@ -838,11 +853,14 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_sensors.disabled_state_replacement" = "Désactivée";
 "settings_sensors.focus_permission.title" = "Autorisation de concentration";
 "settings_sensors.last_updated.footer" = "Dernière mise à jour %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Impossible de charger les capteurs";
 "settings_sensors.periodic_update.description" = "Lorsqu'ils sont activés, ces capteurs se mettent à jour à cette fréquence pendant que l'application est ouverte au premier plan.";
 "settings_sensors.periodic_update.description_mac" = "Lorsqu'ils sont activés, ces capteurs se mettent à jour à cette fréquence pendant que l'application est ouverte. Certains capteurs se mettront à jour automatiquement plus souvent.";
 "settings_sensors.periodic_update.off" = "Arrêt";
 "settings_sensors.periodic_update.title" = "Mise à jour périodique";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Les modifications seront appliquées lors de la prochaine mise à jour.";
 "settings_sensors.settings.header" = "Paramètres";
 "settings_sensors.title" = "Capteurs";
@@ -877,6 +895,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "token_error.token_unavailable" = "Le jeton n'est pas disponible.";
 "unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
 "unauthenticated.message.title" = "You are unauthenticated";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Rechercher des mises à jour…";
 "updater.no_updates_available.on_latest_version" = "Vous êtes sur la dernière version!";
 "updater.no_updates_available.title" = "Vérifier les mises à jour";

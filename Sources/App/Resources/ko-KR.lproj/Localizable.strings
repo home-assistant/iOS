@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "구성요소 '%@'를 찾을 수 없습니다!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 스트림을 사용할 수 없음";
 "extensions.notification_content.error.request.other" = "200이 아닌 상태 코드를 받았습니다(%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 아래로 스와이프";
 "gestures.2_fingers_swipe_left.title" = "2 👆 왼쪽으로 스와이프";
 "gestures.2_fingers_swipe_right.title" = "2 👆 오른쪽으로 스와이프";
 "gestures.2_fingers_swipe_up.title" = "2 👆 위로 스와이프";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 아래로 스와이프";
 "gestures.3_fingers_swipe_left.title" = "3 👆 왼쪽으로 스와이프";
 "gestures.3_fingers_swipe_right.title" = "3 👆 오른쪽으로 스와이프";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "프론트엔드에서 사용할 제스처를 사용자 지정합니다.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "아래 제스처는 Home Assistant 기본 UI를 사용할 때마다 적용됩니다.";
 "gestures.screen.title" = "제스처";
 "gestures.shake.title" = "흔들기";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "왼쪽으로 스와이프할 때";
 "gestures.swipe_right.title" = "오른쪽으로 스와이프할 때";
 "gestures.value.option.back_page" = "이전 페이지로 돌아가기";
@@ -721,6 +729,10 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.location.background_refresh.disabled" = "비활성화됨";
 "settings_details.location.background_refresh.enabled" = "활성화됨";
 "settings_details.location.background_refresh.title" = "백그라운드 새로고침";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "가득 참";
 "settings_details.location.location_accuracy.reduced" = "감소됨";
 "settings_details.location.location_accuracy.title" = "위치 정확도";
@@ -732,6 +744,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.location.motion_permission.denied" = "거부됨";
 "settings_details.location.motion_permission.enabled" = "활성화됨";
 "settings_details.location.motion_permission.needs_request" = "비활성화됨";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "움직임 활동 권한";
 "settings_details.location.notifications.background_fetch.title" = "백그라운드 가져오기 알림";
 "settings_details.location.notifications.beacon_enter.title" = "iBeacon을 통한 지역 입장 알림";
@@ -817,6 +830,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.privacy.alerts.title" = "경고";
 "settings_details.privacy.analytics.generic_description" = "기기에 대한 기본 정보 및 앱과의 상호 작용을 수집할 수 있습니다. Home Assistant URL 및 토큰을 포함하여 사용자 식별 데이터는 공유되지 않습니다. 이 설정에 대한 변경 내용을 적용하려면 앱을 다시 시작해야 합니다.";
 "settings_details.privacy.analytics.generic_title" = "분석";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "앱의 충돌 및 기타 오류를 더 심층적으로 추적할 수 있으므로 수정 사항을 더 빠르게 게시할 수 있습니다. 기본 기기 정보 외에는 사용자 식별 정보가 전송되지 않습니다. 이 설정에 대한 변경 내용을 적용하려면 앱을 다시 시작해야 합니다.";
 "settings_details.privacy.crash_reporting.sentry" = "이 기능은 현재 Sentry를 보고 대상으로 사용합니다.";
 "settings_details.privacy.crash_reporting.title" = "충돌 보고";
@@ -830,6 +844,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "모든 위젯 타임라인이 새로고침 됩니다. 모종의 이유로 위젯이 빈화면으로 멈추거나 갱신이 안될경우 사용하세요.";
 "settings_details.widgets.reload_all.title" = "모든 위젯 새로고침";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "속성";
 "settings_sensors.detail.device_class" = "기기 클래스";
 "settings_sensors.detail.enabled" = "활성화됨";
@@ -838,11 +853,14 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_sensors.disabled_state_replacement" = "비활성화됨";
 "settings_sensors.focus_permission.title" = "집중 모드 권한";
 "settings_sensors.last_updated.footer" = "최근 업데이트됨 %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "센서를 로드하지 못했습니다.";
 "settings_sensors.periodic_update.description" = "활성화하면 앱이 화면에서 열려 있는 동안 이러한 센서가 이 주기로 업데이트됩니다.";
 "settings_sensors.periodic_update.description_mac" = "활성화하면 앱이 열려 있는 동안 이러한 센서가 이 주기로 업데이트됩니다. 일부 센서는 더 자주 자동으로 업데이트됩니다.";
 "settings_sensors.periodic_update.off" = "꺼짐";
 "settings_sensors.periodic_update.title" = "정기 업데이트";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "변경 사항은 다음 업데이트에 적용됩니다.";
 "settings_sensors.settings.header" = "설정";
 "settings_sensors.title" = "센서";
@@ -877,6 +895,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "token_error.token_unavailable" = "토큰을 사용할 수 없습니다.";
 "unauthenticated.message.body" = "프록시나 네트워크 제한으로 인해 발생하는 일시적인 문제일 수 있습니다. 그렇지 않은 경우 지속되면 서버를 제거한 다음 다시 추가하세요.";
 "unauthenticated.message.title" = "인증되지 않았습니다";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "업데이트 확인…";
 "updater.no_updates_available.on_latest_version" = "최신 버전을 사용 중입니다!";
 "updater.no_updates_available.title" = "업데이트 확인";

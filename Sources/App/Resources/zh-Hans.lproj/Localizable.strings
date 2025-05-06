@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "实体“%@”未找到！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 流不可用";
 "extensions.notification_content.error.request.other" = "得到了非 200 的状态码（%li）";
+"gestures.1_finger.title" = "用一根手指";
+"gestures.2_fingers.title" = "用两根手指";
 "gestures.2_fingers_swipe_down.title" = "2 👆 向下滑动";
 "gestures.2_fingers_swipe_left.title" = "2 👆 向左滑动";
 "gestures.2_fingers_swipe_right.title" = "2 👆 向右滑动";
 "gestures.2_fingers_swipe_up.title" = "2 👆 向上滑动";
+"gestures.3_fingers.title" = "用三根手指";
 "gestures.3_fingers_swipe_down.title" = "3 👆 向下滑动";
 "gestures.3_fingers_swipe_left.title" = "3 👆 向左滑动";
 "gestures.3_fingers_swipe_right.title" = "3 👆 向右滑动";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "导航";
 "gestures.category.servers" = "服务器";
 "gestures.footer.title" = "自定义在前端使用的手势。";
+"gestures.reset.title" = "重置";
 "gestures.screen.body" = "当您使用 Home Assistant 主用户界面时，将应用以下手势。";
 "gestures.screen.title" = "手势";
 "gestures.shake.title" = "摇一摇";
+"gestures.swipe.down.header" = "向下滑动";
+"gestures.swipe.left.header" = "向左滑动";
+"gestures.swipe.right.header" = "向右滑动";
+"gestures.swipe.up.header" = "向上滑动";
 "gestures.swipe_left.title" = "向左滑动";
 "gestures.swipe_right.title" = "向右滑动";
 "gestures.value.option.back_page" = "返回上一页";
@@ -719,6 +727,10 @@
 "settings_details.location.background_refresh.disabled" = "已禁用";
 "settings_details.location.background_refresh.enabled" = "已启用";
 "settings_details.location.background_refresh.title" = "后台刷新";
+"settings_details.location.focus_permission.denied" = "已拒绝";
+"settings_details.location.focus_permission.enabled" = "已启用";
+"settings_details.location.focus_permission.needs_request" = "已禁用";
+"settings_details.location.focus_permission.restricted" = "已限制";
 "settings_details.location.location_accuracy.full" = "高精度";
 "settings_details.location.location_accuracy.reduced" = "减少";
 "settings_details.location.location_accuracy.title" = "定位精度";
@@ -730,6 +742,7 @@
 "settings_details.location.motion_permission.denied" = "拒绝";
 "settings_details.location.motion_permission.enabled" = "已启用";
 "settings_details.location.motion_permission.needs_request" = "已禁用";
+"settings_details.location.motion_permission.restricted" = "已限制";
 "settings_details.location.motion_permission.title" = "运动数据权限";
 "settings_details.location.notifications.background_fetch.title" = "后台获取通知";
 "settings_details.location.notifications.beacon_enter.title" = "iBeacon进入区域时推送通知";
@@ -815,6 +828,7 @@
 "settings_details.privacy.alerts.title" = "警报";
 "settings_details.privacy.analytics.generic_description" = "允许收集有关您设备以及与应用程序交互的基本信息。不会共享任何用户身份数据，包括您的 Home Assistant 网址和令牌。您必须重新启动应用程序，才能使对此设置的更改生效。";
 "settings_details.privacy.analytics.generic_title" = "分析和改进";
+"settings_details.privacy.body" = "您可以控制您的数据。";
 "settings_details.privacy.crash_reporting.description" = "允许更深入地跟踪应用程序中的崩溃和其他错误，从而更快地发布修复程序。除基本设备信息外，不会发送任何用户身份信息。您必须重新启动应用程序，才能使对此设置的更改生效。";
 "settings_details.privacy.crash_reporting.sentry" = "此功能当前使用 Sentry 作为报告目标。";
 "settings_details.privacy.crash_reporting.title" = "崩溃报告";
@@ -828,6 +842,7 @@
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "这将重新加载所有小部件时间线，如果您的小部件卡在空白状态或由于某种原因未更新，请使用此功能。";
 "settings_details.widgets.reload_all.title" = "重新加载所有小组件";
+"settings_sensors.body" = "决定要与 Home Assistant 共享哪些设备传感器。";
 "settings_sensors.detail.attributes" = "属性";
 "settings_sensors.detail.device_class" = "设备类型";
 "settings_sensors.detail.enabled" = "已启用";
@@ -836,11 +851,14 @@
 "settings_sensors.disabled_state_replacement" = "已禁用";
 "settings_sensors.focus_permission.title" = "专注模式权限";
 "settings_sensors.last_updated.footer" = "最后更新时间 %@";
+"settings_sensors.last_updated.prefix" = "上次更新";
 "settings_sensors.loading_error.title" = "加载传感器失败";
 "settings_sensors.periodic_update.description" = "启用后，这些传感器将在应用程序打开时以该频率更新。";
 "settings_sensors.periodic_update.description_mac" = "启用后，应用程序打开时，将以该频率更新传感器。一些传感器将更频繁地自动更新。";
 "settings_sensors.periodic_update.off" = "关闭";
 "settings_sensors.periodic_update.title" = "定时更新";
+"settings_sensors.permissions.header" = "权限";
+"settings_sensors.sensors.header" = "传感器";
 "settings_sensors.settings.footer" = "更改将在下次更新时应用。";
 "settings_sensors.settings.header" = "设置";
 "settings_sensors.title" = "传感器";
@@ -875,6 +893,7 @@
 "token_error.token_unavailable" = "令牌不可用。";
 "unauthenticated.message.body" = "如果您被代理或网络限制了，这种情况可能是暂时的，如果问题仍然存在，请移除您的服务器并将其重新添加。";
 "unauthenticated.message.title" = "您尚未通过身份验证";
+"unknownLabel" = "未知";
 "updater.check_for_updates_menu.title" = "正在检查更新…";
 "updater.no_updates_available.on_latest_version" = "已是最新版本！";
 "updater.no_updates_available.title" = "检查更新";
