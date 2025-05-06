@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entità ' %@ ' non trovata!";
 "extensions.notification_content.error.request.hls_unavailable" = "Flusso HLS non disponibile";
 "extensions.notification_content.error.request.other" = "Ha ottenuto un codice di stato non-200 (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 verso il basso";
 "gestures.2_fingers_swipe_left.title" = "2 👆 verso sinistra";
 "gestures.2_fingers_swipe_right.title" = "2 👆 verso destra";
 "gestures.2_fingers_swipe_up.title" = "2 👆 verso l'alto";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 verso il basso";
 "gestures.3_fingers_swipe_left.title" = "3 👆 verso sinistra";
 "gestures.3_fingers_swipe_right.title" = "3 👆 verso destra";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigazione";
 "gestures.category.servers" = "Server";
 "gestures.footer.title" = "Personalizza i gesti da utilizzare nel frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "I gesti indicati di seguito verranno applicati ogni volta che utilizzi l'interfaccia utente principale di Home Assistant.";
 "gestures.screen.title" = "Gesti";
 "gestures.shake.title" = "Scuotimento";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Scorri verso sinistra";
 "gestures.swipe_right.title" = "Scorri verso destra";
 "gestures.value.option.back_page" = "Torna alla pagina precedente";
@@ -721,6 +729,10 @@
 "settings_details.location.background_refresh.disabled" = "Disabilitato";
 "settings_details.location.background_refresh.enabled" = "Abilitato";
 "settings_details.location.background_refresh.title" = "Aggiornamento in background";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Completo";
 "settings_details.location.location_accuracy.reduced" = "Ridotto";
 "settings_details.location.location_accuracy.title" = "Precisione della posizione";
@@ -732,6 +744,7 @@
 "settings_details.location.motion_permission.denied" = "Negato";
 "settings_details.location.motion_permission.enabled" = "Abilitato";
 "settings_details.location.motion_permission.needs_request" = "Disabilitato";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Autorizzazione movimento";
 "settings_details.location.notifications.background_fetch.title" = "Aggiornamento della posizione in background";
 "settings_details.location.notifications.beacon_enter.title" = "Ingresso nella zona tramite iBeacon";
@@ -817,6 +830,7 @@
 "settings_details.privacy.alerts.title" = "Avvisi";
 "settings_details.privacy.analytics.generic_description" = "Consente la raccolta d'informazioni di base sul dispositivo e sulle interazioni con l'app. Nessun dato identificativo dell'utente viene condiviso , inclusi gli URL e i token di Home Assistant. È necessario riavviare l'applicazione affinché le modifiche a questa impostazione abbiano effetto.";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Consente un monitoraggio più approfondito degli arresti anomali e di altri errori nell'app, permettendo la pubblicazione di correzioni più rapide. Non vengono inviate informazioni d'identificazione dell'utente, ma solamente le informazioni di base sul dispositivo. È necessario riavviare l'app affinché le modifiche a questa impostazione abbiano effetto.";
 "settings_details.privacy.crash_reporting.sentry" = "Questa funzione attualmente utilizza Sentry come destinazione del report.";
 "settings_details.privacy.crash_reporting.title" = "Segnalazione arresti anomali";
@@ -830,6 +844,7 @@
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Ricarica tutte le sequenze temporali dei widget, usalo nel caso in cui i tuoi widget siano bloccati in uno stato vuoto o non si aggiornino per qualche motivo.";
 "settings_details.widgets.reload_all.title" = "Ricarica tutti i widget";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Attributi";
 "settings_sensors.detail.device_class" = "Classe del dispositivo";
 "settings_sensors.detail.enabled" = "Abilitato";
@@ -838,11 +853,14 @@
 "settings_sensors.disabled_state_replacement" = "Disabilitato";
 "settings_sensors.focus_permission.title" = "Autorizzazione Focus";
 "settings_sensors.last_updated.footer" = "Ultimo aggiornamento %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Impossibile caricare i sensori";
 "settings_sensors.periodic_update.description" = "Quando è abilitato, questi sensori si aggiorna con questa frequenza, mentre l'app è aperta in primo piano.";
 "settings_sensors.periodic_update.description_mac" = "Se abilitato, questi sensori si aggiorneranno con questa frequenza mentre l'app è aperta. Alcuni sensori si aggiorneranno automaticamente più spesso.";
 "settings_sensors.periodic_update.off" = "Off";
 "settings_sensors.periodic_update.title" = "Aggiornamento periodico";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Le modifiche verranno applicate con il prossimo aggiornamento.";
 "settings_sensors.settings.header" = "Impostazioni";
 "settings_sensors.title" = "Sensori";
@@ -877,6 +895,7 @@
 "token_error.token_unavailable" = "Il Token non è disponibile.";
 "unauthenticated.message.body" = "Questo potrebbe essere temporaneo se sei dietro un proxy o una restrizione di rete, altrimenti se il problema persiste rimuovi il tuo Server e aggiungilo di nuovo.";
 "unauthenticated.message.title" = "Non sei autenticato";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Controllo degli aggiornamenti…";
 "updater.no_updates_available.on_latest_version" = "Sei sull'ultima versione!";
 "updater.no_updates_available.title" = "Controlla gli aggiornamenti";

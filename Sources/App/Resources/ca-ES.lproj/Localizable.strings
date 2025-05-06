@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitat '%@' no trobada!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS Stream no disponible";
 "extensions.notification_content.error.request.other" = "S'ha rebut codi d'estat no-200 (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
 "gestures.2_fingers_swipe_left.title" = "2 👆 swipe left";
 "gestures.2_fingers_swipe_right.title" = "2 👆 swipe right";
 "gestures.2_fingers_swipe_up.title" = "2 👆 swipe up";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 swipe down";
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
 "gestures.shake.title" = "Shake";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
@@ -721,6 +729,10 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.location.background_refresh.disabled" = "Desactivat";
 "settings_details.location.background_refresh.enabled" = "Habilitat";
 "settings_details.location.background_refresh.title" = "Actualització en segon pla";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Ple";
 "settings_details.location.location_accuracy.reduced" = "Reduïda";
 "settings_details.location.location_accuracy.title" = "Precisió de la ubicació";
@@ -732,6 +744,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.location.motion_permission.denied" = "Denegat";
 "settings_details.location.motion_permission.enabled" = "Habilitat";
 "settings_details.location.motion_permission.needs_request" = "Desactivat";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Permís de moviment";
 "settings_details.location.notifications.background_fetch.title" = "Notificacions d'obtenció en segon pla";
 "settings_details.location.notifications.beacon_enter.title" = "Notificacions d'entrar a zona via iBeacon";
@@ -817,6 +830,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.privacy.alerts.title" = "Alertes";
 "settings_details.privacy.analytics.generic_description" = "Permet la recopilació d'informació bàsica sobre el dispositiu i les interaccions amb l'aplicació. No es comparteixen dades identificables de l'usuari, inclosos les URL i els tokens del Home Assistant. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Permet un seguiment més profund de bloquejos i altres errors de l'aplicació, cosa que permet publicar solucions amb més rapidesa. No s’envia cap informació identificable de l’usuari, a part de la informació bàsica del dispositiu. Heu de reiniciar l'aplicació perquè els canvis en aquesta configuració tinguin efecte.";
 "settings_details.privacy.crash_reporting.sentry" = "Actualment, aquesta característica utilitza Sentry com a destinació de l'informe.";
 "settings_details.privacy.crash_reporting.title" = "Informes d'Errors";
@@ -830,6 +844,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
 "settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Atributs";
 "settings_sensors.detail.device_class" = "Classe de dispositiu";
 "settings_sensors.detail.enabled" = "Habilitat";
@@ -838,11 +853,14 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings_sensors.disabled_state_replacement" = "Desactivat";
 "settings_sensors.focus_permission.title" = "Permí de l'estat de concentració";
 "settings_sensors.last_updated.footer" = "Darrera actualització %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "No s'han pogut carregar els sensors";
 "settings_sensors.periodic_update.description" = "Quan està activada, aquests sensors s'actualitzaran amb aquesta freqüència mentre l'aplicació estigui oberta en primer pla.";
 "settings_sensors.periodic_update.description_mac" = "Quan estigui habilitat, aquests sensors s'actualitzaran amb aquesta freqüència mentre l'aplicació estigui oberta. Alguns sensors s'actualitzaran automàticament amb més freqüència.";
 "settings_sensors.periodic_update.off" = "Desactivat";
 "settings_sensors.periodic_update.title" = "Actualització periòdica";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Els canvis s'aplicaran a la pròxima actualització.";
 "settings_sensors.settings.header" = "Configuració";
 "settings_sensors.title" = "Sensors";
@@ -877,6 +895,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "token_error.token_unavailable" = "El token no està disponible.";
 "unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
 "unauthenticated.message.title" = "You are unauthenticated";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Comprova si hi ha actualitzacions…";
 "updater.no_updates_available.on_latest_version" = "Estàs en l'última versió!";
 "updater.no_updates_available.title" = "Comprova si hi ha actualitzacions";

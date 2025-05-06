@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Η οντότητα '%@' δεν βρέθηκε!";
 "extensions.notification_content.error.request.hls_unavailable" = "Η ροή HLS δεν είναι διαθέσιμη";
 "extensions.notification_content.error.request.other" = "Λήφθηκε κωδικός κατάστασης που δεν είναι 200 (%li)";
+"gestures.1_finger.title" = "Χρήση ενός δακτύλου";
+"gestures.2_fingers.title" = "Χρήση δύο δακτύλων";
 "gestures.2_fingers_swipe_down.title" = "2 👆 σύρετε προς τα κάτω";
 "gestures.2_fingers_swipe_left.title" = "2 👆 σύρετε προς τα αριστερά";
 "gestures.2_fingers_swipe_right.title" = "2 👆 σύρετε προς τα δεξιά";
 "gestures.2_fingers_swipe_up.title" = "2 👆 σύρετε προς τα πάνω";
+"gestures.3_fingers.title" = "Χρήση τριών δακτύλων";
 "gestures.3_fingers_swipe_down.title" = "3 👆 σύρετε προς τα κάτω";
 "gestures.3_fingers_swipe_left.title" = "3 👆 σύρετε προς τα αριστερά";
 "gestures.3_fingers_swipe_right.title" = "3 👆 σύρετε προς τα δεξιά";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Πλοήγηση";
 "gestures.category.servers" = "Διακομιστές";
 "gestures.footer.title" = "Προσαρμόστε τις χειρονομίες που θα χρησιμοποιούνται στο frontend.";
+"gestures.reset.title" = "Επαναφορά";
 "gestures.screen.body" = "Οι παρακάτω χειρονομίες θα εφαρμόζονται κάθε φορά που χρησιμοποιείτε την κύρια διεπαφή χρήστη του Home Assistant.";
 "gestures.screen.title" = "Χειρονομίες";
 "gestures.shake.title" = "Κούνημα";
+"gestures.swipe.down.header" = "Κύλιση προς τα κάτω";
+"gestures.swipe.left.header" = "Κύλιση προς τα αριστερά";
+"gestures.swipe.right.header" = "Κύλιση προς τα δεξιά";
+"gestures.swipe.up.header" = "Κύλιση προς τα πάνω";
 "gestures.swipe_left.title" = "Σύρετε προς τα αριστερά";
 "gestures.swipe_right.title" = "Σύρετε προς τα δεξιά";
 "gestures.value.option.back_page" = "Πίσω στην προηγούμενη σελίδα";
@@ -721,6 +729,10 @@
 "settings_details.location.background_refresh.disabled" = "Απενεργοποιημένο";
 "settings_details.location.background_refresh.enabled" = "Ενεργοποιημένο";
 "settings_details.location.background_refresh.title" = "Ανανέωση background";
+"settings_details.location.focus_permission.denied" = "Απορρίφθηκε";
+"settings_details.location.focus_permission.enabled" = "Ενεργό";
+"settings_details.location.focus_permission.needs_request" = "Ανενεργό";
+"settings_details.location.focus_permission.restricted" = "Περιορισμένο";
 "settings_details.location.location_accuracy.full" = "Πλήρης";
 "settings_details.location.location_accuracy.reduced" = "Μειωμένη";
 "settings_details.location.location_accuracy.title" = "Ακρίβεια τοποθεσίας";
@@ -732,6 +744,7 @@
 "settings_details.location.motion_permission.denied" = "Απορρίφθηκε";
 "settings_details.location.motion_permission.enabled" = "Ενεργοποιημένο";
 "settings_details.location.motion_permission.needs_request" = "Απενεργοποιημένο";
+"settings_details.location.motion_permission.restricted" = "Περιορισμένο";
 "settings_details.location.motion_permission.title" = "Αδεια κίνησης";
 "settings_details.location.notifications.background_fetch.title" = "Ειδοποιήσεις λήψης στο παρασκήνιο";
 "settings_details.location.notifications.beacon_enter.title" = "Εισαγωγή ζώνης μέσω ειδοποιήσεων iBeacon";
@@ -817,6 +830,7 @@
 "settings_details.privacy.alerts.title" = "Ειδοποιήσεις";
 "settings_details.privacy.analytics.generic_description" = "Επιτρέπει τη συλλογή βασικών πληροφοριών σχετικά με τη συσκευή σας και τις αλληλεπιδράσεις με την εφαρμογή. Δεν κοινοποιούνται δεδομένα που να είναι αναγνωρίσιμα από το χρήστη, συμπεριλαμβανομένων των διευθύνσεων URL και των διακριτικών του Home Assistant. Πρέπει να κάνετε επανεκκίνηση της εφαρμογής για να εφαρμοστούν οι αλλαγές σε αυτή τη ρύθμιση.";
 "settings_details.privacy.analytics.generic_title" = "Ανάλυση";
+"settings_details.privacy.body" = "Εσείς έχετε τον έλεγχο των δεδομένων σας.";
 "settings_details.privacy.crash_reporting.description" = "Επιτρέπει βαθύτερη παρακολούθηση των σφαλμάτων και άλλων σφαλμάτων στην εφαρμογή, με αποτέλεσμα την ταχύτερη δημοσίευση διορθώσεων. Δεν αποστέλλονται πληροφορίες που να είναι αναγνωρίσιμες από το χρήστη, εκτός από τις βασικές πληροφορίες συσκευής. Πρέπει να κάνετε επανεκκίνηση της εφαρμογής για να εφαρμοστούν οι αλλαγές σε αυτή τη ρύθμιση.";
 "settings_details.privacy.crash_reporting.sentry" = "Αυτή η δυνατότητα χρησιμοποιεί αυτή τη στιγμή το Sentry ως προορισμό αναφοράς.";
 "settings_details.privacy.crash_reporting.title" = "Αναφορά σφαλμάτων";
@@ -830,6 +844,7 @@
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Αυτό θα επαναφορτώσει όλα τα χρονοδιαγράμματα των γραφικών στοιχείων, χρησιμοποιήστε το σε περίπτωση που τα γραφικά στοιχεία σας έχουν κολλήσει σε κενή κατάσταση ή για κάποιο λόγο δεν ενημερώνονται.";
 "settings_details.widgets.reload_all.title" = "Επαναφόρτωση όλων των γραφικών στοιχείων";
+"settings_sensors.body" = "Αποφασίστε ποιους από τους αισθητήρες της συσκευής σας θέλετε να μοιραστείτε με το Home Assistant.";
 "settings_sensors.detail.attributes" = "Χαρακτηριστικά";
 "settings_sensors.detail.device_class" = "Κλάση συσκευής";
 "settings_sensors.detail.enabled" = "Ενεργοποιημένο";
@@ -838,11 +853,14 @@
 "settings_sensors.disabled_state_replacement" = "Απενεργοποιημένο";
 "settings_sensors.focus_permission.title" = "Αδεια εστίασης";
 "settings_sensors.last_updated.footer" = "Τελευταία ενημέρωση %@";
+"settings_sensors.last_updated.prefix" = "Τελευταία ενημέρωση";
 "settings_sensors.loading_error.title" = "Αποτυχία φόρτωσης αισθητήρων";
 "settings_sensors.periodic_update.description" = "Οταν είναι ενεργοποιημένο, αυτοί οι αισθητήρες θα ενημερώνονται με αυτή τη συχνότητα ενώ η εφαρμογή είναι ανοιχτή στο προσκήνιο.";
 "settings_sensors.periodic_update.description_mac" = "Οταν ενεργοποιηθούν, αυτοί οι αισθητήρες θα ενημερωθούν με αυτή τη συχνότητα ενώ η εφαρμογή είναι ανοιχτή. Ορισμένοι αισθητήρες θα ενημερώνονται αυτόματα πιο συχνά.";
 "settings_sensors.periodic_update.off" = "Μη Ενεργό";
 "settings_sensors.periodic_update.title" = "Περιοδική ενημέρωση";
+"settings_sensors.permissions.header" = "Δικαιώματα";
+"settings_sensors.sensors.header" = "Αισθητήρες";
 "settings_sensors.settings.footer" = "Οι αλλαγές θα εφαρμοστούν στην επόμενη ενημέρωση.";
 "settings_sensors.settings.header" = "Ρυθμίσεις";
 "settings_sensors.title" = "Αισθητήρες";
@@ -877,6 +895,7 @@
 "token_error.token_unavailable" = "Το διακριτικό δεν είναι διαθέσιμο.";
 "unauthenticated.message.body" = "Αυτό θα μπορούσε να είναι προσωρινό αν βρίσκεστε πίσω από έναν διακομιστή μεσολάβησης (proxy) ή περιορισμό δικτύου, διαφορετικά αν επιμένει, αφαιρέστε τον διακομιστή σας και προσθέστε τον ξανά.";
 "unauthenticated.message.title" = "Δεν έχει γίνει έλεγχος ταυτότητας";
+"unknownLabel" = "Αγνωστο";
 "updater.check_for_updates_menu.title" = "Ελεγχος για ενημερώσεις…";
 "updater.no_updates_available.on_latest_version" = "Βρίσκεστε στην πιο πρόσφατη έκδοση!";
 "updater.no_updates_available.title" = "Ελεγχος για ενημερώσεις";

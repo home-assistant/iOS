@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entiteit ' %@ ' niet gevonden!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-stream niet beschikbaar";
 "extensions.notification_content.error.request.other" = "Non-200 Statuscode ontvangen (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 veeg omlaag";
 "gestures.2_fingers_swipe_left.title" = "2 👆 veeg naar links";
 "gestures.2_fingers_swipe_right.title" = "2 👆 veeg naar rechts";
 "gestures.2_fingers_swipe_up.title" = "2 👆 veeg omhoog";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 veeg omlaag";
 "gestures.3_fingers_swipe_left.title" = "3 👆 veeg naar links";
 "gestures.3_fingers_swipe_right.title" = "3 👆 veeg naar rechts";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigatie";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Pas gebaren aan die op de frontend gebruikt kunnen worden.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "De onderstaande gebaren kun je gebruiken wanneer je de hoofdinterface van Home Assistant gebruikt.";
 "gestures.screen.title" = "Gebaren";
 "gestures.shake.title" = "Schud";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Veeg naar links";
 "gestures.swipe_right.title" = "Veeg naar rechts";
 "gestures.value.option.back_page" = "Vorige pagina";
@@ -721,6 +729,10 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.location.background_refresh.disabled" = "Uitgeschakeld";
 "settings_details.location.background_refresh.enabled" = "Ingeschakeld";
 "settings_details.location.background_refresh.title" = "Op de achtergrond vernieuwen";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Vol";
 "settings_details.location.location_accuracy.reduced" = "Verminderd";
 "settings_details.location.location_accuracy.title" = "Nauwkeurigheid locatie";
@@ -732,6 +744,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.location.motion_permission.denied" = "Geweigerd";
 "settings_details.location.motion_permission.enabled" = "Ingeschakeld";
 "settings_details.location.motion_permission.needs_request" = "Uitgeschakeld";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Beweging toestemming";
 "settings_details.location.notifications.background_fetch.title" = "Meldingen op de achtergrond ophalen";
 "settings_details.location.notifications.beacon_enter.title" = "Zone betreden via iBeacon-meldingen";
@@ -817,6 +830,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.privacy.alerts.title" = "Waarschuwingen";
 "settings_details.privacy.analytics.generic_description" = "Maakt het verzamelen van basisinformatie over je apparaat en interacties met de app mogelijk. Er worden geen gegevens gedeeld waarmee de gebruiker kan worden geïdentificeerd, inclusief de URL's en tokens van je Home Assistant. Je moet de app opnieuw opstarten om wijzigingen aan deze instelling door te voeren.";
 "settings_details.privacy.analytics.generic_title" = "Analyse";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Hiermee kunnen crashes en andere fouten in de app beter worden gevolgd, waardoor oplossingen sneller worden uitgebracht. Er wordt geen informatie verzonden waarmee de gebruiker kan worden geïdentificeerd, behalve basisinformatie over het apparaat. Je moet de app opnieuw opstarten om wijzigingen aan deze instelling door te voeren.";
 "settings_details.privacy.crash_reporting.sentry" = "Deze functie gebruikt momenteel Sentry als rapportbestemming.";
 "settings_details.privacy.crash_reporting.title" = "Crashrapportage";
@@ -830,6 +844,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Dit zal alle widgets tijdlijnen opnieuw laden, gebruik dit als je widgets vastzitten in een lege staat of om de een of andere reden niet worden bijgewerkt.";
 "settings_details.widgets.reload_all.title" = "Laad alle widgets opnieuw";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Attributen";
 "settings_sensors.detail.device_class" = "apparaatklasse";
 "settings_sensors.detail.enabled" = "Ingeschakeld";
@@ -838,11 +853,14 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_sensors.disabled_state_replacement" = "Uitgeschakeld";
 "settings_sensors.focus_permission.title" = "Focus toestemming";
 "settings_sensors.last_updated.footer" = "Laatst bijgewerkt %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Kan sensoren niet laden";
 "settings_sensors.periodic_update.description" = "Indien ingeschakeld, worden deze sensoren bijgewerkt met deze frequentie terwijl de app op de voorgrond is geopend.";
 "settings_sensors.periodic_update.description_mac" = "Wanneer ingeschakeld, worden deze sensoren met deze frequentie bijgewerkt terwijl de app is geopend. Sommige sensoren worden vaker automatisch bijgewerkt.";
 "settings_sensors.periodic_update.off" = "Uit";
 "settings_sensors.periodic_update.title" = "Periodiek bijwerken";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "De wijzigingen zullen bij de volgende update worden toegepast.";
 "settings_sensors.settings.header" = "Instellingen";
 "settings_sensors.title" = "Sensoren";
@@ -877,6 +895,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "token_error.token_unavailable" = "Token is niet beschikbaar.";
 "unauthenticated.message.body" = "Dit kan tijdelijk zijn als je achter een proxy of netwerkbeperking zit. Als het probleem aanhoudt, verwijdert dan de server en voeg deze opnieuw toe.";
 "unauthenticated.message.title" = "Je bent ongeauthenticeerd";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Zoeken naar updates....";
 "updater.no_updates_available.on_latest_version" = "Je gebruikt de laatste versie!";
 "updater.no_updates_available.title" = "Controleer op updates";

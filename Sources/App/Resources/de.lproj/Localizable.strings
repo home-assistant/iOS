@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entität '%@' nicht gefunden!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-Stream nicht verfügbar";
 "extensions.notification_content.error.request.other" = "Kein HTTP-200 (OK) Statuscode erhalten (%li)";
+"gestures.1_finger.title" = "Mit einem Finger";
+"gestures.2_fingers.title" = "Mit zwei Fingern";
 "gestures.2_fingers_swipe_down.title" = "2 👆 nach unten wischen";
 "gestures.2_fingers_swipe_left.title" = "2 👆 nach links wischen";
 "gestures.2_fingers_swipe_right.title" = "2 👆 nach rechts wischen";
 "gestures.2_fingers_swipe_up.title" = "2 👆 nach oben wischen";
+"gestures.3_fingers.title" = "Mit drei Fingern";
 "gestures.3_fingers_swipe_down.title" = "3 👆 nach unten wischen";
 "gestures.3_fingers_swipe_left.title" = "3 👆 nach links wischen";
 "gestures.3_fingers_swipe_right.title" = "3 👆 nach rechts wischen";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Server";
 "gestures.footer.title" = "Gesten für die Verwendung im Frontend anpassen.";
+"gestures.reset.title" = "Zurücksetzen";
 "gestures.screen.body" = "Die folgenden Gesten werden immer angewendet, wenn du die Hauptbenutzeroberfläche von Home Assistant verwendest.";
 "gestures.screen.title" = "Gesten";
 "gestures.shake.title" = "Schütteln";
+"gestures.swipe.down.header" = "Nach unten wischen";
+"gestures.swipe.left.header" = "Nach links wischen";
+"gestures.swipe.right.header" = "Nach rechts wischen";
+"gestures.swipe.up.header" = "Nach oben wischen";
 "gestures.swipe_left.title" = "Nach links wischen";
 "gestures.swipe_right.title" = "Nach rechts wischen";
 "gestures.value.option.back_page" = "Zurück zur vorherigen Seite";
@@ -721,6 +729,10 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.location.background_refresh.disabled" = "Deaktiviert";
 "settings_details.location.background_refresh.enabled" = "Aktiviert";
 "settings_details.location.background_refresh.title" = "Hintergrund-Aktualisierung";
+"settings_details.location.focus_permission.denied" = "Verweigert";
+"settings_details.location.focus_permission.enabled" = "Aktiviert";
+"settings_details.location.focus_permission.needs_request" = "Deaktiviert";
+"settings_details.location.focus_permission.restricted" = "Eingeschränkt";
 "settings_details.location.location_accuracy.full" = "Voll";
 "settings_details.location.location_accuracy.reduced" = "Reduziert";
 "settings_details.location.location_accuracy.title" = "Standortgenauigkeit";
@@ -732,6 +744,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.location.motion_permission.denied" = "Verweigert";
 "settings_details.location.motion_permission.enabled" = "Aktiviert";
 "settings_details.location.motion_permission.needs_request" = "Deaktiviert";
+"settings_details.location.motion_permission.restricted" = "Eingeschränkt";
 "settings_details.location.motion_permission.title" = "Berechtigung für Bewegungsdaten";
 "settings_details.location.notifications.background_fetch.title" = "Hintergrundaktualisierung";
 "settings_details.location.notifications.beacon_enter.title" = "iBeacon: Zone betreten";
@@ -817,6 +830,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.privacy.alerts.title" = "Warnungen";
 "settings_details.privacy.analytics.generic_description" = "Ermöglicht das Sammeln grundlegender Informationen zu deinem Gerät und die Interaktion mit der App. Es werden keine den Benutzer identifizierenden Daten freigegeben, einschließlich deiner Home Assistant-URLs und -Token. Du musst die App neu starten, damit Änderungen an dieser Einstellung wirksam werden.";
 "settings_details.privacy.analytics.generic_title" = "Datenauswertung";
+"settings_details.privacy.body" = "Du hast die Kontrolle über deine Daten.";
 "settings_details.privacy.crash_reporting.description" = "Ermöglicht eine genauere Verfolgung von Abstürzen und anderen Fehlern in der App, sodass schneller Korrekturen veröffentlicht werden können. Es werden keine benutzeridentifizierbaren Informationen gesendet, nur grundlegende Geräteinformationen. Du musdt die App neu starten, damit Änderungen an dieser Einstellung wirksam werden.";
 "settings_details.privacy.crash_reporting.sentry" = "Diese Funktion nutzt aktuell Sentry als Berichtziel.";
 "settings_details.privacy.crash_reporting.title" = "Fehlerberichte";
@@ -830,6 +844,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Dadurch werden alle Widget-Zeitleisten neu geladen. Verwende diese Option, wenn deine Widgets in einem leeren Zustand hängen bleiben oder aus irgendeinem Grund nicht aktualisiert werden.";
 "settings_details.widgets.reload_all.title" = "Alle Widgets neu laden";
+"settings_sensors.body" = "Entscheide, welche deiner Gerätesensoren du für den Home Assistant freigeben möchtest.";
 "settings_sensors.detail.attributes" = "Attribute";
 "settings_sensors.detail.device_class" = "Geräteklasse";
 "settings_sensors.detail.enabled" = "Aktiviert";
@@ -838,11 +853,14 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_sensors.disabled_state_replacement" = "Deaktiviert";
 "settings_sensors.focus_permission.title" = "Fokus-Berechtigung";
 "settings_sensors.last_updated.footer" = "Zuletzt aktualisiert %@";
+"settings_sensors.last_updated.prefix" = "Zuletzt aktualisiert";
 "settings_sensors.loading_error.title" = "Fehler beim Laden der Sensoren";
 "settings_sensors.periodic_update.description" = "Wenn diese Option aktiviert ist, werden diese Sensoren mit dieser Frequenz aktualisiert, während die App im Vordergrund geöffnet ist.";
 "settings_sensors.periodic_update.description_mac" = "Aktivieren, damit sich diese Sensoren mit dieser Aktualisierungsfrequenz aktualisieren während die App geöffnet ist. Manche Sensoren aktualisieren automatisch öfter.";
 "settings_sensors.periodic_update.off" = "Aus";
 "settings_sensors.periodic_update.title" = "Regelmäßige Aktualisierung";
+"settings_sensors.permissions.header" = "Berechtigungen";
+"settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.settings.footer" = "Änderungen werden bei der nächsten Aktualisierung übernommen.";
 "settings_sensors.settings.header" = "Einstellungen";
 "settings_sensors.title" = "Sensoren";
@@ -877,6 +895,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "token_error.token_unavailable" = "Token ist nicht verfügbar.";
 "unauthenticated.message.body" = "Dies kann vorübergehend sein, wenn du dich hinter einem Proxy oder einer Netzwerkbeschränkung befindest, andernfalls entferne deinen Server und füge ihn wieder hinzu.";
 "unauthenticated.message.title" = "Du bist nicht authentifiziert";
+"unknownLabel" = "Unbekannt";
 "updater.check_for_updates_menu.title" = "Auf Updates prüfen …";
 "updater.no_updates_available.on_latest_version" = "Du hast die neueste Version!";
 "updater.no_updates_available.title" = "Auf Updates prüfen";

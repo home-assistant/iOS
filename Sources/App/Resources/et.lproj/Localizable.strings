@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Olemit \"%@\" ei leitud!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-voog pole saadaval";
 "extensions.notification_content.error.request.other" = "Olekukood on mitte 200 ( %li )";
+"gestures.1_finger.title" = "Kasutades ühte sõrme";
+"gestures.2_fingers.title" = "Kasutades kahte sõrme";
 "gestures.2_fingers_swipe_down.title" = "2 👆 pühi alla";
 "gestures.2_fingers_swipe_left.title" = "2 👆 pühi vasakule";
 "gestures.2_fingers_swipe_right.title" = "2 👆 pühi paremale";
 "gestures.2_fingers_swipe_up.title" = "2 👆 pühi üles";
+"gestures.3_fingers.title" = "Kasutades kolme sõrme";
 "gestures.3_fingers_swipe_down.title" = "3 👆 pühi alla";
 "gestures.3_fingers_swipe_left.title" = "3 👆 pühi vasakule";
 "gestures.3_fingers_swipe_right.title" = "3 👆 pühi paremale";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigeerimine";
 "gestures.category.servers" = "Serverid";
 "gestures.footer.title" = "Kohanda esipaneelil kasutatavaid žeste.";
+"gestures.reset.title" = "Lähtesta";
 "gestures.screen.body" = "Allolevaid žeste rakendatakse alati kui kasutad Home Assistanti peamist kasutajaliidest.";
 "gestures.screen.title" = "Žestid";
 "gestures.shake.title" = "Raputa";
+"gestures.swipe.down.header" = "Nipsa allapoole";
+"gestures.swipe.left.header" = "Nipsa vasakule";
+"gestures.swipe.right.header" = "Nipsa paremale";
+"gestures.swipe.up.header" = "Nipsa üles";
 "gestures.swipe_left.title" = "Pühi vasakule";
 "gestures.swipe_right.title" = "Pühi paremale";
 "gestures.value.option.back_page" = "Tagasi eelmisele lehele";
@@ -721,6 +729,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.location.background_refresh.disabled" = "Keelatud";
 "settings_details.location.background_refresh.enabled" = "Lubatud";
 "settings_details.location.background_refresh.title" = "Taustal värskendamine";
+"settings_details.location.focus_permission.denied" = "Eiratud";
+"settings_details.location.focus_permission.enabled" = "Lubatud";
+"settings_details.location.focus_permission.needs_request" = "Keelatud";
+"settings_details.location.focus_permission.restricted" = "Piiratud";
 "settings_details.location.location_accuracy.full" = "Täielik";
 "settings_details.location.location_accuracy.reduced" = "Vähendatud";
 "settings_details.location.location_accuracy.title" = "Asukoha täpsus";
@@ -732,6 +744,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.location.motion_permission.denied" = "Eiratud";
 "settings_details.location.motion_permission.enabled" = "Lubatud";
 "settings_details.location.motion_permission.needs_request" = "Keelatud";
+"settings_details.location.motion_permission.restricted" = "Piiratud";
 "settings_details.location.motion_permission.title" = "Liikumise luba";
 "settings_details.location.notifications.background_fetch.title" = "Taustateavitused";
 "settings_details.location.notifications.beacon_enter.title" = "Tsooni sisenemine iBeaconi märguannete kaudu";
@@ -817,6 +830,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.privacy.alerts.title" = "Hoiatused";
 "settings_details.privacy.analytics.generic_description" = "Võimaldab koguda põhiteavet seadme ja rakendusega suhtlemise kohta. Kasutajat tuvastavaid andmeid, sealhulgas teie Home Assistanti URL-e ja lubasid, ei jagata. Selle sätte muudatuste jõustumiseks pead rakenduse taaskäivitama.";
 "settings_details.privacy.analytics.generic_title" = "Analüütika";
+"settings_details.privacy.body" = "Teil on kontroll oma andmete üle.";
 "settings_details.privacy.crash_reporting.description" = "Võimaldab rakenduse kokkujooksmiste ja muude vigade põhjalikumat jälgimist, mis viib kiiremate paranduste avaldamiseni. Kasutajat tuvastavat teavet ei saadeta, välja arvatud seadme põhiteave. Selle seade muudatuste jõustumiseks pead rakenduse taaskäivitama.";
 "settings_details.privacy.crash_reporting.sentry" = "See funktsioon kasutab praegu aruande sihtkohana Sentryt.";
 "settings_details.privacy.crash_reporting.title" = "Vearaportid";
@@ -830,6 +844,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "See laeb uuesti kõik vidinate ajaskaalad. Kasuta seda juhuks, kui vidinad on tühjaks jäänud või neid mingil põhjusel ei värskendata.";
 "settings_details.widgets.reload_all.title" = "Taaslae kõik vidinaad";
+"settings_sensors.body" = "Otsusta milliseid oma seadme andureid soovid Home Assistantiga jagada.";
 "settings_sensors.detail.attributes" = "Atribuudid";
 "settings_sensors.detail.device_class" = "Seadme tüüp";
 "settings_sensors.detail.enabled" = "Lubatud";
@@ -838,11 +853,14 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_sensors.disabled_state_replacement" = "Keelatud";
 "settings_sensors.focus_permission.title" = "Fookuse luba";
 "settings_sensors.last_updated.footer" = "Viimati uuendatud %@";
+"settings_sensors.last_updated.prefix" = "Viimati uuendatud";
 "settings_sensors.loading_error.title" = "Andurite laadimine nurjus.";
 "settings_sensors.periodic_update.description" = "Kui see on lubatud, värskendatakse neid andureid selle sagedusega kui rakendus on esiplaanil avatud.";
 "settings_sensors.periodic_update.description_mac" = "Kui see on lubatud, värskendatakse neid andureid selle sagedusega, kui rakendus on avatud. Mõned andurid värskendatakse automaatselt sagedamini.";
 "settings_sensors.periodic_update.off" = "Väljas";
 "settings_sensors.periodic_update.title" = "Perioodiline värskendus";
+"settings_sensors.permissions.header" = "Õigused";
+"settings_sensors.sensors.header" = "Andurid";
 "settings_sensors.settings.footer" = "Muudatused rakendatakse järgmisel värskendusel.";
 "settings_sensors.settings.header" = "Seaded";
 "settings_sensors.title" = "Andurid";
@@ -877,6 +895,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "token_error.token_unavailable" = "Token pole saadaval.";
 "unauthenticated.message.body" = "See võib olla ajutine kui oled puhverserveri või võrgupiirangu taga. Kui see püsib, eemalda oma server ja lisa see uuesti.";
 "unauthenticated.message.title" = "Tuvastamine puudub";
+"unknownLabel" = "Teadmata";
 "updater.check_for_updates_menu.title" = "Otsi värskendusi...";
 "updater.no_updates_available.on_latest_version" = "Kasutad uusimat versiooni!";
 "updater.no_updates_available.title" = "Otsi värskendusi";

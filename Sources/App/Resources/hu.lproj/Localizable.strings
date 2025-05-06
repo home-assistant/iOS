@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "'%@' entitás nem található!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream nem elérhető";
 "extensions.notification_content.error.request.other" = "Nem 200-as állapotkód (%li)";
+"gestures.1_finger.title" = "Egy ujjal";
+"gestures.2_fingers.title" = "Két ujjal";
 "gestures.2_fingers_swipe_down.title" = "2 👆 csúsztassa lefelé";
 "gestures.2_fingers_swipe_left.title" = "2 👆 csúsztassa balra";
 "gestures.2_fingers_swipe_right.title" = "2 👆 csúsztassa jobbra";
 "gestures.2_fingers_swipe_up.title" = "2 👆 csúsztassa felfelé";
+"gestures.3_fingers.title" = "Három ujjal";
 "gestures.3_fingers_swipe_down.title" = "3 👆 csúsztassa lefelé";
 "gestures.3_fingers_swipe_left.title" = "3 👆 csúsztassa balra";
 "gestures.3_fingers_swipe_right.title" = "3 👆 csúsztassa jobbra";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigáció";
 "gestures.category.servers" = "Szerverek";
 "gestures.footer.title" = "A gesztusok testreszabása a felhasználói felületen való használathoz.";
+"gestures.reset.title" = "Visszaállítás";
 "gestures.screen.body" = "Az alábbi gesztusok akkor lesznek alkalmazva, amikor a Home Assistant fő felhasználói felületét használja.";
 "gestures.screen.title" = "Gesztusok";
 "gestures.shake.title" = "Rázza meg";
+"gestures.swipe.down.header" = "Lehúzás";
+"gestures.swipe.left.header" = "Balra húzás";
+"gestures.swipe.right.header" = "Jobbra húzás";
+"gestures.swipe.up.header" = "Felhúzás";
 "gestures.swipe_left.title" = "Csúsztassa balra";
 "gestures.swipe_right.title" = "Csúsztassa jobbra";
 "gestures.value.option.back_page" = "Vissza az előző oldalra";
@@ -721,6 +729,10 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.location.background_refresh.disabled" = "Letiltva";
 "settings_details.location.background_refresh.enabled" = "Engedélyezve";
 "settings_details.location.background_refresh.title" = "Háttérfrissítés";
+"settings_details.location.focus_permission.denied" = "Elutasítva";
+"settings_details.location.focus_permission.enabled" = "Engedélyezve";
+"settings_details.location.focus_permission.needs_request" = "Letiltva";
+"settings_details.location.focus_permission.restricted" = "Korlátozva";
 "settings_details.location.location_accuracy.full" = "Teljes";
 "settings_details.location.location_accuracy.reduced" = "Csökkentett";
 "settings_details.location.location_accuracy.title" = "Helymeghatározás pontossága";
@@ -732,6 +744,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.location.motion_permission.denied" = "Elutasítva";
 "settings_details.location.motion_permission.enabled" = "Engedélyezve";
 "settings_details.location.motion_permission.needs_request" = "Letiltva";
+"settings_details.location.motion_permission.restricted" = "Korlátozva";
 "settings_details.location.motion_permission.title" = "Mozgás engedély";
 "settings_details.location.notifications.background_fetch.title" = "Háttérben történő lekérdezés értesítései";
 "settings_details.location.notifications.beacon_enter.title" = "Belépés a zónába iBeacon értesítéseken keresztül";
@@ -817,6 +830,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.privacy.alerts.title" = "Riasztások";
 "settings_details.privacy.analytics.generic_description" = "Lehetővé teszi az eszközzel és az alkalmazással való interakciókkal kapcsolatos alapvető információk gyűjtését. Nem osztja meg a felhasználó azonosítható adatait, beleértve a Home Assistant URL-címeit és a tokeneket. Újra kell indítania az alkalmazást ahhoz, hogy a beállítás módosításai hatályba lépjenek.";
 "settings_details.privacy.analytics.generic_title" = "Analitika";
+"settings_details.privacy.body" = "Ön irányítja az adatai kezelését.";
 "settings_details.privacy.crash_reporting.description" = "Lehetővé teszi az alkalmazásban előforduló összeomlások és egyéb hibák mélyebb nyomon követését, ami gyorsabb javítások közzétételéhez vezet. Az alapvető eszközadatokon kívül nem küldünk a felhasználóval azonosítható adatokat. Az alkalmazás újraindítása szükséges ahhoz, hogy a beállítás módosítása érvénybe lépjen.";
 "settings_details.privacy.crash_reporting.sentry" = "Ez a funkció jelenleg a Sentry-t használja a jelentés célállomásaként.";
 "settings_details.privacy.crash_reporting.title" = "Összeomlás jelentése";
@@ -830,6 +844,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Ez újratölti az összes widget idővonalát, használja ezt abban az esetben, ha a widgetek üres állapotban ragadnak, vagy valamilyen okból nem frissülnek.";
 "settings_details.widgets.reload_all.title" = "Minden widget újratöltése";
+"settings_sensors.body" = "Döntse el, mely eszközszenzorait kívánja megosztani a Home Assistanttal";
 "settings_sensors.detail.attributes" = "Attribútumok";
 "settings_sensors.detail.device_class" = "Eszközosztály";
 "settings_sensors.detail.enabled" = "Engedélyezve";
@@ -838,11 +853,14 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings_sensors.disabled_state_replacement" = "Letiltva";
 "settings_sensors.focus_permission.title" = "Fókusz engedély";
 "settings_sensors.last_updated.footer" = "Utolsó frissítés %@";
+"settings_sensors.last_updated.prefix" = "Utoljára frissítve";
 "settings_sensors.loading_error.title" = "Nem sikerült betölteni az érzékelőket";
 "settings_sensors.periodic_update.description" = "Ha engedélyezve van, az érzékelők ezzel a gyakorisággal frissülnek, amíg az alkalmazás az előtérben van.";
 "settings_sensors.periodic_update.description_mac" = "Ha engedélyezve van, ezek az érzékelők ezzel a gyakorisággal frissülnek, amíg az alkalmazás nyitva van. Egyes érzékelők automatikusan gyakrabban frissülnek.";
 "settings_sensors.periodic_update.off" = "Ki";
 "settings_sensors.periodic_update.title" = "Időszakos frissítés";
+"settings_sensors.permissions.header" = "Engedélyek";
+"settings_sensors.sensors.header" = "Érzékelők";
 "settings_sensors.settings.footer" = "A módosítások a következő frissítéskor lépnek életbe.";
 "settings_sensors.settings.header" = "Beállítások";
 "settings_sensors.title" = "Érzékelők";
@@ -877,6 +895,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "token_error.token_unavailable" = "A token nem elérhető.";
 "unauthenticated.message.body" = "Ez átmeneti lehet, ha proxy mögött vagy hálózati korlátozás alatt van. Ha a probléma továbbra is fennáll, távolítsa el a szervert, majd adja hozzá újra.";
 "unauthenticated.message.title" = "Nincs hitelesítve";
+"unknownLabel" = "Ismeretlen";
 "updater.check_for_updates_menu.title" = "Frissítések keresése…";
 "updater.no_updates_available.on_latest_version" = "Ön a legújabb verziót használja!";
 "updater.no_updates_available.title" = "Frissítések keresése";

@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "找不到實體 '%@'！";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS 串流不可用";
 "extensions.notification_content.error.request.other" = "取得 non-200 狀態代碼（%li）";
+"gestures.1_finger.title" = "使用一指";
+"gestures.2_fingers.title" = "使用兩指";
 "gestures.2_fingers_swipe_down.title" = "2 👆 向下滑";
 "gestures.2_fingers_swipe_left.title" = "2 👆 向左滑";
 "gestures.2_fingers_swipe_right.title" = "2 👆 向右滑";
 "gestures.2_fingers_swipe_up.title" = "2 👆 向上滑";
+"gestures.3_fingers.title" = "使用三指";
 "gestures.3_fingers_swipe_down.title" = "3 👆 向下滑";
 "gestures.3_fingers_swipe_left.title" = "3 👆 向左滑";
 "gestures.3_fingers_swipe_right.title" = "3 👆 向右滑";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "導航";
 "gestures.category.servers" = "伺服器";
 "gestures.footer.title" = "自訂於 Frontend 中使用的手勢。";
+"gestures.reset.title" = "重置";
 "gestures.screen.body" = "當使用 Home Assistant 主介面時將會套用以下手勢。";
 "gestures.screen.title" = "手勢";
 "gestures.shake.title" = "搖動";
+"gestures.swipe.down.header" = "向下滑";
+"gestures.swipe.left.header" = "向左滑";
+"gestures.swipe.right.header" = "向右滑";
+"gestures.swipe.up.header" = "向上滑";
 "gestures.swipe_left.title" = "向左滑";
 "gestures.swipe_right.title" = "向右滑";
 "gestures.value.option.back_page" = "回上一頁";
@@ -721,6 +729,10 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.location.background_refresh.disabled" = "已關閉";
 "settings_details.location.background_refresh.enabled" = "已啟用";
 "settings_details.location.background_refresh.title" = "背景更新";
+"settings_details.location.focus_permission.denied" = "已拒絕";
+"settings_details.location.focus_permission.enabled" = "已開啟";
+"settings_details.location.focus_permission.needs_request" = "已關閉";
+"settings_details.location.focus_permission.restricted" = "受限制";
 "settings_details.location.location_accuracy.full" = "準確";
 "settings_details.location.location_accuracy.reduced" = "大約";
 "settings_details.location.location_accuracy.title" = "座標精確度";
@@ -732,6 +744,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.location.motion_permission.denied" = "已拒絕";
 "settings_details.location.motion_permission.enabled" = "已啟用";
 "settings_details.location.motion_permission.needs_request" = "已關閉";
+"settings_details.location.motion_permission.restricted" = "受限制";
 "settings_details.location.motion_permission.title" = "移動權限";
 "settings_details.location.notifications.background_fetch.title" = "背景獲取推播提示";
 "settings_details.location.notifications.beacon_enter.title" = "透過 iBeacon 通知已進入區域";
@@ -817,6 +830,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.privacy.alerts.title" = "警告";
 "settings_details.privacy.analytics.generic_description" = "允許收集關於裝置與 App 整合的基本資訊。將不會包含任何有關於使用者身份資料，包含您的 Home Assistant URL 與權杖等。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.analytics.generic_title" = "分析資料";
+"settings_details.privacy.body" = "您的資料都在您掌控中。";
 "settings_details.privacy.crash_reporting.description" = "允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本裝置資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.crash_reporting.sentry" = "此功能使用 Sentry 作為回報目標。";
 "settings_details.privacy.crash_reporting.title" = "當機回報";
@@ -830,6 +844,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "將重新載入所有小工具時間線、如果小工具因某些原因卡在空白狀態或未更新，請使用此功能。";
 "settings_details.widgets.reload_all.title" = "重新載入所有小工具";
+"settings_sensors.body" = "決定要與 Home Assistant 共享哪些裝置感測器。";
 "settings_sensors.detail.attributes" = "屬性";
 "settings_sensors.detail.device_class" = "裝置類別";
 "settings_sensors.detail.enabled" = "已啟用";
@@ -838,11 +853,14 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "settings_sensors.disabled_state_replacement" = "已關閉";
 "settings_sensors.focus_permission.title" = "專注權限";
 "settings_sensors.last_updated.footer" = "最後更新%@";
+"settings_sensors.last_updated.prefix" = "最後更新";
 "settings_sensors.loading_error.title" = "感測器載入失敗";
 "settings_sensors.periodic_update.description" = "開啟後、感測器將會依設定於 App 於背景開啟時持續更新。";
 "settings_sensors.periodic_update.description_mac" = "開啟後、感測器將會依設定於 App 開啟時持續更新，部分感測器更新頻率將更密集。";
 "settings_sensors.periodic_update.off" = "關閉";
 "settings_sensors.periodic_update.title" = "週期更新";
+"settings_sensors.permissions.header" = "權限";
+"settings_sensors.sensors.header" = "感測器";
 "settings_sensors.settings.footer" = "變更將於下次更新時生效。";
 "settings_sensors.settings.header" = "設定";
 "settings_sensors.title" = "感測器";
@@ -877,6 +895,7 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "token_error.token_unavailable" = "權杖不可用。";
 "unauthenticated.message.body" = "如果使用代理伺服器或網路限制、可能為暫時狀態。如果問題持續發生、請移除伺服器並重新添加。";
 "unauthenticated.message.title" = "您未經身份驗證";
+"unknownLabel" = "未知";
 "updater.check_for_updates_menu.title" = "檢查更新…";
 "updater.no_updates_available.on_latest_version" = "已經是最新版本！";
 "updater.no_updates_available.title" = "檢查更新";

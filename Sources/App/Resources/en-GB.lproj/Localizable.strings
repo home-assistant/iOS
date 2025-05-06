@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
 "gestures.2_fingers_swipe_left.title" = "2 👆 swipe left";
 "gestures.2_fingers_swipe_right.title" = "2 👆 swipe right";
 "gestures.2_fingers_swipe_up.title" = "2 👆 swipe up";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 swipe down";
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customise gestures to be used on the frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
 "gestures.shake.title" = "Shake";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
@@ -721,6 +729,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.location.background_refresh.enabled" = "Enabled";
 "settings_details.location.background_refresh.title" = "Background Refresh";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Full";
 "settings_details.location.location_accuracy.reduced" = "Reduced";
 "settings_details.location.location_accuracy.title" = "Location Accuracy";
@@ -732,6 +744,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.location.motion_permission.denied" = "Denied";
 "settings_details.location.motion_permission.enabled" = "Enabled";
 "settings_details.location.motion_permission.needs_request" = "Disabled";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Motion Permission";
 "settings_details.location.notifications.background_fetch.title" = "Background Fetch Notifications";
 "settings_details.location.notifications.beacon_enter.title" = "Enter Zone via iBeacon Notifications";
@@ -817,6 +830,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.privacy.alerts.title" = "Alerts";
 "settings_details.privacy.analytics.generic_description" = "Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared, neither are your Home Assistant URLs or tokens. You must restart the app for changes to this setting to take effect.";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
 "settings_details.privacy.crash_reporting.sentry" = "This feature currently uses Sentry as the report destination.";
 "settings_details.privacy.crash_reporting.title" = "Crash Reporting";
@@ -830,6 +844,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "This will reload all widget timelines. Use this if your widgets are stuck in a blank state or not updating for any reason.";
 "settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Attributes";
 "settings_sensors.detail.device_class" = "Device Class";
 "settings_sensors.detail.enabled" = "Enabled";
@@ -838,11 +853,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Last Updated %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Failed to load sensors";
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update with this frequency while the app is open in the foreground.";
 "settings_sensors.periodic_update.description_mac" = "When enabled, these sensors will update with this frequency while the app is open. Some sensors will update automatically more often.";
 "settings_sensors.periodic_update.off" = "Off";
 "settings_sensors.periodic_update.title" = "Periodic Updated";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Changes will be applied on the next update.";
 "settings_sensors.settings.header" = "Settings";
 "settings_sensors.title" = "Sensors";
@@ -877,6 +895,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "token_error.token_unavailable" = "Token is unavailable.";
 "unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
 "unauthenticated.message.title" = "You are unauthenticated";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Check for Updates…";
 "updater.no_updates_available.on_latest_version" = "You're on the latest version!";
 "updater.no_updates_available.title" = "Check for Updates";

@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entiteten '%@' blev ikke fundet!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-stream er ikke tilgængelig";
 "extensions.notification_content.error.request.other" = "Modtog en ikke-200 statuskode (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
 "gestures.2_fingers_swipe_left.title" = "2 👆 swipe left";
 "gestures.2_fingers_swipe_right.title" = "2 👆 swipe right";
 "gestures.2_fingers_swipe_up.title" = "2 👆 swipe up";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 swipe down";
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Bevægelser";
 "gestures.shake.title" = "Shake";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Tilbage til tidligere side";
@@ -721,6 +729,10 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.location.background_refresh.disabled" = "Deaktiveret";
 "settings_details.location.background_refresh.enabled" = "Aktiveret";
 "settings_details.location.background_refresh.title" = "Opdatering i baggrunden";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Fuld";
 "settings_details.location.location_accuracy.reduced" = "Reduceret";
 "settings_details.location.location_accuracy.title" = "Nøjagtighed af lokalitet";
@@ -732,6 +744,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.location.motion_permission.denied" = "Nægtet";
 "settings_details.location.motion_permission.enabled" = "Aktiveret";
 "settings_details.location.motion_permission.needs_request" = "Deaktiveret";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Bevægelsestilladelse";
 "settings_details.location.notifications.background_fetch.title" = "Hent notifikationer i baggrunden";
 "settings_details.location.notifications.beacon_enter.title" = "Ankom til zone via iBeacon-notifikationer";
@@ -817,6 +830,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.privacy.alerts.title" = "Advarsler";
 "settings_details.privacy.analytics.generic_description" = "Giver mulighed for indsamling af grundlæggende oplysninger om din enhed og interaktioner med appen. Der deles ingen brugeridentificerbare data herunder webadresser og tokens til Home Assistant. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
 "settings_details.privacy.analytics.generic_title" = "Brugsdata og diagnostik";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Giver mulighed for mere tilbundsgående sporing af nedbrud og andre fejl i appen, hvilket betyder at der hurtigere kan laves rettelser. Der sendes ingen brugeridentificerbare oplysninger, bortset fra grundlæggende enhedsoplysninger. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
 "settings_details.privacy.crash_reporting.sentry" = "Denne funktion bruger i øjeblikket Sentry som rapporteringsdestination.";
 "settings_details.privacy.crash_reporting.title" = "Rapportering af nedbrud";
@@ -830,6 +844,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Dette vil genindlæse alle widgets tidslinjer. Brug dette, hvis dine widgets sidder fast i en tom tilstand eller ikke opdateres af en eller anden grund.";
 "settings_details.widgets.reload_all.title" = "Genindlæs alle widgets";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Egenskaber";
 "settings_sensors.detail.device_class" = "Enhedsklasse";
 "settings_sensors.detail.enabled" = "Aktiveret";
@@ -838,11 +853,14 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings_sensors.disabled_state_replacement" = "Deaktiveret";
 "settings_sensors.focus_permission.title" = "Fokus-tilladelse";
 "settings_sensors.last_updated.footer" = "Sidst opdateret %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Sensorer kunne ikke indlæses";
 "settings_sensors.periodic_update.description" = "Når aktiveret, opdateres disse sensorer, med denne frekvens, når appen er åben.";
 "settings_sensors.periodic_update.description_mac" = "Når dette er aktiveret, opdateres sensorer med den angivne frekvens, mens appen er åben. Nogle sensorer opdateres automatisk hyppigere.";
 "settings_sensors.periodic_update.off" = "Fra";
 "settings_sensors.periodic_update.title" = "Periodisk opdatering";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Ændringer vil træde i kraft ved den næste opdatering.";
 "settings_sensors.settings.header" = "Indstillinger";
 "settings_sensors.title" = "Sensorer";
@@ -877,6 +895,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "token_error.token_unavailable" = "Token er ikke tilgængelig.";
 "unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
 "unauthenticated.message.title" = "You are unauthenticated";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Søg efter opdateringer…";
 "updater.no_updates_available.on_latest_version" = "Du bruger den nyeste version!";
 "updater.no_updates_available.title" = "Søg efter opdateringer";

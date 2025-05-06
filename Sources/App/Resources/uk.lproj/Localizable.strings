@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Сутність '%@' не знайдено!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-потік недоступний";
 "extensions.notification_content.error.request.other" = "Отримано статус-код помилки (%li)";
+"gestures.1_finger.title" = "Using one finger";
+"gestures.2_fingers.title" = "Using two fingers";
 "gestures.2_fingers_swipe_down.title" = "2 👆 swipe down";
 "gestures.2_fingers_swipe_left.title" = "2 👆 swipe left";
 "gestures.2_fingers_swipe_right.title" = "2 👆 swipe right";
 "gestures.2_fingers_swipe_up.title" = "2 👆 swipe up";
+"gestures.3_fingers.title" = "Using three fingers";
 "gestures.3_fingers_swipe_down.title" = "3 👆 swipe down";
 "gestures.3_fingers_swipe_left.title" = "3 👆 swipe left";
 "gestures.3_fingers_swipe_right.title" = "3 👆 swipe right";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigation";
 "gestures.category.servers" = "Servers";
 "gestures.footer.title" = "Customize gestures to be used on the frontend.";
+"gestures.reset.title" = "Reset";
 "gestures.screen.body" = "Gestures below will be applied whenever you are using Home Assistant main UI.";
 "gestures.screen.title" = "Gestures";
 "gestures.shake.title" = "Shake";
+"gestures.swipe.down.header" = "Swipe down";
+"gestures.swipe.left.header" = "Swipe left";
+"gestures.swipe.right.header" = "Swipe right";
+"gestures.swipe.up.header" = "Swipe up";
 "gestures.swipe_left.title" = "Swipe Left";
 "gestures.swipe_right.title" = "Swipe Right";
 "gestures.value.option.back_page" = "Back to previous page";
@@ -721,6 +729,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.location.background_refresh.disabled" = "Відключено";
 "settings_details.location.background_refresh.enabled" = "Увімкнено";
 "settings_details.location.background_refresh.title" = "Фонове оновлення";
+"settings_details.location.focus_permission.denied" = "Denied";
+"settings_details.location.focus_permission.enabled" = "Enabled";
+"settings_details.location.focus_permission.needs_request" = "Disabled";
+"settings_details.location.focus_permission.restricted" = "Restricted";
 "settings_details.location.location_accuracy.full" = "Максимальна";
 "settings_details.location.location_accuracy.reduced" = "Зменшено";
 "settings_details.location.location_accuracy.title" = "Точність розташування";
@@ -732,6 +744,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.location.motion_permission.denied" = "Заборонено";
 "settings_details.location.motion_permission.enabled" = "Дозволено";
 "settings_details.location.motion_permission.needs_request" = "Відключено";
+"settings_details.location.motion_permission.restricted" = "Restricted";
 "settings_details.location.motion_permission.title" = "Доступ до руху";
 "settings_details.location.notifications.background_fetch.title" = "Сповіщення про фонові оновлення";
 "settings_details.location.notifications.beacon_enter.title" = "Сповіщення про вхід у зони через iBeacon";
@@ -817,6 +830,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.privacy.alerts.title" = "Alerts";
 "settings_details.privacy.analytics.generic_description" = "Дозволяє збирати основну інформацію про ваш пристрій та взаємодію з додатком. Не надаються ідентифікаційні дані користувача, включаючи URL-адреси та маркери Home Assistant. Потрібно перезапустити програму, щоб зміни цього параметра набрали чинності.";
 "settings_details.privacy.analytics.generic_title" = "Аналітика";
+"settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Дозволяє глибше відстежувати збої та інші помилки в додатку, що призводить до швидшого опублікування виправлень. Не надсилається інформація, що ідентифікує користувача, окрім базової інформації про пристрій. Потрібно перезапустити програму, щоб зміни цього параметра набрали чинності.";
 "settings_details.privacy.crash_reporting.sentry" = "Ця функція наразі використовує Sentry як місце призначення звіту.";
 "settings_details.privacy.crash_reporting.title" = "Звіти про аварійне завершення роботи";
@@ -830,6 +844,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "This will reload all widgets timelines, use this in case your widgets are stuck in a blank state or not updating for some reason.";
 "settings_details.widgets.reload_all.title" = "Reload all widgets";
+"settings_sensors.body" = "Decide which of your device sensors you want to share with Home Assistant.";
 "settings_sensors.detail.attributes" = "Атрибути";
 "settings_sensors.detail.device_class" = "Клас пристрою";
 "settings_sensors.detail.enabled" = "Enabled";
@@ -838,11 +853,14 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_sensors.disabled_state_replacement" = "Disabled";
 "settings_sensors.focus_permission.title" = "Focus Permission";
 "settings_sensors.last_updated.footer" = "Востаннє оновлено %@";
+"settings_sensors.last_updated.prefix" = "Last Updated";
 "settings_sensors.loading_error.title" = "Не вдалося завантажити сенсори";
 "settings_sensors.periodic_update.description" = "Коли увімкнено, ці сенсори будуть оновлюватись поки застосунок відкритий на передньому плані.";
 "settings_sensors.periodic_update.description_mac" = "Якщо увімкнено, ці датчики оновлюватимуться з такою частотою під час роботи програми. Деякі датчики оновлюються автоматично частіше.";
 "settings_sensors.periodic_update.off" = "Вимкнено";
 "settings_sensors.periodic_update.title" = "Періодичне оновлення";
+"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Зміни набудуть чинності у наступному оновленні.";
 "settings_sensors.settings.header" = "Налаштування";
 "settings_sensors.title" = "Сенсори";
@@ -877,6 +895,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "token_error.token_unavailable" = "Токен недоступний";
 "unauthenticated.message.body" = "This could be temporary if you are behind a proxy or network restriction, otherwise if it persists remove your server and add it back in.";
 "unauthenticated.message.title" = "You are unauthenticated";
+"unknownLabel" = "Unknown";
 "updater.check_for_updates_menu.title" = "Перевірити наявність оновлень …";
 "updater.no_updates_available.on_latest_version" = "Ви використовуєте останню версію!";
 "updater.no_updates_available.title" = "Перевірити наявність оновлень";

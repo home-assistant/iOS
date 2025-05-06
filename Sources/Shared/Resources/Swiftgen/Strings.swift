@@ -982,9 +982,41 @@ public enum L10n {
       /// Using two fingers
       public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers.title") }
     }
+    public enum _2FingersSwipeDown {
+      /// 2 👆 swipe down
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_down.title") }
+    }
+    public enum _2FingersSwipeLeft {
+      /// 2 👆 swipe left
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_left.title") }
+    }
+    public enum _2FingersSwipeRight {
+      /// 2 👆 swipe right
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_right.title") }
+    }
+    public enum _2FingersSwipeUp {
+      /// 2 👆 swipe up
+      public static var title: String { return L10n.tr("Localizable", "gestures.2_fingers_swipe_up.title") }
+    }
     public enum _3Fingers {
       /// Using three fingers
       public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers.title") }
+    }
+    public enum _3FingersSwipeDown {
+      /// 3 👆 swipe down
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_down.title") }
+    }
+    public enum _3FingersSwipeLeft {
+      /// 3 👆 swipe left
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_left.title") }
+    }
+    public enum _3FingersSwipeRight {
+      /// 3 👆 swipe right
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_right.title") }
+    }
+    public enum _3FingersSwipeUp {
+      /// 3 👆 swipe up
+      public static var title: String { return L10n.tr("Localizable", "gestures.3_fingers_swipe_up.title") }
     }
     public enum Category {
       /// App
@@ -2963,6 +2995,10 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "settings_sensors.focus_permission.title") }
     }
     public enum LastUpdated {
+      /// Last Updated %@
+      public static func footer(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings_sensors.last_updated.footer", String(describing: p1))
+      }
       /// Last Updated
       public static var `prefix`: String { return L10n.tr("Localizable", "settings_sensors.last_updated.prefix") }
     }

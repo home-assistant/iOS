@@ -240,10 +240,13 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entitet '%@' hittades inte!";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS-ström ej tillgänglig";
 "extensions.notification_content.error.request.other" = "Fick icke-200 statuskod (%li)";
+"gestures.1_finger.title" = "Använd ett finger";
+"gestures.2_fingers.title" = "Använd två fingrar";
 "gestures.2_fingers_swipe_down.title" = "2 👆 svep nedåt";
 "gestures.2_fingers_swipe_left.title" = "2 👆 svep åt vänster";
 "gestures.2_fingers_swipe_right.title" = "2 👆 svep åt höger";
 "gestures.2_fingers_swipe_up.title" = "2 👆 svep uppåt";
+"gestures.3_fingers.title" = "Använd tre fingrar";
 "gestures.3_fingers_swipe_down.title" = "3 👆 svep nedåt";
 "gestures.3_fingers_swipe_left.title" = "3 👆 svep åt vänster";
 "gestures.3_fingers_swipe_right.title" = "3 👆 svep åt höger";
@@ -254,9 +257,14 @@
 "gestures.category.page" = "Navigering";
 "gestures.category.servers" = "Servrar";
 "gestures.footer.title" = "Anpassa gester som ska användas.";
+"gestures.reset.title" = "Återställ";
 "gestures.screen.body" = "Gesterna nedan kommer att användas när du använder Home Assistants huvudgränssnitt.";
 "gestures.screen.title" = "Gester";
 "gestures.shake.title" = "Skaka";
+"gestures.swipe.down.header" = "Svep neråt";
+"gestures.swipe.left.header" = "Svep vänster";
+"gestures.swipe.right.header" = "Svep höger";
+"gestures.swipe.up.header" = "Svep uppåt";
 "gestures.swipe_left.title" = "Svep åt vänster";
 "gestures.swipe_right.title" = "Svep åt höger";
 "gestures.value.option.back_page" = "Gå till föregående sida";
@@ -721,6 +729,10 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.location.background_refresh.disabled" = "Avaktiverad";
 "settings_details.location.background_refresh.enabled" = "Aktiverad";
 "settings_details.location.background_refresh.title" = "Bakgrundsuppdatering";
+"settings_details.location.focus_permission.denied" = "Avvisad";
+"settings_details.location.focus_permission.enabled" = "Aktiverad";
+"settings_details.location.focus_permission.needs_request" = "Inaktiverad";
+"settings_details.location.focus_permission.restricted" = "Begränsad";
 "settings_details.location.location_accuracy.full" = "Maximal";
 "settings_details.location.location_accuracy.reduced" = "Reducerad";
 "settings_details.location.location_accuracy.title" = "Platsnoggrannhet";
@@ -732,6 +744,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.location.motion_permission.denied" = "Avvisad";
 "settings_details.location.motion_permission.enabled" = "Aktiverad";
 "settings_details.location.motion_permission.needs_request" = "Avaktiverad";
+"settings_details.location.motion_permission.restricted" = "Begränsad";
 "settings_details.location.motion_permission.title" = "Rörelse-tillstånd";
 "settings_details.location.notifications.background_fetch.title" = "Notis om bakgrundshämtning";
 "settings_details.location.notifications.beacon_enter.title" = "Notis om ankomst till zon via iBeacon";
@@ -818,6 +831,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.privacy.alerts.title" = "Varningar";
 "settings_details.privacy.analytics.generic_description" = "Tillåter insamling av grundläggande information om din enhet och interaktioner med appen. Inga användaridentifierbara uppgifter delas, inklusive din Home Assistants URL och tokens. Du måste starta om appen för att ändringarna ska slå igenom.";
 "settings_details.privacy.analytics.generic_title" = "Analyser";
+"settings_details.privacy.body" = "Du har kontroll över dina data.";
 "settings_details.privacy.crash_reporting.description" = "Tillåter djupare spårning av krascher och andra fel i appen, vilket leder till att rättelser kan publiceras snabbare. Ingen användaridentifierbar information skickas, utöver grundläggande enhetsinformation. Du måste starta om appen för att ändringarna ska slå igenom.";
 "settings_details.privacy.crash_reporting.sentry" = "Den här funktionen använder för närvarande Sentry som rapportdestination.";
 "settings_details.privacy.crash_reporting.title" = "Kraschrapportering";
@@ -831,6 +845,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.watch.title" = "Apple Watch";
 "settings_details.widgets.reload_all.description" = "Detta kommer att ladda om alla widgets tidslinjer, använd detta om dina widgets har fastnat i ett tomt tillstånd eller inte uppdateras av någon anledning.";
 "settings_details.widgets.reload_all.title" = "Ladda om alla widgets";
+"settings_sensors.body" = "Bestäm vilka av dina enhetssensorer du vill dela med Home Assistant.";
 "settings_sensors.detail.attributes" = "Egenskaper";
 "settings_sensors.detail.device_class" = "Enhets-klass";
 "settings_sensors.detail.enabled" = "Aktiverad";
@@ -839,11 +854,14 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_sensors.disabled_state_replacement" = "Inaktiverad";
 "settings_sensors.focus_permission.title" = "Fokusbehörighet";
 "settings_sensors.last_updated.footer" = "Senast uppdaterad %@";
+"settings_sensors.last_updated.prefix" = "Senast uppdaterad";
 "settings_sensors.loading_error.title" = "Kunde inte ladda sensorer";
 "settings_sensors.periodic_update.description" = "Om aktiverad kommer de här sensorerna att uppdateras med den här frekvensen medan appen är öppen i förgrunden.";
 "settings_sensors.periodic_update.description_mac" = "Om aktiverad uppdateras de här sensorerna med denna frekvens medan appen är öppen. Några sensorer kommer automatiskt att uppdateras oftare.";
 "settings_sensors.periodic_update.off" = "Av";
 "settings_sensors.periodic_update.title" = "Periodisk uppdatering";
+"settings_sensors.permissions.header" = "Behörigheter";
+"settings_sensors.sensors.header" = "Sensorer";
 "settings_sensors.settings.footer" = "Ändringar kommer att träda i kraft vid nästa uppdatering.";
 "settings_sensors.settings.header" = "Inställningar";
 "settings_sensors.title" = "Sensorer";
@@ -878,6 +896,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "token_error.token_unavailable" = "Token är inte tillgänglig.";
 "unauthenticated.message.body" = "Detta kan vara tillfälligt om du är bakom en proxy eller nätverksbegränsning, annars om det kvarstår, ta bort din server och lägg till den igen.";
 "unauthenticated.message.title" = "Du är inte autentiserad";
+"unknownLabel" = "Okänd";
 "updater.check_for_updates_menu.title" = "Sök efter uppdateringar...";
 "updater.no_updates_available.on_latest_version" = "Du har den senaste versionen!";
 "updater.no_updates_available.title" = "Sök efter uppdateringar";
