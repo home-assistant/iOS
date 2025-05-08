@@ -67,7 +67,6 @@ struct LocationPermissionView: View {
                 .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
             Text(verbatim: bullet.text)
                 .font(.body.bold())
-                .foregroundStyle(Color(uiColor: .label))
                 .multilineTextAlignment(.leading)
                 .foregroundStyle(Color(uiColor: .secondaryLabel))
         }
