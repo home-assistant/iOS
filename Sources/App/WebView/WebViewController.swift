@@ -437,7 +437,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         let openInSafariButton = UIButton(type: .custom)
         let image = UIImage(resource: .compass).scaledToSize(.init(width: 7, height: 7))
-            .withTintColor(Asset.Colors.haPrimary.color)
+            .withTintColor(.haPrimary)
         openInSafariButton.setImage(image, for: .normal)
         openInSafariButton.backgroundColor = .white
         openInSafariButton.tintColor = .white
@@ -734,7 +734,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             iconText: nil,
             buttonImage: MaterialDesignIcons.helpCircleIcon.image(
                 ofSize: .init(width: 35, height: 35),
-                color: Asset.Colors.haPrimary.color
+                color: .haPrimary
             ),
             buttonTitle: nil,
             buttonTapHandler: { [weak self] _ in
@@ -767,7 +767,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             iconText: nil,
             buttonImage: MaterialDesignIcons.cogIcon.image(
                 ofSize: CGSize(width: 24, height: 24),
-                color: Asset.Colors.haPrimary.color
+                color: .haPrimary
             ),
             buttonTitle: nil,
             buttonTapHandler: { [weak self] _ in
@@ -795,7 +795,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                         }), label: { EmptyView() })
                     }
                     .padding()
-                    .background(Color.asset(Asset.Colors.haPrimary).opacity(0.2))
+                    .background(Color.haPrimary.opacity(0.2))
                     .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                     .padding(Spaces.one)
                     DebugView()

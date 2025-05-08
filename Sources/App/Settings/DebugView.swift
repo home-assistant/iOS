@@ -79,7 +79,7 @@ struct DebugView: View {
                     } label: {
                         linkContent(
                             image: Image(
-                                uiImage: Asset.SharedAssets.thread.image.withRenderingMode(
+                                uiImage: Asset.thread.image.withRenderingMode(
                                     .alwaysTemplate
                                 )
                             ),
@@ -118,7 +118,7 @@ struct DebugView: View {
                     feedbackGenerator.notificationOccurred(.success)
                     tapsOnCasitaLogo += 1
                 }, label: {
-                    Image(uiImage: Asset.SharedAssets.casita.image)
+                    Image(uiImage: Asset.casita.image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 100, height: 100, alignment: .center)
@@ -136,7 +136,7 @@ struct DebugView: View {
         image: Image,
         title: String,
         imageSize: CGFloat = 18,
-        iconColor: Color = Color.asset(Asset.Colors.haPrimary),
+        iconColor: Color = Color.haPrimary,
         textColor: Color = Color(uiColor: .label),
         showProgressView: Bool? = nil
     ) -> some View {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct TextButton: ButtonStyle {
-    private let backgroundColor = Color.asset(Asset.Colors.haPrimary)
+    private let backgroundColor = Color.haPrimary
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -9,7 +9,7 @@ public struct TextButton: ButtonStyle {
             .multilineTextAlignment(.center)
             .padding(.horizontal, 22)
             .padding(.vertical, 10)
-            .foregroundColor(.asset(Asset.Colors.haPrimary))
+            .foregroundColor(Color.haPrimary)
             .background(configuration.isPressed ? backgroundColor.opacity(0.08) : backgroundColor.opacity(0.12))
             .clipShape(RoundedRectangle(cornerRadius: .infinity))
     }

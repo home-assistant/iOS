@@ -404,8 +404,8 @@ class MenuManager {
 
         Current.macBridge.configureStatusItem(using: AppMacBridgeStatusItemConfiguration(
             isVisible: Current.settingsStore.locationVisibility.isStatusItemVisible,
-            image: Asset.SharedAssets.statusItemIcon.image.cgImage!,
-            imageSize: Asset.SharedAssets.statusItemIcon.image.size,
+            image: Asset.statusItemIcon.image.cgImage!,
+            imageSize: Asset.statusItemIcon.image.size,
             accessibilityLabel: appName,
             items: menuItems,
             primaryActionHandler: { callbackInfo in

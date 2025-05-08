@@ -40,7 +40,7 @@ struct LocationPermissionView: View {
                 ofSize: .init(width: 100, height: 100),
                 color: nil
             ).withRenderingMode(.alwaysTemplate))
-                .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                .foregroundStyle(Color.haPrimary)
             Text(verbatim: permission.title)
                 .font(.title.bold())
             Text(verbatim: permission.enableDescription)
@@ -64,7 +64,7 @@ struct LocationPermissionView: View {
     private func makeBulletRow(_ bullet: PermissionType.BulletPoint) -> some View {
         HStack(spacing: Spaces.one) {
             Image(uiImage: bullet.icon.image(ofSize: .init(width: 35, height: 35), color: .accent))
-                .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                .foregroundStyle(Color.haPrimary)
             Text(verbatim: bullet.text)
                 .font(.body.bold())
                 .multilineTextAlignment(.leading)

@@ -76,7 +76,7 @@ struct WidgetCreationView: View {
                 }
             }
             .frame(width: widthForPreview(), height: heightForPreview())
-            .background(Color.asset(Asset.Colors.primaryBackground))
+            .background(Color.primaryBackground)
             .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.twoAndMicro))
             .shadow(color: .black.opacity(0.1), radius: 2)
             .padding(.vertical)
@@ -143,7 +143,7 @@ struct WidgetCreationView: View {
 
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
-            Image(uiImage: image(for: item, itemInfo: info, color: Asset.Colors.haPrimary.color))
+            Image(uiImage: image(for: item, itemInfo: info, color: .haPrimary))
             Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: SFSymbol.line3Horizontal.rawValue)

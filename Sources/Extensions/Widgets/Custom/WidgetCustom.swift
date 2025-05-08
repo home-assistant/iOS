@@ -37,7 +37,7 @@ struct WidgetCustom: Widget {
         return Link(destination: url.withWidgetAuthenticity()) {
             VStack(spacing: Spaces.two) {
                 Image(systemSymbol: .squareBadgePlusFill)
-                    .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                    .foregroundStyle(Color.haPrimary)
                     .font(.system(size: 55))
                 Text(verbatim: L10n.Widgets.Preview.Empty.Create.button)
                     .foregroundStyle(.secondary)
@@ -82,7 +82,7 @@ struct WidgetCustom: Widget {
                     if let iconColor = magicItem.customization?.iconColor {
                         return Color(hex: iconColor)
                     } else {
-                        return Color.asset(Asset.Colors.haPrimary)
+                        return Color.haPrimary
                     }
                 }()
 
@@ -136,7 +136,7 @@ struct WidgetCustom: Widget {
                 showIconBackground: showIconBackground,
                 textColor: textColor ?? Color(uiColor: .label),
                 iconColor: iconColor,
-                backgroundColor: backgroundColor ?? Color.asset(Asset.Colors.tileBackground),
+                backgroundColor: backgroundColor ?? Color.tileBackground,
                 useCustomColors: useCustomColors,
                 showConfirmation: showConfirmation,
                 requiresConfirmation: magicItem.customization?.requiresConfirmation ?? true,

@@ -9,7 +9,7 @@ struct VolumeView: WKInterfaceObjectRepresentable {
 
     func makeWKInterfaceObject(context: Self.Context) -> WKInterfaceVolumeControl {
         let view = WKInterfaceVolumeControl(origin: .local)
-        view.setTintColor(Asset.Colors.haPrimary.color)
+        view.setTintColor(UIColor(Color.haPrimary))
         return view
     }
 

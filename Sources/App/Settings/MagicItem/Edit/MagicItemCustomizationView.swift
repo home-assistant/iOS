@@ -123,7 +123,7 @@ struct MagicItemCustomizationView: View {
                         if let iconColorHex = viewModel.item.customization?.iconColor {
                             return Color(hex: iconColorHex)
                         } else {
-                            return Color(uiColor: Asset.Colors.haPrimary.color)
+                            return Color.haPrimary
                         }
                     }, set: { _ in
                         /* no-op */
@@ -156,7 +156,7 @@ struct MagicItemCustomizationView: View {
     private func customizationView(info: MagicItem.Info) -> some View {
         Section {
             ColorPicker(L10n.MagicItem.IconColor.title, selection: .init(get: {
-                var color = Color(uiColor: Asset.Colors.haPrimary.color)
+                var color = Color.haPrimary
                 if let configIconColor = viewModel.item.customization?.iconColor {
                     color = Color(hex: configIconColor)
                 } else {

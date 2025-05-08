@@ -24,7 +24,7 @@ struct OnboardingWelcomeView: View {
     }
 
     private var logoBlock: some View {
-        Image(uiImage: Asset.SharedAssets.logoHorizontalText.image)
+        Image(uiImage: Asset.logoHorizontalText.image)
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: 300)
@@ -51,7 +51,7 @@ struct OnboardingWelcomeView: View {
             Button(L10n.Onboarding.Welcome.learnMore) {
                 showLearnMore = true
             }
-            .tint(Color.asset(Asset.Colors.haPrimary))
+            .tint(Color.haPrimary)
             .frame(minHeight: 40)
             .buttonStyle(.secondaryButton)
         }

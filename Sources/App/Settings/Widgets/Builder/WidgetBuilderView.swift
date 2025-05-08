@@ -57,7 +57,7 @@ struct WidgetBuilderView: View {
                 ZStack(alignment: .topTrailing) {
                     Image(uiImage: MaterialDesignIcons.widgetsIcon.image(
                         ofSize: .init(width: 80, height: 80),
-                        color: Asset.Colors.haPrimary.color
+                        color: .haPrimary
                     ))
                     Text("BETA")
                         .font(.caption)

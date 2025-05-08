@@ -229,16 +229,16 @@ struct WidgetBasicView: View {
             } else {
                 return AnyView(
                     checkmarkImage
-                        .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                        .foregroundStyle(Color.haPrimary)
                         .frame(maxWidth: .infinity)
                         // Mimic default widget button style
                         .frame(height: 30)
-                        .background(sizeStyle == .compressed ? nil : Color.asset(Asset.Colors.haPrimary).opacity(0.1))
+                        .background(sizeStyle == .compressed ? nil : Color.haPrimary.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                 )
             }
         }()
-        let confirmationColor = Color.asset(Asset.Colors.haPrimary)
+        let confirmationColor = Color.haPrimary
         if sizeStyle == .compressed {
             compressedConfirmationForm(
                 model: model,

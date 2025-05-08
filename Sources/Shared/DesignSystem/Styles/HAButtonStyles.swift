@@ -16,7 +16,7 @@ public struct HAButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .frame(height: HAButtonStylesConstants.height)
-            .background(isEnabled ? Color.asset(Asset.Colors.haPrimary) : Color.gray)
+            .background(isEnabled ? Color.haPrimary : Color.gray)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
     }
@@ -58,7 +58,7 @@ public struct HASecondaryButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.callout.bold())
-            .foregroundColor(Color.asset(Asset.Colors.haPrimary))
+            .foregroundColor(Color.haPrimary)
             .frame(maxWidth: .infinity)
             .frame(height: HAButtonStylesConstants.height)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
@@ -87,7 +87,7 @@ public struct HAPillButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .padding(.vertical, Spaces.one)
             .padding(.horizontal, Spaces.oneAndHalf)
-            .background(Color.asset(Asset.Colors.haPrimary))
+            .background(Color.haPrimary)
             .frame(alignment: .leading)
             .clipShape(Capsule())
     }
@@ -115,7 +115,7 @@ public struct HALinkButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.footnote)
-            .foregroundColor(Color.asset(Asset.Colors.haPrimary))
+            .foregroundColor(Color.haPrimary)
             .frame(maxWidth: .infinity)
     }
 }

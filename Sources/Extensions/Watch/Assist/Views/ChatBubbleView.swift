@@ -26,7 +26,7 @@ struct ChatBubbleView: View {
     private func backgroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
         switch itemType {
         case .input:
-            .asset(Asset.Colors.haPrimary)
+            .haPrimary
         case .output, .typing:
             .gray
         case .error:

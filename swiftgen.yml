@@ -28,7 +28,6 @@ strings:
 xcassets:
   inputs:
     - Sources/Shared/Assets/SharedAssets.xcassets
-    - Sources/Shared/Assets/Colors.xcassets
   outputs:
     templateName: swift5
     output: Sources/Shared/Assets/Assets.swift

@@ -54,7 +54,7 @@ public struct Style {
         Self.onboardingButton(button)
 
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = Asset.Colors.haPrimary.color
+        button.backgroundColor = .haPrimary
 
         button.setBackgroundImage(
             UIImage(size: CGSize(width: 1, height: 1), color: .white),

@@ -58,7 +58,7 @@ struct GeneralSettingsView: View {
                     HStack(spacing: Spaces.two) {
                         RoundedRectangle(cornerRadius: CornerRadiusSizes.half)
                             .frame(width: 18, height: 18)
-                            .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                            .foregroundStyle(Color.haPrimary)
                         Text(L10n.SettingsDetails.General.AppIcon.title)
                     }
                 }

@@ -165,7 +165,7 @@ struct WatchAssistView: View {
                             value: viewModel.state
                         )
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
+                        .foregroundStyle(.white, Color.haPrimary)
                 } else {
                     Image(systemSymbol: .waveformCircleFill)
                         .font(.system(size: 50))
@@ -218,7 +218,7 @@ struct WatchAssistView: View {
     private var emptyState: some View {
         HStack {
             Spacer()
-            Image(uiImage: Asset.SharedAssets.casitaDark.image)
+            Image(uiImage: Asset.casitaDark.image)
                 .resizable()
                 .frame(
                     width: 70,

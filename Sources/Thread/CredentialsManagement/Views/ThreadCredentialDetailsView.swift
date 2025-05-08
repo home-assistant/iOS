@@ -78,7 +78,7 @@ struct ThreadCredentialDetailsView: View {
     private var actionButtonbackgroundColor: some View {
         switch actionButtonState {
         case .standard, .loading:
-            Color.asset(Asset.Colors.haPrimary)
+            Color.haPrimary
         case .success:
             Color.green
         case .error:

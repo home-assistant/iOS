@@ -92,7 +92,7 @@ struct DownloadManagerView: View {
                         .truncationMode(.middle)
                         .padding()
                         .foregroundStyle(.white)
-                        .background(Color.asset(Asset.Colors.haPrimary))
+                        .background(Color.haPrimary)
                         .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                         .padding()
                         .onAppear {

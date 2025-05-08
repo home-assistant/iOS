@@ -32,7 +32,7 @@ extension WebViewController {
             iconText: nil,
             buttonImage: MaterialDesignIcons.arrowRightBoldCircleIcon.image(
                 ofSize: .init(width: 35, height: 35),
-                color: Asset.Colors.haPrimary.color
+                color: .haPrimary
             ),
             buttonTitle: nil,
             buttonTapHandler: { _ in

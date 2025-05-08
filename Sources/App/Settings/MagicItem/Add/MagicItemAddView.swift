@@ -239,7 +239,7 @@ struct MagicItemRow: View {
                 if showIcon, let entityIcon {
                     Image(uiImage: entityIcon.image(
                         ofSize: .init(width: 24, height: 24),
-                        color: Asset.Colors.haPrimary.color
+                        color: UIColor(Color.haPrimary)
                     ))
                 }
             }
