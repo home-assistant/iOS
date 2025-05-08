@@ -1,6 +1,7 @@
 import ClockKit
 import Foundation
 import Shared
+import SwiftUICore
 
 enum AssistDefaultComplication {
     static let title = "Assist"
@@ -16,7 +17,7 @@ enum AssistDefaultComplication {
 
     static func createAssistTemplate(for family: CLKComplicationFamily) -> CLKComplicationTemplate {
         let assistIcon = MaterialDesignIcons.messageProcessingOutlineIcon
-        let iconColor = Asset.Colors.haPrimary.color
+        let iconColor = UIColor(Color.haPrimary)
         var bigIcon: UIImage {
             assistIcon.image(
                 ofSize: .init(width: 34, height: 34), color: iconColor

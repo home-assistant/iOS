@@ -24,12 +24,12 @@ struct AssistMicAnimationView: View {
     private var content: some View {
         if #available(iOS 18, *) {
             icon
-                .foregroundStyle(Color(uiColor: .systemBackground), Color.asset(Asset.Colors.haPrimary))
+                .foregroundStyle(Color(uiColor: .systemBackground), Color.haPrimary)
                 .symbolEffect(.breathe.pulse, options: .repeat(.continuous), value: isAnimating)
         } else {
             VStack(spacing: Spaces.one) {
                 icon
-                    .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+                    .foregroundStyle(Color.haPrimary)
                 Text(verbatim: L10n.Assist.Button.Listening.title)
                     .opacity(0.5)
                     .padding(.bottom)

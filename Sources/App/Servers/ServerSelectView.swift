@@ -60,7 +60,7 @@ struct ServerSelectView: View {
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     if includeSettings {
-                        SettingsButton(tint: Color(uiColor: Asset.Colors.haPrimary.color)) {
+                        SettingsButton(tint: Color.haPrimary) {
                             dismiss()
                             Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
                                 .done { controller in
@@ -103,7 +103,7 @@ struct ServerSelectViewRow: View {
                 Image(systemSymbol: selected ? .checkmarkCircleFill : .circle)
             }
         })
-        .tint(Color.asset(Asset.Colors.haPrimary))
+        .tint(Color.haPrimary)
         .onAppear {
             updateSelectionIndicator()
             loadUserNameAndProfilePicture()
@@ -127,7 +127,7 @@ struct ServerSelectViewRow: View {
         .clipShape(Circle())
         .overlay(
             Circle()
-                .stroke(Color.asset(Asset.Colors.haPrimary), lineWidth: 2)
+                .stroke(Color.haPrimary, lineWidth: 2)
         )
     }
 

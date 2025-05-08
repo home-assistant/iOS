@@ -26,7 +26,7 @@ struct ControlScene: ControlWidget {
                 // ControlWidget can only display SF Symbol
                 Label(template.intentSceneEntity.displayString, systemImage: template.icon.id)
             }
-            .tint(.init(uiColor: Asset.Colors.haPrimary.color))
+            .tint(.haPrimary)
         }
         .displayName(.init(stringLiteral: L10n.Widgets.Controls.Scene.displayName))
         .description(.init(stringLiteral: L10n.Widgets.Controls.Scene.description))

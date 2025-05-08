@@ -5,7 +5,7 @@ public extension Color {
     init(hex: String?) {
         guard let hex else {
             Current.Log.error("No hex provided when initializing color")
-            self.init(uiColor: Asset.Colors.haPrimary.color)
+            self.init(uiColor: UIColor(Color.haPrimary))
             return
         }
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -22,7 +22,7 @@ public extension Color {
 
         guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else {
             Current.Log.error("Invalid hex color: \(hexSanitized)")
-            self.init(uiColor: Asset.Colors.haPrimary.color)
+            self.init(uiColor: UIColor(Color.haPrimary))
             return
         }
 
@@ -39,7 +39,7 @@ public extension Color {
 
         } else {
             Current.Log.error("Invalid hex color (2): \(hexSanitized)")
-            self.init(uiColor: Asset.Colors.haPrimary.color)
+            self.init(uiColor: UIColor(Color.haPrimary))
             return
         }
 

@@ -22,7 +22,7 @@ public struct CardView<Content: View>: View {
         .overlay(
             RoundedRectangle(cornerRadius: HACornerRadius.standard)
                 .stroke(
-                    Color(Asset.Colors.onSurface.name), lineWidth: 1
+                    Color.onSurface, lineWidth: 1
                 )
         )
     }

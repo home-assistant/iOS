@@ -17,7 +17,7 @@ struct AboutView: View {
             AppleLikeListTopRowHeader(
                 image: nil,
                 headerImageAlternativeView: AnyView(
-                    Image(uiImage: Asset.SharedAssets.logo.image)
+                    Image(uiImage: Asset.logo.image)
                         .resizable()
                         .scaledToFit()
                         .frame(height: 100)

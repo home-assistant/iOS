@@ -125,7 +125,7 @@ struct ConnectionErrorDetailsView: View {
     private var headerView: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                Image(uiImage: Asset.SharedAssets.logo.image.withRenderingMode(.alwaysTemplate))
+                Image(uiImage: Asset.logo.image.withRenderingMode(.alwaysTemplate))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(.white)
@@ -142,7 +142,7 @@ struct ConnectionErrorDetailsView: View {
         .frame(maxWidth: .infinity)
         .frame(minHeight: 140)
         .padding()
-        .background(Color.asset(Asset.Colors.haPrimary))
+        .background(Color.haPrimary)
     }
 
     @ViewBuilder
@@ -171,7 +171,7 @@ struct ConnectionErrorDetailsView: View {
         ActionLinkButton(
             icon: Image(systemSymbol: .docOnDoc),
             title: L10n.Connection.Error.Details.Button.clipboard,
-            tint: .init(uiColor: Asset.Colors.haPrimary.color)
+            tint: .haPrimary
         ) {
             UIPasteboard.general
                 .string =
@@ -193,7 +193,7 @@ struct ConnectionErrorDetailsView: View {
         ActionLinkButton(
             icon: Image(systemSymbol: .squareAndArrowUp),
             title: Current.Log.exportTitle,
-            tint: .init(uiColor: Asset.Colors.haPrimary.color)
+            tint: .haPrimary
         ) {
             if Current.isCatalyst, let logsURL = Current.Log.archiveURL() {
                 UIApplication.shared.open(logsURL)
@@ -211,7 +211,7 @@ struct ConnectionErrorDetailsView: View {
                 color: .label
             )),
             title: L10n.ConnectionError.OpenSettings.title,
-            tint: .init(uiColor: Asset.Colors.haPrimary.color)
+            tint: .haPrimary
         ) {
             openSettings()
         }
@@ -223,7 +223,7 @@ struct ConnectionErrorDetailsView: View {
             icon: Image(systemSymbol: .docTextFill),
             title: L10n.Connection.Error.Details.Button.doc,
             url: ExternalLink.companionAppDocs,
-            tint: .init(uiColor: Asset.Colors.haPrimary.color)
+            tint: .haPrimary
         )
     }
 

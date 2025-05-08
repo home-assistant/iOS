@@ -14,13 +14,13 @@ public struct ExternalLinkButton: View {
         )),
         title: String,
         url: URL,
-        tint: Color = Color(uiColor: Asset.Colors.haPrimary.color),
+        tint: Color? = nil,
         background: Color = Color(uiColor: .secondarySystemBackground)
     ) {
         self.icon = icon
         self.title = title
         self.url = url
-        self.tint = tint
+        self.tint = tint ?? .haPrimary
         self.background = background
     }
 

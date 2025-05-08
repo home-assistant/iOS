@@ -9,7 +9,7 @@ struct ImprovSuccessView: View {
             ZStack(alignment: .bottomTrailing) {
                 Image(systemName: "wifi.circle.fill")
                     .font(.system(size: 100))
-                    .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
+                    .foregroundStyle(.white, Color.haPrimary)
                 Image(systemName: "checkmark.circle.fill")
                     .font(.system(size: 35))
                     .foregroundStyle(.white, .green)

@@ -683,13 +683,13 @@
 		4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
 		4264906E2C0F1B8B002155CC /* WatchAssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4264906D2C0F1B8B002155CC /* WatchAssistViewModel.swift */; };
 		4264906F2C0F1CCA002155CC /* View+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */; };
-		426490702C0F1CFF002155CC /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		426490712C0F1E62002155CC /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		426490732C0F1F36002155CC /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		426490752C0F20FF002155CC /* WatchAssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490742C0F20FF002155CC /* WatchAssistView+Build.swift */; };
 		426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490762C0F2403002155CC /* WatchAudioRecorder.swift */; };
 		4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
+		426B73E52DCCE2C7003F778E /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C42D393F0E0062D905 /* EntityPicker.swift */; };
 		426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */; };
 		426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB692C9C543F003CA3AC /* ControlSwitchValueProvider.swift */; };
@@ -897,7 +897,6 @@
 		42D996E62D89863A001737A0 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
 		42DB4D0B2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */; };
 		42DB4D0C2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */; };
-		42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */; };
 		42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */; };
 		42DD84192B14D83B00936F16 /* WebViewExternalBusMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */; };
 		42DE75D32D1061A600FF379F /* PanelsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DE75D12D105F3000FF379F /* PanelsUpdater.swift */; };
@@ -905,6 +904,9 @@
 		42DEDA9B2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */; };
 		42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2E2CCF918D00D7EC14 /* BluetoothPermissionView.swift */; };
+		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
+		42E0D82C2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
+		42E0D82D2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		42E3B8B92D8AC63300F5D084 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
 		42E3B8BA2D8AC63300F5D084 /* Float+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8B82D8AC63300F5D084 /* Float+HA.swift */; };
 		42E3B8C02D8ACE0400F5D084 /* OptionalsDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */; };
@@ -2323,7 +2325,6 @@
 		42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddView.swift; sourceTree = "<group>"; };
 		42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddViewModel.swift; sourceTree = "<group>"; };
 		42D996E42D89863A001737A0 /* Bool+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+HA.swift"; sourceTree = "<group>"; };
-		42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorAsset.swift"; sourceTree = "<group>"; };
 		42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessage.swift; sourceTree = "<group>"; };
 		42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalBusMessageTests.swift; sourceTree = "<group>"; };
 		42DD84322B15DC2F00936F16 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Intents.strings; sourceTree = "<group>"; };
@@ -4688,7 +4689,6 @@
 			children = (
 				46C62BA02D8A3792002C0001 /* SnapshottablePreviewConfigurations.swift */,
 				42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */,
-				42DD84122B14ACAB00936F16 /* Color+ColorAsset.swift */,
 				429C721F2B28D0EC00BCD558 /* Haptics.swift */,
 			);
 			path = Utilities;
@@ -6515,6 +6515,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */,
+				42E0D82D2DCCE5900095A245 /* Colors.xcassets in Resources */,
 				422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */,
 				177E4B39B7BA296CCB68A27D /* Pods-iOS-Extensions-Widgets-metadata.plist in Resources */,
 			);
@@ -6625,6 +6626,7 @@
 				B60616801D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav in Resources */,
 				B60616421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav in Resources */,
 				B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */,
+				426B73E52DCCE2C7003F778E /* SharedAssets.xcassets in Resources */,
 				B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */,
 				B60616B71D1F117800249C11 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */,
 				B60616901D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav in Resources */,
@@ -6653,6 +6655,7 @@
 				B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */,
 				B60616541D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav in Resources */,
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
+				42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
@@ -6770,6 +6773,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */,
+				42E0D82C2DCCE5900095A245 /* Colors.xcassets in Resources */,
 				404C79802C3491390010EB81 /* Localizable.strings in Resources */,
 				B6CC5D862159D10D00833E5D /* Interface.storyboard in Resources */,
 			);
@@ -7920,7 +7924,6 @@
 				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
-				426490702C0F1CFF002155CC /* Color+ColorAsset.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
@@ -8195,7 +8198,6 @@
 				42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */,
 				42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */,
 				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
-				42DD84132B14ACAB00936F16 /* Color+ColorAsset.swift in Sources */,
 				4251AAC02C6CE376004CCC9D /* MagicItem.swift in Sources */,
 				115560E827011E3300A8F818 /* HAPanel.swift in Sources */,
 				420CFC812D3F9D89009A94F3 /* DatabaseTables.swift in Sources */,

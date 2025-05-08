@@ -19,7 +19,7 @@ struct PermissionRequestView: View {
     let continueAction: () -> Void
     let dismissAction: (() -> Void)?
 
-    @State private var accentColor: UIColor = Asset.Colors.haPrimary.color
+    @State private var accentColor: UIColor = .haPrimary
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack {

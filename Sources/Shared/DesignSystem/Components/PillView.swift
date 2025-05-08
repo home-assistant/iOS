@@ -14,7 +14,7 @@ public struct PillView: View {
             .foregroundStyle(selected ? .white : Color(uiColor: .label))
             .padding(Spaces.one)
             .padding(.horizontal)
-            .background(selected ? Color.asset(Asset.Colors.haPrimary) : Color.secondary.opacity(0.1))
+            .background(selected ? Color.haPrimary : Color.secondary.opacity(0.1))
             .clipShape(Capsule())
     }
 }

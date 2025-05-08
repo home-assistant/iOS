@@ -22,13 +22,13 @@ struct TileCardStyleModifier: ViewModifier {
                 if model.useCustomColors {
                     return model.backgroundColor
                 } else {
-                    return Color.asset(Asset.Colors.tileBackground)
+                    return .tileBackground
                 }
             }())
             .clipShape(RoundedRectangle(cornerRadius: sizeStyle == .compressed ? .zero : 14))
             .overlay {
                 RoundedRectangle(cornerRadius: sizeStyle == .compressed ? .zero : 14)
-                    .stroke(Color.asset(Asset.Colors.tileBorder), lineWidth: sizeStyle == .single ? 0 : 1)
+                    .stroke(Color.tileBorder, lineWidth: sizeStyle == .single ? 0 : 1)
                     .modify { view in
                         if #available(iOS 18, *) {
                             view.widgetAccentable()

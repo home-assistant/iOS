@@ -217,7 +217,7 @@ struct AssistView: View {
         .frame(maxWidth: viewModel.isRecording ? 0 : nil)
         .opacity(viewModel.isRecording ? 0 : 1)
         .font(.system(size: 32))
-        .tint(Color.asset(Asset.Colors.haPrimary))
+        .tint(Color.haPrimary)
         .animation(.smooth, value: viewModel.isRecording)
         .keyboardShortcut(.defaultAction)
     }
@@ -245,13 +245,13 @@ struct AssistView: View {
     private var sendIcon: some View {
         Image(uiImage: MaterialDesignIcons.sendIcon.image(ofSize: iconSize, color: iconColor))
             .symbolRenderingMode(.palette)
-            .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
+            .foregroundStyle(.white, Color.haPrimary)
     }
 
     private func backgroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
         switch itemType {
         case .input:
-            .asset(Asset.Colors.haPrimary)
+            .haPrimary
         case .output:
             .gray
         case .error:

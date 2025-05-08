@@ -85,7 +85,7 @@ class AccountCell: Cell<AccountRowValue>, CellType {
                 imageView.image = imageView.image?.croppedToCircle()
 
                 if showHACloudBadge {
-                    let badgeImage = Asset.SharedAssets.haCloudLogo.image
+                    let badgeImage = Asset.haCloudLogo.image
                     let haCloudBadge = UIImageView(image: badgeImage)
                     imageView.addSubview(haCloudBadge)
                     imageView.contentMode = .scaleAspectFit

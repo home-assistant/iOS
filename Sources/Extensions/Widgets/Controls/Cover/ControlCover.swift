@@ -26,7 +26,7 @@ struct ControlCover: ControlWidget {
             }()) {
                 Label(template.name, systemImage: template.icon.id)
             }
-            .tint(Color.asset(Asset.Colors.haPrimary))
+            .tint(Color.haPrimary)
         }
         .displayName(.init(stringLiteral: L10n.Widgets.Controls.Cover.title))
         .description(.init(stringLiteral: L10n.Widgets.Controls.Cover.description))

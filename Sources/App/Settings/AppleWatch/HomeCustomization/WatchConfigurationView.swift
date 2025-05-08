@@ -272,7 +272,7 @@ struct WatchConfigurationView: View {
             if viewModel.watchConfig.assist.showAssist {
                 Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
                     ofSize: .init(width: 18, height: 18),
-                    color: Asset.Colors.haPrimary.color
+                    color: .haPrimary
                 ))
                 .padding(Spaces.one)
                 .background(.regularMaterial)

@@ -33,14 +33,14 @@ struct OnboardingScanningInstanceRow: View {
 
     private var icon: some View {
         ZStack {
-            Image(uiImage: Asset.SharedAssets.logo.image)
+            Image(uiImage: Asset.logo.image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 30, height: 30)
                 .padding(.trailing, Spaces.one)
             if internalURLString == nil, externalURLString != nil {
                 Image(systemSymbol: .icloudCircleFill)
-                    .foregroundStyle(Color(uiColor: Asset.Colors.haPrimary.color), .white)
+                    .foregroundStyle(Color.haPrimary, .white)
                     .offset(x: 8, y: 12)
                     .shadow(color: .black.opacity(0.2), radius: 5)
             }

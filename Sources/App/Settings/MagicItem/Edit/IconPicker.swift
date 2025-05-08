@@ -89,7 +89,7 @@ struct IconPickerRow: View {
                 if showIcon {
                     Image(uiImage: icon.image(
                         ofSize: .init(width: 30, height: 30),
-                        color: Asset.Colors.haPrimary.color
+                        color: .haPrimary
                     ))
                     .frame(alignment: .leading)
                 }

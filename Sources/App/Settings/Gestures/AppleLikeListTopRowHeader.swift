@@ -22,7 +22,7 @@ struct AppleLikeListTopRowHeader: View {
     var body: some View {
         VStack(spacing: Spaces.two) {
             if let image {
-                Image(uiImage: image.image(ofSize: .init(width: 80, height: 80), color: Asset.Colors.haPrimary.color))
+                Image(uiImage: image.image(ofSize: .init(width: 80, height: 80), color: .haPrimary))
                     .frame(maxWidth: .infinity, alignment: .center)
             } else if let headerImageAlternativeView {
                 headerImageAlternativeView

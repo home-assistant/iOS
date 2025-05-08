@@ -13,7 +13,7 @@ struct NoActiveURLView: View {
             VStack {
                 VStack {
                     header
-                    Image(imageAsset: Asset.SharedAssets.logo)
+                    Image(imageAsset: Asset.logo)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -123,7 +123,7 @@ struct NoActiveURLView: View {
             VStack {
                 Image(systemSymbol: icon)
                     .font(.title)
-                    .foregroundStyle(Color(uiColor: Asset.Colors.haPrimary.color))
+                    .foregroundStyle(Color.haPrimary)
             }
             .frame(width: 30, height: 30)
             Text(text)
