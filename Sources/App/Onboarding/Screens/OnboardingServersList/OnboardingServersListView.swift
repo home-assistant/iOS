@@ -34,7 +34,7 @@ struct OnboardingServersListView: View {
                     Button(action: {
                         showDocumentation = true
                     }, label: {
-                        Image(uiImage: MaterialDesignIcons.bookOpenPageVariantIcon.image(
+                        Image(uiImage: MaterialDesignIcons.helpCircleOutlineIcon.image(
                             ofSize: .init(width: 25, height: 25),
                             color: .accent
                         ))
