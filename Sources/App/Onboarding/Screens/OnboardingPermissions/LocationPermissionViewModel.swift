@@ -66,7 +66,7 @@ extension LocationPermissionViewModel: CLLocationManagerDelegate {
         case .restricted:
             break
         case .denied:
-            break
+            disableLocationSensor()
         case .authorizedAlways:
             break
         case .authorizedWhenInUse:

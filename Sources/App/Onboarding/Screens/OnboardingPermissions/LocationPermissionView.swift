@@ -43,37 +43,49 @@ struct LocationPermissionView: View {
                 .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
             Text(verbatim: permission.title)
                 .font(.title.bold())
-            Text(verbatim: L10n.Onboarding.Permission.Location.description)
+            Text(verbatim: permission.enableDescription)
                 .multilineTextAlignment(.center)
                 .opacity(0.5)
-            PrivacyNoteView(content: L10n.Onboarding.Permission.Location.privacyNote)
+            bullets
+                .padding(.top, Spaces.one)
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
 
+    private var bullets: some View {
+        VStack(alignment: .leading) {
+            ForEach(permission.enableBulletPoints, id: \.id) { bullet in
+                makeBulletRow(bullet)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func makeBulletRow(_ bullet: PermissionType.BulletPoint) -> some View {
+        HStack(spacing: Spaces.one) {
+            Image(uiImage: bullet.icon.image(ofSize: .init(width: 35, height: 35), color: .accent))
+                .foregroundStyle(Color.asset(Asset.Colors.haPrimary))
+            Text(verbatim: bullet.text)
+                .font(.body.bold())
+                .foregroundStyle(Color(uiColor: .label))
+                .multilineTextAlignment(.leading)
+                .foregroundStyle(Color(uiColor: .secondaryLabel))
+        }
+    }
+
     private var actionButtons: some View {
-        VStack(spacing: Spaces.one) {
-            Button {
+        VStack(spacing: Spaces.two) {
+            Button(action: {
                 viewModel.enableLocationSensor()
                 viewModel.requestLocationPermission()
-            } label: {
-                Text(L10n.Onboarding.Permission.Location.Buttons.allowAndShare)
-            }
+            }, label: {
+                Text(L10n.continueLabel)
+            })
             .buttonStyle(.primaryButton)
-            Button {
-                viewModel.disableLocationSensor()
-                viewModel.requestLocationPermission()
-            } label: {
-                Text(L10n.Onboarding.Permission.Location.Buttons.allowForApp)
-            }
-            .buttonStyle(.primaryButton)
-            Button {
-                viewModel.disableLocationSensor()
-                viewModel.showDenyAlert = true
-            } label: {
-                Text(L10n.Onboarding.Permission.Location.Buttons.deny)
-            }
-            .buttonStyle(.secondaryNegativeButton)
+            Button(action: {}, label: {
+                Text(L10n.Onboarding.Permissions.changeLaterNote)
+            })
+            .buttonStyle(.linkButton)
         }
     }
 }
