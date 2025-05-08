@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct HAProgressView: View {
-    enum Style {
+public struct HAProgressView: View {
+    public enum Style {
         case small
         case medium
 
@@ -25,17 +25,19 @@ struct HAProgressView: View {
     }
 
     @State private var isAnimating = false
+    @State private var trimEnd: CGFloat = 0.0
+
     let style: Style
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             Circle()
-                .stroke(Color(uiColor: .secondarySystemBackground), style: StrokeStyle(lineWidth: style.lineWidth))
+                .stroke(Color.track, style: StrokeStyle(lineWidth: style.lineWidth))
                 .frame(width: style.size.width, height: style.size.height)
             Circle()
-                .trim(from: 0.0, to: 0.7)
+                .trim(from: 0.0, to: trimEnd)
                 .stroke(
-                    Color.asset(Asset.Colors.haPrimary),
+                    Color.haPrimary,
                     style: StrokeStyle(lineWidth: style.lineWidth, lineCap: .round)
                 )
                 .frame(width: style.size.width, height: style.size.height)
@@ -43,13 +45,16 @@ struct HAProgressView: View {
                 .animation(Animation.linear(duration: 1).repeatForever(autoreverses: false), value: isAnimating)
                 .onAppear {
                     isAnimating = true
+                    withAnimation(.easeInOut(duration: 1.75).repeatForever(autoreverses: true)) {
+                        trimEnd = 0.7
+                    }
                 }
         }
     }
 }
 
 #Preview {
-    HStack {
+    HStack(spacing: Spaces.two) {
         HAProgressView(style: .small)
         HAProgressView(style: .medium)
     }

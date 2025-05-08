@@ -27,6 +27,7 @@ public enum Asset {
     public static let tileBorder = ColorAsset(name: "tileBorder")
     public static let haPrimary = ColorAsset(name: "haPrimary")
     public static let onSurface = ColorAsset(name: "onSurface")
+    public static let trackColor = ColorAsset(name: "trackColor")
   }
   public enum SharedAssets {
     public static let logo = ImageAsset(name: "Logo")

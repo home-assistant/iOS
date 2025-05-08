@@ -796,6 +796,7 @@
 		429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */; };
 		429BEA1D2D10315F00F070F9 /* SheetCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */; };
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
+		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		42A2AB7C2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
 		42A2AB7D2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
 		42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2AB7F2C80751E00C5608D /* ControlAssist.swift */; };
@@ -8098,6 +8099,7 @@
 				42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */,
 				4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */,
 				42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */,
+				429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */,
 				4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */,
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
