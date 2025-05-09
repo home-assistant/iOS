@@ -4,23 +4,24 @@ public struct HAProgressView: View {
     public enum Style {
         case small
         case medium
+        case large
+        case extraLarge
 
         var size: CGSize {
             switch self {
             case .small:
-                return CGSize(width: 40, height: 40)
+                return CGSize(width: 24, height: 24)
             case .medium:
-                return CGSize(width: 60, height: 60)
+                return CGSize(width: 28, height: 28)
+            case .large:
+                return CGSize(width: 48, height: 48)
+            case .extraLarge:
+                return CGSize(width: 68, height: 68)
             }
         }
 
         var lineWidth: CGFloat {
-            switch self {
-            case .small:
-                return 5
-            case .medium:
-                return 7
-            }
+            4
         }
     }
 
@@ -28,6 +29,10 @@ public struct HAProgressView: View {
     @State private var trimEnd: CGFloat = 0.0
 
     let style: Style
+
+    public init(style: Style = .medium) {
+        self.style = style
+    }
 
     public var body: some View {
         ZStack {
@@ -57,5 +62,7 @@ public struct HAProgressView: View {
     HStack(spacing: Spaces.two) {
         HAProgressView(style: .small)
         HAProgressView(style: .medium)
+        HAProgressView(style: .large)
+        HAProgressView(style: .extraLarge)
     }
 }
