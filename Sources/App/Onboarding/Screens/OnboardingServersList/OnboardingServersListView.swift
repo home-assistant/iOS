@@ -7,27 +7,40 @@ struct OnboardingServersListView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     @EnvironmentObject var hostingProvider: ViewControllerProvider
-    @StateObject private var viewModel = OnboardingServersListViewModel()
+    @StateObject private var viewModel: OnboardingServersListViewModel
 
     @State private var showDocumentation = false
     @State private var showManualInput = false
     @State private var screenLoaded = false
 
-    @Binding var shouldDismissOnboarding: Bool
+    let prefillURL: URL?
+
+    init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false) {
+        self.prefillURL = prefillURL
+        self._viewModel = .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
+    }
 
     var body: some View {
         List {
-            headerView
-            list
-            manualInputButton
+            if let prefillURL {
+                prefillURLHeader(url: prefillURL)
+            } else {
+                headerView
+                list
+                manualInputButton
+            }
         }
         .animation(.easeInOut, value: viewModel.discoveredInstances.count)
-        .navigationTitle(L10n.Onboarding.Scanning.title)
+        .navigationTitle(prefillURL == nil ? L10n.Onboarding.Scanning.title : "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                // Loading happens when URL is manually inputed by user
-                if viewModel.isLoading {
+                if prefillURL != nil {
+                    CloseButton {
+                        dismiss()
+                    }
+                } else if viewModel.isLoading {
+                    // Loading happens when URL is manually inputed by user
                     ProgressView()
                         .progressViewStyle(.circular)
                 } else {
@@ -50,6 +63,11 @@ struct OnboardingServersListView: View {
         }
         .onDisappear {
             onDisappear()
+        }
+        .onChange(of: viewModel.shouldDismiss) { newValue in
+            if newValue {
+                dismiss()
+            }
         }
         .sheet(isPresented: $viewModel.showError) {
             errorView
@@ -75,13 +93,44 @@ struct OnboardingServersListView: View {
     private func onAppear() {
         if !screenLoaded {
             screenLoaded = true
-            viewModel.startDiscovery()
+            if let prefillURL {
+                viewModel.selectInstance(
+                    .init(manualURL: prefillURL),
+                    controller: hostingProvider.viewController
+                )
+            } else {
+                viewModel.startDiscovery()
+            }
         }
     }
 
     private func onDisappear() {
         viewModel.stopDiscovery()
         viewModel.currentlyInstanceLoading = nil
+    }
+
+    @ViewBuilder
+    private func prefillURLHeader(url: URL) -> some View {
+        AppleLikeListTopRowHeader(
+            image: nil,
+            headerImageAlternativeView: AnyView(
+                Image(uiImage: Asset.logo.image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 80, height: 80)
+            ),
+            title: "Home Assistant Invite",
+            subtitle: url.absoluteString
+        )
+        Section {
+            Button {
+                viewModel.selectInstance(.init(manualURL: url), controller: hostingProvider.viewController)
+            } label: {
+                Text("Accept")
+            }
+            .buttonStyle(.primaryButton)
+            .listRowBackground(Color.clear)
+        }
     }
 
     @ViewBuilder

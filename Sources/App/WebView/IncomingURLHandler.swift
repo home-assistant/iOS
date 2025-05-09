@@ -21,9 +21,11 @@ class IncomingURLHandler {
         case performAction = "perform_action"
         case assist
         case navigate
+        case invite
         case createCustomWidget = "createcustomwidget"
     }
 
+    // swiftlint:disable cyclomatic_complexity
     @discardableResult
     func handle(url: URL) -> Bool {
         Current.Log.verbose("Received URL: \(url)")
@@ -154,6 +156,26 @@ class IncomingURLHandler {
                             }
                         ))
                         webViewController.presentOverlayController(controller: controller, animated: true)
+                    }
+            case .invite:
+                // homeassistant://invite?url=https://example.com
+                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                      let queryParameters = components.queryItems else {
+                    return false
+                }
+
+                let inviteUrl = queryParameters.first(where: { $0.name == "url" })?.value ?? ""
+
+                let navigationView = NavigationView {
+                    OnboardingServersListView(prefillURL: URL(string: inviteUrl), shouldDismissOnSuccess: true)
+                }
+
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        webViewController.presentOverlayController(
+                            controller: navigationView.embeddedInHostingController(),
+                            animated: true
+                        )
                     }
             }
         } else {

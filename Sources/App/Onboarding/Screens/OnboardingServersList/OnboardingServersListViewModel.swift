@@ -17,6 +17,7 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var error: Error?
 
     @Published var showPermissionsFlow = false
+    @Published var shouldDismiss = false
     @Published var onboardingServer: Server?
 
     /// Indicator for manual input loading
@@ -25,10 +26,13 @@ final class OnboardingServersListViewModel: ObservableObject {
     private var webhookSensors: [WebhookSensor] = []
     private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
+    private let shouldDismissOnSuccess: Bool
 
-    init() {
+    init(shouldDismissOnSuccess: Bool) {
+        self.shouldDismissOnSuccess = shouldDismissOnSuccess
         discovery.observer = self
         Current.sensors.register(observer: self)
+        Current.onboardingObservation.register(observer: self)
     }
 
     func startDiscovery() {
@@ -157,6 +161,14 @@ extension OnboardingServersListViewModel: SensorObserver {
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
         update.sensors.done { [weak self] sensors in
             self?.webhookSensors = sensors
+        }
+    }
+}
+
+extension OnboardingServersListViewModel: OnboardingStateObserver {
+    func onboardingStateDidChange(to state: OnboardingState) {
+        if state == .complete, shouldDismissOnSuccess {
+            shouldDismiss = true
         }
     }
 }

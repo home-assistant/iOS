@@ -43,7 +43,7 @@ struct OnboardingWelcomeView: View {
 
     private var continueButton: some View {
         VStack {
-            NavigationLink(destination: OnboardingServersListView(shouldDismissOnboarding: $shouldDismissOnboarding)) {
+            NavigationLink(destination: OnboardingServersListView()) {
                 Text(verbatim: L10n.continueLabel)
             }
             .buttonStyle(.primaryButton)

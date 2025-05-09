@@ -51,7 +51,7 @@ struct OnboardingNavigationView: View {
                 case .initial:
                     OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                 case .secondary:
-                    OnboardingServersListView(shouldDismissOnboarding: $viewModel.shouldDismiss)
+                    OnboardingServersListView()
                 case let .required(type):
                     switch type {
                     case .full:
