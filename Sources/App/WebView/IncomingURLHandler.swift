@@ -158,25 +158,22 @@ class IncomingURLHandler {
                         webViewController.presentOverlayController(controller: controller, animated: true)
                     }
             case .invite:
-                // homeassistant://invite?url=https://example.com
-                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                      let queryParameters = components.queryItems else {
+                // homeassistant://invite#url=http%3A%2F%2Fhomeassistant.local%3A8123
+                Current.Log.verbose("Received Home Assistant invitation URL: \(url)")
+                guard let fragment = url.fragment else {
+                    Current.Log.error("Home Assistant invitation does not contain a fragment (e.g. #url=...)")
                     return false
                 }
 
-                let inviteUrl = queryParameters.first(where: { $0.name == "url" })?.value ?? ""
+                // Convert fragment into query items (#url=... -> ?url=...)
+                let components = URLComponents(string: "?\(fragment)")
+                let urlParam = components?.queryItems?.first(where: { $0.name == "url" })?.value
 
-                let navigationView = NavigationView {
-                    OnboardingServersListView(prefillURL: URL(string: inviteUrl), shouldDismissOnSuccess: true)
+                let inviteUrl = URL(string: urlParam.orEmpty)
+
+                Current.sceneManager.webViewWindowControllerPromise.done { windowController in
+                    windowController.presentInvitation(url: inviteUrl)
                 }
-
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                    .done { webViewController in
-                        webViewController.presentOverlayController(
-                            controller: navigationView.embeddedInHostingController(),
-                            animated: true
-                        )
-                    }
             }
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")

@@ -6,13 +6,18 @@ import SwiftUI
 import UIKit
 
 final class WebViewWindowController {
+    enum RootViewControllerType {
+        case onboarding
+        case webView
+    }
+
     let window: UIWindow
     var restorationActivity: NSUserActivity?
 
     var webViewControllerPromise: Guarantee<WebViewController>
 
     private var cachedWebViewControllers = [Identifier<Server>: WebViewController]()
-
+    private var rootViewControllerType: RootViewControllerType?
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
 
@@ -29,7 +34,8 @@ final class WebViewWindowController {
         webViewControllerPromise.value?.userActivity
     }
 
-    private func updateRootViewController(to newValue: UIViewController) {
+    private func updateRootViewController(to newValue: UIViewController, type: RootViewControllerType) {
+        rootViewControllerType = type
         let newWebViewController = newValue.children.compactMap { $0 as? WebViewController }.first
 
         // must be before the seal fires, or it may request during deinit of an old one
@@ -61,14 +67,45 @@ final class WebViewWindowController {
     func setup() {
         if let style = OnboardingNavigation.requiredOnboardingStyle {
             Current.Log.info("Showing onboarding \(style)")
-            updateRootViewController(to: OnboardingNavigationView.controller(onboardingStyle: style))
+            updateRootViewController(
+                to: OnboardingNavigationView(onboardingStyle: style).embeddedInHostingController(),
+                type: .webView
+            )
         } else {
             if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
-                updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
+                updateRootViewController(
+                    to: webViewNavigationController(rootViewController: webViewController),
+                    type: .webView
+                )
             } else {
-                updateRootViewController(to: OnboardingNavigationView.controller(onboardingStyle: .initial))
+                updateRootViewController(
+                    to: OnboardingNavigationView(onboardingStyle: .initial).embeddedInHostingController(),
+                    type: .onboarding
+                )
             }
             restorationActivity = nil
+        }
+    }
+
+    func presentInvitation(url inviteURL: URL?) {
+        guard let inviteURL else { return }
+
+        switch rootViewControllerType {
+        case .onboarding:
+            Current.appSessionValues.inviteURL = inviteURL
+        case .webView:
+            webViewControllerPromise.done { controller in
+                let navigationView = NavigationView {
+                    OnboardingServersListView(prefillURL: inviteURL, shouldDismissOnSuccess: true)
+                }.navigationViewStyle(.stack)
+                controller.presentOverlayController(
+                    controller: navigationView.embeddedInHostingController(),
+                    animated: true
+                )
+            }
+        case nil:
+            Current.Log.error("No root view controller type set, presentInvitation failed")
+            return
         }
     }
 
@@ -142,7 +179,10 @@ final class WebViewWindowController {
                     }
                 }()
 
-                updateRootViewController(to: webViewNavigationController(rootViewController: newController))
+                updateRootViewController(
+                    to: webViewNavigationController(rootViewController: newController),
+                    type: .webView
+                )
                 resolver(newController)
             }
 
@@ -361,8 +401,8 @@ extension WebViewWindowController: OnboardingStateObserver {
             switch type {
             case .error, .logout:
                 if Current.servers.all.isEmpty {
-                    let controller = OnboardingNavigationView.controller(onboardingStyle: .initial)
-                    updateRootViewController(to: controller)
+                    let controller = OnboardingNavigationView(onboardingStyle: .initial).embeddedInHostingController()
+                    updateRootViewController(to: controller, type: .onboarding)
 
                     if type.shouldShowError {
                         let alert = UIAlertController(
@@ -410,7 +450,10 @@ extension WebViewWindowController: OnboardingStateObserver {
                 }
 
                 if let controller {
-                    updateRootViewController(to: webViewNavigationController(rootViewController: controller))
+                    updateRootViewController(
+                        to: webViewNavigationController(rootViewController: controller),
+                        type: .webView
+                    )
                 }
             }
         }

@@ -17,7 +17,9 @@ struct OnboardingServersListView: View {
 
     init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false) {
         self.prefillURL = prefillURL
-        self._viewModel = .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
+        self
+            ._viewModel =
+            .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
     }
 
     var body: some View {
@@ -25,7 +27,16 @@ struct OnboardingServersListView: View {
             if let prefillURL {
                 prefillURLHeader(url: prefillURL)
             } else {
-                headerView
+                if let inviteURL = Current.appSessionValues.inviteURL {
+                    prefillURLHeader(url: inviteURL)
+                    Text("Other options")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                        .listRowBackground(Color.clear)
+                } else {
+                    headerView
+                }
                 list
                 manualInputButton
             }
