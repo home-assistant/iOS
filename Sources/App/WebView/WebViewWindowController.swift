@@ -69,7 +69,7 @@ final class WebViewWindowController {
             Current.Log.info("Showing onboarding \(style)")
             updateRootViewController(
                 to: OnboardingNavigationView(onboardingStyle: style).embeddedInHostingController(),
-                type: .webView
+                type: .onboarding
             )
         } else {
             if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
