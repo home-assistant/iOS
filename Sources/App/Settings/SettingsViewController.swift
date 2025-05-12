@@ -59,7 +59,7 @@ class SettingsViewController: HAFormViewController {
                 $0.onCellSelection { _, row in
                     row.deselect(animated: true)
                     controller.present(
-                        OnboardingNavigationView.controller(onboardingStyle: .secondary),
+                        OnboardingNavigationView(onboardingStyle: .secondary).embeddedInHostingController(),
                         animated: true,
                         completion: nil
                     )

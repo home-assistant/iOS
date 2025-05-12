@@ -21,9 +21,11 @@ class IncomingURLHandler {
         case performAction = "perform_action"
         case assist
         case navigate
+        case invite
         case createCustomWidget = "createcustomwidget"
     }
 
+    // swiftlint:disable cyclomatic_complexity
     @discardableResult
     func handle(url: URL) -> Bool {
         Current.Log.verbose("Received URL: \(url)")
@@ -155,6 +157,23 @@ class IncomingURLHandler {
                         ))
                         webViewController.presentOverlayController(controller: controller, animated: true)
                     }
+            case .invite:
+                // homeassistant://invite#url=http%3A%2F%2Fhomeassistant.local%3A8123
+                Current.Log.verbose("Received Home Assistant invitation URL: \(url)")
+                guard let fragment = url.fragment else {
+                    Current.Log.error("Home Assistant invitation does not contain a fragment (e.g. #url=...)")
+                    return false
+                }
+
+                // Convert fragment into query items (#url=... -> ?url=...)
+                let components = URLComponents(string: "?\(fragment)")
+                let urlParam = components?.queryItems?.first(where: { $0.name == "url" })?.value
+
+                let inviteUrl = URL(string: urlParam.orEmpty)
+
+                Current.sceneManager.webViewWindowControllerPromise.done { windowController in
+                    windowController.presentInvitation(url: inviteUrl)
+                }
             }
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")

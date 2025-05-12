@@ -447,4 +447,7 @@ public class AppEnvironment {
         Bonjour()
     }
     #endif
+
+    /// Values stored for the given app session until terminated by the OS.
+    public var appSessionValues: AppSessionValuesProtocol = AppSessionValues.shared
 }

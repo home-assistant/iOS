@@ -9,7 +9,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel()
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
         assert(sut.discoveredInstances.isEmpty)
         assert((mockBonjour.observer as? OnboardingServersListViewModel) != nil)
     }
@@ -19,7 +19,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel()
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
 
         sut.startDiscovery()
         assert(sut.discoveredInstances.isEmpty)
@@ -31,7 +31,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel()
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
 
         sut.stopDiscovery()
         assert(mockBonjour.stopCalled)
@@ -42,7 +42,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel()
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
         let instance = DiscoveredHomeAssistant(
             manualURL: URL(string: "http://192.168.0.1:8123")!,
             name: "Home"
@@ -58,7 +58,7 @@ struct OnboardingServersListViewModelTests {
         Current.bonjour = {
             mockBonjour
         }
-        let sut = OnboardingServersListViewModel()
+        let sut = OnboardingServersListViewModel(shouldDismissOnSuccess: false)
 
         sut.resetFlow()
         assert(sut.currentlyInstanceLoading == nil)

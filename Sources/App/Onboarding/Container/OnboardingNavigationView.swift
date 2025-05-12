@@ -32,10 +32,6 @@ enum OnboardingNavigation {
 }
 
 struct OnboardingNavigationView: View {
-    static func controller(onboardingStyle: OnboardingStyle) -> UIViewController {
-        OnboardingNavigationView(onboardingStyle: onboardingStyle).embeddedInHostingController()
-    }
-
     @Environment(\.dismiss) private var dismiss
     @StateObject public var viewModel = OnboardingNavigationViewModel()
     public let onboardingStyle: OnboardingStyle
@@ -51,7 +47,7 @@ struct OnboardingNavigationView: View {
                 case .initial:
                     OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                 case .secondary:
-                    OnboardingServersListView(shouldDismissOnboarding: $viewModel.shouldDismiss)
+                    OnboardingServersListView()
                 case let .required(type):
                     switch type {
                     case .full:
