@@ -7,6 +7,8 @@ import Shared
 extension WebViewController {
     func handleGestureAction(_ action: HAGestureAction) {
         switch action {
+        case .assist:
+            showAssistThroughKeyEvent()
         case .showSidebar:
             showSidebar()
         case .backPage:
@@ -25,6 +27,10 @@ extension WebViewController {
             openDebug()
         case .searchEntities:
             showSearchEntities()
+        case .searchDevices:
+            showSearchDevices()
+        case .searchCommands:
+            showSearchCommands()
         case .none:
             /* no-op */
             break
@@ -62,6 +68,36 @@ extension WebViewController {
                 Current.Log.error("JavaScript error while trying to open entities search: \(error)")
             } else {
                 Current.Log.info("Open entities search command sent to webview")
+            }
+        }
+    }
+
+    private func showSearchDevices() {
+        webView.evaluateJavaScript(WebViewJavascriptCommands.searchDevicesKeyEvent) { _, error in
+            if let error {
+                Current.Log.error("JavaScript error while trying to open devices search: \(error)")
+            } else {
+                Current.Log.info("Open devices search command sent to webview")
+            }
+        }
+    }
+
+    private func showSearchCommands() {
+        webView.evaluateJavaScript(WebViewJavascriptCommands.searchCommandsKeyEvent) { _, error in
+            if let error {
+                Current.Log.error("JavaScript error while trying to open commands search: \(error)")
+            } else {
+                Current.Log.info("Open commands search command sent to webview")
+            }
+        }
+    }
+
+    private func showAssistThroughKeyEvent() {
+        webView.evaluateJavaScript(WebViewJavascriptCommands.assistKeyEvent) { _, error in
+            if let error {
+                Current.Log.error("JavaScript error while trying to open assist: \(error)")
+            } else {
+                Current.Log.info("Open assist command sent to webview")
             }
         }
     }

@@ -22,4 +22,46 @@ struct WebViewJavascriptCommandsTests {
         document.dispatchEvent(event);
         """)
     }
+
+    @Test func testWebViewJavascriptCommandsSearchDevices() async throws {
+        assert(WebViewJavascriptCommands.searchDevicesKeyEvent == """
+        var event = new KeyboardEvent('keydown', {
+            key: 'd',
+            code: 'KeyD',
+            keyCode: 68,
+            which: 68,
+            bubbles: true,
+            cancelable: true
+        });
+        document.dispatchEvent(event);
+        """)
+    }
+
+    @Test func testWebViewJavascriptCommandsSearchCommands() async throws {
+        assert(WebViewJavascriptCommands.searchCommandsKeyEvent == """
+        var event = new KeyboardEvent('keydown', {
+            key: 'c',
+            code: 'KeyC',
+            keyCode: 67,
+            which: 67,
+            bubbles: true,
+            cancelable: true
+        });
+        document.dispatchEvent(event);
+        """)
+    }
+
+    @Test func testWebViewJavascriptCommandsKeyA() async throws {
+        assert(WebViewJavascriptCommands.assistKeyEvent == """
+        var event = new KeyboardEvent('keydown', {
+            key: 'a',
+            code: 'KeyA',
+            keyCode: 65,
+            which: 65,
+            bubbles: true,
+            cancelable: true
+        });
+        document.dispatchEvent(event);
+        """)
+    }
 }

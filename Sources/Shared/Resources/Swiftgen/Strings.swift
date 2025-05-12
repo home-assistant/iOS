@@ -1076,6 +1076,8 @@ public enum L10n {
     }
     public enum Value {
       public enum Option {
+        /// Open Assist
+        public static var assist: String { return L10n.tr("Localizable", "gestures.value.option.assist") }
         /// Back to previous page
         public static var backPage: String { return L10n.tr("Localizable", "gestures.value.option.back_page") }
         /// Go to next page
@@ -1088,6 +1090,10 @@ public enum L10n {
         public static var openDebug: String { return L10n.tr("Localizable", "gestures.value.option.open_debug") }
         /// Previous server
         public static var previousServer: String { return L10n.tr("Localizable", "gestures.value.option.previous_server") }
+        /// Search commands
+        public static var searchCommands: String { return L10n.tr("Localizable", "gestures.value.option.search_commands") }
+        /// Search devices
+        public static var searchDevices: String { return L10n.tr("Localizable", "gestures.value.option.search_devices") }
         /// Search entities
         public static var searchEntities: String { return L10n.tr("Localizable", "gestures.value.option.search_entities") }
         /// Servers list
@@ -1097,6 +1103,10 @@ public enum L10n {
         /// Show sidebar
         public static var showSidebar: String { return L10n.tr("Localizable", "gestures.value.option.show_sidebar") }
         public enum MoreInfo {
+          /// Search commands
+          public static var searchCommands: String { return L10n.tr("Localizable", "gestures.value.option.more_info.search_commands") }
+          /// Search devices
+          public static var searchDevices: String { return L10n.tr("Localizable", "gestures.value.option.more_info.search_devices") }
           /// Search entities
           public static var searchEntities: String { return L10n.tr("Localizable", "gestures.value.option.more_info.search_entities") }
         }
