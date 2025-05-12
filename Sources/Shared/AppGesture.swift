@@ -28,6 +28,9 @@ public enum HAGestureAction: String, Codable, CaseIterable {
     // Home Assistant
     case showSidebar
     case searchEntities
+    case searchDevices
+    case searchCommands
+    case assist
     // Page
     case backPage
     case nextPage
@@ -43,7 +46,7 @@ public enum HAGestureAction: String, Codable, CaseIterable {
 
     public var category: HAGestureActionCategory {
         switch self {
-        case .showSidebar, .searchEntities:
+        case .showSidebar, .searchEntities, .searchDevices, .searchCommands, .assist:
             .homeAssistant
         case .backPage, .nextPage:
             .page
@@ -78,6 +81,12 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             L10n.Gestures.Value.Option.none
         case .openDebug:
             L10n.Gestures.Value.Option.openDebug
+        case .searchDevices:
+            L10n.Gestures.Value.Option.searchDevices
+        case .searchCommands:
+            L10n.Gestures.Value.Option.searchCommands
+        case .assist:
+            L10n.Gestures.Value.Option.assist
         }
     }
 
@@ -91,6 +100,10 @@ public enum HAGestureAction: String, Codable, CaseIterable {
             nil
         case .searchEntities:
             L10n.Gestures.Value.Option.MoreInfo.searchEntities
+        case .searchCommands:
+            L10n.Gestures.Value.Option.MoreInfo.searchCommands
+        case .searchDevices:
+            L10n.Gestures.Value.Option.MoreInfo.searchDevices
         case .showServersList:
             nil
         case .nextServer:
@@ -102,6 +115,8 @@ public enum HAGestureAction: String, Codable, CaseIterable {
         case .none:
             nil
         case .openDebug:
+            nil
+        case .assist:
             nil
         }
     }
@@ -195,10 +210,6 @@ public extension [AppGesture: HAGestureAction] {
             switch numberOfTouches {
             case 1:
                 return .none
-            //            case 2:
-            //                return Current.settingsStore.gestures[._2FingersSwipeDown] ?? .none
-            //            case 3:
-            //                return Current.settingsStore.gestures[._3FingersSwipeDown] ?? .none
             default:
                 return .none
             }
@@ -229,8 +240,6 @@ public extension [AppGesture: HAGestureAction] {
             switch numberOfTouches {
             case 1:
                 return .none
-            //            case 2:
-            //                return Current.settingsStore.gestures[._2FingersSwipeUp] ?? .none
             case 3:
                 return Current.settingsStore.gestures[._3FingersSwipeUp] ?? .none
             default:
