@@ -51,7 +51,7 @@ struct WebViewJavascriptCommandsTests {
         """)
     }
 
-    @Test func testWebViewJavascriptCommandsKeyA() async throws {
+    @Test func testWebViewJavascriptCommandsAssist() async throws {
         assert(WebViewJavascriptCommands.assistKeyEvent == """
         var event = new KeyboardEvent('keydown', {
             key: 'a',
