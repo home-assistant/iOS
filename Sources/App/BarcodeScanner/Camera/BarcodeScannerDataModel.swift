@@ -25,6 +25,7 @@ final class BarcodeScannerDataModel: ObservableObject {
     func stop() {
         handleCameraPreviewsTask?.cancel()
         viewFinderImageTask?.cancel()
+        camera.stop()
     }
 
     func handleCameraPreviews() async {
