@@ -267,13 +267,18 @@
 "gestures.swipe.up.header" = "Svep uppåt";
 "gestures.swipe_left.title" = "Svep åt vänster";
 "gestures.swipe_right.title" = "Svep åt höger";
+"gestures.value.option.assist" = "Öppna Assist";
 "gestures.value.option.back_page" = "Gå till föregående sida";
+"gestures.value.option.more_info.search_commands" = "Sök kommandon";
+"gestures.value.option.more_info.search_devices" = "Sök enheter";
 "gestures.value.option.more_info.search_entities" = "Sök entiteter";
 "gestures.value.option.next_page" = "Gå till nästa sida";
 "gestures.value.option.next_server" = "Nästa server";
 "gestures.value.option.none" = "Ingen";
 "gestures.value.option.open_debug" = "Öppna felsökning";
 "gestures.value.option.previous_server" = "Föregående server";
+"gestures.value.option.search_commands" = "Sök kommandon";
+"gestures.value.option.search_devices" = "Sök enheter";
 "gestures.value.option.search_entities" = "Sök entiteter";
 "gestures.value.option.servers_list" = "Lista över servrar";
 "gestures.value.option.show_settings" = "Öppna appinställningar";
@@ -288,7 +293,7 @@
 "ha_api.api_error.no_available_api" = "Inget API tillgängligt, dubbelkolla om intern URL eller extern URL är tillgänglig.";
 "ha_api.api_error.not_configured" = "HA API är inte konfigurerat";
 "ha_api.api_error.unacceptable_status_code" = "Ogiltig statuskod %1$li.";
-"ha_api.api_error.unexpected_type" = "Mottog svar med resultat av typ %1$@ men väntade typ %2$@.";
+"ha_api.api_error.unexpected_type" = "Mottog svar med resultat av typ %1$@ men förväntade typ %2$@.";
 "ha_api.api_error.unknown" = "Ett okänt fel inträffade.";
 "ha_api.api_error.update_not_possible" = "Åtgärd kunde inte utföras.";
 "help_label" = "Hjälp";
@@ -354,7 +359,7 @@
 "magic_item.item_type.script.list.title" = "Skript";
 "magic_item.item_type.selection.list.title" = "Typ av artikel";
 "magic_item.name.title" = "Namn";
-"magic_item.name_and_icon.footer" = "Redigera skriptnamn och ikon i användargränssnittet under \"Inställningar\" > \"Automationer & scener\" > \"Skript\".";
+"magic_item.name_and_icon.footer" = "Redigera skriptets namn och ikon i användargränssnittet under 'Inställningar' > 'Automatiseringar och scener' > 'Skript'.";
 "magic_item.name_and_icon.footer.scenes" = "Redigera scenens namn och ikon i användargränssnittet under 'Inställningar' > 'Automatiseringar och scener' > 'Scener'.";
 "magic_item.require_confirmation.title" = "Kräv bekräftelse";
 "magic_item.text_color.title" = "Textfärg";
@@ -427,7 +432,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "notifications_configurator.category.rows.category_summary.default" = "%%u aviseringar inom %%@";
 "notifications_configurator.category.rows.category_summary.footer" = "En formatsträng för den sammanfattande beskrivning som används när systemet grupperar kategorins aviseringar. Du kan valfritt använda '%%u' för att visa antalet aviseringar i gruppen och '%%@' för att visa det sammanfattande argumentet som anges i pushdata.";
 "notifications_configurator.category.rows.category_summary.header" = "Kategorisummering";
-"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u notiser";
+"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u aviseringar";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Den här texten visas bara om du har gömt förhandsgranskning av aviseringar. Använd '%%u' för antalet aviseringar med samma identifierare.";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Gömd platshållare för förhandsvisning";
 "notifications_configurator.category.rows.name.title" = "Namn";
@@ -495,7 +500,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.permissions.motion.bullet.steps" = "Sensor för stegräkning";
 "onboarding.permissions.motion.description" = "Tillåt att rörelseaktivitet och stegräknardata skickas till Home Assistant";
 "onboarding.permissions.motion.grant_description" = "Tillåt åtkomst till rörelse för att skapa sensorer för rörelse- och stegräknardata.";
-"onboarding.permissions.motion.title" = "Rörelse & stegräknare";
+"onboarding.permissions.motion.title" = "Rörelse och stegräknare";
 "onboarding.permissions.notification.bullet.alert" = "Bli uppmärksammad med aviseringar";
 "onboarding.permissions.notification.bullet.badge" = "Uppdatera app-ikonmärket";
 "onboarding.permissions.notification.bullet.commands" = "Skicka kommandon till din enhet";
@@ -763,7 +768,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.location.updates.header" = "Uppdatering från";
 "settings_details.location.updates.notification.title" = "Begäran om push-notiser";
 "settings_details.location.updates.significant.title" = "Betydande platsändring";
-"settings_details.location.updates.zone.title" = "Zon in / ut";
+"settings_details.location.updates.zone.title" = "Zon in/ut";
 "settings_details.location.zones.beacon.prop_not_set.value" = "Inte inställt";
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
@@ -810,9 +815,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.notifications.sounds.bundled" = "Medföljande";
 "settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "Kan inte skapa sökväg till ~/Library/Ljud: %@";
 "settings_details.notifications.sounds.error.cant_get_directory_contents" = "Kan inte lista mappinnehåll: %@";
-"settings_details.notifications.sounds.error.cant_get_file_sharing_path" = "Kan inte komma åt mapp för delade ljudfiler\
-: %@";
-"settings_details.notifications.sounds.error.conversion_failed" = "Misslyckades konvertera ljud till PCM 32 bit 48khz: %@";
+"settings_details.notifications.sounds.error.cant_get_file_sharing_path" = "Kan inte komma åt mapp för delade ljudfiler: %@";
+"settings_details.notifications.sounds.error.conversion_failed" = "Misslyckades konvertera ljud till PCM 32 bitar 48 kHz: %@";
 "settings_details.notifications.sounds.error.copy_error" = "Lyckades inte kopiera filen: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Misslyckades radera filen: %@";
 "settings_details.notifications.sounds.footer" = "Inbyggda, system- eller egna ljud kan användas till dina notiser.";
@@ -954,8 +958,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.configurator.list.manual_updates.title" = "Manuella uppdateringar";
 "watch.configurator.new.multiple_complication_info" = "Att lägga till ytterligare en komplikation av samma typ som en befintlig kräver watchOS 7 eller nyare.";
 "watch.configurator.new.title" = "Ny komplikation";
-"watch.configurator.preview_error.not_number" = "Väntade ett tal men fick %1$@: '%2$@'";
-"watch.configurator.preview_error.out_of_range" = "Väntande ett tal mellan 0.0 och 1.0, men fick %1$f";
+"watch.configurator.preview_error.not_number" = "Förväntade ett tal men fick %1$@: '%2$@'";
+"watch.configurator.preview_error.out_of_range" = "Förväntade ett tal mellan 0,0 och 1,0 men fick %1$f";
 "watch.configurator.rows.color.title" = "Färg";
 "watch.configurator.rows.column_2_alignment.options.leading" = "Inledande";
 "watch.configurator.rows.column_2_alignment.options.trailing" = "Avslutande";
@@ -1191,7 +1195,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.custom.intent_toggle_failed.title" = "Det gick inte att \"växla\" entiteten";
 "widgets.custom.require_confirmation.footer" = "Widgetbekräftelse och tillståndsvisning är för närvarande i BETA. Om du upplever problem, inaktivera \"Kräv bekräftelse\" och spara.";
 "widgets.custom.show_last_update_time.param.title" = "Visa senaste uppdateringstid";
-"widgets.custom.show_states.description" = "Visning av senaste tillstånd är inte 100% garanterat, du kan göra ett försök och kolla appdokumentationen för mer information.";
+"widgets.custom.show_states.description" = "Visning av senaste tillstånd är inte 100 % garanterat, du kan göra ett försök och kolla appdokumentationen för mer information.";
 "widgets.custom.show_states.param.title" = "Visa tillstånd (BETA)";
 "widgets.custom.show_update_time.title" = "Senaste uppdatering:";
 "widgets.custom.subtitle" = "Skapa widgets med din egen stil";
