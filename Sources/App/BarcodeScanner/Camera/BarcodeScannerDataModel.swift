@@ -34,7 +34,7 @@ final class BarcodeScannerDataModel: ObservableObject {
         let imageStream = previewStream.map(\.image)
 
         for await image in imageStream {
-            viewFinderImageTask = Task { @MainActor in
+            await MainActor.run {
                 viewfinderImage = image
             }
         }
