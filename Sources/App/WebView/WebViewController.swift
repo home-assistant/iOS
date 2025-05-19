@@ -25,7 +25,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
     let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
-    var emptyStateView: UIView?
+    private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
 
     private var initialURL: URL?
