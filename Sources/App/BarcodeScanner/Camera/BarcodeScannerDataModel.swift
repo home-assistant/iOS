@@ -13,7 +13,6 @@ final class BarcodeScannerDataModel: ObservableObject {
     weak var delegate: BarcodeScannerDataModelDelegate?
 
     private var handleCameraPreviewsTask: Task<Void, Never>?
-    private var viewFinderImageTask: Task<Void, Never>?
 
     init() {
         camera.delegate = self
@@ -24,7 +23,6 @@ final class BarcodeScannerDataModel: ObservableObject {
 
     func stop() {
         handleCameraPreviewsTask?.cancel()
-        viewFinderImageTask?.cancel()
         camera.stop()
     }
 
