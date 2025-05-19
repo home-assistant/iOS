@@ -43,3 +43,9 @@ final class BarcodeScannerViewModel: ObservableObject {
             }
     }
 }
+
+extension BarcodeScannerViewModel: BarcodeScannerDataModelDelegate {
+    func didDetectBarcode(_ code: String, format: String) {
+        scannedCode(code, format: format)
+    }
+}
