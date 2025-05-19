@@ -14,7 +14,7 @@
 "common::state::open" = "פתוח";
 "common::state::paused" = "מושהה";
 "common::state::standby" = "בהמתנה";
-"common::state::unlocked" = "פתוח";
+"common::state::unlocked" = "נעילה פתוחה";
 "common::state::yes" = "כן";
 "component::airzone::entity::select::sleep_times::state::off" = "כבוי";
 "component::alert::entity_component::_::state::idle" = "ממתין";
@@ -30,7 +30,7 @@
 "component::binary_sensor::entity_component::garage_door::state::off" = "נסגר";
 "component::binary_sensor::entity_component::garage_door::state::on" = "פתוח";
 "component::binary_sensor::entity_component::lock::state::off" = "נעול";
-"component::binary_sensor::entity_component::lock::state::on" = "פתוח";
+"component::binary_sensor::entity_component::lock::state::on" = "נעילה פתוחה";
 "component::binary_sensor::entity_component::opening::state::off" = "נסגר";
 "component::binary_sensor::entity_component::opening::state::on" = "פתוח";
 "component::binary_sensor::entity_component::presence::state::off" = "בחוץ";
@@ -80,7 +80,7 @@
 "component::group::entity_component::_::state::off" = "כבוי";
 "component::group::entity_component::_::state::on" = "מופעל";
 "component::group::entity_component::_::state::open" = "פתוח";
-"component::group::entity_component::_::state::unlocked" = "פתוח";
+"component::group::entity_component::_::state::unlocked" = "נעילה פתוחה";
 "component::hdmi_cec::services::standby::name" = "בהמתנה";
 "component::homekit_controller::entity::select::ecobee_mode::state::away" = "בחוץ";
 "component::homekit_controller::entity::select::ecobee_mode::state::home" = "בבית";
@@ -142,7 +142,7 @@
 "component::litterrobot::platform::sensor::state::litterrobot__status_code::p" = "מושהה";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "מופעל";
 "component::lock::entity_component::_::state::locked" = "נעול";
-"component::lock::entity_component::_::state::unlocked" = "פתוח";
+"component::lock::entity_component::_::state::unlocked" = "נעילה פתוחה";
 "component::lock::title" = "מנעול";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "כבוי";
 "component::lutron_caseta::device_automation::trigger_subtype::on" = "מופעל";
