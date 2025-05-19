@@ -14,6 +14,8 @@ class BarcodeScannerCamera: NSObject {
     private var allBackCaptureDevices: [AVCaptureDevice] {
         AVCaptureDevice.DiscoverySession(
             deviceTypes: [
+                .builtInTripleCamera,
+                .builtInDualCamera,
                 .builtInWideAngleCamera,
             ],
             mediaType: .video,
