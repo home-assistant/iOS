@@ -6,6 +6,11 @@ extension WebViewController: WebViewControllerProtocol {
         presentedViewController
     }
 
+    // Timer to manage delayed emptyStateView alpha update
+    private enum AssociatedKeys {
+        static var settingsButtonTimer = "settingsButtonTimer"
+    }
+
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.dismissOverlayController(animated: false, completion: { [weak self] in
@@ -39,9 +44,16 @@ extension WebViewController: WebViewControllerProtocol {
 
     func updateSettingsButton(state: String) {
         // Possible values: connected, disconnected, auth-invalid
-        UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
-            WebViewAccessoryViews.settingsButton.alpha = state == "connected" ? 0 : 1
-        }, completion: nil)
+        settingsButtonTimer?.invalidate()
+        settingsButtonTimer = nil
+        if state == "connected" {
+            hideEmptyState()
+        } else {
+            // Start a 4-second timer. If not interrupted by a 'connected' state, set alpha to 1.
+            settingsButtonTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: false) { [weak self] _ in
+                self?.showEmptyState()
+            }
+        }
     }
 
     func navigateToPath(path: String) {

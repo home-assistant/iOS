@@ -110,7 +110,7 @@ final class WebViewWindowController {
     }
 
     private func makeWebViewIfNotInCache(
-        restorationType: WebViewController.RestorationType?,
+        restorationType: WebViewRestorationType?,
         shouldLoadImmediately: Bool = false
     ) -> WebViewController? {
         if let server = restorationType?.server ?? Current.servers.all.first {

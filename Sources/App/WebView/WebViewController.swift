@@ -12,70 +12,7 @@ import SwiftUI
 import UIKit
 @preconcurrency import WebKit
 
-protocol WebViewControllerProtocol: AnyObject {
-    var server: Server { get }
-    var overlayedController: UIViewController? { get }
-
-    func presentOverlayController(controller: UIViewController, animated: Bool)
-    func presentAlertController(controller: UIViewController, animated: Bool)
-    func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
-    func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
-    func dismissControllerAboveOverlayController()
-    func updateSettingsButton(state: String)
-    func navigateToPath(path: String)
-    func reload()
-}
-
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
-    enum RestorationType {
-        case userActivity(NSUserActivity)
-        case coder(NSCoder)
-        case server(Server)
-
-        init?(_ userActivity: NSUserActivity?) {
-            if let userActivity {
-                self = .userActivity(userActivity)
-            } else {
-                return nil
-            }
-        }
-
-        var initialURL: URL? {
-            switch self {
-            case let .userActivity(userActivity):
-                return userActivity.userInfo?[RestorableStateKey.lastURL.rawValue] as? URL
-            case let .coder(coder):
-                return coder.decodeObject(of: NSURL.self, forKey: RestorableStateKey.lastURL.rawValue) as URL?
-            case .server:
-                return nil
-            }
-        }
-
-        var server: Server? {
-            let serverRawValue: String?
-
-            switch self {
-            case let .userActivity(userActivity):
-                serverRawValue = userActivity.userInfo?[RestorableStateKey.server.rawValue] as? String
-            case let .coder(coder):
-                serverRawValue = coder.decodeObject(
-                    of: NSString.self,
-                    forKey: RestorableStateKey.server.rawValue
-                ) as String?
-            case let .server(server):
-                return server
-            }
-
-            return Current.servers.server(forServerIdentifier: serverRawValue)
-        }
-    }
-
-    private enum WebViewSettingsUpdateReason {
-        case initial
-        case settingChange
-        case load
-    }
-
     var webView: WKWebView!
 
     let server: Server
@@ -86,7 +23,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private let refreshControl = UIRefreshControl()
     private let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
+
     let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
+    var emptyStateView: UIView?
+    private let emptyStateTransitionDuration: TimeInterval = 0.3
 
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
@@ -99,12 +39,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
+    /// Defer showing the empty state until disconnected for 4 seconds (var used in
+    /// WebViewControllerProtocol+Implementation )
+    var settingsButtonTimer: Timer?
 
-    enum RestorableStateKey: String {
-        case lastURL
-        case server
-    }
+    private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
         Current.settingsStore.fullScreen
@@ -142,7 +81,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    convenience init?(restoring: RestorationType?, shouldLoadImmediately: Bool = false) {
+    convenience init?(restoring: WebViewRestorationType?, shouldLoadImmediately: Bool = false) {
         if let server = restoring?.server ?? Current.servers.all.first {
             self.init(server: server)
         } else {
@@ -224,7 +163,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         setupWebViewConstraints(statusBarView: statusBarView)
         setupPullToRefresh()
-        setupSettingsButton()
+        setupEmptyState()
 
         NotificationCenter.default.addObserver(
             self,
@@ -303,16 +242,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         })
     }
 
-    private func setupSettingsButton() {
-        WebViewAccessoryViews.settingsButton.addTarget(self, action: #selector(openSettingsView(_:)), for: .touchDown)
-        view.addSubview(WebViewAccessoryViews.settingsButton)
-
-        NSLayoutConstraint.activate([
-            view.bottomAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.bottomAnchor, constant: 16.0),
-            view.rightAnchor.constraint(equalTo: WebViewAccessoryViews.settingsButton.rightAnchor, constant: 16.0),
-        ])
-    }
-
     private func setupPullToRefresh() {
         if !Current.isCatalyst {
             // refreshing is handled by menu/keyboard shortcuts
@@ -320,6 +249,43 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             webView.scrollView.addSubview(refreshControl)
             webView.scrollView.bounces = true
         }
+    }
+
+    private func setupEmptyState() {
+        let emptyState = WebViewEmptyStateWrapperView { [weak self] in
+            self?.hideEmptyState()
+            self?.webView.reload()
+        } settingsAction: { [weak self] in
+            self?.showSettingsViewController()
+        } dismissAction: { [weak self] in
+            self?.hideEmptyState()
+        }
+
+        view.addSubview(emptyState)
+
+        emptyState.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            emptyState.leftAnchor.constraint(equalTo: view.leftAnchor),
+            emptyState.rightAnchor.constraint(equalTo: view.rightAnchor),
+            emptyState.topAnchor.constraint(equalTo: view.topAnchor),
+            emptyState.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+
+        emptyState.alpha = 0
+        emptyStateView = emptyState
+    }
+
+    func showEmptyState() {
+        UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
+            self.emptyStateView?.alpha = 1
+        }, completion: nil)
+    }
+
+    func hideEmptyState() {
+        UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
+            self.emptyStateView?.alpha = 0
+        }, completion: nil)
     }
 
     private func setupWebViewConstraints(statusBarView: UIView) {
@@ -779,6 +745,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         // Avoid retrying from Home Assistant UI since this is a dead end
         webView.load(URLRequest(url: URL(string: "about:blank")!))
+        showEmptyState()
         SwiftMessages.show(config: config, view: view)
     }
 
@@ -926,6 +893,7 @@ extension WebViewController {
             }
 
             if !error.isCancelled {
+                showEmptyState()
                 showSwiftMessage(error: error)
             }
         }
@@ -939,6 +907,7 @@ extension WebViewController {
             }
 
             if !error.isCancelled {
+                showEmptyState()
                 showSwiftMessage(error: error)
             }
         }

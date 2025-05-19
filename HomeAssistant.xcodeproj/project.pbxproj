@@ -792,6 +792,7 @@
 		429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */; };
 		429821172CD0DDCD005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
 		429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
+		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
 		429BA2AF2C800CAB00A50996 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
@@ -821,6 +822,10 @@
 		42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */; };
 		42AC94A42CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
 		42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
+		42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */; };
+		42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */; };
+		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
+		42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
@@ -848,7 +853,6 @@
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */; };
 		42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */; };
-		42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
@@ -2242,6 +2246,7 @@
 		4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GRDB+Initialization.swift"; sourceTree = "<group>"; };
 		429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewModel.swift; sourceTree = "<group>"; };
 		429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.swift; sourceTree = "<group>"; };
+		429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorationType.swift; sourceTree = "<group>"; };
 		429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTemplateEditor.swift; sourceTree = "<group>"; };
 		429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolEntity.swift; sourceTree = "<group>"; };
@@ -2269,6 +2274,10 @@
 		42ABB0B82C888AA10081461D /* CarPlayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfig.swift; sourceTree = "<group>"; };
 		42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationViewModel.swift; sourceTree = "<group>"; };
 		42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCardStyleModifier.swift; sourceTree = "<group>"; };
+		42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorableStateKey.swift; sourceTree = "<group>"; };
+		42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSettingsUpdateReason.swift; sourceTree = "<group>"; };
+		42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerProtocol.swift; sourceTree = "<group>"; };
+		42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewEmptyStateView.swift; sourceTree = "<group>"; };
 		42B19BD02D4A358B00B3262B /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -2292,7 +2301,6 @@
 		42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HATypedRequest+App.swift"; sourceTree = "<group>"; };
 		42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.test.swift; sourceTree = "<group>"; };
 		42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = WatchConfigV1.sqlite; sourceTree = "<group>"; };
-		42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAccessoryViews.swift; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
@@ -3399,26 +3407,22 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
+				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
+				42AF759C2DDB5AC000ACDF45 /* Extensions */,
 				42E6C0882CE4F4EC007CA622 /* DownloadManager */,
 				42B942F42CAA1E4400E36E02 /* Payload */,
 				42BE698B2C4691E000745ECA /* Views */,
-				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
-				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
-				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
-				4228CFFE2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift */,
-				4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */,
-				4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */,
-				4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */,
-				4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */,
-				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
-				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
-				420C57C62D0A6DE700D2D9AC /* NoActiveURLView.swift */,
+				42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
-				42A47A8B2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift */,
-				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
+				42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */,
+				429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */,
+				42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */,
+				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
+				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -4568,6 +4572,20 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		42AF759C2DDB5AC000ACDF45 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				42A47A8B2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift */,
+				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
+				4228CFFE2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift */,
+				4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */,
+				4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */,
+				4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */,
+				4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		42B942F42CAA1E4400E36E02 /* Payload */ = {
 			isa = PBXGroup;
 			children = (
@@ -4636,7 +4654,9 @@
 		42BE698B2C4691E000745ECA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				42BE698C2C4691EA00745ECA /* WebViewAccessoryViews.swift */,
+				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
+				420C57C62D0A6DE700D2D9AC /* NoActiveURLView.swift */,
+				42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -7660,6 +7680,7 @@
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
+				42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */,
 				422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
@@ -7701,7 +7722,6 @@
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
-				42BE698D2C4691EA00745ECA /* WebViewAccessoryViews.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
 				427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
@@ -7774,6 +7794,7 @@
 				4251AA9B2C6B9DBE004CCC9D /* MagicItemCustomizationViewModel.swift in Sources */,
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
+				42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */,
 				42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */,
 				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
@@ -7791,8 +7812,10 @@
 				427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
 				4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */,
+				42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
+				429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
@@ -7815,6 +7838,7 @@
 				3E02C0F32CA8032500102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */,
 				4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */,
+				42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				42B74A642D36B17000C37304 /* ReloadWidgetsAppIntent.swift in Sources */,
 				42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */,
