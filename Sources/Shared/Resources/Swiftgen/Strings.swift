@@ -4043,6 +4043,16 @@ public enum L10n {
   }
 
   public enum WebView {
+    public enum EmptyState {
+      /// Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.
+      public static var body: String { return L10n.tr("Localizable", "web_view.empty_state.body") }
+      /// Open App settings
+      public static var openSettingsButton: String { return L10n.tr("Localizable", "web_view.empty_state.open_settings_button") }
+      /// Retry
+      public static var retryButton: String { return L10n.tr("Localizable", "web_view.empty_state.retry_button") }
+      /// You're disconnected
+      public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.title") }
+    }
     public enum ServerSelection {
       /// Choose server
       public static var title: String { return L10n.tr("Localizable", "web_view.server_selection.title") }

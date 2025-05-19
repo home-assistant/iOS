@@ -39,9 +39,16 @@ extension WebViewController: WebViewControllerProtocol {
 
     func updateSettingsButton(state: String) {
         // Possible values: connected, disconnected, auth-invalid
-        UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
-            WebViewAccessoryViews.settingsButton.alpha = state == "connected" ? 0 : 1
-        }, completion: nil)
+        emptyStateTimer?.invalidate()
+        emptyStateTimer = nil
+        if state == "connected" {
+            hideEmptyState()
+        } else {
+            // Start a 4-second timer. If not interrupted by a 'connected' state, set alpha to 1.
+            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: false) { [weak self] _ in
+                self?.showEmptyState()
+            }
+        }
     }
 
     func navigateToPath(path: String) {
