@@ -186,7 +186,7 @@
 "client_events.no_events" = "Δεν υπάρχουν συμβάντα";
 "client_events.view.clear" = "Εκκαθάριση";
 "client_events.view.clear_confirm.message" = "Αυτό δεν μπορεί να αναιρεθεί.";
-"client_events.view.clear_confirm.title" = "Είστε βέβαιοι ότι θέλετε να διαγράψετε όλα τα συμβάντα;";
+"client_events.view.clear_confirm.title" = "Θέλετε σίγουρα να διαγράψετε όλα τα συμβάντα;";
 "close_label" = "Κλείσιμο";
 "component.collapsible_view.collapse" = "Σύμπτυξη";
 "component.collapsible_view.expand" = "Επέκταση";
@@ -267,13 +267,18 @@
 "gestures.swipe.up.header" = "Κύλιση προς τα πάνω";
 "gestures.swipe_left.title" = "Σύρετε προς τα αριστερά";
 "gestures.swipe_right.title" = "Σύρετε προς τα δεξιά";
+"gestures.value.option.assist" = "Ανοιγμα Assist";
 "gestures.value.option.back_page" = "Πίσω στην προηγούμενη σελίδα";
+"gestures.value.option.more_info.search_commands" = "Αναζήτηση εντολών";
+"gestures.value.option.more_info.search_devices" = "Αναζήτηση συσκευών";
 "gestures.value.option.more_info.search_entities" = "Αναζήτηση οντοτήτων";
 "gestures.value.option.next_page" = "Μετάβαση στην επόμενη σελίδα";
 "gestures.value.option.next_server" = "Επόμενος διακομιστής";
 "gestures.value.option.none" = "Κανένα";
 "gestures.value.option.open_debug" = "Ανοιγμα εντοπισμού σφαλμάτων";
 "gestures.value.option.previous_server" = "Προηγούμενος διακομιστής";
+"gestures.value.option.search_commands" = "Αναζήτηση εντολών";
+"gestures.value.option.search_devices" = "Αναζήτηση συσκευών";
 "gestures.value.option.search_entities" = "Αναζήτηση οντοτήτων";
 "gestures.value.option.servers_list" = "Λίστα διακομιστών";
 "gestures.value.option.show_settings" = "Ανοιγμα ρυθμίσεων εφαρμογής";
@@ -542,7 +547,7 @@
 "settings.connection_section.always_fallback_internal.title" = "Πάντα εναλλακτική στην εσωτερική διεύθυνση URL";
 "settings.connection_section.cloud_overrides_external" = "Κατά τη σύνδεση μέσω Cloud, το εξωτερικό URL δεν θα χρησιμοποιηθεί. Δεν χρειάζεται να διαμορφώσετε κανένα, εκτός εάν θέλετε να απενεργοποιήσετε το Cloud.";
 "settings.connection_section.connecting_via" = "Συνδεδεμένο μέσω";
-"settings.connection_section.delete_server.message" = "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτόν τον διακομιστή;";
+"settings.connection_section.delete_server.message" = "Θέλετε σίγουρα να διαγράψετε αυτόν τον διακομιστή;";
 "settings.connection_section.delete_server.progress" = "Διαγραφή διακομιστή…";
 "settings.connection_section.delete_server.title" = "Διαγραφή διακομιστή";
 "settings.connection_section.details" = "Λεπτομέρειες";

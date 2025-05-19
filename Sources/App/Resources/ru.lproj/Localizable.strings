@@ -267,13 +267,18 @@
 "gestures.swipe.up.header" = "Свайп вверх";
 "gestures.swipe_left.title" = "Свайп влево";
 "gestures.swipe_right.title" = "Свайп вправо";
+"gestures.value.option.assist" = "Открыть Assist";
 "gestures.value.option.back_page" = "Возвращение на предыдущую страницу";
+"gestures.value.option.more_info.search_commands" = "Поиск команд";
+"gestures.value.option.more_info.search_devices" = "Поиск устройств";
 "gestures.value.option.more_info.search_entities" = "Поиск объектов";
 "gestures.value.option.next_page" = "Переход к следующей странице";
 "gestures.value.option.next_server" = "Следующий сервер";
 "gestures.value.option.none" = "Ничего";
 "gestures.value.option.open_debug" = "Открыть отладку";
 "gestures.value.option.previous_server" = "Предыдущий сервер";
+"gestures.value.option.search_commands" = "Поиск команд";
+"gestures.value.option.search_devices" = "Поиск устройств";
 "gestures.value.option.search_entities" = "Поиск объектов";
 "gestures.value.option.servers_list" = "Список серверов";
 "gestures.value.option.show_settings" = "Открытие настроек приложения";
@@ -864,7 +869,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_sensors.settings.footer" = "Изменения будут применены при следующем обновлении.";
 "settings_sensors.settings.header" = "Настройки";
 "settings_sensors.title" = "Датчики";
-"share_extension.entered_placeholder" = "'entered' in event";
+"share_extension.entered_placeholder" = "'entered' в событии";
 "share_extension.error.title" = "Не удалось отправить";
 "shortcut_item.open_settings.title" = "Открыть настройки";
 "success_label" = "Успешно";

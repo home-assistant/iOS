@@ -35,8 +35,8 @@
 "component::binary_sensor::entity_component::opening::state::on" = "Öppen";
 "component::binary_sensor::entity_component::presence::state::off" = "Borta";
 "component::binary_sensor::entity_component::presence::state::on" = "Hemma";
-"component::binary_sensor::entity_component::window::state::off" = "Stängt";
-"component::binary_sensor::entity_component::window::state::on" = "Öppet";
+"component::binary_sensor::entity_component::window::state::off" = "Stängd";
+"component::binary_sensor::entity_component::window::state::on" = "Öppen";
 "component::button::title" = "Knapp";
 "component::calendar::entity_component::_::state::off" = "Av";
 "component::calendar::entity_component::_::state::on" = "På";
