@@ -41,7 +41,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// Defer showing the empty state until disconnected for 4 seconds (var used in
     /// WebViewControllerProtocol+Implementation )
-    var settingsButtonTimer: Timer?
+    var emptyStateTimer: Timer?
 
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
