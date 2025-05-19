@@ -853,6 +853,8 @@
 		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CC2D47B47F00BD5C76 /* IconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */; };
+		42C0FD0A2DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0FD092DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift */; };
+		42C0FD0C2DDB206C001016D6 /* UIScreen+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0FD0B2DDB206C001016D6 /* UIScreen+Camera.swift */; };
 		42C101242CD3D7700012BA78 /* ControlRefreshDelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */; };
 		42C101272CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */; };
 		42C101282CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */; };
@@ -2295,6 +2297,8 @@
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
 		42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPicker.swift; sourceTree = "<group>"; };
+		42C0FD092DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVMetadataObject.ObjectType+HA.swift"; sourceTree = "<group>"; };
+		42C0FD0B2DDB206C001016D6 /* UIScreen+Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Camera.swift"; sourceTree = "<group>"; };
 		42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlRefreshDelay.swift; sourceTree = "<group>"; };
 		42C101262CD3DABA0012BA78 /* IntentCoverEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentCoverEntity.swift; sourceTree = "<group>"; };
 		42C101292CD3DB8A0012BA78 /* CoverIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverIntent.swift; sourceTree = "<group>"; };
@@ -4841,10 +4845,12 @@
 			isa = PBXGroup;
 			children = (
 				42FCCFDF2B9B1B600057783F /* BarcodeScannerCamera.swift */,
+				42C0FD092DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift */,
 				42FCCFE02B9B1B610057783F /* BarcodeScannerCameraView.swift */,
 				42FCCFDE2B9B1B600057783F /* BarcodeScannerDataModel.swift */,
 				42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */,
 				42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */,
+				42C0FD0B2DDB206C001016D6 /* UIScreen+Camera.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -7665,6 +7671,7 @@
 				11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* ComplicationEditViewController.swift in Sources */,
+				42C0FD0C2DDB206C001016D6 /* UIScreen+Camera.swift in Sources */,
 				1185DFB0271FF53800ED7D9A /* OnboardingAuthStepConnectivity.swift in Sources */,
 				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
 				115EF6A72549152F0048597B /* AccountRow.swift in Sources */,
@@ -7816,6 +7823,7 @@
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,
 				4206FFBA2DAD58DB0087626C /* ConnectionInfo+WebView.swift in Sources */,
+				42C0FD0A2DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

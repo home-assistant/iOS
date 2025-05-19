@@ -41,9 +41,7 @@ struct BarcodeScannerView: View {
             topInformation
         }
         .onAppear {
-            cameraDataModel.camera.barcodeFound = { code, format in
-                viewModel.scannedCode(code, format: format)
-            }
+            cameraDataModel.delegate = viewModel
         }
         .onDisappear {
             cameraDataModel.turnOffFlashlight()

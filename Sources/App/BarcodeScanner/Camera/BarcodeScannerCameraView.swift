@@ -23,5 +23,8 @@ struct BarcodeScannerCameraView: View {
                 await model.camera.start()
             }
         }
+        .onDisappear {
+            model.stop()
+        }
     }
 }
