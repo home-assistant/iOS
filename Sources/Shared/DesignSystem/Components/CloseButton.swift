@@ -7,13 +7,24 @@ public struct CloseButton: View {
         case large
 
         var size: CGFloat {
-            switch self {
-            case .small:
-                return 20
-            case .medium:
-                return 24
-            case .large:
-                return 28
+            if Current.isCatalyst {
+                switch self {
+                case .small:
+                    return 24
+                case .medium:
+                    return 28
+                case .large:
+                    return 32
+                }
+            } else {
+                switch self {
+                case .small:
+                    return 20
+                case .medium:
+                    return 24
+                case .large:
+                    return 28
+                }
             }
         }
     }
@@ -47,6 +58,7 @@ public struct CloseButton: View {
                 .frame(width: size.size, height: size.size)
                 .foregroundStyle(tint)
         })
+        .buttonStyle(.plain)
     }
 }
 
