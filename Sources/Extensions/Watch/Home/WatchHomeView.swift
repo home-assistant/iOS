@@ -102,9 +102,17 @@ struct WatchHomeView: View {
             if viewModel.watchConfig.items.isEmpty || viewModel.showError {
                 reloadButton
             }
+            appVersion
         }
         .id(viewModel.refreshListID)
         .navigationTitle("")
+    }
+
+    private var appVersion: some View {
+        Text(verbatim: AppConstants.version)
+            .listRowBackground(Color.clear)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var navReloadButton: some View {
