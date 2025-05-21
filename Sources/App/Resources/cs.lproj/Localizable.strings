@@ -1150,6 +1150,10 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Zástupný symbol";
 "watch.settings.no_items.phone.title" = "Nejsou nastaveny žádné položky, vyberte položky níže.";
+"web_view.empty_state.body" = "Zkontrolujte připojení nebo to zkuste znovu později. Pokud se Home Assistant restartuje, znovu se připojí po opětovném připojení k internetu.";
+"web_view.empty_state.open_settings_button" = "Otevřít nastavení aplikace";
+"web_view.empty_state.retry_button" = "Zkusit znovu";
+"web_view.empty_state.title" = "Jste odpojeni";
 "web_view.server_selection.title" = "Vyberte server";
 "web_view.unique_server_selection.title" = "Vybrat jeden server";
 "widgets.action.name.assist" = "Assist";

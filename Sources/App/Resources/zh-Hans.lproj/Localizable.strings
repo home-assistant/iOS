@@ -1150,6 +1150,10 @@
 "watch.labels.selected_pipeline.title" = "管道";
 "watch.placeholder_complication_name" = "占位符";
 "watch.settings.no_items.phone.title" = "未配置任何项目，请选择下面的项目。";
+"web_view.empty_state.body" = "请检查您的连接或稍后重试。如果 Home Assistant 正在重启，它将在恢复在线后重新连接。";
+"web_view.empty_state.open_settings_button" = "打开应用设置";
+"web_view.empty_state.retry_button" = "重试";
+"web_view.empty_state.title" = "您已断开连接";
 "web_view.server_selection.title" = "选择服务器";
 "web_view.unique_server_selection.title" = "选择一台服务器";
 "widgets.action.name.assist" = "语音助手";

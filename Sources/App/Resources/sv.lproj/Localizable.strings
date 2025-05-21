@@ -1150,6 +1150,10 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platshållare";
 "watch.settings.no_items.phone.title" = "Inga objekt konfigurerade, vänligen välj objekt nedan.";
+"web_view.empty_state.body" = "Kontrollera anslutningen eller försök igen senare. Om Home Assistant-servern startas om kommer den att återansluta när den är online igen.";
+"web_view.empty_state.open_settings_button" = "Öppna appinställningar";
+"web_view.empty_state.retry_button" = "Försök igen";
+"web_view.empty_state.title" = "Du är frånkopplad";
 "web_view.server_selection.title" = "Välj server";
 "web_view.unique_server_selection.title" = "Välj en server";
 "widgets.action.name.assist" = "Assist";

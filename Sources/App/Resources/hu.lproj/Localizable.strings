@@ -1150,6 +1150,10 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "watch.labels.selected_pipeline.title" = "Csatorna";
 "watch.placeholder_complication_name" = "Helykitöltő";
 "watch.settings.no_items.phone.title" = "Nincsenek konfigurált elemek, kérjük, válasszon elemeket alább.";
+"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
+"web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.retry_button" = "Retry";
+"web_view.empty_state.title" = "You're disconnected";
 "web_view.server_selection.title" = "Szerver kiválasztása";
 "web_view.unique_server_selection.title" = "Válasszon egy szervert";
 "widgets.action.name.assist" = "Assist";

@@ -1150,6 +1150,10 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "watch.labels.selected_pipeline.title" = "助理設定";
 "watch.placeholder_complication_name" = "Placeholder";
 "watch.settings.no_items.phone.title" = "未設定項目、請於下方選擇項目。";
+"web_view.empty_state.body" = "請檢查連線或稍後再試。如果 Home Assistant 正在重新啟動，恢復線上後將重新連線。";
+"web_view.empty_state.open_settings_button" = "開啟 App 設定";
+"web_view.empty_state.retry_button" = "重試";
+"web_view.empty_state.title" = "您已斷線";
 "web_view.server_selection.title" = "選擇伺服器";
 "web_view.unique_server_selection.title" = "選擇伺服器";
 "widgets.action.name.assist" = "助理";

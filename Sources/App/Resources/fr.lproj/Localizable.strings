@@ -1150,6 +1150,10 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Espace réservé";
 "watch.settings.no_items.phone.title" = "Aucun élément configuré, veuillez choisir les éléments ci-dessous.";
+"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
+"web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.retry_button" = "Retry";
+"web_view.empty_state.title" = "You're disconnected";
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";

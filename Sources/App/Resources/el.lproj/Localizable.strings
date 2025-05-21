@@ -1150,6 +1150,10 @@
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Σύμβολο κράτησης θέσης";
 "watch.settings.no_items.phone.title" = "Δεν έχουν διαμορφωθεί στοιχεία, παρακαλώ επιλέξτε στοιχεία παρακάτω.";
+"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
+"web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.retry_button" = "Retry";
+"web_view.empty_state.title" = "You're disconnected";
 "web_view.server_selection.title" = "Επιλέξτε διακομιστή";
 "web_view.unique_server_selection.title" = "Επιλέξτε έναν διακομιστή";
 "widgets.action.name.assist" = "Assist";

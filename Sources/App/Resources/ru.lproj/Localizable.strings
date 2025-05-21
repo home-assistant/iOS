@@ -1150,6 +1150,10 @@ Home Assistant - это бесплатное программное обеспе
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Заглушка";
 "watch.settings.no_items.phone.title" = "Элементы не настроены, пожалуйста, выберите элементы ниже.";
+"web_view.empty_state.body" = "Пожалуйста, проверьте ваше соединение или повторите попытку позже. Если Home Assistant перезагружается, соединение восстановится после его возвращения в сеть.";
+"web_view.empty_state.open_settings_button" = "Открыть настройки приложения";
+"web_view.empty_state.retry_button" = "Повторить";
+"web_view.empty_state.title" = "Вы отключены";
 "web_view.server_selection.title" = "Выберите сервер";
 "web_view.unique_server_selection.title" = "Выберите один сервер";
 "widgets.action.name.assist" = "Assist";
