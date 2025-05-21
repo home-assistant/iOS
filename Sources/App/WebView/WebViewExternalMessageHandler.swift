@@ -143,6 +143,14 @@ final class WebViewExternalMessageHandler {
             case .improvConfigureDevice:
                 let deviceName = incomingMessage.Payload?["name"] as? String
                 presentImprov(deviceName: deviceName)
+            case .storageSet:
+                handleStorageOperation(.set, messagePayload: incomingMessage.Payload)
+            case .storageGet:
+                handleStorageOperation(.get, messagePayload: incomingMessage.Payload)
+            case .storageRemove:
+                handleStorageOperation(.remove, messagePayload: incomingMessage.Payload)
+            case .storageClear:
+                handleStorageOperation(.clear, messagePayload: incomingMessage.Payload)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -151,6 +159,53 @@ final class WebViewExternalMessageHandler {
         response?.then { [self] outgoing in
             sendExternalBus(message: outgoing)
         }.cauterize()
+    }
+
+    private func handleStorageOperation(_ operation: FrontendStorageOperation, messagePayload: [String: Any]?) {
+        guard let messagePayload else {
+            Current.Log.error("Received invalid storage operation message \(messagePayload ?? [:])")
+            return
+        }
+
+        guard let storageName = messagePayload["storage"] as? String,
+              let storage = FrontendStorage(rawValue: storageName) else {
+            Current.Log.error("Received invalid storage name \(messagePayload)")
+            return
+        }
+
+        guard let key = messagePayload["key"] as? String else {
+            Current.Log.error("Received invalid storage key in message \(messagePayload)")
+            return
+        }
+
+        let value = messagePayload["value"] as? String
+        Current.Log.verbose("Handle storage operation \(operation) for key \(key) with value \(String(describing: value))")
+
+        switch storage {
+        case .local:
+            switch operation {
+            case .set:
+                FrontendSessionStorage.storage[key] = value
+            case .get:
+                let value = FrontendSessionStorage.storage[key]
+                // TODO: return value to frontend
+            case .remove:
+                FrontendSessionStorage.storage[key] = nil
+            case .clear:
+                FrontendSessionStorage.storage = [:]
+            }
+        case .session:
+            switch operation {
+            case .set:
+                break
+            case .get:
+                break
+            case .remove:
+                break
+            case .clear:
+                break
+            }
+        }
     }
 
     func showSettingsViewController() {

@@ -612,6 +612,9 @@
 		422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
 		422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
+		42308E6A2DDDF7BC00DD87C3 /* FrontendSessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42308E692DDDF7BC00DD87C3 /* FrontendSessionStorage.swift */; };
+		42308E6C2DDDF7E200DD87C3 /* FrontendLocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42308E6B2DDDF7E200DD87C3 /* FrontendLocalStorage.swift */; };
+		42308E6E2DDDF83200DD87C3 /* FrontendStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42308E6D2DDDF83200DD87C3 /* FrontendStorage.swift */; };
 		423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
@@ -2059,6 +2062,9 @@
 		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
 		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
+		42308E692DDDF7BC00DD87C3 /* FrontendSessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendSessionStorage.swift; sourceTree = "<group>"; };
+		42308E6B2DDDF7E200DD87C3 /* FrontendLocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendLocalStorage.swift; sourceTree = "<group>"; };
+		42308E6D2DDDF83200DD87C3 /* FrontendStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontendStorage.swift; sourceTree = "<group>"; };
 		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
@@ -3423,6 +3429,9 @@
 				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
+				42308E692DDDF7BC00DD87C3 /* FrontendSessionStorage.swift */,
+				42308E6D2DDDF83200DD87C3 /* FrontendStorage.swift */,
+				42308E6B2DDDF7E200DD87C3 /* FrontendLocalStorage.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -7645,6 +7654,7 @@
 				42B980D92DC24E5D00BC5C08 /* SensorDetailViewModel.swift in Sources */,
 				420E2AE82C47471B004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				4280E0712DC23CCF0004BE7D /* SensorRow.swift in Sources */,
+				42308E6C2DDDF7E200DD87C3 /* FrontendLocalStorage.swift in Sources */,
 				42C101282CD3DABA0012BA78 /* IntentCoverEntity.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				1101D7F92621479200AAE617 /* SettingsButtonRow.swift in Sources */,
@@ -7713,6 +7723,7 @@
 				42F1DA612B4D4F31002729BC /* CarPlayNoServerAlert.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				4296C36D2B90DB640051B63C /* IntentActionAppEntity.swift in Sources */,
+				42308E6E2DDDF83200DD87C3 /* FrontendStorage.swift in Sources */,
 				42EF0AD22D4D1A920088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */,
 				42F1DA5B2B4BF7DF002729BC /* WindowSizeObserver.swift in Sources */,
 				429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */,
@@ -7741,6 +7752,7 @@
 				11DE822E24FAC51100E636B8 /* IncomingURLHandler.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */,
+				42308E6A2DDDF7BC00DD87C3 /* FrontendSessionStorage.swift in Sources */,
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,

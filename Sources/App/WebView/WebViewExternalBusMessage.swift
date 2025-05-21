@@ -17,6 +17,10 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case assistShow = "assist/show"
     case scanForImprov = "improv/scan"
     case improvConfigureDevice = "improv/configure_device"
+    case storageGet = "storage/get_item"
+    case storageSet = "storage/set_item"
+    case storageRemove = "storage/remove_item"
+    case storageClear = "storage/clear"
 }
 
 enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
