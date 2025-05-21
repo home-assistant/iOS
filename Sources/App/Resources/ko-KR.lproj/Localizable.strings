@@ -1150,6 +1150,10 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "watch.labels.selected_pipeline.title" = "파이프라인";
 "watch.placeholder_complication_name" = "자리 표시자";
 "watch.settings.no_items.phone.title" = "구성된 항목이 없으므로 아래에서 항목을 선택하세요.";
+"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
+"web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.retry_button" = "Retry";
+"web_view.empty_state.title" = "You're disconnected";
 "web_view.server_selection.title" = "서버 선택";
 "web_view.unique_server_selection.title" = "하나의 서버를 선택하세요";
 "widgets.action.name.assist" = "Assist";

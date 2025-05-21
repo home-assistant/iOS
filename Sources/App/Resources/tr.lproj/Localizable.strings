@@ -1150,6 +1150,10 @@
 "watch.labels.selected_pipeline.title" = "İşlem hattı";
 "watch.placeholder_complication_name" = "Yer tutucu";
 "watch.settings.no_items.phone.title" = "Hiçbir öğe yapılandırılmadı, lütfen aşağıdaki öğeleri seçin.";
+"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
+"web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.retry_button" = "Retry";
+"web_view.empty_state.title" = "You're disconnected";
 "web_view.server_selection.title" = "Sunucu seç";
 "web_view.unique_server_selection.title" = "Bir sunucu seçin";
 "widgets.action.name.assist" = "Asistan";

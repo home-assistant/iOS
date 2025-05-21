@@ -8,7 +8,7 @@
 "panel::map" = "Χάρτης";
 "panel::media_browser" = "Πολυμέσα";
 "panel::profile" = "Προφίλ";
-"panel::shopping_list" = "Λίστα αγορών";
+"panel::shopping_list" = "Λίστα για ψώνια";
 "panel::states" = "Επισκόπηση";
 "state::default::unavailable" = "Μη Διαθέσιμο";
 "state::default::unknown" = "Άγνωστη";

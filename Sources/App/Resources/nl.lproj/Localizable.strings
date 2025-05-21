@@ -1150,6 +1150,10 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "watch.labels.selected_pipeline.title" = "Pijplijn";
 "watch.placeholder_complication_name" = "Tijdelijke aanduiding";
 "watch.settings.no_items.phone.title" = "Geen items geconfigureerd, kies hieronder items.";
+"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
+"web_view.empty_state.open_settings_button" = "Open App settings";
+"web_view.empty_state.retry_button" = "Retry";
+"web_view.empty_state.title" = "You're disconnected";
 "web_view.server_selection.title" = "Server kiezen";
 "web_view.unique_server_selection.title" = "Kies één server";
 "widgets.action.name.assist" = "Assist";
