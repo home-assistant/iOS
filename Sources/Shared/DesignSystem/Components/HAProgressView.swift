@@ -2,6 +2,8 @@ import SwiftUI
 
 public struct HAProgressView: View {
     public enum Style {
+        /// A style intended for pull-to-refresh indicators. It has a fixed size of 24x24 points,
+        /// includes padding, a white background, and is clipped to a circular shape.
         case refreshControl
         case small
         case medium
