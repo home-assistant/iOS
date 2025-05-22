@@ -20,7 +20,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var urlObserver: NSKeyValueObservation?
     private var tokens = [HACancellable]()
 
-    private let refreshControl = UIRefreshControl()
+    private let refreshControl = CustomRefreshControl()
     private let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
@@ -449,8 +449,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 statusBarView.backgroundColor = cachedColors[.appThemeColor]
             }
         }
-
-        refreshControl.tintColor = cachedColors[.primaryColor]
 
         let headerBackgroundIsLight = cachedColors[.appThemeColor].isLight
         underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
