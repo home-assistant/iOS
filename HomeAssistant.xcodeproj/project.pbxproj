@@ -673,6 +673,7 @@
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		4259637A2DDF6ED3002F3504 /* CustomRefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425963792DDF6ED3002F3504 /* CustomRefreshControl.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -2130,6 +2131,7 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		425963792DDF6ED3002F3504 /* CustomRefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRefreshControl.swift; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
@@ -3415,6 +3417,7 @@
 				42BE698B2C4691E000745ECA /* Views */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				425963792DDF6ED3002F3504 /* CustomRefreshControl.swift */,
 				42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
 				42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */,
@@ -7565,6 +7568,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4259637A2DDF6ED3002F3504 /* CustomRefreshControl.swift in Sources */,
 				423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,

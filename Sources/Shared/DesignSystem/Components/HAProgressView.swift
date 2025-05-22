@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct HAProgressView: View {
     public enum Style {
+        case refreshControl
         case small
         case medium
         case large
@@ -9,7 +10,7 @@ public struct HAProgressView: View {
 
         var size: CGSize {
             switch self {
-            case .small:
+            case .small, .refreshControl:
                 return CGSize(width: 24, height: 24)
             case .medium:
                 return CGSize(width: 28, height: 28)
@@ -54,6 +55,15 @@ public struct HAProgressView: View {
                         trimEnd = 0.7
                     }
                 }
+        }
+        .padding(style == .refreshControl ? Spaces.one : 0)
+        .background(style == .refreshControl ? Color.white : Color.clear)
+        .modify { view in
+            if style == .refreshControl {
+                view.clipShape(Circle())
+            } else {
+                view
+            }
         }
     }
 }
