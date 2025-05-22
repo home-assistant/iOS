@@ -57,13 +57,25 @@ public struct HAProgressView: View {
                 }
         }
         .padding(style == .refreshControl ? Spaces.one : 0)
-        .background(style == .refreshControl ? Color.white : Color.clear)
+        .background(backgroundColor)
         .modify { view in
             if style == .refreshControl {
                 view.clipShape(Circle())
             } else {
                 view
             }
+        }
+    }
+
+    private var backgroundColor: Color {
+        if style == .refreshControl {
+            #if !os(watchOS)
+            Color(uiColor: .systemBackground)
+            #else
+            Color.white
+            #endif
+        } else {
+            Color.clear
         }
     }
 }
