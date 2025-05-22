@@ -2,6 +2,9 @@ import SwiftUI
 
 public struct HAProgressView: View {
     public enum Style {
+        /// A style intended for pull-to-refresh indicators. It has a fixed size of 24x24 points,
+        /// includes padding, a white background, and is clipped to a circular shape.
+        case refreshControl
         case small
         case medium
         case large
@@ -9,7 +12,7 @@ public struct HAProgressView: View {
 
         var size: CGSize {
             switch self {
-            case .small:
+            case .small, .refreshControl:
                 return CGSize(width: 24, height: 24)
             case .medium:
                 return CGSize(width: 28, height: 28)
@@ -54,6 +57,27 @@ public struct HAProgressView: View {
                         trimEnd = 0.7
                     }
                 }
+        }
+        .padding(style == .refreshControl ? Spaces.one : 0)
+        .background(backgroundColor)
+        .modify { view in
+            if style == .refreshControl {
+                view.clipShape(Circle())
+            } else {
+                view
+            }
+        }
+    }
+
+    private var backgroundColor: Color {
+        if style == .refreshControl {
+            #if !os(watchOS)
+            Color(uiColor: .systemBackground)
+            #else
+            Color.white
+            #endif
+        } else {
+            Color.clear
         }
     }
 }
