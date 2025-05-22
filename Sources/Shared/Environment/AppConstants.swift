@@ -284,6 +284,8 @@ public extension Version {
     /// The version where the app can subscribe to entities changes with a filter (e.g. only state changes from sensor
     /// domain)
     static let canSubscribeEntitiesChangesWithFilter: Version = .init(major: 2024, minor: 10)
+    /// Allows app to ask frontend to navigate to a specific page
+    static let canNavigateThroughFrontend: Version = .init(major: 2025, minor: 6, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

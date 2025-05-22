@@ -39,7 +39,11 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusOutgoingMessage.improvDiscoveredDeviceSetupDone.rawValue,
             "improv/device_setup_done"
         )
+        XCTAssertEqual(
+            WebViewExternalBusOutgoingMessage.navigate.rawValue,
+            "navigate"
+        )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 6)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 7)
     }
 }
