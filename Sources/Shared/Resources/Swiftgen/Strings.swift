@@ -1751,6 +1751,10 @@ public enum L10n {
         }
       }
     }
+    public enum Invitation {
+      /// Other options
+      public static var otherOptions: String { return L10n.tr("Localizable", "onboarding.invitation.other_options") }
+    }
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
