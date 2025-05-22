@@ -815,8 +815,26 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             Current.Log.info("Open page did not reload webview because path component matches current URL")
             return
         } else {
-            webView.load(URLRequest(url: url))
+            if !navigate(path: url.path) {
+                webView.load(URLRequest(url: url))
+            }
         }
+    }
+
+    /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
+    /// Returns true if the navigation was successful
+    private func navigate(path: String) -> Bool {
+        guard server.info.version >= .canNavigateThroughFrontend else {
+            Current.Log.warning("Cannot navigate through frontend, core version is too low")
+            return false
+        }
+        webViewExternalMessageHandler.sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.navigate.rawValue,
+            payload: [
+                "path": path,
+            ]
+        ))
+        return true
     }
 
     public func showSettingsViewController() {

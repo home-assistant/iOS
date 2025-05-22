@@ -26,4 +26,5 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case barCodeScanAborted = "bar_code/aborted"
     case improvDiscoveredDevice = "improv/discovered_device"
     case improvDiscoveredDeviceSetupDone = "improv/device_setup_done"
+    case navigate = "navigate"
 }
