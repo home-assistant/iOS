@@ -823,7 +823,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    /// Uses external bus to navigate throught frontend instead of loading the page from scratch using the web view
+    /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
     /// Returns true if the navigation was successful
     private func navigate(path: String) -> Bool {
         guard server.info.version >= .canNavigateThroughFrontend else {
