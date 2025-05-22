@@ -757,6 +757,7 @@
 		4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */; };
 		4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */; };
 		4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626092DA5CD1B00D58D13 /* SpacesTests.swift */; };
+		42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
 		4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -2220,6 +2221,7 @@
 		428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizesTests.swift; sourceTree = "<group>"; };
 		428626092DA5CD1B00D58D13 /* SpacesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesTests.swift; sourceTree = "<group>"; };
 		4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorIdTests.swift; sourceTree = "<group>"; };
+		42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+SafeArea.swift"; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		4289DDAE2C85D5C4003591C2 /* ControlScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScene.swift; sourceTree = "<group>"; };
@@ -3789,6 +3791,7 @@
 				39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */,
 				42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */,
 				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
+				42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -7720,6 +7723,7 @@
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
+				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
