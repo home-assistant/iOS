@@ -1151,10 +1151,10 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platzhalter";
 "watch.settings.no_items.phone.title" = "Keine Einträge konfiguriert. Bitte wähle untenstehende Einträge aus.";
-"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
-"web_view.empty_state.open_settings_button" = "Open App settings";
-"web_view.empty_state.retry_button" = "Retry";
-"web_view.empty_state.title" = "You're disconnected";
+"web_view.empty_state.body" = "Bitte überprüfe deine Verbindung oder versuche es später erneut. Wenn Home Assistant neu gestartet wird, wird die Verbindung wiederhergestellt, sobald er wieder online ist.";
+"web_view.empty_state.open_settings_button" = "App-Einstellungen öffnen";
+"web_view.empty_state.retry_button" = "Erneut versuchen";
+"web_view.empty_state.title" = "Verbindung wurde getrennt";
 "web_view.server_selection.title" = "Server auswählen";
 "web_view.unique_server_selection.title" = "Wähle einen Server";
 "widgets.action.name.assist" = "Assist";
