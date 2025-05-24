@@ -112,7 +112,7 @@
 "component::improv_ble::config::step::main_menu::menu_options::provision" = "Подключите устройство к сети Wi-Fi";
 "component::improv_ble::config::step::provision::data::password" = "Пароль";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
-"component::improv_ble::config::step::provision::description" = "Введите учетные данные Wi-Fi, чтобы подключить устройство к вашей сети.";
+"component::improv_ble::config::step::provision::description" = "Введите учётные данные Wi-Fi, чтобы подключить устройство к вашей сети.";
 "component::improv_ble::config::step::user::data::address" = "Устройство";
 "component::improv_ble::config::step::user::description" = "Выберите устройство для настройки";
 "component::input_boolean::entity_component::_::state::off" = "Выключено";
