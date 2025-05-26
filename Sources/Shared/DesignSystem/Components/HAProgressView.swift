@@ -1,6 +1,6 @@
 import SwiftUI
 
-class HAProgressViewModel: ObservableObject {
+final class HAProgressViewModel: ObservableObject {
     @Published var isAnimating = false
     @Published var trimEnd: CGFloat = 0.1
 }
