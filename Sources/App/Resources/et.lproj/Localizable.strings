@@ -1150,10 +1150,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.labels.selected_pipeline.title" = "Voog";
 "watch.placeholder_complication_name" = "Kohatäide";
 "watch.settings.no_items.phone.title" = "Üksusi pole konfigureeritud, vali allolevad üksused.";
-"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
-"web_view.empty_state.open_settings_button" = "Open App settings";
-"web_view.empty_state.retry_button" = "Retry";
-"web_view.empty_state.title" = "You're disconnected";
+"web_view.empty_state.body" = "Kontrolli ühendust või proovi hiljem uuesti. Kui Home Assistant taaskäivitub, loob see pärast võrguühenduse taastamist uuesti ühenduse.";
+"web_view.empty_state.open_settings_button" = "Ava rakenduse seaded";
+"web_view.empty_state.retry_button" = "Proovi uuesti";
+"web_view.empty_state.title" = "Oled ühenduseta";
 "web_view.server_selection.title" = "Vali server";
 "web_view.unique_server_selection.title" = "Vali üks server";
 "widgets.action.name.assist" = "Abiline";
