@@ -199,7 +199,7 @@
 "connection.error.details.label.description" = "Beskrivning";
 "connection.error.details.label.domain" = "Domän";
 "connection.error.details.title" = "Anslutningsfel";
-"connection.error.failed_connect.cloud.title" = "Kontrollera att din Home Assistant Cloud-prenumeration är aktiv och ansluten till din server, du kan verifiera det på [Nabu Casa] (https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud.title" = "Kontrollera att din Home Assistant Cloud-prenumeration är aktiv och ansluten till din server, du kan verifiera det på [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.cloud_inactive.title" = "Du har inaktiverat Home Assistant Cloud-användning i appen. Om du behöver det för fjärråtkomst, öppna inställningarna för Companion-appen och aktivera det.";
 "connection.error.failed_connect.subtitle" = "Kontrollera din anslutning och försök igen. Om du inte är hemma, se till att du har konfigurerat fjärråtkomst.";
 "connection.error.failed_connect.title" = "Vi kunde inte ansluta till Home Assistant";
