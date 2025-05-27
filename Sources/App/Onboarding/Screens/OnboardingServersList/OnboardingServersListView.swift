@@ -12,6 +12,8 @@ struct OnboardingServersListView: View {
     @State private var showDocumentation = false
     @State private var showManualInput = false
     @State private var screenLoaded = false
+    @State private var showHeaderView = false
+    @State private var showManualInputButton = false
 
     let prefillURL: URL?
 
@@ -29,16 +31,21 @@ struct OnboardingServersListView: View {
             } else {
                 if let inviteURL = Current.appSessionValues.inviteURL {
                     prefillURLHeader(url: inviteURL)
-                    Text("Other options")
+                    Text(L10n.Onboarding.Invitation.otherOptions)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                         .listRowBackground(Color.clear)
                 } else {
-                    headerView
+                    if showHeaderView, viewModel.discoveredInstances.isEmpty {
+                        headerView
+                    }
                 }
                 list
-                manualInputButton
+
+                if showManualInputButton {
+                    manualInputButton
+                }
             }
         }
         .animation(.easeInOut, value: viewModel.discoveredInstances.count)
@@ -112,6 +119,15 @@ struct OnboardingServersListView: View {
             } else {
                 viewModel.startDiscovery()
             }
+        }
+
+        // Only displays magnifying glass animation if no servers are found after 1.5 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            if viewModel.discoveredInstances.isEmpty {
+                showHeaderView = true
+            }
+
+            showManualInputButton = true
         }
     }
 

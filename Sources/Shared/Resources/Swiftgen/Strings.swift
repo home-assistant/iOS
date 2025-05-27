@@ -1751,6 +1751,10 @@ public enum L10n {
         }
       }
     }
+    public enum Invitation {
+      /// Other options
+      public static var otherOptions: String { return L10n.tr("Localizable", "onboarding.invitation.other_options") }
+    }
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
@@ -1920,6 +1924,8 @@ public enum L10n {
       }
     }
     public enum Welcome {
+      /// Connect to my Home Assistant
+      public static var continueButton: String { return L10n.tr("Localizable", "onboarding.welcome.continue_button") }
       /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
@@ -1928,6 +1934,8 @@ public enum L10n {
       public static var getStarted: String { return L10n.tr("Localizable", "onboarding.welcome.get_started") }
       /// Learn more
       public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
+      /// Getting started
+      public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.secondary_button") }
       /// Welcome to Home Assistant %@!
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
