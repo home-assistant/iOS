@@ -460,6 +460,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.device_name_check.error.prompt" = "Milyen eszköznevet kell helyette használni?";
 "onboarding.device_name_check.error.rename_action" = "Átnevezés";
 "onboarding.device_name_check.error.title" = "Már létezik egy eszköz a '%1$@' névvel.";
+"onboarding.invitation.other_options" = "Egyéb lehetőségek";
 "onboarding.manual_setup.connect" = "Csatlakozás";
 "onboarding.manual_setup.couldnt_make_url.message" = "%@ nem érvényes URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nem sikerült létrehozni URL-t";
@@ -515,11 +516,13 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.scanning.title" = "Szerverek keresése";
 "onboarding.servers.docs.read" = "Dokumentáció elolvasása";
 "onboarding.servers.search.message" = "Kiszolgálók keresése a közelben…";
+"onboarding.welcome.continue_button" = "Csatlakozás a saját Home Assistant rendszeremhez";
 "onboarding.welcome.description" = "Ez az alkalmazás csatlakozik a Home Assistant szerverhez és lehetővé teszi az Önre és telefonjára vonatkozó adatok integrálását.\
 \
 A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási szoftver, amely a vezérlés helyben történő kivitelezésére és az adatvédelemre összpontosít.";
 "onboarding.welcome.get_started" = "Első lépések a Home Assistanttal";
 "onboarding.welcome.learn_more" = "Tudjon meg többet";
+"onboarding.welcome.secondary_button" = "Első lépések";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "open_label" = "Megnyitás";
 "permission.screen.bluetooth.secondary_button" = "Kihagyás";
@@ -633,7 +636,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.location_history.title" = "Helyelőzmények";
 "settings.navigation_bar.about_button.title" = "Névjegy";
 "settings.navigation_bar.title" = "Beállítások";
-"settings.reset_section.reset_alert.message" = "A beállítások visszaállítását követően ez az eszköz nem lesz regisztrálva többé a push-értesítésekbe, valamint eltávolításra kerül a Home Assistant konfigurációjából.";
+"settings.reset_section.reset_alert.message" = "A beállításai visszaállnak, és ez az eszköz le lesz választva az értesítési szolgáltatásról, valamint eltávolításra kerül a Home Assistant konfigurációjából.";
 "settings.reset_section.reset_alert.progress_message" = "Visszaállítás...";
 "settings.reset_section.reset_alert.title" = "Visszaállítás";
 "settings.reset_section.reset_app.title" = "Alkalmazás visszaállítása (kiszolgálók és adatok eltávolítása)";

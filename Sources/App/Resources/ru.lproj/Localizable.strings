@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "Какое имя устройства следует использовать вместо этого?";
 "onboarding.device_name_check.error.rename_action" = "Переименовать";
 "onboarding.device_name_check.error.title" = "Устройство с именем '%1$@' уже существует";
+"onboarding.invitation.other_options" = "Другие варианты";
 "onboarding.manual_setup.connect" = "Подключиться";
 "onboarding.manual_setup.couldnt_make_url.message" = "Значение '%@' не является допустимым URL-адресом.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Не удалось создать URL-адрес";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Сканирование серверов";
 "onboarding.servers.docs.read" = "Читать документацию";
 "onboarding.servers.search.message" = "Ищу серверы поблизости...";
+"onboarding.welcome.continue_button" = "Подключиться к моему Home Assistant";
 "onboarding.welcome.description" = "Это приложение подключается к вашему серверу Home Assistant и позволяет интегрировать данные о вас и вашем телефоне.\
 \
 Home Assistant - это бесплатное программное обеспечение для домашней автоматизации с открытым исходным кодом, ориентированное на локальный контроль и конфиденциальность.";
 "onboarding.welcome.get_started" = "Начните работу с Home Assistant";
 "onboarding.welcome.learn_more" = "Узнать больше";
+"onboarding.welcome.secondary_button" = "Начало работы";
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
 "open_label" = "Открыто";
 "permission.screen.bluetooth.secondary_button" = "Пропустить";

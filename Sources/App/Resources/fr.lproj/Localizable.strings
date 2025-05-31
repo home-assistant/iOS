@@ -460,6 +460,7 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.device_name_check.error.prompt" = "Quel nom de périphérique doit être utilisé à la place ?";
 "onboarding.device_name_check.error.rename_action" = "Renommer";
 "onboarding.device_name_check.error.title" = "Un périphérique existe déjà avec le nom ' %1$@ '";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Connecter";
 "onboarding.manual_setup.couldnt_make_url.message" = "La valeur '%@' n'était pas une URL valide.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossible de créer une URL";
@@ -515,11 +516,13 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.scanning.title" = "Recherche de serveurs";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Cette application se connecte à votre serveur Home Assistant et permet d'intégrer des données sur vous et votre téléphone. \
 \
 Home Assistant est un logiciel de domotique gratuit et open source axé sur le contrôle local et la confidentialité.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Plus d'informations";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Bienvenue dans Home Assistant %@ !";
 "open_label" = "Ouvert";
 "permission.screen.bluetooth.secondary_button" = "Skip";

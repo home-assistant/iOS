@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "应改用什么设备名称 ？";
 "onboarding.device_name_check.error.rename_action" = "重命名";
 "onboarding.device_name_check.error.title" = "已存在名称为\"%1$@\"的设备。";
+"onboarding.invitation.other_options" = "其它选项";
 "onboarding.manual_setup.connect" = "连接";
 "onboarding.manual_setup.couldnt_make_url.message" = "“ %@ ”不是有效的 URL。";
 "onboarding.manual_setup.couldnt_make_url.title" = "无法创建网址";
@@ -515,9 +516,11 @@
 "onboarding.scanning.title" = "正在扫描服务器";
 "onboarding.servers.docs.read" = "阅读文档";
 "onboarding.servers.search.message" = "正在寻找附近的服务器...";
+"onboarding.welcome.continue_button" = "连接到我的 Home Assistant";
 "onboarding.welcome.description" = "此应用程序将连接到您的 Home Assistant 服务器，并将集成有关您和您的移动设备的数据。Home Assistant 是免费的开源家庭自动化软件，专注于本地控制和隐私保护。";
 "onboarding.welcome.get_started" = "开始使用 Home Assistant";
 "onboarding.welcome.learn_more" = "了解更多信息";
+"onboarding.welcome.secondary_button" = "入门";
 "onboarding.welcome.title" = "欢迎使用 Home Assistant %@ ！";
 "open_label" = "打开";
 "permission.screen.bluetooth.secondary_button" = "跳过";

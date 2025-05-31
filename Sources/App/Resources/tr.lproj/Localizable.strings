@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "Bunun yerine hangi cihaz adı kullanılmalıdır?";
 "onboarding.device_name_check.error.rename_action" = "Yeniden adlandır";
 "onboarding.device_name_check.error.title" = "%1$@ ' adında bir cihaz zaten var";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Bağlan";
 "onboarding.manual_setup.couldnt_make_url.message" = "\" %@ \" değeri geçerli bir URL değildi.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL oluşturulamadı";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Sunucular için Tarama";
 "onboarding.servers.docs.read" = "Belgeleri okuyun";
 "onboarding.servers.search.message" = "Yakındaki sunucular aranıyor...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Bu uygulama, Home Assistant sunucunuza bağlanır ve siz ve telefonunuz hakkındaki verilerin entegre edilmesini sağlar. \
 \
  Home Assistant, yerel kontrol ve gizliliğe odaklanan ücretsiz ve açık kaynaklı bir ev otomasyon yazılımıdır.";
 "onboarding.welcome.get_started" = "Home Assistant'ı kullanmaya başlayın";
 "onboarding.welcome.learn_more" = "Daha fazla bilgi edin";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Home Assistant'a Hoş Geldiniz %@!";
 "open_label" = "Açık";
 "permission.screen.bluetooth.secondary_button" = "Atla";

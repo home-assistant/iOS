@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "Qual nome de dispositivo deve ser usado?";
 "onboarding.device_name_check.error.rename_action" = "Renomear";
 "onboarding.device_name_check.error.title" = "Já existe um dispositivo com o nome ' %1$@ '";
+"onboarding.invitation.other_options" = "Outras opções";
 "onboarding.manual_setup.connect" = "Conectar";
 "onboarding.manual_setup.couldnt_make_url.message" = "O valor ' %@ ' não era um URL válido.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Não foi possível criar uma URL";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Escaneando servidores";
 "onboarding.servers.docs.read" = "Leia a documentação";
 "onboarding.servers.search.message" = "Procurando servidores nas proximidades...";
+"onboarding.welcome.continue_button" = "Conecte-se ao meu Home Assistant";
 "onboarding.welcome.description" = "Este aplicativo se conecta ao servidor do Home Assistant e permite integrar dados sobre você e seu telefone. \
 \
  O Home Assistant é um software de automação residencial gratuito e de código aberto com foco no controle local e na privacidade.";
 "onboarding.welcome.get_started" = "Comece a usar o Home Assistant";
 "onboarding.welcome.learn_more" = "Saiba mais";
+"onboarding.welcome.secondary_button" = "Primeiros passos";
 "onboarding.welcome.title" = "Bem-vindo ao Home Assistant %@ !";
 "open_label" = "Abrir";
 "permission.screen.bluetooth.secondary_button" = "Pular";
@@ -1150,10 +1153,10 @@
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Espaço reservado";
 "watch.settings.no_items.phone.title" = "Nenhum item configurado, escolha os itens abaixo.";
-"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
-"web_view.empty_state.open_settings_button" = "Open App settings";
-"web_view.empty_state.retry_button" = "Retry";
-"web_view.empty_state.title" = "You're disconnected";
+"web_view.empty_state.body" = "Verifique sua conexão ou tente novamente mais tarde. Se o Home Assistant estiver reiniciando, ele se reconectará após ficar online novamente.";
+"web_view.empty_state.open_settings_button" = "Abra as configurações do aplicativo";
+"web_view.empty_state.retry_button" = "Tentar novamente";
+"web_view.empty_state.title" = "Você está desconectado";
 "web_view.server_selection.title" = "Escolha o servidor";
 "web_view.unique_server_selection.title" = "Escolha um servidor";
 "widgets.action.name.assist" = "Assist";

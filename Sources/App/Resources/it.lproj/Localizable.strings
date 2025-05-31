@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "Quale dispositivo dovrebbe essere usato invece?";
 "onboarding.device_name_check.error.rename_action" = "Rinomina";
 "onboarding.device_name_check.error.title" = "Esiste già un dispositivo con il nome '%1$@'";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Connetti";
 "onboarding.manual_setup.couldnt_make_url.message" = "Il valore \"%@\" non era un URL valido.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossibile creare un URL";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Scansione per server";
 "onboarding.servers.docs.read" = "Leggi la documentazione";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Questa app si connette al tuo server Home Assistant e consente di integrare i dati su di te e sul tuo telefono. \
 \
  Home Assistant è un software di automazione domestica gratuito e open source con particolare attenzione al controllo locale e alla privacy.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Scopri di più";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Benvenuto in Home Assistant %@ !";
 "open_label" = "Aperto";
 "permission.screen.bluetooth.secondary_button" = "Salta";

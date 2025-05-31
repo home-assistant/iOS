@@ -268,7 +268,7 @@
 "gestures.swipe_left.title" = "Svep åt vänster";
 "gestures.swipe_right.title" = "Svep åt höger";
 "gestures.value.option.assist" = "Öppna Assist";
-"gestures.value.option.back_page" = "Gå till föregående sida";
+"gestures.value.option.back_page" = "Tillbaka till föregående sida";
 "gestures.value.option.more_info.search_commands" = "Sök kommandon";
 "gestures.value.option.more_info.search_devices" = "Sök enheter";
 "gestures.value.option.more_info.search_entities" = "Sök entiteter";
@@ -377,7 +377,7 @@
 "network.error.no_active_url.body" = "Öppna inställningarna för Companion-appen och kontrollera serverinställningarna. Den interna webbadressen används endast om lokalt nätverk är definierat (SSID). Om du använder VPN kan du försöka ställa in den externa webbadressen som samma som den interna webbadressen.";
 "network.error.no_active_url.title" = "Ingen URL tillgänglig att ladda";
 "nfc.detail.copy" = "Kopiera till klippbord";
-"nfc.detail.duplicate" = "Skapa kopia";
+"nfc.detail.duplicate" = "Skapa en kopia";
 "nfc.detail.example_trigger" = "Exempel-utlösare";
 "nfc.detail.fire" = "Kör händelse";
 "nfc.detail.share" = "Dela identifierare";
@@ -460,6 +460,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.device_name_check.error.prompt" = "Vilket enhetsnamn ska användas istället?";
 "onboarding.device_name_check.error.rename_action" = "Döp om";
 "onboarding.device_name_check.error.title" = "Det finns redan en enhet med namnet '%1$@'";
+"onboarding.invitation.other_options" = "Andra alternativ";
 "onboarding.manual_setup.connect" = "Anslut";
 "onboarding.manual_setup.couldnt_make_url.message" = "Värdet '%@' var inte en giltig URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kunde inte skapa en URL";
@@ -515,11 +516,13 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.scanning.title" = "Söker efter servrar";
 "onboarding.servers.docs.read" = "Läs dokumentationen";
 "onboarding.servers.search.message" = "Letar efter servrar i närheten...";
+"onboarding.welcome.continue_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.description" = "Den här appen ansluter till din Home Assistant-server och låter dig integrera data om dig och din telefon. \
 \
 Home Assistant är gratis och öppen källkod för hemautomatisering med fokus på lokal kontroll och integritet.";
 "onboarding.welcome.get_started" = "Kom igång med Home Assistant";
 "onboarding.welcome.learn_more" = "Läs mer";
+"onboarding.welcome.secondary_button" = "Så här kommer du igång";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
 "open_label" = "Öppen";
 "permission.screen.bluetooth.secondary_button" = "Hoppa över";
@@ -706,7 +709,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.general.app_icon.explanation.title" = "Varje ikon har 3 varianter (iOS 18+), standard, mörk och tonad för att reagera enligt den valda iOS-startskärmsstilen. Vissa ikoner är desamma i mörkt läge eller hanteras automatiskt av iOS.";
 "settings_details.general.app_icon.title" = "App-ikon";
 "settings_details.general.body" = "Grundläggande appkonfiguration, appikon och webbinställningar.";
-"settings_details.general.device_name.title" = "Namn på enheten";
+"settings_details.general.device_name.title" = "Enhetsnamn";
 "settings_details.general.full_screen.title" = "Helskärm";
 "settings_details.general.launch_on_login.title" = "Starta appen när du loggar in";
 "settings_details.general.links.title" = "Länkar";
@@ -750,7 +753,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.location.motion_permission.enabled" = "Aktiverad";
 "settings_details.location.motion_permission.needs_request" = "Avaktiverad";
 "settings_details.location.motion_permission.restricted" = "Begränsad";
-"settings_details.location.motion_permission.title" = "Rörelse-tillstånd";
+"settings_details.location.motion_permission.title" = "Tillstånd för rörelse";
 "settings_details.location.notifications.background_fetch.title" = "Notis om bakgrundshämtning";
 "settings_details.location.notifications.beacon_enter.title" = "Notis om ankomst till zon via iBeacon";
 "settings_details.location.notifications.beacon_exit.title" = "Notis om lämnad zon via iBeacon";
@@ -793,7 +796,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.notifications.local_push.status.available" = "Tillgängliga (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Inaktiverad";
 "settings_details.notifications.local_push.status.establishing" = "Upprättar";
-"settings_details.notifications.local_push.status.unavailable" = "Ej tillgängliga";
+"settings_details.notifications.local_push.status.unavailable" = "Otillgänglig";
 "settings_details.notifications.local_push.status.unsupported" = "Stöds inte";
 "settings_details.notifications.local_push.title" = "Lokal push";
 "settings_details.notifications.new_category.title" = "Ny kategori";
@@ -807,8 +810,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.notifications.rate_limits.attempts" = "Försök";
 "settings_details.notifications.rate_limits.delivered" = "Levererat";
 "settings_details.notifications.rate_limits.errors" = "Fel";
-"settings_details.notifications.rate_limits.footer" = "Du kan skicka 300 pushmeddelanden per 24 timmar. Begränsningen återställs vid midnatt Universal Coordinated Time (UTC).";
-"settings_details.notifications.rate_limits.footer_with_param" = "Du är beviljad %u push-notiser per 24 timmar. Gränsen återställs vid midnatt UTC.";
+"settings_details.notifications.rate_limits.footer" = "Du kan skicka 300 push-aviseringar per 24 timmar. Begränsningen återställs vid midnatt Universal Coordinated Time (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "Du är beviljad %u push-aviseringar per 24 timmar. Gränsen återställs vid midnatt UTC.";
 "settings_details.notifications.rate_limits.header" = "Begränsningar";
 "settings_details.notifications.rate_limits.resets_in" = "Återställs om";
 "settings_details.notifications.rate_limits.total" = "Totalt";
@@ -850,8 +853,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_details.widgets.reload_all.description" = "Detta kommer att ladda om alla widgets tidslinjer, använd detta om dina widgets har fastnat i ett tomt tillstånd eller inte uppdateras av någon anledning.";
 "settings_details.widgets.reload_all.title" = "Ladda om alla widgets";
 "settings_sensors.body" = "Bestäm vilka av dina enhetssensorer du vill dela med Home Assistant.";
-"settings_sensors.detail.attributes" = "Egenskaper";
-"settings_sensors.detail.device_class" = "Enhets-klass";
+"settings_sensors.detail.attributes" = "Attribut";
+"settings_sensors.detail.device_class" = "Enhetsklass";
 "settings_sensors.detail.enabled" = "Aktiverad";
 "settings_sensors.detail.icon" = "Ikon";
 "settings_sensors.detail.state" = "Tillstånd";
@@ -859,7 +862,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_sensors.focus_permission.title" = "Fokusbehörighet";
 "settings_sensors.last_updated.footer" = "Senast uppdaterad %@";
 "settings_sensors.last_updated.prefix" = "Senast uppdaterad";
-"settings_sensors.loading_error.title" = "Kunde inte ladda sensorer";
+"settings_sensors.loading_error.title" = "Kunde inte ladda in sensorer";
 "settings_sensors.periodic_update.description" = "Om aktiverad kommer de här sensorerna att uppdateras med den här frekvensen medan appen är öppen i förgrunden.";
 "settings_sensors.periodic_update.description_mac" = "Om aktiverad uppdateras de här sensorerna med denna frekvens medan appen är öppen. Några sensorer kommer automatiskt att uppdateras oftare.";
 "settings_sensors.periodic_update.off" = "Av";
@@ -917,7 +920,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "url_handler.fire_event.error.message" = "Ett fel uppstod vid försök att utlösa händelsen %@: %@";
 "url_handler.fire_event.success.message" = "Utlöste händelse %@";
 "url_handler.fire_event.success.title" = "Utlöste händelse";
-"url_handler.no_service.message" = "%@är inte en giltig väg";
+"url_handler.no_service.message" = "%@ är inte en giltig rutt";
 "url_handler.render_template.confirm.message" = "Vill du skapa %@?";
 "url_handler.render_template.confirm.title" = "Skapa mall?";
 "url_handler.send_location.confirm.message" = "Vill du skicka din plats?";

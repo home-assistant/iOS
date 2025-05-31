@@ -460,6 +460,7 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.device_name_check.error.prompt" = "Mitä nimeä laitteelle pitäisi käyttää sen sijaan?";
 "onboarding.device_name_check.error.rename_action" = "Nimeä uudelleen";
 "onboarding.device_name_check.error.title" = "Laite on jo olemassa nimellä '%1$@'";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Yhdistä";
 "onboarding.manual_setup.couldnt_make_url.message" = "Arvo '%@' ei ollut kelvollinen URL-osoite.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL-osoitetta ei voitu luoda";
@@ -515,11 +516,13 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.scanning.title" = "Etsitään palvelimia";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Tämä sovellus yhdistää Home Assistant -palvelimeesi ja mahdollistaa tietojen integroinnin sinusta ja puhelimestasi.\
 \
 Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka painottaa paikallista hallinnoitavuutta ja yksityisyyttä.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Lisätietoja";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Tervetuloa Home Assistantiin %@!";
 "open_label" = "Avaa";
 "permission.screen.bluetooth.secondary_button" = "Skip";
