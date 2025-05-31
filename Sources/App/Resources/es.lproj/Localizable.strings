@@ -460,6 +460,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.device_name_check.error.prompt" = "¿Qué nombre de dispositivo debería utilizar?";
 "onboarding.device_name_check.error.rename_action" = "Renombrada";
 "onboarding.device_name_check.error.title" = "Ya existe un dispositivo con el nombre \"%1$@\"";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Conectado";
 "onboarding.manual_setup.couldnt_make_url.message" = "El valor \" %@ \" no es una URL válida.";
 "onboarding.manual_setup.couldnt_make_url.title" = "No se pudo crear una URL";
@@ -515,11 +516,13 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.scanning.title" = "Se está buscando servidores";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Esta aplicación se conecta a vuestro servidor Home Assistant y permite integrar datos sobre ti y tu teléfono. \
 \
 Home Assistant es un software de automatización del hogar gratuito y de código abierto, centrado en el control local y la privacidad.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Bienvenidos a Home Assistant %@ !";
 "open_label" = "Abrir";
 "permission.screen.bluetooth.secondary_button" = "Skip";

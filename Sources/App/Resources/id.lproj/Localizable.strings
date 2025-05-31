@@ -460,6 +460,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.device_name_check.error.prompt" = "Nama perangkat apa yang ingin digunakan?";
 "onboarding.device_name_check.error.rename_action" = "Ganti Nama";
 "onboarding.device_name_check.error.title" = "Sudah ada perangkat dengan nama '%1$@'";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Hubungkan";
 "onboarding.manual_setup.couldnt_make_url.message" = "Nilai '%@' bukan URL yang valid.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Tidak dapat membuat URL";
@@ -515,11 +516,13 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.scanning.title" = "Memindai Server";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Aplikasi ini terhubung ke server Home Assistant Anda dan memungkinkan integrasi data tentang Anda dan ponsel Anda.\
 \
 Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka dengan fokus pada kontrol dan privasi lokal.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Pelajari lebih lanjut";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Selamat datang di Home Assistant %@!";
 "open_label" = "Buka";
 "permission.screen.bluetooth.secondary_button" = "Lewatkan";

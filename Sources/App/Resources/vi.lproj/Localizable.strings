@@ -460,6 +460,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.device_name_check.error.prompt" = "Thay vào đó nên sử dụng tên thiết bị nào?";
 "onboarding.device_name_check.error.rename_action" = "Đổi tên";
 "onboarding.device_name_check.error.title" = "Một thiết bị đã tồn tại với tên ' %1$@ '";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Kết nối";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
@@ -515,11 +516,13 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.scanning.title" = "Đang quét tìm máy chủ";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Ứng dụng này kết nối với máy chủ Home Assistant và cho phép tích hợp dữ liệu về bạn và điện thoại của bạn. \
 \
 Home Assistant là phần mềm tự động hóa gia đình mã nguồn mở và miễn phí, tập trung vào quyền kiểm soát và quyền riêng tư cục bộ.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Chào mừng bạn đến với Home Assistant%@!";
 "open_label" = "Mở";
 "permission.screen.bluetooth.secondary_button" = "Skip";

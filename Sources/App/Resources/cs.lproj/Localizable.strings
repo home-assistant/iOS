@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "Jaký název zařízení by měl být místo toho použit?";
 "onboarding.device_name_check.error.rename_action" = "Přejmenovat";
 "onboarding.device_name_check.error.title" = "Zařízení s názvem \"%1$@\" již existuje";
+"onboarding.invitation.other_options" = "Další volby";
 "onboarding.manual_setup.connect" = "Připojit";
 "onboarding.manual_setup.couldnt_make_url.message" = "Hodnota \"%@\" není platná URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nelze vytvořit URL.";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Vyhledávání serverů";
 "onboarding.servers.docs.read" = "Přečíst si dokumentaci";
 "onboarding.servers.search.message" = "Hledání serverů v okolí...";
+"onboarding.welcome.continue_button" = "Připojit k mému Home Assistantovi";
 "onboarding.welcome.description" = "Tato aplikace se připojí k Vašemu Home Assistantovi a umožní Vám propojení s Vašim telefonem.\
 \
 Home Assistant je bezplatný a otevřený software pro domácí automatizaci se zaměřením na místní ovládání a soukromí.";
 "onboarding.welcome.get_started" = "Začněte s Home Assistantem";
 "onboarding.welcome.learn_more" = "Více informací";
+"onboarding.welcome.secondary_button" = "Začínáme";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
 "open_label" = "Otevřít";
 "permission.screen.bluetooth.secondary_button" = "Přeskočit";

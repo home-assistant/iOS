@@ -460,6 +460,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.device_name_check.error.prompt" = "Welcher Gerätename sollte stattdessen verwendet werden?";
 "onboarding.device_name_check.error.rename_action" = "Umbenennen";
 "onboarding.device_name_check.error.title" = "Ein Gerät mit dem Namen '%1$@' existiert bereits";
+"onboarding.invitation.other_options" = "Weitere Optionen";
 "onboarding.manual_setup.connect" = "Verbinden";
 "onboarding.manual_setup.couldnt_make_url.message" = "Der Wert ' %@ ' war keine gültige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL konnte nicht erstellt werden";
@@ -515,11 +516,13 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.scanning.title" = "Server werden gesucht";
 "onboarding.servers.docs.read" = "Dokumentation lesen";
 "onboarding.servers.search.message" = "Suche nach Servern in der Nähe …";
+"onboarding.welcome.continue_button" = "Mit meinem Home Assistant verbinden";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
 Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
 "onboarding.welcome.get_started" = "Erste Schritte mit Home Assistant";
 "onboarding.welcome.learn_more" = "Mehr erfahren";
+"onboarding.welcome.secondary_button" = "Erste Schritte";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";
 "permission.screen.bluetooth.secondary_button" = "Überspringen";

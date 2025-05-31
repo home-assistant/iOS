@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "Какво име на устройството да се използва вместо това?";
 "onboarding.device_name_check.error.rename_action" = "Преименуване";
 "onboarding.device_name_check.error.title" = "Вече съществува устройство с име '%1$@'";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Свържете се";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Сканиране за сървъри";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Това приложение се свързва с вашия Home Assistant сървър и позволява интегриране на данни за вас и вашия телефон.\
 \
 Home Assistant е безплатен и с отворен код софтуер за автоматизация на дома с акцент върху локалния контрол и поверителността.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Добре дошли в Home Assistant %@!";
 "open_label" = "Open";
 "permission.screen.bluetooth.secondary_button" = "Skip";

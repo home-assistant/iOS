@@ -460,6 +460,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.device_name_check.error.prompt" = "Katero ime naprave naj bo uporabljeno namesto tega?";
 "onboarding.device_name_check.error.rename_action" = "Preimenuj";
 "onboarding.device_name_check.error.title" = "Naprava z imenom '%1$@' že obstaja.";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Povežite se";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
@@ -515,11 +516,13 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.scanning.title" = "Iskanje strežnikov";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Ta aplikacija se poveže s strežnikom Home Assistant in omogoča integracijo podatkov o vas in vašem telefonu. \
 \
 Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo doma s poudarkom na lokalnem nadzoru in zasebnosti.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Dobrodošli v Home Assistant-u %@!";
 "open_label" = "Odprto";
 "permission.screen.bluetooth.secondary_button" = "Skip";

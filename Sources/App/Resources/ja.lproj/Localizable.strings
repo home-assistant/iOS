@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "代わりにどのデバイス名を使用する必要がありますか？";
 "onboarding.device_name_check.error.rename_action" = "リネーム";
 "onboarding.device_name_check.error.title" = "'%1$@' という名前のデバイスは既に存在します";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "接続";
 "onboarding.manual_setup.couldnt_make_url.message" = "値 %@ は、有効なURLではありませんでした。";
 "onboarding.manual_setup.couldnt_make_url.title" = "URLを作成できませんでした";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "サーバーのスキャン";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "このアプリは、あなたのHome Assistantのサーバーに接続し、あなたとあなたの携帯電話に関するデータを統合することができます。\
 \
 Home Assistantは、ローカルコントロールとプライバシーに重点を置いた、フリーでオープンソースなホームオートメーションソフトウェアです。";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "もっと詳しく知る";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Home Assistantへようこそ %@！";
 "open_label" = "オープン";
 "permission.screen.bluetooth.secondary_button" = "スキップ";

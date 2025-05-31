@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "What device name should be used instead?";
 "onboarding.device_name_check.error.rename_action" = "Rename";
 "onboarding.device_name_check.error.title" = "Уже існує пристрій з назвою \" %1$@ \"";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Підключення";
 "onboarding.manual_setup.couldnt_make_url.message" = "Значення \"%@\" не є допустимою URL-адресою.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Не вдалося створити URL";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Сканування серверів";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Ласкаво просимо до Home Assistant %@ !";
 "open_label" = "Відкрити";
 "permission.screen.bluetooth.secondary_button" = "Skip";

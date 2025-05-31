@@ -267,18 +267,18 @@
 "gestures.swipe.up.header" = "위로 스와이프";
 "gestures.swipe_left.title" = "왼쪽으로 스와이프할 때";
 "gestures.swipe_right.title" = "오른쪽으로 스와이프할 때";
-"gestures.value.option.assist" = "Open Assist";
+"gestures.value.option.assist" = "Assist 열기";
 "gestures.value.option.back_page" = "이전 페이지로 돌아가기";
-"gestures.value.option.more_info.search_commands" = "Search commands";
-"gestures.value.option.more_info.search_devices" = "Search devices";
+"gestures.value.option.more_info.search_commands" = "명령 검색";
+"gestures.value.option.more_info.search_devices" = "기기 찾기";
 "gestures.value.option.more_info.search_entities" = "구성요소 찾기";
 "gestures.value.option.next_page" = "다음 페이지로 이동";
 "gestures.value.option.next_server" = "다음 서버";
 "gestures.value.option.none" = "없음";
 "gestures.value.option.open_debug" = "디버그 열기";
 "gestures.value.option.previous_server" = "이전 서버";
-"gestures.value.option.search_commands" = "Search commands";
-"gestures.value.option.search_devices" = "Search devices";
+"gestures.value.option.search_commands" = "명령 검색";
+"gestures.value.option.search_devices" = "기기 찾기";
 "gestures.value.option.search_entities" = "구성요소 찾기";
 "gestures.value.option.servers_list" = "서버 목록";
 "gestures.value.option.show_settings" = "앱 설정 열기";
@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "대신 어떤 기기 이름을 사용해야 합니까?";
 "onboarding.device_name_check.error.rename_action" = "이름 변경하기";
 "onboarding.device_name_check.error.title" = "이름이 ' %1$@ '인 기기가 이미 존재합니다.";
+"onboarding.invitation.other_options" = "기타 옵션";
 "onboarding.manual_setup.connect" = "연결";
 "onboarding.manual_setup.couldnt_make_url.message" = "'%@'은 유효한 URL이 아닙니다.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL을 생성할 수 없습니다.";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "서버를 찾는 중";
 "onboarding.servers.docs.read" = "문서 읽기";
 "onboarding.servers.search.message" = "근처의 서버를 찾고 있습니다...";
+"onboarding.welcome.continue_button" = "내 Home Assistant에 연결";
 "onboarding.welcome.description" = "이 앱은 Home Assitant 서버에 연결되어 사용자와 휴대전화에 대한 데이터를 통합할 수 있습니다.\
 \
 Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료 오픈 소스 홈 자동화 소프트웨어입니다.";
 "onboarding.welcome.get_started" = "Home Assistant 시작하기";
 "onboarding.welcome.learn_more" = "더 알아보기";
+"onboarding.welcome.secondary_button" = "시작하기";
 "onboarding.welcome.title" = "Home Assistant %@에 오신것을 환영합니다!";
 "open_label" = "열기";
 "permission.screen.bluetooth.secondary_button" = "건너뛰기";
@@ -1150,10 +1153,10 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "watch.labels.selected_pipeline.title" = "파이프라인";
 "watch.placeholder_complication_name" = "자리 표시자";
 "watch.settings.no_items.phone.title" = "구성된 항목이 없으므로 아래에서 항목을 선택하세요.";
-"web_view.empty_state.body" = "Please check your connection or try again later. If Home Assistant is restarting it will reconnect after it is back online.";
-"web_view.empty_state.open_settings_button" = "Open App settings";
-"web_view.empty_state.retry_button" = "Retry";
-"web_view.empty_state.title" = "You're disconnected";
+"web_view.empty_state.body" = "연결 상태를 확인하거나 나중에 다시 시도해 주세요. Home Assistant가 재시작되는 경우, 온라인 상태가 되면 다시 연결됩니다.";
+"web_view.empty_state.open_settings_button" = "앱 설정 열기";
+"web_view.empty_state.retry_button" = "재시도";
+"web_view.empty_state.title" = "연결이 끊어졌습니다";
 "web_view.server_selection.title" = "서버 선택";
 "web_view.unique_server_selection.title" = "하나의 서버를 선택하세요";
 "widgets.action.name.assist" = "Assist";

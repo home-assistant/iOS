@@ -460,6 +460,7 @@
 "onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
 "onboarding.device_name_check.error.rename_action" = "Μετονομασία";
 "onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";
+"onboarding.invitation.other_options" = "Αλλες επιλογές";
 "onboarding.manual_setup.connect" = "Σύνδεση";
 "onboarding.manual_setup.couldnt_make_url.message" = "Η τιμή '%@' δεν ήταν έγκυρη διεύθυνση URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL";
@@ -515,11 +516,13 @@
 "onboarding.scanning.title" = "Σάρωση για διακομιστές";
 "onboarding.servers.docs.read" = "Διαβάστε την τεκμηρίωση";
 "onboarding.servers.search.message" = "Αναζήτηση διακομιστών σε κοντινή απόσταση...";
+"onboarding.welcome.continue_button" = "Σύνδεση με το Home Assistant μου";
 "onboarding.welcome.description" = "Αυτή η εφαρμογή συνδέεται με τον διακομιστή Home Assistant και επιτρέπει την ενσωμάτωση δεδομένων σχετικά με εσάς και το τηλέφωνό σας. \
 \
  Το Home Assistant είναι δωρεάν και ανοιχτού κώδικα λογισμικό αυτοματισμού σπιτιού με έμφαση στον τοπικό έλεγχο και την ιδιωτικότητα.";
 "onboarding.welcome.get_started" = "Ξεκινήστε με το Home Assistant";
 "onboarding.welcome.learn_more" = "Μάθετε περισσότερα";
+"onboarding.welcome.secondary_button" = "Ξεκινώντας";
 "onboarding.welcome.title" = "Καλώς ορίσατε στο Home Assistant %@!";
 "open_label" = "Άνοιγμα";
 "permission.screen.bluetooth.secondary_button" = "Παράλειψη";

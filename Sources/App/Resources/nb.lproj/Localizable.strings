@@ -460,6 +460,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.device_name_check.error.prompt" = "Hvilket enhetsnavn bør brukes i stedet?";
 "onboarding.device_name_check.error.rename_action" = "Gi nytt navn";
 "onboarding.device_name_check.error.title" = "Det finnes allerede en enhet med navnet ' %1$@ '";
+"onboarding.invitation.other_options" = "Other options";
 "onboarding.manual_setup.connect" = "Koble";
 "onboarding.manual_setup.couldnt_make_url.message" = "Verdien %@ var ikke en gyldig URL-adresse.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan ikke opprette en URL-adresse";
@@ -515,11 +516,13 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.scanning.title" = "Søker etter servere";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Denne appen kobles til Home Assistant -serveren og lar deg integrere data om deg og telefonen. \
 \
  Home Assistant er gratis og åpen kildekode hjemmeautomatiseringsprogramvare med fokus på lokal kontroll og personvern.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@ !";
 "open_label" = "Åpen";
 "permission.screen.bluetooth.secondary_button" = "Skip";
