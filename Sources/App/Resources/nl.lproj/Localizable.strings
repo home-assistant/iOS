@@ -460,7 +460,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.device_name_check.error.prompt" = "Welke apparaat moet in plaats daarvan worden gebruikt?";
 "onboarding.device_name_check.error.rename_action" = "Hernoemen";
 "onboarding.device_name_check.error.title" = "Er bestaat al een apparaat met de naam ' %1$@ '";
-"onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.other_options" = "Andere opties";
 "onboarding.manual_setup.connect" = "Verbind";
 "onboarding.manual_setup.couldnt_make_url.message" = "De waarde '%@' was geen geldige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan geen URL maken";
@@ -516,13 +516,13 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.scanning.title" = "Scannen naar servers";
 "onboarding.servers.docs.read" = "Documentatie lezen";
 "onboarding.servers.search.message" = "Op zoek naar servers in de buurt...";
-"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
+"onboarding.welcome.continue_button" = "Maak verbinding met mijn Home Assistant";
 "onboarding.welcome.description" = "Deze app maakt verbinding met je Home Assistant-server en maakt het mogelijk gegevens over jou en je telefoon te integreren.\
 \
 Home Assistant is gratis en open source domotica-software met een focus op lokale controle en privacy.";
 "onboarding.welcome.get_started" = "Aan de slag met Home Assistant";
 "onboarding.welcome.learn_more" = "Meer informatie";
-"onboarding.welcome.secondary_button" = "Getting started";
+"onboarding.welcome.secondary_button" = "Aan de slag";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";
 "permission.screen.bluetooth.secondary_button" = "Overslaan";

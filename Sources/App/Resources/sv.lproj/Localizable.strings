@@ -65,10 +65,10 @@
 "app_intents.haptic_confirmation.title" = "Haptisk bekräftelse";
 "app_intents.icon.title" = "Ikon";
 "app_intents.intent.cover.title" = "Kontrollera skydd";
-"app_intents.intent.light.title" = "Kontrollera belysning";
+"app_intents.intent.light.title" = "Styr lampa";
 "app_intents.intent.switch.title" = "Kontrollera brytare";
 "app_intents.lights.light.target" = "Måltillstånd";
-"app_intents.lights.light.title" = "Belysning";
+"app_intents.lights.light.title" = "Lampa";
 "app_intents.lights.off_state_icon.title" = "Ikon för avstängt tillstånd";
 "app_intents.lights.on_state_icon.title" = "Ikon för påslaget tillstånd";
 "app_intents.notify_when_run.description" = "Visar avisering efter körd";
@@ -560,7 +560,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings.connection_section.header" = "Anslutning";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.internal_base_url.placeholder" = "till exempel http://homeassistant.local:8123/";
-"settings.connection_section.internal_base_url.requires_setup.title" = "Kräver inställning";
+"settings.connection_section.internal_base_url.requires_setup.title" = "Kräver installation";
 "settings.connection_section.internal_base_url.ssid_bssid_required.title" = "För att använda intern URL måste du ange nätverksnamn (SSID) eller hårdvaruadresser (BSSID) för ditt Wi-Fi-nätverk, annars kommer appen alltid att använda extern URL som standard.";
 "settings.connection_section.internal_base_url.ssid_required.title" = "För att använda intern URL måste du ange ditt Wi-Fi-nätverksnamn (SSID), annars kommer appen alltid att använda extern URL som standard.";
 "settings.connection_section.internal_base_url.title" = "Intern URL";
@@ -1153,7 +1153,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platshållare";
 "watch.settings.no_items.phone.title" = "Inga objekt konfigurerade, vänligen välj objekt nedan.";
-"web_view.empty_state.body" = "Kontrollera anslutningen eller försök igen senare. Om Home Assistant-servern startas om kommer den att återansluta när den är online igen.";
+"web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant håller på att starta om kommer återanslutning ske när den är online igen.";
 "web_view.empty_state.open_settings_button" = "Öppna appinställningar";
 "web_view.empty_state.retry_button" = "Försök igen";
 "web_view.empty_state.title" = "Du är frånkopplad";
@@ -1179,9 +1179,9 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.controls.cover.description" = "Växla skydd";
 "widgets.controls.cover.placeholder_title" = "Välj skydd";
 "widgets.controls.cover.title" = "Skydd";
-"widgets.controls.light.description" = "Tänd/släck din belysning";
-"widgets.controls.light.placeholder_title" = "Välj ljuskälla";
-"widgets.controls.light.title" = "Belysning";
+"widgets.controls.light.description" = "Tänd/släck din lampa";
+"widgets.controls.light.placeholder_title" = "Välj lampa";
+"widgets.controls.light.title" = "Lampa";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Välj sida";
 "widgets.controls.open_page.configuration.parameter.page" = "Sida";
 "widgets.controls.open_page.configuration.title" = "Öppna sida";
@@ -1230,7 +1230,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.gauge.parameters.value_label_template" = "Mall för värdeetikett";
 "widgets.gauge.parameters.value_template" = "Värdemall (0-1)";
 "widgets.gauge.title" = "Mätare";
-"widgets.lights.description" = "Tänd/släck belysning";
+"widgets.lights.description" = "Tänd/släck lampa";
 "widgets.open_page.description" = "Öppna en frontend-sida i Home Assistant.";
 "widgets.open_page.not_configured" = "Inga sidor tillgängliga";
 "widgets.open_page.title" = "Öppna sida";
