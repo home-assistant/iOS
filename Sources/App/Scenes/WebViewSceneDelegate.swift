@@ -120,22 +120,9 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        Current.modelManager.cleanup().cauterize()
-        Current.modelManager.subscribe(isAppInForeground: {
-            UIApplication.shared.applicationState == .active
-        })
-
-        Current.appDatabaseUpdater.update()
-        Current.panelsUpdater.update()
-
-        let widgetsCacheFile = AppConstants.widgetsCacheURL
-
-        // Clean up widgets cache file
-        do {
-            try FileManager.default.removeItem(at: widgetsCacheFile)
-        } catch {
-            Current.Log.error("Failed to remove widgets cache file: \(error)")
-        }
+        updateDatabase()
+        cleanWidgetsCache()
+        updateLocation()
     }
 
     func windowScene(
@@ -163,5 +150,39 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         urlHandler?.handle(userActivity: userActivity)
+    }
+
+    // MARK: - Private
+
+    /// Whenever a custom widget is executed it can create cache files to hold it state,
+    /// this clears it
+    private func cleanWidgetsCache() {
+        let widgetsCacheFile = AppConstants.widgetsCacheURL
+
+        // Clean up widgets cache file
+        do {
+            try FileManager.default.removeItem(at: widgetsCacheFile)
+        } catch {
+            Current.Log.error("Failed to remove widgets cache file: \(error)")
+        }
+    }
+
+    /// Sets up model manager and update database tables for cached panels and entities
+    private func updateDatabase() {
+        Current.modelManager.cleanup().cauterize()
+        Current.modelManager.subscribe(isAppInForeground: {
+            UIApplication.shared.applicationState == .active
+        })
+
+        Current.appDatabaseUpdater.update()
+        Current.panelsUpdater.update()
+    }
+
+    /// Force update location when user opens the app
+    private func updateLocation() {
+        _ = HomeAssistantAPI.manuallyUpdate(
+            applicationState: UIApplication.shared.applicationState,
+            type: .userRequested
+        )
     }
 }
