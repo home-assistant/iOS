@@ -852,11 +852,12 @@ public class HomeAssistantAPI {
     #if os(iOS)
     public enum ManualUpdateType {
         case userRequested
+        case appOpened
         case programmatic
 
         var allowsTemporaryAccess: Bool {
             switch self {
-            case .userRequested: return true
+            case .userRequested, .appOpened: return true
             case .programmatic: return false
             }
         }
