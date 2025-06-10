@@ -24,6 +24,10 @@ public enum AppConstants {
         public static var issues = URL(string: "https://companion.home-assistant.io/app/ios/issues")!
     }
 
+    public enum QueryItems: String, CaseIterable {
+        case openMoreInfoDialog = "more-info-entity-id"
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
@@ -95,16 +99,25 @@ public enum AppConstants {
             AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
                 .appending(queryItems: [
                     .init(name: "openPageIntent", value: "true"),
-                ])
+                ]).withWidgetAuthenticity()
         } else {
-            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)
+            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
+                .withWidgetAuthenticity()
         }
+    }
+
+    public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
+        AppConstants.navigateDeeplinkURL(
+            path: "?\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
+            serverId: serverId,
+            avoidUnecessaryReload: true
+        )?.withWidgetAuthenticity()
     }
 
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
-        )
+        )?.withWidgetAuthenticity()
     }
 
     /// The App Group ID used by the app and extensions for sharing data.

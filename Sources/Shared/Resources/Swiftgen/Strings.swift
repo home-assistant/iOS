@@ -4139,6 +4139,16 @@ public enum L10n {
         /// Light
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.light.title") }
       }
+      public enum OpenEntity {
+        public enum Configuration {
+          /// Open Entity
+          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_entity.configuration.title") }
+          public enum Parameter {
+            /// Entity
+            public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_entity.configuration.parameter.entity") }
+          }
+        }
+      }
       public enum OpenPage {
         public enum Configuration {
           /// Open Page
@@ -4289,6 +4299,10 @@ public enum L10n {
     public enum Lights {
       /// Turn on/off light
       public static var description: String { return L10n.tr("Localizable", "widgets.lights.description") }
+    }
+    public enum OpenEntity {
+      /// Open Entity
+      public static var title: String { return L10n.tr("Localizable", "widgets.open_entity.title") }
     }
     public enum OpenPage {
       /// Open a frontend page in Home Assistant.

@@ -16,4 +16,5 @@ public enum WidgetsKind: String, CaseIterable {
     case controlLight
     case controlSwitch
     case controlCover
+    case controlOpenEntity
 }

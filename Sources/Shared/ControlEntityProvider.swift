@@ -58,10 +58,16 @@ public final class ControlEntityProvider {
         for server in Current.servers.all.sorted(by: { $0.info.name < $1.info.name }) {
             do {
                 var entities: [HAAppEntity] = try Current.database().read { db in
-                    try HAAppEntity
-                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
-                        .filter(domains.map(\.rawValue).contains(Column(DatabaseTables.AppEntity.domain.rawValue)))
-                        .fetchAll(db)
+                    if domains.isEmpty {
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .fetchAll(db)
+                    } else {
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
+                            .filter(domains.map(\.rawValue).contains(Column(DatabaseTables.AppEntity.domain.rawValue)))
+                            .fetchAll(db)
+                    }
                 }
                 if let string {
                     entities = entities.filter({ entity in
