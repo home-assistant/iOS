@@ -182,7 +182,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     private func updateLocation() {
         _ = HomeAssistantAPI.manuallyUpdate(
             applicationState: UIApplication.shared.applicationState,
-            type: .userRequested
+            type: .appOpened
         )
     }
 }
