@@ -811,15 +811,17 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Used for OpenPage intent
     public func openPanel(_ url: URL) {
         loadViewIfNeeded()
-        if #available(iOS 16.0, *),
-           let webViewURL = webView.url,
-           webViewURL.path().contains(url.path()) {
-            Current.Log.info("Open page did not reload webview because path component matches current URL")
-            return
-        } else {
-            if !navigate(path: url.path) {
-                webView.load(URLRequest(url: url))
+
+        let urlPathIncludingQueryParams = {
+            // If the URL has query parameters, we need to include them in the path to ensure proper navigation
+            if let query = url.query, !query.isEmpty {
+                return "\(url.path)?\(query)"
             }
+            return url.path
+        }()
+
+        if !navigate(path: urlPathIncludingQueryParams) {
+            webView.load(URLRequest(url: url))
         }
     }
 
@@ -830,6 +832,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             Current.Log.warning("Cannot navigate through frontend, core version is too low")
             return false
         }
+        Current.Log.verbose("Requesting navigation using external bus to path: \(path)")
         webViewExternalMessageHandler.sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.navigate.rawValue,
             payload: [

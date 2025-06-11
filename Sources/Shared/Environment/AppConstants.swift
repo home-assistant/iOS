@@ -26,6 +26,7 @@ public enum AppConstants {
 
     public enum QueryItems: String, CaseIterable {
         case openMoreInfoDialog = "more-info-entity-id"
+        case isComingFromAppIntent = "isComingFromAppIntent"
     }
 
     /// Home Assistant Blue
@@ -88,28 +89,33 @@ public enum AppConstants {
         }
     }
 
-    public static func navigateDeeplinkURL(path: String, serverId: String, avoidUnecessaryReload: Bool) -> URL? {
-        URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)"
+    public static func navigateDeeplinkURL(
+        path: String,
+        serverId: String,
+        queryPrams: String? = nil,
+        avoidUnecessaryReload: Bool
+    ) -> URL? {
+        var url = URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
         )
+
+        if let queryPrams, let newURL = URL(string: "\(url?.absoluteString ?? "")&\(queryPrams)") {
+            url = newURL
+        }
+
+        return url
     }
 
     public static func openPageDeeplinkURL(path: String, serverId: String) -> URL? {
-        if #available(iOS 16.0, watchOS 9.0, *) {
-            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
-                .appending(queryItems: [
-                    .init(name: "openPageIntent", value: "true"),
-                ]).withWidgetAuthenticity()
-        } else {
-            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
-                .withWidgetAuthenticity()
-        }
+        AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
+            .withWidgetAuthenticity()
     }
 
     public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
         AppConstants.navigateDeeplinkURL(
-            path: "?\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
+            path: "lovelace",
             serverId: serverId,
+            queryPrams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
             avoidUnecessaryReload: true
         )?.withWidgetAuthenticity()
     }

@@ -11,7 +11,6 @@ struct OpenEntityAppIntent: AppIntent {
         defaultValue: "Open Entity"
     )
 
-    static var isDiscoverable: Bool = false
     static var openAppWhenRun: Bool = true
 
     @Parameter(
