@@ -92,14 +92,14 @@ public enum AppConstants {
     public static func navigateDeeplinkURL(
         path: String,
         serverId: String,
-        queryPrams: String? = nil,
+        queryParams: String? = nil,
         avoidUnecessaryReload: Bool
     ) -> URL? {
         var url = URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
         )
 
-        if let queryPrams, let newURL = URL(string: "\(url?.absoluteString ?? "")&\(queryPrams)") {
+        if let queryParams, let newURL = URL(string: "\(url?.absoluteString ?? "")&\(queryParams)") {
             url = newURL
         }
 
@@ -115,7 +115,7 @@ public enum AppConstants {
         AppConstants.navigateDeeplinkURL(
             path: "lovelace",
             serverId: serverId,
-            queryPrams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
+            queryParams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
             avoidUnecessaryReload: true
         )?.withWidgetAuthenticity()
     }
