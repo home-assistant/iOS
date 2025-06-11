@@ -1161,6 +1161,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
 "widgets.action.name.run_script" = "Run Script";

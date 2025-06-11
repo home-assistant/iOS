@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 // AppIntent that open app needs to have it's target the widget extension AND app target!
-@available(iOS 18, *)
+@available(iOS 17, *)
 struct OpenEntityAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.open_entity.configuration.title",

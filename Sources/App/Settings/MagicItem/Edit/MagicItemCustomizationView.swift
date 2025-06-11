@@ -74,7 +74,7 @@ struct MagicItemCustomizationView: View {
     private func save() {
         if let action = viewModel.item.action {
             switch action {
-            case .default, .nothing, .runScript, .assist:
+            case .default, .nothing, .runScript, .assist, .moreInfoDialog:
                 // No update needed
                 break
             case .navigate:
@@ -104,7 +104,7 @@ struct MagicItemCustomizationView: View {
             viewModel.startListeningAssistAction = startListening
             viewModel.selectedPipelineId = pipelineId
             viewModel.selectedServerIdForPipeline = serverId
-        case .default, .nothing:
+        case .default, .nothing, .moreInfoDialog:
             break
         }
         actionsLoaded = true

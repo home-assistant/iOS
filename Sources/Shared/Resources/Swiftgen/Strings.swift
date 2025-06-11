@@ -4078,6 +4078,8 @@ public enum L10n {
         public static var assist: String { return L10n.tr("Localizable", "widgets.action.name.assist") }
         /// Default
         public static var `default`: String { return L10n.tr("Localizable", "widgets.action.name.default") }
+        /// More info
+        public static var moreInfoDialog: String { return L10n.tr("Localizable", "widgets.action.name.moreInfoDialog") }
         /// Navigate
         public static var navigate: String { return L10n.tr("Localizable", "widgets.action.name.navigate") }
         /// Nothing
