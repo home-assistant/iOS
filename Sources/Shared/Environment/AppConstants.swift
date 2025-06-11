@@ -24,6 +24,11 @@ public enum AppConstants {
         public static var issues = URL(string: "https://companion.home-assistant.io/app/ios/issues")!
     }
 
+    public enum QueryItems: String, CaseIterable {
+        case openMoreInfoDialog = "more-info-entity-id"
+        case isComingFromAppIntent = "isComingFromAppIntent"
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
@@ -84,27 +89,41 @@ public enum AppConstants {
         }
     }
 
-    public static func navigateDeeplinkURL(path: String, serverId: String, avoidUnecessaryReload: Bool) -> URL? {
-        URL(
-            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)"
+    public static func navigateDeeplinkURL(
+        path: String,
+        serverId: String,
+        queryParams: String? = nil,
+        avoidUnecessaryReload: Bool
+    ) -> URL? {
+        var url = URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
         )
+
+        if let queryParams, let newURL = URL(string: "\(url?.absoluteString ?? "")&\(queryParams)") {
+            url = newURL
+        }
+
+        return url
     }
 
     public static func openPageDeeplinkURL(path: String, serverId: String) -> URL? {
-        if #available(iOS 16.0, watchOS 9.0, *) {
-            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
-                .appending(queryItems: [
-                    .init(name: "openPageIntent", value: "true"),
-                ])
-        } else {
-            AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)
-        }
+        AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
+            .withWidgetAuthenticity()
+    }
+
+    public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
+        AppConstants.navigateDeeplinkURL(
+            path: "lovelace",
+            serverId: serverId,
+            queryParams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
+            avoidUnecessaryReload: true
+        )?.withWidgetAuthenticity()
     }
 
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
-        )
+        )?.withWidgetAuthenticity()
     }
 
     /// The App Group ID used by the app and extensions for sharing data.

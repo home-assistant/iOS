@@ -854,6 +854,14 @@
 		42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB4C362CD26490003E47FD /* HATypedRequest+App.swift */; };
 		42BB53302CAA09F300680ED8 /* WatchConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */; };
 		42BB53322CAA0B3C00680ED8 /* WatchConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */; };
+		42BF7F2A2DF8662200875A0F /* ControlOpenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F292DF8662200875A0F /* ControlOpenEntity.swift */; };
+		42BF7F2B2DF8662200875A0F /* ControlOpenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F292DF8662200875A0F /* ControlOpenEntity.swift */; };
+		42BF7F2D2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2C2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift */; };
+		42BF7F2E2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2C2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift */; };
+		42BF7F302DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
+		42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
+		42BF7F332DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
+		42BF7F342DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
@@ -2304,6 +2312,10 @@
 		42BB532F2CAA09F300680ED8 /* WatchConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfig.test.swift; sourceTree = "<group>"; };
 		42BB53312CAA0B3C00680ED8 /* WatchConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = WatchConfigV1.sqlite; sourceTree = "<group>"; };
 		42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+PerfectCornerRadius.swift"; sourceTree = "<group>"; };
+		42BF7F292DF8662200875A0F /* ControlOpenEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntity.swift; sourceTree = "<group>"; };
+		42BF7F2C2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntityValueProvider.swift; sourceTree = "<group>"; };
+		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
+		42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenEntityAppIntent.swift; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
 		42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPicker.swift; sourceTree = "<group>"; };
@@ -3253,6 +3265,8 @@
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */,
+				42BF7F272DF8660800875A0F /* OpenEntity */,
 				422368892D40F980005911E4 /* Lockscreen */,
 				422368882D40F965005911E4 /* Controls */,
 				422368872D40F959005911E4 /* Custom */,
@@ -4662,6 +4676,24 @@
 				42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		42BF7F272DF8660800875A0F /* OpenEntity */ = {
+			isa = PBXGroup;
+			children = (
+				42BF7F282DF8660F00875A0F /* ControlOpenEntity */,
+			);
+			path = OpenEntity;
+			sourceTree = "<group>";
+		};
+		42BF7F282DF8660F00875A0F /* ControlOpenEntity */ = {
+			isa = PBXGroup;
+			children = (
+				42BF7F292DF8662200875A0F /* ControlOpenEntity.swift */,
+				42BF7F2C2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift */,
+				42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */,
+			);
+			path = ControlOpenEntity;
 			sourceTree = "<group>";
 		};
 		42C101252CD3DAAA0012BA78 /* Cover */ = {
@@ -7435,8 +7467,11 @@
 				42C1012A2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
 				426CBB6C2C9C550D003CA3AC /* IntentSwitchEntity.swift in Sources */,
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
+				42BF7F2A2DF8662200875A0F /* ControlOpenEntity.swift in Sources */,
 				42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */,
+				42BF7F2E2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift in Sources */,
+				42BF7F302DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */,
 				420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */,
 				422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
@@ -7474,6 +7509,7 @@
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
 				4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */,
 				3E4087EE2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
+				42BF7F332DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */,
 				42D3E4AE2C5D2AFA00444BE6 /* WidgetScripts.swift in Sources */,
 				403AE92B2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */,
@@ -7597,6 +7633,7 @@
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
+				42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */,
 				429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */,
 				4206FFB82DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListView.swift in Sources */,
@@ -7615,6 +7652,7 @@
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
 				42FCCFFB2B9B1C310057783F /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
+				42BF7F2D2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift in Sources */,
 				42B980D32DC24E1300BC5C08 /* SensorDetailLabelRowView.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
@@ -7626,6 +7664,7 @@
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
+				42BF7F342DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */,
 				426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
@@ -7645,6 +7684,7 @@
 				117EB15C2569AD4600049541 /* NotificationManager.swift in Sources */,
 				1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */,
 				42D3E4B12C5D2B3C00444BE6 /* ScriptAppIntent.swift in Sources */,
+				42BF7F2B2DF8662200875A0F /* ControlOpenEntity.swift in Sources */,
 				42B980D92DC24E5D00BC5C08 /* SensorDetailViewModel.swift in Sources */,
 				420E2AE82C47471B004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				4280E0712DC23CCF0004BE7D /* SensorRow.swift in Sources */,

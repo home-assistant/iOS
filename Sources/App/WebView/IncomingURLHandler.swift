@@ -69,8 +69,9 @@ class IncomingURLHandler {
                 let queryParameters = components.queryItems
                 let isFromWidget = components.popWidgetAuthenticity()
                 let server = components.popWidgetServer(isFromWidget: isFromWidget)
-                let isOpenPageIntent: Bool = {
-                    if let value = queryParameters?.first(where: { $0.name == "openPageIntent" })?.value {
+                let isComingFromAppIntent: Bool = {
+                    if let value = queryParameters?
+                        .first(where: { $0.name == AppConstants.QueryItems.isComingFromAppIntent.rawValue })?.value {
                         return Bool(value) ?? false
                     } else {
                         return false
@@ -91,7 +92,7 @@ class IncomingURLHandler {
                             urlString: rawURL,
                             skipConfirm: true,
                             queryParameters: queryParameters,
-                            isOpenPageIntent: false
+                            isComingFromAppIntent: false
                         )
                     })
                 } else if let server {
@@ -100,7 +101,7 @@ class IncomingURLHandler {
                         server: server,
                         urlString: rawURL,
                         skipConfirm: isFromWidget,
-                        isOpenPageIntent: isOpenPageIntent
+                        isComingFromAppIntent: isComingFromAppIntent
                     )
                 } else {
                     windowController.openSelectingServer(
@@ -108,7 +109,7 @@ class IncomingURLHandler {
                         urlString: rawURL,
                         skipConfirm: isFromWidget,
                         queryParameters: queryParameters,
-                        isOpenPageIntent: isOpenPageIntent
+                        isComingFromAppIntent: isComingFromAppIntent
                     )
                 }
             case .assist:
@@ -245,14 +246,14 @@ class IncomingURLHandler {
                             server: server,
                             urlString: urlString,
                             skipConfirm: true,
-                            isOpenPageIntent: false
+                            isComingFromAppIntent: false
                         )
                     } else {
                         windowController.openSelectingServer(
                             from: .deeplink,
                             urlString: urlString,
                             skipConfirm: true,
-                            isOpenPageIntent: false
+                            isComingFromAppIntent: false
                         )
                     }
                     return true

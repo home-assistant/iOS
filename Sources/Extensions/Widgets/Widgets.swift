@@ -60,6 +60,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlScript()
         ControlScene()
         ControlOpenPage()
+        ControlOpenEntity()
 
         // Widgets
         WidgetCustom()
