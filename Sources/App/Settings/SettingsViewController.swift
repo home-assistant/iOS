@@ -192,7 +192,7 @@ class SettingsViewController: HAFormViewController {
         moveRowAt sourceIndexPath: IndexPath,
         to destinationIndexPath: IndexPath
     ) {
-        // Server come already sorted by sortOrder, so we just need to update the order
+        // Servers come already sorted by sortOrder, so we just need to update the order
         var servers = Current.servers.all
         let movedServer = servers.remove(at: sourceIndexPath.row)
         servers.insert(movedServer, at: destinationIndexPath.row)
