@@ -119,6 +119,18 @@ private struct HandlerUpdateComplications: NotificationCommandHandler {
 
 private struct HandlerUpdateWidgets: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
+        // Avoid sequential updates in case push command is misused
+        let nextAllowedUpdateDate = Current.date().addingTimeInterval(2)
+
+        guard (Current.settingsStore.lastPushUpdateWidgetsDate ?? nextAllowedUpdateDate) >= nextAllowedUpdateDate else {
+            Current.Log
+                .verbose(
+                    "Ignoring widget update request by notification command, nextAllowedUpdateDate not met, nextAllowedUpdateDate: \(nextAllowedUpdateDate), lastPushUpdateWidgetsDate: \(String(describing: Current.settingsStore.lastPushUpdateWidgetsDate))"
+                )
+            return Promise.value(())
+        }
+        Current.settingsStore.lastPushUpdateWidgetsDate = Current.date()
+
         Current.Log.verbose("Reloading widgets triggered by notification command")
         Current.clientEventStore.addEvent(ClientEvent(
             text: "Notification command triggered widget update",
