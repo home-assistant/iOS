@@ -45,6 +45,15 @@ public class SettingsStore {
         }
     }
 
+    public var lastPushUpdateWidgetsDate: Date? {
+        get {
+            prefs.object(forKey: "lastPushUpdateWidgetsDate") as? Date
+        }
+        set {
+            prefs.setValue(newValue, forKeyPath: "lastPushUpdateWidgetsDate")
+        }
+    }
+
     #if os(iOS)
     public var matterLastPreferredNetWorkMacExtendedAddress: String? {
         get {
