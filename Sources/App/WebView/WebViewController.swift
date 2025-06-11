@@ -820,6 +820,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             return url.path
         }()
 
+        // TODO: Find out why navigating through the external bus does not open more-info dialog
+        guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil else {
+            webView.load(URLRequest(url: url))
+            Current.Log.verbose("Opening more-info dialog for URL: \(url)")
+            return
+        }
+
         if !navigate(path: urlPathIncludingQueryParams) {
             webView.load(URLRequest(url: url))
         }
