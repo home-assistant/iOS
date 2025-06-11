@@ -21,6 +21,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlLight.rawValue, "controlLight")
         XCTAssertEqual(WidgetsKind.controlSwitch.rawValue, "controlSwitch")
         XCTAssertEqual(WidgetsKind.controlCover.rawValue, "controlCover")
-        XCTAssertEqual(WidgetsKind.allCases.count, 15)
+        XCTAssertEqual(WidgetsKind.controlOpenEntity.rawValue, "controlOpenEntity")
+        XCTAssertEqual(WidgetsKind.allCases.count, 16)
     }
 }
