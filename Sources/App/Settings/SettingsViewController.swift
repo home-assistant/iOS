@@ -41,7 +41,12 @@ class SettingsViewController: HAFormViewController {
             }
         }
 
-        let section = Section()
+        let section = MultivaluedSection(
+            multivaluedOptions: [.Reorder, .Insert],
+            header: L10n.Settings.ConnectionSection.serversHeader,
+            footer: L10n.Settings.ConnectionSection.serversFooter
+        )
+
         let observer = Observer {
             var rows = [BaseRow]()
 
@@ -54,8 +59,8 @@ class SettingsViewController: HAFormViewController {
                 })
             }
 
-            rows.append(HomeAssistantAccountRow {
-                $0.value = .add
+            rows.append(LabelRow {
+                $0.title = L10n.Settings.ConnectionSection.addServer
                 $0.onCellSelection { _, row in
                     row.deselect(animated: true)
                     controller.present(
@@ -163,6 +168,9 @@ class SettingsViewController: HAFormViewController {
 
         form +++ Section()
             <<< SettingsRootDataSource.Row.whatsNew.row
+
+        // Set self as delegate to handle reordering
+        tableView.delegate = self
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -177,5 +185,21 @@ class SettingsViewController: HAFormViewController {
 
     @objc func closeSettings(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        moveRowAt sourceIndexPath: IndexPath,
+        to destinationIndexPath: IndexPath
+    ) {
+        // Servers come already sorted by sortOrder, so we just need to update the order
+        var servers = Current.servers.all
+        let movedServer = servers.remove(at: sourceIndexPath.row)
+        servers.insert(movedServer, at: destinationIndexPath.row)
+        for (index, server) in servers.enumerated() {
+            server.update { info in
+                info.sortOrder = index
+            }
+        }
     }
 }
