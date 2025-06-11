@@ -2011,6 +2011,10 @@ public enum L10n {
       public static var loggedInAs: String { return L10n.tr("Localizable", "settings.connection_section.logged_in_as") }
       /// Servers
       public static var servers: String { return L10n.tr("Localizable", "settings.connection_section.servers") }
+      /// Reorder to define default server
+      public static var serversFooter: String { return L10n.tr("Localizable", "settings.connection_section.servers_footer") }
+      /// Servers
+      public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
       public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
       /// Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.
