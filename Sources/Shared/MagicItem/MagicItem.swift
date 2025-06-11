@@ -139,6 +139,11 @@ public struct MagicItem: Codable, Equatable, Hashable {
                 // This block of code should not be reached, default should not be handled here
                 // Returning something to avoid compiler error
                 interactionType = .appIntent(.refresh)
+            case .moreInfoDialog:
+                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ))
             case .nothing:
                 interactionType = .appIntent(.refresh)
             case let .navigate(path):
@@ -171,8 +176,10 @@ public struct MagicItem: Codable, Equatable, Hashable {
                     serverId: magicItem.serverId
                 ))
             case .lock:
-                // TODO: Support lock action in widgets
-                interactionType = .appIntent(.refresh)
+                interactionType = navigateIntent(url: AppConstants.openEntityDeeplinkURL(
+                    entityId: magicItem.id,
+                    serverId: magicItem.serverId
+                ))
             case .scene, .script:
                 interactionType = .appIntent(.activate(
                     entityId: magicItem.id,
@@ -204,6 +211,13 @@ public struct MagicItem: Codable, Equatable, Hashable {
         }
     }
 
+    private func navigateIntent(url: URL?) -> WidgetInteractionType {
+        guard let url else {
+            return .appIntent(.refresh)
+        }
+        return .widgetURL(url)
+    }
+
     private func assistIntent(serverId: String, pipelineId: String, startListening: Bool) -> WidgetInteractionType {
         if let url = AppConstants.assistDeeplinkURL(
             serverId: serverId,
@@ -224,6 +238,7 @@ public enum MagicItemError: Error {
 public enum ItemAction: Codable, CaseIterable, Equatable {
     public static var allCases: [ItemAction] = [
         .default,
+        .moreInfoDialog,
         .navigate(""),
         .runScript("", ""),
         .assist("", "", false),
@@ -231,6 +246,7 @@ public enum ItemAction: Codable, CaseIterable, Equatable {
     ]
 
     case `default`
+    case moreInfoDialog
     case navigate(_ navigationPath: String)
     case runScript(_ serverId: String, _ scriptId: String)
     case assist(_ serverId: String, _ pipelineId: String, _ startListening: Bool)
@@ -240,6 +256,8 @@ public enum ItemAction: Codable, CaseIterable, Equatable {
         switch self {
         case .default:
             return "default"
+        case .moreInfoDialog:
+            return "moreInfoDialog"
         case .navigate:
             return "navigate"
         case .runScript:
@@ -255,6 +273,8 @@ public enum ItemAction: Codable, CaseIterable, Equatable {
         switch self {
         case .default:
             return L10n.Widgets.Action.Name.default
+        case .moreInfoDialog:
+            return L10n.Widgets.Action.Name.moreInfoDialog
         case .navigate:
             return L10n.Widgets.Action.Name.navigate
         case .runScript:
