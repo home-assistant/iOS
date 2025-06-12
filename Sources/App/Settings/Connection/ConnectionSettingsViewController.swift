@@ -36,24 +36,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         let connection = Current.api(for: server)?.connection
 
-        if Current.servers.all.count > 1 {
-            form +++ Section(footer: L10n.Settings.ConnectionSection.activateSwipeHint) {
-                _ in
-            } <<< ButtonRow {
-                $0.title = L10n.Settings.ConnectionSection.activateServer
-                $0.onCellSelection { [server] _, _ in
-                    if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
-                        if let url = server.info.connection.activeURL() {
-                            UIApplication.shared.open(url)
-                        }
-                    } else {
-                        Current.sceneManager.webViewWindowControllerPromise.done {
-                            $0.open(server: server)
-                        }
-                    }
-                }
-            }
-        }
+        addActivateButtonToNavBar()
+        appendInvitationButton()
 
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -300,6 +284,52 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         // Detect when your view controller is popped and invoke the callback
         if !isMovingToParent {
             onDismissCallback?(self)
+        }
+    }
+
+    private func appendInvitationButton() {
+        guard let activeURL = server.info.connection.activeURL() else {
+            Current.Log.error("Invitation button failed, no active URL found for server \(server.identifier)")
+            return
+        }
+
+        guard let invitationURL = AppConstants.invitationURL(serverURL: activeURL) else {
+            Current.Log.error("Invitation button failed, could not create invitation URL for server \(server.identifier)")
+            return
+        }
+
+        form +++ Section() {
+            _ in
+        } <<< ButtonRow {
+            $0.title = L10n.Settings.ConnectionSection.inviteToServer
+            $0.onCellSelection { [weak self] cell, _ in
+                guard let self = self else { return }
+                let activityVC = UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
+                if let popover = activityVC.popoverPresentationController {
+                    popover.sourceView = cell
+                    popover.sourceRect = cell.bounds
+                }
+                self.present(activityVC, animated: true, completion: nil)
+            }
+        }
+    }
+
+    private func addActivateButtonToNavBar() {
+        if Current.servers.all.count > 1 {
+            let activateButton = UIBarButtonItem(title: L10n.Settings.ConnectionSection.activateServer, style: .plain, target: self, action: #selector(activateServerTapped))
+            navigationItem.rightBarButtonItem = activateButton
+        }
+    }
+
+    @objc private func activateServerTapped() {
+        if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
+            if let url = server.info.connection.activeURL() {
+                UIApplication.shared.open(url)
+            }
+        } else {
+            Current.sceneManager.webViewWindowControllerPromise.done {
+                $0.open(server: self.server)
+            }
         }
     }
 }

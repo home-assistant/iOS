@@ -1991,8 +1991,6 @@ public enum L10n {
     public enum ConnectionSection {
       /// Activate
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
-      /// Quickly activate using a three-finger swipe left or right when viewing a server.
-      public static var activateSwipeHint: String { return L10n.tr("Localizable", "settings.connection_section.activate_swipe_hint") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// All Servers
@@ -2005,6 +2003,8 @@ public enum L10n {
       public static var details: String { return L10n.tr("Localizable", "settings.connection_section.details") }
       /// Connection
       public static var header: String { return L10n.tr("Localizable", "settings.connection_section.header") }
+      /// Invite someone to this server
+      public static var inviteToServer: String { return L10n.tr("Localizable", "settings.connection_section.invite_to_server") }
       /// Directly connect to the Home Assistant server for push notifications when on internal SSIDs.
       public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
       /// Logged in as

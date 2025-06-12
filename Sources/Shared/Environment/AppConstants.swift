@@ -89,6 +89,10 @@ public enum AppConstants {
         }
     }
 
+    public static func invitationURL(serverURL: URL) -> URL? {
+        URL(string: "https://my.home-assistant.io/invite/#url=\(serverURL.absoluteString)")
+    }
+
     public static func navigateDeeplinkURL(
         path: String,
         serverId: String,
