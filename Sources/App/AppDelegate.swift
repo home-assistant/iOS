@@ -105,6 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupWatchCommunicator()
         setupUIApplicationShortcutItems()
+        migrateIfNeeded()
 
         return true
     }
@@ -413,6 +414,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 localizedSubtitle: nil,
                 icon: .init(systemSymbol: .gear)
             )]
+        }
+    }
+
+    private func migrateIfNeeded() {
+        resetLocalPush()
+    }
+
+    /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it
+    private func resetLocalPush() {
+        if !Current.settingsStore.migratedOptInLocalPush {
+            for server in Current.servers.all {
+                server.update { info in
+                    info.connection.isLocalPushEnabled = false
+                }
+            }
+            Current.settingsStore.migratedOptInLocalPush = true
         }
     }
 
