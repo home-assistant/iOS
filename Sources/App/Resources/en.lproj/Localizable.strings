@@ -444,6 +444,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "off_label" = "Off";
 "ok_label" = "OK";
 "on_label" = "On";
+"onboarding.invitation.title" = "Home Assistant Invite";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.connect.mac_safari_warning.message" = "Try restarting Safari if the login form does not open.";
 "onboarding.connect.mac_safari_warning.title" = "Launching Safari";
 "onboarding.connect.title" = "Connecting to %@";

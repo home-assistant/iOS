@@ -62,6 +62,6 @@ struct OnboardingServersListViewModelTests {
 
         sut.resetFlow()
         assert(sut.currentlyInstanceLoading == nil)
-        assert(sut.isLoading == false)
+        assert(sut.manualInputLoading == false)
     }
 }
