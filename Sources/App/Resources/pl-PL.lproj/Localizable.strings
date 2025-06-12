@@ -582,6 +582,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.sensor_send_type.setting.none" = "Nic";
 "settings.connection_section.sensor_send_type.title" = "Sensory wysłane";
 "settings.connection_section.servers" = "Serwery";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Dostęp do identyfikatorów SSID w tle wymaga, aby ustawienia lokalizacji były ustawione na „Zawsze”. Kliknij tutaj, aby zmienić ustawienia.";
 "settings.connection_section.validate_error.edit_url" = "Edytuj adres URL";
@@ -1159,6 +1161,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "web_view.unique_server_selection.title" = "Wybierz serwer";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
 "widgets.action.name.run_script" = "Run Script";
@@ -1180,6 +1183,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Światło";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Strona";
 "widgets.controls.open_page.configuration.title" = "Open Page";
@@ -1229,6 +1234,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.gauge.parameters.value_template" = "Value Template (0-1)";
 "widgets.gauge.title" = "Gauge";
 "widgets.lights.description" = "Turn on/off light";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Open a frontend page in Home Assistant.";
 "widgets.open_page.not_configured" = "Brak dostępnych stron";
 "widgets.open_page.title" = "Otwórz stronę";

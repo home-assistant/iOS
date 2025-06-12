@@ -584,6 +584,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "settings.connection_section.sensor_send_type.setting.none" = "Ingen";
 "settings.connection_section.sensor_send_type.title" = "Sensorer sendt";
 "settings.connection_section.servers" = "Servere";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "For å få tilgang til SSID-er i bakgrunnen, krever 'Alltid' plasseringstillatelse og 'Full' posisjonsnøyaktighet. Trykk her for å endre innstillingene.";
 "settings.connection_section.ssid_permission_message" = "Tilgang til SSID-er i bakgrunnen krever \"Alltid\" posisjonstillatelse. Trykk her for å endre innstillingene dine.";
 "settings.connection_section.validate_error.edit_url" = "Rediger URL";
@@ -1161,6 +1163,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
 "widgets.action.name.run_script" = "Run Script";
@@ -1182,6 +1185,8 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";
@@ -1231,6 +1236,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "widgets.gauge.parameters.value_template" = "Value Template (0-1)";
 "widgets.gauge.title" = "Gauge";
 "widgets.lights.description" = "Turn on/off light";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Åpne en frontend -side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgjengelig";
 "widgets.open_page.title" = "Åpne side";

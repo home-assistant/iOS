@@ -584,6 +584,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.connection_section.sensor_send_type.setting.none" = "なし";
 "settings.connection_section.sensor_send_type.title" = "送信されたセンサー";
 "settings.connection_section.servers" = "サーバー";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "バックグラウンドで SSID にアクセスするには、「常に」位置情報の許可と「完全な」位置精度が必要です。ここをタップして設定を変更します。";
 "settings.connection_section.ssid_permission_message" = "バックグラウンドで SSID にアクセスするには、\"常時\"位置情報の許可が必要です。ここをタップして設定を変更します。";
 "settings.connection_section.validate_error.edit_url" = "URLの編集";
@@ -1161,6 +1163,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "アシスト";
 "widgets.action.name.default" = "デフォルト";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "ナビゲート";
 "widgets.action.name.nothing" = "何もない";
 "widgets.action.name.run_script" = "スクリプトを実行";
@@ -1182,6 +1185,8 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.controls.light.description" = "照明を点灯/消灯する";
 "widgets.controls.light.placeholder_title" = "ライトを選ぶ";
 "widgets.controls.light.title" = "照明";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "ページを選択";
 "widgets.controls.open_page.configuration.parameter.page" = "ページ";
 "widgets.controls.open_page.configuration.title" = "ページを開く";
@@ -1231,6 +1236,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "widgets.gauge.parameters.value_template" = "値テンプレート (0-1)";
 "widgets.gauge.title" = "ゲージ";
 "widgets.lights.description" = "照明の点灯/消灯";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Home Assistantでフロントエンドページを開きます。";
 "widgets.open_page.not_configured" = "利用できるページがありません";
 "widgets.open_page.title" = "ページを開く";

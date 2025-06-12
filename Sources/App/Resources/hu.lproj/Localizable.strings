@@ -584,6 +584,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.connection_section.sensor_send_type.setting.none" = "Egy sem";
 "settings.connection_section.sensor_send_type.title" = "Elküldött érzékelők";
 "settings.connection_section.servers" = "Szerverek";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "A háttérben lévő SSID-k eléréséhez a \"Mindig\" helymeghatározási engedély és a \"Teljes\" helymeghatározási pontosság szükséges. A beállítások módosításához koppintson ide.";
 "settings.connection_section.ssid_permission_message" = "A háttérben lévő SSID-k eléréséhez \"Mindig\" helyengedély szükséges. A beállítások módosításához koppintson ide.";
 "settings.connection_section.validate_error.edit_url" = "URL szerkesztése";
@@ -1161,6 +1163,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "web_view.unique_server_selection.title" = "Válasszon egy szervert";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Alapértelmezett";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Ugrás";
 "widgets.action.name.nothing" = "Nem történik semmi";
 "widgets.action.name.run_script" = "Szkript futtatása";
@@ -1182,6 +1185,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.light.description" = "Kapcsolja be vagy ki a lámpát";
 "widgets.controls.light.placeholder_title" = "Válasszon lámpát";
 "widgets.controls.light.title" = "Fény";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Válasszon oldalt";
 "widgets.controls.open_page.configuration.parameter.page" = "Oldal";
 "widgets.controls.open_page.configuration.title" = "Oldal megnyitása";
@@ -1231,6 +1236,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.gauge.parameters.value_template" = "Értéksablon (0-1)";
 "widgets.gauge.title" = "Mérőműszer";
 "widgets.lights.description" = "Kapcsolja be/ki a lámpát";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Nyisson meg egy kezelőfelületet a Home Assistant alkalmazásban.";
 "widgets.open_page.not_configured" = "Nincsenek elérhető oldalak";
 "widgets.open_page.title" = "Oldal megnyitása";

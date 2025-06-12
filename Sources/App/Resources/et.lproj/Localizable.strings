@@ -584,6 +584,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.sensor_send_type.setting.none" = "Puudub";
 "settings.connection_section.sensor_send_type.title" = "Saadetud andurid";
 "settings.connection_section.servers" = "Serverid";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Taustal SSID-dele juurdepääsemiseks on vaja asukohaluba „Alati” ja asukoha täielikku täpsust. Sätete muutmiseks puuduta siin.";
 "settings.connection_section.ssid_permission_message" = "Taustal SSID-dele juurdepääsemiseks on vaja luba \"Alati\" asukohale. Seadete muutmiseks puuduta siin.";
 "settings.connection_section.validate_error.edit_url" = "Muuda URL-i";
@@ -1161,6 +1163,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "web_view.unique_server_selection.title" = "Vali üks server";
 "widgets.action.name.assist" = "Abiline";
 "widgets.action.name.default" = "Vaikimisi";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigeeri";
 "widgets.action.name.nothing" = "Mitte midagi";
 "widgets.action.name.run_script" = "Käivita skript";
@@ -1182,6 +1185,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.light.description" = "Valgusti sisse/välja lülitamine";
 "widgets.controls.light.placeholder_title" = "Vali valgusti";
 "widgets.controls.light.title" = "Valgusti";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Vali lehekülg";
 "widgets.controls.open_page.configuration.parameter.page" = "Lehekülg";
 "widgets.controls.open_page.configuration.title" = "Ava lehekülg";
@@ -1231,6 +1236,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.gauge.parameters.value_template" = "Väärtuse mall (0-1)";
 "widgets.gauge.title" = "Mõõtur";
 "widgets.lights.description" = "Valgustuse sisse/välja lülitamine";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "AvaHome Assistantis esileht.";
 "widgets.open_page.not_configured" = "Lehekülgi pole saadaval";
 "widgets.open_page.title" = "Ava lehekülg";

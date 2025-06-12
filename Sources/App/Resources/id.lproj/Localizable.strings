@@ -584,6 +584,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.connection_section.sensor_send_type.setting.none" = "Tidak Ada";
 "settings.connection_section.sensor_send_type.title" = "Sensor Terkirim";
 "settings.connection_section.servers" = "Server";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Akses SSID di latar belakang membutuhkan izin lokasi 'Selalu' dan keakuratan lokasi 'Tepat'. Ketuk di sini untuk mengubah pengaturan Anda.";
 "settings.connection_section.ssid_permission_message" = "Akses SSID di latar belakang membutuhkan izin lokasi 'Selalu'. Ketuk di sini untuk mengubah pengaturan Anda.";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
@@ -1161,6 +1163,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "web_view.unique_server_selection.title" = "Pilih satu server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Baku";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Buka";
 "widgets.action.name.nothing" = "Tidak ada";
 "widgets.action.name.run_script" = "Jalankan Skrip";
@@ -1182,6 +1185,8 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.controls.light.description" = "Nyalakan/matikan lampu Anda";
 "widgets.controls.light.placeholder_title" = "Pilih Lampu";
 "widgets.controls.light.title" = "Lampu";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Pilih halaman";
 "widgets.controls.open_page.configuration.parameter.page" = "Halaman";
 "widgets.controls.open_page.configuration.title" = "Buka Halaman";
@@ -1231,6 +1236,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "widgets.gauge.parameters.value_template" = "Templat Nilai (0-1)";
 "widgets.gauge.title" = "Gauge";
 "widgets.lights.description" = "Nyalakan/matikan lampu";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Buka halaman antarmuka di Home Assistant.";
 "widgets.open_page.not_configured" = "Tidak Ada Halaman yang Tersedia";
 "widgets.open_page.title" = "Buka Halaman";
