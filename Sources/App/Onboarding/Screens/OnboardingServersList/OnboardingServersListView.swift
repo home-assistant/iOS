@@ -162,6 +162,7 @@ struct OnboardingServersListView: View {
                 }
             }
             .buttonStyle(.primaryButton)
+            .disabled(viewModel.invitationLoading)
         }
         .listRowSeparator(.hidden)
     }
