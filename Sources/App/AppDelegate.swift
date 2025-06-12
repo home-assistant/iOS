@@ -430,6 +430,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
             Current.settingsStore.migratedOptInLocalPush = true
+            Current.Log.info("Reset local push for all servers due to migration")
+        } else {
+            Current.Log.info("No need to reset local push, migration already done")
         }
     }
 
