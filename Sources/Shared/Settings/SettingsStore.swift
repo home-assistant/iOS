@@ -197,6 +197,16 @@ public class SettingsStore {
         }
     }
 
+    /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it
+    public var migratedOptInLocalPush: Bool {
+        get {
+            prefs.bool(forKey: "migratedOptInLocalPush")
+        }
+        set {
+            prefs.set(newValue, forKey: "migratedOptInLocalPush")
+        }
+    }
+
     public var periodicUpdateInterval: TimeInterval? {
         get {
             if prefs.object(forKey: "periodicUpdateInterval") == nil {
