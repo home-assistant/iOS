@@ -110,7 +110,7 @@ final class OnboardingServersListViewModel: ObservableObject {
 
     func resetFlow() {
         currentlyInstanceLoading = nil
-        manualInputLoading = false
+        resetSpecificLoaders()
     }
 
     @MainActor
