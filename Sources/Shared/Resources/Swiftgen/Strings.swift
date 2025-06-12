@@ -1752,8 +1752,12 @@ public enum L10n {
       }
     }
     public enum Invitation {
+      /// Accept
+      public static var acceptButton: String { return L10n.tr("Localizable", "onboarding.invitation.accept_button") }
       /// Other options
       public static var otherOptions: String { return L10n.tr("Localizable", "onboarding.invitation.other_options") }
+      /// Home Assistant Invite
+      public static var title: String { return L10n.tr("Localizable", "onboarding.invitation.title") }
     }
     public enum ManualSetup {
       /// Connect

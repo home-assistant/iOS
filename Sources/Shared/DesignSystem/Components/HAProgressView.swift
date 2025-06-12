@@ -30,22 +30,34 @@ public struct HAProgressView: View {
         }
     }
 
+    public enum ColorType {
+        /// When display in light background
+        case `default`
+        /// When displayed on accented background such as haPrimary
+        case light
+    }
+
     @StateObject private var viewModel = HAProgressViewModel()
     let style: Style
+    let colorType: ColorType
 
-    public init(style: Style = .medium) {
+    public init(style: Style = .medium, colorType: ColorType = .default) {
         self.style = style
+        self.colorType = colorType
     }
 
     public var body: some View {
         ZStack {
             Circle()
-                .stroke(Color.track, style: StrokeStyle(lineWidth: style.lineWidth))
+                .stroke(
+                    colorType == .default ? Color.track : Color.white,
+                    style: StrokeStyle(lineWidth: style.lineWidth)
+                )
                 .frame(width: style.size.width, height: style.size.height)
             Circle()
                 .trim(from: 0, to: viewModel.trimEnd)
                 .stroke(
-                    Color.haPrimary,
+                    Color.haPrimary.opacity(colorType == .default ? 1 : 0.5),
                     style: StrokeStyle(lineWidth: style.lineWidth, lineCap: .round)
                 )
                 .frame(width: style.size.width, height: style.size.height)

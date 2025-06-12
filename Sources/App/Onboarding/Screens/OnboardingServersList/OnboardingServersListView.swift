@@ -57,7 +57,7 @@ struct OnboardingServersListView: View {
                     CloseButton {
                         dismiss()
                     }
-                } else if viewModel.isLoading {
+                } else if viewModel.manualInputLoading {
                     // Loading happens when URL is manually inputed by user
                     ProgressView()
                         .progressViewStyle(.circular)
@@ -92,7 +92,7 @@ struct OnboardingServersListView: View {
         }
         .sheet(isPresented: $showManualInput) {
             ManualURLEntryView { connectURL in
-                viewModel.isLoading = true
+                viewModel.manualInputLoading = true
                 viewModel.selectInstance(
                     .init(manualURL: connectURL),
                     controller: hostingProvider.viewController
@@ -138,26 +138,33 @@ struct OnboardingServersListView: View {
 
     @ViewBuilder
     private func prefillURLHeader(url: URL) -> some View {
-        AppleLikeListTopRowHeader(
-            image: nil,
-            headerImageAlternativeView: AnyView(
-                Image(uiImage: Asset.logo.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 80, height: 80)
-            ),
-            title: "Home Assistant Invite",
-            subtitle: url.absoluteString
-        )
         Section {
+            AppleLikeListTopRowHeader(
+                image: nil,
+                headerImageAlternativeView: AnyView(
+                    Image(uiImage: Asset.logo.image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 80, height: 80)
+                ),
+                title: L10n.Onboarding.Invitation.title,
+                subtitle: url.absoluteString
+            )
             Button {
                 viewModel.selectInstance(.init(manualURL: url), controller: hostingProvider.viewController)
+                viewModel.invitationLoading = true
             } label: {
-                Text("Accept")
+                ZStack {
+                    HAProgressView(colorType: .light)
+                        .opacity(viewModel.invitationLoading ? 1 : 0)
+                    Text(L10n.Onboarding.Invitation.acceptButton)
+                        .opacity(viewModel.invitationLoading ? 0 : 1)
+                }
             }
             .buttonStyle(.primaryButton)
-            .listRowBackground(Color.clear)
+            .disabled(viewModel.invitationLoading)
         }
+        .listRowSeparator(.hidden)
     }
 
     @ViewBuilder
@@ -174,6 +181,9 @@ struct OnboardingServersListView: View {
             }
         } else {
             Text("Unmapped onboarding flow (1)")
+                .onAppear {
+                    assertionFailure("Unmapped onboarding flow (1)")
+                }
         }
     }
 

@@ -20,8 +20,8 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var shouldDismiss = false
     @Published var onboardingServer: Server?
 
-    /// Indicator for manual input loading
-    @Published var isLoading = false
+    @Published var manualInputLoading = false
+    @Published var invitationLoading = false
 
     private var webhookSensors: [WebhookSensor] = []
     private var discovery = Current.bonjour()
@@ -98,14 +98,19 @@ final class OnboardingServersListViewModel: ObservableObject {
                     self?.error = error
                     self?.showError = true
                 }
-                self?.isLoading = false
+                self?.resetSpecificLoaders()
             }
         }
     }
 
+    private func resetSpecificLoaders() {
+        manualInputLoading = false
+        invitationLoading = false
+    }
+
     func resetFlow() {
         currentlyInstanceLoading = nil
-        isLoading = false
+        resetSpecificLoaders()
     }
 
     @MainActor
