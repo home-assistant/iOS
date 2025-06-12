@@ -90,7 +90,11 @@ public enum AppConstants {
     }
 
     public static func invitationURL(serverURL: URL) -> URL? {
-        URL(string: "https://my.home-assistant.io/invite/#url=\(serverURL.absoluteString)")
+        guard let encodedURLString = serverURL.absoluteString
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            return nil
+        }
+        return URL(string: "https://my.home-assistant.io/invite/#url=\(encodedURLString)")
     }
 
     public static func navigateDeeplinkURL(
