@@ -294,29 +294,35 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         }
 
         guard let invitationURL = AppConstants.invitationURL(serverURL: activeURL) else {
-            Current.Log.error("Invitation button failed, could not create invitation URL for server \(server.identifier)")
+            Current.Log
+                .error("Invitation button failed, could not create invitation URL for server \(server.identifier)")
             return
         }
 
-        form +++ Section() {
+        form +++ Section {
             _ in
         } <<< ButtonRow {
             $0.title = L10n.Settings.ConnectionSection.inviteToServer
             $0.onCellSelection { [weak self] cell, _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 let activityVC = UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
                 if let popover = activityVC.popoverPresentationController {
                     popover.sourceView = cell
                     popover.sourceRect = cell.bounds
                 }
-                self.present(activityVC, animated: true, completion: nil)
+                present(activityVC, animated: true, completion: nil)
             }
         }
     }
 
     private func addActivateButtonToNavBar() {
         if Current.servers.all.count > 1 {
-            let activateButton = UIBarButtonItem(title: L10n.Settings.ConnectionSection.activateServer, style: .plain, target: self, action: #selector(activateServerTapped))
+            let activateButton = UIBarButtonItem(
+                title: L10n.Settings.ConnectionSection.activateServer,
+                style: .plain,
+                target: self,
+                action: #selector(activateServerTapped)
+            )
             navigationItem.rightBarButtonItem = activateButton
         }
     }
