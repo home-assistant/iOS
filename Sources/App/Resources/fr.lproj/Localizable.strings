@@ -584,6 +584,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings.connection_section.sensor_send_type.setting.none" = "Aucun";
 "settings.connection_section.sensor_send_type.title" = "Capteurs envoyés";
 "settings.connection_section.servers" = "Serveurs";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours» et une précision de localisation «complète». Appuyez ici pour modifier vos paramètres.";
 "settings.connection_section.ssid_permission_message" = "L'accès aux SSID en arrière-plan nécessite une autorisation de localisation «Toujours». Appuyez ici pour modifier vos paramètres.";
 "settings.connection_section.validate_error.edit_url" = "Modifier l'URL";
@@ -1161,6 +1163,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
 "widgets.action.name.run_script" = "Run Script";
@@ -1182,6 +1185,8 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.controls.light.description" = "Allumer/éteindre votre lumière";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Lumière";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choisir page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Ouvrir page";
@@ -1231,6 +1236,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "widgets.gauge.parameters.value_template" = "Modèle de valeur (0-1)";
 "widgets.gauge.title" = "Jauge";
 "widgets.lights.description" = "Allumer/éteindre la lumière";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Ouvrez une page frontale dans Home Assistant.";
 "widgets.open_page.not_configured" = "Aucune page disponible";
 "widgets.open_page.title" = "Ouvrir la page";

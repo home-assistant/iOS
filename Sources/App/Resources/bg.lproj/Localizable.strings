@@ -584,6 +584,8 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings.connection_section.sensor_send_type.setting.none" = "Няма";
 "settings.connection_section.sensor_send_type.title" = "Изпратени сензори";
 "settings.connection_section.servers" = "Сървъри";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Достъпът до SSID във фонов режим изисква разрешение за местоположение „Винаги“ и „Пълна“ точност на местоположението. Докоснете тук, за да промените настройките си.";
 "settings.connection_section.ssid_permission_message" = "Достъпът до SSID-тата във фона изисква разрешение за 'Винаги' местоположение. Чукнете тук, за да промените настройките си.";
 "settings.connection_section.validate_error.edit_url" = "Редактирай URL";
@@ -1161,6 +1163,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
 "widgets.action.name.run_script" = "Run Script";
@@ -1182,6 +1185,8 @@ Home Assistant е безплатен и с отворен код софтуер 
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";
@@ -1231,6 +1236,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "widgets.gauge.parameters.value_template" = "Value Template (0-1)";
 "widgets.gauge.title" = "Gauge";
 "widgets.lights.description" = "Turn on/off light";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Отворете предна страница в Home Assistant.";
 "widgets.open_page.not_configured" = "Няма налични страници";
 "widgets.open_page.title" = "Отворена страница";

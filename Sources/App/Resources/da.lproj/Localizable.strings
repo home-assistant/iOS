@@ -584,6 +584,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.connection_section.sensor_send_type.setting.none" = "Ingen";
 "settings.connection_section.sensor_send_type.title" = "Sensorer sendt";
 "settings.connection_section.servers" = "Servere";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Adgang til at tilgå SSID'er i baggrunden kræver, at lokalitetstilladelse er sat til 'Altid'  og at 'Præcis lokalitet' er slået til. Tryk her for at ændre dine indstillinger.";
 "settings.connection_section.ssid_permission_message" = "Adgang til SSID'er i baggrunden kræver 'Altid'-lokalitetstilladelse. Tryk her for at ændre dine indstillinger.";
 "settings.connection_section.validate_error.edit_url" = "Redigér webadresse";
@@ -1161,6 +1163,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "web_view.unique_server_selection.title" = "Vælg én server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Gå til";
 "widgets.action.name.nothing" = "Intet";
 "widgets.action.name.run_script" = "Kør script";
@@ -1182,6 +1185,8 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.controls.light.description" = "Tænd/sluk dit lys";
 "widgets.controls.light.placeholder_title" = "Vælg Lys";
 "widgets.controls.light.title" = "Lys";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Vælg side";
 "widgets.controls.open_page.configuration.parameter.page" = "Side";
 "widgets.controls.open_page.configuration.title" = "Åbn side";
@@ -1231,6 +1236,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "widgets.gauge.parameters.value_template" = "Værdi-skabelon (0-1)";
 "widgets.gauge.title" = "Måler";
 "widgets.lights.description" = "Tænd/sluk lys";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Åbn en brugerflade-side i Home Assistant.";
 "widgets.open_page.not_configured" = "Ingen sider tilgængelig";
 "widgets.open_page.title" = "Åbn side";

@@ -584,6 +584,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.sensor_send_type.setting.none" = "Geen";
 "settings.connection_section.sensor_send_type.title" = "Sensoren doorgeven";
 "settings.connection_section.servers" = "Servers";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Voor toegang tot SSID's op de achtergrond is locatietoestemming 'Altijd' en 'Exacte locatie' vereist. Tik hier om je instellingen te wijzigen.";
 "settings.connection_section.ssid_permission_message" = "Voor toegang tot SSID's op de achtergrond is toestemming voor locatie 'Altijd' vereist. Tik hier om je instellingen te wijzigen.";
 "settings.connection_section.validate_error.edit_url" = "Wijzig URL";
@@ -1161,6 +1163,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "web_view.unique_server_selection.title" = "Kies één server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standaard";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigeer";
 "widgets.action.name.nothing" = "Niets";
 "widgets.action.name.run_script" = "Script uitvoeren";
@@ -1182,6 +1185,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.controls.light.description" = "Zet je licht aan of uit";
 "widgets.controls.light.placeholder_title" = "Kies licht";
 "widgets.controls.light.title" = "Licht";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Kies pagina";
 "widgets.controls.open_page.configuration.parameter.page" = "Pagina";
 "widgets.controls.open_page.configuration.title" = "Open pagina";
@@ -1231,6 +1236,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.gauge.parameters.value_template" = "Waardesjabloon (0-1)";
 "widgets.gauge.title" = "Meter";
 "widgets.lights.description" = "Licht aan of uit zetten";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "Open een frontend-pagina in Home Assistant";
 "widgets.open_page.not_configured" = "Geen pagina's beschikbaar";
 "widgets.open_page.title" = "Open pagina";
