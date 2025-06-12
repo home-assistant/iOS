@@ -584,6 +584,8 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "settings.connection_section.sensor_send_type.setting.none" = "כלום";
 "settings.connection_section.sensor_send_type.title" = "חיישנים נשלחו";
 "settings.connection_section.servers" = "שרתים";
+"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "גישה למזהי SSID ברקע דורשת הרשאת מיקום 'תמיד' ודיוק מיקום 'מלא'. הקש כאן כדי לשנות את ההגדרות שלך.";
 "settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
@@ -1161,6 +1163,7 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "web_view.unique_server_selection.title" = "Choose one server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
+"widgets.action.name.moreInfoDialog" = "More info";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
 "widgets.action.name.run_script" = "Run Script";
@@ -1182,6 +1185,8 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";
@@ -1231,6 +1236,7 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "widgets.gauge.parameters.value_template" = "Value Template (0-1)";
 "widgets.gauge.title" = "Gauge";
 "widgets.lights.description" = "Turn on/off light";
+"widgets.open_entity.title" = "Open Entity";
 "widgets.open_page.description" = "פתח דף פרונטאנד בהום אסיסטנט";
 "widgets.open_page.not_configured" = "אין דפים זמינים";
 "widgets.open_page.title" = "פתיחת דף";
