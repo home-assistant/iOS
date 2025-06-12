@@ -205,7 +205,7 @@ private extension ConnectionInfo {
             webhookSecret: nil,
             internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: true,
+            isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
             alwaysFallbackToInternalURL: false
         )
