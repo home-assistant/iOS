@@ -31,7 +31,9 @@ public struct HAProgressView: View {
     }
 
     public enum ColorType {
+        /// When display in light background
         case `default`
+        /// When displayed on accented background such as haPrimary
         case light
     }
 
