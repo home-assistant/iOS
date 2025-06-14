@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "代わりにどのデバイス名を使用する必要がありますか？";
 "onboarding.device_name_check.error.rename_action" = "リネーム";
 "onboarding.device_name_check.error.title" = "'%1$@' という名前のデバイスは既に存在します";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "接続";
 "onboarding.manual_setup.couldnt_make_url.message" = "値 %@ は、有効なURLではありませんでした。";
 "onboarding.manual_setup.couldnt_make_url.title" = "URLを作成できませんでした";

@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Какое имя устройства следует использовать вместо этого?";
 "onboarding.device_name_check.error.rename_action" = "Переименовать";
 "onboarding.device_name_check.error.title" = "Устройство с именем '%1$@' уже существует";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Другие варианты";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Подключиться";
 "onboarding.manual_setup.couldnt_make_url.message" = "Значение '%@' не является допустимым URL-адресом.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Не удалось создать URL-адрес";

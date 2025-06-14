@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Qual nome de dispositivo deve ser usado?";
 "onboarding.device_name_check.error.rename_action" = "Renomear";
 "onboarding.device_name_check.error.title" = "Já existe um dispositivo com o nome ' %1$@ '";
+"onboarding.invitation.accept_button" = "Aceitar";
 "onboarding.invitation.other_options" = "Outras opções";
+"onboarding.invitation.title" = "Convite para o Home Assistant";
 "onboarding.manual_setup.connect" = "Conectar";
 "onboarding.manual_setup.couldnt_make_url.message" = "O valor ' %@ ' não era um URL válido.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Não foi possível criar uma URL";
@@ -584,8 +586,8 @@
 "settings.connection_section.sensor_send_type.setting.none" = "Nenhum";
 "settings.connection_section.sensor_send_type.title" = "Sensores enviados";
 "settings.connection_section.servers" = "Servidores";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_footer" = "Reordenar para definir o servidor padrão";
+"settings.connection_section.servers_header" = "Servidores";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Acessar SSIDs em segundo plano requer permissão de localização 'Sempre' e precisão de localização 'Total'. Toque aqui para alterar suas configurações.";
 "settings.connection_section.ssid_permission_message" = "Acessar SSIDs em segundo plano requer permissão de localização 'Sempre'. Toque aqui para alterar suas configurações.";
 "settings.connection_section.validate_error.edit_url" = "Editar URL";
@@ -1163,7 +1165,7 @@
 "web_view.unique_server_selection.title" = "Escolha um servidor";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Padrão";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "Mais informações";
 "widgets.action.name.navigate" = "Navegar";
 "widgets.action.name.nothing" = "Nada";
 "widgets.action.name.run_script" = "Executar script";
@@ -1185,8 +1187,8 @@
 "widgets.controls.light.description" = "Ligue / desligue sua luz";
 "widgets.controls.light.placeholder_title" = "Escolha a Luz";
 "widgets.controls.light.title" = "Luz";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entidade";
+"widgets.controls.open_entity.configuration.title" = "Entidade aberta";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Escolha a página";
 "widgets.controls.open_page.configuration.parameter.page" = "Página";
 "widgets.controls.open_page.configuration.title" = "Abrir página";
@@ -1236,7 +1238,7 @@
 "widgets.gauge.parameters.value_template" = "Modelo de valor (0-1)";
 "widgets.gauge.title" = "Medidor";
 "widgets.lights.description" = "Ligar/desligar a luz";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "Entidade aberta";
 "widgets.open_page.description" = "Abra uma página de frontend no Home Assistant.";
 "widgets.open_page.not_configured" = "Nenhuma página disponível";
 "widgets.open_page.title" = "Abrir página";
