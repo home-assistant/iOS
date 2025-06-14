@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Quale dispositivo dovrebbe essere usato invece?";
 "onboarding.device_name_check.error.rename_action" = "Rinomina";
 "onboarding.device_name_check.error.title" = "Esiste già un dispositivo con il nome '%1$@'";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Connetti";
 "onboarding.manual_setup.couldnt_make_url.message" = "Il valore \"%@\" non era un URL valido.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossibile creare un URL";

@@ -460,7 +460,9 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.device_name_check.error.prompt" = "Mitä nimeä laitteelle pitäisi käyttää sen sijaan?";
 "onboarding.device_name_check.error.rename_action" = "Nimeä uudelleen";
 "onboarding.device_name_check.error.title" = "Laite on jo olemassa nimellä '%1$@'";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Yhdistä";
 "onboarding.manual_setup.couldnt_make_url.message" = "Arvo '%@' ei ollut kelvollinen URL-osoite.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL-osoitetta ei voitu luoda";

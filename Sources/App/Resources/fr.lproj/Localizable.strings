@@ -460,7 +460,9 @@ Les balises fonctionneront sur tout appareil sur lequel Home Assistant est insta
 "onboarding.device_name_check.error.prompt" = "Quel nom de périphérique doit être utilisé à la place ?";
 "onboarding.device_name_check.error.rename_action" = "Renommer";
 "onboarding.device_name_check.error.title" = "Un périphérique existe déjà avec le nom ' %1$@ '";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Connecter";
 "onboarding.manual_setup.couldnt_make_url.message" = "La valeur '%@' n'était pas une URL valide.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Impossible de créer une URL";
