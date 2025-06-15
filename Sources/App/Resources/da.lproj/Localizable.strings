@@ -460,7 +460,9 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.device_name_check.error.prompt" = "Hvilket enhedsnavn skal bruges i stedet?";
 "onboarding.device_name_check.error.rename_action" = "Omdøb";
 "onboarding.device_name_check.error.title" = "Der findes allerede en enhed med navnet '%1$@'";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Opret forbindelse";
 "onboarding.manual_setup.couldnt_make_url.message" = "Værdien '%@' var ikke en gyldig webadresse.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kunne ikke oprette en webadresse";

@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
 "onboarding.device_name_check.error.rename_action" = "Μετονομασία";
 "onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";
+"onboarding.invitation.accept_button" = "Αποδοχή";
 "onboarding.invitation.other_options" = "Αλλες επιλογές";
+"onboarding.invitation.title" = "Πρόσκληση στο Home Assistant";
 "onboarding.manual_setup.connect" = "Σύνδεση";
 "onboarding.manual_setup.couldnt_make_url.message" = "Η τιμή '%@' δεν ήταν έγκυρη διεύθυνση URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL";
@@ -584,8 +586,8 @@
 "settings.connection_section.sensor_send_type.setting.none" = "Κανένα";
 "settings.connection_section.sensor_send_type.title" = "Αποστολή αισθητήρων";
 "settings.connection_section.servers" = "Διακομιστές";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_footer" = "Κάντε αναδιάταξη για να ορίσετε τον προεπιλεγμένο διακομιστή";
+"settings.connection_section.servers_header" = "Διακομιστές";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\" και ακρίβεια τοποθεσίας \"Πλήρης\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
 "settings.connection_section.ssid_permission_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
 "settings.connection_section.validate_error.edit_url" = "Επεξεργασία διεύθυνσης URL";
@@ -1163,7 +1165,7 @@
 "web_view.unique_server_selection.title" = "Επιλέξτε έναν διακομιστή";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Προεπιλογή";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "Περισσότερες πληροφορίες";
 "widgets.action.name.navigate" = "Πλοήγηση";
 "widgets.action.name.nothing" = "Τίποτα";
 "widgets.action.name.run_script" = "Εκτέλεση σεναρίου";
@@ -1185,8 +1187,8 @@
 "widgets.controls.light.description" = "Ανάψτε/σβήστε το φως σας";
 "widgets.controls.light.placeholder_title" = "Επιλέξτε φως";
 "widgets.controls.light.title" = "Φως";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Οντότητα";
+"widgets.controls.open_entity.configuration.title" = "Ανοιχτή Οντότητα";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Επιλέξτε σελίδα";
 "widgets.controls.open_page.configuration.parameter.page" = "Σελίδα";
 "widgets.controls.open_page.configuration.title" = "Ανοιγμα σελίδας";
@@ -1236,7 +1238,7 @@
 "widgets.gauge.parameters.value_template" = "Τιμή πρότυπου (0-1)";
 "widgets.gauge.title" = "Μετρητής";
 "widgets.lights.description" = "Ενεργοποίηση/απενεργοποίηση φωτός";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "Ανοιχτή Οντότητα";
 "widgets.open_page.description" = "Ανοίξτε μια αρχική σελίδα στο Home Assistant.";
 "widgets.open_page.not_configured" = "Δεν υπάρχουν διαθέσιμες σελίδες";
 "widgets.open_page.title" = "Άνοιγμα σελίδας";

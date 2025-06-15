@@ -460,7 +460,9 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.device_name_check.error.prompt" = "Thay vào đó nên sử dụng tên thiết bị nào?";
 "onboarding.device_name_check.error.rename_action" = "Đổi tên";
 "onboarding.device_name_check.error.title" = "Một thiết bị đã tồn tại với tên ' %1$@ '";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Kết nối";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";

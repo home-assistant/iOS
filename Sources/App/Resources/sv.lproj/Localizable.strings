@@ -460,7 +460,9 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.device_name_check.error.prompt" = "Vilket enhetsnamn ska användas istället?";
 "onboarding.device_name_check.error.rename_action" = "Döp om";
 "onboarding.device_name_check.error.title" = "Det finns redan en enhet med namnet '%1$@'";
+"onboarding.invitation.accept_button" = "Acceptera";
 "onboarding.invitation.other_options" = "Andra alternativ";
+"onboarding.invitation.title" = "Home Assistant-inbjudan";
 "onboarding.manual_setup.connect" = "Anslut";
 "onboarding.manual_setup.couldnt_make_url.message" = "Värdet '%@' var inte en giltig URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kunde inte skapa en URL";
@@ -584,8 +586,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings.connection_section.sensor_send_type.setting.none" = "Ingen";
 "settings.connection_section.sensor_send_type.title" = "Sensorer skickade";
 "settings.connection_section.servers" = "Servrar";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_footer" = "Ändra ordning för att definiera standardserver";
+"settings.connection_section.servers_header" = "Servrar";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Åtkomst till SSID:er i bakgrunden kräver 'Alltid'-tillåtelse och 'Maximal' platsnoggrannhet.";
 "settings.connection_section.ssid_permission_message" = "Bakgrundsåtkomst till SSID:er kräver 'Alltid'-tillåtelse för platsåtkomst. Tryck här för att ändra dina inställningar.";
 "settings.connection_section.validate_error.edit_url" = "Redigera URL";
@@ -1163,7 +1165,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "web_view.unique_server_selection.title" = "Välj en server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standard";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "Mer information";
 "widgets.action.name.navigate" = "Navigera";
 "widgets.action.name.nothing" = "Ingenting";
 "widgets.action.name.run_script" = "Kör skript";
@@ -1185,8 +1187,8 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.controls.light.description" = "Tänd/släck din lampa";
 "widgets.controls.light.placeholder_title" = "Välj lampa";
 "widgets.controls.light.title" = "Lampa";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entitet";
+"widgets.controls.open_entity.configuration.title" = "Öppna entitet";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Välj sida";
 "widgets.controls.open_page.configuration.parameter.page" = "Sida";
 "widgets.controls.open_page.configuration.title" = "Öppna sida";
@@ -1236,7 +1238,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "widgets.gauge.parameters.value_template" = "Värdemall (0-1)";
 "widgets.gauge.title" = "Mätare";
 "widgets.lights.description" = "Tänd/släck lampa";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "Öppna entitet";
 "widgets.open_page.description" = "Öppna en frontend-sida i Home Assistant.";
 "widgets.open_page.not_configured" = "Inga sidor tillgängliga";
 "widgets.open_page.title" = "Öppna sida";

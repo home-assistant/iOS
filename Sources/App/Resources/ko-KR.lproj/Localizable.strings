@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "대신 어떤 기기 이름을 사용해야 합니까?";
 "onboarding.device_name_check.error.rename_action" = "이름 변경하기";
 "onboarding.device_name_check.error.title" = "이름이 ' %1$@ '인 기기가 이미 존재합니다.";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "기타 옵션";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "연결";
 "onboarding.manual_setup.couldnt_make_url.message" = "'%@'은 유효한 URL이 아닙니다.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL을 생성할 수 없습니다.";

@@ -460,7 +460,9 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.device_name_check.error.prompt" = "Nama perangkat apa yang ingin digunakan?";
 "onboarding.device_name_check.error.rename_action" = "Ganti Nama";
 "onboarding.device_name_check.error.title" = "Sudah ada perangkat dengan nama '%1$@'";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Opsi lainnya";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Hubungkan";
 "onboarding.manual_setup.couldnt_make_url.message" = "Nilai '%@' bukan URL yang valid.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Tidak dapat membuat URL";
