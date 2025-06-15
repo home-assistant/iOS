@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Bunun yerine hangi cihaz adı kullanılmalıdır?";
 "onboarding.device_name_check.error.rename_action" = "Yeniden adlandır";
 "onboarding.device_name_check.error.title" = "%1$@ ' adında bir cihaz zaten var";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Bağlan";
 "onboarding.manual_setup.couldnt_make_url.message" = "\" %@ \" değeri geçerli bir URL değildi.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL oluşturulamadı";

@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Jaký název zařízení by měl být místo toho použit?";
 "onboarding.device_name_check.error.rename_action" = "Přejmenovat";
 "onboarding.device_name_check.error.title" = "Zařízení s názvem \"%1$@\" již existuje";
+"onboarding.invitation.accept_button" = "Přijmout";
 "onboarding.invitation.other_options" = "Další volby";
+"onboarding.invitation.title" = "Pozvánka do Home Asistenta";
 "onboarding.manual_setup.connect" = "Připojit";
 "onboarding.manual_setup.couldnt_make_url.message" = "Hodnota \"%@\" není platná URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nelze vytvořit URL.";
@@ -584,8 +586,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.connection_section.sensor_send_type.setting.none" = "Nic";
 "settings.connection_section.sensor_send_type.title" = "Senzory odeslány";
 "settings.connection_section.servers" = "Servery";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_footer" = "Změnit pořadí pro definování výchozího serveru";
+"settings.connection_section.servers_header" = "Servery";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\" a \"Plnou\" přesnost polohy. Klepnutím sem změníte nastavení.";
 "settings.connection_section.ssid_permission_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\". Klepnutím sem změníte nastavení.";
 "settings.connection_section.validate_error.edit_url" = "Upravit URL";
@@ -1163,7 +1165,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "web_view.unique_server_selection.title" = "Vybrat jeden server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Výchozí";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "Více informací";
 "widgets.action.name.navigate" = "Navigovat";
 "widgets.action.name.nothing" = "Nic";
 "widgets.action.name.run_script" = "Spustit skript";
@@ -1185,8 +1187,8 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.controls.light.description" = "Zapne/Vypne světlo.";
 "widgets.controls.light.placeholder_title" = "Vybrat světlo";
 "widgets.controls.light.title" = "Světlo";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entita";
+"widgets.controls.open_entity.configuration.title" = "Otevřít entitu";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Vybrat stránku";
 "widgets.controls.open_page.configuration.parameter.page" = "Stránka";
 "widgets.controls.open_page.configuration.title" = "Otevřít stránku";
@@ -1236,7 +1238,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "widgets.gauge.parameters.value_template" = "Šablona hodnoty (0-1)";
 "widgets.gauge.title" = "Ručičkový ukazatel";
 "widgets.lights.description" = "Zapne/Vypne světla.";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "Otevřít entitu";
 "widgets.open_page.description" = "Otevřete frontendovou stránku v Home Assistantovi.";
 "widgets.open_page.not_configured" = "Nejsou k dispozici žádné stránky";
 "widgets.open_page.title" = "Otevřít stránku";
