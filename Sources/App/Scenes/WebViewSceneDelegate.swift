@@ -180,9 +180,15 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
 
     /// Force update location when user opens the app
     private func updateLocation() {
-        _ = HomeAssistantAPI.manuallyUpdate(
-            applicationState: UIApplication.shared.applicationState,
-            type: .appOpened
-        )
+        Current.location.oneShotLocation(.Launch, nil).pipe { result in
+            switch result {
+            case let .fulfilled(location):
+                for api in Current.apis {
+                    _ = api.SubmitLocation(updateType: .Launch, location: location, zone: nil)
+                }
+            case let .rejected(error):
+                Current.Log.error("Failed to get location on sceneDidBecomeActive: \(error)")
+            }
+        }
     }
 }
