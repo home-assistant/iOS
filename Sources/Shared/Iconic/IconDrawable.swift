@@ -152,16 +152,25 @@ extension IconDrawable {
         mString.draw(in: rect)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
-        return image!
+        if let image {
+            return image
+        } else {
+            assertionFailure("Failed to get image for IconDrawable name: \(name). image(ofSize size: CGSize, color: UIColor?, edgeInsets: UIEdgeInsets) -> UIImage")
+            return UIImage()
+        }
     }
 
     public static func font(ofSize fontSize: CGFloat) -> UIFont {
-
+        let defaultSize = 10.0
         // Needs a default size, since zero would return a system font object.
-        let size = (fontSize == 0) ? 10.0 : fontSize
+        let size = (fontSize == 0) ? defaultSize : fontSize
 
-        return UIFont(name: familyName, size: size)!
+        if let font = UIFont(name: familyName, size: size) {
+            return font
+        } else {
+            assertionFailure("Failed to get font for IconDrawable familyName: \(familyName). font(ofSize fontSize: CGFloat) -> UIFont")
+            return .systemFont(ofSize: defaultSize)
+        }
     }
 
     public static func register() {
