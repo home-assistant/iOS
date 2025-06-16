@@ -152,12 +152,12 @@ extension IconDrawable {
         mString.draw(in: rect)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
-        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+        if let image {
+            return image
+        } else {
             assertionFailure("Failed to get image for IconDrawable name: \(name). image(ofSize size: CGSize, color: UIColor?, edgeInsets: UIEdgeInsets) -> UIImage")
             return UIImage()
         }
-        return image
     }
 
     public static func font(ofSize fontSize: CGFloat) -> UIFont {
