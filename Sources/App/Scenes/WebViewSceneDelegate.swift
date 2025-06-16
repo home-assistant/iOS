@@ -184,7 +184,14 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             switch result {
             case let .fulfilled(location):
                 for api in Current.apis {
-                    _ = api.SubmitLocation(updateType: .Launch, location: location, zone: nil)
+                    api.SubmitLocation(updateType: .Launch, location: location, zone: nil).pipe { result in
+                        switch result {
+                        case .fulfilled:
+                            break // Submission succeeded, no action needed
+                        case let .rejected(error):
+                            Current.Log.error("Failed to submit location: \(error)")
+                        }
+                    }
                 }
             case let .rejected(error):
                 Current.Log.error("Failed to get location on sceneDidBecomeActive: \(error)")
