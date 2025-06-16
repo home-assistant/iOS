@@ -56,7 +56,11 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         }
         template.setText(displayText)
         if !entityHasIrrelevantState {
-            template.setDetailText(entity.localizedState.leadingCapitalized)
+            var detailsText = entity.localizedState.leadingCapitalized
+            if let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] {
+                detailsText += " \(unitOfMeasurement)"
+            }
+            template.setDetailText(detailsText)
         }
         template.setImage(image)
     }
