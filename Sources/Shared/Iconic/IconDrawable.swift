@@ -161,15 +161,15 @@ extension IconDrawable {
     }
 
     public static func font(ofSize fontSize: CGFloat) -> UIFont {
-
+        let defaultSize = 10.0
         // Needs a default size, since zero would return a system font object.
-        let size = (fontSize == 0) ? 10.0 : fontSize
+        let size = (fontSize == 0) ? defaultSize : fontSize
 
         if let font = UIFont(name: familyName, size: size) {
             return font
         } else {
             assertionFailure("Failed to get font for IconDrawable familyName: \(familyName). font(ofSize fontSize: CGFloat) -> UIFont")
-            return .systemFont(ofSize: 20)
+            return .systemFont(ofSize: defaultSize)
         }
     }
 
