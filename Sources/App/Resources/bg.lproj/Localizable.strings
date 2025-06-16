@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Какво име на устройството да се използва вместо това?";
 "onboarding.device_name_check.error.rename_action" = "Преименуване";
 "onboarding.device_name_check.error.title" = "Вече съществува устройство с име '%1$@'";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Свържете се";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";

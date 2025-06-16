@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "应改用什么设备名称 ？";
 "onboarding.device_name_check.error.rename_action" = "重命名";
 "onboarding.device_name_check.error.title" = "已存在名称为\"%1$@\"的设备。";
+"onboarding.invitation.accept_button" = "接受";
 "onboarding.invitation.other_options" = "其它选项";
+"onboarding.invitation.title" = "Home Assistant 邀请";
 "onboarding.manual_setup.connect" = "连接";
 "onboarding.manual_setup.couldnt_make_url.message" = "“ %@ ”不是有效的 URL。";
 "onboarding.manual_setup.couldnt_make_url.title" = "无法创建网址";
@@ -582,8 +584,8 @@
 "settings.connection_section.sensor_send_type.setting.none" = "无";
 "settings.connection_section.sensor_send_type.title" = "传感器已发送";
 "settings.connection_section.servers" = "服务器";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_footer" = "重新排序以定义默认服务器";
+"settings.connection_section.servers_header" = "服务器";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "在后台访问 SSID 需要\"始终\"位置权限和精确位置，点击此处以更改您的设置。";
 "settings.connection_section.ssid_permission_message" = "在后台访问 SSID 需要“始终”位置权限，点击此处更改设置。";
 "settings.connection_section.validate_error.edit_url" = "编辑 URL 地址";
@@ -1163,7 +1165,7 @@
 "web_view.unique_server_selection.title" = "选择一台服务器";
 "widgets.action.name.assist" = "语音助手";
 "widgets.action.name.default" = "默认";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "更多信息";
 "widgets.action.name.navigate" = "导航";
 "widgets.action.name.nothing" = "无";
 "widgets.action.name.run_script" = "运行脚本";
@@ -1185,8 +1187,8 @@
 "widgets.controls.light.description" = "打开/关闭您的灯";
 "widgets.controls.light.placeholder_title" = "选择灯光";
 "widgets.controls.light.title" = "灯光";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "实体";
+"widgets.controls.open_entity.configuration.title" = "打开实体";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "选择页面";
 "widgets.controls.open_page.configuration.parameter.page" = "页面";
 "widgets.controls.open_page.configuration.title" = "打开页面";
@@ -1236,7 +1238,7 @@
 "widgets.gauge.parameters.value_template" = "值模板 (0-1)";
 "widgets.gauge.title" = "仪表";
 "widgets.lights.description" = "开/关灯";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "打开实体";
 "widgets.open_page.description" = "在 Home Assistant 中打开前端页面。";
 "widgets.open_page.not_configured" = "无可用页面";
 "widgets.open_page.title" = "打开页面";

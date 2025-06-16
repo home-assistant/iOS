@@ -460,7 +460,9 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.device_name_check.error.prompt" = "Milyen eszköznevet kell helyette használni?";
 "onboarding.device_name_check.error.rename_action" = "Átnevezés";
 "onboarding.device_name_check.error.title" = "Már létezik egy eszköz a '%1$@' névvel.";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Egyéb lehetőségek";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Csatlakozás";
 "onboarding.manual_setup.couldnt_make_url.message" = "%@ nem érvényes URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nem sikerült létrehozni URL-t";

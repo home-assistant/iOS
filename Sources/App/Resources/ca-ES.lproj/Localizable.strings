@@ -460,7 +460,9 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.device_name_check.error.prompt" = "Quin nom de dispositiu hauria d'utilitzar?";
 "onboarding.device_name_check.error.rename_action" = "Reanomena";
 "onboarding.device_name_check.error.title" = "Ja existeix un dispositiu amb el nom \"%1$@\"";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Connecta't";
 "onboarding.manual_setup.couldnt_make_url.message" = "El valor \" %@ \" no és una URL vàlida.";
 "onboarding.manual_setup.couldnt_make_url.title" = "No s'ha pogut crear una URL";

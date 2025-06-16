@@ -460,7 +460,9 @@
 "onboarding.device_name_check.error.prompt" = "Какое имя устройства следует использовать вместо этого?";
 "onboarding.device_name_check.error.rename_action" = "Переименовать";
 "onboarding.device_name_check.error.title" = "Устройство с именем '%1$@' уже существует";
+"onboarding.invitation.accept_button" = "Принять";
 "onboarding.invitation.other_options" = "Другие варианты";
+"onboarding.invitation.title" = "Приглашение Home Assistant";
 "onboarding.manual_setup.connect" = "Подключиться";
 "onboarding.manual_setup.couldnt_make_url.message" = "Значение '%@' не является допустимым URL-адресом.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Не удалось создать URL-адрес";
@@ -584,8 +586,8 @@ Home Assistant - это бесплатное программное обеспе
 "settings.connection_section.sensor_send_type.setting.none" = "Нет";
 "settings.connection_section.sensor_send_type.title" = "Отправка датчиков";
 "settings.connection_section.servers" = "Серверы";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_footer" = "Изменить порядок для определения сервера по умолчанию";
+"settings.connection_section.servers_header" = "Серверы";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Для доступа к SSID в фоновом режиме требуется разрешение на определение местоположения \"Всегда\" и точное определение местоположения. Нажмите здесь, чтобы изменить свои настройки.";
 "settings.connection_section.ssid_permission_message" = "Для доступа к SSID в фоновом режиме требуется разрешение на местоположение «Всегда». Нажмите здесь, чтобы изменить настройки.";
 "settings.connection_section.validate_error.edit_url" = "Изменить URL-адрес";
@@ -1163,7 +1165,7 @@ Home Assistant - это бесплатное программное обеспе
 "web_view.unique_server_selection.title" = "Выберите один сервер";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "По умолчанию";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "Информация";
 "widgets.action.name.navigate" = "Перейти на страницу";
 "widgets.action.name.nothing" = "Ничего";
 "widgets.action.name.run_script" = "Запустить скрипт";
@@ -1185,8 +1187,8 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.controls.light.description" = "Включить/выключить свет";
 "widgets.controls.light.placeholder_title" = "Выберите освещение";
 "widgets.controls.light.title" = "Свет";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Объект";
+"widgets.controls.open_entity.configuration.title" = "Открыть объект";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Выберите страницу";
 "widgets.controls.open_page.configuration.parameter.page" = "Страница";
 "widgets.controls.open_page.configuration.title" = "Открыть страницу";
@@ -1236,7 +1238,7 @@ Home Assistant - это бесплатное программное обеспе
 "widgets.gauge.parameters.value_template" = "Шаблон значений (0-1)";
 "widgets.gauge.title" = "Датчик";
 "widgets.lights.description" = "Включить/выключить свет";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "Открыть объект";
 "widgets.open_page.description" = "Открыть страницу интерфейса в Home Assistant.";
 "widgets.open_page.not_configured" = "Нет доступных страниц";
 "widgets.open_page.title" = "Открыть страницу";

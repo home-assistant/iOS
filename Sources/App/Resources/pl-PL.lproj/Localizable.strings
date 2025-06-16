@@ -458,7 +458,9 @@
 "onboarding.device_name_check.error.prompt" = "Jakiej nazwy urządzenia należy użyć zamiast tej?";
 "onboarding.device_name_check.error.rename_action" = "Zmień nazwę";
 "onboarding.device_name_check.error.title" = "Urządzenie o nazwie „ %1$@ ” już istnieje";
+"onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "Other options";
+"onboarding.invitation.title" = "Home Assistant Invite";
 "onboarding.manual_setup.connect" = "Połącz";
 "onboarding.manual_setup.couldnt_make_url.message" = "Wartość „ %@ ” nie jest prawidłowym adresem URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nie udało się utworzyć adresu URL";
