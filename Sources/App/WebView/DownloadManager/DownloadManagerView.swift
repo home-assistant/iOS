@@ -22,7 +22,7 @@ struct DownloadManagerView: View {
             viewModel.cancelDownload()
 
             // For mac the file should remain in the download folder to keep expected behavior
-            if Current.isCatalyst {
+            if !Current.isCatalyst {
                 viewModel.deleteFile()
             }
         }
