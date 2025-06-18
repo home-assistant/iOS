@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Geliştirici araçları";
 "panel::energy" = "Enerji";
 "panel::history" = "Geçmiş";
-"panel::logbook" = "Kayıt defteri";
+"panel::logbook" = "Günlük";
 "panel::mailbox" = "Posta kutusu";
 "panel::map" = "Harita";
 "panel::media_browser" = "Medya";
