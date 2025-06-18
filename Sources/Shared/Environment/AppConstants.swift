@@ -221,16 +221,28 @@ public enum AppConstants {
     }
 
     public static var DownloadsDirectory: URL {
-        let fileManager = FileManager.default
-        let directoryURL = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
-            .appendingPathComponent(
+        var directoryURL: URL = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
+
+        // Save directly in macOS Downloads folder if running on Catalyst and allowed access to download folder when
+        // prompted.
+        if Current.isCatalyst, let macDownloadFolder = FileManager.default.urls(
+            for: .downloadsDirectory,
+            in: .userDomainMask
+        ).first {
+            directoryURL = macDownloadFolder
+        } else {
+            directoryURL = directoryURL.appendingPathComponent(
                 "Downloads",
                 isDirectory: true
             )
-
-        if !fileManager.fileExists(atPath: directoryURL.path) {
+        }
+        if !FileManager.default.fileExists(atPath: directoryURL.path) {
             do {
-                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(
+                    at: directoryURL,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
             } catch {
                 fatalError("Error while attempting to create downloads path URL: \(error)")
             }

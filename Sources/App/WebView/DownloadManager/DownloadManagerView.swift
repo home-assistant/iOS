@@ -20,7 +20,11 @@ struct DownloadManagerView: View {
         }
         .onDisappear {
             viewModel.cancelDownload()
-            viewModel.deleteFile()
+
+            // For mac the file should remain in the download folder to keep expected behavior
+            if Current.isCatalyst {
+                viewModel.deleteFile()
+            }
         }
         .onChange(of: viewModel.finished) { _, newValue in
             if newValue, Current.isCatalyst {
