@@ -7,7 +7,7 @@ import UIKit
 import WebKit
 
 class CameraStreamWebViewController: UIViewController, NotificationCategory {
-    let webView: WKWebView
+    var webView: WKWebView!
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
@@ -15,12 +15,51 @@ class CameraStreamWebViewController: UIViewController, NotificationCategory {
     }
 
     required init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws {
-        self.webView = WKWebView()
         super.init(nibName: nil, bundle: nil)
-        webView.configuration.allowsInlineMediaPlayback = true
-        webView.configuration.allowsAirPlayForMediaPlayback = false
-        webView.configuration.mediaTypesRequiringUserActionForPlayback = []
-        webView.configuration.allowsPictureInPictureMediaPlayback = false
+
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        config.mediaTypesRequiringUserActionForPlayback = []
+        config.allowsInlineMediaPlayback = true
+        config.allowsAirPlayForMediaPlayback = false
+
+
+        let userContentController = WKUserContentController()
+        let safeScriptMessageHandler = SafeScriptMessageHandler(delegate: self)
+        userContentController.add(safeScriptMessageHandler, name: "getExternalAuth")
+        userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
+        userContentController.add(safeScriptMessageHandler, name: "logError")
+
+        guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
+              let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
+            fatalError("Couldn't load WebSocketBridge.js for injection to WKWebView!")
+        }
+
+        userContentController.addUserScript(WKUserScript(
+            source: wsBridgeJS,
+            injectionTime: .atDocumentEnd,
+            forMainFrameOnly: false
+        ))
+
+        userContentController.addUserScript(.init(
+            source: """
+                window.addEventListener("error", (e) => {
+                    window.webkit.messageHandlers.logError.postMessage({
+                        "message": JSON.stringify(e.message),
+                        "filename": JSON.stringify(e.filename),
+                        "lineno": JSON.stringify(e.lineno),
+                        "colno": JSON.stringify(e.colno),
+                    });
+                });
+            """,
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: false
+        ))
+
+        config.userContentController = userContentController
+        config.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
+
+        self.webView = WKWebView(frame: .zero, configuration: config)
         webView.scrollView.bounces = false
     }
 
@@ -86,7 +125,8 @@ class CameraStreamWebViewController: UIViewController, NotificationCategory {
 
     private func setupStreamer() {
         webView.navigationDelegate = self
-        webView.load(URLRequest(url: URL(string: "http://192.168.0.157:1984/stream.html?src=doorbell-unifi")!))
+//        webView.load(URLRequest(url: URL(string: "http://192.168.0.157:1984/stream.html?src=doorbell-unifi")!))
+        webView.load(URLRequest(url: URL(string: "http://192.168.0.133:8123?external_auth=1")!))
         runHack()
     }
 
@@ -177,5 +217,50 @@ class CameraStreamWebViewController: UIViewController, NotificationCategory {
 extension CameraStreamWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         runHack()
+    }
+}
+
+extension CameraStreamWebViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard let messageBody = message.body as? [String: Any] else {
+            Current.Log.error("received message for \(message.name) but of type: \(type(of: message.body))")
+            return
+        }
+
+        Current.Log.verbose("message \(message.body)".replacingOccurrences(of: "\n", with: " "))
+
+        switch WKUserContentControllerMessage(rawValue: message.name) {
+        case .getExternalAuth:
+            guard let callbackName = messageBody["callback"] else { return }
+            let force = messageBody["force"] as? Bool ?? false
+
+            Current.Log.verbose("getExternalAuth called, forced: \(force)")
+
+            firstly {
+                Current.api(for: Current.servers.all.first!)?.tokenManager
+                    .authDictionaryForWebView(forceRefresh: force) ??
+                    .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+            }.done { dictionary in
+                let jsonData = try? JSONSerialization.data(withJSONObject: dictionary)
+                if let jsonString = String(data: jsonData!, encoding: .utf8) {
+                    let script = "\(callbackName)(true, \(jsonString))"
+                    self.webView.evaluateJavaScript(script, completionHandler: { result, error in
+                        if let error {
+                            Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
+                        }
+                        Current.Log.verbose("Success on getExternalAuth callback: \(String(describing: result))")
+                    })
+                }
+            }.catch { error in
+                self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
+                Current.Log.error("Failed to authenticate webview: \(error)")
+            }
+        case .revokeExternalAuth:
+            break
+        case .logError:
+            break
+        default:
+            Current.Log.error("unknown message: \(message.name)")
+        }
     }
 }

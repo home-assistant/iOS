@@ -907,6 +907,12 @@
 		42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
 		42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
 		42D57FBD2E0567C30061FF3B /* CameraStreamWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FBC2E0567C30061FF3B /* CameraStreamWebViewController.swift */; };
+		42D57FC02E0589B00061FF3B /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42D57FBF2E0589B00061FF3B /* WebRTC */; };
+		42D57FC22E0589DE0061FF3B /* POCWebRtc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC12E0589DE0061FF3B /* POCWebRtc.swift */; };
+		42D57FC42E058DAD0061FF3B /* SafeScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */; };
+		42D57FC62E058E250061FF3B /* WKUserContentControllerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC52E058E250061FF3B /* WKUserContentControllerMessage.swift */; };
+		42D57FC72E058E320061FF3B /* WKUserContentControllerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC52E058E250061FF3B /* WKUserContentControllerMessage.swift */; };
+		42D57FC82E058F1E0061FF3B /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */; };
 		42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */; };
 		42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */; };
@@ -2350,6 +2356,8 @@
 		42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntent.swift; sourceTree = "<group>"; };
 		42D57FBC2E0567C30061FF3B /* CameraStreamWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamWebViewController.swift; sourceTree = "<group>"; };
+		42D57FC12E0589DE0061FF3B /* POCWebRtc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POCWebRtc.swift; sourceTree = "<group>"; };
+		42D57FC52E058E250061FF3B /* WKUserContentControllerMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKUserContentControllerMessage.swift; sourceTree = "<group>"; };
 		42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationView.swift; sourceTree = "<group>"; };
 		42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationViewModel.swift; sourceTree = "<group>"; };
 		42D5ACCF2C639AB700D9C4E2 /* MagicItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItem.swift; sourceTree = "<group>"; };
@@ -2946,6 +2954,7 @@
 				1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */,
 				110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */,
 				11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */,
+				42D57FC02E0589B00061FF3B /* WebRTC in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
 				B9820AF29664869FD0B25CDF /* Pods_iOS_App.framework in Frameworks */,
@@ -3433,6 +3442,7 @@
 				42BE698B2C4691E000745ECA /* Views */,
 				113FB1122515A065000AC680 /* ScaleFactorMutator.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				42D57FC12E0589DE0061FF3B /* POCWebRtc.swift */,
 				42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */,
 				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
 				42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */,
@@ -4597,6 +4607,7 @@
 				42A47A8B2C4547B800C9B43D /* WebViewExternalMessageHandler+Build.swift */,
 				11DE822F24FAE66F00E636B8 /* UIWindow+Additions.swift */,
 				4228CFFE2DB8E7DD00FC6912 /* WebViewController+WKScriptMessageHandler.swift */,
+				42D57FC52E058E250061FF3B /* WKUserContentControllerMessage.swift */,
 				4206FFB72DAD58A60087626C /* WebViewControllerProtocol+Implementation.swift */,
 				4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */,
 				4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */,
@@ -6534,6 +6545,7 @@
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				42D57FBE2E0589B00061FF3B /* XCRemoteSwiftPackageReference "WebRTC" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -6626,6 +6638,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */,
+				42D57FC82E058F1E0061FF3B /* WebSocketBridge.js in Resources */,
 				8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7589,7 +7602,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42D57FC42E058DAD0061FF3B /* SafeScriptMessageHandler.swift in Sources */,
 				B63CCDCB216442C200123C50 /* MapViewController.swift in Sources */,
+				42D57FC72E058E320061FF3B /* WKUserContentControllerMessage.swift in Sources */,
 				11169CBB262FD6E1005EF90A /* NSLayoutConstraint+Additions.swift in Sources */,
 				11169CAA262FCE43005EF90A /* ImageAttachmentViewController.swift in Sources */,
 				110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */,
@@ -7667,6 +7682,7 @@
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
+				42D57FC22E0589DE0061FF3B /* POCWebRtc.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				42BF7F342DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */,
 				426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */,
@@ -7865,6 +7881,7 @@
 				42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
 				429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
+				42D57FC62E058E250061FF3B /* WKUserContentControllerMessage.swift in Sources */,
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
@@ -10421,6 +10438,14 @@
 				version = 1.18.1;
 			};
 		};
+		42D57FBE2E0589B00061FF3B /* XCRemoteSwiftPackageReference "WebRTC" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stasel/WebRTC.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 137.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -10446,6 +10471,11 @@
 		427692E42B98B83200F24321 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
+		};
+		42D57FBF2E0589B00061FF3B /* WebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42D57FBE2E0589B00061FF3B /* XCRemoteSwiftPackageReference "WebRTC" */;
+			productName = WebRTC;
 		};
 		46C62B952D8A3730002C0001 /* InlineSnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;

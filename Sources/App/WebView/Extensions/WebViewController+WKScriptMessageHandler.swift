@@ -3,13 +3,7 @@ import PromiseKit
 import Shared
 import WebKit
 
-enum WKUserContentControllerMessage: String, CaseIterable {
-    case externalBus
-    case updateThemeColors
-    case getExternalAuth
-    case revokeExternalAuth
-    case logError
-}
+
 
 extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
