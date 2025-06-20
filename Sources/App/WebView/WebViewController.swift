@@ -180,6 +180,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         postOnboardingNotificationPermission()
+
+        present(WebRTCVideoPlayerView().embeddedInHostingController(), animated: true, completion: nil)
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -1123,3 +1125,4 @@ extension WebViewController: UIGestureRecognizerDelegate {
         true
     }
 }
+
