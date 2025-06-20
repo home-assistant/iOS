@@ -12,6 +12,13 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
     let server: Server
 
+    private lazy var shareButton = UIBarButtonItem(
+        image: UIImage(systemName: "square.and.arrow.up"),
+        style: .plain,
+        target: self,
+        action: #selector(shareServer)
+    )
+
     init(server: Server) {
         self.server = server
 
@@ -36,8 +43,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         let connection = Current.api(for: server)?.connection
 
-        addActivateButtonToNavBar()
-        appendInvitationButton()
+        addActivateButton()
+        addInvitationButtonToNavBar()
 
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -287,7 +294,11 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         }
     }
 
-    private func appendInvitationButton() {
+    private func addInvitationButtonToNavBar() {
+        navigationItem.rightBarButtonItem = shareButton
+    }
+
+    @objc private func shareServer() {
         guard let activeURL = server.info.connection.activeURL() else {
             Current.Log.error("Invitation button failed, no active URL found for server \(server.identifier)")
             return
@@ -299,31 +310,29 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             return
         }
 
-        form +++ Section {
-            _ in
-        } <<< ButtonRow {
-            $0.title = L10n.Settings.ConnectionSection.inviteToServer
-            $0.onCellSelection { [weak self] cell, _ in
-                guard let self else { return }
-                let activityVC = UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
-                if let popover = activityVC.popoverPresentationController {
-                    popover.sourceView = cell
-                    popover.sourceRect = cell.bounds
-                }
-                present(activityVC, animated: true, completion: nil)
-            }
+        let activityVC = UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
+        if let popover = activityVC.popoverPresentationController {
+            popover.sourceView = shareButton.customView
+            popover.sourceRect = shareButton.customView?.bounds ?? CGRect(
+                x: view.bounds.width - 1,
+                y: 0,
+                width: 1,
+                height: 1
+            )
         }
+        present(activityVC, animated: true, completion: nil)
     }
 
-    private func addActivateButtonToNavBar() {
+    private func addActivateButton() {
         if Current.servers.all.count > 1 {
-            let activateButton = UIBarButtonItem(
-                title: L10n.Settings.ConnectionSection.activateServer,
-                style: .plain,
-                target: self,
-                action: #selector(activateServerTapped)
-            )
-            navigationItem.rightBarButtonItem = activateButton
+            form +++ Section {
+                _ in
+            } <<< ButtonRow {
+                $0.title = L10n.Settings.ConnectionSection.activateServer
+                $0.onCellSelection { [weak self] _, _ in
+                    self?.activateServerTapped()
+                }
+            }
         }
     }
 
