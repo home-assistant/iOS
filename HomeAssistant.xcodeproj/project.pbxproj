@@ -4258,6 +4258,7 @@
 			isa = PBXGroup;
 			children = (
 				42B89EA42E05B797000224A2 /* WebRTCVideoPlayerView.swift */,
+				42B89EA92E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift */,
 				42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */,
 				425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */,
 				425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */,
@@ -7927,6 +7928,7 @@
 				42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
+				42B89EAA2E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift in Sources */,
 				429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
