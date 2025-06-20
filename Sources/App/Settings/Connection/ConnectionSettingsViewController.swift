@@ -12,6 +12,13 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
     let server: Server
 
+    private lazy var shareButton = UIBarButtonItem(
+        image: UIImage(systemName: "square.and.arrow.up"),
+        style: .plain,
+        target: self,
+        action: #selector(shareServer)
+    )
+
     init(server: Server) {
         self.server = server
 
@@ -288,12 +295,6 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
     }
 
     private func addInvitationButtonToNavBar() {
-        let shareButton = UIBarButtonItem(
-            image: UIImage(systemName: "square.and.arrow.up"),
-            style: .plain,
-            target: self,
-            action: #selector(shareServer)
-        )
         navigationItem.rightBarButtonItem = shareButton
     }
 
@@ -311,8 +312,13 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         let activityVC = UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
         if let popover = activityVC.popoverPresentationController {
-            popover.sourceView = view
-            popover.sourceRect = CGRect(x: view.bounds.width - 1, y: 0, width: 1, height: 1)
+            popover.sourceView = shareButton.customView
+            popover.sourceRect = shareButton.customView?.bounds ?? CGRect(
+                x: view.bounds.width - 1,
+                y: 0,
+                width: 1,
+                height: 1
+            )
         }
         present(activityVC, animated: true, completion: nil)
     }
