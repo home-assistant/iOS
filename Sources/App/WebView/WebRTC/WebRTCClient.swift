@@ -7,6 +7,7 @@ protocol WebRTCClientDelegate: AnyObject {
     func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data)
 }
 
+// Code based on example froject from WebRTC iOS SDK
 final class WebRTCClient: NSObject {
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
@@ -112,37 +113,6 @@ final class WebRTCClient: NSObject {
         peerConnection.add(remoteCandidate, completionHandler: completion)
     }
 
-    // MARK: Media
-
-    func startCaptureLocalVideo(renderer: RTCVideoRenderer) {
-        guard let capturer = videoCapturer as? RTCCameraVideoCapturer else {
-            return
-        }
-
-        guard
-            let frontCamera = (RTCCameraVideoCapturer.captureDevices().first { $0.position == .front }),
-
-            // choose highest res
-            let format = (RTCCameraVideoCapturer.supportedFormats(for: frontCamera).sorted { f1, f2 -> Bool in
-                let width1 = CMVideoFormatDescriptionGetDimensions(f1.formatDescription).width
-                let width2 = CMVideoFormatDescriptionGetDimensions(f2.formatDescription).width
-                return width1 < width2
-            }).last,
-
-            // choose highest fps
-            let fps = (format.videoSupportedFrameRateRanges.sorted { $0.maxFrameRate < $1.maxFrameRate }.last) else {
-            return
-        }
-
-        capturer.startCapture(
-            with: frontCamera,
-            format: format,
-            fps: Int(fps.maxFrameRate)
-        )
-
-        localVideoTrack?.add(renderer)
-    }
-
     func renderRemoteVideo(to renderer: RTCVideoRenderer) {
         remoteVideoTrack?.add(renderer)
     }
@@ -150,8 +120,9 @@ final class WebRTCClient: NSObject {
     private func configureAudioSession() {
         rtcAudioSession.lockForConfiguration()
         do {
-            try rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord)
-            try rtcAudioSession.setMode(AVAudioSession.Mode.voiceChat)
+            // TODO: This needs to be adjusted in case of 2-way audio/video calls.
+            try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
+            try rtcAudioSession.setMode(AVAudioSession.Mode.moviePlayback)
         } catch {
             debugPrint("Error changeing AVAudioSession category: \(error)")
         }
@@ -300,7 +271,7 @@ extension WebRTCClient {
 
             rtcAudioSession.lockForConfiguration()
             do {
-                try rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord)
+                try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
                 try rtcAudioSession.overrideOutputAudioPort(.none)
             } catch {
                 debugPrint("Error setting AVAudioSession category: \(error)")
@@ -318,7 +289,7 @@ extension WebRTCClient {
 
             rtcAudioSession.lockForConfiguration()
             do {
-                try rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord)
+                try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
                 try rtcAudioSession.overrideOutputAudioPort(.speaker)
                 try rtcAudioSession.setActive(true)
             } catch {

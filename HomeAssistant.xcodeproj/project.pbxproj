@@ -839,6 +839,7 @@
 		42B74A662D37C2C000C37304 /* WidgetCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */; };
 		42B89EA52E05B797000224A2 /* WebRTCVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EA42E05B797000224A2 /* WebRTCVideoPlayerView.swift */; };
 		42B89EA82E05CC54000224A2 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42B89EA72E05CC54000224A2 /* WebRTC */; };
+		42B89EAA2E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EA92E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift */; };
 		42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */; };
 		42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */; };
 		42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */; };
@@ -2302,6 +2303,7 @@
 		42B74A612D36B08600C37304 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationViewModel.swift; sourceTree = "<group>"; };
 		42B89EA42E05B797000224A2 /* WebRTCVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerView.swift; sourceTree = "<group>"; };
+		42B89EA92E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerViewControls.swift; sourceTree = "<group>"; };
 		42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.swift; sourceTree = "<group>"; };
 		42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.test.swift; sourceTree = "<group>"; };
 		42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistChatItem.swift; sourceTree = "<group>"; };
@@ -4245,6 +4247,7 @@
 			isa = PBXGroup;
 			children = (
 				42B89EA42E05B797000224A2 /* WebRTCVideoPlayerView.swift */,
+				42B89EA92E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift */,
 				42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */,
 				425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */,
 				425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */,
@@ -7886,6 +7889,7 @@
 				42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				42C1012B2CD3DB8A0012BA78 /* CoverIntent.swift in Sources */,
+				42B89EAA2E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift in Sources */,
 				429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
