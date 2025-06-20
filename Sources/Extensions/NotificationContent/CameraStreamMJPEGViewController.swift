@@ -58,7 +58,6 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         imageView.contentMode = .scaleAspectFit
         view.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +67,25 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+
+#if DEBUG
+        let mjpegLabel = UILabel()
+        mjpegLabel.text = "MJPEG"
+        mjpegLabel.backgroundColor = .black
+        mjpegLabel.textColor = .white
+        mjpegLabel.font = UIFont.boldSystemFont(ofSize: 14)
+        mjpegLabel.textAlignment = .center
+        mjpegLabel.layer.cornerRadius = 4
+        mjpegLabel.layer.masksToBounds = true
+        mjpegLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(mjpegLabel)
+        NSLayoutConstraint.activate([
+            mjpegLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            mjpegLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            mjpegLabel.widthAnchor.constraint(equalToConstant: 60),
+            mjpegLabel.heightAnchor.constraint(equalToConstant: 24)
+        ])
+#endif
 
         setupStreamer()
     }

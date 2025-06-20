@@ -36,7 +36,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     }
 
     private static var possibleControllers: [(UIViewController & NotificationCategory).Type] { [
-        CameraViewController.self,
+        CameraStreamWebViewController.self,
+//        CameraViewController.self,
         MapViewController.self,
         ImageAttachmentViewController.self,
         PlayerAttachmentViewController.self,

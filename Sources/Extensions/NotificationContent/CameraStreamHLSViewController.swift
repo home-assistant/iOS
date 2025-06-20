@@ -59,7 +59,6 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.addSubview(playerViewController.view)
         playerViewController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -70,6 +69,25 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         ])
 
         playerViewController.didMove(toParent: self)
+
+#if DEBUG
+        let hlsLabel = UILabel()
+        hlsLabel.text = "HLS"
+        hlsLabel.backgroundColor = .black
+        hlsLabel.textColor = .white
+        hlsLabel.font = UIFont.boldSystemFont(ofSize: 14)
+        hlsLabel.textAlignment = .center
+        hlsLabel.layer.cornerRadius = 4
+        hlsLabel.layer.masksToBounds = true
+        hlsLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hlsLabel)
+        NSLayoutConstraint.activate([
+            hlsLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            hlsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            hlsLabel.widthAnchor.constraint(equalToConstant: 40),
+            hlsLabel.heightAnchor.constraint(equalToConstant: 24)
+        ])
+#endif
 
         setupVideo()
     }

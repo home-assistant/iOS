@@ -906,6 +906,7 @@
 		42D3E4BE2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
 		42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
 		42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
+		42D57FBD2E0567C30061FF3B /* CameraStreamWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FBC2E0567C30061FF3B /* CameraStreamWebViewController.swift */; };
 		42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */; };
 		42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */; };
 		42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */; };
@@ -2348,6 +2349,7 @@
 		42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScripts.swift; sourceTree = "<group>"; };
 		42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntent.swift; sourceTree = "<group>"; };
+		42D57FBC2E0567C30061FF3B /* CameraStreamWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamWebViewController.swift; sourceTree = "<group>"; };
 		42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationView.swift; sourceTree = "<group>"; };
 		42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationViewModel.swift; sourceTree = "<group>"; };
 		42D5ACCF2C639AB700D9C4E2 /* MagicItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItem.swift; sourceTree = "<group>"; };
@@ -5268,6 +5270,7 @@
 				110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */,
 				110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */,
 				110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */,
+				42D57FBC2E0567C30061FF3B /* CameraStreamWebViewController.swift */,
 				110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */,
 				11169CA9262FCE43005EF90A /* ImageAttachmentViewController.swift */,
 				11169CEB262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift */,
@@ -7594,6 +7597,7 @@
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 				11F01A80263D050D002AC33B /* NotificationLoadingViewController.swift in Sources */,
+				42D57FBD2E0567C30061FF3B /* CameraStreamWebViewController.swift in Sources */,
 				11169CEC262FE3A2005EF90A /* VideoAudioAttachmentViewController.swift in Sources */,
 				110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */,
 				110FB4502499CE34000865B4 /* CameraStreamMJPEGViewController.swift in Sources */,
