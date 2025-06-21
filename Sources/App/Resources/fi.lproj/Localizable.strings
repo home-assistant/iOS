@@ -574,6 +574,7 @@ Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka p
 "settings.connection_section.internal_url_ssids.footer" = "Sisäistä URL-osoitetta käytetään, kun on yhteys listattuihin SSID-tunnuksiin";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MinunHupaisaVerkkoNimi";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.location_send_type.setting.exact" = "Tarkka";
 "settings.connection_section.location_send_type.setting.never" = "Ei koskaan";

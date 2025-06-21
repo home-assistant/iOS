@@ -574,6 +574,7 @@ Home Assistant és un programari d'automatització de la llar gratuït i de codi
 "settings.connection_section.internal_url_ssids.footer" = "La URL interna s'utilitzarà quan estigui connectat a algun dels SSIDs de la llista";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "ElMeuNomDeXarxaDivertit";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Connecteu-vos directament al servidor Home Assistant per rebre notificacions push quan estigueu connectats a SSIDs interns.";
 "settings.connection_section.location_send_type.setting.exact" = "Exacte";
 "settings.connection_section.location_send_type.setting.never" = "Mai";

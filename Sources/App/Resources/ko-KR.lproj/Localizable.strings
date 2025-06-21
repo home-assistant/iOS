@@ -574,6 +574,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings.connection_section.internal_url_ssids.footer" = "나열된 SSID에 연결할 때 내부 URL이 사용됩니다.";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "내부 SSID에 있을 때 푸시 알림을 위해 Home Assistant 서버에 직접 연결합니다.";
 "settings.connection_section.location_send_type.setting.exact" = "정확한";
 "settings.connection_section.location_send_type.setting.never" = "절대 안됨";

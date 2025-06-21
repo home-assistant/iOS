@@ -572,6 +572,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "连接到列出的无线网络时将使用内部URL";
 "settings.connection_section.internal_url_ssids.header" = "无线网络";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.invite_to_server" = "邀请某人加入此服务器";
 "settings.connection_section.local_push_description" = "使用内网 SSID 时，直接连接到 Home Assistant 服务器以获取推送通知。";
 "settings.connection_section.location_send_type.setting.exact" = "精确";
 "settings.connection_section.location_send_type.setting.never" = "从不";

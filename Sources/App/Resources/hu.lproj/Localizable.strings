@@ -574,6 +574,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.connection_section.internal_url_ssids.footer" = "A belső URL-t használja a rendszer, ha a felsorolt SSID-ek közül valamelyikéhez csatlakozik";
 "settings.connection_section.internal_url_ssids.header" = "SSID-k";
 "settings.connection_section.internal_url_ssids.placeholder" = "SajátHálózatNév";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Közvetlenül csatlakozhat a Home Assistant szerverhez a push értesítésekért, ha belső SSID-eken van.";
 "settings.connection_section.location_send_type.setting.exact" = "Pontos";
 "settings.connection_section.location_send_type.setting.never" = "Soha";

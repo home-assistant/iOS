@@ -542,7 +542,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Activate";
-"settings.connection_section.invite_to_server" = "Invite someone to this server";
+"settings.connection_section.activate_swipe_hint" = "Quickly activate using a three-finger swipe left or right when viewing a server.";
 "settings.connection_section.add_server" = "Add Server";
 "settings.connection_section.all_servers" = "All Servers";
 "settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
@@ -574,6 +574,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.location_send_type.setting.exact" = "Exact";
 "settings.connection_section.location_send_type.setting.never" = "Never";

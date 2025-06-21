@@ -574,6 +574,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings.connection_section.internal_url_ssids.footer" = "Внутренний URL-адрес будет использоваться при подключении WiFi к одному из этих SSID";
 "settings.connection_section.internal_url_ssids.header" = "Выбранные SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "МояДомашняяСеть";
+"settings.connection_section.invite_to_server" = "Пригласить кого-нибудь на этот сервер";
 "settings.connection_section.local_push_description" = "Напрямую подключайтесь к серверу Home Assistant для получения push-уведомлений при использовании внутренних SSID.";
 "settings.connection_section.location_send_type.setting.exact" = "Точное";
 "settings.connection_section.location_send_type.setting.never" = "Никогда";
