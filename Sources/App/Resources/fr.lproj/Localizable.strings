@@ -574,6 +574,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings.connection_section.internal_url_ssids.footer" = "L'URL interne sera utilisée lors de la connexion au SSID répertoriés";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MonNomDeReseauSympa";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Connectez-vous directement au serveur Home Assistant pour les notifications push lorsque vous utilisez des SSID internes.";
 "settings.connection_section.location_send_type.setting.exact" = "Exact";
 "settings.connection_section.location_send_type.setting.never" = "Jamais";

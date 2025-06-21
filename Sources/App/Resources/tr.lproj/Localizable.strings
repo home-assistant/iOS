@@ -574,6 +574,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "Listelenen SSID'lere bağlanıldığında dahili URL kullanılacaktır";
 "settings.connection_section.internal_url_ssids.header" = "SSID'lerin";
 "settings.connection_section.internal_url_ssids.placeholder" = "BenimNetworkAdim";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Dahili SSID'lerdeyken anında bildirimler için doğrudan Home Assistant sunucusuna bağlanın.";
 "settings.connection_section.location_send_type.setting.exact" = "Bire bir aynı";
 "settings.connection_section.location_send_type.setting.never" = "Asla";

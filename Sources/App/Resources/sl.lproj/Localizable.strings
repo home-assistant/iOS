@@ -574,6 +574,7 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "settings.connection_section.internal_url_ssids.footer" = "Notranji URL bo uporabljen, če se povežete s navedenimi SSID-ji";
 "settings.connection_section.internal_url_ssids.header" = "SSID-ji";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.location_send_type.setting.exact" = "Točno";
 "settings.connection_section.location_send_type.setting.never" = "Nikoli";

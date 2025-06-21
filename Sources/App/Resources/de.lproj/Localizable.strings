@@ -574,6 +574,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings.connection_section.internal_url_ssids.footer" = "Die interne URL wird verwendet, wenn eine Verbindung zu den aufgeführten SSIDs hergestellt wird";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MeinWlanName";
+"settings.connection_section.invite_to_server" = "Jemanden auf diesen Server einladen";
 "settings.connection_section.local_push_description" = "Direkte Verbindung zum Home Assistant-Server für Push-Benachrichtigungen bei internen SSIDs.";
 "settings.connection_section.location_send_type.setting.exact" = "Genau";
 "settings.connection_section.location_send_type.setting.never" = "Niemals";

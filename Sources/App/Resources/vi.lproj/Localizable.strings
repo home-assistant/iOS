@@ -574,6 +574,7 @@ Home Assistant là phần mềm tự động hóa gia đình mã nguồn mở v�
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Kết nối trực tiếp với máy chủ Home Assistant để nhận thông báo đẩy khi sử dụng SSID nội bộ.";
 "settings.connection_section.location_send_type.setting.exact" = "Chính xác";
 "settings.connection_section.location_send_type.setting.never" = "Không bao giờ";

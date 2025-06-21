@@ -574,6 +574,7 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "settings.connection_section.internal_url_ssids.footer" = "Intern webadresse vil blive brugt, når der er oprettet forbindelse til tilføjede SSID'er";
 "settings.connection_section.internal_url_ssids.header" = "SSID'er";
 "settings.connection_section.internal_url_ssids.placeholder" = "MitSjoveNetværksnavn";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Opret direkte forbindelse til Home Assistant -serveren for push -notifikationer, når der tilsluttes via  interne SSID'er.";
 "settings.connection_section.location_send_type.setting.exact" = "Præcis";
 "settings.connection_section.location_send_type.setting.never" = "Aldrig";
