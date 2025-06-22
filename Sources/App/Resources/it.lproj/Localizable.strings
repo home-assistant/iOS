@@ -574,6 +574,7 @@
 "settings.connection_section.internal_url_ssids.footer" = "Verrà utilizzato l'URL interno quando si è collegati agli SSID elencati";
 "settings.connection_section.internal_url_ssids.header" = "SSID conosciuti";
 "settings.connection_section.internal_url_ssids.placeholder" = "IlBuffoNomeDellaMiaRete";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Connettiti direttamente al server Home Assistant per le notifiche push quando sei su SSID interni.";
 "settings.connection_section.location_send_type.setting.exact" = "Esattamente";
 "settings.connection_section.location_send_type.setting.never" = "Mai";

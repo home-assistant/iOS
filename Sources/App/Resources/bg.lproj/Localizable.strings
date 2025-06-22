@@ -574,6 +574,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Директно свързване със сървъра на Home Assistant за push известия когато сте свързани с вътрешни SSID-та.";
 "settings.connection_section.location_send_type.setting.exact" = "Точно";
 "settings.connection_section.location_send_type.setting.never" = "Никога";

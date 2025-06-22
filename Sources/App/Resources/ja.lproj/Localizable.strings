@@ -574,6 +574,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings.connection_section.internal_url_ssids.footer" = "リストアップされたSSIDに接続すると、内部URLが使用されます";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "内部SSIDの場合、Home Assistantサーバーに直接接続し、プッシュ通知を行います。";
 "settings.connection_section.location_send_type.setting.exact" = "正確";
 "settings.connection_section.location_send_type.setting.never" = "なし";

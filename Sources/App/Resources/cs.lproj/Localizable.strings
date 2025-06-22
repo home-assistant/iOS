@@ -574,6 +574,7 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "settings.connection_section.internal_url_ssids.footer" = "Interní URL bude použita při připojení k uvedeným SSID";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "NázevMéSítě";
+"settings.connection_section.invite_to_server" = "Invite someone to this server";
 "settings.connection_section.local_push_description" = "Přímé připojení k serveru Home Assistant pro push oznámení na interních SSID.";
 "settings.connection_section.location_send_type.setting.exact" = "Přesná";
 "settings.connection_section.location_send_type.setting.never" = "Nikdy";
