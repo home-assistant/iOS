@@ -223,6 +223,21 @@ public struct ConnectionInfo: Codable, Equatable {
         return url?.sanitized()
     }
 
+    /// Returns the url that should be used at this moment to share with someone else to access the Home Assistant
+    /// instance.
+    /// Cloud > Remote > Internal
+    public func invitationURL() -> URL? {
+        if useCloud, let remoteUIURL {
+            return remoteUIURL.sanitized()
+        } else if let externalURL {
+            return externalURL.sanitized()
+        } else if let internalURL {
+            return internalURL.sanitized()
+        } else {
+            return nil
+        }
+    }
+
     /// Returns the activeURL with /api appended.
     public mutating func activeAPIURL() -> URL? {
         if let activeURL = activeURL() {

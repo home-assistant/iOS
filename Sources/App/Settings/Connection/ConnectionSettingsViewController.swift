@@ -299,12 +299,12 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
     }
 
     @objc private func shareServer() {
-        guard let activeURL = server.info.connection.activeURL() else {
-            Current.Log.error("Invitation button failed, no active URL found for server \(server.identifier)")
+        guard let invitationServerURL = server.info.connection.invitationURL() else {
+            Current.Log.error("Invitation button failed, no invitation URL found for server \(server.identifier)")
             return
         }
 
-        guard let invitationURL = AppConstants.invitationURL(serverURL: activeURL) else {
+        guard let invitationURL = AppConstants.invitationURL(serverURL: invitationServerURL) else {
             Current.Log
                 .error("Invitation button failed, could not create invitation URL for server \(server.identifier)")
             return
