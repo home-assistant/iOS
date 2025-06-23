@@ -17,7 +17,7 @@ struct HAAppEntityAppIntentEntity: AppEntity {
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)")
+        DisplayRepresentation(title: "\(displayString)", subtitle: "\(entityId)")
     }
 
     init(

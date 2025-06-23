@@ -57,6 +57,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                 "entity_id": cameraEntityId,
                 "offer": sdp.sdp,
             ]), handler: { [weak self] _, data in
+
+                // TODO: Handle case where camera does not support WebRTC
+
                 guard let self else { return }
                 guard let typeString: String = try? data.decode("type") else {
                     assertionFailure("Failed to decode type from data")
