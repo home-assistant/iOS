@@ -312,13 +312,14 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         let activityVC = UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
         if let popover = activityVC.popoverPresentationController {
-            popover.sourceView = shareButton.customView
-            popover.sourceRect = shareButton.customView?.bounds ?? CGRect(
-                x: view.bounds.width - 1,
-                y: 0,
-                width: 1,
-                height: 1
+            popover.sourceView = view
+            popover.sourceRect = CGRect(
+                x: view.bounds.midX,
+                y: view.bounds.midY,
+                width: 0,
+                height: 0
             )
+            popover.permittedArrowDirections = []
         }
         present(activityVC, animated: true, completion: nil)
     }
