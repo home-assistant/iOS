@@ -30,25 +30,27 @@ public extension HAEntity {
             case .inputBoolean:
                 image = getInputBooleanIcon()
             case .inputButton:
-                image = MaterialDesignIcons.gestureTapButtonIcon
+                image = .gestureTapButtonIcon
             case .light:
-                image = MaterialDesignIcons.lightbulbIcon
+                image = .lightbulbIcon
             case .lock:
                 image = getLockIcon()
             case .scene:
-                image = MaterialDesignIcons.paletteOutlineIcon
+                image = .paletteOutlineIcon
             case .script:
-                image = MaterialDesignIcons.scriptTextOutlineIcon
+                image = .scriptTextOutlineIcon
             case .switch:
                 image = getSwitchIcon()
             case .sensor:
-                image = MaterialDesignIcons.eyeIcon
+                image = .eyeIcon
             case .binarySensor:
-                image = MaterialDesignIcons.eyeIcon
+                image = .eyeIcon
             case .zone:
-                image = MaterialDesignIcons.mapIcon
+                image = .mapIcon
             case .person:
-                image = MaterialDesignIcons.accountIcon
+                image = .accountIcon
+            case .camera:
+                image = .cameraIcon
             }
         }
 

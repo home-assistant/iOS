@@ -16,6 +16,7 @@ public enum Domain: String, CaseIterable {
     case binarySensor = "binary_sensor"
     case zone
     case person
+    case camera
     // TODO: Map more domains
 
     public init?(entityId: String) {
@@ -91,6 +92,8 @@ public enum Domain: String, CaseIterable {
             image = .mapIcon
         case .person:
             image = .accountIcon
+        case .camera:
+            image = .cameraIcon
         }
         return image
     }

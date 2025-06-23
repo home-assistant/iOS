@@ -786,7 +786,7 @@ public class HomeAssistantAPI {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person:
+        case .sensor, .binarySensor, .zone, .person, .camera:
             break
         }
         if let request {

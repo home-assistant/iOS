@@ -128,6 +128,12 @@ public enum AppConstants {
         )?.withWidgetAuthenticity()
     }
 
+    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
+        URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+        )
+    }
+
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"

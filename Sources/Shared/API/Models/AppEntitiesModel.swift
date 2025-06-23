@@ -25,6 +25,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         Domain.inputBoolean,
         Domain.inputButton,
         Domain.lock,
+        Domain.camera,
     ].map(\.rawValue)
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {
