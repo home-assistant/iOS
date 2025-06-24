@@ -20,16 +20,14 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         case cadidate = "camera/webrtc/candidate"
     }
 
-    private let iceServers = [
-        "stun:stun.home-assistant.io:80",
-        "stun:stun.home-assistant.io:3478",
-    ]
-
     var webRTCClient: WebRTCClient?
     private var sessionId: String?
     private var pendingCandidates: [RTCIceCandidate] = []
     private let server: Server
     private let cameraEntityId: String
+
+    @Published var failureReason: String?
+    @Published var showLoader: Bool = true
 
     init(server: Server, cameraEntityId: String) {
         self.server = server
@@ -38,7 +36,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
     func start() {
         webRTCClient = nil
-        webRTCClient = WebRTCClient(iceServers: iceServers)
+        webRTCClient = WebRTCClient(iceServers: AppConstants.WebRTC.iceServers)
         guard let webRTCClient else {
             assertionFailure("WebRTCClient initialization failed")
             return
@@ -53,13 +51,20 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                 assertionFailure("API for server is nil")
                 return
             }
+
             api.connection.subscribe(to: .init(type: .webSocket(Constants.offer.rawValue), data: [
                 "entity_id": cameraEntityId,
                 "offer": sdp.sdp,
-            ]), handler: { [weak self] _, data in
-
-                // TODO: Handle case where camera does not support WebRTC
-
+            ])) { [weak self] result in
+                switch result {
+                case let .success(data):
+                    Current.Log.verbose("WebRTC offer sent successfully: \(data)")
+                case let .failure(error):
+                    Current.Log.error("Failed to send WebRTC offer: \(error.localizedDescription)")
+                    self?.showLoader = false
+                    self?.failureReason = error.localizedDescription
+                }
+            } handler: { [weak self] _, data in
                 guard let self else { return }
                 guard let typeString: String = try? data.decode("type") else {
                     assertionFailure("Failed to decode type from data")
@@ -74,9 +79,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                 case .candidate:
                     handleCandidate(data)
                 case .unknown:
-                    print("Unknown type: \(typeString)")
+                    debugPrint("Unknown type: \(typeString)")
                 }
-            })
+            }
         }
     }
 
@@ -147,7 +152,14 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                 "sdpMid": candidate.sdpMid ?? "0",
                 "sdpMLineIndex": candidate.sdpMLineIndex,
             ],
-        ]))
+        ])).promise.pipe { result in
+            switch result {
+            case let .fulfilled(data):
+                Current.Log.verbose("Sent candidate: \(data)")
+            case let .rejected(error):
+                Current.Log.error("Failed to send candidate: \(error.localizedDescription)")
+            }
+        }
     }
 }
 

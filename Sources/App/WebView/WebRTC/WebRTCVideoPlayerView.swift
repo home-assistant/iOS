@@ -1,9 +1,13 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 import WebRTC
 
 struct WebRTCVideoPlayerView: View {
     @Environment(\.dismiss) var dismiss
+
+    @StateObject private var viewModel: WebRTCViewPlayerViewModel
+
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
@@ -20,13 +24,19 @@ struct WebRTCVideoPlayerView: View {
     init(server: Server, cameraEntityId: String) {
         self.server = server
         self.cameraEntityId = cameraEntityId
+        self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(server: server, cameraEntityId: cameraEntityId))
     }
 
     var body: some View {
         GeometryReader { geometry in
-            ZStack(alignment: .topTrailing) {
-                player
-                controls
+            ZStack {
+                ZStack(alignment: .topTrailing) {
+                    player
+                    controls
+                }
+                HAProgressView(style: .large)
+                    .opacity(viewModel.showLoader ? 1.0 : 0.0)
+                errorView
             }
             .background(.black)
             .statusBarHidden(true)
@@ -50,6 +60,21 @@ struct WebRTCVideoPlayerView: View {
                 view
             }
         }
+    }
+
+    private var errorView: some View {
+        VStack {
+            Image(systemSymbol: .exclamationmarkTriangle)
+                .font(.title)
+                .foregroundStyle(.white)
+            Text(viewModel.failureReason ?? "")
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.gray)
+                .padding()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .opacity(viewModel.failureReason != nil ? 1.0 : 0.0)
+        .animation(.easeInOut, value: viewModel.failureReason)
     }
 
     private func magnificationGesture(geometry: GeometryProxy) -> some Gesture {
@@ -121,8 +146,7 @@ struct WebRTCVideoPlayerView: View {
 
     private var player: some View {
         WebRTCVideoPlayerViewControllerWrapper(
-            server: server,
-            cameraEntityId: cameraEntityId,
+            viewModel: viewModel,
             isVideoPlaying: $isVideoPlaying
         )
         .edgesIgnoringSafeArea(.all)
@@ -179,18 +203,16 @@ struct WebRTCVideoPlayerView: View {
 }
 
 struct WebRTCVideoPlayerViewControllerWrapper: UIViewControllerRepresentable {
-    private let server: Server
-    private let cameraEntityId: String
+    private let viewModel: WebRTCViewPlayerViewModel
     @Binding var isVideoPlaying: Bool
 
-    init(server: Server, cameraEntityId: String, isVideoPlaying: Binding<Bool>) {
-        self.server = server
-        self.cameraEntityId = cameraEntityId
+    init(viewModel: WebRTCViewPlayerViewModel, isVideoPlaying: Binding<Bool>) {
+        self.viewModel = viewModel
         self._isVideoPlaying = isVideoPlaying
     }
 
     func makeUIViewController(context: Context) -> WebRTCVideoPlayerViewController {
-        let vc = WebRTCVideoPlayerViewController(server: server, cameraEntityId: cameraEntityId)
+        let vc = WebRTCVideoPlayerViewController(viewModel: viewModel)
         vc.onVideoStarted = {
             isVideoPlaying = true
         }
