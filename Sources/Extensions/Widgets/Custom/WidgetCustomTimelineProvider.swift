@@ -214,6 +214,8 @@ enum WidgetCustomConstants {
 struct WidgetCustomAppIntent: AppIntent, WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.custom.title", defaultValue: "Custom widgets")
 
+    static var isDiscoverable: Bool = false
+
     @Parameter(
         title: "Widget"
     )
