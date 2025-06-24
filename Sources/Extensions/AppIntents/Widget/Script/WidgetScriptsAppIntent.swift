@@ -7,6 +7,8 @@ import Shared
 struct WidgetScriptsAppIntent: AppIntent, WidgetConfigurationIntent {
     static let title: LocalizedStringResource = .init("widgets.scripts.description", defaultValue: "Run Scripts")
 
+    static var isDiscoverable: Bool = false
+
     // ATTENTION: Unfortunately these sizes below can't be retrieved dynamically from widget family sizes.
     // Check ``WidgetFamilySizes.swift`` as source of truth
     @Parameter(
