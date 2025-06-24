@@ -10,8 +10,8 @@ class WebRTCVideoPlayerViewController: UIViewController {
 
     var onVideoStarted: (() -> Void)?
 
-    init(server: Server, cameraEntityId: String) {
-        self.viewModel = .init(server: server, cameraEntityId: cameraEntityId)
+    init(viewModel: WebRTCViewPlayerViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -23,7 +23,6 @@ class WebRTCVideoPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupVideoView()
-        setupActivityIndicator()
         viewModel.start()
         if let client = viewModel.webRTCClient {
             client.renderRemoteVideo(to: remoteVideoView)
@@ -45,26 +44,13 @@ class WebRTCVideoPlayerViewController: UIViewController {
         remoteVideoView.videoContentMode = .scaleAspectFit
         remoteVideoView.backgroundColor = .black
     }
-
-    private func setupActivityIndicator() {
-        let progressView = HAProgressView(style: .large)
-        let host = UIHostingController(rootView: progressView)
-        host.view.translatesAutoresizingMaskIntoConstraints = false
-        host.view.backgroundColor = .clear
-        view.addSubview(host.view)
-        NSLayoutConstraint.activate([
-            host.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            host.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
-        activityIndicatorHost = host
-    }
 }
 
 extension WebRTCVideoPlayerViewController: RTCVideoViewDelegate {
     func videoView(_ videoView: RTCVideoRenderer, didChangeVideoSize size: CGSize) {
         // Hide loader when the first frame is rendered
         DispatchQueue.main.async { [weak self] in
-            self?.activityIndicatorHost?.view.isHidden = true
+            self?.viewModel.showLoader = false
             self?.onVideoStarted?()
         }
     }

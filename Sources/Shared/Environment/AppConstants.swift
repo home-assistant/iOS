@@ -29,6 +29,13 @@ public enum AppConstants {
         case isComingFromAppIntent = "isComingFromAppIntent"
     }
 
+    public enum WebRTC {
+        public static var iceServers = [
+            "stun:stun.home-assistant.io:80",
+            "stun:stun.home-assistant.io:3478",
+        ]
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
