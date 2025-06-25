@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
         Current.clientEventStore.addEvent(ClientEvent(text: "Background fetch activated", type: .backgroundOperation))
-        Current.backgroundTask(withName: "background-fetch") { remaining in
+        Current.backgroundTask(withName: BackgroundTask.backgroundFetch.rawValue) { remaining in
             let updatePromise: Promise<Void>
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
                Current.settingsStore.locationSources.backgroundFetch {

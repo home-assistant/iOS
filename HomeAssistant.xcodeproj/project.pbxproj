@@ -680,6 +680,7 @@
 		426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
 		426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
+		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
 		426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490672C0F1A41002155CC /* WatchAssistView.swift */; };
 		4264906B2C0F1B5F002155CC /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
 		4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
@@ -835,9 +836,6 @@
 		42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A612D36B08600C37304 /* WidgetBasicView.swift */; };
 		42B74A642D36B17000C37304 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
 		42B74A662D37C2C000C37304 /* WidgetCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */; };
-		42B89EA52E05B797000224A2 /* WebRTCVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EA42E05B797000224A2 /* WebRTCVideoPlayerView.swift */; };
-		42B89EA82E05CC54000224A2 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42B89EA72E05CC54000224A2 /* WebRTC */; };
-		42B89EAA2E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EA92E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
 		42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */; };
 		42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */; };
@@ -2146,6 +2144,7 @@
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
+		42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		426490672C0F1A41002155CC /* WatchAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistView.swift; sourceTree = "<group>"; };
 		4264906D2C0F1B8B002155CC /* WatchAssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistViewModel.swift; sourceTree = "<group>"; };
 		426490742C0F20FF002155CC /* WatchAssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+Build.swift"; sourceTree = "<group>"; };
@@ -2298,8 +2297,6 @@
 		42B74A5C2D36A47E00C37304 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
 		42B74A612D36B08600C37304 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationViewModel.swift; sourceTree = "<group>"; };
-		42B89EA42E05B797000224A2 /* WebRTCVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerView.swift; sourceTree = "<group>"; };
-		42B89EA92E05DEAB000224A2 /* WebRTCVideoPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerViewControls.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.swift; sourceTree = "<group>"; };
 		42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.test.swift; sourceTree = "<group>"; };
@@ -5347,6 +5344,7 @@
 			isa = PBXGroup;
 			children = (
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
+				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
 				11EFD3C1272642FC000AF78B /* Additions */,
 				422E626A2CDCF00000987BD0 /* Area */,
 				39A32EDD2C0E36A400985722 /* Assist */,
@@ -7907,6 +7905,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */,
 				46BA6A4E2D734EBB002C2262 /* SnapshotTestingHelper.swift in Sources */,
 				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
 				46F103262D721516002BC586 /* LocationHistoryListViewSnapshot.test.swift in Sources */,

@@ -867,7 +867,7 @@ public class HomeAssistantAPI {
         applicationState: UIApplication.State,
         type: ManualUpdateType
     ) -> Promise<Void> {
-        Current.backgroundTask(withName: "manual-location-update") { _ in
+        Current.backgroundTask(withName: BackgroundTask.manualLocationUpdate.rawValue) { _ in
             firstly { () -> Guarantee<Void> in
                 Guarantee { seal in
                     let locationManager = CLLocationManager()
@@ -986,7 +986,7 @@ extension HomeAssistantAPI: SensorObserver {
         _ container: SensorContainer,
         didSignalForUpdateBecause reason: SensorContainerUpdateReason
     ) {
-        Current.backgroundTask(withName: "signaled-update-sensors") { _ in
+        Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
             UpdateSensors(trigger: .Signaled)
         }.cauterize()
     }
