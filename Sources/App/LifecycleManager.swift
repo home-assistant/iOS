@@ -80,7 +80,7 @@ class LifecycleManager {
     @objc private func didEnterBackground() {
         isActive = false
 
-        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
+        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidEnterBackground.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.entered_background",
