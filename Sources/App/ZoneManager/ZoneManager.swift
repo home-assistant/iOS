@@ -144,7 +144,7 @@ class ZoneManager {
                 switch result {
                 case .fulfilled:
                     Current.Log.info("Fired ZoneManager event")
-                case .rejected(let error):
+                case let .rejected(error):
                     let message = "Failed to fire ZoneManager event: \(error.localizedDescription)"
                     Current.Log.error(message)
                     Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))

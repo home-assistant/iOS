@@ -29,7 +29,6 @@ public final class LocalNotificationDispatcher: LocalNotificationDispatcherProto
     public init() {}
 
     public func send(_ notification: Notification) {
-
         if notification.id == .debug, !Current.settingsStore.receiveDebugNotifications {
             // Do not send debug notifications if the setting is disabled
             return
