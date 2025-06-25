@@ -4,6 +4,26 @@ import PromiseKit
 import UIKit
 #endif
 
+public enum BackgroundTask: String {
+    case backgroundFetch = "background-fetch"
+    case lifecycleManagerDidFinishLaunching = "lifecycle-manager-didFinishLaunching"
+    case lifecycleManagerDidEnterBackground = "lifecycle-manager-didEnterBackground"
+    case lifecycleManagerDidBecomeActive = "lifecycle-manager-didBecomeActive"
+    case shortcutItem = "shortcut-item"
+    case handlePushAction = "handle-push-action"
+    case notificationManagerDidReceiveRegistrationToken = "notificationManager-didReceiveRegistrationToken"
+    case zoneManagerPerformEvent = "zone-manager-perform-event"
+    case watchPushAction = "watch-push-action"
+    case webhookSendEphemeral = "webhook-send-ephemeral"
+    case webhookSend = "webhook-send"
+    case webhookInvoke = "webhook-invoke"
+    case manualLocationUpdate = "manual-location-update"
+    case signaledUpdateSensors = "signaled-update-sensors"
+    case connectApi = "connect-api"
+    case realmWrite = "realm-write"
+    case pushLocationRequest = "push-location-request"
+}
+
 public enum BackgroundTaskError: Error {
     case outOfTime
 }

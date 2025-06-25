@@ -70,7 +70,7 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
 
         Current.Log.verbose("Received remote request to provide a location update")
 
-        return Current.backgroundTask(withName: "push-location-request") { remaining in
+        return Current.backgroundTask(withName: BackgroundTask.pushLocationRequest.rawValue) { remaining in
             firstly {
                 Current.location.oneShotLocation(.PushNotification, remaining)
             }.then { location in
