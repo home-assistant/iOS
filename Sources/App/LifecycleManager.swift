@@ -61,7 +61,7 @@ class LifecycleManager {
     }
 
     func didFinishLaunching() {
-        Current.backgroundTask(withName: "lifecycle-manager-didFinishLaunching") { _ in
+        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.finished_launching",
@@ -80,7 +80,7 @@ class LifecycleManager {
     @objc private func didEnterBackground() {
         isActive = false
 
-        Current.backgroundTask(withName: "lifecycle-manager-didEnterBackground") { _ in
+        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidFinishLaunching.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.entered_background",
@@ -103,7 +103,7 @@ class LifecycleManager {
     }
 
     @objc private func didBecomeActive() {
-        Current.backgroundTask(withName: "lifecycle-manager-didBecomeActive") { _ in
+        Current.backgroundTask(withName: BackgroundTask.lifecycleManagerDidBecomeActive.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.CreateEvent(
                     eventType: "ios.became_active",

@@ -365,7 +365,7 @@ public extension Realm {
                 try seal.fulfill(block())
             }
         } else {
-            promise = Current.backgroundTask(withName: "realm-write") { _ in
+            promise = Current.backgroundTask(withName: BackgroundTask.realmWrite.rawValue) { _ in
                 Promise<Result> { seal in
                     try seal.fulfill(write(withoutNotifying: tokens, block))
                 }
