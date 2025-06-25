@@ -309,6 +309,14 @@ struct DebugView: View {
                 )
             }
 
+            Toggle(isOn: .init(get: {
+                Current.settingsStore.receiveDebugNotifications
+            }, set: { newValue in
+                Current.settingsStore.receiveDebugNotifications = newValue
+            })) {
+                Text("Receive debug notifications")
+            }
+
         } header: {
             Text(verbatim: L10n.Settings.Developer.header)
         } footer: {

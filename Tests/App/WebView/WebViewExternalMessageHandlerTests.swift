@@ -6,14 +6,11 @@ import XCTest
 final class WebViewExternalMessageHandlerTests: XCTestCase {
     private var sut: WebViewExternalMessageHandler!
     private var mockWebViewController: MockWebViewController!
-    private var mockLocalNotificationDispatcher: MockLocalNotificationDispatcher!
 
     override func setUp() async throws {
         mockWebViewController = MockWebViewController()
-        mockLocalNotificationDispatcher = MockLocalNotificationDispatcher()
         sut = WebViewExternalMessageHandler(
-            improvManager: ImprovManager.shared,
-            localNotificationDispatcher: mockLocalNotificationDispatcher
+            improvManager: ImprovManager.shared
         )
         sut.webViewController = mockWebViewController
     }

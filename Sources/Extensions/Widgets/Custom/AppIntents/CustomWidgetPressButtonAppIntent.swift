@@ -37,8 +37,7 @@ struct CustomWidgetPressButtonAppIntent: AppIntent {
                         .error(
                             "Failed to execute PressButtonAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
                         )
-                    let dispatcher = LocalNotificationDispatcher()
-                    dispatcher.send(.init(
+                    Current.notificationDispatcher.send(.init(
                         id: .intentPressFailed,
                         title: L10n.Widgets.Custom.IntentPressFailed.title,
                         body: L10n.Widgets.Custom.IntentPressFailed.body

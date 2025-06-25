@@ -5,8 +5,7 @@ import Shared
 extension WebViewExternalMessageHandler {
     static func build() -> WebViewExternalMessageHandler {
         WebViewExternalMessageHandler(
-            improvManager: ImprovManager.shared,
-            localNotificationDispatcher: LocalNotificationDispatcher()
+            improvManager: ImprovManager.shared
         )
     }
 }

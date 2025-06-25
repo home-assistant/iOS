@@ -62,7 +62,7 @@ final class ScriptAppIntent: AppIntent {
                 }
         }
         if showConfirmationNotification {
-            LocalNotificationDispatcher().send(.init(
+            Current.notificationDispatcher.send(.init(
                 id: .scriptAppIntentRun,
                 title: success ? L10n.AppIntents.Scripts.SuccessMessage.content(script.displayString) : L10n.AppIntents
                     .Scripts.FailureMessage.content(script.displayString)

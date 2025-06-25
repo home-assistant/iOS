@@ -54,8 +54,7 @@ struct CustomWidgetActivateAppIntent: AppIntent {
                         .error(
                             "Failed to execute ActivateAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
                         )
-                    let dispatcher = LocalNotificationDispatcher()
-                    dispatcher.send(.init(
+                    Current.notificationDispatcher.send(.init(
                         id: .intentActivateFailed,
                         title: L10n.Widgets.Custom.IntentActivateFailed.title,
                         body: L10n.Widgets.Custom.IntentActivateFailed.body
