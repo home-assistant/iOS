@@ -1089,13 +1089,13 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "watch.labels.complication_template.modular_small_stack_text.description" = "En mal for å vise to strenger stablet på toppen av den andre.";
 "watch.labels.complication_template.style.circular_image" = "Sirkulært bilde";
 "watch.labels.complication_template.style.circular_text" = "Sirkulær tekst";
-"watch.labels.complication_template.style.closed_gauge_image" = "Lukket målebilde";
+"watch.labels.complication_template.style.closed_gauge_image" = "Lukket målerbilde";
 "watch.labels.complication_template.style.closed_gauge_text" = "Lukket målertekst";
 "watch.labels.complication_template.style.columns" = "Kolonner";
-"watch.labels.complication_template.style.columns_text" = "Kolonne Tekst";
+"watch.labels.complication_template.style.columns_text" = "Kolonnetekst";
 "watch.labels.complication_template.style.flat" = "Flat";
-"watch.labels.complication_template.style.gauge_image" = "Måler Bilde";
-"watch.labels.complication_template.style.gauge_text" = "Måltekst";
+"watch.labels.complication_template.style.gauge_image" = "Målerbilde";
+"watch.labels.complication_template.style.gauge_text" = "Målertekst";
 "watch.labels.complication_template.style.large_image" = "Stort bilde";
 "watch.labels.complication_template.style.open_gauge_image" = "Åpne målerbilde";
 "watch.labels.complication_template.style.open_gauge_range_text" = "Åpne tekst for måleområde";
@@ -1121,7 +1121,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "watch.labels.complication_text_areas.body1.label" = "Body 1";
 "watch.labels.complication_text_areas.body2.description" = "Den sekundære brødteksten som skal vises i komplikasjon.";
 "watch.labels.complication_text_areas.body2.label" = "Body 2";
-"watch.labels.complication_text_areas.bottom.description" = "Teksten som skal vises nederst på måleren.l";
+"watch.labels.complication_text_areas.bottom.description" = "Teksten som skal vises nederst på måleren.";
 "watch.labels.complication_text_areas.bottom.label" = "Nederst";
 "watch.labels.complication_text_areas.center.description" = "Teksten som skal vises i komplikasjonen.";
 "watch.labels.complication_text_areas.center.label" = "Senter";
