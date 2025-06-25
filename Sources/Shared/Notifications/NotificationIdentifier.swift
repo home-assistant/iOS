@@ -7,4 +7,7 @@ public enum NotificationIdentifier: String {
     case intentToggleFailed
     case intentActivateFailed
     case intentPressFailed
+
+    // Debug
+    case debug
 }

@@ -41,8 +41,7 @@ struct CustomWidgetToggleAppIntent: AppIntent {
                         .error(
                             "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
                         )
-                    let dispatcher = LocalNotificationDispatcher()
-                    dispatcher.send(.init(
+                    Current.notificationDispatcher.send(.init(
                         id: .intentToggleFailed,
                         title: L10n.Widgets.Custom.IntentToggleFailed.title,
                         body: L10n.Widgets.Custom.IntentToggleFailed.body

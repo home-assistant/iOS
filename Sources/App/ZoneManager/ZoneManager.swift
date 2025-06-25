@@ -110,7 +110,7 @@ class ZoneManager {
             ))
             return Promise.value(())
         }.catch { error in
-            Current.Log.error("final error for \(event): \(error)")
+            Current.Log.error("ZoneManagerPerformEvent background task error for \(event): \(error)")
 
             var updatedPayload = logPayload
             updatedPayload["error"] = String(describing: error)
@@ -119,6 +119,12 @@ class ZoneManager {
                 text: "Didn't update: \(error.localizedDescription)",
                 type: .locationUpdate,
                 payload: updatedPayload
+            ))
+
+            Current.notificationDispatcher.send(.init(
+                id: .debug,
+                title: "DEBUG: Failed to perform ZoneManager event",
+                body: "Event: \(event.eventType.description), error: \(error.localizedDescription)"
             ))
         }
     }
@@ -134,7 +140,21 @@ class ZoneManager {
                 return
             }
             let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
-            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).cauterize()
+            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).pipe { result in
+                switch result {
+                case .fulfilled:
+                    Current.Log.info("Fired ZoneManager event")
+                case .rejected(let error):
+                    let message = "Failed to fire ZoneManager event: \(error.localizedDescription)"
+                    Current.Log.error(message)
+                    Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+                    Current.notificationDispatcher.send(.init(
+                        id: .debug,
+                        title: "DEBUG: Failed to fire ZoneManager",
+                        body: message
+                    ))
+                }
+            }
         case .locationChange:
             break
         }

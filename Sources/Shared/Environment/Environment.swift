@@ -193,6 +193,9 @@ public class AppEnvironment {
     public var serverAlerter = ServerAlerter()
     public var notificationAttachmentManager: NotificationAttachmentManager = NotificationAttachmentManagerImpl()
 
+    /// Dispatchque local notifications (From the App to the App, not from Home Assistant)
+    public var notificationDispatcher: LocalNotificationDispatcherProtocol = LocalNotificationDispatcher()
+
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
     #endif

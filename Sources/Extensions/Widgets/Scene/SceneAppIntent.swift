@@ -64,7 +64,7 @@ final class SceneAppIntent: AppIntent {
             }
         }
         if showConfirmationNotification {
-            LocalNotificationDispatcher().send(.init(
+            Current.notificationDispatcher.send(.init(
                 id: .sceneAppIntentRun,
                 title: success ? L10n.AppIntents.Scenes.SuccessMessage.content(scene.displayString) : L10n.AppIntents
                     .Scenes.FailureMessage.content(scene.displayString)

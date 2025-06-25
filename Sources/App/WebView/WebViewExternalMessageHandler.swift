@@ -9,16 +9,13 @@ import SwiftUI
 final class WebViewExternalMessageHandler {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
-    private let localNotificationDispatcher: LocalNotificationDispatcherProtocol
 
     private var improvController: UIViewController?
 
     init(
         improvManager: any ImprovManagerProtocol,
-        localNotificationDispatcher: LocalNotificationDispatcherProtocol
     ) {
         self.improvManager = improvManager
-        self.localNotificationDispatcher = localNotificationDispatcher
     }
 
     func handleExternalMessage(_ dictionary: [String: Any]) {

@@ -452,6 +452,19 @@ public class SettingsStore {
     }
     #endif
 
+    // MARK: - Debug settings
+
+    /// Debug options to receive local notifications when something goes wrong
+    /// e.g. location update in background fails
+    public var receiveDebugNotifications: Bool {
+        get {
+            prefs.bool(forKey: "receiveDebugNotifications")
+        }
+        set {
+            prefs.set(newValue, forKey: "receiveDebugNotifications")
+        }
+    }
+
     // MARK: - Private helpers
 
     private var defaultDeviceID: String {
