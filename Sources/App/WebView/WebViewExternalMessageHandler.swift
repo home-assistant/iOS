@@ -13,7 +13,7 @@ final class WebViewExternalMessageHandler {
     private var improvController: UIViewController?
 
     init(
-        improvManager: any ImprovManagerProtocol,
+        improvManager: any ImprovManagerProtocol
     ) {
         self.improvManager = improvManager
     }
