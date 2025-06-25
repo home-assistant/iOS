@@ -240,7 +240,7 @@ final class WatchCommunicatorService {
            let serverIdentifier = message.content["Server"] as? String,
            let server = Current.servers.server(forServerIdentifier: serverIdentifier),
            let api = Current.api(for: server) {
-            Current.backgroundTask(withName: "watch-push-action") { _ in
+            Current.backgroundTask(withName: BackgroundTask.watchPushAction.rawValue) { _ in
                 firstly {
                     api.handlePushAction(for: info)
                 }.ensure {

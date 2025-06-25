@@ -219,7 +219,7 @@ public class WebhookManager: NSObject {
         request: WebhookRequest,
         overrideURL: URL? = nil
     ) -> Promise<ResponseType> {
-        Current.backgroundTask(withName: "webhook-send-ephemeral") { [self, dataQueue] _ in
+        Current.backgroundTask(withName: BackgroundTask.webhookSendEphemeral.rawValue) { [self, dataQueue] _ in
             attemptNetworking {
                 firstly {
                     Self.urlRequest(for: request, server: server, baseURL: overrideURL)
@@ -391,7 +391,7 @@ public class WebhookManager: NSObject {
         // wrap this in a background task, but don't let the expiration cause the resolve chain to be aborted
         // this is important because we may be woken up later and asked to continue the same request, even if timed out
         // since, you know, background execution and whatnot
-        Current.backgroundTask(withName: "webhook-send") { _ in promise }.cauterize()
+        Current.backgroundTask(withName: BackgroundTask.webhookSend.rawValue) { _ in promise }.cauterize()
 
         firstly {
             Self.urlRequest(for: request, server: server)
@@ -699,7 +699,7 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
         Current.Log.notify("starting \(request.type) to \(server.identifier) (\(handlerType))")
         sessionInfo.eventGroup.enter()
 
-        Current.backgroundTask(withName: "webhook-invoke") { _ -> Promise<Void> in
+        Current.backgroundTask(withName: BackgroundTask.webhookInvoke.rawValue) { _ -> Promise<Void> in
             guard let api = Current.api(for: server) else {
                 return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             }

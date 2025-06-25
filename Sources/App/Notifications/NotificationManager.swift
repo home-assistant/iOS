@@ -253,7 +253,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
-            Current.backgroundTask(withName: "handle-push-action") { _ in
+            Current.backgroundTask(withName: BackgroundTask.handlePushAction.rawValue) { _ in
                 Current.api(for: server)?
                     .handlePushAction(for: info) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
             }.ensure {
@@ -340,7 +340,7 @@ extension NotificationManager: MessagingDelegate {
         Current.crashReporter.setUserProperty(value: fcmToken, name: "FCM Token")
         Current.settingsStore.pushID = fcmToken
 
-        Current.backgroundTask(withName: "notificationManager-didReceiveRegistrationToken") { _ in
+        Current.backgroundTask(withName: BackgroundTask.notificationManagerDidReceiveRegistrationToken.rawValue) { _ in
             when(fulfilled: Current.apis.map { api in
                 api.updateRegistration()
             })

@@ -267,7 +267,7 @@ class IncomingURLHandler {
     }
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
-        Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+        Current.backgroundTask(withName: BackgroundTask.shortcutItem.rawValue) { remaining -> Promise<Void> in
             switch shortcutItem.type {
             case HAApplicationShortcutItem.sendLocation.rawValue:
                 return firstly {

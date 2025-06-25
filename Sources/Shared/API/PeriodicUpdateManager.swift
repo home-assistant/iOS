@@ -49,7 +49,7 @@ public class PeriodicUpdateManager {
     }
 
     public func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
-        Current.backgroundTask(withName: "connect-api") { _ in
+        Current.backgroundTask(withName: BackgroundTask.connectApi.rawValue) { _ in
             when(resolved: Current.apis.map { api in
                 api.Connect(reason: reason)
             }).asVoid()
