@@ -41,7 +41,7 @@ class ZoneManager {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(locationSettingDidChange),
-            name: SettingsStore.locationRelatedSettingDidChange,
+            name: NotificationCenterItems.locationRelatedSettingDidChange,
             object: nil
         )
     }

@@ -12,7 +12,7 @@ struct OnboardingAuthStepNotify: OnboardingAuthPostStep {
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         NotificationCenter.default.post(
-            name: HomeAssistantAPI.didConnectNotification,
+            name: NotificationCenterItems.apiDidConnectNotification,
             object: nil,
             userInfo: nil
         )

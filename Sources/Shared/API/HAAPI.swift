@@ -25,8 +25,6 @@ public class HomeAssistantAPI {
         case unknown
     }
 
-    public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
-
     public private(set) var manager: Alamofire.Session!
     public static let unauthenticatedManager: Alamofire.Session = configureSessionManager()
 
@@ -233,7 +231,7 @@ public class HomeAssistantAPI {
             return when(fulfilled: promises).asVoid()
         }.get { _ in
             NotificationCenter.default.post(
-                name: Self.didConnectNotification,
+                name: NotificationCenterItems.apiDidConnectNotification,
                 object: nil,
                 userInfo: nil
             )

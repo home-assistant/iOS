@@ -2,8 +2,7 @@ import Alamofire
 import Foundation
 import UIKit
 
-class MJPEGStreamerSessionDelegate: SessionDelegate {
-    static let didReceiveResponse: Notification.Name = .init(rawValue: "MJPEGStreamerSessionDelegateDidReceiveResponse")
+final class MJPEGStreamerSessionDelegate: SessionDelegate {
     static let taskUserInfoKey: AnyHashable = "taskUserInfoKey"
 
     // if/when alamofire also implements this again, we need to update to handle it as the breakpoint between images
@@ -15,7 +14,7 @@ class MJPEGStreamerSessionDelegate: SessionDelegate {
     ) {
         super.urlSession(session, dataTask: dataTask, didReceive: response, completionHandler: completionHandler)
         NotificationCenter.default.post(
-            name: Self.didReceiveResponse,
+            name: NotificationCenterItems.MJPEGStreamerDidReceiveResponse,
             object: self,
             userInfo: [Self.taskUserInfoKey: dataTask]
         )
@@ -57,7 +56,7 @@ public class MJPEGStreamer {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didReceiveResponse(_:)),
-            name: MJPEGStreamerSessionDelegate.didReceiveResponse,
+            name: NotificationCenterItems.MJPEGStreamerDidReceiveResponse,
             object: manager.delegate
         )
     }

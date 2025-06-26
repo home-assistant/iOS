@@ -74,7 +74,7 @@ struct WatchAssistView: View {
                 break
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: NotificationCenterItems.assistLaunchNotification)) { _ in
             viewModel.initialRoutine()
         }
     }

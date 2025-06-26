@@ -8,10 +8,6 @@ public protocol NotificationCommandHandler {
 }
 
 public class NotificationCommandManager {
-    public static var didUpdateComplicationsNotification: Notification.Name {
-        .init(rawValue: "didUpdateComplicationsNotification")
-    }
-
     public enum CommandError: Error {
         case notCommand
         case unknownCommand
@@ -110,7 +106,7 @@ private struct HandlerUpdateComplications: NotificationCommandHandler {
             }
         }.get {
             NotificationCenter.default.post(
-                name: NotificationCommandManager.didUpdateComplicationsNotification,
+                name: NotificationCenterItems.notificationCommandManagerDidUpdateComplicationsNotification,
                 object: nil
             )
         }

@@ -84,7 +84,7 @@ class ComplicationListViewController: HAFormViewController {
                 }
 
                 let updateToken = NotificationCenter.default.addObserver(
-                    forName: NotificationCommandManager.didUpdateComplicationsNotification,
+                    forName: NotificationCenterItems.notificationCommandManagerDidUpdateComplicationsNotification,
                     object: nil,
                     queue: .main
                 ) { _ in

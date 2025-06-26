@@ -397,7 +397,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(menuRelatedSettingDidChange(_:)),
-            name: SettingsStore.menuRelatedSettingDidChange,
+            name: NotificationCenterItems.menuRelatedSettingDidChange,
             object: nil
         )
     }

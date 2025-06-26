@@ -9,11 +9,6 @@ public class SettingsStore {
     let keychain = AppConstants.Keychain
     let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
-    /// These will only be posted on the main thread
-    public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
-    public static let menuRelatedSettingDidChange: Notification.Name = .init("menuRelatedSettingDidChange")
-    public static let locationRelatedSettingDidChange: Notification.Name = .init("locationRelatedSettingDidChange")
-
     public var pushID: String? {
         get {
             prefs.string(forKey: "pushID")
@@ -151,7 +146,7 @@ public class SettingsStore {
         set {
             precondition(Thread.isMainThread)
             prefs.set(newValue.zoom, forKey: "page_zoom")
-            NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+            NotificationCenter.default.post(name: NotificationCenterItems.webViewRelatedSettingDidChange, object: nil)
         }
     }
 
@@ -161,7 +156,7 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "pinchToZoom")
-            NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+            NotificationCenter.default.post(name: NotificationCenterItems.webViewRelatedSettingDidChange, object: nil)
         }
     }
 
@@ -184,7 +179,7 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "fullScreen")
-            NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+            NotificationCenter.default.post(name: NotificationCenterItems.webViewRelatedSettingDidChange, object: nil)
         }
     }
 
@@ -325,7 +320,7 @@ public class SettingsStore {
         set {
             prefs.set(newValue.rawValue, forKey: "locationVisibility")
             NotificationCenter.default.post(
-                name: Self.menuRelatedSettingDidChange,
+                name: NotificationCenterItems.menuRelatedSettingDidChange,
                 object: nil,
                 userInfo: nil
             )
@@ -354,7 +349,7 @@ public class SettingsStore {
             prefs.setValue(newValue?.0.identifier.rawValue, forKey: "menuItemTemplate-server")
             prefs.setValue(newValue?.1, forKey: "menuItemTemplate")
             NotificationCenter.default.post(
-                name: Self.menuRelatedSettingDidChange,
+                name: NotificationCenterItems.menuRelatedSettingDidChange,
                 object: nil,
                 userInfo: nil
             )
@@ -402,7 +397,7 @@ public class SettingsStore {
             prefs.set(newValue.significantLocationChange, forKey: LocationSource.key(for: \.significantLocationChange))
             prefs.set(newValue.pushNotifications, forKey: LocationSource.key(for: \.pushNotifications))
             Current.Log.info("location sources updated to \(newValue)")
-            NotificationCenter.default.post(name: Self.locationRelatedSettingDidChange, object: nil)
+            NotificationCenter.default.post(name: NotificationCenterItems.locationRelatedSettingDidChange, object: nil)
         }
     }
 

@@ -520,6 +520,9 @@
 		4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */; };
 		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
+		420224C52E0D3565009AC741 /* NotificationCenterItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420224C42E0D3565009AC741 /* NotificationCenterItems.swift */; };
+		420224C62E0D3565009AC741 /* NotificationCenterItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420224C42E0D3565009AC741 /* NotificationCenterItems.swift */; };
+		420224C82E0D38BE009AC741 /* NotificationCenterItems.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420224C72E0D38BE009AC741 /* NotificationCenterItems.test.swift */; };
 		420461692C8F29440062E89F /* ControlLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420461682C8F29440062E89F /* ControlLight.swift */; };
 		4206FFB42DAD58140087626C /* WebViewController+PostOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */; };
 		4206FFB62DAD58520087626C /* WebViewController+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */; };
@@ -2011,6 +2014,8 @@
 		4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsView.swift; sourceTree = "<group>"; };
 		4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetDetailsAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Details/WidgetDetailsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
+		420224C42E0D3565009AC741 /* NotificationCenterItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterItems.swift; sourceTree = "<group>"; };
+		420224C72E0D38BE009AC741 /* NotificationCenterItems.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterItems.test.swift; sourceTree = "<group>"; };
 		420461682C8F29440062E89F /* ControlLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLight.swift; sourceTree = "<group>"; };
 		4206FFB32DAD58140087626C /* WebViewController+PostOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+PostOnboarding.swift"; sourceTree = "<group>"; };
 		4206FFB52DAD58520087626C /* WebViewController+Gestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+Gestures.swift"; sourceTree = "<group>"; };
@@ -5345,6 +5350,7 @@
 			children = (
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
+				420224C72E0D38BE009AC741 /* NotificationCenterItems.test.swift */,
 				11EFD3C1272642FC000AF78B /* Additions */,
 				422E626A2CDCF00000987BD0 /* Area */,
 				39A32EDD2C0E36A400985722 /* Assist */,
@@ -5664,6 +5670,7 @@
 				D03D891920E0A85300D4F28D /* Shared.h */,
 				4235075C2CDB756800A19902 /* HAServices.swift */,
 				4254C4C92D103ABB00245021 /* ExternalLink.swift */,
+				420224C42E0D3565009AC741 /* NotificationCenterItems.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -7941,6 +7948,7 @@
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
 				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
+				420224C82E0D38BE009AC741 /* NotificationCenterItems.test.swift in Sources */,
 				42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
@@ -8014,6 +8022,7 @@
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
+				420224C62E0D3565009AC741 /* NotificationCenterItems.swift in Sources */,
 				42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
 				11B38EF0275C54A300205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5852749C6350046C38B /* ServerProviding.swift in Sources */,
@@ -8517,6 +8526,7 @@
 				D0EEF316214DD7A400D1D360 /* ConfigResponse.swift in Sources */,
 				11F2F1EC2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				42DB4D0B2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */,
+				420224C52E0D3565009AC741 /* NotificationCenterItems.swift in Sources */,
 				11F855D824DF6C7A0018013E /* MaterialDesignIcons.swift in Sources */,
 				42FCD0072B9B1DA10057783F /* CollapsibleView.swift in Sources */,
 				425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */,

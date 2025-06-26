@@ -134,7 +134,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
         } else if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
                   identifier == AssistDefaultComplication.defaultComplicationId {
-            NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
+            NotificationCenter.default.post(name: NotificationCenterItems.assistLaunchNotification, object: nil)
         } else {
             Current.Log.verbose("unknown or no complication launched the app")
         }

@@ -168,7 +168,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateWebViewSettingsForNotification),
-            name: SettingsStore.webViewRelatedSettingDidChange,
+            name: NotificationCenterItems.webViewRelatedSettingDidChange,
             object: nil
         )
         updateWebViewSettings(reason: .initial)
@@ -219,7 +219,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private func observeConnectionNotifications() {
         for name: Notification.Name in [
-            HomeAssistantAPI.didConnectNotification,
+            NotificationCenterItems.apiDidConnectNotification,
             UIApplication.didBecomeActiveNotification,
         ] {
             NotificationCenter.default.addObserver(

@@ -296,23 +296,23 @@ private enum UpdateType: CaseIterable {
     var notification: UpdateNotification? {
         switch self {
         // these distributed ones do not have constants we can access
-        case .screensaverStart: return .distributed(.init(rawValue: "com.apple.screensaver.didstart"))
-        case .screensaverEnd: return .distributed(.init(rawValue: "com.apple.screensaver.didstop"))
-        case .lockStart: return .distributed(.init(rawValue: "com.apple.screenIsLocked"))
-        case .lockEnd: return .distributed(.init(rawValue: "com.apple.screenIsUnlocked"))
+        case .screensaverStart: return .distributed(NotificationCenterItems.macScreenSaverDidStart)
+        case .screensaverEnd: return .distributed(NotificationCenterItems.macScreenSaverDidStop)
+        case .lockStart: return .distributed(NotificationCenterItems.macScreenIsLocked)
+        case .lockEnd: return .distributed(NotificationCenterItems.macScreenIsUnlocked)
         // these workspace ones do have constants, but they are in AppKit which we do not currently have access to
-        case .sleepStart: return .workspace(.init("NSWorkspaceWillSleepNotification"))
-        case .sleepEnd: return .workspace(.init("NSWorkspaceDidWakeNotification"))
-        case .screenOffStart: return .workspace(.init("NSWorkspaceScreensDidSleepNotification"))
-        case .screenOffEnd: return .workspace(.init("NSWorkspaceScreensDidWakeNotification"))
-        case .fastUserSwitchStart: return .workspace(.init("NSWorkspaceSessionDidResignActiveNotification"))
-        case .fastUserSwitchEnd: return .workspace(.init("NSWorkspaceSessionDidBecomeActiveNotification"))
+        case .sleepStart: return .workspace(NotificationCenterItems.macWorkspaceWillSleep)
+        case .sleepEnd: return .workspace(NotificationCenterItems.macWorkspaceDidWake)
+        case .screenOffStart: return .workspace(NotificationCenterItems.macWorkspaceScreensDidSleep)
+        case .screenOffEnd: return .workspace(NotificationCenterItems.macWorkspaceScreensDidWake)
+        case .fastUserSwitchStart: return .workspace(NotificationCenterItems.macWorkspaceSessionDidResignActive)
+        case .fastUserSwitchEnd: return .workspace(NotificationCenterItems.macWorkspaceSessionDidBecomeActive)
         // default notification center; likely some shim we post internally
         case .terminateStart:
             #if targetEnvironment(macCatalyst)
             return .default(Current.macBridge.terminationWillBeginNotification)
             #else
-            return .default(.init("NonMac_terminationWillBeginNotification"))
+            return .default(NotificationCenterItems.nonMacTerminationWillBeginNotification)
             #endif
         // not notifications
         case .idleStart, .idleEnd: return nil

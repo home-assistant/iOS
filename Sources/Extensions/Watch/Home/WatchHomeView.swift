@@ -12,7 +12,10 @@ struct WatchHomeView: View {
 
     var body: some View {
         navigation
-            .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+            .onReceive(
+                NotificationCenter.default
+                    .publisher(for: NotificationCenterItems.assistLaunchNotification)
+            ) { _ in
                 showAssist = true
             }
             .fullScreenCover(isPresented: $viewModel.isLoading, content: {

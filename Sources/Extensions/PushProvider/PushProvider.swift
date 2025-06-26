@@ -104,7 +104,7 @@ import UserNotifications
         let valueSync = LocalPushStateSync(settingsKey: configuration.settingsKey)
         valueSync.value = localPushManager.state
         stateObservers.append(NotificationCenter.default.addObserver(
-            forName: LocalPushManager.stateDidChange,
+            forName: NotificationCenterItems.localPushManagerStateDidChange,
             object: localPushManager,
             queue: nil
         ) { [localPushManager] _ in
