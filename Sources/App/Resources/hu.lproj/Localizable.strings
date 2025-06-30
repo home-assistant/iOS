@@ -460,9 +460,9 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.device_name_check.error.prompt" = "Milyen eszköznevet kell helyette használni?";
 "onboarding.device_name_check.error.rename_action" = "Átnevezés";
 "onboarding.device_name_check.error.title" = "Már létezik egy eszköz a '%1$@' névvel.";
-"onboarding.invitation.accept_button" = "Accept";
+"onboarding.invitation.accept_button" = "Elfogadás";
 "onboarding.invitation.other_options" = "Egyéb lehetőségek";
-"onboarding.invitation.title" = "Home Assistant Invite";
+"onboarding.invitation.title" = "Home Assistant meghívó";
 "onboarding.manual_setup.connect" = "Csatlakozás";
 "onboarding.manual_setup.couldnt_make_url.message" = "%@ nem érvényes URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nem sikerült létrehozni URL-t";
@@ -574,7 +574,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.connection_section.internal_url_ssids.footer" = "A belső URL-t használja a rendszer, ha a felsorolt SSID-ek közül valamelyikéhez csatlakozik";
 "settings.connection_section.internal_url_ssids.header" = "SSID-k";
 "settings.connection_section.internal_url_ssids.placeholder" = "SajátHálózatNév";
-"settings.connection_section.invite_to_server" = "Invite someone to this server";
+"settings.connection_section.invite_to_server" = "Meghívás erre a kiszolgálóra";
 "settings.connection_section.local_push_description" = "Közvetlenül csatlakozhat a Home Assistant szerverhez a push értesítésekért, ha belső SSID-eken van.";
 "settings.connection_section.location_send_type.setting.exact" = "Pontos";
 "settings.connection_section.location_send_type.setting.never" = "Soha";
@@ -587,8 +587,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "settings.connection_section.sensor_send_type.setting.none" = "Egy sem";
 "settings.connection_section.sensor_send_type.title" = "Elküldött érzékelők";
 "settings.connection_section.servers" = "Szerverek";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_footer" = "Rendezze át a kiszolgálókat az alapértelmezett meghatározásához";
+"settings.connection_section.servers_header" = "Kiszolgálók";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "A háttérben lévő SSID-k eléréséhez a \"Mindig\" helymeghatározási engedély és a \"Teljes\" helymeghatározási pontosság szükséges. A beállítások módosításához koppintson ide.";
 "settings.connection_section.ssid_permission_message" = "A háttérben lévő SSID-k eléréséhez \"Mindig\" helyengedély szükséges. A beállítások módosításához koppintson ide.";
 "settings.connection_section.validate_error.edit_url" = "URL szerkesztése";
@@ -1166,7 +1166,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "web_view.unique_server_selection.title" = "Válasszon egy szervert";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Alapértelmezett";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "További információ";
 "widgets.action.name.navigate" = "Ugrás";
 "widgets.action.name.nothing" = "Nem történik semmi";
 "widgets.action.name.run_script" = "Szkript futtatása";
@@ -1188,8 +1188,8 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.controls.light.description" = "Kapcsolja be vagy ki a lámpát";
 "widgets.controls.light.placeholder_title" = "Válasszon lámpát";
 "widgets.controls.light.title" = "Fény";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entitás";
+"widgets.controls.open_entity.configuration.title" = "Entitás megnyitása";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Válasszon oldalt";
 "widgets.controls.open_page.configuration.parameter.page" = "Oldal";
 "widgets.controls.open_page.configuration.title" = "Oldal megnyitása";
@@ -1239,7 +1239,7 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "widgets.gauge.parameters.value_template" = "Értéksablon (0-1)";
 "widgets.gauge.title" = "Mérőműszer";
 "widgets.lights.description" = "Kapcsolja be/ki a lámpát";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "Entitás megnyitása";
 "widgets.open_page.description" = "Nyisson meg egy kezelőfelületet a Home Assistant alkalmazásban.";
 "widgets.open_page.not_configured" = "Nincsenek elérhető oldalak";
 "widgets.open_page.title" = "Oldal megnyitása";

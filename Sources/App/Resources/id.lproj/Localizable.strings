@@ -574,7 +574,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings.connection_section.internal_url_ssids.footer" = "URL internal akan digunakan ketika terhubung ke SSID yang terdaftar";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "NamaWiFiLucukSekali";
-"settings.connection_section.invite_to_server" = "Invite someone to this server";
+"settings.connection_section.invite_to_server" = "Undang seseorang ke server ini";
 "settings.connection_section.local_push_description" = "Sambungkan langsung ke server Home Assistant untuk notifikasi push saat menggunakan SSID internal.";
 "settings.connection_section.location_send_type.setting.exact" = "Tepat";
 "settings.connection_section.location_send_type.setting.never" = "Jangan Pernah";
