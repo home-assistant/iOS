@@ -754,7 +754,7 @@
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
 		428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */; };
 		428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */; };
-		428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */; };
+		428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */; };
 		4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */; };
 		4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */; };
 		4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626092DA5CD1B00D58D13 /* SpacesTests.swift */; };
@@ -2232,7 +2232,7 @@
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
 		428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleViewTests.swift; sourceTree = "<group>"; };
 		428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkButtonTests.swift; sourceTree = "<group>"; };
-		428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStylesTests.swift; sourceTree = "<group>"; };
+		428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.test.swift; sourceTree = "<group>"; };
 		428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizesTests.swift; sourceTree = "<group>"; };
 		428626092DA5CD1B00D58D13 /* SpacesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesTests.swift; sourceTree = "<group>"; };
 		4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorIdTests.swift; sourceTree = "<group>"; };
@@ -4451,7 +4451,7 @@
 			children = (
 				428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */,
 				428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */,
-				428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */,
+				428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */,
 				429481EE2DA94B9900A8B468 /* ListPickerTests.swift */,
 			);
 			path = Components;
@@ -7971,7 +7971,7 @@
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,
 				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
-				428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */,
+				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
