@@ -1252,6 +1252,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
 "onboarding.welcome.title" = "Home Assistant Companion App";
 "onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.primary_button" = "Connect to my Home Assistant";

@@ -36,6 +36,7 @@ struct OnboardingWelcomeView: View {
             Image(.logo)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .accessibilityLabel(L10n.Onboarding.Welcome.Logo.accessibilityLabel)
                 .frame(
                     width: Constants.logoWidth,
                     height: Constants.logoHeight,
