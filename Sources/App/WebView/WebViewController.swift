@@ -691,11 +691,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         Current.Log.error(error)
         var config = swiftMessagesConfig()
         config.duration = duration
+        config.dimMode = .none
 
-        let view = MessageView.viewFromNib(layout: .messageView)
+        let view = MessageView.viewFromNib(layout: .cardView)
         view.configureContent(
             title: L10n.Connection.Error.genericTitle,
-            body: error.localizedDescription,
+            body: nil,
             iconImage: nil,
             iconText: nil,
             buttonImage: MaterialDesignIcons.helpCircleIcon.image(
