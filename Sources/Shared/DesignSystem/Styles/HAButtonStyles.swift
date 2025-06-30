@@ -2,9 +2,10 @@ import Foundation
 import SwiftUI
 
 enum HAButtonStylesConstants {
-    static var height: CGFloat = 55
     static var cornerRadius: CGFloat = 12
     static var disabledOpacity: CGFloat = 0.5
+    static var horizontalPadding: CGFloat = 20
+    static var verticalPadding: CGFloat = 14
 }
 
 public struct HAButtonStyle: ButtonStyle {
@@ -12,10 +13,11 @@ public struct HAButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.callout.bold())
+            .font(.headline)
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .frame(height: HAButtonStylesConstants.height)
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .background(isEnabled ? Color.haPrimary : Color.gray)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
@@ -30,7 +32,8 @@ public struct HANeutralButtonStyle: ButtonStyle {
             .font(.callout.bold())
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .frame(height: HAButtonStylesConstants.height)
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .background(Color.gray)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
@@ -45,7 +48,8 @@ public struct HANegativeButtonStyle: ButtonStyle {
             .font(.callout.bold())
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .frame(height: HAButtonStylesConstants.height)
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .background(isEnabled ? .red : Color.gray)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
@@ -60,7 +64,8 @@ public struct HASecondaryButtonStyle: ButtonStyle {
             .font(.callout.bold())
             .foregroundColor(Color.haPrimary)
             .frame(maxWidth: .infinity)
-            .frame(height: HAButtonStylesConstants.height)
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
     }
@@ -74,7 +79,8 @@ public struct HASecondaryNegativeButtonStyle: ButtonStyle {
             .font(.callout.bold())
             .foregroundColor(.red)
             .frame(maxWidth: .infinity)
-            .frame(height: HAButtonStylesConstants.height)
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
     }
@@ -85,8 +91,8 @@ public struct HAPillButtonStyle: ButtonStyle {
         configuration.label
             .font(.callout.bold())
             .foregroundColor(.white)
-            .padding(.vertical, Spaces.one)
-            .padding(.horizontal, Spaces.oneAndHalf)
+            .padding(.vertical, DesignSystem.Spaces.one)
+            .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
             .background(Color.haPrimary)
             .frame(alignment: .leading)
             .clipShape(Capsule())
@@ -100,7 +106,8 @@ public struct HACriticalButtonStyle: ButtonStyle {
             .font(.callout.bold())
             .foregroundColor(.black)
             .frame(maxWidth: .infinity)
-            .frame(height: HAButtonStylesConstants.height)
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .padding()
             .background(.red.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))

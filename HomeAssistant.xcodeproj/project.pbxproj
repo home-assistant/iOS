@@ -754,7 +754,7 @@
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
 		428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */; };
 		428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */; };
-		428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */; };
+		428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */; };
 		4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */; };
 		4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */; };
 		4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626092DA5CD1B00D58D13 /* SpacesTests.swift */; };
@@ -774,6 +774,9 @@
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
 		428EDB682DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
 		428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
+		42905D852E12B00900250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
+		42905D872E12B01200250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
+		42905D892E12BA4500250728 /* OnboardingWelcomeView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */; };
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
@@ -2229,7 +2232,7 @@
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
 		428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleViewTests.swift; sourceTree = "<group>"; };
 		428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkButtonTests.swift; sourceTree = "<group>"; };
-		428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStylesTests.swift; sourceTree = "<group>"; };
+		428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.test.swift; sourceTree = "<group>"; };
 		428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizesTests.swift; sourceTree = "<group>"; };
 		428626092DA5CD1B00D58D13 /* SpacesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesTests.swift; sourceTree = "<group>"; };
 		4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorIdTests.swift; sourceTree = "<group>"; };
@@ -2243,6 +2246,8 @@
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
+		42905D842E12B00900250728 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.test.swift; sourceTree = "<group>"; };
 		429106862BA9D22500D452F9 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
@@ -3229,17 +3234,14 @@
 			path = API;
 			sourceTree = "<group>";
 		};
-		1168BF35271811C200DD4D15 /* Screens */ = {
+		1168BF35271811C200DD4D15 /* Steps */ = {
 			isa = PBXGroup;
 			children = (
-				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
-				427FEE052D9C03C50047C00C /* OnboardingServersList */,
-				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
-				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
-				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
-				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
+				42905D812E1297BC00250728 /* Welcome */,
+				42905D822E1297C500250728 /* Servers */,
+				42905D832E1297D000250728 /* Permissions */,
 			);
-			path = Screens;
+			path = Steps;
 			sourceTree = "<group>";
 		};
 		1168BF36271811D800DD4D15 /* Container */ = {
@@ -3555,9 +3557,12 @@
 		11AF1ED82528FBAA00AAE364 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
+				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
+				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
 				1168BF34271811B300DD4D15 /* API */,
 				1168BF36271811D800DD4D15 /* Container */,
-				1168BF35271811C200DD4D15 /* Screens */,
+				1168BF35271811C200DD4D15 /* Steps */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -4081,6 +4086,7 @@
 			children = (
 				42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */,
 				42196AD62DA5AF7A00BD501E /* ServersList */,
+				42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -4445,7 +4451,7 @@
 			children = (
 				428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */,
 				428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */,
-				428626042DA5CCAE00D58D13 /* HAButtonStylesTests.swift */,
+				428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */,
 				429481EE2DA94B9900A8B468 /* ListPickerTests.swift */,
 			);
 			path = Components;
@@ -4485,6 +4491,30 @@
 				4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */,
 			);
 			path = Control;
+			sourceTree = "<group>";
+		};
+		42905D812E1297BC00250728 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */,
+			);
+			path = Welcome;
+			sourceTree = "<group>";
+		};
+		42905D822E1297C500250728 /* Servers */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE052D9C03C50047C00C /* OnboardingServersList */,
+			);
+			path = Servers;
+			sourceTree = "<group>";
+		};
+		42905D832E1297D000250728 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
+			);
+			path = Permissions;
 			sourceTree = "<group>";
 		};
 		4291068A2BA9D77600D452F9 /* Audio */ = {
@@ -4730,6 +4760,7 @@
 				429821152CD0DDC0005ECD39 /* Styles */,
 				428338412BA1BAF3004798C2 /* Constants */,
 				42CA28B12B101D9C0093B31A /* Components */,
+				42905D842E12B00900250728 /* DesignSystem.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -7922,6 +7953,7 @@
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */,
 				46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */,
+				42905D892E12BA4500250728 /* OnboardingWelcomeView.test.swift in Sources */,
 				4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */,
 				4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */,
 				4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */,
@@ -7939,7 +7971,7 @@
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,
 				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
-				428626072DA5CCAE00D58D13 /* HAButtonStylesTests.swift in Sources */,
+				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
@@ -8015,6 +8047,7 @@
 				11F2F1ED2586ED6100F61F7C /* NotificationAttachmentManager.swift in Sources */,
 				3997926F2B7F907B00231B54 /* MobileAppConfigPush.swift in Sources */,
 				42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */,
+				42905D872E12B01200250728 /* DesignSystem.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
@@ -8370,6 +8403,7 @@
 				399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
 				11CFD784273662DF0082D557 /* Server.swift in Sources */,
+				42905D852E12B00900250728 /* DesignSystem.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
 				4238DCA52DD1F1E300126434 /* AppSessionValues.swift in Sources */,
 				11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */,
