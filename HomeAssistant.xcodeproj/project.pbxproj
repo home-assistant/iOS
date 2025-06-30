@@ -776,6 +776,7 @@
 		428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
 		42905D852E12B00900250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
 		42905D872E12B01200250728 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D842E12B00900250728 /* DesignSystem.swift */; };
+		42905D892E12BA4500250728 /* OnboardingWelcomeView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */; };
 		429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106862BA9D22500D452F9 /* AudioRecorder.swift */; };
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
@@ -2246,6 +2247,7 @@
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
 		42905D842E12B00900250728 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.test.swift; sourceTree = "<group>"; };
 		429106862BA9D22500D452F9 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		429106882BA9D5F700D452F9 /* AssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssistView+Build.swift"; sourceTree = "<group>"; };
 		4291068B2BA9D79500D452F9 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
@@ -4084,6 +4086,7 @@
 			children = (
 				42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */,
 				42196AD62DA5AF7A00BD501E /* ServersList */,
+				42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -7950,6 +7953,7 @@
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */,
 				46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */,
+				42905D892E12BA4500250728 /* OnboardingWelcomeView.test.swift in Sources */,
 				4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */,
 				4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */,
 				4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */,
