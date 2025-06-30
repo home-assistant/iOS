@@ -10,7 +10,7 @@ struct ChatBubbleView: View {
                 AssistTypingIndicator()
                     .padding(.vertical, Spaces.half)
             } else {
-                Text(item.content)
+                Text(item.markdown)
             }
         }
         .padding(4)
