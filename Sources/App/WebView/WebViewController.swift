@@ -252,7 +252,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     private func setupEmptyState() {
-        let emptyState = WebViewEmptyStateWrapperView { [weak self] in
+        let emptyState = WebViewEmptyStateWrapperView(server: server) { [weak self] in
             self?.hideEmptyState()
             self?.webView.reload()
         } settingsAction: { [weak self] in

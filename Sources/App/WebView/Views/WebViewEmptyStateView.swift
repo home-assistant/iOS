@@ -6,69 +6,102 @@ struct WebViewEmptyStateView: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     @State private var showCloseButton = false
+    let server: Server
     let retryAction: (() -> Void)?
     let settingsAction: (() -> Void)?
     let dismissAction: (() -> Void)?
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            VStack(spacing: Spaces.two) {
-                Image(.logo)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .foregroundColor(.accentColor)
-                Text(L10n.WebView.EmptyState.title)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                Text(L10n.WebView.EmptyState.body)
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, Spaces.two)
-                VStack(spacing: Spaces.one) {
-                    Button(action: {
-                        retryAction?()
-                    }) {
-                        Text(L10n.WebView.EmptyState.retryButton)
-                    }
-                    .buttonStyle(.primaryButton)
-                    Button(action: {
-                        settingsAction?()
-                    }) {
-                        Text(L10n.WebView.EmptyState.openSettingsButton)
-                    }
-                    .buttonStyle(.secondaryButton)
-                }
-                .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-                .padding(.horizontal, Spaces.two)
-                .padding(.top)
-            }
-            .padding(Spaces.three)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(uiColor: .secondarySystemBackground))
+            content
+            header
+        }
+        .ignoresSafeArea()
+    }
+
+    private var header: some View {
+        Group {
+            serverSelection
             CloseButton(size: .medium) {
                 dismissAction?()
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
-            .padding()
-            // This is needed alongside with the ignores safe area below because
-            // this view is added as a subview to the WebView
-            .offset(x: 0, y: safeAreaInsets.top)
         }
-        .ignoresSafeArea()
+        .padding()
+        // This is needed alongside with the ignores safe area below because
+        // this view is added as a subview to the WebView
+        .offset(x: 0, y: safeAreaInsets.top)
+    }
+
+    private var content: some View {
+        VStack(spacing: Spaces.two) {
+            Image(.logo)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+                .foregroundColor(.accentColor)
+            Text(L10n.WebView.EmptyState.title)
+                .font(.title2)
+                .fontWeight(.semibold)
+            Text(L10n.WebView.EmptyState.body)
+                .font(.callout)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Spaces.two)
+            VStack(spacing: Spaces.one) {
+                Button(action: {
+                    retryAction?()
+                }) {
+                    Text(L10n.WebView.EmptyState.retryButton)
+                }
+                .buttonStyle(.primaryButton)
+                Button(action: {
+                    settingsAction?()
+                }) {
+                    Text(L10n.WebView.EmptyState.openSettingsButton)
+                }
+                .buttonStyle(.secondaryButton)
+            }
+            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+            .padding(.horizontal, Spaces.two)
+            .padding(.top)
+        }
+        .padding(Spaces.three)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(uiColor: .secondarySystemBackground))
+    }
+
+    @ViewBuilder
+    private var serverSelection: some View {
+        if Current.servers.all.count > 1 {
+            HStack {
+                Spacer()
+                ServerPickerView(server: server)
+                    .background(Color(uiColor: .systemBackground))
+                    .clipShape(Capsule())
+                Spacer()
+            }
+        }
     }
 }
 
 #Preview {
-    WebViewEmptyStateView {} settingsAction: {} dismissAction: {}
+    WebViewEmptyStateView(server: ServerFixture.standard) {} settingsAction: {} dismissAction: {}
 }
 
 final class WebViewEmptyStateWrapperView: UIView {
     private let hostingController: UIHostingController<WebViewEmptyStateView>
+    private let server: Server
 
-    init(retryAction: (() -> Void)? = nil, settingsAction: (() -> Void)? = nil, dismissAction: (() -> Void)? = nil) {
+    init(
+        server: Server,
+        retryAction: (() -> Void)? = nil,
+        settingsAction: (() -> Void)? = nil,
+        dismissAction: (() -> Void)? = nil
+    ) {
+        self.server = server
         let swiftUIView = WebViewEmptyStateView(
+            server: server,
             retryAction: retryAction,
             settingsAction: settingsAction,
             dismissAction: dismissAction
@@ -78,14 +111,9 @@ final class WebViewEmptyStateWrapperView: UIView {
         setup()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        self.hostingController = UIHostingController(rootView: WebViewEmptyStateView(
-            retryAction: nil,
-            settingsAction: nil,
-            dismissAction: nil
-        ))
-        super.init(coder: coder)
-        setup()
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func setup() {
