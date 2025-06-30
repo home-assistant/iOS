@@ -522,10 +522,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.welcome.description" = "This app connects to your Home Assistant server and allows integrating data about you and your phone.\
 \
 Home Assistant is free and open source home automation software with a focus on local control and privacy.";
-"onboarding.welcome.get_started" = "Get started with Home Assistant";
-"onboarding.welcome.learn_more" = "Learn more";
-"onboarding.welcome.secondary_button" = "Getting started";
-"onboarding.welcome.title" = "Welcome to Home Assistant %@!";
 "open_label" = "Open";
 "permission.screen.bluetooth.secondary_button" = "Skip";
 "permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
@@ -1257,3 +1253,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+"onboarding.welcome.title" = "Home Assistant Companion App";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
+"onboarding.welcome.secondary_button" = "Learn more";

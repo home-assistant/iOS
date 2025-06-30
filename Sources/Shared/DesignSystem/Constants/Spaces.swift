@@ -1,5 +1,6 @@
 import Foundation
 
+@available(*, deprecated, renamed: "DesignSystem.Spaces", message: "Use DesignSystem.Spaces instead")
 public enum Spaces {
     public static var half: CGFloat = 4
     public static var one: CGFloat = 8
