@@ -42,7 +42,7 @@ struct OnboardingWelcomeView: View {
                     height: Constants.logoHeight,
                     alignment: .center
                 )
-            Text(verbatim: L10n.Onboarding.Welcome.title)
+            Text(verbatim: L10n.Onboarding.Welcome.header)
                 .font(DesignSystem.Font.largeTitle.bold())
                 .padding(.horizontal, DesignSystem.Spaces.two)
         }
