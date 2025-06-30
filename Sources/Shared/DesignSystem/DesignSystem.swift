@@ -29,13 +29,13 @@ public enum DesignSystem {
     }
 
     public enum Spaces {
-        public static var half: CGFloat = 4
-        public static var one: CGFloat = 8
-        public static var oneAndHalf: CGFloat = 12
-        public static var two: CGFloat = 16
-        public static var three: CGFloat = 24
-        public static var four: CGFloat = 32
-        public static var five: CGFloat = 40
-        public static var six: CGFloat = 48
+        public static let half: CGFloat = 4
+        public static let one: CGFloat = 8
+        public static let oneAndHalf: CGFloat = 12
+        public static let two: CGFloat = 16
+        public static let three: CGFloat = 24
+        public static let four: CGFloat = 32
+        public static let five: CGFloat = 40
+        public static let six: CGFloat = 48
     }
 }

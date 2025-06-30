@@ -1930,8 +1930,6 @@ public enum L10n {
     public enum Welcome {
       /// Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.
       public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.body") }
-      /// Connect to my Home Assistant
-      public static var continueButton: String { return L10n.tr("Localizable", "onboarding.welcome.continue_button") }
       /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
