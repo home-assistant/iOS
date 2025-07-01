@@ -12,8 +12,7 @@ struct OnboardingServersListView: View {
     @State private var showDocumentation = false
     @State private var showManualInput = false
     @State private var screenLoaded = false
-    @State private var showHeaderView = false
-    @State private var showManualInputButton = false
+    @State private var autoConnectWorkItem: DispatchWorkItem?
 
     let prefillURL: URL?
 
@@ -25,56 +24,17 @@ struct OnboardingServersListView: View {
     }
 
     var body: some View {
-        List {
-            if let prefillURL {
-                prefillURLHeader(url: prefillURL)
-            } else {
-                if let inviteURL = Current.appSessionValues.inviteURL {
-                    prefillURLHeader(url: inviteURL)
-                    Text(L10n.Onboarding.Invitation.otherOptions)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.secondary)
-                        .listRowBackground(Color.clear)
-                } else {
-                    if showHeaderView, viewModel.discoveredInstances.isEmpty {
-                        headerView
-                    }
-                }
-                list
-
-                if showManualInputButton {
-                    manualInputButton
-                }
-            }
+        ZStack {
+            content
+                .animation(.easeInOut, value: viewModel.discoveredInstances.count)
+            centerLoader
         }
-        .animation(.easeInOut, value: viewModel.discoveredInstances.count)
-        .navigationTitle(prefillURL == nil ? L10n.Onboarding.Scanning.title : "")
         .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .bottom, content: {
+            manualInputButton
+        })
         .toolbar(content: {
-            ToolbarItem(placement: .topBarTrailing) {
-                if prefillURL != nil {
-                    CloseButton {
-                        dismiss()
-                    }
-                } else if viewModel.manualInputLoading {
-                    // Loading happens when URL is manually inputed by user
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                } else {
-                    Button(action: {
-                        showDocumentation = true
-                    }, label: {
-                        Image(uiImage: MaterialDesignIcons.helpCircleOutlineIcon.image(
-                            ofSize: .init(width: 25, height: 25),
-                            color: .accent
-                        ))
-                    })
-                    .fullScreenCover(isPresented: $showDocumentation) {
-                        SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
-                    }
-                }
-            }
+            toolbarItems
         })
         .onAppear {
             onAppear()
@@ -86,6 +46,18 @@ struct OnboardingServersListView: View {
             if newValue {
                 dismiss()
             }
+        }
+        .onChange(of: viewModel.discoveredInstances) { newValue in
+            if newValue.count == 1 {
+                scheduleAutoConnect()
+            } else if newValue.count > 1 {
+                cancelAutoConnect()
+            }
+
+            // We display the loader a bit after instances are discovered
+            // if there is just 1 server available we connect to it automatically
+            // otherwise we display the list of servers
+            scheduleCenterLoaderDimiss()
         }
         .sheet(isPresented: $viewModel.showError) {
             errorView
@@ -108,6 +80,81 @@ struct OnboardingServersListView: View {
         }
     }
 
+    private func scheduleAutoConnect() {
+        autoConnectWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak viewModel] in
+            if viewModel?.discoveredInstances.count == 1 {
+                // TODO: Display a bottom sheet asking to connect
+            }
+        }
+        autoConnectWorkItem = workItem
+        let amountOfTimeToWaitToAutoConnect: CGFloat = 2
+        DispatchQueue.main.asyncAfter(deadline: .now() + amountOfTimeToWaitToAutoConnect, execute: workItem)
+    }
+
+    private func cancelAutoConnect() {
+        autoConnectWorkItem?.cancel()
+        autoConnectWorkItem = nil
+    }
+
+    private func scheduleCenterLoaderDimiss() {
+        let amountOfTimeToWaitToDismissCenterLoader: CGFloat = 2
+        DispatchQueue.main.asyncAfter(deadline: .now() + amountOfTimeToWaitToDismissCenterLoader) {
+            viewModel.showCenterLoader = false
+        }
+    }
+
+    private var toolbarItems: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            if prefillURL != nil {
+                CloseButton {
+                    dismiss()
+                }
+            } else if viewModel.manualInputLoading {
+                // Loading happens when URL is manually inputed by user
+                ProgressView()
+                    .progressViewStyle(.circular)
+            } else {
+                Button(action: {
+                    showDocumentation = true
+                }, label: {
+                    Image(uiImage: MaterialDesignIcons.helpCircleOutlineIcon.image(
+                        ofSize: .init(width: 25, height: 25),
+                        color: .accent
+                    ))
+                })
+                .fullScreenCover(isPresented: $showDocumentation) {
+                    SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
+                }
+            }
+        }
+    }
+
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: DesignSystem.Spaces.two) {
+                if let prefillURL {
+                    prefillURLHeader(url: prefillURL)
+                } else {
+                    if let inviteURL = Current.appSessionValues.inviteURL {
+                        prefillURLHeader(url: inviteURL)
+                        Text(L10n.Onboarding.Invitation.otherOptions)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.secondary)
+                            .listRowBackground(Color.clear)
+                    } else {
+                        headerView
+                    }
+                    list
+                        .opacity(viewModel.showCenterLoader ? 0 : 1)
+                        .animation(.easeInOut, value: viewModel.showCenterLoader)
+                }
+            }
+            .padding(.horizontal, DesignSystem.Spaces.two)
+        }
+    }
+
     private func onAppear() {
         if !screenLoaded {
             screenLoaded = true
@@ -120,20 +167,17 @@ struct OnboardingServersListView: View {
                 viewModel.startDiscovery()
             }
         }
-
-        // Only displays magnifying glass animation if no servers are found after 1.5 seconds
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            if viewModel.discoveredInstances.isEmpty {
-                showHeaderView = true
-            }
-
-            showManualInputButton = true
-        }
     }
 
     private func onDisappear() {
         viewModel.stopDiscovery()
         viewModel.currentlyInstanceLoading = nil
+    }
+
+    private var centerLoader: some View {
+        SearchingServersAnimationView()
+            .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
+            .animation(.easeInOut, value: viewModel.showCenterLoader)
     }
 
     @ViewBuilder
@@ -187,6 +231,7 @@ struct OnboardingServersListView: View {
         }
     }
 
+    @ViewBuilder
     private var list: some View {
         ForEach(viewModel.discoveredInstances, id: \.uuid) { instance in
             if #available(iOS 17, *) {
@@ -200,13 +245,24 @@ struct OnboardingServersListView: View {
             }
         }
         .disabled(viewModel.currentlyInstanceLoading != nil)
+        if !viewModel.discoveredInstances.isEmpty {
+            listLoader
+                .padding(.top, DesignSystem.Spaces.one)
+        }
+    }
+
+    private var listLoader: some View {
+        HAProgressView()
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var headerView: some View {
         Section {
-            ServersScanAnimationView()
-                .listRowBackground(Color.clear)
+            Text(L10n.Onboarding.Servers.title)
+                .font(DesignSystem.Font.largeTitle.bold())
+                .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.bottom)
         }
     }
 
@@ -226,19 +282,15 @@ struct OnboardingServersListView: View {
     }
 
     private var manualInputButton: some View {
-        VStack {
-            if !viewModel.discoveredInstances.isEmpty {
-                orDivider
-            }
-            Button(action: {
-                showManualInput = true
-            }) {
-                Text(L10n.Onboarding.Scanning.Manual.Button.title)
-            }
-            .buttonStyle(.linkButton)
-            .padding()
+        Button(action: {
+            showManualInput = true
+        }) {
+            Text(L10n.Onboarding.Scanning.Manual.Button.title)
         }
-        .listRowBackground(Color.clear)
+        .buttonStyle(.secondaryButton)
+        .padding()
+        // A little bit of opacity to indicate items behind it
+        .background(Color(uiColor: .systemBackground).opacity(0.9))
     }
 
     // Divider between the list and manual input button providing alternative
@@ -249,7 +301,7 @@ struct OnboardingServersListView: View {
                 .foregroundColor(Color(uiColor: .secondaryLabel))
             line()
         }
-        .padding(.vertical, Spaces.one)
+        .padding(.vertical, DesignSystem.Spaces.one)
         .opacity(0.5)
     }
 
@@ -258,5 +310,11 @@ struct OnboardingServersListView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 1)
             .foregroundStyle(Color(uiColor: .secondaryLabel))
+    }
+}
+
+#Preview {
+    NavigationView {
+        OnboardingServersListView(prefillURL: nil)
     }
 }

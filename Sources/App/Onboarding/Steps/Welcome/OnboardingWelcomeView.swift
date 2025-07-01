@@ -14,15 +14,18 @@ struct OnboardingWelcomeView: View {
     @Binding var shouldDismissOnboarding: Bool
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spaces.three) {
-            Spacer()
-            logoBlock
-            textBlock
-            Spacer()
+        ScrollView {
+            VStack(spacing: DesignSystem.Spaces.three) {
+                Spacer()
+                logoBlock
+                textBlock
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .frame(maxWidth: Sizes.maxWidthForLargerScreens)
+            .padding(.top, Constants.distanceToTop)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-        .padding(.top, Constants.distanceToTop)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .safeAreaInset(edge: .bottom, content: {
             continueButtonBlock
         })
@@ -49,14 +52,12 @@ struct OnboardingWelcomeView: View {
     }
 
     private var textBlock: some View {
-        ScrollView {
-            VStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
-                Text(verbatim: L10n.Onboarding.Welcome.body)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            .padding()
+        VStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
+            Text(verbatim: L10n.Onboarding.Welcome.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
+        .padding()
     }
 
     private var continueButtonBlock: some View {
@@ -72,6 +73,7 @@ struct OnboardingWelcomeView: View {
             .buttonStyle(.secondaryButton)
         }
         .padding(.horizontal, DesignSystem.Spaces.two)
+        .background(Color(uiColor: .systemBackground))
     }
 }
 
