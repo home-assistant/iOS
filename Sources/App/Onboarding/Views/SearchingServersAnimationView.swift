@@ -1,11 +1,3 @@
-//
-//  SearchingServersAnimationView.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 1/7/25.
-//  Copyright © 2025 Home Assistant. All rights reserved.
-//
-
 import SwiftUI
 
 struct SearchingServersAnimationView: View {
@@ -36,9 +28,9 @@ struct SearchingServersAnimationView: View {
     private var logo: some View {
         Image(.logoInCircle)
             .resizable()
+            .aspectRatio(contentMode: .fit)
             .frame(width: Constants.logoSize, height: Constants.logoSize)
-            .scaleEffect(logoScale)
-            .animation(.easeInOut(duration: Constants.logoPulseDuration).repeatForever(autoreverses: true), value: logoScale)
+            .scaleEffect(logoScale, anchor: .center)
     }
 
     private var dots: some View {
@@ -54,15 +46,14 @@ struct SearchingServersAnimationView: View {
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.animationDuration) {
             direction *= -1
-            withAnimation(Animation.linear(duration: 0.01)) {
-                rotation += direction * 0.01 // Small nudge to avoid abrupt stop
-            }
             animateRotation()
         }
     }
 
     private func animateLogoPulse() {
-        logoScale = Constants.logoPulseScale
+        withAnimation(Animation.easeInOut(duration: Constants.logoPulseDuration).repeatForever(autoreverses: true)) {
+            logoScale = Constants.logoPulseScale
+        }
     }
 }
 

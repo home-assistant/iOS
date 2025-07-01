@@ -739,7 +739,6 @@
 		427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */; };
 		427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */; };
 		427FEE092D9C04050047C00C /* OnboardingServersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */; };
-		427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */; };
 		427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */; };
 		427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */; };
 		427FEE592D9D48120047C00C /* View+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE572D9D48120047C00C /* View+HA.swift */; };
@@ -2217,7 +2216,6 @@
 		427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListView.swift; sourceTree = "<group>"; };
 		427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.swift; sourceTree = "<group>"; };
 		427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListViewModel.swift; sourceTree = "<group>"; };
-		427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersScanAnimationView.swift; sourceTree = "<group>"; };
 		427FEE0D2D9C22310047C00C /* ManualURLEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualURLEntryView.swift; sourceTree = "<group>"; };
 		427FEE552D9D39A50047C00C /* OnboardingNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationView.swift; sourceTree = "<group>"; };
 		427FEE572D9D48120047C00C /* View+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HA.swift"; sourceTree = "<group>"; };
@@ -4389,18 +4387,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		427FEE052D9C03C50047C00C /* OnboardingServersList */ = {
-			isa = PBXGroup;
-			children = (
-				427FEE0C2D9C221D0047C00C /* ManualURLEntry */,
-				427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */,
-				427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */,
-				427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */,
-				427FEE0A2D9C05EF0047C00C /* ServersScanAnimationView.swift */,
-			);
-			path = OnboardingServersList;
-			sourceTree = "<group>";
-		};
 		427FEE0C2D9C221D0047C00C /* ManualURLEntry */ = {
 			isa = PBXGroup;
 			children = (
@@ -4507,7 +4493,10 @@
 		42905D822E1297C500250728 /* Servers */ = {
 			isa = PBXGroup;
 			children = (
-				427FEE052D9C03C50047C00C /* OnboardingServersList */,
+				427FEE0C2D9C221D0047C00C /* ManualURLEntry */,
+				427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */,
+				427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */,
+				427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */,
 			);
 			path = Servers;
 			sourceTree = "<group>";
@@ -7839,7 +7828,6 @@
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
-				427FEE0B2D9C05EF0047C00C /* ServersScanAnimationView.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
