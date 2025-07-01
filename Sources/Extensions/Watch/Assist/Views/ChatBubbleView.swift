@@ -18,6 +18,7 @@ struct ChatBubbleView: View {
         .background(backgroundForChatItemType(item.itemType))
         .roundedCorner(6, corners: roundedCornersForChatItemType(item.itemType))
         .foregroundColor(.white)
+        .tint(Color.haPrimaryDark)
         .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
         .listRowBackground(Color.clear)
         .id(item.id)

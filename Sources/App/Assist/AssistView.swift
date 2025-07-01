@@ -120,6 +120,7 @@ struct AssistView: View {
         .background(backgroundForChatItemType(item.itemType))
         .roundedCorner(10, corners: roundedCornersForChatItemType(item.itemType))
         .foregroundColor(.white)
+        .tint(Color.haPrimaryDark)
         .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
         .textSelection(.enabled)
     }
