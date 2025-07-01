@@ -1,5 +1,6 @@
 import Foundation
 
+@available(*, deprecated, renamed: "DesignSystem.CornerRadius", message: "Use DesignSystem.CornerRadius instead.")
 // 8-point system
 public enum CornerRadiusSizes {
     public static var half: CGFloat = 4

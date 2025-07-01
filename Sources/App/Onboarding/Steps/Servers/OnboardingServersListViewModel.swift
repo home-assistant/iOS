@@ -22,6 +22,7 @@ final class OnboardingServersListViewModel: ObservableObject {
 
     @Published var manualInputLoading = false
     @Published var invitationLoading = false
+    @Published var showCenterLoader = true
 
     private var webhookSensors: [WebhookSensor] = []
     private var discovery = Current.bonjour()
