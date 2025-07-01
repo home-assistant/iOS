@@ -5,13 +5,14 @@ public struct AssistChatItem: Equatable {
         self.id = id
         self.content = content
         self.itemType = itemType
-        self.markdown = (try? AttributedString(markdown: content)) ?? AttributedString(content)
     }
 
     public var id: String = UUID().uuidString
     public let content: String
     public let itemType: ItemType
-    public let markdown: AttributedString
+    public var markdown: AttributedString {
+        (try? AttributedString(markdown: content)) ?? AttributedString(content)
+    }
 
     public enum ItemType {
         case input
