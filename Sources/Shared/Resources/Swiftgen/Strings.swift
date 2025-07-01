@@ -1934,12 +1934,12 @@ public enum L10n {
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
+      /// Home Assistant Companion App
+      public static var header: String { return L10n.tr("Localizable", "onboarding.welcome.header") }
       /// Connect to my Home Assistant
       public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button") }
       /// Learn more
       public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.secondary_button") }
-      /// Home Assistant Companion App
-      public static var title: String { return L10n.tr("Localizable", "onboarding.welcome.title") }
       public enum Logo {
         /// Home Assistant logo
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "onboarding.welcome.logo.accessibility_label") }
