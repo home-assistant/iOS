@@ -45,19 +45,12 @@ struct OnboardingScanningInstanceRow: View {
 
     private var icon: some View {
         ZStack {
-            Group {
-                Image(uiImage: Asset.logo.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                if internalURLString == nil, externalURLString != nil {
-                    Image(systemSymbol: .icloudCircleFill)
-                        .foregroundStyle(Color.haPrimary, .white)
-                        .offset(x: 8, y: 12)
-                        .shadow(color: .black.opacity(0.2), radius: 5)
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .padding(DesignSystem.Spaces.oneAndHalf)
+            Image(systemSymbol: .externaldriveConnectedToLineBelow)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundStyle(.haPrimary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .padding(DesignSystem.Spaces.oneAndHalf)
         }
         .frame(width: Constants.iconContainerSize, height: Constants.iconContainerSize)
     }
