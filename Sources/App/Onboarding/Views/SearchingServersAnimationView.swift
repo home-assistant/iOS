@@ -21,7 +21,12 @@ struct SearchingServersAnimationView: View {
         }
         .onAppear {
             animateLogoPulse()
-            animateRotation()
+            withAnimation(Animation.linear(duration: Constants.animationDuration).repeatForever(autoreverses: false)) {
+                rotation = direction * Constants.rotationDegrees
+            }
+        }
+        .onDisappear {
+            rotation = 0
         }
     }
 
@@ -29,8 +34,8 @@ struct SearchingServersAnimationView: View {
         Image(.logoInCircle)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: Constants.logoSize, height: Constants.logoSize)
             .scaleEffect(logoScale, anchor: .center)
+            .frame(width: Constants.logoSize, height: Constants.logoSize)
     }
 
     private var dots: some View {
@@ -38,16 +43,6 @@ struct SearchingServersAnimationView: View {
             .resizable()
             .frame(width: Constants.dotsSize, height: Constants.dotsSize)
             .rotationEffect(.degrees(rotation))
-    }
-
-    private func animateRotation() {
-        withAnimation(Animation.linear(duration: Constants.animationDuration)) {
-            rotation += direction * Constants.rotationDegrees
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.animationDuration) {
-            direction *= -1
-            animateRotation()
-        }
     }
 
     private func animateLogoPulse() {
@@ -58,5 +53,10 @@ struct SearchingServersAnimationView: View {
 }
 
 #Preview {
-    SearchingServersAnimationView()
+    ZStack {
+        List {
+            Text("Example")
+        }
+        SearchingServersAnimationView()
+    }
 }
