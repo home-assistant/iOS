@@ -9,10 +9,10 @@ public struct AssistChatItem: Equatable {
 
     public var id: String = UUID().uuidString
     public let content: String
-    public let itemType: ItemType
     public var markdown: AttributedString {
-        (try? AttributedString(markdown: content)) ?? AttributedString(content)
+        (try? AttributedString(markdown: self.content, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace, failurePolicy: .returnPartiallyParsedIfPossible))) ?? AttributedString(self.content)
     }
+    public let itemType: ItemType
 
     public enum ItemType {
         case input
