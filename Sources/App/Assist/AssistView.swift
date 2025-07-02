@@ -261,7 +261,7 @@ struct AssistView: View {
             .gray.opacity(0.5)
         }
     }
-    
+
     private func foregroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
         switch itemType {
         case .input, .error:
@@ -272,7 +272,7 @@ struct AssistView: View {
             .primary
         }
     }
-    
+
     private func tintForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
         switch itemType {
         case .input, .error:
