@@ -112,14 +112,15 @@ struct AssistView: View {
                 AssistTypingIndicator()
                     .padding(.vertical, Spaces.half)
             } else {
-                Text(item.content)
+                Text(item.markdown)
             }
         }
         .padding(8)
         .padding(.horizontal, 8)
         .background(backgroundForChatItemType(item.itemType))
         .roundedCorner(10, corners: roundedCornersForChatItemType(item.itemType))
-        .foregroundColor(.white)
+        .foregroundColor(foregroundForChatItemType(item.itemType))
+        .tint(tintForChatItemType(item.itemType))
         .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
         .textSelection(.enabled)
     }
@@ -252,12 +253,32 @@ struct AssistView: View {
         switch itemType {
         case .input:
             .haPrimary
-        case .output:
-            .gray
+        case .output, .typing:
+            .secondaryBackground
         case .error:
             .red
-        case .info, .typing:
+        case .info:
             .gray.opacity(0.5)
+        }
+    }
+
+    private func foregroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
+        switch itemType {
+        case .input, .error:
+            .white
+        case .info:
+            .secondary
+        default:
+            .primary
+        }
+    }
+
+    private func tintForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
+        switch itemType {
+        case .input, .error:
+            .white
+        default:
+            .haPrimary
         }
     }
 
