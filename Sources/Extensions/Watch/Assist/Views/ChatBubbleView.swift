@@ -17,8 +17,8 @@ struct ChatBubbleView: View {
         .padding(.horizontal, 4)
         .background(backgroundForChatItemType(item.itemType))
         .roundedCorner(6, corners: roundedCornersForChatItemType(item.itemType))
-        .foregroundColor(.white)
-        .tint(.white)
+        .foregroundColor(foregroundForChatItemType(item.itemType))
+        .tint(tintForChatItemType(item.itemType))
         .frame(maxWidth: .infinity, alignment: alignmentForChatItemType(item.itemType))
         .listRowBackground(Color.clear)
         .id(item.id)
@@ -29,11 +29,31 @@ struct ChatBubbleView: View {
         case .input:
             .haPrimary
         case .output, .typing:
-            .gray
+            .secondaryBackground
         case .error:
             .red
         case .info:
             .gray.opacity(0.5)
+        }
+    }
+    
+    private func foregroundForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
+        switch itemType {
+        case .input, .error:
+            .white
+        case .info:
+            .secondary
+        default:
+            .primary
+        }
+    }
+    
+    private func tintForChatItemType(_ itemType: AssistChatItem.ItemType) -> Color {
+        switch itemType {
+        case .input, .error:
+            .white
+        default:
+            .haPrimary
         }
     }
 
