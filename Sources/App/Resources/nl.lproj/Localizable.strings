@@ -518,12 +518,17 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.scanning.title" = "Scannen naar servers";
 "onboarding.servers.docs.read" = "Documentatie lezen";
 "onboarding.servers.search.message" = "Op zoek naar servers in de buurt...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Maak verbinding met mijn Home Assistant";
 "onboarding.welcome.description" = "Deze app maakt verbinding met je Home Assistant-server en maakt het mogelijk gegevens over jou en je telefoon te integreren.\
 \
 Home Assistant is gratis en open source domotica-software met een focus op lokale controle en privacy.";
 "onboarding.welcome.get_started" = "Aan de slag met Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Meer informatie";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Aan de slag";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";

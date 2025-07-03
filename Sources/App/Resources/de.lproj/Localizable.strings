@@ -518,12 +518,17 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.scanning.title" = "Server werden gesucht";
 "onboarding.servers.docs.read" = "Dokumentation lesen";
 "onboarding.servers.search.message" = "Suche nach Servern in der Nähe …";
+"onboarding.servers.title" = "Suche im Heimnetzwerk";
+"onboarding.welcome.body" = "Ermöglicht dir den Zugriff auf deine Home Assistant-Installation von unterwegs. Sie läuft lokal bei dir zuhause über ein Gerät wie den Home Assistant Green oder Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Mit meinem Home Assistant verbinden";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
 Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit dem Schwerpunkt auf lokaler Kontrolle und Datenschutz.";
 "onboarding.welcome.get_started" = "Erste Schritte mit Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion-App";
 "onboarding.welcome.learn_more" = "Mehr erfahren";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant-Logo";
+"onboarding.welcome.primary_button" = "Mit meinem Home Assistant verbinden";
 "onboarding.welcome.secondary_button" = "Erste Schritte";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";

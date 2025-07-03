@@ -518,12 +518,17 @@
 "onboarding.scanning.title" = "Vyhledávání serverů";
 "onboarding.servers.docs.read" = "Přečíst si dokumentaci";
 "onboarding.servers.search.message" = "Hledání serverů v okolí...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Připojit k mému Home Assistantovi";
 "onboarding.welcome.description" = "Tato aplikace se připojí k Vašemu Home Assistantovi a umožní Vám propojení s Vašim telefonem.\
 \
 Home Assistant je bezplatný a otevřený software pro domácí automatizaci se zaměřením na místní ovládání a soukromí.";
 "onboarding.welcome.get_started" = "Začněte s Home Assistantem";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Více informací";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Začínáme";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
 "open_label" = "Otevřít";

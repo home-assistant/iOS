@@ -518,12 +518,17 @@
 "onboarding.scanning.title" = "Сканирование серверов";
 "onboarding.servers.docs.read" = "Читать документацию";
 "onboarding.servers.search.message" = "Ищу серверы поблизости...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Подключиться к моему Home Assistant";
 "onboarding.welcome.description" = "Это приложение подключается к вашему серверу Home Assistant и позволяет интегрировать данные о вас и вашем телефоне.\
 \
 Home Assistant - это бесплатное программное обеспечение для домашней автоматизации с открытым исходным кодом, ориентированное на локальный контроль и конфиденциальность.";
 "onboarding.welcome.get_started" = "Начните работу с Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Узнать больше";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Начало работы";
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
 "open_label" = "Открыто";

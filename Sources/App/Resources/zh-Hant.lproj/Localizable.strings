@@ -518,12 +518,17 @@
 "onboarding.scanning.title" = "掃描伺服器";
 "onboarding.servers.docs.read" = "閱讀文件";
 "onboarding.servers.search.message" = "正在搜尋周圍的伺服器...";
+"onboarding.servers.title" = "於家庭網路上搜尋";
+"onboarding.welcome.body" = "可隨時隨地存取 Home Assistant 伺服器。透過 Home Assistant Green 或 Raspberry Pi 等裝置安全的家中以本地端執行。";
 "onboarding.welcome.continue_button" = "連線至我的 Home Assistant";
 "onboarding.welcome.description" = "App 將連線至 Home Assistant 伺服器並允許整合關於你與手機的資料。\
 \
 Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本地端控制與隱私議題。";
 "onboarding.welcome.get_started" = "開始使用 Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "了解更多";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "連線至我的 Home Assistant";
 "onboarding.welcome.secondary_button" = "開始使用";
 "onboarding.welcome.title" = "歡迎使用 Home Assistant %@！";
 "open_label" = "開啟";

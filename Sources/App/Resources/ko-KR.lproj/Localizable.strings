@@ -518,12 +518,17 @@
 "onboarding.scanning.title" = "서버를 찾는 중";
 "onboarding.servers.docs.read" = "문서 읽기";
 "onboarding.servers.search.message" = "근처의 서버를 찾고 있습니다...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "내 Home Assistant에 연결";
 "onboarding.welcome.description" = "이 앱은 Home Assitant 서버에 연결되어 사용자와 휴대전화에 대한 데이터를 통합할 수 있습니다.\
 \
 Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료 오픈 소스 홈 자동화 소프트웨어입니다.";
 "onboarding.welcome.get_started" = "Home Assistant 시작하기";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "더 알아보기";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "시작하기";
 "onboarding.welcome.title" = "Home Assistant %@에 오신것을 환영합니다!";
 "open_label" = "열기";

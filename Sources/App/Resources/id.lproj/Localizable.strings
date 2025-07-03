@@ -518,12 +518,17 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.scanning.title" = "Memindai Server";
 "onboarding.servers.docs.read" = "Baca dokumentasi";
 "onboarding.servers.search.message" = "Mencari server terdekat...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Hubungkan ke Home Assistant saya";
 "onboarding.welcome.description" = "Aplikasi ini terhubung ke server Home Assistant Anda dan memungkinkan integrasi data tentang Anda dan ponsel Anda.\
 \
 Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka dengan fokus pada kontrol dan privasi lokal.";
 "onboarding.welcome.get_started" = "Memulai dengan Home Assistant";
+"onboarding.welcome.header" = "Aplikasi Home Assistant Companion";
 "onboarding.welcome.learn_more" = "Pelajari lebih lanjut";
+"onboarding.welcome.logo.accessibility_label" = "Logo Home Assistant";
+"onboarding.welcome.primary_button" = "Hubungkan ke Home Assistant saya";
 "onboarding.welcome.secondary_button" = "Memulai";
 "onboarding.welcome.title" = "Selamat datang di Home Assistant %@!";
 "open_label" = "Buka";

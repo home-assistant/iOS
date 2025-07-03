@@ -518,12 +518,17 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.scanning.title" = "Etsitään palvelimia";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Yhdistä Home Assistantiin";
 "onboarding.welcome.description" = "Tämä sovellus yhdistää Home Assistant -palvelimeesi ja mahdollistaa tietojen integroinnin sinusta ja puhelimestasi.\
 \
 Home Assistant on ilmainen ja avoimen lähdekoodin automaatio-ohjelmisto, joka painottaa paikallista hallinnoitavuutta ja yksityisyyttä.";
 "onboarding.welcome.get_started" = "Aloita Home Assistantin käyttö";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Lisätietoja";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Aloitusopas";
 "onboarding.welcome.title" = "Tervetuloa Home Assistantiin %@!";
 "open_label" = "Avaa";

@@ -518,12 +518,17 @@
 "onboarding.scanning.title" = "Escaneando servidores";
 "onboarding.servers.docs.read" = "Leia a documentação";
 "onboarding.servers.search.message" = "Procurando servidores nas proximidades...";
+"onboarding.servers.title" = "Pesquisando na rede doméstica";
+"onboarding.welcome.body" = "Permite que você acesse a instalação do Home Assistant em qualquer lugar. Ele funciona localmente na sua casa por meio de um dispositivo como o Home Assistant Green ou o Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Conecte-se ao meu Home Assistant";
 "onboarding.welcome.description" = "Este aplicativo se conecta ao servidor do Home Assistant e permite integrar dados sobre você e seu telefone. \
 \
  O Home Assistant é um software de automação residencial gratuito e de código aberto com foco no controle local e na privacidade.";
 "onboarding.welcome.get_started" = "Comece a usar o Home Assistant";
+"onboarding.welcome.header" = "Aplicativo do Home Assistant";
 "onboarding.welcome.learn_more" = "Saiba mais";
+"onboarding.welcome.logo.accessibility_label" = "Logotipo do Home Assistant";
+"onboarding.welcome.primary_button" = "Conectar-se ao meu Home Assistant";
 "onboarding.welcome.secondary_button" = "Primeiros passos";
 "onboarding.welcome.title" = "Bem-vindo ao Home Assistant %@ !";
 "open_label" = "Abrir";

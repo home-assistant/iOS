@@ -518,12 +518,17 @@
 "onboarding.scanning.title" = "Σάρωση για διακομιστές";
 "onboarding.servers.docs.read" = "Διαβάστε την τεκμηρίωση";
 "onboarding.servers.search.message" = "Αναζήτηση διακομιστών σε κοντινή απόσταση...";
+"onboarding.servers.title" = "Αναζήτηση στο δίκτυο του σπιτιού";
+"onboarding.welcome.body" = "Σας επιτρέπει να έχετε πρόσβαση στην εγκατάσταση του Home Assistant εν κινήσει. Εκτελείται τοπικά στο σπίτι σας μέσω μιας συσκευής όπως το Home Assistant Green ή το Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Σύνδεση με το Home Assistant μου";
 "onboarding.welcome.description" = "Αυτή η εφαρμογή συνδέεται με τον διακομιστή Home Assistant και επιτρέπει την ενσωμάτωση δεδομένων σχετικά με εσάς και το τηλέφωνό σας. \
 \
  Το Home Assistant είναι δωρεάν και ανοιχτού κώδικα λογισμικό αυτοματισμού σπιτιού με έμφαση στον τοπικό έλεγχο και την ιδιωτικότητα.";
 "onboarding.welcome.get_started" = "Ξεκινήστε με το Home Assistant";
+"onboarding.welcome.header" = "Εφαρμογή Home Assistant Companion";
 "onboarding.welcome.learn_more" = "Μάθετε περισσότερα";
+"onboarding.welcome.logo.accessibility_label" = "Λογότυπο Home Assistant";
+"onboarding.welcome.primary_button" = "Σύνδεση με το Home Assistant μου";
 "onboarding.welcome.secondary_button" = "Ξεκινώντας";
 "onboarding.welcome.title" = "Καλώς ορίσατε στο Home Assistant %@!";
 "open_label" = "Άνοιγμα";
