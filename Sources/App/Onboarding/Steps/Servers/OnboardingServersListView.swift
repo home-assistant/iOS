@@ -3,6 +3,12 @@ import Shared
 import SwiftUI
 
 struct OnboardingServersListView: View {
+    enum Constants {
+        static let initialDelayUntilDismissCenterLoader: TimeInterval = 3
+        static let minimumDelayUntilDismissCenterLoader: TimeInterval = 1.5
+        static let delayUntilAutoconnect: TimeInterval = 2
+    }
+
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -13,6 +19,8 @@ struct OnboardingServersListView: View {
     @State private var showManualInput = false
     @State private var screenLoaded = false
     @State private var autoConnectWorkItem: DispatchWorkItem?
+    @State private var autoConnectInstance: DiscoveredHomeAssistant?
+    @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
 
     let prefillURL: URL?
 
@@ -26,12 +34,14 @@ struct OnboardingServersListView: View {
     var body: some View {
         ZStack {
             content
-                .animation(.easeInOut, value: viewModel.discoveredInstances.count)
             centerLoader
+            autoConnectView
         }
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom, content: {
-            manualInputButton
+            if autoConnectInstance == nil {
+                manualInputButton
+            }
         })
         .toolbar(content: {
             toolbarItems
@@ -52,12 +62,14 @@ struct OnboardingServersListView: View {
                 scheduleAutoConnect()
             } else if newValue.count > 1 {
                 cancelAutoConnect()
+                // We display the loader a bit after instances are discovered
+                // if there is just 1 server available we connect to it automatically
+                // otherwise we display the list of servers
+                scheduleCenterLoaderDimiss(
+                    amountOfTimeToWaitToDismissCenterLoader: Constants
+                        .minimumDelayUntilDismissCenterLoader
+                )
             }
-
-            // We display the loader a bit after instances are discovered
-            // if there is just 1 server available we connect to it automatically
-            // otherwise we display the list of servers
-            scheduleCenterLoaderDimiss()
         }
         .sheet(isPresented: $viewModel.showError) {
             errorView
@@ -80,16 +92,58 @@ struct OnboardingServersListView: View {
         }
     }
 
+    @ViewBuilder
+    private var autoConnectView: some View {
+        if autoConnectInstance != nil {
+            AppleLikeBottomSheet(
+                title: autoConnectInstance?.bonjourName ?? autoConnectInstance?.locationName ?? L10n.unknownLabel,
+                content: {
+                    autoConnectViewContent(instance: autoConnectInstance)
+                },
+                state: $autoConnectBottomSheetState,
+                customDismiss: {
+                    autoConnectInstance = nil
+                },
+                willDismiss: {
+                    autoConnectInstance = nil
+                }
+            )
+        }
+    }
+
+    private func autoConnectViewContent(instance: DiscoveredHomeAssistant?) -> some View {
+        VStack(spacing: DesignSystem.Spaces.three) {
+            Spacer()
+            Image(systemSymbol: .externaldriveConnectedToLineBelow)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 240, height: 100)
+                .foregroundStyle(.haPrimary)
+                .padding(.bottom, DesignSystem.Spaces.four)
+            Text(instance?.internalOrExternalURL.absoluteString ?? "--")
+                .font(DesignSystem.Font.body.weight(.light))
+                .foregroundStyle(.secondary)
+            Button {
+                autoConnectInstance = nil
+                guard let viewController = hostingProvider.viewController, let instance else { return }
+                viewModel.selectInstance(instance, controller: viewController)
+            } label: {
+                Text(L10n.Onboarding.Servers.AutoConnect.button)
+            }
+            .buttonStyle(.primaryButton)
+        }
+    }
+
     private func scheduleAutoConnect() {
         autoConnectWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak viewModel] in
             if viewModel?.discoveredInstances.count == 1 {
-                // TODO: Display a bottom sheet asking to connect
+                viewModel?.showCenterLoader = false
+                autoConnectInstance = viewModel?.discoveredInstances.first
             }
         }
         autoConnectWorkItem = workItem
-        let amountOfTimeToWaitToAutoConnect: CGFloat = 2
-        DispatchQueue.main.asyncAfter(deadline: .now() + amountOfTimeToWaitToAutoConnect, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.delayUntilAutoconnect, execute: workItem)
     }
 
     private func cancelAutoConnect() {
@@ -97,8 +151,7 @@ struct OnboardingServersListView: View {
         autoConnectWorkItem = nil
     }
 
-    private func scheduleCenterLoaderDimiss() {
-        let amountOfTimeToWaitToDismissCenterLoader: CGFloat = 2
+    private func scheduleCenterLoaderDimiss(amountOfTimeToWaitToDismissCenterLoader: CGFloat) {
         DispatchQueue.main.asyncAfter(deadline: .now() + amountOfTimeToWaitToDismissCenterLoader) {
             viewModel.showCenterLoader = false
         }
@@ -257,13 +310,11 @@ struct OnboardingServersListView: View {
     }
 
     private var headerView: some View {
-        Section {
-            Text(L10n.Onboarding.Servers.title)
-                .font(DesignSystem.Font.largeTitle.bold())
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.bottom)
-        }
+        Text(L10n.Onboarding.Servers.title)
+            .font(DesignSystem.Font.largeTitle.bold())
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.vertical, DesignSystem.Spaces.four)
     }
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
@@ -271,7 +322,7 @@ struct OnboardingServersListView: View {
             viewModel.selectInstance(instance, controller: hostingProvider.viewController)
         }, label: {
             OnboardingScanningInstanceRow(
-                name: instance.locationName,
+                name: instance.bonjourName ?? instance.locationName,
                 internalURLString: instance.internalURL?.absoluteString,
                 externalURLString: instance.externalURL?.absoluteString,
                 internalOrExternalURLString: instance.internalOrExternalURL.absoluteString,
