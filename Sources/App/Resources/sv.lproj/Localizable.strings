@@ -518,12 +518,17 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.scanning.title" = "Söker efter servrar";
 "onboarding.servers.docs.read" = "Läs dokumentationen";
 "onboarding.servers.search.message" = "Letar efter servrar i närheten...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.description" = "Den här appen ansluter till din Home Assistant-server och låter dig integrera data om dig och din telefon. \
 \
 Home Assistant är gratis och öppen källkod för hemautomatisering med fokus på lokal kontroll och integritet.";
 "onboarding.welcome.get_started" = "Kom igång med Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Läs mer";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Så här kommer du igång";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
 "open_label" = "Öppen";

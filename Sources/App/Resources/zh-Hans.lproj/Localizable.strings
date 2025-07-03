@@ -518,10 +518,15 @@
 "onboarding.scanning.title" = "正在扫描服务器";
 "onboarding.servers.docs.read" = "阅读文档";
 "onboarding.servers.search.message" = "正在寻找附近的服务器...";
+"onboarding.servers.title" = "正在搜索家庭网络";
+"onboarding.welcome.body" = "让您随时随地访问您的 Home Assistant 。它可以通过 Home Assistant Green 或 Raspberry Pi 等设备在您家中本地运行。";
 "onboarding.welcome.continue_button" = "连接到我的 Home Assistant";
 "onboarding.welcome.description" = "此应用程序将连接到您的 Home Assistant 服务器，并将集成有关您和您的移动设备的数据。Home Assistant 是免费的开源家庭自动化软件，专注于本地控制和隐私保护。";
 "onboarding.welcome.get_started" = "开始使用 Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion 应用";
 "onboarding.welcome.learn_more" = "了解更多信息";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant 图标";
+"onboarding.welcome.primary_button" = "连接到我的 Home Assistant";
 "onboarding.welcome.secondary_button" = "入门";
 "onboarding.welcome.title" = "欢迎使用 Home Assistant %@ ！";
 "open_label" = "打开";

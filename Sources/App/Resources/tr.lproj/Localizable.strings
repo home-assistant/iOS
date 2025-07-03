@@ -518,12 +518,17 @@
 "onboarding.scanning.title" = "Sunucular için Tarama";
 "onboarding.servers.docs.read" = "Belgeleri okuyun";
 "onboarding.servers.search.message" = "Yakındaki sunucular aranıyor...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Home Assistant'ıma bağlan";
 "onboarding.welcome.description" = "Bu uygulama, Home Assistant sunucunuza bağlanır ve siz ve telefonunuz hakkındaki verilerin entegre edilmesini sağlar. \
 \
  Home Assistant, yerel kontrol ve gizliliğe odaklanan ücretsiz ve açık kaynaklı bir ev otomasyon yazılımıdır.";
 "onboarding.welcome.get_started" = "Home Assistant'ı kullanmaya başlayın";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Daha fazla bilgi edin";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Başlarken";
 "onboarding.welcome.title" = "Home Assistant'a Hoş Geldiniz %@!";
 "open_label" = "Açık";

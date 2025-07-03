@@ -518,12 +518,17 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.scanning.title" = "Đang quét tìm máy chủ";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Ứng dụng này kết nối với máy chủ Home Assistant và cho phép tích hợp dữ liệu về bạn và điện thoại của bạn. \
 \
 Home Assistant là phần mềm tự động hóa gia đình mã nguồn mở và miễn phí, tập trung vào quyền kiểm soát và quyền riêng tư cục bộ.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Chào mừng bạn đến với Home Assistant%@!";
 "open_label" = "Mở";

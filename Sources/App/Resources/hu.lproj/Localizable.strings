@@ -518,12 +518,17 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.scanning.title" = "Szerverek keresése";
 "onboarding.servers.docs.read" = "Dokumentáció elolvasása";
 "onboarding.servers.search.message" = "Kiszolgálók keresése a közelben…";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Csatlakozás a saját Home Assistant rendszeremhez";
 "onboarding.welcome.description" = "Ez az alkalmazás csatlakozik a Home Assistant szerverhez és lehetővé teszi az Önre és telefonjára vonatkozó adatok integrálását.\
 \
 A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási szoftver, amely a vezérlés helyben történő kivitelezésére és az adatvédelemre összpontosít.";
 "onboarding.welcome.get_started" = "Első lépések a Home Assistanttal";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Tudjon meg többet";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Első lépések";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "open_label" = "Megnyitás";

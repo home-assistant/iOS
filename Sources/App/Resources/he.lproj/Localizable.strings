@@ -518,12 +518,17 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.scanning.title" = "סריקה לאיתור שרתים";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.servers.title" = "Searching on home network";
+"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "יישומון זו מתחבר לשרת Home Assistant ומאפשרת שילוב נתונים עליך ועל הטלפון שלך. \
 \
 Home Assistant היא תוכנת אוטומציה ביתית חינמית ובקוד פתוח המתמקדת בשליטה מקומית ופרטיות.";
 "onboarding.welcome.get_started" = "Get started with Home Assistant";
+"onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Learn more";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
+"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "%@ ברוך בואך ל־Home Assistant!";
 "open_label" = "פתח";
