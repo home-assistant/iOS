@@ -4,9 +4,9 @@ import SwiftUI
 
 struct OnboardingServersListView: View {
     enum Constants {
-        static let initialDelayUntilDismissCenterLoader: CGFloat = 3
-        static let minimumDelayUntilDismissCenterLoader: CGFloat = 1.5
-        static let delayUntilAutoconnect: CGFloat = 2
+        static let initialDelayUntilDismissCenterLoader: TimeInterval = 3
+        static let minimumDelayUntilDismissCenterLoader: TimeInterval = 1.5
+        static let delayUntilAutoconnect: TimeInterval = 2
     }
 
     @Environment(\.dismiss) private var dismiss
