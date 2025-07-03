@@ -1920,6 +1920,10 @@ public enum L10n {
     public enum Servers {
       /// Searching on home network
       public static var title: String { return L10n.tr("Localizable", "onboarding.servers.title") }
+      public enum AutoConnect {
+        /// Connect
+        public static var button: String { return L10n.tr("Localizable", "onboarding.servers.auto_connect.button") }
+      }
       public enum Docs {
         /// Read documentation
         public static var read: String { return L10n.tr("Localizable", "onboarding.servers.docs.read") }

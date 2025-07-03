@@ -96,8 +96,13 @@ final class OnboardingServersListViewModel: ObservableObject {
                     Current.Log.verbose("Onboarding authentication succeeded")
                     self?.authenticationSucceeded(server: server)
                 case let .rejected(error):
-                    self?.error = error
-                    self?.showError = true
+                    if let pmkError = error as? PMKError, pmkError.isCancelled {
+                        /* No action needed, user cancelled flow */
+                        self?.resetFlow()
+                    } else {
+                        self?.error = error
+                        self?.showError = true
+                    }
                 }
                 self?.resetSpecificLoaders()
             }
