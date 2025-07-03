@@ -1,7 +1,7 @@
 import SwiftUI
 import UIColor_Hex_Swift
 
-extension Color {
+public extension Color {
     init(hex: String) {
         var hex = hex
         if !hex.starts(with: "#") {
