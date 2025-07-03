@@ -34,7 +34,6 @@ struct OnboardingServersListView: View {
     var body: some View {
         ZStack {
             content
-                .animation(.easeInOut, value: viewModel.discoveredInstances.count)
             centerLoader
             autoConnectView
         }
@@ -61,10 +60,6 @@ struct OnboardingServersListView: View {
         .onChange(of: viewModel.discoveredInstances) { newValue in
             if newValue.count == 1 {
                 scheduleAutoConnect()
-                scheduleCenterLoaderDimiss(
-                    amountOfTimeToWaitToDismissCenterLoader: Constants
-                        .initialDelayUntilDismissCenterLoader
-                )
             } else if newValue.count > 1 {
                 cancelAutoConnect()
                 // We display the loader a bit after instances are discovered
@@ -143,6 +138,7 @@ struct OnboardingServersListView: View {
         autoConnectWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak viewModel] in
             if viewModel?.discoveredInstances.count == 1 {
+                viewModel?.showCenterLoader = false
                 autoConnectInstance = viewModel?.discoveredInstances.first
             }
         }
