@@ -30,8 +30,7 @@ final class BarcodeScannerCamera: NSObject {
     public var screenSize: CGSize? {
         didSet {
             // Prevent unecessary updates
-            guard let screenSize,
-                  metadataOutput.rectOfInterest.width != BarcodeScannerView.cameraSquareSize else { return }
+            guard let screenSize else { return }
             // Calculate normalized rectOfInterest for AVFoundation
             let cameraSquareSize = BarcodeScannerView.cameraSquareSize
             let x = (screenSize.width - cameraSquareSize) / 2.0
