@@ -340,6 +340,7 @@ final class WebViewExternalMessageHandler {
                 SwiftMessages.hide()
             }
         )
+        view.id = "BarcodeScannerMessage"
         SwiftMessages.show(config: config, view: view)
     }
 
