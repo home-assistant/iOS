@@ -27,6 +27,32 @@ final class BarcodeScannerCamera: NSObject {
         ).devices
     }
 
+    public var screenSize: CGSize? {
+        didSet {
+            // Prevent unecessary updates
+            guard let screenSize,
+                  metadataOutput.rectOfInterest.width != BarcodeScannerView.cameraSquareSize else { return }
+            // Calculate normalized rectOfInterest for AVFoundation
+            let cameraSquareSize = BarcodeScannerView.cameraSquareSize
+            let x = (screenSize.width - cameraSquareSize) / 2.0
+            let y = (screenSize.height - cameraSquareSize) / 2.0
+            // AVFoundation expects (x, y, width, height) in normalized coordinates (0-1),
+            // and (0,0) is top-left of the video in portrait orientation
+            let normalizedX = y / screenSize.height
+            let normalizedY = x / screenSize.width
+            let normalizedWidth = cameraSquareSize / screenSize.height
+            let normalizedHeight = cameraSquareSize / screenSize.width
+            captureSession.beginConfiguration()
+            metadataOutput.rectOfInterest = CGRect(
+                x: normalizedX,
+                y: normalizedY,
+                width: normalizedWidth,
+                height: normalizedHeight
+            )
+            captureSession.commitConfiguration()
+        }
+    }
+
     private var availableCaptureDevices: [AVCaptureDevice] {
         allBackCaptureDevices
             .filter(\.isConnected)

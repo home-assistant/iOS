@@ -18,7 +18,7 @@ final class WebViewExternalMessageHandler {
         self.improvManager = improvManager
     }
 
-    func handleExternalMessage(_ dictionary: [String: Any]) {
+    @MainActor func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
             Current.Log.error("WebViewExternalMessageHandler has nil webViewController")
             return
@@ -116,9 +116,7 @@ final class WebViewExternalMessageHandler {
                 }
             case .barCodeScannerNotify:
                 guard let message = incomingMessage.Payload?["message"] as? String else { return }
-                let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-                alert.addAction(.init(title: L10n.okLabel, style: .default))
-                webViewController.presentAlertController(controller: alert, animated: true)
+                presentBarcodeScannerMessage(message: message)
             case .threadStoreCredentialInAppleKeychain:
                 guard let macExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
                       let activeOperationalDataset = incomingMessage.Payload?["active_operational_dataset"] as? String else { return }
@@ -322,6 +320,27 @@ final class WebViewExternalMessageHandler {
         } else {
             comissionMatterDevice()
         }
+    }
+
+    @MainActor
+    private func presentBarcodeScannerMessage(message: String) {
+        var config = SwiftMessages.Config()
+        config.dimMode = .none
+        config.presentationStyle = .bottom
+        config.duration = .seconds(seconds: 3)
+        let view = MessageView.viewFromNib(layout: .cardView)
+        view.configureContent(
+            title: nil,
+            body: message,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: nil,
+            buttonTitle: nil,
+            buttonTapHandler: { _ in
+                SwiftMessages.hide()
+            }
+        )
+        SwiftMessages.show(config: config, view: view)
     }
 
     private func cleanPreferredThreadCredentials() {
