@@ -104,7 +104,6 @@ PODS:
   - Realm/Headers (10.35.0)
   - RealmSwift (10.35.0):
     - Realm (= 10.35.0)
-  - SFSafeSymbols (5.3.0)
   - Sodium (0.9.1)
   - Starscream (4.0.4)
   - SwiftFormat/CLI (0.53.1)
@@ -144,7 +143,6 @@ DEPENDENCIES:
   - PromiseKit (~> 8.1.1)
   - ReachabilitySwift
   - RealmSwift
-  - SFSafeSymbols (~> 5.3)
   - Sodium (from `https://github.com/zacwest/swift-sodium.git`, branch `xcode-14.0.1`)
   - Starscream (from `https://github.com/bgoncal/starscream`, branch `ha-URLSession-fix`)
   - SwiftFormat/CLI (= 0.53.1)
@@ -178,7 +176,6 @@ SPEC REPOS:
     - ReachabilitySwift
     - Realm
     - RealmSwift
-    - SFSafeSymbols
     - SwiftFormat
     - SwiftGen
     - SwiftLint
@@ -286,7 +283,6 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Realm: e6b04f15a814cb22aae621e7e15f2ccb27ac8f95
   RealmSwift: b358779c10ba6d2648d541f8a1bcd671f73485c1
-  SFSafeSymbols: c0244d55ef543c7b2c01f3af2d3d2dd9e26dd00c
   Sodium: a7d42cb46e789d2630fa552d35870b416ed055ae
   Starscream: c5d70811b01d9ada7fdeb2132bc47fc893b6b0c9
   SwiftFormat: a8623113c7adcbeb4289a013cac68ec801e1ed24
@@ -299,6 +295,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: dbffac5c46356ce4ccff72aaa9090b1a572a2b6f
+PODFILE CHECKSUM: 14e5121f2d3773485b4cd14f67beadb61b5b7ef8
 
 COCOAPODS: 1.15.2

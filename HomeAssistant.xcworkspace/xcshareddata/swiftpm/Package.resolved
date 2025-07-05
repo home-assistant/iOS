@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "SFSafeSymbols",
+        "repositoryURL": "https://github.com/SFSafeSymbols/SFSafeSymbols",
+        "state": {
+          "branch": null,
+          "revision": "3dd282d3269b061853a3b3bcd23a509d2aa166ce",
+          "version": "6.2.0"
+        }
+      },
+      {
         "package": "swift-custom-dump",
         "repositoryURL": "https://github.com/pointfreeco/swift-custom-dump",
         "state": {
