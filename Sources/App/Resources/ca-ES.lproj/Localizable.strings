@@ -516,6 +516,7 @@ Les etiquetes funcionaran en qualsevol dispositiu amb Home Assistant instal·lat
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "No trobeu el vostre servidor?";
 "onboarding.scanning.title" = "S'està cercant servidors";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Searching on home network";

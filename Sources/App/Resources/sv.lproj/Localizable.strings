@@ -516,6 +516,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.scanning.manual.button.title" = "Ange adress manuellt";
 "onboarding.scanning.manual_hint" = "Hittar du inte din server?";
 "onboarding.scanning.title" = "Söker efter servrar";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Läs dokumentationen";
 "onboarding.servers.search.message" = "Letar efter servrar i närheten...";
 "onboarding.servers.title" = "Searching on home network";

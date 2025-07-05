@@ -516,6 +516,7 @@
 "onboarding.scanning.manual.button.title" = "주소를 수동으로 입력하세요";
 "onboarding.scanning.manual_hint" = "서버를 찾을 수 없습니까?";
 "onboarding.scanning.title" = "서버를 찾는 중";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "문서 읽기";
 "onboarding.servers.search.message" = "근처의 서버를 찾고 있습니다...";
 "onboarding.servers.title" = "Searching on home network";

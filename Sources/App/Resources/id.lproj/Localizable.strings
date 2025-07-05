@@ -516,6 +516,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.scanning.manual.button.title" = "Masukkan alamat secara manual";
 "onboarding.scanning.manual_hint" = "Tidak menemukan server Anda?";
 "onboarding.scanning.title" = "Memindai Server";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Baca dokumentasi";
 "onboarding.servers.search.message" = "Mencari server terdekat...";
 "onboarding.servers.title" = "Searching on home network";

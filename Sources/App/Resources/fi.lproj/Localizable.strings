@@ -516,6 +516,7 @@ NFC-tunnisteet toimivat millä tahansa laitteella, johon on asennettu Home Assis
 "onboarding.scanning.manual.button.title" = "Syötä osoite manuaalisesti";
 "onboarding.scanning.manual_hint" = "Etkö löydä palvelinta?";
 "onboarding.scanning.title" = "Etsitään palvelimia";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Searching on home network";

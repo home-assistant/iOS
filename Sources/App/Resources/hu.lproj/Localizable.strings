@@ -516,6 +516,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.scanning.manual.button.title" = "Cím megadása kézzel";
 "onboarding.scanning.manual_hint" = "Nem találja a szerverét?";
 "onboarding.scanning.title" = "Szerverek keresése";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Dokumentáció elolvasása";
 "onboarding.servers.search.message" = "Kiszolgálók keresése a közelben…";
 "onboarding.servers.title" = "Searching on home network";

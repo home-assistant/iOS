@@ -516,6 +516,7 @@
 "onboarding.scanning.manual.button.title" = "Εισάγετε τη διεύθυνση χειροκίνητα";
 "onboarding.scanning.manual_hint" = "Δεν βρίσκετε τον διακομιστή σας;";
 "onboarding.scanning.title" = "Σάρωση για διακομιστές";
+"onboarding.servers.auto_connect.button" = "Σύνδεση";
 "onboarding.servers.docs.read" = "Διαβάστε την τεκμηρίωση";
 "onboarding.servers.search.message" = "Αναζήτηση διακομιστών σε κοντινή απόσταση...";
 "onboarding.servers.title" = "Αναζήτηση στο δίκτυο του σπιτιού";

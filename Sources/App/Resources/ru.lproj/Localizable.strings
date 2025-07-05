@@ -516,6 +516,7 @@
 "onboarding.scanning.manual.button.title" = "Ввести адрес вручную";
 "onboarding.scanning.manual_hint" = "Не находите свой сервер?";
 "onboarding.scanning.title" = "Сканирование серверов";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Читать документацию";
 "onboarding.servers.search.message" = "Ищу серверы поблизости...";
 "onboarding.servers.title" = "Searching on home network";
