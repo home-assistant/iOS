@@ -516,6 +516,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Finner du ikke serveren din?";
 "onboarding.scanning.title" = "Søker etter servere";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Searching on home network";

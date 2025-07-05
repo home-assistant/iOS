@@ -516,6 +516,7 @@
 "onboarding.scanning.manual.button.title" = "Inserisci l'indirizzo manualmente";
 "onboarding.scanning.manual_hint" = "Non trovi il tuo server?";
 "onboarding.scanning.title" = "Scansione per server";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Leggi la documentazione";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Searching on home network";

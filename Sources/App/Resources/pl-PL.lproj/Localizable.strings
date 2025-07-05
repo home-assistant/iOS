@@ -514,6 +514,7 @@
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Nie możesz znaleźć swojego serwera?";
 "onboarding.scanning.title" = "Wyszukiwanie serwerów Home Assistanta";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Searching on home network";

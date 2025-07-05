@@ -516,6 +516,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.scanning.manual.button.title" = "Adresse manuell eingeben";
 "onboarding.scanning.manual_hint" = "Wird dein Server nicht gefunden?";
 "onboarding.scanning.title" = "Server werden gesucht";
+"onboarding.servers.auto_connect.button" = "Verbinden";
 "onboarding.servers.docs.read" = "Dokumentation lesen";
 "onboarding.servers.search.message" = "Suche nach Servern in der Nähe …";
 "onboarding.servers.title" = "Suche im Heimnetzwerk";

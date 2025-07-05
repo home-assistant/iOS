@@ -516,6 +516,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "onboarding.scanning.manual.button.title" = "Indtast adressen manuelt";
 "onboarding.scanning.manual_hint" = "Kan du ikke finde din server?";
 "onboarding.scanning.title" = "Søger efter servere";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Læs dokumentationen";
 "onboarding.servers.search.message" = "Søger efter servere i nærheden...";
 "onboarding.servers.title" = "Searching on home network";
