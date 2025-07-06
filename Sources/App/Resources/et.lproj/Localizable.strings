@@ -516,6 +516,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.scanning.manual.button.title" = "Sisesta aadress käsitsi";
 "onboarding.scanning.manual_hint" = "Ei leia oma serverit?";
 "onboarding.scanning.title" = "Serverite otsimine";
+"onboarding.servers.auto_connect.button" = "Ühenda";
 "onboarding.servers.docs.read" = "Loe dokumentatsiooni";
 "onboarding.servers.search.message" = "Otsin läheduses olevaid servereid...";
 "onboarding.servers.title" = "Otsing koduvõrgus";

@@ -516,6 +516,7 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.scanning.manual.button.title" = "Adres handmatig invoeren";
 "onboarding.scanning.manual_hint" = "Kun je je server niet vinden?";
 "onboarding.scanning.title" = "Scannen naar servers";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Documentatie lezen";
 "onboarding.servers.search.message" = "Op zoek naar servers in de buurt...";
 "onboarding.servers.title" = "Searching on home network";

@@ -516,6 +516,7 @@
 "onboarding.scanning.manual.button.title" = "Adresi manuel olarak girin";
 "onboarding.scanning.manual_hint" = "Sunucunuzu bulamıyor musunuz?";
 "onboarding.scanning.title" = "Sunucular için Tarama";
+"onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Belgeleri okuyun";
 "onboarding.servers.search.message" = "Yakındaki sunucular aranıyor...";
 "onboarding.servers.title" = "Searching on home network";
