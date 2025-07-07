@@ -28,6 +28,11 @@ class WebRTCVideoPlayerViewController: UIViewController {
         }
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        viewModel.webRTCClient?.closeConnection()
+    }
+
     private func setupVideoView() {
         remoteVideoView = RTCMTLVideoView(frame: view.bounds)
         remoteVideoView.translatesAutoresizingMaskIntoConstraints = false

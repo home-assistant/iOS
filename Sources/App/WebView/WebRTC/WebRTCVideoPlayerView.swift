@@ -14,8 +14,6 @@ struct WebRTCVideoPlayerView: View {
     @State private var lastOffset: CGSize = .zero
 
     @State private var isPlaying: Bool = false
-    @State private var controlsVisible: Bool = true
-    @State private var hideControlsWorkItem: DispatchWorkItem?
     @State private var isVideoPlaying: Bool = false
 
     private let server: Server
@@ -41,7 +39,11 @@ struct WebRTCVideoPlayerView: View {
             .background(.black)
             .statusBarHidden(true)
             .onAppear {
-                showControlsTemporarily()
+                viewModel.showControlsTemporarily()
+            }
+            .onDisappear {
+                viewModel.hideControlsWorkItem?.cancel()
+                viewModel.hideControlsWorkItem = nil
             }
             .gesture(
                 magnificationGesture(geometry: geometry)
@@ -81,11 +83,11 @@ struct WebRTCVideoPlayerView: View {
         MagnificationGesture()
             .onChanged { value in
                 scale = lastScale * value
-                showControlsTemporarily()
+                viewModel.showControlsTemporarily()
             }
             .onEnded { _ in
                 lastScale = scale
-                showControlsTemporarily()
+                viewModel.showControlsTemporarily()
                 if scale <= 1.0 {
                     withAnimation {
                         offset = .zero
@@ -109,7 +111,7 @@ struct WebRTCVideoPlayerView: View {
                     height: lastOffset.height + value.translation.height
                 )
                 offset = clampedOffset(for: newOffset, in: geometry.size)
-                showControlsTemporarily()
+                viewModel.showControlsTemporarily()
             }
             .onEnded { value in
                 // If user is not zoomed in, allow dismissing the view with a swipe down
@@ -123,7 +125,7 @@ struct WebRTCVideoPlayerView: View {
                     offset = clampedOffset(for: offset, in: geometry.size)
                     lastOffset = offset
                 }
-                showControlsTemporarily()
+                viewModel.showControlsTemporarily()
             }
     }
 
@@ -139,7 +141,7 @@ struct WebRTCVideoPlayerView: View {
                     scale = 2.0
                     lastScale = 2.0
                 }
-                showControlsTemporarily()
+                viewModel.showControlsTemporarily()
             }
         }
     }
@@ -154,7 +156,7 @@ struct WebRTCVideoPlayerView: View {
         .offset(offset)
         .contentShape(Rectangle())
         .onTapGesture {
-            showControlsTemporarily()
+            viewModel.showControlsTemporarily()
         }
     }
 
@@ -163,7 +165,8 @@ struct WebRTCVideoPlayerView: View {
             dismiss()
         }
         .transition(.opacity)
-        .opacity(controlsVisible || !isVideoPlaying ? 1.0 : 0.0)
+        .animation(.easeInOut, value: viewModel.controlsVisible)
+        .opacity(viewModel.controlsVisible || !isVideoPlaying ? 1.0 : 0.0)
     }
 
     /// Clamps the dragging offset to prevent the zoomed content from being moved
@@ -187,18 +190,6 @@ struct WebRTCVideoPlayerView: View {
         let clampedX = min(max(offset.width, -maxX), maxX)
         let clampedY = min(max(offset.height, -maxY), maxY)
         return CGSize(width: clampedX, height: clampedY)
-    }
-
-    private func showControlsTemporarily() {
-        controlsVisible = true
-        hideControlsWorkItem?.cancel()
-        let workItem = DispatchWorkItem {
-            withAnimation {
-                controlsVisible = false
-            }
-        }
-        hideControlsWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: workItem)
     }
 }
 

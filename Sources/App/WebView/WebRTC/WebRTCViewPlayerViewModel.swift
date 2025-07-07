@@ -28,11 +28,28 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
+    @Published var controlsVisible: Bool = true
+
+    var hideControlsWorkItem: DispatchWorkItem?
 
     init(server: Server, cameraEntityId: String) {
         self.server = server
         self.cameraEntityId = cameraEntityId
     }
+
+    // MARK: - UI
+
+    func showControlsTemporarily() {
+        controlsVisible = true
+        hideControlsWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.controlsVisible = false
+        }
+        hideControlsWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: workItem)
+    }
+
+    // MARK: - WebRTC
 
     func start() {
         webRTCClient = nil

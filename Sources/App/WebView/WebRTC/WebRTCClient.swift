@@ -15,7 +15,7 @@ protocol WebRTCClientDelegate: AnyObject {
 /// WebRTCClient manages a WebRTC peer connection, media tracks, and data channels.
 /// It abstracts the setup and control of a WebRTC session for use in the Home Assistant iOS app.
 ///
-/// - Note: Based on example project from WebRTC iOS SDK
+/// - Note: Based on example project from WebRTC iOS SDK https://github.com/stasel/WebRTC
 final class WebRTCClient: NSObject {
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
@@ -28,16 +28,12 @@ final class WebRTCClient: NSObject {
 
     weak var delegate: WebRTCClientDelegate?
     private let peerConnection: RTCPeerConnection
-    private let rtcAudioSession = RTCAudioSession.sharedInstance()
-    private let audioQueue = DispatchQueue(label: "audio")
     private let mediaConstrains = [
         kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
         kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue,
     ]
     private var videoCapturer: RTCVideoCapturer?
-    private var localVideoTrack: RTCVideoTrack?
     private var remoteVideoTrack: RTCVideoTrack?
-    private var localDataChannel: RTCDataChannel?
     private var remoteDataChannel: RTCDataChannel?
 
     @available(*, unavailable)
@@ -72,11 +68,18 @@ final class WebRTCClient: NSObject {
         }
 
         self.peerConnection = peerConnection
-
         super.init()
-        createMediaSenders()
-        configureAudioSession()
+        createMediaTracks()
+
+        // This is currently disable since the library does not offer a way to disable just the microphone usage.
+        // TODO: Find a workaround so audio can be receveid without using microphone in parallel
+        RTCAudioSession.sharedInstance().useManualAudio = true
+
         self.peerConnection.delegate = self
+    }
+
+    func closeConnection() {
+        peerConnection.close()
     }
 
     // MARK: Signaling
@@ -125,45 +128,12 @@ final class WebRTCClient: NSObject {
         remoteVideoTrack?.add(renderer)
     }
 
-    private func configureAudioSession() {
-        rtcAudioSession.lockForConfiguration()
-        do {
-            // TODO: This needs to be adjusted in case of 2-way audio/video calls.
-            try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
-            // TODO: Same for the mode, this is just a placeholder.
-            // try rtcAudioSession.setMode(AVAudioSession.Mode.moviePlayback)
-        } catch {
-            Current.Log.info("Error changing AVAudioSession category: \(error)")
-        }
-        rtcAudioSession.unlockForConfiguration()
-    }
-
-    private func createMediaSenders() {
+    private func createMediaTracks() {
         let streamId = "stream"
-
-        // Audio
-        let audioTrack = createAudioTrack()
-        peerConnection.add(audioTrack, streamIds: [streamId])
-
-        // Video
         let videoTrack = createVideoTrack()
-        localVideoTrack = videoTrack
         peerConnection.add(videoTrack, streamIds: [streamId])
         remoteVideoTrack = peerConnection.transceivers.first { $0.mediaType == .video }?.receiver
             .track as? RTCVideoTrack
-
-        // Data
-        if let dataChannel = createDataChannel() {
-            dataChannel.delegate = self
-            localDataChannel = dataChannel
-        }
-    }
-
-    private func createAudioTrack() -> RTCAudioTrack {
-        let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
-        let audioSource = WebRTCClient.factory.audioSource(with: audioConstrains)
-        let audioTrack = WebRTCClient.factory.audioTrack(with: audioSource, trackId: "audio0")
-        return audioTrack
     }
 
     private func createVideoTrack() -> RTCVideoTrack {
@@ -177,22 +147,6 @@ final class WebRTCClient: NSObject {
 
         let videoTrack = WebRTCClient.factory.videoTrack(with: videoSource, trackId: "video0")
         return videoTrack
-    }
-
-    // MARK: Data Channels
-
-    private func createDataChannel() -> RTCDataChannel? {
-        let config = RTCDataChannelConfiguration()
-        guard let dataChannel = peerConnection.dataChannel(forLabel: "WebRTCData", configuration: config) else {
-            Current.Log.info("Warning: Couldn't create data channel.")
-            return nil
-        }
-        return dataChannel
-    }
-
-    func sendData(_ data: Data) {
-        let buffer = RTCDataBuffer(data: data, isBinary: true)
-        remoteDataChannel?.sendData(buffer)
     }
 }
 
@@ -226,6 +180,7 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
+        Current.Log.info("peerConnection did generate candidate: \(candidate)")
         delegate?.webRTCClient(self, didDiscoverLocalCandidate: candidate)
     }
 
@@ -239,85 +194,11 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     }
 }
 
-// MARK: - Track Control
-
-/// Helpers for enabling/disabling audio and video tracks.
 extension WebRTCClient {
     private func setTrackEnabled<T: RTCMediaStreamTrack>(_ type: T.Type, isEnabled: Bool) {
         peerConnection.transceivers
             .compactMap { $0.sender.track as? T }
             .forEach { $0.isEnabled = isEnabled }
-    }
-}
-
-// MARK: - Video control
-
-/// Public API for controlling video track.
-extension WebRTCClient {
-    func hideVideo() {
-        setVideoEnabled(false)
-    }
-
-    func showVideo() {
-        setVideoEnabled(true)
-    }
-
-    private func setVideoEnabled(_ isEnabled: Bool) {
-        setTrackEnabled(RTCVideoTrack.self, isEnabled: isEnabled)
-    }
-}
-
-// MARK: - Audio control
-
-/// Public API for controlling audio track and speaker output.
-extension WebRTCClient {
-    func muteAudio() {
-        setAudioEnabled(false)
-    }
-
-    func unmuteAudio() {
-        setAudioEnabled(true)
-    }
-
-    // Fallback to the default playing device: headphones/bluetooth/ear speaker
-    func speakerOff() {
-        audioQueue.async { [weak self] in
-            guard let self else {
-                return
-            }
-
-            rtcAudioSession.lockForConfiguration()
-            do {
-                try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
-                try rtcAudioSession.overrideOutputAudioPort(.none)
-            } catch {
-                Current.Log.info("Error setting AVAudioSession category: \(error)")
-            }
-            rtcAudioSession.unlockForConfiguration()
-        }
-    }
-
-    // Force speaker
-    func speakerOn() {
-        audioQueue.async { [weak self] in
-            guard let self else {
-                return
-            }
-
-            rtcAudioSession.lockForConfiguration()
-            do {
-                try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
-                try rtcAudioSession.overrideOutputAudioPort(.speaker)
-                try rtcAudioSession.setActive(true)
-            } catch {
-                Current.Log.info("Couldn't force audio to speaker: \(error)")
-            }
-            rtcAudioSession.unlockForConfiguration()
-        }
-    }
-
-    private func setAudioEnabled(_ isEnabled: Bool) {
-        setTrackEnabled(RTCAudioTrack.self, isEnabled: isEnabled)
     }
 }
 
