@@ -1263,3 +1263,4 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature. Please use the web player interface for advanced options and reliable playback.";

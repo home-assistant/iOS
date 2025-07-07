@@ -16,6 +16,11 @@ struct WebRTCVideoPlayerViewControls: View {
                     .padding(16)
                 }
                 Spacer()
+                Text(L10n.WebRTCPlayer.Experimental.disclaimer)
+                    .font(DesignSystem.Font.footnote.weight(.light))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
             }
             .padding()
         }

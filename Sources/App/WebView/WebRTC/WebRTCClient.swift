@@ -1,13 +1,34 @@
+//  This file implements the WebRTCClient class, which manages WebRTC peer connections, media tracks, and data channels for real-time audio, video, and data communication. It provides a delegate protocol for signaling and data events, and abstracts the setup and control of WebRTC sessions for use in the Home Assistant iOS app.
+//
+//  Key responsibilities:
+//  - Creating and configuring RTCPeerConnection instances
+//  - Managing local and remote audio/video tracks
+//  - Handling ICE candidates and connection state changes
+//  - Sending and receiving data over RTCDataChannel
+//  - Controlling audio and video (mute, speaker, hide video, etc.)
+//
+//  Usage:
+//  Instantiate WebRTCClient with a list of ICE server URLs, set its delegate, and use its methods to offer/answer, set remote SDP/candidates, and control media.
+//
+
 import Foundation
 import WebRTC
+import Shared
 
+/// Delegate protocol for WebRTCClient events.
 protocol WebRTCClientDelegate: AnyObject {
+    /// Called when a new ICE candidate is discovered.
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
+    /// Called when the ICE connection state changes.
     func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState)
+    /// Called when data is received over the data channel.
     func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data)
 }
 
-// Code based on example froject from WebRTC iOS SDK
+/// WebRTCClient manages a WebRTC peer connection, media tracks, and data channels.
+/// It abstracts the setup and control of a WebRTC session for use in the Home Assistant iOS app.
+///
+/// - Note: Based on example project from WebRTC iOS SDK
 final class WebRTCClient: NSObject {
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
@@ -125,7 +146,7 @@ final class WebRTCClient: NSObject {
             // TODO: Same for the mode, this is just a placeholder.
             // try rtcAudioSession.setMode(AVAudioSession.Mode.moviePlayback)
         } catch {
-            debugPrint("Error changeing AVAudioSession category: \(error)")
+            Current.Log.info("Error changeing AVAudioSession category: \(error)")
         }
         rtcAudioSession.unlockForConfiguration()
     }
@@ -176,7 +197,7 @@ final class WebRTCClient: NSObject {
     private func createDataChannel() -> RTCDataChannel? {
         let config = RTCDataChannelConfiguration()
         guard let dataChannel = peerConnection.dataChannel(forLabel: "WebRTCData", configuration: config) else {
-            debugPrint("Warning: Couldn't create data channel.")
+            Current.Log.info("Warning: Couldn't create data channel.")
             return nil
         }
         return dataChannel
@@ -188,30 +209,33 @@ final class WebRTCClient: NSObject {
     }
 }
 
+// MARK: - RTCPeerConnectionDelegate
+
+/// Handles RTCPeerConnection events and forwards relevant events to the delegate.
 extension WebRTCClient: RTCPeerConnectionDelegate {
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        debugPrint("peerConnection new signaling state: \(stateChanged)")
+        Current.Log.info("peerConnection new signaling state: \(stateChanged)")
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        debugPrint("peerConnection did add stream")
+        Current.Log.info("peerConnection did add stream")
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        debugPrint("peerConnection did remove stream")
+        Current.Log.info("peerConnection did remove stream")
     }
 
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        debugPrint("peerConnection should negotiate")
+        Current.Log.info("peerConnection should negotiate")
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        debugPrint("peerConnection new connection state: \(newState)")
+        Current.Log.info("peerConnection new connection state: \(newState)")
         delegate?.webRTCClient(self, didChangeConnectionState: newState)
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        debugPrint("peerConnection new gathering state: \(newState)")
+        Current.Log.info("peerConnection new gathering state: \(newState)")
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
@@ -219,15 +243,18 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
-        debugPrint("peerConnection did remove candidate(s)")
+        Current.Log.info("peerConnection did remove candidate(s)")
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        debugPrint("peerConnection did open data channel")
+        Current.Log.info("peerConnection did open data channel")
         remoteDataChannel = dataChannel
     }
 }
 
+// MARK: - Track Control
+
+/// Helpers for enabling/disabling audio and video tracks.
 extension WebRTCClient {
     private func setTrackEnabled<T: RTCMediaStreamTrack>(_ type: T.Type, isEnabled: Bool) {
         peerConnection.transceivers
@@ -238,6 +265,7 @@ extension WebRTCClient {
 
 // MARK: - Video control
 
+/// Public API for controlling video track.
 extension WebRTCClient {
     func hideVideo() {
         setVideoEnabled(false)
@@ -254,6 +282,7 @@ extension WebRTCClient {
 
 // MARK: - Audio control
 
+/// Public API for controlling audio track and speaker output.
 extension WebRTCClient {
     func muteAudio() {
         setAudioEnabled(false)
@@ -275,7 +304,7 @@ extension WebRTCClient {
                 try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
                 try rtcAudioSession.overrideOutputAudioPort(.none)
             } catch {
-                debugPrint("Error setting AVAudioSession category: \(error)")
+                Current.Log.info("Error setting AVAudioSession category: \(error)")
             }
             rtcAudioSession.unlockForConfiguration()
         }
@@ -294,7 +323,7 @@ extension WebRTCClient {
                 try rtcAudioSession.overrideOutputAudioPort(.speaker)
                 try rtcAudioSession.setActive(true)
             } catch {
-                debugPrint("Couldn't force audio to speaker: \(error)")
+                Current.Log.info("Couldn't force audio to speaker: \(error)")
             }
             rtcAudioSession.unlockForConfiguration()
         }
@@ -305,9 +334,12 @@ extension WebRTCClient {
     }
 }
 
+// MARK: - RTCDataChannelDelegate
+
+/// Handles RTCDataChannel events and forwards data to the delegate.
 extension WebRTCClient: RTCDataChannelDelegate {
     func dataChannelDidChangeState(_ dataChannel: RTCDataChannel) {
-        debugPrint("dataChannel did change state: \(dataChannel.readyState)")
+        Current.Log.info("dataChannel did change state: \(dataChannel.readyState)")
     }
 
     func dataChannel(_ dataChannel: RTCDataChannel, didReceiveMessageWith buffer: RTCDataBuffer) {
