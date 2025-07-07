@@ -122,7 +122,8 @@ final class WebRTCClient: NSObject {
         do {
             // TODO: This needs to be adjusted in case of 2-way audio/video calls.
             try rtcAudioSession.setCategory(AVAudioSession.Category.playback)
-            try rtcAudioSession.setMode(AVAudioSession.Mode.moviePlayback)
+            // TODO: Same for the mode, this is just a placeholder.
+            // try rtcAudioSession.setMode(AVAudioSession.Mode.moviePlayback)
         } catch {
             debugPrint("Error changeing AVAudioSession category: \(error)")
         }
