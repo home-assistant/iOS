@@ -21,7 +21,14 @@ struct OpenEntityAppIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         guard let entity else { return .result() }
         #if !WIDGET_EXTENSION
-        if let url =
+        if Domain(entityId: entity.entityId) == .camera, let url = AppConstants.openCameraDeeplinkURL(
+            entityId: entity.entityId,
+            serverId: entity.serverId
+        ) {
+            DispatchQueue.main.async {
+                UIApplication.shared.open(url)
+            }
+        } else if let url =
             AppConstants.openEntityDeeplinkURL(entityId: entity.entityId, serverId: entity.serverId) {
             DispatchQueue.main.async {
                 UIApplication.shared.open(url)

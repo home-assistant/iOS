@@ -67,6 +67,13 @@ public enum L10n {
   /// Yes
   public static var yesLabel: String { return L10n.tr("Localizable", "yes_label") }
 
+  public enum WebRTCPlayer {
+    public enum Experimental {
+      /// Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.
+      public static var disclaimer: String { return L10n.tr("Localizable", "WebRTC_player.experimental.disclaimer") }
+    }
+  }
+
   public enum About {
     /// About
     public static var title: String { return L10n.tr("Localizable", "about.title") }

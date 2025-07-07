@@ -379,7 +379,7 @@ public extension MagicItem {
             default:
                 break
             }
-        case .sensor, .binarySensor, .zone, .person:
+        case .sensor, .binarySensor, .zone, .person, .camera:
             break
         }
         if let request, let connection = Current.api(for: server)?.connection {

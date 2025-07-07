@@ -29,6 +29,13 @@ public enum AppConstants {
         case isComingFromAppIntent = "isComingFromAppIntent"
     }
 
+    public enum WebRTC {
+        public static let iceServers = [
+            "stun:stun.home-assistant.io:80",
+            "stun:stun.home-assistant.io:3478",
+        ]
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
@@ -126,6 +133,12 @@ public enum AppConstants {
             queryParams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
             avoidUnecessaryReload: true
         )?.withWidgetAuthenticity()
+    }
+
+    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
+        URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+        )
     }
 
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
