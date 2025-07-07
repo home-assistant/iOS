@@ -156,7 +156,6 @@ struct WatchAssistView: View {
             // This could also be achieved using .controlSize(.large) on watchOS 9+
             .scaleEffect(Constants.micButtonProgressScale)
             .frame(maxWidth: .infinity, alignment: .center)
-            .progressViewStyle(.linear)
             .frame(height: Constants.micButtonProgressHeight)
             .padding(Constants.micButtonProgressPadding)
             .modify {
