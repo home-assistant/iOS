@@ -8,7 +8,7 @@ struct ChatBubbleView: View {
         Group {
             if item.itemType == .typing {
                 AssistTypingIndicator()
-                    .padding(.vertical, Spaces.half)
+                    .padding(.vertical, DesignSystem.Spaces.half)
             } else {
                 Text(item.markdown)
             }
@@ -44,7 +44,7 @@ struct ChatBubbleView: View {
         case .info:
             .secondary
         default:
-            .primary
+            .black
         }
     }
 
