@@ -516,6 +516,7 @@
 "onboarding.scanning.manual.button.title" = "手動輸入位址";
 "onboarding.scanning.manual_hint" = "找不到伺服器？";
 "onboarding.scanning.title" = "掃描伺服器";
+"onboarding.servers.auto_connect.button" = "連線";
 "onboarding.servers.docs.read" = "閱讀文件";
 "onboarding.servers.search.message" = "正在搜尋周圍的伺服器...";
 "onboarding.servers.title" = "於家庭網路上搜尋";
