@@ -122,7 +122,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         let sdp = RTCSessionDescription(type: .answer, sdp: answerSDP)
         webRTCClient?.set(remoteSdp: sdp) { error in
             if let error {
-                print("Failed to set remote SDP: \(error)")
+                Current.Log.error("Failed to set remote SDP: \(error.localizedDescription)")
             }
         }
     }
