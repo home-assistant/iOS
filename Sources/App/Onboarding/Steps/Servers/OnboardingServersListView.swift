@@ -245,6 +245,11 @@ struct OnboardingServersListView: View {
             title: L10n.Onboarding.Invitation.title,
             subtitle: url.absoluteString
         )
+        .onAppear {
+            // No need for center loader logic neither auto connect in invitation context
+            cancelAutoConnect()
+            viewModel.showCenterLoader = false
+        }
         Button {
             viewModel.selectInstance(.init(manualURL: url), controller: hostingProvider.viewController)
             viewModel.invitationLoading = true
@@ -258,10 +263,6 @@ struct OnboardingServersListView: View {
         }
         .buttonStyle(.primaryButton)
         .disabled(viewModel.invitationLoading)
-        .onAppear {
-            cancelAutoConnect()
-            viewModel.showCenterLoader = false
-        }
     }
 
     @ViewBuilder
