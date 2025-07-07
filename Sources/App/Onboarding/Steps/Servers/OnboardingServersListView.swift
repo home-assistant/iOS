@@ -192,10 +192,9 @@ struct OnboardingServersListView: View {
                     if let inviteURL = Current.appSessionValues.inviteURL {
                         prefillURLHeader(url: inviteURL)
                         Text(L10n.Onboarding.Invitation.otherOptions)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.secondary)
-                            .listRowBackground(Color.clear)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(DesignSystem.Font.headline)
+                            .padding(.top, DesignSystem.Spaces.two)
                     } else {
                         headerView
                     }
@@ -235,33 +234,35 @@ struct OnboardingServersListView: View {
 
     @ViewBuilder
     private func prefillURLHeader(url: URL) -> some View {
-        Section {
-            AppleLikeListTopRowHeader(
-                image: nil,
-                headerImageAlternativeView: AnyView(
-                    Image(uiImage: Asset.logo.image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 80, height: 80)
-                ),
-                title: L10n.Onboarding.Invitation.title,
-                subtitle: url.absoluteString
-            )
-            Button {
-                viewModel.selectInstance(.init(manualURL: url), controller: hostingProvider.viewController)
-                viewModel.invitationLoading = true
-            } label: {
-                ZStack {
-                    HAProgressView(colorType: .light)
-                        .opacity(viewModel.invitationLoading ? 1 : 0)
-                    Text(L10n.Onboarding.Invitation.acceptButton)
-                        .opacity(viewModel.invitationLoading ? 0 : 1)
-                }
-            }
-            .buttonStyle(.primaryButton)
-            .disabled(viewModel.invitationLoading)
+        AppleLikeListTopRowHeader(
+            image: nil,
+            headerImageAlternativeView: AnyView(
+                Image(uiImage: Asset.logo.image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 80, height: 80)
+            ),
+            title: L10n.Onboarding.Invitation.title,
+            subtitle: url.absoluteString
+        )
+        .onAppear {
+            // No need for center loader logic neither auto connect in invitation context
+            cancelAutoConnect()
+            viewModel.showCenterLoader = false
         }
-        .listRowSeparator(.hidden)
+        Button {
+            viewModel.selectInstance(.init(manualURL: url), controller: hostingProvider.viewController)
+            viewModel.invitationLoading = true
+        } label: {
+            ZStack {
+                HAProgressView(colorType: .light)
+                    .opacity(viewModel.invitationLoading ? 1 : 0)
+                Text(L10n.Onboarding.Invitation.acceptButton)
+                    .opacity(viewModel.invitationLoading ? 0 : 1)
+            }
+        }
+        .buttonStyle(.primaryButton)
+        .disabled(viewModel.invitationLoading)
     }
 
     @ViewBuilder
