@@ -133,7 +133,7 @@ final class WebRTCClient: NSObject {
             // TODO: Same for the mode, this is just a placeholder.
             // try rtcAudioSession.setMode(AVAudioSession.Mode.moviePlayback)
         } catch {
-            Current.Log.info("Error changeing AVAudioSession category: \(error)")
+            Current.Log.info("Error changing AVAudioSession category: \(error)")
         }
         rtcAudioSession.unlockForConfiguration()
     }
