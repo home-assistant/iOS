@@ -30,7 +30,7 @@ public enum AppConstants {
     }
 
     public enum WebRTC {
-        public static var iceServers = [
+        public static let iceServers = [
             "stun:stun.home-assistant.io:80",
             "stun:stun.home-assistant.io:3478",
         ]

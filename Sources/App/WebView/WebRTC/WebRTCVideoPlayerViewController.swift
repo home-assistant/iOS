@@ -6,7 +6,6 @@ import WebRTC
 class WebRTCVideoPlayerViewController: UIViewController {
     private let viewModel: WebRTCViewPlayerViewModel
     private var remoteVideoView: RTCMTLVideoView!
-    private var activityIndicatorHost: UIHostingController<HAProgressView>?
 
     var onVideoStarted: (() -> Void)?
 
@@ -27,7 +26,6 @@ class WebRTCVideoPlayerViewController: UIViewController {
         if let client = viewModel.webRTCClient {
             client.renderRemoteVideo(to: remoteVideoView)
         }
-        activityIndicatorHost?.view.isHidden = false
     }
 
     private func setupVideoView() {
