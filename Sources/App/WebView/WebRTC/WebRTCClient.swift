@@ -1,19 +1,6 @@
-//  This file implements the WebRTCClient class, which manages WebRTC peer connections, media tracks, and data channels for real-time audio, video, and data communication. It provides a delegate protocol for signaling and data events, and abstracts the setup and control of WebRTC sessions for use in the Home Assistant iOS app.
-//
-//  Key responsibilities:
-//  - Creating and configuring RTCPeerConnection instances
-//  - Managing local and remote audio/video tracks
-//  - Handling ICE candidates and connection state changes
-//  - Sending and receiving data over RTCDataChannel
-//  - Controlling audio and video (mute, speaker, hide video, etc.)
-//
-//  Usage:
-//  Instantiate WebRTCClient with a list of ICE server URLs, set its delegate, and use its methods to offer/answer, set remote SDP/candidates, and control media.
-//
-
 import Foundation
-import WebRTC
 import Shared
+import WebRTC
 
 /// Delegate protocol for WebRTCClient events.
 protocol WebRTCClientDelegate: AnyObject {
