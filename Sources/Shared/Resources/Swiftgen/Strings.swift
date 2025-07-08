@@ -913,6 +913,21 @@ public enum L10n {
     }
   }
 
+  public enum DeviceName {
+    /// This is used to identify your device in your Home Assistant.
+    public static var subtitle: String { return L10n.tr("Localizable", "device_name.subtitle") }
+    /// How would you like to name this device?
+    public static var title: String { return L10n.tr("Localizable", "device_name.title") }
+    public enum PrimaryButton {
+      /// Save
+      public static var title: String { return L10n.tr("Localizable", "device_name.primary_button.title") }
+    }
+    public enum Textfield {
+      /// iPhone/iPad/Mac name
+      public static var placeholder: String { return L10n.tr("Localizable", "device_name.textfield.placeholder") }
+    }
+  }
+
   public enum DownloadManager {
     public enum Downloading {
       /// Downloading

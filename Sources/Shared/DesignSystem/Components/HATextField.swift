@@ -19,6 +19,7 @@ public struct HATextField: View {
                 Image(systemSymbol: .xmark)
                     .foregroundStyle(.gray)
             })
+            .buttonStyle(.plain)
             .opacity(text.isEmpty ? 0 : 1)
             .animation(.easeInOut, value: text)
         }
