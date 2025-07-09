@@ -3,34 +3,66 @@ import Shared
 import SwiftUI
 
 struct DeviceNameView: View {
+    enum ActionType {
+        case save
+        case cancel
+        case none
+    }
+
+    @Environment(\.dismiss) private var dismiss
     @State private var deviceName: String = UIDevice.current.name
+    let errorMessage: String?
     let saveAction: (String) -> Void
-    let undoOnboarding: () -> Void
+    let cancelAction: () -> Void
+
+    // We can only execute those actions when the view has actually disappeared.
+    // similar to UIKit onDismiss completion handler.
+    @State private var onDismissAction: ActionType = .none
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Spaces.three) {
-                Image(systemSymbol: icon)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 100)
-                    .foregroundStyle(.haPrimary)
-                Text(L10n.DeviceName.title)
-                    .font(DesignSystem.Font.largeTitle.bold())
-                    .frame(maxWidth: .infinity)
-                    .multilineTextAlignment(.center)
-                Text(L10n.DeviceName.subtitle)
-                    .font(DesignSystem.Font.body)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity)
-                    .multilineTextAlignment(.center)
-                HATextField(placeholder: L10n.DeviceName.Textfield.placeholder, text: $deviceName)
+        NavigationView {
+            ScrollView {
+                VStack(spacing: DesignSystem.Spaces.three) {
+                    Image(systemSymbol: icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 100)
+                        .foregroundStyle(.haPrimary)
+                    Text(L10n.DeviceName.title)
+                        .font(DesignSystem.Font.largeTitle.bold())
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                    Text(L10n.DeviceName.subtitle)
+                        .font(DesignSystem.Font.body)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                    VStack(spacing: DesignSystem.Spaces.one) {
+                        HATextField(placeholder: L10n.DeviceName.Textfield.placeholder, text: $deviceName)
+                        if let errorMessage {
+                            Text(errorMessage)
+                                .font(DesignSystem.Font.footnote)
+                                .foregroundStyle(.red)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                }
+                .padding(DesignSystem.Spaces.two)
             }
-            .padding(DesignSystem.Spaces.two)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    CloseButton(size: .medium) {
+                        onDismissAction = .cancel
+                        dismiss()
+                    }
+                }
+            }
         }
+        .navigationViewStyle(.stack)
         .safeAreaInset(edge: .bottom) {
             Button {
-                saveAction(deviceName)
+                onDismissAction = .save
+                dismiss()
             } label: {
                 Text(L10n.DeviceName.PrimaryButton.title)
             }
@@ -39,13 +71,14 @@ struct DeviceNameView: View {
             .disabled(deviceName.count < 3)
         }
         .interactiveDismissDisabled(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    undoOnboarding()
-                } label: {
-                    Text(L10n.cancelLabel)
-                }
+        .onDisappear {
+            switch onDismissAction {
+            case .save:
+                saveAction(deviceName)
+            case .cancel:
+                cancelAction()
+            case .none:
+                break
             }
         }
     }
@@ -60,7 +93,7 @@ struct DeviceNameView: View {
 }
 
 #Preview {
-    DeviceNameView { _ in
+    DeviceNameView(errorMessage: "Error message") { _ in
 
-    } undoOnboarding: {}
+    } cancelAction: {}
 }

@@ -4,8 +4,8 @@ import PromiseKit
 @testable import Shared
 import XCTest
 
-class OnboardingAuthStepDuplicateTests: XCTestCase {
-    private var step: OnboardingAuthStepDuplicate!
+class OnboardingAuthStepDeviceNamingTests: XCTestCase {
+    private var step: OnboardingAuthStepDeviceNaming!
     private var api: HomeAssistantAPI!
     private var connection: HAMockConnection!
     private var sender: FakeUIViewController!
@@ -26,7 +26,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         deviceName = name
         Current.device.deviceName = { name }
 
-        step = OnboardingAuthStepDuplicate(api: api, sender: sender)
+        step = OnboardingAuthStepDeviceNaming(api: api, sender: sender)
     }
 
     override func tearDown() {
@@ -39,7 +39,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
     }
 
     func testSupportedPoints() {
-        XCTAssertTrue(OnboardingAuthStepDuplicate.supportedPoints.contains(.beforeRegister))
+        XCTAssertTrue(OnboardingAuthStepDeviceNaming.supportedPoints.contains(.beforeRegister))
     }
 
     func testNoWebSocketResponseWithoutError() {
