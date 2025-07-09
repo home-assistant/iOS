@@ -55,10 +55,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
                 header
                 content
                     .frame(maxWidth: .infinity)
-                    .padding(.leading, contentInsets.leading)
-                    .padding(.trailing, contentInsets.trailing)
-                    .padding(.top, contentInsets.top)
-                    .padding(.bottom, contentInsets.bottom)
+                    .padding(contentInsets)
                     .frame(maxHeight: .infinity)
             }
             .padding(.horizontal)
