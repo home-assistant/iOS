@@ -1,6 +1,5 @@
 import Foundation
 import Shared
-import SwiftMessages
 import SwiftUI
 
 // MARK: - Post onboarding
