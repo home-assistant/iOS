@@ -1,5 +1,5 @@
-import SwiftUI
 import SFSafeSymbols
+import SwiftUI
 
 public struct HATextField: View {
     let placeholder: String

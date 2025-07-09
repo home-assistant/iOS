@@ -1,18 +1,11 @@
-//
-//  DeviceNameView.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 8/7/25.
-//  Copyright © 2025 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
-import Shared
 import SFSafeSymbols
+import Shared
+import SwiftUI
 
 struct DeviceNameView: View {
-
     @State private var deviceName: String = UIDevice.current.name
+    let saveAction: (String) -> Void
+    let undoOnboarding: () -> Void
 
     var body: some View {
         ScrollView {
@@ -37,13 +30,23 @@ struct DeviceNameView: View {
         }
         .safeAreaInset(edge: .bottom) {
             Button {
-                // TODO: send name to Home Assistant
+                saveAction(deviceName)
             } label: {
                 Text(L10n.DeviceName.PrimaryButton.title)
             }
             .buttonStyle(.primaryButton)
             .padding(DesignSystem.Spaces.two)
-
+            .disabled(deviceName.count < 3)
+        }
+        .interactiveDismissDisabled(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    undoOnboarding()
+                } label: {
+                    Text(L10n.cancelLabel)
+                }
+            }
         }
     }
 
@@ -57,5 +60,7 @@ struct DeviceNameView: View {
 }
 
 #Preview {
-    DeviceNameView()
+    DeviceNameView { _ in
+
+    } undoOnboarding: {}
 }
