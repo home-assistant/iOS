@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "Märge: Native WebRTC videopleier on praegu eksperimentaalne funktsioon, heli ei pruugi töötada ning mikrofoni luba ja kasutamist võidakse nõuda isegi siis kui seda ei kasutata. Täpsemate valikute ja usaldusväärse taasesituse jaoks kasuta web pleieri liidest.";
 "about.acknowledgements.title" = "Tänuavaldused";
 "about.beta.title" = "Liitu eelvaatekanaliga";
 "about.chat.title" = "Vestlus";
