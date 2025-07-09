@@ -112,12 +112,19 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                 }
 
                 api.server.info.setSetting(value: name, for: .overrideDeviceName)
+                resetFirstUserDeviceNameInput()
                 seal.fulfill(())
             }, cancelAction: {
+                resetFirstUserDeviceNameInput()
                 seal.reject(PMKError.cancelled)
             }))
 
             sender.present(view, animated: true, completion: nil)
         }
+    }
+
+    // In case the flow is completed or cancelled, we reset the first user device name input flag.
+    private func resetFirstUserDeviceNameInput() {
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = true
     }
 }
