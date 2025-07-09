@@ -1269,3 +1269,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
 "device_name.primary_button.title" = "Save";
 "yes_label" = "Yes";
+"permission.notification.title" = "Allow notifications?";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";

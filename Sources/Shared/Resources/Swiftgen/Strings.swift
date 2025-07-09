@@ -1986,6 +1986,16 @@ public enum L10n {
   }
 
   public enum Permission {
+    public enum Notification {
+      /// Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.
+      public static var body: String { return L10n.tr("Localizable", "permission.notification.body") }
+      /// Allow notifications
+      public static var primaryButton: String { return L10n.tr("Localizable", "permission.notification.primary_button") }
+      /// Do not allow
+      public static var secondaryButton: String { return L10n.tr("Localizable", "permission.notification.secondary_button") }
+      /// Allow notifications?
+      public static var title: String { return L10n.tr("Localizable", "permission.notification.title") }
+    }
     public enum Screen {
       public enum Bluetooth {
         /// Skip

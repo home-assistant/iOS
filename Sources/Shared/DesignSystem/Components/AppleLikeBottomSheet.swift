@@ -20,11 +20,14 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     private let customDismiss: (() -> Void)?
     private let willDismiss: (() -> Void)?
 
-    private let bottomSheetMinHeight: CGFloat = 400
+    private let bottomSheetMinHeight: CGFloat
+    private let contentInsets: EdgeInsets
 
     public init(
         title: String? = nil,
         @ViewBuilder content: () -> Content,
+        contentInsets: EdgeInsets? = nil,
+        bottomSheetMinHeight: CGFloat = 400,
         showCloseButton: Bool = true,
         state: Binding<AppleLikeBottomSheetViewState?>,
         customDismiss: (() -> Void)? = nil,
@@ -36,19 +39,24 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         self._state = state
         self.customDismiss = customDismiss
         self.willDismiss = willDismiss
+        self.bottomSheetMinHeight = bottomSheetMinHeight
+        self.contentInsets = contentInsets ?? EdgeInsets(
+            top: .zero,
+            leading: DesignSystem.Spaces.two,
+            bottom: DesignSystem.Spaces.six,
+            trailing: DesignSystem.Spaces.two
+        )
     }
 
     public var body: some View {
         VStack {
             Spacer()
-            ZStack(alignment: .top) {
+            VStack {
+                header
                 content
                     .frame(maxWidth: .infinity)
-                    .padding(.horizontal, DesignSystem.Spaces.two)
-                    .padding(.vertical, DesignSystem.Spaces.six)
-                if showCloseButton {
-                    closeButton
-                }
+                    .padding(contentInsets)
+                    .frame(maxHeight: .infinity)
             }
             .padding(.horizontal)
             .frame(minHeight: bottomSheetMinHeight)
@@ -122,39 +130,42 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     @ViewBuilder
-    private var closeButton: some View {
-        VStack {
-            HStack {
-                // Spacer reserved for title to be center properly
-                Rectangle()
-                    .foregroundStyle(.clear)
-                    .frame(
-                        width: AppleLikeBottomSheetConstants.closebuttonSize,
-                        height: AppleLikeBottomSheetConstants.closebuttonSize
-                    )
-                Spacer()
-                if let title {
-                    Text(title)
-                        .font(DesignSystem.Font.title2.bold())
-                }
-                Spacer()
-                Button(action: {
-                    state = .dismiss
-                }, label: {
-                    Image(systemSymbol: .xmarkCircleFill)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
+    private var header: some View {
+        if showCloseButton || title != nil {
+            VStack {
+                HStack {
+                    // Spacer reserved for title to be center properly
+                    Rectangle()
+                        .foregroundStyle(.clear)
                         .frame(
                             width: AppleLikeBottomSheetConstants.closebuttonSize,
                             height: AppleLikeBottomSheetConstants.closebuttonSize
                         )
-                        .foregroundStyle(.gray, Color(uiColor: .secondarySystemBackground))
-                })
+                    Spacer()
+                    if let title {
+                        Text(title)
+                            .font(DesignSystem.Font.title2.bold())
+                            .multilineTextAlignment(.center)
+                    }
+                    Spacer()
+                    Button(action: {
+                        state = .dismiss
+                    }, label: {
+                        Image(systemSymbol: .xmarkCircleFill)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(
+                                width: AppleLikeBottomSheetConstants.closebuttonSize,
+                                height: AppleLikeBottomSheetConstants.closebuttonSize
+                            )
+                            .foregroundStyle(.gray, Color(uiColor: .secondarySystemBackground))
+                    })
+                }
+                Spacer()
             }
-            Spacer()
+            .padding(.top, DesignSystem.Spaces.three)
+            .padding([.trailing, .bottom], DesignSystem.Spaces.one)
         }
-        .padding(.top, DesignSystem.Spaces.three)
-        .padding([.trailing, .bottom], DesignSystem.Spaces.one)
     }
 }
 
@@ -163,7 +174,30 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         VStack {}
             .background(.blue)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        AppleLikeBottomSheet(content: { Text("Hello World") }, state: .constant(.initial), willDismiss: {})
+        AppleLikeBottomSheet(title: "Allow notifications?", content: {
+            VStack(spacing: DesignSystem.Spaces.three) {
+                Text(
+                    "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you."
+                )
+                .foregroundStyle(.secondary)
+                VStack(spacing: DesignSystem.Spaces.one) {
+                    Button {} label: {
+                        Text("Allow notifications")
+                    }
+                    .buttonStyle(.primaryButton)
+                    Button {} label: {
+                        Text("Do not allow")
+                    }
+                    .buttonStyle(.secondaryButton)
+                }
+            }
+            .background(.green)
+        }, contentInsets: .init(
+            top: DesignSystem.Spaces.six,
+            leading: DesignSystem.Spaces.two,
+            bottom: DesignSystem.Spaces.half,
+            trailing: DesignSystem.Spaces.two
+        ), state: .constant(.initial), willDismiss: {})
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
 }
