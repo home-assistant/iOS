@@ -52,7 +52,7 @@ final class MockWebViewController: WebViewControllerProtocol {
         dismissControllerAboveOverlayControllerCalled = true
     }
 
-    func updateSettingsButton(state: String) {
+    func updateFrontendConnectionState(state: String) {
         updateSettingsButtonCalled = true
         lastSettingButtonState = state
     }

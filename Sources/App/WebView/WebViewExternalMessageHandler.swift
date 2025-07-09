@@ -2,7 +2,7 @@ import CoreBluetooth
 import Foundation
 import Improv_iOS
 import PromiseKit
-import Shared
+@preconcurrency import Shared
 import SwiftMessages
 import SwiftUI
 
@@ -65,7 +65,7 @@ final class WebViewExternalMessageHandler {
                     Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
                     return
                 }
-                webViewController.updateSettingsButton(state: connEvt)
+                webViewController.updateFrontendConnectionState(state: connEvt)
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
@@ -193,8 +193,10 @@ final class WebViewExternalMessageHandler {
                     webViewController?.evaluateJavaScript(script, completion: { _, error in
                         if let error {
                             Current.Log.error("failed to fire message to externalBus: \(error)")
+                            seal.reject(error)
+                        } else {
+                            seal.fulfill(())
                         }
-                        seal.resolve(error)
                     })
                 } catch {
                     Current.Log.error("failed to send \(message): \(error)")

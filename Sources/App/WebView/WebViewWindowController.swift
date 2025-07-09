@@ -148,13 +148,17 @@ final class WebViewWindowController {
     }
 
     func navigate(to url: URL, on server: Server, avoidUnecessaryReload: Bool = false, isComingFromAppIntent: Bool) {
-        open(server: server).done { webViewController in
-            // Dismiss any overlayed controllers
-            webViewController.dismissOverlayController(animated: true, completion: nil)
-            if isComingFromAppIntent {
-                webViewController.openPanel(url)
-            } else {
-                webViewController.open(inline: url, avoidUnecessaryReload: avoidUnecessaryReload)
+        open(server: server).pipe { result in
+            switch result {
+            case let .fulfilled(webViewController):
+                webViewController.dismissOverlayController(animated: true, completion: nil)
+                if isComingFromAppIntent {
+                    webViewController.openPanel(url)
+                } else {
+                    webViewController.open(inline: url, avoidUnecessaryReload: avoidUnecessaryReload)
+                }
+            case .rejected:
+                Current.Log.error("Failed to open WebViewController for server \(server.identifier)")
             }
         }
     }
