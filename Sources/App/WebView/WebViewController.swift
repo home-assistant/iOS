@@ -254,7 +254,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private func setupEmptyState() {
         let emptyState = WebViewEmptyStateWrapperView(server: server) { [weak self] in
             self?.hideEmptyState()
-            self?.webView.reload()
+            self?.reloadWebView()
         } settingsAction: { [weak self] in
             self?.showSettingsViewController()
         } dismissAction: { [weak self] in
@@ -396,7 +396,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
         stackView.axis = .horizontal
-        stackView.spacing = Spaces.one
+        stackView.spacing = DesignSystem.Spaces.one
 
         statusBarView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -418,8 +418,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         openInSafariButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -Spaces.half),
-            stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: Spaces.half),
+            stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -DesignSystem.Spaces.half),
+            stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: DesignSystem.Spaces.half),
             openInSafariButton.leftAnchor.constraint(equalTo: statusBarView.leftAnchor, constant: 68),
             openInSafariButton.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: 8),
             openInSafariButton.widthAnchor.constraint(equalToConstant: 12),
@@ -551,16 +551,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             request = URLRequest(url: webviewURL)
         }
 
-        webView.load(request)
+        webViewLoad(request: request)
     }
 
     @objc private func refresh() {
         // called via menu/keyboard shortcut too
         if let webviewURL = server.info.connection.webviewURL() {
             if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
-                webView.reload()
+                reloadWebView()
             } else {
-                webView.load(URLRequest(url: webviewURL))
+                webViewLoad(request: URLRequest(url: webviewURL))
             }
         } else {
             showNoActiveURLError()
@@ -745,7 +745,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         view.bodyLabel?.numberOfLines = 0
 
         // Avoid retrying from Home Assistant UI since this is a dead end
-        webView.load(URLRequest(url: URL(string: "about:blank")!))
+        webViewLoad(request: URLRequest(url: URL(string: "about:blank")!))
         showEmptyState()
         SwiftMessages.show(config: config, view: view)
     }
@@ -754,7 +754,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let controller = UIHostingController(rootView: AnyView(
             NavigationView {
                 VStack {
-                    HStack(spacing: Spaces.half) {
+                    HStack(spacing: DesignSystem.Spaces.half) {
                         Text(verbatim: L10n.Settings.Debugging.ShakeDisclaimerOptional.title)
                         Toggle(isOn: .init(get: {
                             Current.settingsStore.gestures[.shake] == .openDebug
@@ -764,8 +764,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                     }
                     .padding()
                     .background(Color.haPrimary.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
-                    .padding(Spaces.one)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
+                    .padding(DesignSystem.Spaces.one)
                     DebugView()
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {
@@ -803,7 +803,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                     )
                 return
             }
-            webView.load(URLRequest(url: url))
+            webViewLoad(request: URLRequest(url: url))
         } else {
             openURLInBrowser(url, self)
         }
@@ -813,6 +813,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     public func openPanel(_ url: URL) {
         loadViewIfNeeded()
 
+        // TODO: Find out why navigating through the external bus does not open more-info dialog
+        guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil else {
+            webViewLoad(request: URLRequest(url: url))
+            Current.Log.verbose("Opening more-info dialog for URL: \(url)")
+            return
+        }
+
         let urlPathIncludingQueryParams = {
             // If the URL has query parameters, we need to include them in the path to ensure proper navigation
             if let query = url.query, !query.isEmpty {
@@ -821,24 +828,22 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             return url.path
         }()
 
-        // TODO: Find out why navigating through the external bus does not open more-info dialog
-        guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil else {
-            webView.load(URLRequest(url: url))
-            Current.Log.verbose("Opening more-info dialog for URL: \(url)")
-            return
-        }
-
-        if !navigate(path: urlPathIncludingQueryParams) {
-            webView.load(URLRequest(url: url))
+        navigate(path: urlPathIncludingQueryParams) { [weak self] success in
+            if !success {
+                Current.Log.warning("Failed to navigate through frontend for URL: \(url)")
+                // Fallback to loading the URL directly if navigation fails
+                self?.webViewLoad(request: URLRequest(url: url))
+            }
         }
     }
 
     /// Uses external bus to navigate through frontend instead of loading the page from scratch using the web view
     /// Returns true if the navigation was successful
-    private func navigate(path: String) -> Bool {
+    private func navigate(path: String, completion: @escaping (Bool) -> Void) {
         guard server.info.version >= .canNavigateThroughFrontend else {
             Current.Log.warning("Cannot navigate through frontend, core version is too low")
-            return false
+            completion(false)
+            return
         }
         Current.Log.verbose("Requesting navigation using external bus to path: \(path)")
         webViewExternalMessageHandler.sendExternalBus(message: .init(
@@ -846,8 +851,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             payload: [
                 "path": path,
             ]
-        ))
-        return true
+        )).pipe { result in
+            switch result {
+            case .fulfilled:
+                completion(true)
+            case .rejected:
+                completion(false)
+            }
+        }
     }
 
     public func showSettingsViewController() {
@@ -883,6 +894,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 ],
             ]
         ))
+    }
+
+    private func webViewLoad(request: URLRequest) {
+        Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
+        webView.load(request)
+    }
+
+    private func reloadWebView() {
+        Current.Log.verbose("Reload webView requested")
+        webView.reload()
     }
 }
 
@@ -994,7 +1015,7 @@ extension WebViewController {
 
             if let webviewURL = server.info.connection.webviewURL() {
                 decisionHandler(.cancel)
-                webView.load(URLRequest(url: webviewURL))
+                webViewLoad(request: URLRequest(url: webviewURL))
             } else {
                 // we don't have anything we can do about this
                 decisionHandler(.allow)

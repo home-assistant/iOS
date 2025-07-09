@@ -10,7 +10,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?)
     func dismissOverlayController(animated: Bool, completion: (() -> Void)?)
     func dismissControllerAboveOverlayController()
-    func updateSettingsButton(state: String)
+    func updateFrontendConnectionState(state: String)
     func navigateToPath(path: String)
     func reload()
 }

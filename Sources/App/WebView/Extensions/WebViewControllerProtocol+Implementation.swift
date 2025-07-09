@@ -37,10 +37,11 @@ extension WebViewController: WebViewControllerProtocol {
         overlayedController?.dismissAllViewControllersAbove()
     }
 
-    func updateSettingsButton(state: String) {
-        // Possible values: connected, disconnected, auth-invalid
+    func updateFrontendConnectionState(state: String) {
         emptyStateTimer?.invalidate()
         emptyStateTimer = nil
+
+        // Possible values: connected, disconnected, auth-invalid
         if state == "connected" {
             hideEmptyState()
         } else {
