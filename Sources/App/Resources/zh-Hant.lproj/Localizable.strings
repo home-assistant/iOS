@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "注意：原生 WebRTC 影片播放器目前為實驗性功能，音效可能無法正常執行，且即使未使用麥克風，系統仍可能請求麥克風權限。請使用網頁播放器介面以獲得進階選項與可靠的播放體驗。";
 "about.acknowledgements.title" = "致謝";
 "about.beta.title" = "參與測試";
 "about.chat.title" = "聊天";

@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "Σημείωση: Η εγγενής συσκευή αναπαραγωγής βίντεο WebRTC είναι προς το παρόν μια πειραματική λειτουργία, ο ήχος ενδέχεται να μην λειτουργεί και ενδέχεται να ζητηθεί άδεια χρήσης του μικροφώνου, ακόμη και αν δεν χρησιμοποιείται. Παρακαλώ χρησιμοποιήστε τη διεπαφή web player για προηγμένες επιλογές και αξιόπιστη αναπαραγωγή.";
 "about.acknowledgements.title" = "Ευχαριστίες";
 "about.beta.title" = "Συμμετοχή σε beta";
 "about.chat.title" = "Συνομιλία";
