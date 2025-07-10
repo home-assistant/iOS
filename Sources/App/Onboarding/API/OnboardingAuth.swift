@@ -16,7 +16,7 @@ class OnboardingAuth {
         OnboardingAuthStepConnectivity.self,
     ]
     var postSteps: [OnboardingAuthPostStep.Type] = [
-        OnboardingAuthStepDuplicate.self,
+        OnboardingAuthStepDeviceNaming.self,
         OnboardingAuthStepConfig.self,
         OnboardingAuthStepSensors.self,
         OnboardingAuthStepModels.self,

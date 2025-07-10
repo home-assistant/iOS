@@ -80,7 +80,9 @@ final class OnboardingServersListViewModel: ObservableObject {
 
     func selectInstance(_ instance: DiscoveredHomeAssistant, controller: UIViewController?) {
         guard let controller else {
-            Current.Log.error("No controller provided for onboarding")
+            let message = "No controller provided for onboarding"
+            Current.Log.error(message)
+            assertionFailure(message)
             return
         }
         Current.Log.verbose("Selected instance \(instance)")

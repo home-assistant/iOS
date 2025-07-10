@@ -1263,6 +1263,11 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
+"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"device_name.title" = "How would you like to name this device?";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.primary_button.title" = "Save";
 "yes_label" = "Yes";
 "permission.notification.title" = "Allow notifications?";
 "permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";

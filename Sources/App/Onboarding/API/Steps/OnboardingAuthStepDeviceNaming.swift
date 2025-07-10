@@ -1,8 +1,30 @@
 import HAKit
 import PromiseKit
 import Shared
+import SwiftUI
 
-struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
+private struct RegisteredDevice {
+    var name: String
+    var id: String
+
+    init?(data: HAData) throws {
+        self.name = try data.decode("name")
+        self.id = try {
+            let identifiers: [[String]] = try data.decode("identifiers")
+            for identifier in identifiers where identifier.count == 2 && identifier.starts(with: ["mobile_app"]) {
+                return identifier[1]
+            }
+
+            throw HADataError.couldntTransform(key: "identifiers")
+        }()
+    }
+
+    func matches(name other: String) -> Bool {
+        name.lowercased() == other.lowercased()
+    }
+}
+
+struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     init(
         api: HomeAssistantAPI,
         sender: UIViewController
@@ -19,6 +41,9 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
     }
 
     var timeout: TimeInterval = 30.0
+
+    /// Whether the user has already been prompted for a device name.
+    static var firstUserDeviceNameInput = true
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         let devices = firstly { () -> Promise<[HAData]> in
@@ -60,78 +85,46 @@ struct OnboardingAuthStepDuplicate: OnboardingAuthPostStep {
         }
     }
 
-    private struct RegisteredDevice {
-        var name: String
-        var id: String
-
-        init?(data: HAData) throws {
-            self.name = try data.decode("name")
-            self.id = try {
-                let identifiers: [[String]] = try data.decode("identifiers")
-                for identifier in identifiers where identifier.count == 2 && identifier.starts(with: ["mobile_app"]) {
-                    return identifier[1]
-                }
-
-                throw HADataError.couldntTransform(key: "identifiers")
-            }()
-        }
-
-        func matches(name other: String) -> Bool {
-            name.lowercased() == other.lowercased()
-        }
-    }
-
     private func promptForDeviceName(
         deviceName: String,
+        errorMessage: String? = nil,
         registeredDevices: [RegisteredDevice],
         sender: UIViewController
     ) -> Promise<Void> {
-        guard registeredDevices.contains(where: { $0.matches(name: deviceName) }) else {
+        guard registeredDevices.contains(where: { $0.matches(name: deviceName) }) ||
+            OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput else {
             // if the device name is not already taken, we can safely use it and don't need to prompt
             return .value(())
         }
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = false
 
         return Promise<Void> { seal in
-            let alert = UIAlertController(
-                title: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
-                message: L10n.Onboarding.DeviceNameCheck.Error.prompt,
-                preferredStyle: .alert
-            )
+            let view = UIHostingController(rootView: DeviceNameView(errorMessage: errorMessage, saveAction: { name in
+                guard name.isEmpty == false,
+                      !registeredDevices.contains(where: { $0.matches(name: name) }) else {
+                    promptForDeviceName(
+                        deviceName: deviceName,
+                        errorMessage: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
+                        registeredDevices: registeredDevices,
+                        sender: sender
+                    ).pipe(to: seal.resolve)
+                    return
+                }
 
-            alert.addTextField { textField in
-                textField.keyboardType = .default
-                textField.placeholder = deviceName
-                textField.text = deviceName
-                textField.enablesReturnKeyAutomatically = true
-                textField.autocapitalizationType = .words
-            }
-
-            alert.addAction(.init(title: L10n.cancelLabel, style: .cancel, handler: { _ in
+                api.server.info.setSetting(value: name, for: .overrideDeviceName)
+                resetFirstUserDeviceNameInput()
+                seal.fulfill(())
+            }, cancelAction: {
+                resetFirstUserDeviceNameInput()
                 seal.reject(PMKError.cancelled)
             }))
 
-            alert.addAction(.init(
-                title: L10n.Onboarding.DeviceNameCheck.Error.renameAction,
-                style: .default,
-                handler: { [self] _ in
-                    let name = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespaces)
-
-                    guard let name, name.isEmpty == false,
-                          !registeredDevices.contains(where: { $0.matches(name: name) }) else {
-                        promptForDeviceName(
-                            deviceName: deviceName,
-                            registeredDevices: registeredDevices,
-                            sender: sender
-                        ).pipe(to: seal.resolve)
-                        return
-                    }
-
-                    api.server.info.setSetting(value: name, for: .overrideDeviceName)
-                    seal.fulfill(())
-                }
-            ))
-
-            sender.present(alert, animated: true, completion: nil)
+            sender.present(view, animated: true, completion: nil)
         }
+    }
+
+    // In case the flow is completed or cancelled, we reset the first user device name input flag.
+    private func resetFirstUserDeviceNameInput() {
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = true
     }
 }

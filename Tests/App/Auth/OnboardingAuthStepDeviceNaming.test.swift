@@ -2,10 +2,16 @@ import HAKit
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SwiftUI
 import XCTest
 
-class OnboardingAuthStepDuplicateTests: XCTestCase {
-    private var step: OnboardingAuthStepDuplicate!
+final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
+    enum Operation {
+        case `default`
+        case cancel
+    }
+
+    private var step: OnboardingAuthStepDeviceNaming!
     private var api: HomeAssistantAPI!
     private var connection: HAMockConnection!
     private var sender: FakeUIViewController!
@@ -26,7 +32,8 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
         deviceName = name
         Current.device.deviceName = { name }
 
-        step = OnboardingAuthStepDuplicate(api: api, sender: sender)
+        step = OnboardingAuthStepDeviceNaming(api: api, sender: sender)
+        OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = false
     }
 
     override func tearDown() {
@@ -39,7 +46,7 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
     }
 
     func testSupportedPoints() {
-        XCTAssertTrue(OnboardingAuthStepDuplicate.supportedPoints.contains(.beforeRegister))
+        XCTAssertTrue(OnboardingAuthStepDeviceNaming.supportedPoints.contains(.beforeRegister))
     }
 
     func testNoWebSocketResponseWithoutError() {
@@ -212,14 +219,14 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
 
     private func setupSender(
         delay: DispatchTimeInterval = .seconds(0),
-        actions: (UIAlertAction.Style, String?)...
+        actions: (Operation, String?)...
     ) -> XCTestExpectation {
         var pendingActions = actions.makeIterator()
 
         let expectation = expectation(description: "alert action")
         expectation.expectedFulfillmentCount = actions.count
         sender.didPresent = { vc in
-            guard let vc = vc as? UIAlertController else {
+            guard let vc = vc as? UIHostingController<DeviceNameView> else {
                 XCTFail("invalid presented controller")
                 return
             }
@@ -229,15 +236,15 @@ class OnboardingAuthStepDuplicateTests: XCTestCase {
                 return
             }
 
-            guard let action = vc.actions.first(where: { $0.style == nextAction.0 }) else {
-                XCTFail("no action found")
-                return
-            }
-
-            vc.textFields?.forEach { $0.text = nextAction.1 }
+            vc.rootView.setDeviceName(nextAction.1 ?? "")
 
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                action.ha_handler(action)
+                switch nextAction.0 {
+                case .default:
+                    vc.rootView.saveAction(nextAction.1 ?? "")
+                case .cancel:
+                    vc.rootView.cancelAction()
+                }
                 expectation.fulfill()
             }
         }
