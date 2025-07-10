@@ -432,7 +432,7 @@
 		11EFCDDC24F6065F00314D85 /* AboutSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */; };
 		11EFCDE024F60E5900314D85 /* BasicSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */; };
 		11EFD3BE27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift */; };
-		11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */; };
+		11EFD3C027261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift */; };
 		11EFD3C327264306000AF78B /* UIAlertAction+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EFD3C227264306000AF78B /* UIAlertAction+Additions.swift */; };
 		11F01A80263D050D002AC33B /* NotificationLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */; };
 		11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F20BC4274B06C100DFB163 /* ServerSelectRow.swift */; };
@@ -807,8 +807,6 @@
 		429C72202B28D0EC00BCD558 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429C721F2B28D0EC00BCD558 /* Haptics.swift */; };
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		42A1860A2E1D310D004B729A /* HATextField.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A186092E1D310D004B729A /* HATextField.test.swift */; };
-		42A2AB7C2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
-		42A2AB7D2C806D5D00C5608D /* SharedPush in Resources */ = {isa = PBXBuildFile; fileRef = 42A2AB7B2C806D5D00C5608D /* SharedPush */; };
 		42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2AB7F2C80751E00C5608D /* ControlAssist.swift */; };
 		42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
 		42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
@@ -1969,7 +1967,7 @@
 		11EFCDDB24F6065F00314D85 /* AboutSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSceneDelegate.swift; sourceTree = "<group>"; };
 		11EFCDDF24F60E5900314D85 /* BasicSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSceneDelegate.swift; sourceTree = "<group>"; };
 		11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepConnectivity.test.swift; sourceTree = "<group>"; };
-		11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepDuplicate.test.swift; sourceTree = "<group>"; };
+		11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAuthStepDeviceNaming.test.swift; sourceTree = "<group>"; };
 		11EFD3C227264306000AF78B /* UIAlertAction+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Additions.swift"; sourceTree = "<group>"; };
 		11F01A7F263D050D002AC33B /* NotificationLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationLoadingViewController.swift; sourceTree = "<group>"; };
 		11F20BC4274B06C100DFB163 /* ServerSelectRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectRow.swift; sourceTree = "<group>"; };
@@ -2290,7 +2288,6 @@
 		429BEA1B2D1030EA00F070F9 /* SheetCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetCloseButton.swift; sourceTree = "<group>"; };
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		42A186092E1D310D004B729A /* HATextField.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.test.swift; sourceTree = "<group>"; };
-		42A2AB7B2C806D5D00C5608D /* SharedPush */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedPush; sourceTree = "<group>"; };
 		42A2AB7F2C80751E00C5608D /* ControlAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssist.swift; sourceTree = "<group>"; };
 		42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Codable.swift"; sourceTree = "<group>"; };
 		42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Encodable.swift"; sourceTree = "<group>"; };
@@ -3286,7 +3283,7 @@
 				116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */,
 				116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */,
 				11EFD3BD27253504000AF78B /* OnboardingAuthStepConnectivity.test.swift */,
-				11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift */,
+				11EFD3BF27261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift */,
 				11ED43952726599D00B5FD45 /* OnboardingAuthStepModels.test.swift */,
 				11ED439727265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift */,
 				11ED439927265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift */,
@@ -8034,7 +8031,7 @@
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
-				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDuplicate.test.swift in Sources */,
+				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift in Sources */,
 				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
 				42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,

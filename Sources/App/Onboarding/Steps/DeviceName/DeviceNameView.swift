@@ -90,6 +90,12 @@ struct DeviceNameView: View {
             .iphone
         }
     }
+
+    #if DEBUG
+    func setDeviceName(_ deviceName: String) {
+        self.deviceName = deviceName
+    }
+    #endif
 }
 
 #Preview {
