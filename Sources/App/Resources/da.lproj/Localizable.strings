@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Nulstil appens entitetsdatabase";
 "debug_section_label" = "Fejlsøg";
 "delete" = "Slet";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Færdig";
 "download_manager.downloading.title" = "Henter";
 "download_manager.failed.title" = "Kunne ikke hente fil, fejl: %@";
@@ -534,6 +538,10 @@ Home Assistant er gratis og open source hjemmeautomatiseringssoftware med fokus 
 "onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Velkommen til Home Assistant %@!";
 "open_label" = "Åbn";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Spring over";
 "permission.screen.bluetooth.subtitle" = "Home Assistant-appen kan finde enheder ved hjælp af Bluetooth på denne enhed. Tillad Bluetooth-adgang for Home Assistant-appen.";
 "permission.screen.bluetooth.title" = "Søg enheder";

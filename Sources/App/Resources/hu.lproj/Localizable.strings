@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Alkalmazás entitások adatbázisának visszaállítása";
 "debug_section_label" = "Hibakeresés";
 "delete" = "Törlés";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Kész";
 "download_manager.downloading.title" = "Letöltés";
 "download_manager.failed.title" = "Nem sikerült letölteni a fájlt, hiba: %@";
@@ -534,6 +538,10 @@ A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási 
 "onboarding.welcome.secondary_button" = "Első lépések";
 "onboarding.welcome.title" = "%@ Home Assistant üdvözli Önt!";
 "open_label" = "Megnyitás";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Kihagyás";
 "permission.screen.bluetooth.subtitle" = "A Home Assistant alkalmazás Bluetooth-on keresztül képes megkeresni az eszköz Bluetooth-kapcsolatát használó eszközöket. Engedélyezze a Bluetooth-hozzáférést a Home Assistant alkalmazás számára.";
 "permission.screen.bluetooth.title" = "Eszközök keresése";

@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Setel ulang database entitas aplikasi";
 "debug_section_label" = "Debug";
 "delete" = "Hapus";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Selesai";
 "download_manager.downloading.title" = "Mengunduh";
 "download_manager.failed.title" = "Gagal mengunduh berkas, kesalahan: %@";
@@ -534,6 +538,10 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "onboarding.welcome.secondary_button" = "Memulai";
 "onboarding.welcome.title" = "Selamat datang di Home Assistant %@!";
 "open_label" = "Buka";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Lewatkan";
 "permission.screen.bluetooth.subtitle" = "Aplikasi Home Assistant dapat menemukan perangkat yang menggunakan Bluetooth perangkat ini. Izinkan akses Bluetooth untuk aplikasi Home Assistant.";
 "permission.screen.bluetooth.title" = "Cari perangkat";

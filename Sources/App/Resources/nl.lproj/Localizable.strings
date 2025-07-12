@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "App-entiteitendatabase resetten";
 "debug_section_label" = "Debug";
 "delete" = "Verwijder";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Klaar";
 "download_manager.downloading.title" = "Downloaden";
 "download_manager.failed.title" = "Downloaden van bestand mislukt, fout: %@";
@@ -534,6 +538,10 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "onboarding.welcome.secondary_button" = "Aan de slag";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Overslaan";
 "permission.screen.bluetooth.subtitle" = "De Home Assistant app kan apparaten vinden via Bluetooth van dit apparaat. Sta Bluetooth-toegang toe voor de Home Assistant app.";
 "permission.screen.bluetooth.title" = "Zoek apparaten";

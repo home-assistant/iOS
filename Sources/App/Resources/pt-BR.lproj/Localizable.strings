@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "Observação: O player de vídeo WebRTC nativo é atualmente um recurso experimental. O áudio pode não funcionar e a permissão e o uso do microfone podem ser solicitados mesmo quando não estiverem em uso. Use a interface do player web para opções avançadas e reprodução confiável.";
 "about.acknowledgements.title" = "Agradecimentos";
 "about.beta.title" = "Inscreva-se no Beta";
 "about.chat.title" = "Chat";
@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Redefinir o banco de dados de entidades do aplicativo";
 "debug_section_label" = "Depurar";
 "delete" = "Excluir";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Feito";
 "download_manager.downloading.title" = "Baixando";
 "download_manager.failed.title" = "Falha ao baixar o arquivo, erro: %@";
@@ -517,7 +521,7 @@
 "onboarding.scanning.manual.button.title" = "Digite o endereço manualmente";
 "onboarding.scanning.manual_hint" = "Não encontrou seu servidor?";
 "onboarding.scanning.title" = "Escaneando servidores";
-"onboarding.servers.auto_connect.button" = "Connect";
+"onboarding.servers.auto_connect.button" = "Conectar";
 "onboarding.servers.docs.read" = "Leia a documentação";
 "onboarding.servers.search.message" = "Procurando servidores nas proximidades...";
 "onboarding.servers.title" = "Pesquisando na rede doméstica";
@@ -534,6 +538,10 @@
 "onboarding.welcome.secondary_button" = "Primeiros passos";
 "onboarding.welcome.title" = "Bem-vindo ao Home Assistant %@ !";
 "open_label" = "Abrir";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Pular";
 "permission.screen.bluetooth.subtitle" = "O aplicativo Home Assistant pode encontrar dispositivos usando o Bluetooth deste dispositivo. Permita o acesso Bluetooth para o aplicativo Home Assistant.";
 "permission.screen.bluetooth.title" = "Pesquisar dispositivos";
