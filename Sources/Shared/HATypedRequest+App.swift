@@ -120,4 +120,20 @@ public extension HATypedRequest {
             type: .webSocket("config/entity_registry/list_for_display")
         ))
     }
+
+    static func getItemFromTodoList(listId: String) -> HATypedRequest<TodoListRawResponse> {
+        HATypedRequest<TodoListRawResponse>(request:
+                .init(
+                    type: .rest(
+                        .post, "services/todo/get_items"
+                    ), data: [
+                        "entity_id": "todo.supermercado"
+                    ],
+                    queryItems: [
+                        .init(name: "return_response", value: "true")
+                    ],
+                    shouldRetry: true
+                )
+        )
+    }
 }
