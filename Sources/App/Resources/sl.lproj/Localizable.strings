@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Debug";
 "delete" = "Izbriši";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Done";
 "download_manager.downloading.title" = "Downloading";
 "download_manager.failed.title" = "Failed to download file, error: %@";
@@ -534,6 +538,10 @@ Home Assistant je brezplačna odprtokodna programska oprema za avtomatizacijo do
 "onboarding.welcome.secondary_button" = "Getting started";
 "onboarding.welcome.title" = "Dobrodošli v Home Assistant-u %@!";
 "open_label" = "Odprto";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Skip";
 "permission.screen.bluetooth.subtitle" = "The Home Assistant app can find devices using Bluetooth of this device. Allow Bluetooth access for the Home Assistant app.";
 "permission.screen.bluetooth.title" = "Search devices";

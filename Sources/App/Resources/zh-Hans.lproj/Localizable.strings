@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "重置应用实体数据库";
 "debug_section_label" = "调试";
 "delete" = "删除";
+"device_name.primary_button.title" = "保存";
+"device_name.subtitle" = "这用于在您的 Home Assistant 中识别您的设备。";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac 名称";
+"device_name.title" = "您想如何命名该设备 ？";
 "done_label" = "完成";
 "download_manager.downloading.title" = "正在下载";
 "download_manager.failed.title" = "下载文件失败，错误：%@";
@@ -532,6 +536,10 @@
 "onboarding.welcome.secondary_button" = "入门";
 "onboarding.welcome.title" = "欢迎使用 Home Assistant %@ ！";
 "open_label" = "打开";
+"permission.notification.body" = "启用通知并获取您家中发生的情况，从检测到泄漏到敞开的门，您可以完全控制它告诉您的内容。";
+"permission.notification.primary_button" = "允许通知";
+"permission.notification.secondary_button" = "不允许";
+"permission.notification.title" = "允许通知吗 ？";
 "permission.screen.bluetooth.secondary_button" = "跳过";
 "permission.screen.bluetooth.subtitle" = "Home Assistant 应用可以找到使用此设备蓝牙的那些设备。允许 Home Assistant 应用可访问蓝牙。";
 "permission.screen.bluetooth.title" = "搜索设备";
