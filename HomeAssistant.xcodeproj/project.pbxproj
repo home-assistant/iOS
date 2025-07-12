@@ -1209,6 +1209,13 @@
 		42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 42FDCA252F0C7BFA00C92958 /* entityregistry.json */; };
 		42FDCA2A2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
 		42FDCA2B2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
+		42FF5E912E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */; };
+		42FF5E922E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */; };
+		42FF5E942E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */; };
+		42FF5E952E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */; };
+		42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
+		42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */; };
+		42FF5E992E22F84600BDF5EF /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -2994,6 +3001,9 @@
 		42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClass.swift; sourceTree = "<group>"; };
 		42FDCA252F0C7BFA00C92958 /* entityregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = entityregistry.json; sourceTree = "<group>"; };
 		42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryTable.swift; sourceTree = "<group>"; };
+		42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoList.swift; sourceTree = "<group>"; };
+		42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTodoListProvider.swift; sourceTree = "<group>"; };
+		42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListItem.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingHelper.swift; sourceTree = "<group>"; };
@@ -3846,6 +3856,7 @@
 			isa = PBXGroup;
 			children = (
 				428863582EF9641400319CF4 /* CameraList */,
+				42FF5E8F2E22D7DA00BDF5EF /* TodoList */,
 				42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */,
 				422368892D40F980005911E4 /* Lockscreen */,
 				422368882D40F965005911E4 /* Controls */,
@@ -6426,6 +6437,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		42FF5E8F2E22D7DA00BDF5EF /* TodoList */ = {
+			isa = PBXGroup;
+			children = (
+				42FF5E902E22D7EC00BDF5EF /* WidgetTodoList.swift */,
+				42FF5E932E22D83800BDF5EF /* WidgetTodoListProvider.swift */,
+			);
+			path = TodoList;
+			sourceTree = "<group>";
+		};
 		46C3EB192D721000009A893F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -7109,6 +7129,7 @@
 				4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */,
 				42D6EAB62F0FF8BD00FA249B /* ExternalMessageModels */,
 				42D6EABB2F0FF96400FA249B /* Toast */,
+				42FF5E962E22E5C100BDF5EF /* TodoListItem.swift */,
 				4251AABD2C6CE230004CCC9D /* MagicItem */,
 				4264906A2C0F1B40002155CC /* Assist */,
 				426740A42B17348700C1DD73 /* Assets */,
@@ -8069,6 +8090,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42FF5E992E22F84600BDF5EF /* SharedAssets.xcassets in Resources */,
 				1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */,
 				42E0D82D2DCCE5900095A245 /* Colors.xcassets in Resources */,
 				422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */,
@@ -8989,6 +9011,7 @@
 				3E4087F12CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
 				3E02C0F52CA8047000102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,
+				42FF5E952E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */,
 				422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
@@ -9056,6 +9079,7 @@
 				403AE9122C2E2BFC00D48147 /* WidgetGaugeAppIntentTimelineProvider.swift in Sources */,
 				42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */,
 				428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
+				42FF5E912E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */,
 				4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */,
 				428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */,
@@ -9424,6 +9448,7 @@
 				42DC44362E1C0791001046C1 /* WebRTCVideoPlayerView.swift in Sources */,
 				42DC44372E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift in Sources */,
 				4278CB812D01E61D00CFAAC9 /* GesturesSetupView.swift in Sources */,
+				42FF5E922E22D7EC00BDF5EF /* WidgetTodoList.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,
 				42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
@@ -9480,6 +9505,7 @@
 				429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */,
+				42FF5E942E22D83800BDF5EF /* WidgetTodoListProvider.swift in Sources */,
 				42E5542D2E128AE4008A160D /* ServerPickerView.swift in Sources */,
 				42C60F892F0576CA0071A6F6 /* LightControlsView.swift in Sources */,
 				11EFCDDA24F5FE0600314D85 /* SceneActivity.swift in Sources */,
@@ -9755,6 +9781,7 @@
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */,
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
+				42FF5E972E22E5C100BDF5EF /* TodoListItem.swift in Sources */,
 				114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
 				4251AABE2C6CE242004CCC9D /* MagicItemProvider.swift in Sources */,
 				42D3E4BE2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */,
@@ -10054,6 +10081,7 @@
 				11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */,
 				42FCD00C2B9B25D60057783F /* ThreadClientProtocol.swift in Sources */,
 				42D334282D105990008D8E78 /* AppPanel.swift in Sources */,
+				42FF5E982E22E5C100BDF5EF /* TodoListItem.swift in Sources */,
 				11C4628824B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
 				B6872E632226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,

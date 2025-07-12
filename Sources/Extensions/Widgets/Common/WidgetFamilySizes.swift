@@ -18,6 +18,19 @@ enum WidgetFamilySizes {
         }
     }
 
+    static func todoListSize(for family: WidgetFamily) -> Int {
+        switch family {
+        case .systemSmall: return 3
+        case .systemMedium: return 3
+        case .systemLarge: return 6
+        case .systemExtraLarge: return 12
+        case .accessoryRectangular, .accessoryCircular, .accessoryInline:
+            return 1
+        @unknown default:
+            return 1
+        }
+    }
+
     // While previewing we want to display tile card style (with padding and border)
     // To do that we can't display the maximum amount of items otherwise we will show 'compressed' size style
     static func sizeForPreview(for family: WidgetFamily) -> Int {
