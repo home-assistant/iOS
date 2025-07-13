@@ -12,6 +12,13 @@ import SwiftUI
 import UIKit
 @preconcurrency import WebKit
 
+enum FrontEndConnectionState: String {
+    case connected
+    case disconnected
+    case authInvalid = "auth-invalid"
+    case unknown
+}
+
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
 
@@ -42,6 +49,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// Defer showing the empty state until disconnected for 4 seconds (var used in
     /// WebViewControllerProtocol+Implementation )
     var emptyStateTimer: Timer?
+
+    // Frontend notifies when connection is established or not
+    // Each navigation resets this to false so we can show the empty state
+    var isConnected = false
 
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
@@ -911,6 +922,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
 extension WebViewController {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
 
