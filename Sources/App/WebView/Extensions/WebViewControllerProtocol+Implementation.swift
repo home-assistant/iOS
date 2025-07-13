@@ -41,8 +41,11 @@ extension WebViewController: WebViewControllerProtocol {
         emptyStateTimer?.invalidate()
         emptyStateTimer = nil
 
+        let state = FrontEndConnectionState(rawValue: state) ?? .unknown
+        isConnected = state == .connected
+
         // Possible values: connected, disconnected, auth-invalid
-        if state == "connected" {
+        if state == .connected {
             hideEmptyState()
         } else {
             // Start a 4-second timer. If not interrupted by a 'connected' state, set alpha to 1.
