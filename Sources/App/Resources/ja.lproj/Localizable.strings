@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "注：ネイティブWebRTCビデオプレーヤーは現在試験的な機能です。音声が機能しない場合があります。また、マイクを使用していない場合でも、マイクの許可と使用許可を求められる場合があります。高度なオプションや安定した再生には、ウェブプレーヤーインターフェースをご利用ください。";
 "about.acknowledgements.title" = "謝辞";
 "about.beta.title" = "ベータ版に参加";
 "about.chat.title" = "チャット";
@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "アプリエンティティデータベースをリセット";
 "debug_section_label" = "デバッグ";
 "delete" = "削除";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "完了";
 "download_manager.downloading.title" = "ダウンロード中";
 "download_manager.failed.title" = "ファイルのダウンロードに失敗しました。エラー: %@";
@@ -534,6 +538,10 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "onboarding.welcome.secondary_button" = "はじめる";
 "onboarding.welcome.title" = "Home Assistantへようこそ %@！";
 "open_label" = "オープン";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "スキップ";
 "permission.screen.bluetooth.subtitle" = "Home Assistant アプリは、このデバイスの Bluetooth を使用してデバイスを見つけることができます。Home Assistant アプリに Bluetooth アクセスを許可してください。";
 "permission.screen.bluetooth.title" = "デバイスを探す";
