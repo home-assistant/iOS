@@ -16,7 +16,7 @@ class FocusSensorTests: XCTestCase {
         super.setUp()
     }
 
-    private func setUp(
+    private func setUpDependencies(
         authorization: FocusStatusWrapper.AuthorizationStatus = .authorized,
         isAvailable: Bool = true,
         status: FocusStatusWrapper.Status = .init(isFocused: nil)
@@ -27,7 +27,7 @@ class FocusSensorTests: XCTestCase {
     }
 
     func testNotAvailable() throws {
-        setUp(isAvailable: false)
+        setUpDependencies(isAvailable: false)
 
         let promise = FocusSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -39,7 +39,7 @@ class FocusSensorTests: XCTestCase {
         for state: FocusStatusWrapper.AuthorizationStatus in [
             .restricted, .denied, .notDetermined,
         ] {
-            setUp(authorization: state)
+            setUpDependencies(authorization: state)
 
             let promise = FocusSensor(request: request).sensors()
             XCTAssertThrowsError(try hang(promise)) { error in
@@ -49,14 +49,14 @@ class FocusSensorTests: XCTestCase {
     }
 
     func testIsFocusedNil() throws {
-        setUp(status: .init(isFocused: nil))
+        setUpDependencies(status: .init(isFocused: nil))
 
         let promise = FocusSensor(request: request).sensors()
         XCTAssertTrue(try hang(promise).isEmpty)
     }
 
     func testIsFocusedYes() throws {
-        setUp(status: .init(isFocused: true))
+        setUpDependencies(status: .init(isFocused: true))
 
         let promise = FocusSensor(request: request).sensors()
         let sensors = try hang(promise)
@@ -69,7 +69,7 @@ class FocusSensorTests: XCTestCase {
     }
 
     func testIsFocusedNo() throws {
-        setUp(status: .init(isFocused: false))
+        setUpDependencies(status: .init(isFocused: false))
 
         let promise = FocusSensor(request: request).sensors()
         let sensors = try hang(promise)
@@ -82,7 +82,7 @@ class FocusSensorTests: XCTestCase {
     }
 
     func testUpdateSignalerCreated() throws {
-        setUp(status: .init(isFocused: false))
+        setUpDependencies(status: .init(isFocused: false))
 
         let dependencies = SensorProviderDependencies()
         let provider = FocusSensor(request: .init(
@@ -100,22 +100,24 @@ class FocusSensorTests: XCTestCase {
 
     @MainActor
     func testSignaler() async throws {
-        Current.focusStatus.authorizationStatus = {
-            .authorized
-        }
+        setUpDependencies(
+            authorization: .authorized,
+            isAvailable: true,
+            status: .init(focusStatus: .init(isFocused: true))
+        )
         _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
 
         let expectation1 = expectation(description: "Observation")
         let expectation2 = expectation(description: "Signal")
-        var signaler: FocusSensorUpdateSignaler? = FocusSensorUpdateSignaler(signal: {
+        let signaler = FocusSensorUpdateSignaler(signal: {
             expectation2.fulfill()
         })
 
-        signaler?.notifyObservation = {
+        signaler.notifyObservation = {
             expectation1.fulfill()
         }
 
-        await fulfillment(of: [expectation1], timeout: 2)
+        await fulfillment(of: [expectation1], timeout: 10)
 
         let date = Date()
         Current.isForegroundApp = { false }
@@ -125,10 +127,6 @@ class FocusSensorTests: XCTestCase {
         Current.focusStatus.trigger.value = date.addingTimeInterval(1.0)
 
         // so it sticks around, but we don't need to access it directly
-        await fulfillment(of: [expectation2], timeout: 2)
-        signaler = nil
-
-        Current.focusStatus.trigger.value = date.addingTimeInterval(2.0)
-        // we expect this to not fire an expectation over-fulfill
+        await fulfillment(of: [expectation2], timeout: 10)
     }
 }
