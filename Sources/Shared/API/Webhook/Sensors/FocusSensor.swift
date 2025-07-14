@@ -3,11 +3,22 @@ import HAKit
 import PromiseKit
 
 final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
+
+    /// Indicates where observation is already happening
     private var isObserving = false
+    /// Indicates where intial sensors update is going to happen
+    private var firstUpdate = true
+
+    #if DEBUG
+    /// Used for unit test to identify when observation is ready
+    var notifyObservation: (() -> Void)?
+    #endif
+
     var cancellable: HACancellable?
     private let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
     }
 
     deinit {
@@ -24,6 +35,10 @@ final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObser
             }
         }
         isObserving = true
+
+        #if DEBUG
+        notifyObservation?()
+        #endif
     }
 
     private func stopObserving() {
@@ -33,7 +48,18 @@ final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObser
     }
 
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        update.sensors.done { [weak self] sensors in
+        guard firstUpdate else { return }
+        firstUpdate = false
+        updateObservation(sensorUpdates: update)
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+        guard reason == .settingsChange else { return }
+        updateObservation(sensorUpdates: lastUpdate)
+    }
+
+    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
+        sensorUpdates?.sensors.done { [weak self] sensors in
             let activeRelatedSensors = sensors.filter({ sensor in
                 sensor.UniqueID == WebhookSensorId.focus.rawValue
             })
@@ -45,13 +71,9 @@ final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObser
             if activeSensors.isEmpty {
                 self?.stopObserving()
             } else {
-                self?.observe()
+                    self?.observe()
             }
         }
-    }
-
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
-        /* no-op */
     }
 }
 

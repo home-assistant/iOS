@@ -8,6 +8,12 @@ import Reachability
 final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
     private var isObserving = false
     let signal: () -> Void
+
+    #if DEBUG
+    /// Used for unit test to identify when observation is ready
+    var notifyObservation: (() -> Void)?
+    #endif
+
     init(signal: @escaping () -> Void) {
         self.signal = signal
         Current.sensors.register(observer: self)
@@ -26,6 +32,10 @@ final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
             object: nil
         )
         isObserving = true
+
+        #if DEBUG
+        notifyObservation?()
+        #endif
     }
 
     private func stopObserving() {
@@ -58,7 +68,7 @@ final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
         }
     }
 
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
         /* no-op */
     }
 }

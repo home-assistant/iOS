@@ -164,10 +164,7 @@ extension OnboardingServersListViewModel: BonjourObserver {
 }
 
 extension OnboardingServersListViewModel: SensorObserver {
-    func sensorContainer(
-        _ container: Shared.SensorContainer,
-        didSignalForUpdateBecause reason: Shared.SensorContainerUpdateReason
-    ) {
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
         /* no-op */
     }
 

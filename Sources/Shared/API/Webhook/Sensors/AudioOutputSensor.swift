@@ -6,7 +6,11 @@ import Intents
 import PromiseKit
 
 final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
+    /// Indicates where observation is already happening
     private var isObserving = false
+    /// Indicates where intial sensors update is going to happen
+    private var firstUpdate = true
+
     private var cancellables: Set<AnyCancellable> = []
     private let signal: () -> Void
     init(signal: @escaping () -> Void) {
@@ -32,7 +36,18 @@ final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, Se
     }
 
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        update.sensors.done { [weak self] sensors in
+        guard firstUpdate else { return }
+        firstUpdate = false
+        updateObservation(sensorUpdates: update)
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+        guard reason == .settingsChange else { return }
+        updateObservation(sensorUpdates: lastUpdate)
+    }
+
+    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
+        sensorUpdates?.sensors.done { [weak self] sensors in
             guard let frontMostAppSensor = sensors.first(where: { sensor in
                 sensor.UniqueID == WebhookSensorId.iPhoneAudioOutput.rawValue
             }) else {
@@ -44,10 +59,6 @@ final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, Se
                 self?.stopObserving()
             }
         }
-    }
-
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
-        /* no-op */
     }
 }
 

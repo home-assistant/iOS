@@ -106,7 +106,7 @@ class SensorListViewModel: ObservableObject {
 // MARK: - SensorObserver
 
 extension SensorListViewModel: SensorObserver {
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
         refresh()
     }
 

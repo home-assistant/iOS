@@ -12,6 +12,7 @@ class FocusSensorTests: XCTestCase {
         serverVersion: Version()
     )
 
+
     override func setUp() {
         super.setUp()
     }
@@ -98,14 +99,24 @@ class FocusSensorTests: XCTestCase {
         XCTAssertNotNil(signaler)
     }
 
-    func testSignaler() {
-        let expectation = expectation(description: "signal")
+    @MainActor
+    func testSignaler() async throws {
+        Current.focusStatus.authorizationStatus = {
+            .authorized
+        }
+        _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
+
+        let expectation1 = expectation(description: "Observation")
+        let expectation2 = expectation(description: "Signal")
         var signaler: FocusSensorUpdateSignaler? = FocusSensorUpdateSignaler(signal: {
-            expectation.fulfill()
+            expectation2.fulfill()
         })
 
-        // to mute the written-but-never-read warning
-        _ = signaler
+        signaler?.notifyObservation = {
+            expectation1.fulfill()
+        }
+
+        await fulfillment(of: [expectation1], timeout: 2)
 
         let date = Date()
         Current.isForegroundApp = { false }
@@ -115,7 +126,7 @@ class FocusSensorTests: XCTestCase {
         Current.focusStatus.trigger.value = date.addingTimeInterval(1.0)
 
         // so it sticks around, but we don't need to access it directly
-        wait(for: [expectation], timeout: 10.0)
+        await fulfillment(of: [expectation2], timeout: 2)
         signaler = nil
 
         Current.focusStatus.trigger.value = date.addingTimeInterval(2.0)

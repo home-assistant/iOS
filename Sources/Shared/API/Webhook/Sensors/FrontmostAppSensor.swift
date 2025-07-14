@@ -2,7 +2,10 @@ import Foundation
 import PromiseKit
 
 final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
+    /// Indicates where observation is already happening
     private var isObserving = false
+    /// Indicates where intial sensors update is going to happen
+    private var firstUpdate = true
 
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
@@ -40,7 +43,18 @@ final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
     }
 
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        update.sensors.done { [weak self] sensors in
+        guard firstUpdate else { return }
+        firstUpdate = false
+        updateObservation(sensorUpdates: update)
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+        guard reason == .settingsChange else { return }
+        updateObservation(sensorUpdates: lastUpdate)
+    }
+
+    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
+        sensorUpdates?.sensors.done { [weak self] sensors in
             guard let frontMostAppSensor = sensors.first(where: { sensor in
                 sensor.UniqueID == WebhookSensorId.frontmostApp.rawValue
             }) else {
@@ -52,10 +66,6 @@ final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
                 self?.stopObserving()
             }
         }
-    }
-
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
-        /* no-op */
     }
 }
 

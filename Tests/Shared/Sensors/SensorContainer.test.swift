@@ -409,7 +409,7 @@ private class MockSensorObserver: SensorObserver {
         updates.append(update)
     }
 
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
         updateSignalCount += 1
     }
 }

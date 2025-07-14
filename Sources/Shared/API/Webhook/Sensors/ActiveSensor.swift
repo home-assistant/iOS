@@ -2,7 +2,11 @@ import Foundation
 import PromiseKit
 
 final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStateObserver, SensorObserver {
+    /// Indicates where observation is already happening
     private var isObserving = false
+    /// Indicates where intial sensors update is going to happen
+    private var firstUpdate = true
+
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
@@ -26,7 +30,18 @@ final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStat
     }
 
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        update.sensors.done { [weak self] sensors in
+        guard firstUpdate else { return }
+        firstUpdate = false
+        updateObservation(sensorUpdates: update)
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+        guard reason == .settingsChange else { return }
+        updateObservation(sensorUpdates: lastUpdate)
+    }
+
+    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
+        sensorUpdates?.sensors.done { [weak self] sensors in
             let activeRelatedSensors = sensors.filter({ sensor in
                 sensor.UniqueID == WebhookSensorId.active.rawValue
             })
@@ -41,10 +56,6 @@ final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStat
                 self?.observe()
             }
         }
-    }
-
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
-        /* no-op */
     }
 }
 
