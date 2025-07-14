@@ -21,4 +21,5 @@ public enum WebhookSensorId: String, CaseIterable {
     case watchBatteryState = "watch-battery-state"
     case appVersion = "app-version"
     case locationPermission = "location-permission"
+    case focus
 }

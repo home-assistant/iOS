@@ -1,7 +1,7 @@
 import Foundation
 import PromiseKit
 
-final class DisplaySensorUpdateSignaler: SensorProviderUpdateSignaler {
+final class DisplaySensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     static var notificationName: Notification.Name {
         #if targetEnvironment(macCatalyst)
         return Current.macBridge.screensWillChangeNotification
@@ -13,17 +13,41 @@ final class DisplaySensorUpdateSignaler: SensorProviderUpdateSignaler {
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        super.init(relatedSensorsIds: [
+            .displaysCount,
+            .primaryDisplayName,
+            .primaryDisplayId,
+        ])
+    }
 
+    @objc private func screensDidChange(_ note: Notification) {
+        signal()
+    }
+
+    override func observe() {
+        super.observe()
+        guard !isObserving else { return }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(screensDidChange(_:)),
             name: Self.notificationName,
             object: nil
         )
+        isObserving = true
+        #if DEBUG
+        notifyObservation?()
+        #endif
     }
 
-    @objc private func screensDidChange(_ note: Notification) {
-        signal()
+    override func stopObserving() {
+        super.stopObserving()
+        guard isObserving else { return }
+        NotificationCenter.default.removeObserver(
+            self,
+            name: Self.notificationName,
+            object: nil
+        )
+        isObserving = false
     }
 }
 

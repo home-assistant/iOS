@@ -1,16 +1,31 @@
 import Foundation
 import PromiseKit
 
-final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStateObserver {
+final class ActiveSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler, ActiveStateObserver {
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
-
-        Current.activeState.register(observer: self)
+        super.init(relatedSensorsIds: [
+            .active,
+        ])
     }
 
     func activeStateDidChange(for manager: ActiveStateManager) {
         signal()
+    }
+
+    override func observe() {
+        super.observe()
+        guard !isObserving else { return }
+        Current.activeState.register(observer: self)
+        isObserving = true
+    }
+
+    override func stopObserving() {
+        super.stopObserving()
+        guard isObserving else { return }
+        Current.activeState.unregister(observer: self)
+        isObserving = false
     }
 }
 

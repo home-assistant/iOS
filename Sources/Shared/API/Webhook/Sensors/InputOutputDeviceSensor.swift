@@ -8,7 +8,7 @@ import CoreMediaIO
 import CoreAudio
 #endif
 
-private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
+private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     let signal: () -> Void
 
     enum ObservedObjectType: Hashable {
@@ -39,14 +39,12 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
-
-        #if targetEnvironment(macCatalyst)
-        #if canImport(CoreMediaIO)
-        addCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject), property: .allDevices)
-        #endif
-
-        addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
-        #endif
+        super.init(relatedSensorsIds: [
+            .iPhoneAudioOutput,
+            .camera,
+            .microphone,
+            .audioOutput,
+        ])
     }
 
     private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
@@ -61,9 +59,15 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         observedObjects.insert(object)
     }
 
+    private func removeObserver(object: ObservedObjectType) {
+        guard observedObjects.contains(object) else { return }
+        observedObjects.remove(object)
+    }
+
     // object IDs both alias to UInt32 so we can't rely on the type system to know which method to call
 
     #if targetEnvironment(macCatalyst)
+    #if canImport(CoreMediaIO)
     func addCoreAudioObserver(
         for id: AudioObjectID,
         property: HACoreAudioProperty<some Any>
@@ -71,15 +75,52 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler {
         addObserver(object: .coreAudio(id), property: property)
     }
 
-    #if canImport(CoreMediaIO)
+    func removeCoreAudioObserver(
+        for id: AudioObjectID
+    ) {
+        removeObserver(object: .coreAudio(id))
+    }
+
     func addCoreMediaObserver(
         for id: CMIOObjectID,
         property: HACoreMediaProperty<some Any>
     ) {
         addObserver(object: .coreMedia(id), property: property)
     }
+
+    func removeCoreMediaObserver(
+        for id: CMIOObjectID
+    ) {
+        removeObserver(object: .coreMedia(id))
+    }
     #endif
     #endif
+
+    override func observe() {
+        super.observe()
+        guard !isObserving else { return }
+        #if targetEnvironment(macCatalyst)
+        #if canImport(CoreMediaIO)
+        addCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject), property: .allDevices)
+        #endif
+
+        addCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject), property: .allDevices)
+        #endif
+        isObserving = true
+    }
+
+    override func stopObserving() {
+        super.stopObserving()
+        guard isObserving else { return }
+        #if targetEnvironment(macCatalyst)
+        #if canImport(CoreMediaIO)
+        removeCoreMediaObserver(for: CMIOObjectID(kCMIOObjectSystemObject))
+        #endif
+
+        removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject))
+        #endif
+        isObserving = false
+    }
 }
 
 public class InputOutputDeviceSensor: SensorProvider {

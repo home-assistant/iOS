@@ -28,7 +28,11 @@ class SensorDetailViewModel: ObservableObject, SensorObserver {
         Current.sensors.register(observer: self)
     }
 
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
         // we don't care about when updates are going to happen
     }
 

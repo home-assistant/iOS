@@ -2,20 +2,43 @@ import Foundation
 import HAKit
 import PromiseKit
 
-final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler {
-    let cancellable: HACancellable
+final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
+    var cancellable: HACancellable?
+    private let signal: () -> Void
+
     init(signal: @escaping () -> Void) {
-        self.cancellable = Current.focusStatus.trigger.observe { _ in
-            // this means that we will double-update the focus sensor if the app is running
-            // this feels less likely to happen, but allows us to keep the in-app visual state right
-            if Current.isForegroundApp() {
-                signal()
-            }
-        }
+        self.signal = signal
+        super.init(relatedSensorsIds: [
+            .focus,
+        ])
     }
 
     deinit {
-        cancellable.cancel()
+        cancellable?.cancel()
+    }
+
+    override func observe() {
+        super.observe()
+        guard !isObserving else { return }
+        cancellable = Current.focusStatus.trigger.observe { [weak self] _ in
+            // this means that we will double-update the focus sensor if the app is running
+            // this feels less likely to happen, but allows us to keep the in-app visual state right
+            if Current.isForegroundApp() {
+                self?.signal()
+            }
+        }
+        isObserving = true
+
+        #if DEBUG
+        notifyObservation?()
+        #endif
+    }
+
+    override func stopObserving() {
+        super.stopObserving()
+        guard isObserving else { return }
+        cancellable?.cancel()
+        isObserving = false
     }
 }
 
@@ -45,7 +68,7 @@ final class FocusSensor: SensorProvider {
         if let isFocused = focusState.isFocused {
             sensors.append(with(WebhookSensor(
                 name: "Focus",
-                uniqueID: "focus",
+                uniqueID: WebhookSensorId.focus.rawValue,
                 icon: "mdi:moon-waning-crescent",
                 state: isFocused
             )) {

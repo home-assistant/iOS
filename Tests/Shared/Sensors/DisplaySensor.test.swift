@@ -32,16 +32,27 @@ class DeviceSensorTests: XCTestCase {
         }
     }
 
-    func testSignaler() {
-        var didSignal = false
+    func testSignaler() async throws {
+        Current.device.screens = {
+            []
+        }
+        _ = Current.sensors.sensors(reason: .registration, server: ServerFixture.standard)
+
+        let expectation1 = expectation(description: "Observation needs to start")
+        let expectation2 = expectation(description: "Signaler should be called")
         let signaler = DisplaySensorUpdateSignaler(signal: {
-            didSignal = true
+            expectation2.fulfill()
         })
 
-        withExtendedLifetime(signaler) {
-            NotificationCenter.default.post(name: DisplaySensorUpdateSignaler.notificationName, object: nil)
-            XCTAssertTrue(didSignal)
+        signaler.notifyObservation = {
+            expectation1.fulfill()
         }
+
+        await fulfillment(of: [expectation1], timeout: 2)
+
+        NotificationCenter.default.post(name: DisplaySensorUpdateSignaler.notificationName, object: nil)
+
+        await fulfillment(of: [expectation2], timeout: 2)
     }
 
     func testUpdateSignalerCreated() throws {

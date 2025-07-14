@@ -5,21 +5,75 @@ import CoreTelephony
 import Reachability
 #endif
 
-final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler {
+final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
+    private var isObserving = false
     let signal: () -> Void
+
+    #if DEBUG
+    /// Used for unit test to identify when observation is ready
+    var notifyObservation: (() -> Void)?
+    #endif
+
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
+    }
 
+    @objc private func connectivityDidChange(_ note: Notification) {
+        signal()
+    }
+
+    private func observe() {
+        guard !isObserving else { return }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(connectivityDidChange(_:)),
             name: Current.connectivity.connectivityDidChangeNotification(),
             object: nil
         )
+        isObserving = true
+
+        #if DEBUG
+        notifyObservation?()
+        #endif
     }
 
-    @objc private func connectivityDidChange(_ note: Notification) {
-        signal()
+    private func stopObserving() {
+        guard isObserving else { return }
+        NotificationCenter.default.removeObserver(
+            self,
+            name: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+        isObserving = false
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors.done { [weak self] sensors in
+            let activeRelatedSensors = sensors.filter({ sensor in
+                sensor.UniqueID == WebhookSensorId.connectivitySSID.rawValue ||
+                    sensor.UniqueID == WebhookSensorId.connectivityBSID.rawValue ||
+                    sensor.UniqueID == WebhookSensorId.connectivityConnectionType.rawValue
+            })
+
+            let activeSensors = activeRelatedSensors.filter({ sensor in
+                Current.sensors.isEnabled(sensor: sensor)
+            })
+
+            if activeSensors.isEmpty {
+                self?.stopObserving()
+            } else {
+                self?.observe()
+            }
+        }
+    }
+
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
+        /* no-op */
     }
 }
 

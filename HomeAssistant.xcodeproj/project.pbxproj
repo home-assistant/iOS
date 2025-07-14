@@ -977,6 +977,8 @@
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
+		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */; };
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
@@ -2434,6 +2436,7 @@
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
+		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
@@ -3616,6 +3619,7 @@
 				118261F624F8D6B0000795C6 /* SensorProviderDependencies.swift */,
 				118261FF24F9C3D6000795C6 /* CoreMedia and CoreAudio Helpers */,
 				115BC8272676F44E00452430 /* FocusSensor.swift */,
+				42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -8270,6 +8274,7 @@
 				B6723345225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				11F2F26F25871D8200F61F7C /* NotificationAttachmentParserURL.swift in Sources */,
 				11F2F24225871CB000F61F7C /* NotificationAttachmentParser.swift in Sources */,
+				42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */,
 				11B38EF3275C54A300205C7B /* PerformActionIntentHandler.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
 				119EC3C824D5119300617D51 /* MobileAppConfigAction.swift in Sources */,
@@ -8526,6 +8531,7 @@
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
 				42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */,
+				42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */,
 				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,
 				42E4C9932DCC9A6600DF2813 /* HAProgressView.swift in Sources */,
 				42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */,
