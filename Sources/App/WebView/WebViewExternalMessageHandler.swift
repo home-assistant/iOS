@@ -6,7 +6,18 @@ import PromiseKit
 import SwiftMessages
 import SwiftUI
 
-final class WebViewExternalMessageHandler {
+protocol WebViewExternalMessageHandlerProtocol {
+    var webViewController: WebViewControllerProtocol? { get set }
+    func handleExternalMessage(_ dictionary: [String: Any])
+    func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
+
+    // TODO: Move these methods below to their proper handlers
+    func scanImprov()
+    func stopImprovScanIfNeeded()
+    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool, animated: Bool)
+}
+
+final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
 
@@ -18,7 +29,8 @@ final class WebViewExternalMessageHandler {
         self.improvManager = improvManager
     }
 
-    @MainActor func handleExternalMessage(_ dictionary: [String: Any]) {
+    @MainActor
+    func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
             Current.Log.error("WebViewExternalMessageHandler has nil webViewController")
             return
@@ -339,7 +351,9 @@ final class WebViewExternalMessageHandler {
             buttonImage: nil,
             buttonTitle: nil,
             buttonTapHandler: { _ in
-                SwiftMessages.hide()
+                DispatchQueue.main.async {
+                    SwiftMessages.hide()
+                }
             }
         )
         view.id = "BarcodeScannerMessage"
@@ -401,7 +415,7 @@ final class WebViewExternalMessageHandler {
         }
     }
 
-    func presentImprov(deviceName: String?) {
+    private func presentImprov(deviceName: String?) {
         improvManager.stopScan()
         improvManager.delegate = nil
 
