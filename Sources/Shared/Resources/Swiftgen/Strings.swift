@@ -3097,6 +3097,8 @@ public enum L10n {
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.permissions.header") }
     }
     public enum Sensors {
+      /// Enable all sensors
+      public static var enableAll: String { return L10n.tr("Localizable", "settings_sensors.sensors.enable_all") }
       /// Sensors
       public static var header: String { return L10n.tr("Localizable", "settings_sensors.sensors.header") }
     }
