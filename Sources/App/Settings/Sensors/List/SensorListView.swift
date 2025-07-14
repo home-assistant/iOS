@@ -79,9 +79,7 @@ struct SensorListView: View {
             Toggle(isOn: .init(get: {
                 viewModel.sensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
             }, set: { newValue in
-                for sensor in viewModel.sensors {
-                    Current.sensors.setEnabled(newValue, for: sensor)
-                }
+                viewModel.updateAllSensors(isEnabled: newValue)
             })) {
                 Text(L10n.SettingsSensors.Sensors.enableAll)
             }
