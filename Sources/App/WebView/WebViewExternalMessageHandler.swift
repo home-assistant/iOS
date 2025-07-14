@@ -17,7 +17,7 @@ protocol WebViewExternalMessageHandlerProtocol {
     func showAssist(server: Server, pipeline: String, autoStartRecording: Bool, animated: Bool)
 }
 
-final class WebViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol {
+final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
 
@@ -29,6 +29,7 @@ final class WebViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol
         self.improvManager = improvManager
     }
 
+    @MainActor
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
             Current.Log.error("WebViewExternalMessageHandler has nil webViewController")
@@ -335,6 +336,7 @@ final class WebViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol
         }
     }
 
+    @MainActor
     private func presentBarcodeScannerMessage(message: String) {
         var config = SwiftMessages.Config()
         config.dimMode = .none
@@ -355,9 +357,7 @@ final class WebViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol
             }
         )
         view.id = "BarcodeScannerMessage"
-        DispatchQueue.main.async {
-            SwiftMessages.show(config: config, view: view)
-        }
+        SwiftMessages.show(config: config, view: view)
     }
 
     private func cleanPreferredThreadCredentials() {
