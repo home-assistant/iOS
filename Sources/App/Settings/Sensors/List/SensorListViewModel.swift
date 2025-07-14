@@ -95,6 +95,12 @@ class SensorListViewModel: ObservableObject {
     func openFocusSettings() {
         UIApplication.shared.openSettings(destination: .focus)
     }
+
+    func updateAllSensors(isEnabled: Bool) {
+        for sensor in sensors {
+            Current.sensors.setEnabled(isEnabled, for: sensor)
+        }
+    }
 }
 
 // MARK: - SensorObserver

@@ -76,6 +76,13 @@ struct SensorListView: View {
 
     private var sensorsList: some View {
         Section {
+            Toggle(isOn: .init(get: {
+                viewModel.sensors.filter { !Current.sensors.isEnabled(sensor: $0) }.isEmpty
+            }, set: { newValue in
+                viewModel.updateAllSensors(isEnabled: newValue)
+            })) {
+                Text(L10n.SettingsSensors.Sensors.enableAll)
+            }
             ForEach(viewModel.sensors, id: \.UniqueID) { sensor in
                 NavigationLink(destination: SensorDetailView(sensor: sensor)) {
                     SensorRow(sensor: sensor, isEnabled: Current.sensors.isEnabled(sensor: sensor))
