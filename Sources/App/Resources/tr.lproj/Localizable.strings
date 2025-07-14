@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Uygulama varlıkları veritabanını sıfırla";
 "debug_section_label" = "Hata ayıklama";
 "delete" = "Sil";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Bitti";
 "download_manager.downloading.title" = "İndiriliyor";
 "download_manager.failed.title" = "Dosya indirilemedi, hata: %@";
@@ -534,6 +538,10 @@
 "onboarding.welcome.secondary_button" = "Başlarken";
 "onboarding.welcome.title" = "Home Assistant'a Hoş Geldiniz %@!";
 "open_label" = "Açık";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Atla";
 "permission.screen.bluetooth.subtitle" = "Home Assistant uygulaması bu cihazın Bluetooth'unu kullanarak cihazları bulabilir. Home Assistant uygulaması için Bluetooth erişimine izin verin.";
 "permission.screen.bluetooth.title" = "Cihaz ara";

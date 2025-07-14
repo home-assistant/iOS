@@ -10,5 +10,5 @@
 "panel::profile" = "Προφίλ";
 "panel::shopping_list" = "Λίστα για ψώνια";
 "panel::states" = "Επισκόπηση";
-"state::default::unavailable" = "Μη Διαθέσιμο";
+"state::default::unavailable" = "Μη διαθέσιμο";
 "state::default::unknown" = "Άγνωστη";

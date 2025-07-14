@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "重置應用程式實體資料庫";
 "debug_section_label" = "回報錯誤";
 "delete" = "刪除";
+"device_name.primary_button.title" = "儲存";
+"device_name.subtitle" = "用以於 Home Assistant 中識別裝置。";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac 名稱";
+"device_name.title" = "為裝置命名？";
 "done_label" = "完成";
 "download_manager.downloading.title" = "下載中";
 "download_manager.failed.title" = "下載檔案失敗、錯誤：%@";
@@ -534,6 +538,10 @@ Home Assistant 為一款免費且開源的家庭自動化軟體、專制於本�
 "onboarding.welcome.secondary_button" = "開始使用";
 "onboarding.welcome.title" = "歡迎使用 Home Assistant %@！";
 "open_label" = "開啟";
+"permission.notification.body" = "開啟通知功能，掌握家中所發生的一切。從偵測漏水、到門為開啟狀態，都可完全控制通報內容。";
+"permission.notification.primary_button" = "允許通知";
+"permission.notification.secondary_button" = "不允許";
+"permission.notification.title" = "允許通知？";
 "permission.screen.bluetooth.secondary_button" = "跳過";
 "permission.screen.bluetooth.subtitle" = "Home Assistant 應用程式可使用裝置的藍牙來搜尋裝置。請允許 Home Assistant 應用程式存取藍牙權限。";
 "permission.screen.bluetooth.title" = "搜尋裝置";

@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Datenbank für App-Entitäten zurücksetzen";
 "debug_section_label" = "Debuggen";
 "delete" = "Löschen";
+"device_name.primary_button.title" = "Speichern";
+"device_name.subtitle" = "Dies wird verwendet, um dein Gerät in deinem Home Assistant zu identifizieren.";
+"device_name.textfield.placeholder" = "Name des iPhone/iPad/Mac";
+"device_name.title" = "Wie möchtest du dieses Gerät nennen?";
 "done_label" = "Erledigt";
 "download_manager.downloading.title" = "Wird heruntergeladen";
 "download_manager.failed.title" = "Herunterladen der Datei fehlgeschlagen, Fehler: %@";
@@ -521,7 +525,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "onboarding.servers.docs.read" = "Dokumentation lesen";
 "onboarding.servers.search.message" = "Suche nach Servern in der Nähe …";
 "onboarding.servers.title" = "Suche im Heimnetzwerk";
-"onboarding.welcome.body" = "Ermöglicht dir den Zugriff auf deine Home Assistant-Installation von unterwegs. Sie läuft lokal bei dir zuhause über ein Gerät wie den Home Assistant Green oder Raspberry Pi.";
+"onboarding.welcome.body" = "Ermöglicht dir den Zugriff auf deine Home Assistant-Installation von unterwegs. Sie läuft lokal bei dir zuhause über ein Gerät wie dem Home Assistant Green oder Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Mit meinem Home Assistant verbinden";
 "onboarding.welcome.description" = "Diese App stellt eine Verbindung zu deinem Home Assistant-Server her und ermöglicht die Integration von Daten über dich und dein Telefon.\
 \
@@ -534,6 +538,10 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "onboarding.welcome.secondary_button" = "Erste Schritte";
 "onboarding.welcome.title" = "Willkommen bei Home Assistant %@!";
 "open_label" = "Öffnen";
+"permission.notification.body" = "Aktiviere Benachrichtigungen und erfahre, was in deinem Zuhause passiert, von der Erkennung von Lecks bis hin zu offen gelassenen Türen, du hast die volle Kontrolle darüber, was dir mitgeteilt wird.";
+"permission.notification.primary_button" = "Benachrichtigungen zulassen";
+"permission.notification.secondary_button" = "Nicht zulassen";
+"permission.notification.title" = "Benachrichtigungen zulassen?";
 "permission.screen.bluetooth.secondary_button" = "Überspringen";
 "permission.screen.bluetooth.subtitle" = "Die Home Assistant-App kann Geräte über Bluetooth dieses Geräts finden. Erlaube der Home Assistant-App den Bluetooth-Zugriff.";
 "permission.screen.bluetooth.title" = "Geräte suchen";
