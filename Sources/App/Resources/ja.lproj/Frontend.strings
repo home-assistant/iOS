@@ -9,6 +9,6 @@
 "panel::media_browser" = "メディア";
 "panel::profile" = "プロファイル";
 "panel::shopping_list" = "ショッピングリスト";
-"panel::states" = "オーバービュー";
+"panel::states" = "概要";
 "state::default::unavailable" = "利用不可";
 "state::default::unknown" = "不明";

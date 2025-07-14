@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "Примечание: Встроенный видеоплеер WebRTC в настоящее время является экспериментальной функцией, звук может не работать, а разрешение на использование микрофона может быть запрошено, даже если он не используется. Пожалуйста, используйте интерфейс веб-плеера для расширенных возможностей и надежного воспроизведения.";
 "about.acknowledgements.title" = "Благодарности";
 "about.beta.title" = "Участвовать в бета-тесте";
 "about.chat.title" = "Чат";
@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Сбросить базу данных объектов приложения";
 "debug_section_label" = "Отладка";
 "delete" = "Удалить";
+"device_name.primary_button.title" = "Сохранить";
+"device_name.subtitle" = "Это используется для идентификации вашего устройства в Home Assistant.";
+"device_name.textfield.placeholder" = "Имя iPhone/iPad/Mac";
+"device_name.title" = "Как бы вы хотели назвать это устройство?";
 "done_label" = "Готово";
 "download_manager.downloading.title" = "Загрузка";
 "download_manager.failed.title" = "Не удалось загрузить файл, ошибка: %@";
@@ -534,6 +538,10 @@ Home Assistant - это бесплатное программное обеспе
 "onboarding.welcome.secondary_button" = "Начало работы";
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
 "open_label" = "Открыто";
+"permission.notification.body" = "Включите уведомления и получайте информацию о том, что происходит у вас дома: от обнаружения утечек до незакрытых дверей. Вы полностью контролируете то, что вам сообщает система.";
+"permission.notification.primary_button" = "Разрешить уведомления";
+"permission.notification.secondary_button" = "Не разрешать";
+"permission.notification.title" = "Разрешить уведомления?";
 "permission.screen.bluetooth.secondary_button" = "Пропустить";
 "permission.screen.bluetooth.subtitle" = "Приложение Home Assistant может находить устройства, использующие Bluetooth этого устройства. Разрешите доступ по Bluetooth для приложения Home Assistant.";
 "permission.screen.bluetooth.title" = "Поиск устройств";

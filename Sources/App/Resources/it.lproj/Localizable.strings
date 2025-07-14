@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Reimposta il database delle entità dell'app";
 "debug_section_label" = "";
 "delete" = "Cancella";
+"device_name.primary_button.title" = "Save";
+"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.title" = "How would you like to name this device?";
 "done_label" = "Fatto";
 "download_manager.downloading.title" = "Scaricando";
 "download_manager.failed.title" = "Impossibile scaricare il file, errore: %@";
@@ -534,6 +538,10 @@
 "onboarding.welcome.secondary_button" = "Per iniziare";
 "onboarding.welcome.title" = "Benvenuto in Home Assistant %@ !";
 "open_label" = "Aperto";
+"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
+"permission.notification.primary_button" = "Allow notifications";
+"permission.notification.secondary_button" = "Do not allow";
+"permission.notification.title" = "Allow notifications?";
 "permission.screen.bluetooth.secondary_button" = "Salta";
 "permission.screen.bluetooth.subtitle" = "L'app Home Assistant può trovare dispositivi utilizzando il Bluetooth di questo dispositivo. Consenti l'accesso Bluetooth per l'app Home Assistant.";
 "permission.screen.bluetooth.title" = "Cerca dispositivi";

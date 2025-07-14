@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "Poznámka: Nativní přehrávač videa s WebRTC je v současné době experimentální funkcí, zvuk nemusí fungovat a může být vyžadováno povolení k používání mikrofonu, i když se nepoužívá. Pro pokročilé volby a spolehlivé přehrávání použijte rozhraní webového přehrávače.";
 "about.acknowledgements.title" = "Poděkování";
 "about.beta.title" = "Připojte se k beta verzi";
 "about.chat.title" = "Chat";
@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Resetovat databázi entit aplikace";
 "debug_section_label" = "Ladění";
 "delete" = "Smazat";
+"device_name.primary_button.title" = "Uložit";
+"device_name.subtitle" = "Toto se používá k identifikaci vašeho zařízení v aplikaci Home Assistant.";
+"device_name.textfield.placeholder" = "Název iPhonu/iPadu/Macu";
+"device_name.title" = "Jak byste chtěli pojmenovat toto zařízení?";
 "done_label" = "Hotovo";
 "download_manager.downloading.title" = "Stahování";
 "download_manager.failed.title" = "Stažení souboru se nezdařilo, chyba: %@";
@@ -534,6 +538,10 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "onboarding.welcome.secondary_button" = "Začínáme";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
 "open_label" = "Otevřít";
+"permission.notification.body" = "Povolte oznámení a získejte přehled o tom, co se děje ve vaší domácnosti; od detekce netěsností až po otevřené dveře - máte plnou kontrolu nad vším.";
+"permission.notification.primary_button" = "Povolit oznámení";
+"permission.notification.secondary_button" = "Nepovolovat";
+"permission.notification.title" = "Povolit oznámení?";
 "permission.screen.bluetooth.secondary_button" = "Přeskočit";
 "permission.screen.bluetooth.subtitle" = "Aplikace Home Assistant dokáže najít zařízení pomocí Bluetooth tohoto zařízení. Povolte aplikaci Home Assistant přístup přes Bluetooth.";
 "permission.screen.bluetooth.title" = "Hledat zařízení";

@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Setel ulang database entitas aplikasi";
 "debug_section_label" = "Debug";
 "delete" = "Hapus";
+"device_name.primary_button.title" = "Simpan";
+"device_name.subtitle" = "Ini akan digunakan untuk mengidentifikasi perangkat Anda di Home Assistant.";
+"device_name.textfield.placeholder" = "Nama iPhone/iPad/Mac";
+"device_name.title" = "Nama perangkat?";
 "done_label" = "Selesai";
 "download_manager.downloading.title" = "Mengunduh";
 "download_manager.failed.title" = "Gagal mengunduh berkas, kesalahan: %@";
@@ -517,10 +521,10 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "onboarding.scanning.manual.button.title" = "Masukkan alamat secara manual";
 "onboarding.scanning.manual_hint" = "Tidak menemukan server Anda?";
 "onboarding.scanning.title" = "Memindai Server";
-"onboarding.servers.auto_connect.button" = "Connect";
+"onboarding.servers.auto_connect.button" = "Hubungkan";
 "onboarding.servers.docs.read" = "Baca dokumentasi";
 "onboarding.servers.search.message" = "Mencari server terdekat...";
-"onboarding.servers.title" = "Searching on home network";
+"onboarding.servers.title" = "Mencari di jaringan rumah";
 "onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Hubungkan ke Home Assistant saya";
 "onboarding.welcome.description" = "Aplikasi ini terhubung ke server Home Assistant Anda dan memungkinkan integrasi data tentang Anda dan ponsel Anda.\
@@ -534,6 +538,10 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "onboarding.welcome.secondary_button" = "Memulai";
 "onboarding.welcome.title" = "Selamat datang di Home Assistant %@!";
 "open_label" = "Buka";
+"permission.notification.body" = "Aktifkan notifikasi dan ketahui apa yang terjadi di rumah Anda, mulai dari mendeteksi kebocoran hingga pintu yang dibiarkan terbuka, Anda memiliki kendali penuh atas apa yang diberitahukannya kepada Anda.";
+"permission.notification.primary_button" = "Izinkan notifikasi?";
+"permission.notification.secondary_button" = "Jangan izinkan";
+"permission.notification.title" = "Izinkan notifikasi?";
 "permission.screen.bluetooth.secondary_button" = "Lewatkan";
 "permission.screen.bluetooth.subtitle" = "Aplikasi Home Assistant dapat menemukan perangkat yang menggunakan Bluetooth perangkat ini. Izinkan akses Bluetooth untuk aplikasi Home Assistant.";
 "permission.screen.bluetooth.title" = "Cari perangkat";

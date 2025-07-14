@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Επαναφορά βάσης δεδομένων οντοτήτων εφαρμογής";
 "debug_section_label" = "Εντοπισμός σφαλμάτων";
 "delete" = "Διαγραφή";
+"device_name.primary_button.title" = "Αποθήκευση";
+"device_name.subtitle" = "Αυτό χρησιμοποιείται για την αναγνώριση της συσκευής σας στο Home Assistant.";
+"device_name.textfield.placeholder" = "Ονομα iPhone/iPad/Mac";
+"device_name.title" = "Πώς θα θέλατε να ονομάσετε αυτή τη συσκευή;";
 "done_label" = "Έγινε!";
 "download_manager.downloading.title" = "Λήψη";
 "download_manager.failed.title" = "Η λήψη του αρχείου απέτυχε, σφάλμα: %@";
@@ -534,6 +538,10 @@
 "onboarding.welcome.secondary_button" = "Ξεκινώντας";
 "onboarding.welcome.title" = "Καλώς ορίσατε στο Home Assistant %@!";
 "open_label" = "Άνοιγμα";
+"permission.notification.body" = "Ενεργοποιήστε τις ειδοποιήσεις και μάθετε τι συμβαίνει στο σπίτι σας, από την ανίχνευση διαρροών έως τις πόρτες που έχουν μείνει ανοιχτές, έχετε πλήρη έλεγχο του τι σας λέει.";
+"permission.notification.primary_button" = "Να επιτρέπονται οι ειδοποιήσεις";
+"permission.notification.secondary_button" = "Να μην επιτρέπονται";
+"permission.notification.title" = "Να επιτρέπονται οι ειδοποιήσεις;";
 "permission.screen.bluetooth.secondary_button" = "Παράλειψη";
 "permission.screen.bluetooth.subtitle" = "Η εφαρμογή Home Assistant μπορεί να βρει συσκευές χρησιμοποιώντας το Bluetooth αυτής της συσκευής. Επιτρέψτε την πρόσβαση Bluetooth για την εφαρμογή Home Assistant.";
 "permission.screen.bluetooth.title" = "Αναζήτηση συσκευών";
@@ -808,7 +816,7 @@
 "settings_details.notifications.local_push.status.available" = "Διαθέσιμο (%1$@)";
 "settings_details.notifications.local_push.status.disabled" = "Απενεργοποιημένο";
 "settings_details.notifications.local_push.status.establishing" = "Καθιέρωση";
-"settings_details.notifications.local_push.status.unavailable" = "Μη Διαθέσιμο";
+"settings_details.notifications.local_push.status.unavailable" = "Μη διαθέσιμο";
 "settings_details.notifications.local_push.status.unsupported" = "Μη υποστηριζόμενο";
 "settings_details.notifications.local_push.title" = "Τοπική ώθηση";
 "settings_details.notifications.new_category.title" = "Νέα κατηγορία";

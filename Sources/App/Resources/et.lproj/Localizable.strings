@@ -225,6 +225,10 @@
 "debug.reset.entities_database.title" = "Rakenduse olemite andmebaasi lähtestamine";
 "debug_section_label" = "Silumine";
 "delete" = "Kustuta";
+"device_name.primary_button.title" = "Salvesta";
+"device_name.subtitle" = "Seda kasutatakse seadme tuvastamiseks Home Assistantis.";
+"device_name.textfield.placeholder" = "iPhone'i/iPadi/Maci nimi";
+"device_name.title" = "Kuidas soovid seda seadet nimetada?";
 "done_label" = "Valmis";
 "download_manager.downloading.title" = "Allalaadimine";
 "download_manager.failed.title" = "Faili allalaadimine nurjus, tõrge: %@";
@@ -534,6 +538,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.welcome.secondary_button" = "Alustamine";
 "onboarding.welcome.title" = "Tere tulemast Home Assistanti %@!";
 "open_label" = "Avatud";
+"permission.notification.body" = "Luba märguanded ja saa teada, mis sinu kodus toimub – lekete tuvastamisest kuni lahti jäänud uste tuvastamiseni – sul on täielik kontroll selle üle, mida see sulle näitab.";
+"permission.notification.primary_button" = "Luba märguanded";
+"permission.notification.secondary_button" = "Ära luba";
+"permission.notification.title" = "Kas lubada märguanded?";
 "permission.screen.bluetooth.secondary_button" = "Jäta vahele";
 "permission.screen.bluetooth.subtitle" = "Home Assistant'i rakendus suudab selle seadme Bluetoothiga seadmeid leida. Luba rakenduse Home Assistant jaoks Bluetooth-juurdepääs.";
 "permission.screen.bluetooth.title" = "Otsi seadmeid";
