@@ -1,23 +1,61 @@
 import Foundation
 import PromiseKit
 
-final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler {
+final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
+    private var isObserving = false
+
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
+    }
 
+    @objc private func frontmostAppDidChange(_ note: Notification) {
+        signal()
+    }
+
+    private func observe() {
         #if targetEnvironment(macCatalyst)
+        guard !isObserving else { return }
         Current.macBridge.workspaceNotificationCenter.addObserver(
             self,
             selector: #selector(frontmostAppDidChange(_:)),
             name: Current.macBridge.frontmostApplicationDidChangeNotification,
             object: nil
         )
+        isObserving = true
         #endif
     }
 
-    @objc private func frontmostAppDidChange(_ note: Notification) {
-        signal()
+    private func stopObserving() {
+        #if targetEnvironment(macCatalyst)
+        guard isObserving else { return }
+        Current.macBridge.workspaceNotificationCenter.removeObserver(
+            self,
+            name: Current.macBridge.frontmostApplicationDidChangeNotification,
+            object: nil
+        )
+        isObserving = false
+        #endif
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors.done { [weak self] sensors in
+            guard let frontMostAppSensor = sensors.first(where: { sensor in
+                sensor.UniqueID == WebhookSensorId.frontmostApp.rawValue
+            }) else {
+                return
+            }
+            if Current.sensors.isEnabled(sensor: frontMostAppSensor) {
+                self?.observe()
+            } else {
+                self?.stopObserving()
+            }
+        }
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+        /* no-op */
     }
 }
 

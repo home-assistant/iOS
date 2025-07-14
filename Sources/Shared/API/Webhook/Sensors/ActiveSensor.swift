@@ -1,16 +1,49 @@
 import Foundation
 import PromiseKit
 
-final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStateObserver {
+final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStateObserver, SensorObserver {
+    private var isObserving = false
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
-
-        Current.activeState.register(observer: self)
     }
 
     func activeStateDidChange(for manager: ActiveStateManager) {
         signal()
+    }
+
+    private func observe() {
+        guard !isObserving else { return }
+        Current.activeState.register(observer: self)
+        isObserving = true
+    }
+
+    private func stopObserving() {
+        guard isObserving else { return }
+        Current.activeState.unregister(observer: self)
+        isObserving = false
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors.done { [weak self] sensors in
+            let activeRelatedSensors = sensors.filter({ sensor in
+                sensor.UniqueID == WebhookSensorId.active.rawValue
+            })
+
+            let activeSensors = activeRelatedSensors.filter({ sensor in
+                Current.sensors.isEnabled(sensor: sensor)
+            })
+
+            if activeSensors.isEmpty {
+                self?.stopObserving()
+            } else {
+                self?.observe()
+            }
+        }
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+        /* no-op */
     }
 }
 

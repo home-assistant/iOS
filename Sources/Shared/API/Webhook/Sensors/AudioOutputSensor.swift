@@ -5,14 +5,47 @@ import HAKit
 import Intents
 import PromiseKit
 
-final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler {
+final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
+    private var isObserving = false
     private var cancellables: Set<AnyCancellable> = []
+    private let signal: () -> Void
     init(signal: @escaping () -> Void) {
+        self.signal = signal
+    }
+
+    private func observe() {
+        guard !isObserving else { return }
         NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)
-            .sink { _ in
-                signal()
+            .sink { [weak self] _ in
+                self?.signal()
             }
             .store(in: &cancellables)
+        isObserving = true
+    }
+
+    private func stopObserving() {
+        guard isObserving else { return }
+        cancellables.forEach { $0.cancel() }
+        isObserving = false
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors.done { [weak self] sensors in
+            guard let frontMostAppSensor = sensors.first(where: { sensor in
+                sensor.UniqueID == WebhookSensorId.iPhoneAudioOutput.rawValue
+            }) else {
+                return
+            }
+            if Current.sensors.isEnabled(sensor: frontMostAppSensor) {
+                self?.observe()
+            } else {
+                self?.stopObserving()
+            }
+        }
+    }
+
+    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason) {
+        /* no-op */
     }
 }
 
