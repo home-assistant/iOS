@@ -27,6 +27,7 @@ final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, Se
     private func stopObserving() {
         guard isObserving else { return }
         cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
         isObserving = false
     }
 
