@@ -11,6 +11,7 @@ final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, Se
     private let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
     }
 
     private func observe() {

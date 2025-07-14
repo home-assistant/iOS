@@ -40,6 +40,7 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler, Sen
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
     }
 
     private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {

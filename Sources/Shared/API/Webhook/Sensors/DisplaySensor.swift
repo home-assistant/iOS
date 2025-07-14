@@ -14,6 +14,7 @@ final class DisplaySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObs
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
     }
 
     @objc private func screensDidChange(_ note: Notification) {

@@ -10,6 +10,7 @@ final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
     }
 
     @objc private func connectivityDidChange(_ note: Notification) {

@@ -6,6 +6,7 @@ final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStat
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
     }
 
     func activeStateDidChange(for manager: ActiveStateManager) {
