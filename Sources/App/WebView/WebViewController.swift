@@ -20,8 +20,7 @@ enum FrontEndConnectionState: String {
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
-    var webView: WKWebView!
-
+    private var webView: WKWebView!
     let server: Server
 
     private var urlObserver: NSKeyValueObservation?
@@ -31,7 +30,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
     private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
-    let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
     private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
 
@@ -46,13 +44,22 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    /// Handler for messages sent from the webview to the app
+    let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
+
+    /// Handler for gestures over the webview
+    private let webViewGestureHandler = WebViewGestureHandler()
+
+    /// Handler for script messages sent from the webview to the app
+    private let webViewScriptMessageHandler = WebViewScriptMessageHandler()
+
     /// Defer showing the empty state until disconnected for 4 seconds (var used in
     /// WebViewControllerProtocol+Implementation )
-    var emptyStateTimer: Timer?
+    private var emptyStateTimer: Timer?
 
-    // Frontend notifies when connection is established or not
-    // Each navigation resets this to false so we can show the empty state
-    var isConnected = false
+    /// Frontend notifies when connection is established or not
+    /// Each navigation resets this to false so we can show the empty state
+    private var isConnected = false
 
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
@@ -90,6 +97,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             loadViewIfNeeded()
             loadActiveURLIfNeeded()
         }
+
+        webViewGestureHandler.webView = self
+        webViewScriptMessageHandler.webView = self
     }
 
     convenience init?(restoring: WebViewRestorationType?, shouldLoadImmediately: Bool = false) {
@@ -191,6 +201,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         postOnboardingNotificationPermission()
+        resetFrontendCacheIfNeeded()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -222,7 +233,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
             let action = Current.settingsStore.gestures[.shake] ?? .openDebug
-            handleGestureAction(action)
+            webViewGestureHandler.handleGestureAction(action)
         }
     }
 
@@ -265,7 +276,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private func setupEmptyState() {
         let emptyState = WebViewEmptyStateWrapperView(server: server) { [weak self] in
             self?.hideEmptyState()
-            self?.reloadWebView()
+            self?.reload()
         } settingsAction: { [weak self] in
             self?.showSettingsViewController()
         } dismissAction: { [weak self] in
@@ -353,7 +364,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private func setupUserContentController() -> WKUserContentController {
         let userContentController = WKUserContentController()
-        let safeScriptMessageHandler = SafeScriptMessageHandler(delegate: self)
+        let safeScriptMessageHandler = SafeScriptMessageHandler(delegate: webViewScriptMessageHandler)
         userContentController.add(safeScriptMessageHandler, name: "getExternalAuth")
         userContentController.add(safeScriptMessageHandler, name: "revokeExternalAuth")
         userContentController.add(safeScriptMessageHandler, name: "externalBus")
@@ -524,6 +535,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    private func resetFrontendCacheIfNeeded() {}
+
     // MARK: - @objc
 
     @objc private func connectionInfoDidChange() {
@@ -562,16 +575,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             request = URLRequest(url: webviewURL)
         }
 
-        webViewLoad(request: request)
+        load(request: request)
     }
 
     @objc private func refresh() {
         // called via menu/keyboard shortcut too
         if let webviewURL = server.info.connection.webviewURL() {
             if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
-                reloadWebView()
+                reload()
             } else {
-                webViewLoad(request: URLRequest(url: webviewURL))
+                load(request: URLRequest(url: webviewURL))
             }
         } else {
             showNoActiveURLError()
@@ -583,7 +596,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             return
         }
         let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: gesture.numberOfTouches)
-        handleGestureAction(action)
+        webViewGestureHandler.handleGestureAction(action)
     }
 
     @objc private func screenEdgeGestureRecognizerAction(_ gesture: UIScreenEdgePanGestureRecognizer) {
@@ -592,7 +605,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
         let gesture: AppGesture = gesture.edges == .left ? .swipeRight : .swipeLeft
         let action = Current.settingsStore.gestures[gesture] ?? .none
-        handleGestureAction(action)
+        webViewGestureHandler.handleGestureAction(action)
     }
 
     @objc private func updateSensors() {
@@ -756,7 +769,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         view.bodyLabel?.numberOfLines = 0
 
         // Avoid retrying from Home Assistant UI since this is a dead end
-        webViewLoad(request: URLRequest(url: URL(string: "about:blank")!))
+        load(request: URLRequest(url: URL(string: "about:blank")!))
         showEmptyState()
         SwiftMessages.show(config: config, view: view)
     }
@@ -814,7 +827,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                     )
                 return
             }
-            webViewLoad(request: URLRequest(url: url))
+            load(request: URLRequest(url: url))
         } else {
             openURLInBrowser(url, self)
         }
@@ -826,7 +839,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         // TODO: Find out why navigating through the external bus does not open more-info dialog
         guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil else {
-            webViewLoad(request: URLRequest(url: url))
+            load(request: URLRequest(url: url))
             Current.Log.verbose("Opening more-info dialog for URL: \(url)")
             return
         }
@@ -843,7 +856,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             if !success {
                 Current.Log.warning("Failed to navigate through frontend for URL: \(url)")
                 // Fallback to loading the URL directly if navigation fails
-                self?.webViewLoad(request: URLRequest(url: url))
+                self?.load(request: URLRequest(url: url))
             }
         }
     }
@@ -907,14 +920,19 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         ))
     }
 
-    private func webViewLoad(request: URLRequest) {
-        Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
-        webView.load(request)
-    }
-
-    private func reloadWebView() {
-        Current.Log.verbose("Reload webView requested")
-        webView.reload()
+    private func resetFrontendcacheIfNeeded(completion: (() -> Void)? = nil) {
+        // Reset the frontend cache if needed, e.g. after a server version change
+        if Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] ?? false {
+            Current.Log.info("Resetting frontend cache for server \(server.info.name)")
+            Current.websiteDataStoreHandler.cleanCache { [weak self] in
+                Current.Log.info("Frontend cache reset completed")
+                guard let self else { return }
+                Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] = nil
+                completion?()
+            }
+        } else {
+            completion?()
+        }
     }
 }
 
@@ -1027,7 +1045,7 @@ extension WebViewController {
 
             if let webviewURL = server.info.connection.webviewURL() {
                 decisionHandler(.cancel)
-                webViewLoad(request: URLRequest(url: webviewURL))
+                load(request: URLRequest(url: webviewURL))
             } else {
                 // we don't have anything we can do about this
                 decisionHandler(.allow)
@@ -1155,5 +1173,96 @@ extension WebViewController: UIGestureRecognizerDelegate {
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
         true
+    }
+}
+
+extension WebViewController: WebViewControllerProtocol {
+    var canGoBack: Bool {
+        webView.canGoBack
+    }
+
+    var canGoForward: Bool {
+        webView.canGoForward
+    }
+
+    func goBack() {
+        webView.goBack()
+    }
+
+    func goForward() {
+        webView.goForward()
+    }
+
+    var overlayedController: UIViewController? {
+        presentedViewController
+    }
+
+    func presentOverlayController(controller: UIViewController, animated: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.dismissOverlayController(animated: false, completion: { [weak self] in
+                self?.present(controller, animated: animated, completion: nil)
+            })
+        }
+    }
+
+    func presentAlertController(controller: UIViewController, animated: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if let overlayedController {
+                overlayedController.present(controller, animated: animated, completion: nil)
+            } else {
+                present(controller, animated: animated, completion: nil)
+            }
+        }
+    }
+
+    func evaluateJavaScript(_ script: String, completion: ((Any?, (any Error)?) -> Void)?) {
+        webView.evaluateJavaScript(script, completionHandler: completion)
+    }
+
+    func dismissOverlayController(animated: Bool, completion: (() -> Void)?) {
+        dismissAllViewControllersAbove(completion: completion)
+    }
+
+    func dismissControllerAboveOverlayController() {
+        overlayedController?.dismissAllViewControllersAbove()
+    }
+
+    func updateFrontendConnectionState(state: String) {
+        emptyStateTimer?.invalidate()
+        emptyStateTimer = nil
+
+        let state = FrontEndConnectionState(rawValue: state) ?? .unknown
+        isConnected = state == .connected
+
+        // Possible values: connected, disconnected, auth-invalid
+        if state == .connected {
+            hideEmptyState()
+        } else {
+            // Start a 4-second timer. If not interrupted by a 'connected' state, set alpha to 1.
+            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: false) { [weak self] _ in
+                self?.showEmptyState()
+            }
+        }
+    }
+
+    func navigateToPath(path: String) {
+        if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
+            load(request: URLRequest(url: url))
+        }
+    }
+
+    func load(request: URLRequest) {
+        resetFrontendcacheIfNeeded { [weak self] in
+            Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
+            self?.webView.load(request)
+        }
+    }
+
+    func reload() {
+        resetFrontendcacheIfNeeded { [weak self] in
+            Current.Log.verbose("Reload webView requested")
+            self?.webView.reload()
+        }
     }
 }

@@ -452,6 +452,27 @@ public class SettingsStore {
     }
     #endif
 
+    /// [ServerId: NeedsFrontendReset]
+    public var serverNeedsFrontendReset: [String: Bool] {
+        get {
+            if let data = prefs.data(forKey: "serverNeedsFrontendReset"),
+               let decoded = try? JSONDecoder().decode([String: Bool].self, from: data) {
+                return decoded
+            } else {
+                return [:]
+            }
+        }
+        set {
+            do {
+                let encoded = try JSONEncoder().encode(newValue)
+                prefs.set(encoded, forKey: "serverNeedsFrontendReset")
+            } catch {
+                Current.Log
+                    .error("Failed to encode server needs frontend reset settings, error \(error.localizedDescription)")
+            }
+        }
+    }
+
     // MARK: - Debug settings
 
     /// Debug options to receive local notifications when something goes wrong

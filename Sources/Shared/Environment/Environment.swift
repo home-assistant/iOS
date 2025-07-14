@@ -446,9 +446,13 @@ public class AppEnvironment {
     }
 
     #if !os(watchOS)
+    /// Provides a way to handle Bonjour connections. Such as for scanning for Home Assistant instances.
     public var bonjour: () -> BonjourProtocol = {
         Bonjour()
     }
+
+    /// Handles website data store for the app, such as cookies and local storage.
+    public var websiteDataStoreHandler: WebsiteDataStoreHandlerProtocol = WebsiteDataStoreHandlerImpl.build()
     #endif
 
     /// Values stored for the given app session until terminated by the OS.

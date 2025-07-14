@@ -324,14 +324,19 @@ public class HomeAssistantAPI {
         )
 
         return promise.done { [self] config in
-            server.update { server in
-                server.connection.cloudhookURL = config.CloudhookURL
-                server.connection.set(address: config.RemoteUIURL, for: .remoteUI)
-                server.remoteName = config.LocationName ?? ServerInfo.defaultName
-                server.hassDeviceId = config.hassDeviceId
+            server.update { serverInfo in
+                serverInfo.connection.cloudhookURL = config.CloudhookURL
+                serverInfo.connection.set(address: config.RemoteUIURL, for: .remoteUI)
+                serverInfo.remoteName = config.LocationName ?? ServerInfo.defaultName
+                serverInfo.hassDeviceId = config.hassDeviceId
 
                 if let version = try? Version(hassVersion: config.Version) {
-                    server.version = version
+                    if serverInfo.version != version {
+                        // Reset frontend cache since server version changed
+                        Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] = true
+                    }
+
+                    serverInfo.version = version
                 }
             }
 
