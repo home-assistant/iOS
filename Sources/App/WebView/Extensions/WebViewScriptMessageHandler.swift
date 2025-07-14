@@ -60,7 +60,7 @@ final class WebViewScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     /// Handles externalBus messages by passing them to the webViewExternalMessageHandler.
-    @MainActor private func handleExternalBus(_ messageBody: [String: Any]) {
+    private func handleExternalBus(_ messageBody: [String: Any]) {
         webView?.webViewExternalMessageHandler.handleExternalMessage(messageBody)
     }
 

@@ -4,7 +4,7 @@ import Shared
 protocol WebViewControllerProtocol: AnyObject {
     var server: Server { get }
     var overlayedController: UIViewController? { get }
-    var webViewExternalMessageHandler: WebViewExternalMessageHandler { get }
+    var webViewExternalMessageHandler: any WebViewExternalMessageHandlerProtocol { get }
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }
     var traitCollection: UITraitCollection { get }

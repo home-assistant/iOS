@@ -3,6 +3,7 @@ import AVFoundation
 import AVKit
 import CoreLocation
 import HAKit
+import Improv_iOS
 import KeychainAccess
 import MBProgressHUD
 import PromiseKit
@@ -45,7 +46,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     /// Handler for messages sent from the webview to the app
-    let webViewExternalMessageHandler = WebViewExternalMessageHandler.build()
+    var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
+        improvManager: ImprovManager.shared
+    )
 
     /// Handler for gestures over the webview
     private let webViewGestureHandler = WebViewGestureHandler()
@@ -98,6 +101,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             loadActiveURLIfNeeded()
         }
 
+        webViewExternalMessageHandler.webViewController = self
         webViewGestureHandler.webView = self
         webViewScriptMessageHandler.webView = self
     }
@@ -126,8 +130,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        webViewExternalMessageHandler.webViewController = self
-
         becomeFirstResponder()
 
         observeConnectionNotifications()
@@ -535,8 +537,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    private func resetFrontendCacheIfNeeded() {}
-
     // MARK: - @objc
 
     @objc private func connectionInfoDidChange() {
@@ -920,7 +920,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         ))
     }
 
-    private func resetFrontendcacheIfNeeded(completion: (() -> Void)? = nil) {
+    private func resetFrontendCacheIfNeeded(completion: (() -> Void)? = nil) {
         // Reset the frontend cache if needed, e.g. after a server version change
         if Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] ?? false {
             Current.Log.info("Resetting frontend cache for server \(server.info.name)")
@@ -1253,14 +1253,14 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func load(request: URLRequest) {
-        resetFrontendcacheIfNeeded { [weak self] in
+        resetFrontendCacheIfNeeded { [weak self] in
             Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
             self?.webView.load(request)
         }
     }
 
     func reload() {
-        resetFrontendcacheIfNeeded { [weak self] in
+        resetFrontendCacheIfNeeded { [weak self] in
             Current.Log.verbose("Reload webView requested")
             self?.webView.reload()
         }
