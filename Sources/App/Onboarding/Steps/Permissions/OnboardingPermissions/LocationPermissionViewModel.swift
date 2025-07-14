@@ -44,7 +44,11 @@ final class LocationPermissionViewModel: NSObject, ObservableObject {
 }
 
 extension LocationPermissionViewModel: SensorObserver {
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
         /* no-op */
     }
 

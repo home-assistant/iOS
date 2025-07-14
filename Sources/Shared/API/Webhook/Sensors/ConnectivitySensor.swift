@@ -68,7 +68,11 @@ final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
         }
     }
 
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
         /* no-op */
     }
 }

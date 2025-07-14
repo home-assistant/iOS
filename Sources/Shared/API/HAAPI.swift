@@ -987,7 +987,11 @@ extension HomeAssistantAPI.APIError: LocalizedError {
 }
 
 extension HomeAssistantAPI: SensorObserver {
-    public     func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+    public func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
         Current.backgroundTask(withName: BackgroundTask.signaledUpdateSensors.rawValue) { _ in
             UpdateSensors(trigger: .Signaled)
         }.cauterize()

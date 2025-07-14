@@ -20,7 +20,6 @@ final class DisplaySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObs
     var notifyObservation: (() -> Void)?
     #endif
 
-
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
@@ -43,7 +42,6 @@ final class DisplaySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObs
         #if DEBUG
         notifyObservation?()
         #endif
-
     }
 
     private func stopObserving() {
@@ -62,7 +60,11 @@ final class DisplaySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObs
         updateObservation(sensorUpdates: update)
     }
 
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
         guard reason == .settingsChange else { return }
         updateObservation(sensorUpdates: lastUpdate)
     }

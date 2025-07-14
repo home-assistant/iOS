@@ -3,7 +3,6 @@ import HAKit
 import PromiseKit
 
 final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
-
     /// Indicates where observation is already happening
     private var isObserving = false
     /// Indicates where intial sensors update is going to happen
@@ -53,7 +52,11 @@ final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObser
         updateObservation(sensorUpdates: update)
     }
 
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
         guard reason == .settingsChange else { return }
         updateObservation(sensorUpdates: lastUpdate)
     }
@@ -71,7 +74,7 @@ final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObser
             if activeSensors.isEmpty {
                 self?.stopObserving()
             } else {
-                    self?.observe()
+                self?.observe()
             }
         }
     }

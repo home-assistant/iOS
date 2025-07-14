@@ -12,7 +12,6 @@ class FocusSensorTests: XCTestCase {
         serverVersion: Version()
     )
 
-
     override func setUp() {
         super.setUp()
     }

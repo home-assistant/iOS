@@ -48,7 +48,11 @@ final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
         updateObservation(sensorUpdates: update)
     }
 
-    func sensorContainer(_ container: SensorContainer, didSignalForUpdateBecause reason: SensorContainerUpdateReason, lastUpdate: SensorObserverUpdate?) {
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
         guard reason == .settingsChange else { return }
         updateObservation(sensorUpdates: lastUpdate)
     }
