@@ -4,32 +4,58 @@ import Shared
 import UIKit
 
 final class MockWebViewController: WebViewControllerProtocol {
+    var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol
+    var canGoBack: Bool = false
+    var canGoForward: Bool = false
+    var traitCollection: UITraitCollection = .init()
     var server: Server = ServerFixture.standard
     var overlayedController: UIViewController?
 
     var presentOverlayControllerCalled = false
     var presentControllerCalled = false
     var evaluateJavaScriptCalled = false
-
     var lastEvaluatedJavaScriptScript: String?
     var lastEvaluatedJavaScriptCompletion: ((Any?, (any Error)?) -> Void)?
-
     var dismissControllerAboveOverlayControllerCalled = false
     var dismissOverlayControllerCalled = false
     var dismissOverlayControllerLastAnimated = false
     var dismissOverlayControllerLastCompletion: (() -> Void)?
-
     var updateSettingsButtonCalled = false
     var lastSettingButtonState: String?
-
     var navigateToPathCalled = false
     var lastNavigateToPathPath: String?
-
     var updateImprovEntryViewCalled = false
     var lastUpdateImprovEntryViewState = false
-
     var reloadCalled = false
     var presentAlertControllerCalled = false
+
+    init() {
+        self.webViewExternalMessageHandler = MockWebViewExternalMessageHandler()
+    }
+
+    func load(request: URLRequest) {
+        // Simulate loading a request
+    }
+
+    func showSettingsViewController() {
+        // Simulate showing settings
+    }
+
+    func openDebug() {
+        // Simulate opening debug view
+    }
+
+    func goBack() {
+        // Simulate going back
+    }
+
+    func goForward() {
+        // Simulate going forward
+    }
+
+    func styleUI() {
+        // Simulate styling UI
+    }
 
     func presentOverlayController(controller: UIViewController, animated: Bool) {
         presentOverlayControllerCalled = true

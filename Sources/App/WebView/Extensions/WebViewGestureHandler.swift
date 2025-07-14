@@ -4,7 +4,9 @@ import Shared
 
 // MARK: - Gestures
 
-extension WebViewController {
+final class WebViewGestureHandler {
+    weak var webView: WebViewControllerProtocol?
+
     func handleGestureAction(_ action: HAGestureAction) {
         switch action {
         case .assist:
@@ -22,9 +24,9 @@ extension WebViewController {
         case .previousServer:
             moveToServer(next: false)
         case .showSettings:
-            showSettingsViewController()
+            webView?.showSettingsViewController()
         case .openDebug:
-            openDebug()
+            webView?.openDebug()
         case .searchEntities:
             showSearchEntities()
         case .searchDevices:
@@ -38,19 +40,19 @@ extension WebViewController {
     }
 
     private func showSidebar() {
-        webViewExternalMessageHandler
+        webView?.webViewExternalMessageHandler
             .sendExternalBus(message: .init(command: WebViewExternalBusOutgoingMessage.showSidebar.rawValue))
     }
 
     private func webViewNavigateBack() {
-        if webView.canGoBack {
-            webView.goBack()
+        if webView?.canGoBack ?? false {
+            webView?.goBack()
         }
     }
 
     private func webViewNavigateForward() {
-        if webView.canGoForward {
-            webView.goForward()
+        if webView?.canGoForward ?? false {
+            webView?.goForward()
         }
     }
 
@@ -63,7 +65,7 @@ extension WebViewController {
     }
 
     private func showSearchEntities() {
-        webView.evaluateJavaScript(WebViewJavascriptCommands.searchEntitiesKeyEvent) { _, error in
+        webView?.evaluateJavaScript(WebViewJavascriptCommands.searchEntitiesKeyEvent) { _, error in
             if let error {
                 Current.Log.error("JavaScript error while trying to open entities search: \(error)")
             } else {
@@ -73,7 +75,7 @@ extension WebViewController {
     }
 
     private func showSearchDevices() {
-        webView.evaluateJavaScript(WebViewJavascriptCommands.searchDevicesKeyEvent) { _, error in
+        webView?.evaluateJavaScript(WebViewJavascriptCommands.searchDevicesKeyEvent) { _, error in
             if let error {
                 Current.Log.error("JavaScript error while trying to open devices search: \(error)")
             } else {
@@ -83,7 +85,7 @@ extension WebViewController {
     }
 
     private func showSearchCommands() {
-        webView.evaluateJavaScript(WebViewJavascriptCommands.searchCommandsKeyEvent) { _, error in
+        webView?.evaluateJavaScript(WebViewJavascriptCommands.searchCommandsKeyEvent) { _, error in
             if let error {
                 Current.Log.error("JavaScript error while trying to open commands search: \(error)")
             } else {
@@ -93,7 +95,7 @@ extension WebViewController {
     }
 
     private func showAssistThroughKeyEvent() {
-        webView.evaluateJavaScript(WebViewJavascriptCommands.assistKeyEvent) { _, error in
+        webView?.evaluateJavaScript(WebViewJavascriptCommands.assistKeyEvent) { _, error in
             if let error {
                 Current.Log.error("JavaScript error while trying to open assist: \(error)")
             } else {
@@ -103,6 +105,10 @@ extension WebViewController {
     }
 
     private func moveToServer(next: Bool) {
+        guard let server = webView?.server else {
+            Current.Log.error("No server available to switch")
+            return
+        }
         let servers = Current.servers.all
         guard servers.count > 1, let currentIndex = servers.firstIndex(of: server) else { return }
 

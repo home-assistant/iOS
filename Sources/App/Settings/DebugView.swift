@@ -191,14 +191,9 @@ struct DebugView: View {
             }
             Button {
                 loadingCleaningWebCache = true
-                WKWebsiteDataStore.default().removeData(
-                    ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
-                    modifiedSince: Date(timeIntervalSince1970: 0),
-                    completionHandler: {
-                        Current.Log.verbose("Reset browser caches!")
-                        loadingCleaningWebCache = false
-                    }
-                )
+                Current.websiteDataStoreHandler.cleanCache {
+                    loadingCleaningWebCache = false
+                }
             } label: {
                 linkContent(
                     image: .init(systemSymbol: .deleteBackwardFill),
