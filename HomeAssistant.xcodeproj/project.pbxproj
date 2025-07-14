@@ -712,6 +712,7 @@
 		4273C48D2C8859530065A5B4 /* PageAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C48C2C8859530065A5B4 /* PageAppEntity.swift */; };
 		4273C48E2C8859530065A5B4 /* PageAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4273C48C2C8859530065A5B4 /* PageAppEntity.swift */; };
 		4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429BA2AE2C800CAB00A50996 /* SFSymbolEntity.swift */; };
+		4273F7E02E258827000629F7 /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 4273F7DF2E258827000629F7 /* SharedPush */; };
 		42752DF12D50F94C00FC2F37 /* AssistTypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */; };
 		42755FF32CD913C700CB0032 /* MagicItemProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42755FF22CD913C700CB0032 /* MagicItemProviderTests.swift */; };
 		4276471E2C8F2F100027B21F /* IntentLightEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4276471D2C8F2F100027B21F /* IntentLightEntity.swift */; };
@@ -3036,6 +3037,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */,
 			);
@@ -10557,6 +10559,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTestingCustomDump;
+		};
+		4273F7DF2E258827000629F7 /* SharedPush */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */;
+			productName = SharedPush;
 		};
 		427692E22B98B82500F24321 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
