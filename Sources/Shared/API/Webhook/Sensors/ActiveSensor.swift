@@ -1,65 +1,31 @@
 import Foundation
 import PromiseKit
 
-final class ActiveSensorUpdateSignaler: SensorProviderUpdateSignaler, ActiveStateObserver, SensorObserver {
-    /// Indicates where observation is already happening
-    private var isObserving = false
-    /// Indicates where intial sensors update is going to happen
-    private var firstUpdate = true
-
+final class ActiveSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler, ActiveStateObserver {
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
-        Current.sensors.register(observer: self)
+        super.init(relatedSensorsIds: [
+            .active,
+        ])
     }
 
     func activeStateDidChange(for manager: ActiveStateManager) {
         signal()
     }
 
-    private func observe() {
+    override func observe() {
+        super.observe()
         guard !isObserving else { return }
         Current.activeState.register(observer: self)
         isObserving = true
     }
 
-    private func stopObserving() {
+    override func stopObserving() {
+        super.stopObserving()
         guard isObserving else { return }
         Current.activeState.unregister(observer: self)
         isObserving = false
-    }
-
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        guard firstUpdate else { return }
-        firstUpdate = false
-        updateObservation(sensorUpdates: update)
-    }
-
-    func sensorContainer(
-        _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
-        lastUpdate: SensorObserverUpdate?
-    ) {
-        guard reason == .settingsChange else { return }
-        updateObservation(sensorUpdates: lastUpdate)
-    }
-
-    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
-        sensorUpdates?.sensors.done { [weak self] sensors in
-            let activeRelatedSensors = sensors.filter({ sensor in
-                sensor.UniqueID == WebhookSensorId.active.rawValue
-            })
-
-            let activeSensors = activeRelatedSensors.filter({ sensor in
-                Current.sensors.isEnabled(sensor: sensor)
-            })
-
-            if activeSensors.isEmpty {
-                self?.stopObserving()
-            } else {
-                self?.observe()
-            }
-        }
     }
 }
 

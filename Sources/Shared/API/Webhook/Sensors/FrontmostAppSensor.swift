@@ -1,23 +1,21 @@
 import Foundation
 import PromiseKit
 
-final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
-    /// Indicates where observation is already happening
-    private var isObserving = false
-    /// Indicates where intial sensors update is going to happen
-    private var firstUpdate = true
-
+final class FrontmostAppSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
-        Current.sensors.register(observer: self)
+        super.init(relatedSensorsIds: [
+            .frontmostApp,
+        ])
     }
 
     @objc private func frontmostAppDidChange(_ note: Notification) {
         signal()
     }
 
-    private func observe() {
+    override func observe() {
+        super.observe()
         #if targetEnvironment(macCatalyst)
         guard !isObserving else { return }
         Current.macBridge.workspaceNotificationCenter.addObserver(
@@ -30,7 +28,8 @@ final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
         #endif
     }
 
-    private func stopObserving() {
+    override func stopObserving() {
+        super.stopObserving()
         #if targetEnvironment(macCatalyst)
         guard isObserving else { return }
         Current.macBridge.workspaceNotificationCenter.removeObserver(
@@ -40,36 +39,6 @@ final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler, Sens
         )
         isObserving = false
         #endif
-    }
-
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        guard firstUpdate else { return }
-        firstUpdate = false
-        updateObservation(sensorUpdates: update)
-    }
-
-    func sensorContainer(
-        _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
-        lastUpdate: SensorObserverUpdate?
-    ) {
-        guard reason == .settingsChange else { return }
-        updateObservation(sensorUpdates: lastUpdate)
-    }
-
-    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
-        sensorUpdates?.sensors.done { [weak self] sensors in
-            guard let frontMostAppSensor = sensors.first(where: { sensor in
-                sensor.UniqueID == WebhookSensorId.frontmostApp.rawValue
-            }) else {
-                return
-            }
-            if Current.sensors.isEnabled(sensor: frontMostAppSensor) {
-                self?.observe()
-            } else {
-                self?.stopObserving()
-            }
-        }
     }
 }
 

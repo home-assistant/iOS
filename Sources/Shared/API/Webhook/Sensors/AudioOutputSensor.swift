@@ -5,20 +5,19 @@ import HAKit
 import Intents
 import PromiseKit
 
-final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
-    /// Indicates where observation is already happening
-    private var isObserving = false
-    /// Indicates where intial sensors update is going to happen
-    private var firstUpdate = true
-
+final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     private var cancellables: Set<AnyCancellable> = []
     private let signal: () -> Void
+
     init(signal: @escaping () -> Void) {
         self.signal = signal
-        Current.sensors.register(observer: self)
+        super.init(relatedSensorsIds: [
+            .iPhoneAudioOutput,
+        ])
     }
 
-    private func observe() {
+    override func observe() {
+        super.observe()
         guard !isObserving else { return }
         NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)
             .sink { [weak self] _ in
@@ -28,41 +27,12 @@ final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler, Se
         isObserving = true
     }
 
-    private func stopObserving() {
+    override func stopObserving() {
+        super.stopObserving()
         guard isObserving else { return }
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
         isObserving = false
-    }
-
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        guard firstUpdate else { return }
-        firstUpdate = false
-        updateObservation(sensorUpdates: update)
-    }
-
-    func sensorContainer(
-        _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
-        lastUpdate: SensorObserverUpdate?
-    ) {
-        guard reason == .settingsChange else { return }
-        updateObservation(sensorUpdates: lastUpdate)
-    }
-
-    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
-        sensorUpdates?.sensors.done { [weak self] sensors in
-            guard let frontMostAppSensor = sensors.first(where: { sensor in
-                sensor.UniqueID == WebhookSensorId.iPhoneAudioOutput.rawValue
-            }) else {
-                return
-            }
-            if Current.sensors.isEnabled(sensor: frontMostAppSensor) {
-                self?.observe()
-            } else {
-                self?.stopObserving()
-            }
-        }
     }
 }
 

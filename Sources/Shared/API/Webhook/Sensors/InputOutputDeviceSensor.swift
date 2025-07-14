@@ -8,12 +8,7 @@ import CoreMediaIO
 import CoreAudio
 #endif
 
-private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
-    /// Indicates where observation is already happening
-    private var isObserving = false
-    /// Indicates where intial sensors update is going to happen
-    private var firstUpdate = true
-
+private class InputOutputDeviceUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     let signal: () -> Void
 
     enum ObservedObjectType: Hashable {
@@ -44,7 +39,12 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler, Sen
 
     required init(signal: @escaping () -> Void) {
         self.signal = signal
-        Current.sensors.register(observer: self)
+        super.init(relatedSensorsIds: [
+            .iPhoneAudioOutput,
+            .camera,
+            .microphone,
+            .audioOutput,
+        ])
     }
 
     private func addObserver(object: ObservedObjectType, property: some HACoreBlahProperty) {
@@ -96,7 +96,8 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler, Sen
     #endif
     #endif
 
-    private func observe() {
+    override func observe() {
+        super.observe()
         guard !isObserving else { return }
         #if targetEnvironment(macCatalyst)
         #if canImport(CoreMediaIO)
@@ -108,7 +109,8 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler, Sen
         isObserving = true
     }
 
-    private func stopObserving() {
+    override func stopObserving() {
+        super.stopObserving()
         guard isObserving else { return }
         #if targetEnvironment(macCatalyst)
         #if canImport(CoreMediaIO)
@@ -118,36 +120,6 @@ private class InputOutputDeviceUpdateSignaler: SensorProviderUpdateSignaler, Sen
         removeCoreAudioObserver(for: AudioObjectID(kAudioObjectSystemObject))
         #endif
         isObserving = false
-    }
-
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        guard firstUpdate else { return }
-        firstUpdate = false
-        updateObservation(sensorUpdates: update)
-    }
-
-    func sensorContainer(
-        _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
-        lastUpdate: SensorObserverUpdate?
-    ) {
-        guard reason == .settingsChange else { return }
-        updateObservation(sensorUpdates: lastUpdate)
-    }
-
-    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
-        sensorUpdates?.sensors.done { [weak self] sensors in
-            guard let frontMostAppSensor = sensors.first(where: { sensor in
-                sensor.UniqueID == WebhookSensorId.iPhoneAudioOutput.rawValue
-            }) else {
-                return
-            }
-            if Current.sensors.isEnabled(sensor: frontMostAppSensor) {
-                self?.observe()
-            } else {
-                self?.stopObserving()
-            }
-        }
     }
 }
 

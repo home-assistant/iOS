@@ -2,29 +2,23 @@ import Foundation
 import HAKit
 import PromiseKit
 
-final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
-    /// Indicates where observation is already happening
-    private var isObserving = false
-    /// Indicates where intial sensors update is going to happen
-    private var firstUpdate = true
-
-    #if DEBUG
-    /// Used for unit test to identify when observation is ready
-    var notifyObservation: (() -> Void)?
-    #endif
-
+final class FocusSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     var cancellable: HACancellable?
     private let signal: () -> Void
+
     init(signal: @escaping () -> Void) {
         self.signal = signal
-        Current.sensors.register(observer: self)
+        super.init(relatedSensorsIds: [
+            .focus,
+        ])
     }
 
     deinit {
         cancellable?.cancel()
     }
 
-    private func observe() {
+    override func observe() {
+        super.observe()
         guard !isObserving else { return }
         cancellable = Current.focusStatus.trigger.observe { [weak self] _ in
             // this means that we will double-update the focus sensor if the app is running
@@ -40,43 +34,11 @@ final class FocusSensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObser
         #endif
     }
 
-    private func stopObserving() {
+    override func stopObserving() {
+        super.stopObserving()
         guard isObserving else { return }
         cancellable?.cancel()
         isObserving = false
-    }
-
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        guard firstUpdate else { return }
-        firstUpdate = false
-        updateObservation(sensorUpdates: update)
-    }
-
-    func sensorContainer(
-        _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
-        lastUpdate: SensorObserverUpdate?
-    ) {
-        guard reason == .settingsChange else { return }
-        updateObservation(sensorUpdates: lastUpdate)
-    }
-
-    private func updateObservation(sensorUpdates: SensorObserverUpdate?) {
-        sensorUpdates?.sensors.done { [weak self] sensors in
-            let activeRelatedSensors = sensors.filter({ sensor in
-                sensor.UniqueID == WebhookSensorId.focus.rawValue
-            })
-
-            let activeSensors = activeRelatedSensors.filter({ sensor in
-                Current.sensors.isEnabled(sensor: sensor)
-            })
-
-            if activeSensors.isEmpty {
-                self?.stopObserving()
-            } else {
-                self?.observe()
-            }
-        }
     }
 }
 
