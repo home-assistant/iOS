@@ -888,6 +888,7 @@ Home Assistantは、ローカルコントロールとプライバシーに重点
 "settings_sensors.periodic_update.off" = "オフ";
 "settings_sensors.periodic_update.title" = "定期的な更新";
 "settings_sensors.permissions.header" = "アクセス許可";
+"settings_sensors.sensors.enable_all" = "Enable all sensors";
 "settings_sensors.sensors.header" = "センサー";
 "settings_sensors.settings.footer" = "変更は次回のアップデート時に適用されます。";
 "settings_sensors.settings.header" = "設定";

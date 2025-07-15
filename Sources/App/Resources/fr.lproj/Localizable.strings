@@ -888,6 +888,7 @@ Home Assistant est un logiciel de domotique gratuit et open source axé sur le c
 "settings_sensors.periodic_update.off" = "Arrêt";
 "settings_sensors.periodic_update.title" = "Mise à jour périodique";
 "settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.sensors.enable_all" = "Enable all sensors";
 "settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Les modifications seront appliquées lors de la prochaine mise à jour.";
 "settings_sensors.settings.header" = "Paramètres";

@@ -888,6 +888,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_sensors.periodic_update.off" = "Aus";
 "settings_sensors.periodic_update.title" = "Regelmäßige Aktualisierung";
 "settings_sensors.permissions.header" = "Berechtigungen";
+"settings_sensors.sensors.enable_all" = "Enable all sensors";
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.settings.footer" = "Änderungen werden bei der nächsten Aktualisierung übernommen.";
 "settings_sensors.settings.header" = "Einstellungen";

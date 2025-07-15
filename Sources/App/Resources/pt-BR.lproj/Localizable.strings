@@ -888,6 +888,7 @@
 "settings_sensors.periodic_update.off" = "Desligado";
 "settings_sensors.periodic_update.title" = "Atualização periódica";
 "settings_sensors.permissions.header" = "Permissões";
+"settings_sensors.sensors.enable_all" = "Enable all sensors";
 "settings_sensors.sensors.header" = "Sensores";
 "settings_sensors.settings.footer" = "As alterações serão aplicadas na próxima atualização.";
 "settings_sensors.settings.header" = "Configurações";
