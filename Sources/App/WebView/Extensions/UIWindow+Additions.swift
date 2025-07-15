@@ -1,6 +1,6 @@
 import Foundation
 import Shared
-import SwiftUICore
+import SwiftUI
 import UIKit
 
 extension UIWindow {

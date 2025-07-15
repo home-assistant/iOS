@@ -533,6 +533,12 @@
 		42070EEF2BAC52630031E96F /* AssistRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283383F2BA1B17C004798C2 /* AssistRequests.swift */; };
 		42070EF02BAC52630031E96F /* AssistRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283383F2BA1B17C004798C2 /* AssistRequests.swift */; };
 		4207EB762C8754BF00286A2D /* WatchMagicViewRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */; };
+		420ABC122E269A1C00D51D66 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC112E269A1C00D51D66 /* RealmSwift */; };
+		420ABC132E269A1C00D51D66 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC112E269A1C00D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		420ABC152E269CC400D51D66 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC142E269CC400D51D66 /* RealmSwift */; };
+		420ABC162E269CC400D51D66 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC142E269CC400D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		420ABC192E269EBB00D51D66 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC182E269EBB00D51D66 /* RealmSwift */; };
+		420ABC1A2E269EBB00D51D66 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC182E269EBB00D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		420AE9E02CA559FE0020E9CB /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420AE9DF2CA559FE0020E9CB /* Color+hex.swift */; };
 		420AE9E12CA559FE0020E9CB /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420AE9DF2CA559FE0020E9CB /* Color+hex.swift */; };
 		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
@@ -598,6 +604,13 @@
 		4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
 		422368902D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
 		422368912D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
+		422445612E26862900902303 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 422445602E26862900902303 /* RealmSwift */; };
+		422445622E26862A00902303 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 422445602E26862900902303 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		422445652E26863200902303 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 422445642E26863200902303 /* RealmSwift */; };
+		422445662E26863200902303 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 422445642E26863200902303 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4224456A2E26875700902303 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 422445692E26875700902303 /* ZIPFoundation */; };
+		4224456C2E2688AA00902303 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4224456B2E2688AA00902303 /* RealmSwift */; };
+		4224456D2E2688AA00902303 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4224456B2E2688AA00902303 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		4228CFFF2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228CFFE2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift */; };
@@ -1530,6 +1543,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				420ABC1A2E269EBB00D51D66 /* RealmSwift in Embed Frameworks */,
 				110EC9FE251708D5009C9A1B /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -1568,6 +1582,50 @@
 			name = "Embed Mac Launcher";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		420ABC172E269CC400D51D66 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				420ABC162E269CC400D51D66 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		422445632E26862A00902303 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				422445622E26862A00902303 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		422445672E26863200902303 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				422445662E26863200902303 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4224456E2E2688AA00902303 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4224456D2E2688AA00902303 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4697F4C52D8A416400C5C467 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1585,6 +1643,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				420ABC132E269A1C00D51D66 /* RealmSwift in Embed Frameworks */,
 				B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -2904,6 +2963,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				420ABC152E269CC400D51D66 /* RealmSwift in Frameworks */,
 				117318AB25199E1A0013E010 /* AppKit.framework in Frameworks */,
 				117318AD25199E220013E010 /* Foundation.framework in Frameworks */,
 			);
@@ -2916,6 +2976,7 @@
 				1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */,
 				1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */,
 				1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */,
+				4224456C2E2688AA00902303 /* RealmSwift in Frameworks */,
 				20226C5AB77E1229852ADDC8 /* Pods_iOS_Extensions_Widgets.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2985,6 +3046,7 @@
 				1148A44E24E8B59100345050 /* WidgetKit.framework in Frameworks */,
 				42E00D112E1E7487006D140D /* SharedPush in Frameworks */,
 				110EC9FD251708D5009C9A1B /* Shared.framework in Frameworks */,
+				420ABC192E269EBB00D51D66 /* RealmSwift in Frameworks */,
 				11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */,
 				42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
@@ -3025,6 +3087,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				422445652E26863200902303 /* RealmSwift in Frameworks */,
 				CF58E969432B36CC112701AC /* Pods_watchOS_Shared_watchOS.framework in Frameworks */,
 				427692E52B98B83200F24321 /* SharedPush in Frameworks */,
 			);
@@ -3044,6 +3107,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				420ABC122E269A1C00D51D66 /* RealmSwift in Frameworks */,
 				4273F7E02E258827000629F7 /* SharedPush in Frameworks */,
 				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 				368048FC64829A4E4B82B631 /* Pods_watchOS_WatchExtension_Watch.framework in Frameworks */,
@@ -3056,10 +3120,12 @@
 			files = (
 				11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */,
 				1182620A24F9D2EE000795C6 /* CoreMediaIO.framework in Frameworks */,
+				422445612E26862900902303 /* RealmSwift in Frameworks */,
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				427692E32B98B82500F24321 /* SharedPush in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */,
+				4224456A2E26875700902303 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6066,6 +6132,7 @@
 				1167401E25198F9A00F51626 /* Sources */,
 				1167401F25198F9A00F51626 /* Frameworks */,
 				1167402025198F9A00F51626 /* Resources */,
+				420ABC172E269CC400D51D66 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -6084,6 +6151,7 @@
 				1171506524DFCDE60065E874 /* Sources */,
 				1171506624DFCDE60065E874 /* Frameworks */,
 				1171506724DFCDE60065E874 /* Resources */,
+				4224456E2E2688AA00902303 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -6298,6 +6366,7 @@
 				B67CE82022200D420034C1D0 /* Sources */,
 				B67CE82122200D420034C1D0 /* Frameworks */,
 				B67CE82222200D420034C1D0 /* Resources */,
+				422445672E26863200902303 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -6307,6 +6376,7 @@
 			name = "Shared-watchOS";
 			packageProductDependencies = (
 				427692E42B98B83200F24321 /* SharedPush */,
+				422445642E26863200902303 /* RealmSwift */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -6381,6 +6451,7 @@
 				11A31CA1252128C200D50A78 /* Embed Plugins */,
 				D03D891420E0A85200D4F28D /* Headers */,
 				D03D891520E0A85200D4F28D /* Resources */,
+				422445632E26862A00902303 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -6391,6 +6462,8 @@
 			name = "Shared-iOS";
 			packageProductDependencies = (
 				427692E22B98B82500F24321 /* SharedPush */,
+				422445602E26862900902303 /* RealmSwift */,
+				422445692E26875700902303 /* ZIPFoundation */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -6642,6 +6715,8 @@
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
 				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
+				4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				422445682E26875700902303 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -10556,6 +10631,22 @@
 				version = 1.18.1;
 			};
 		};
+		4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		422445682E26875700902303 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.9.19;
+			};
+		};
 		42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stasel/WebRTC.git";
@@ -10567,6 +10658,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		420ABC112E269A1C00D51D66 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		420ABC142E269CC400D51D66 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		420ABC182E269EBB00D51D66 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		420E64BC2D676B2400A31E86 /* InlineSnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
@@ -10581,6 +10687,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTestingCustomDump;
+		};
+		422445602E26862900902303 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		422445642E26863200902303 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		422445692E26875700902303 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 422445682E26875700902303 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
+		4224456B2E2688AA00902303 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;

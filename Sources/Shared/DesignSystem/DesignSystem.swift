@@ -1,5 +1,5 @@
 import Foundation
-import SwiftUICore
+import SwiftUI
 
 public enum DesignSystem {
     // TODO: Use HA design system font sizes when ready
