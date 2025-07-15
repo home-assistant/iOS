@@ -1333,6 +1333,19 @@ public enum L10n {
     }
   }
 
+  public enum Mac {
+    public enum Navigation {
+      public enum GoBack {
+        /// Navigate back
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.navigation.go_back.accessibility_label") }
+      }
+      public enum GoForward {
+        /// Navigate forward
+        public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.navigation.go_forward.accessibility_label") }
+      }
+    }
+  }
+
   public enum MagicItem {
     /// Action
     public static var action: String { return L10n.tr("Localizable", "magic_item.action") }
