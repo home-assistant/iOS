@@ -888,6 +888,7 @@
 "settings_sensors.periodic_update.off" = "Kapalı";
 "settings_sensors.periodic_update.title" = "Periyodik Güncelleme";
 "settings_sensors.permissions.header" = "İzinler";
+"settings_sensors.sensors.enable_all" = "Enable all sensors";
 "settings_sensors.sensors.header" = "Sensörler";
 "settings_sensors.settings.footer" = "Değişiklikler bir sonraki güncellemede uygulanacaktır.";
 "settings_sensors.settings.header" = "Ayarlar";

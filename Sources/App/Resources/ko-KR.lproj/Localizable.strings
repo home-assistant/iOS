@@ -888,6 +888,7 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings_sensors.periodic_update.off" = "꺼짐";
 "settings_sensors.periodic_update.title" = "정기 업데이트";
 "settings_sensors.permissions.header" = "권한";
+"settings_sensors.sensors.enable_all" = "Enable all sensors";
 "settings_sensors.sensors.header" = "센서";
 "settings_sensors.settings.footer" = "변경 사항은 다음 업데이트에 적용됩니다.";
 "settings_sensors.settings.header" = "설정";

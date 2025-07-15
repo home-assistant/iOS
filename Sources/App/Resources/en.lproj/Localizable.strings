@@ -888,8 +888,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_sensors.periodic_update.off" = "Off";
 "settings_sensors.periodic_update.title" = "Periodic Update";
 "settings_sensors.permissions.header" = "Permissions";
-"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.header" = "Sensors";
 "settings_sensors.settings.footer" = "Changes will be applied on the next update.";
 "settings_sensors.settings.header" = "Settings";
 "settings_sensors.title" = "Sensors";
