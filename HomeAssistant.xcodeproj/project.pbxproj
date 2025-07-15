@@ -979,6 +979,7 @@
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
 		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
+		42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */; };
 		42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */; };
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
@@ -2437,6 +2438,7 @@
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
+		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
@@ -4751,6 +4753,7 @@
 		42BE698B2C4691E000745ECA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				42F73F582E264A7A00B704A9 /* StatusBarViews */,
 				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				420C57C62D0A6DE700D2D9AC /* NoActiveURLView.swift */,
 				42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */,
@@ -4963,6 +4966,14 @@
 				42F5CABB2B10AE1A00409816 /* ServerFixture.swift */,
 			);
 			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		42F73F582E264A7A00B704A9 /* StatusBarViews */ = {
+			isa = PBXGroup;
+			children = (
+				42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */,
+			);
+			path = StatusBarViews;
 			sourceTree = "<group>";
 		};
 		42F958962BB4680100497981 /* Assist */ = {
@@ -7908,6 +7919,7 @@
 				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
 				3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
+				42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */,
 				42DC44362E1C0791001046C1 /* WebRTCVideoPlayerView.swift in Sources */,
 				42DC44372E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift in Sources */,
 				4278CB812D01E61D00CFAAC9 /* GesturesSetupView.swift in Sources */,

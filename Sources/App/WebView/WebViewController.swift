@@ -425,29 +425,33 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         statusBarView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        let openInSafariButton = UIButton(type: .custom)
-        let image = UIImage(resource: .compass).scaledToSize(.init(width: 7, height: 7))
-            .withTintColor(.haPrimary)
-        openInSafariButton.setImage(image, for: .normal)
-        openInSafariButton.backgroundColor = .white
-        openInSafariButton.tintColor = .white
-        openInSafariButton.layer.cornerRadius = 6
-        openInSafariButton.layer.shadowColor = UIColor.black.cgColor
-        openInSafariButton.layer.shadowRadius = 0.5
-        openInSafariButton.layer.shadowOpacity = 0.7
-        openInSafariButton.layer.shadowOffset = .init(width: 0, height: 0)
-        openInSafariButton.layer.masksToBounds = false
+        let openInSafariButton = WebViewControllerButtons.openInSafariButton
         openInSafariButton.addTarget(self, action: #selector(openServerInSafari), for: .touchUpInside)
-        statusBarView.addSubview(openInSafariButton)
         openInSafariButton.translatesAutoresizingMaskIntoConstraints = false
+
+        let backButton = WebViewControllerButtons.backButton
+        backButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+
+        let forwardButton = WebViewControllerButtons.forwardButton
+        forwardButton.addTarget(self, action: #selector(goForward), for: .touchUpInside)
+        forwardButton.translatesAutoresizingMaskIntoConstraints = false
+
+        let buttonStack = UIStackView(arrangedSubviews: [openInSafariButton, backButton, forwardButton])
+        buttonStack.axis = .horizontal
+        buttonStack.spacing = DesignSystem.Spaces.one
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
+        buttonStack.alignment = .center
+        statusBarView.addSubview(buttonStack)
 
         NSLayoutConstraint.activate([
             stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -DesignSystem.Spaces.half),
             stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: DesignSystem.Spaces.half),
-            openInSafariButton.leftAnchor.constraint(equalTo: statusBarView.leftAnchor, constant: 68),
-            openInSafariButton.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: 8),
-            openInSafariButton.widthAnchor.constraint(equalToConstant: 12),
-            openInSafariButton.heightAnchor.constraint(equalToConstant: 12),
+            buttonStack.leftAnchor.constraint(equalTo: statusBarView.leftAnchor, constant: 68),
+            buttonStack.topAnchor.constraint(equalTo: statusBarView.topAnchor),
+            buttonStack.heightAnchor.constraint(equalToConstant: 27),
+            openInSafariButton.widthAnchor.constraint(equalToConstant: 11),
+            openInSafariButton.heightAnchor.constraint(equalToConstant: 11),
         ])
         statusBarButtonsStack = stackView
     }
@@ -1185,11 +1189,11 @@ extension WebViewController: WebViewControllerProtocol {
         webView.canGoForward
     }
 
-    func goBack() {
+    @objc func goBack() {
         webView.goBack()
     }
 
-    func goForward() {
+    @objc func goForward() {
         webView.goForward()
     }
 
