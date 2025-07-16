@@ -342,6 +342,8 @@
 "location_change_notification.visit.body" = "Standort über Besuch aktualisiert";
 "location_change_notification.watch_context.body" = "Standort über Watch-Kontextsync aktualisiert";
 "location_change_notification.x_callback_url.body" = "Standort über X-Callback-URL aktualisiert";
+"mac.navigation.go_back.accessibility_label" = "Navigate back";
+"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
 "magic_item.action" = "Aktion";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Spracheingabe aktivieren";
@@ -888,7 +890,7 @@ Home Assistant ist eine kostenlose und Open-Source Heimautomationssoftware mit d
 "settings_sensors.periodic_update.off" = "Aus";
 "settings_sensors.periodic_update.title" = "Regelmäßige Aktualisierung";
 "settings_sensors.permissions.header" = "Berechtigungen";
-"settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.enable_all" = "Alle Sensoren aktivieren";
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.settings.footer" = "Änderungen werden bei der nächsten Aktualisierung übernommen.";
 "settings_sensors.settings.header" = "Einstellungen";

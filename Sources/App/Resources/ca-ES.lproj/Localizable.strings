@@ -342,6 +342,8 @@
 "location_change_notification.visit.body" = "Ubicació actualitzada mitjançant Visita";
 "location_change_notification.watch_context.body" = "Location updated via watch context sync";
 "location_change_notification.x_callback_url.body" = "Ubicació actualitzada mitjançant X-Callback-URL";
+"mac.navigation.go_back.accessibility_label" = "Navigate back";
+"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
 "magic_item.action" = "Action";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Start listening";

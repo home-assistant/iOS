@@ -342,6 +342,8 @@
 "location_change_notification.visit.body" = "Ziyaret yoluyla güncellenen konum";
 "location_change_notification.watch_context.body" = "Konum, saat bağlamı senkronizasyonu aracılığıyla güncellendi";
 "location_change_notification.x_callback_url.body" = "Konum X-Callback-URL ile güncellendi";
+"mac.navigation.go_back.accessibility_label" = "Navigate back";
+"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
 "magic_item.action" = "Eylem";
 "magic_item.action.assist.pipeline.title" = "İşlem hattı";
 "magic_item.action.assist.start_listening.title" = "Dinlemeye başla";

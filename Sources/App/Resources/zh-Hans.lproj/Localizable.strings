@@ -342,6 +342,8 @@
 "location_change_notification.visit.body" = "通过访问更新位置";
 "location_change_notification.watch_context.body" = "通过手表上下文同步更新位置";
 "location_change_notification.x_callback_url.body" = "通过 URL Scheme 更新位置";
+"mac.navigation.go_back.accessibility_label" = "Navigate back";
+"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
 "magic_item.action" = "动作";
 "magic_item.action.assist.pipeline.title" = "管道";
 "magic_item.action.assist.start_listening.title" = "开始聆听";
@@ -886,7 +888,7 @@
 "settings_sensors.periodic_update.off" = "关闭";
 "settings_sensors.periodic_update.title" = "定时更新";
 "settings_sensors.permissions.header" = "权限";
-"settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.enable_all" = "启用全部传感器";
 "settings_sensors.sensors.header" = "传感器";
 "settings_sensors.settings.footer" = "更改将在下次更新时应用。";
 "settings_sensors.settings.header" = "设置";

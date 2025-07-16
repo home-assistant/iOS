@@ -342,6 +342,8 @@
 "location_change_notification.visit.body" = "Helymegatározás frissítve a Visit segítségével";
 "location_change_notification.watch_context.body" = "A helszín frissítve lett az óra kontextus szinkronizálása által";
 "location_change_notification.x_callback_url.body" = "Helymegatározás frissítve az X-Callback-URL segítségével";
+"mac.navigation.go_back.accessibility_label" = "Navigate back";
+"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
 "magic_item.action" = "Művelet";
 "magic_item.action.assist.pipeline.title" = "Folyamat";
 "magic_item.action.assist.start_listening.title" = "Figyelés indítása";

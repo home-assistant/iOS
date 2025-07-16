@@ -342,6 +342,8 @@
 "location_change_notification.visit.body" = "Η τοποθεσία ενημερώθηκε μέσω επίσκεψης";
 "location_change_notification.watch_context.body" = "Η τοποθεσία ενημερώθηκε μέσω συγχρονισμού περιβάλλοντος ρολογιού";
 "location_change_notification.x_callback_url.body" = "Η τοποθεσία ενημερώθηκε μέσω X-Callback-URL";
+"mac.navigation.go_back.accessibility_label" = "Navigate back";
+"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
 "magic_item.action" = "Ενέργεια";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Εκκίνηση ακρόασης";
@@ -888,7 +890,7 @@
 "settings_sensors.periodic_update.off" = "Μη Ενεργό";
 "settings_sensors.periodic_update.title" = "Περιοδική ενημέρωση";
 "settings_sensors.permissions.header" = "Δικαιώματα";
-"settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.enable_all" = "Ενεργοποίηση όλων των αισθητήρων";
 "settings_sensors.sensors.header" = "Αισθητήρες";
 "settings_sensors.settings.footer" = "Οι αλλαγές θα εφαρμοστούν στην επόμενη ενημέρωση.";
 "settings_sensors.settings.header" = "Ρυθμίσεις";
