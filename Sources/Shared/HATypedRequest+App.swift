@@ -24,8 +24,11 @@ public extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": "script",
-                "service": entityId.replacingOccurrences(of: "script.", with: ""),
+                "domain": Domain.script.rawValue,
+                "service": "turn_on",
+                "target": [
+                    "entity_id": entityId,
+                ],
             ]
         ))
     }

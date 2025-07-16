@@ -16,7 +16,7 @@ struct WidgetBasicView: View {
     private let opacityWhenDisabled: CGFloat = 0.3
 
     var body: some View {
-        let spacing = sizeStyle == .compressed ? .zero : Spaces.one
+        let spacing = sizeStyle == .compressed ? .zero : DesignSystem.Spaces.one
         VStack(alignment: .leading, spacing: spacing) {
             ForEach(rows, id: \.self) { column in
                 HStack(spacing: spacing) {
@@ -26,7 +26,7 @@ struct WidgetBasicView: View {
                 }
             }
         }
-        .padding([.single, .compressed].contains(sizeStyle) ? 0 : Spaces.one)
+        .padding([.single, .compressed].contains(sizeStyle) ? 0 : DesignSystem.Spaces.one)
     }
 
     @ViewBuilder

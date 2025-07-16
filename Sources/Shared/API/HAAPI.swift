@@ -369,6 +369,12 @@ public class HomeAssistantAPI {
         )
     }
 
+    public func turnOnScript(scriptEntityId: String, triggerSource: AppTriggerSource) -> Promise<Void> {
+        CallService(domain: Domain.script.rawValue, service: "turn_on", serviceData: [
+            "entity_id": scriptEntityId
+        ], triggerSource: triggerSource)
+    }
+
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
             guard let queryUrl = server.info.connection.activeAPIURL()?
