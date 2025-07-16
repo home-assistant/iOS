@@ -2,6 +2,12 @@ import Shared
 import SwiftUI
 
 struct ManualURLEntryView: View {
+
+    enum Constants {
+        static let http = "http://"
+        static let https = "https://"
+    }
+
     @Environment(\.dismiss) private var dismiss
     @State private var urlString = ""
     @FocusState private var focused: Bool?
@@ -13,16 +19,22 @@ struct ManualURLEntryView: View {
         NavigationView {
             List {
                 Section(L10n.Onboarding.ManualSetup.TextField.title) {
-                    TextField(L10n.Onboarding.ManualSetup.TextField.placeholder, text: $urlString)
-                        .keyboardType(.URL)
-                        .focused($focused, equals: true)
-                        .onAppear {
-                            focused = true
-                        }
+                    HATextField(
+                        placeholder: L10n.Onboarding.ManualSetup.TextField.placeholder,
+                        text: $urlString,
+                        keyboardType: .URL
+                    )
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .focused($focused, equals: true)
+                    .onAppear {
+                        focused = true
+                    }
                 }
 
                 httpOrHttpsSection
             }
+            .listStyle(.plain)
             .navigationTitle(L10n.Onboarding.ManualSetup.title)
             .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
@@ -53,26 +65,25 @@ struct ManualURLEntryView: View {
         // 7 is the count of http:// chars
         let minCharsToActivateSection = 7
         if !cleanedURL.isEmpty,
-           !cleanedURL.starts(with: "http://"),
-           !cleanedURL.starts(with: "https://"),
+           !cleanedURL.starts(with: Constants.http),
+           !cleanedURL.starts(with: Constants.https),
            cleanedURL.count >= minCharsToActivateSection {
             Section(L10n.Onboarding.ManualSetup.HelperSection.title) {
                 HStack {
                     Button(action: {
-                        urlString = "http://\(urlString)"
+                        urlString = "\(Constants.http)\(urlString)"
                     }, label: {
-                        Text(verbatim: "http://\(urlString)")
+                        Text(verbatim: "\(Constants.http)\(urlString)")
                     })
                 }
                 Button(action: {
-                    urlString = "https://\(urlString)"
+                    urlString = "\(Constants.https)\(urlString)"
                 }, label: {
-                    Text(verbatim: "https://\(urlString)")
+                    Text(verbatim: "\(Constants.https)\(urlString)")
                 })
             }
             .buttonStyle(.pillButton)
             .listRowBackground(Color.clear)
-            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             .listRowSeparator(.hidden)
         }
     }

@@ -31,13 +31,13 @@ public struct CloseButton: View {
 
     @Environment(\.dismiss) private var dismiss
     private let alternativeAction: (() -> Void)?
-    private let tint: Color
+    private let tint: Color?
     private let size: Size
 
     /// When alternative action is set, the button will execute this action instead of dismissing the view.
     public init(
-        tint: Color = Color.gray,
-        size: Size = .small,
+        tint: Color? = nil,
+        size: Size = .medium,
         alternativeAction: (() -> Void)? = nil
     ) {
         self.alternativeAction = alternativeAction
@@ -56,7 +56,7 @@ public struct CloseButton: View {
             Image(systemSymbol: .xmarkCircleFill)
                 .resizable()
                 .frame(width: size.size, height: size.size)
-                .foregroundStyle(tint)
+                .foregroundStyle(tint ?? .secondary, .quaternary)
         })
         .buttonStyle(.plain)
     }

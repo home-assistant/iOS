@@ -3,16 +3,19 @@ import SwiftUI
 
 public struct HATextField: View {
     let placeholder: String
+    let keyboardType: UIKeyboardType
     @Binding var text: String
 
-    public init(placeholder: String, text: Binding<String>) {
+    public init(placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType = .default) {
         self.placeholder = placeholder
+        self.keyboardType = keyboardType
         self._text = text
     }
 
     public var body: some View {
         HStack {
             TextField(placeholder, text: $text)
+                .keyboardType(keyboardType)
             Button(action: {
                 text = ""
             }, label: {

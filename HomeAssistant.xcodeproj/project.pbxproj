@@ -973,7 +973,6 @@
 		42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */; };
 		42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */; };
 		42F3E1492E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
-		42F3E14A2E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
@@ -8193,7 +8192,6 @@
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
-				42F3E14A2E1D22B400F4E6FC /* HATextField.swift in Sources */,
 				11A3BD2E26192210005237E6 /* LocalPushManager.swift in Sources */,
 				4278C9C22C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */,
 				4238DCA42DD1F1E300126434 /* AppSessionValues.swift in Sources */,
