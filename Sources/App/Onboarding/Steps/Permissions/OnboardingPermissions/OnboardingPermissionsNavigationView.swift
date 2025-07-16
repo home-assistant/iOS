@@ -14,22 +14,42 @@ enum OnboardingPermissionHandler {
 struct OnboardingPermissionsNavigationView: View {
     let onboardingServer: Server?
 
+    @State private var skipRemoteAccessInput = false
+
     var body: some View {
         Group {
-            if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
-                LocationPermissionView(permission: permission) {
-                    Current.onboardingObservation.complete()
+            if let onboardingServer,
+               onboardingServer.info.connection.hasRemoteConnection {
+                // In case we cannot determine user's remote URL
+                RemoteAccessView(skipRemoteAccessInput: $skipRemoteAccessInput, server: onboardingServer) {
+                    skipRemoteAccessInput = true
+                }
+                NavigationLink("", isActive: $skipRemoteAccessInput) {
+                    permissionsFlow
                 }
             } else {
-                flowEnd
+                permissionsFlow
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .interactiveDismissDisabled(true)
         .onDisappear {
             if Current.location.permissionStatus == .denied {
                 useLocalConnectionAsRemoteIfNeeded()
             } else {
                 addCurrentSSIDAsLocalConnectionSafeNetwork()
             }
+        }
+    }
+
+    @ViewBuilder
+    private var permissionsFlow: some View {
+        if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
+            LocationPermissionView(permission: permission) {
+                Current.onboardingObservation.complete()
+            }
+        } else {
+            flowEnd
         }
     }
 

@@ -36,6 +36,11 @@ struct OnboardingServersListView: View {
             content
             centerLoader
             autoConnectView
+            NavigationLink(destination: OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer), isActive: .init(get: {
+                viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
+            }, set: { newValue in
+                viewModel.showPermissionsFlow = newValue
+            }), label: {EmptyView()})
         }
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom, content: {
@@ -82,13 +87,6 @@ struct OnboardingServersListView: View {
                     controller: hostingProvider.viewController
                 )
             }
-        }
-        .fullScreenCover(isPresented: .init(get: {
-            viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
-        }, set: { newValue in
-            viewModel.showPermissionsFlow = newValue
-        })) {
-            OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer)
         }
     }
 

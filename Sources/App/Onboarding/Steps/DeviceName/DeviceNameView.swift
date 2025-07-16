@@ -26,7 +26,7 @@ struct DeviceNameView: View {
                     Image(systemSymbol: icon)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 100)
+                        .frame(height: OnboardingConstants.iconSize)
                         .foregroundStyle(.haPrimary)
                     Text(L10n.DeviceName.title)
                         .font(DesignSystem.Font.largeTitle.bold())

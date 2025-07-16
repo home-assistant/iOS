@@ -272,6 +272,11 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    public var hasRemoteConnection: Bool {
+        address(for: .external) != nil ||
+        address(for: .remoteUI) != nil
+    }
+
     public mutating func set(address: URL?, for addressType: URLType) {
         switch addressType {
         case .internal:

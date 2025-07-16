@@ -7,13 +7,12 @@ struct LocationPermissionView: View {
     let completeAction: () -> Void
 
     var body: some View {
-        VStack(spacing: Spaces.three) {
-            header
-            Spacer()
-            actionButtons
+        VStack(spacing: DesignSystem.Spaces.three) {
+            Text("Location Permission")
         }
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding()
+        .navigationBarBackButtonHidden(false)
         .alert(
             L10n.Onboarding.Permission.Location.Deny.Alert.header,
             isPresented: $viewModel.showDenyAlert,
@@ -30,28 +29,6 @@ struct LocationPermissionView: View {
             if newValue {
                 completeAction()
             }
-        }
-    }
-
-    @ViewBuilder
-    private var header: some View {
-        VStack(spacing: Spaces.two) {}
-            .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private var actionButtons: some View {
-        VStack(spacing: Spaces.two) {
-//            Button(action: {
-//                viewModel.enableLocationSensor()
-//                viewModel.requestLocationPermission()
-//            }, label: {
-//                Text(L10n.continueLabel)
-//            })
-//            .buttonStyle(.primaryButton)
-//            Button(action: {}, label: {
-//                Text(L10n.Onboarding.Permissions.changeLaterNote)
-//            })
-//            .buttonStyle(.linkButton)
         }
     }
 }
