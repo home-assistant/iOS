@@ -239,7 +239,7 @@ struct WidgetBasicContainerWrapperView: View {
                 .font(.system(size: 10).bold())
                 .frame(maxWidth: .infinity, alignment: .center)
                 .multilineTextAlignment(.center)
-                .padding(.bottom, Spaces.half)
+                .padding(.bottom, DesignSystem.Spaces.half)
                 .opacity(0.5)
             }
         }

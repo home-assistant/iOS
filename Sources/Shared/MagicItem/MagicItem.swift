@@ -315,7 +315,7 @@ public extension MagicItem {
                     let domain = Domain.scene.rawValue
                     return Current.api(for: server)?.CallService(
                         domain: domain,
-                        service: "turn_on",
+                        service: Service.turnOn.rawValue,
                         serviceData: [
                             "entity_id": id,
                         ],
