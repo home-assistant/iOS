@@ -25,7 +25,6 @@
 /* Begin PBXBuildFile section */
 		07B254BADB23F6A60E82D615 /* Pods_iOS_Extensions_Matter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */; };
 		1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */; };
-		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */; };
 		1101568424D770B2009424C9 /* NFCWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E324D76CDB003CE877 /* NFCWriter.swift */; };
 		1101568524D770B2009424C9 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E124D76CD3003CE877 /* NFCReader.swift */; };
@@ -674,6 +673,19 @@
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		425624AB2E27BC6500ACD8A6 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624AA2E27BC6500ACD8A6 /* AppConfiguration.swift */; };
+		425624AC2E27BC6500ACD8A6 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624AA2E27BC6500ACD8A6 /* AppConfiguration.swift */; };
+		425624BF2E27C28D00ACD8A6 /* PermissionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624AE2E27BE6B00ACD8A6 /* PermissionStatus.swift */; };
+		425624C12E27C28D00ACD8A6 /* CMAuthorizationStatus+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624B72E27C09000ACD8A6 /* CMAuthorizationStatus+Permissions.swift */; };
+		425624C22E27C28D00ACD8A6 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
+		425624C32E27C28D00ACD8A6 /* FocusStatusWrapper.AuthorizationStatus +Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624B52E27BEFB00ACD8A6 /* FocusStatusWrapper.AuthorizationStatus +Permissions.swift */; };
+		425624C42E27C28D00ACD8A6 /* CLAuthorizationStatus+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624B02E27BE8200ACD8A6 /* CLAuthorizationStatus+Permissions.swift */; };
+		425624C52E27C28D00ACD8A6 /* UNAuthorizationStatus+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624B32E27BED000ACD8A6 /* UNAuthorizationStatus+Permissions.swift */; };
+		425624C62E27C28D00ACD8A6 /* UNAuthorizationOptions+Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624B92E27C11100ACD8A6 /* UNAuthorizationOptions+Permissions.swift */; };
+		425624D02E27C30400ACD8A6 /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
+		425624D22E27C38B00ACD8A6 /* PermissionType+Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624D12E27C38B00ACD8A6 /* PermissionType+Onboarding.swift */; };
+		425624D32E27C3EB00ACD8A6 /* OnboardingPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624BD2E27C1B300ACD8A6 /* OnboardingPermissionManager.swift */; };
+		425624D52E27C61100ACD8A6 /* PermissionsLocationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624BB2E27C13D00ACD8A6 /* PermissionsLocationDelegate.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -1037,7 +1049,6 @@
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
 		B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022212226DAC9D00E8DBFE /* ScaledFont.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
-		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
 		B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */; };
 		B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */; };
@@ -2165,6 +2176,16 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		425624AA2E27BC6500ACD8A6 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
+		425624AE2E27BE6B00ACD8A6 /* PermissionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionStatus.swift; sourceTree = "<group>"; };
+		425624B02E27BE8200ACD8A6 /* CLAuthorizationStatus+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLAuthorizationStatus+Permissions.swift"; sourceTree = "<group>"; };
+		425624B32E27BED000ACD8A6 /* UNAuthorizationStatus+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNAuthorizationStatus+Permissions.swift"; sourceTree = "<group>"; };
+		425624B52E27BEFB00ACD8A6 /* FocusStatusWrapper.AuthorizationStatus +Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FocusStatusWrapper.AuthorizationStatus +Permissions.swift"; sourceTree = "<group>"; };
+		425624B72E27C09000ACD8A6 /* CMAuthorizationStatus+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMAuthorizationStatus+Permissions.swift"; sourceTree = "<group>"; };
+		425624B92E27C11100ACD8A6 /* UNAuthorizationOptions+Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNAuthorizationOptions+Permissions.swift"; sourceTree = "<group>"; };
+		425624BB2E27C13D00ACD8A6 /* PermissionsLocationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsLocationDelegate.swift; sourceTree = "<group>"; };
+		425624BD2E27C1B300ACD8A6 /* OnboardingPermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionManager.swift; sourceTree = "<group>"; };
+		425624D12E27C38B00ACD8A6 /* PermissionType+Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PermissionType+Onboarding.swift"; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
@@ -4327,6 +4348,20 @@
 			path = Domains;
 			sourceTree = "<group>";
 		};
+		425624B22E27BEB900ACD8A6 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				B605C890226E9DAC00EF46DD /* Permissions.swift */,
+				425624AE2E27BE6B00ACD8A6 /* PermissionStatus.swift */,
+				425624B52E27BEFB00ACD8A6 /* FocusStatusWrapper.AuthorizationStatus +Permissions.swift */,
+				425624B02E27BE8200ACD8A6 /* CLAuthorizationStatus+Permissions.swift */,
+				425624B92E27C11100ACD8A6 /* UNAuthorizationOptions+Permissions.swift */,
+				425624B72E27C09000ACD8A6 /* CMAuthorizationStatus+Permissions.swift */,
+				425624B32E27BED000ACD8A6 /* UNAuthorizationStatus+Permissions.swift */,
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
 		425C5A052CF756CF00206B5B /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -5562,6 +5597,8 @@
 				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
 				11BD7B3C25B53D37001826F0 /* AppMacBridgeStatusItemConfiguration.swift */,
+				425624D12E27C38B00ACD8A6 /* PermissionType+Onboarding.swift */,
+				425624BB2E27C13D00ACD8A6 /* PermissionsLocationDelegate.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
@@ -5569,7 +5606,6 @@
 				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DA3C7222691A5000DE811C /* AKConverter.swift */,
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
-				B605C890226E9DAC00EF46DD /* Permissions.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
@@ -5675,6 +5711,9 @@
 			isa = PBXGroup;
 			children = (
 				D00302BD20D4BEDB004C2CA9 /* Environment.swift */,
+				425624B22E27BEB900ACD8A6 /* Permissions */,
+				425624BD2E27C1B300ACD8A6 /* OnboardingPermissionManager.swift */,
+				425624AA2E27BC6500ACD8A6 /* AppConfiguration.swift */,
 				4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */,
 				D03D893A20E0B2E300D4F28D /* AppConstants.swift */,
 				1101568624D7712F009424C9 /* TagManagerProtocol.swift */,
@@ -7720,7 +7759,6 @@
 				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
 				4228CFFF2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift in Sources */,
 				11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */,
-				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
 				1185DFB4271FF53800ED7D9A /* OnboardingAuthStepModels.swift in Sources */,
 				42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */,
 				11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */,
@@ -7852,6 +7890,7 @@
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
+				425624D52E27C61100ACD8A6 /* PermissionsLocationDelegate.swift in Sources */,
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
@@ -7882,6 +7921,7 @@
 				42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
+				425624D02E27C30400ACD8A6 /* ThemeColors.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,
 				42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */,
@@ -7910,7 +7950,6 @@
 				4206FFB62DAD58520087626C /* WebViewGestureHandler.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
-				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */,
@@ -7978,6 +8017,7 @@
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
+				425624D22E27C38B00ACD8A6 /* PermissionType+Onboarding.swift in Sources */,
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
@@ -8235,6 +8275,7 @@
 				420CFC852D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */,
 				1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
+				425624AB2E27BC6500ACD8A6 /* AppConfiguration.swift in Sources */,
 				428338452BA1BB4F004798C2 /* Spaces.swift in Sources */,
 				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				11B38EEF275C54A300205C7B /* OpenPageIntentHandler.swift in Sources */,
@@ -8400,6 +8441,7 @@
 				42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */,
 				420CFC702D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */,
 				42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */,
+				425624D32E27C3EB00ACD8A6 /* OnboardingPermissionManager.swift in Sources */,
 				42BB4C372CD26490003E47FD /* HATypedRequest+App.swift in Sources */,
 				42F5CAE72B10CDC900409816 /* CardView.swift in Sources */,
 				4251AAC02C6CE376004CCC9D /* MagicItem.swift in Sources */,
@@ -8463,6 +8505,13 @@
 				42196ACE2DA5A49600BD501E /* Bonjour.swift in Sources */,
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
+				425624BF2E27C28D00ACD8A6 /* PermissionStatus.swift in Sources */,
+				425624C12E27C28D00ACD8A6 /* CMAuthorizationStatus+Permissions.swift in Sources */,
+				425624C22E27C28D00ACD8A6 /* Permissions.swift in Sources */,
+				425624C32E27C28D00ACD8A6 /* FocusStatusWrapper.AuthorizationStatus +Permissions.swift in Sources */,
+				425624C42E27C28D00ACD8A6 /* CLAuthorizationStatus+Permissions.swift in Sources */,
+				425624C52E27C28D00ACD8A6 /* UNAuthorizationStatus+Permissions.swift in Sources */,
+				425624C62E27C28D00ACD8A6 /* UNAuthorizationOptions+Permissions.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
 				424151FC2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
 				11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */,
@@ -8495,6 +8544,7 @@
 				11F20BC7274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */,
+				425624AC2E27BC6500ACD8A6 /* AppConfiguration.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
 				110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */,

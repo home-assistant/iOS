@@ -2,7 +2,6 @@ import Shared
 import SwiftUI
 
 struct ManualURLEntryView: View {
-
     enum Constants {
         static let http = "http://"
         static let https = "https://"

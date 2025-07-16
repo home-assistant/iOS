@@ -35,56 +35,23 @@ struct LocationPermissionView: View {
 
     @ViewBuilder
     private var header: some View {
-        VStack(spacing: Spaces.two) {
-            Image(uiImage: permission.enableIcon.image(
-                ofSize: .init(width: 100, height: 100),
-                color: nil
-            ).withRenderingMode(.alwaysTemplate))
-                .foregroundStyle(Color.haPrimary)
-            Text(verbatim: permission.title)
-                .font(.title.bold())
-            Text(verbatim: permission.enableDescription)
-                .multilineTextAlignment(.center)
-                .opacity(0.5)
-            bullets
-                .padding(.top, Spaces.one)
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private var bullets: some View {
-        VStack(alignment: .leading) {
-            ForEach(permission.enableBulletPoints, id: \.id) { bullet in
-                makeBulletRow(bullet)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func makeBulletRow(_ bullet: PermissionType.BulletPoint) -> some View {
-        HStack(spacing: Spaces.one) {
-            Image(uiImage: bullet.icon.image(ofSize: .init(width: 35, height: 35), color: .accent))
-                .foregroundStyle(Color.haPrimary)
-            Text(verbatim: bullet.text)
-                .font(.body.bold())
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
-        }
+        VStack(spacing: Spaces.two) {}
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var actionButtons: some View {
         VStack(spacing: Spaces.two) {
-            Button(action: {
-                viewModel.enableLocationSensor()
-                viewModel.requestLocationPermission()
-            }, label: {
-                Text(L10n.continueLabel)
-            })
-            .buttonStyle(.primaryButton)
-            Button(action: {}, label: {
-                Text(L10n.Onboarding.Permissions.changeLaterNote)
-            })
-            .buttonStyle(.linkButton)
+//            Button(action: {
+//                viewModel.enableLocationSensor()
+//                viewModel.requestLocationPermission()
+//            }, label: {
+//                Text(L10n.continueLabel)
+//            })
+//            .buttonStyle(.primaryButton)
+//            Button(action: {}, label: {
+//                Text(L10n.Onboarding.Permissions.changeLaterNote)
+//            })
+//            .buttonStyle(.linkButton)
         }
     }
 }

@@ -10,26 +10,6 @@ import UserNotifications
 import Version
 import XCGLogger
 
-public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {
-    case fastlaneSnapshot
-    case debug
-    case beta
-    case release
-
-    public var description: String {
-        switch self {
-        case .fastlaneSnapshot:
-            return "fastlane"
-        case .debug:
-            return "debug"
-        case .beta:
-            return "beta"
-        case .release:
-            return "release"
-        }
-    }
-}
-
 private var underlyingWasSetUp: UInt32 = 0
 private var underlyingCurrent = AppEnvironment()
 
@@ -222,6 +202,10 @@ public class AppEnvironment {
     public lazy var clientVersion: () -> Version = { AppConstants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()
+
+    #if !os(watchOS)
+    public var onboardingPermissionManager: OnboardingPermissionManagerProtocol = OnboardingPermissionManager()
+    #endif
 
     public var isPerformingSingleShotLocationQuery = false
 
