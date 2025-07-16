@@ -617,8 +617,6 @@
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
-		4235075D2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
-		4235075E2CDB756800A19902 /* HAServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4235075C2CDB756800A19902 /* HAServices.swift */; };
 		42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		4238DCA42DD1F1E300126434 /* AppSessionValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238DCA32DD1F1E300126434 /* AppSessionValues.swift */; };
@@ -956,6 +954,9 @@
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
+		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
+		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
+		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
 		42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
 		42EF0ACE2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */; };
 		42EF0AD12D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */; };
@@ -2094,7 +2095,6 @@
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
-		4235075C2CDB756800A19902 /* HAServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAServices.swift; sourceTree = "<group>"; };
 		42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerSource.swift; sourceTree = "<group>"; };
 		4238DCA32DD1F1E300126434 /* AppSessionValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionValues.swift; sourceTree = "<group>"; };
 		4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUserDefaults.swift; sourceTree = "<group>"; };
@@ -2415,6 +2415,8 @@
 		42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
+		42EEEFE12E2791430080E973 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
 		42EF0ACC2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetAllCustomWidgetConfirmationAppIntent.swift; sourceTree = "<group>"; };
 		42EF0ACF2D4CDFF30088C91E /* UpdateWidgetItemConfirmationStateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateWidgetItemConfirmationStateAppIntent.swift; sourceTree = "<group>"; };
 		42EFFAEB2C8882DD002F10FC /* CarPlayConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationView.swift; sourceTree = "<group>"; };
@@ -4847,6 +4849,7 @@
 			isa = PBXGroup;
 			children = (
 				42CE8FAC2B46C12C00C707F9 /* Domain.swift */,
+				42EEEFE12E2791430080E973 /* Service.swift */,
 				42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */,
 			);
 			path = Domain;
@@ -5761,7 +5764,6 @@
 				426266432C11B0070081A818 /* Watch */,
 				420F53E92C4E9D43003C8415 /* Widget */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
-				4235075C2CDB756800A19902 /* HAServices.swift */,
 				4254C4C92D103ABB00245021 /* ExternalLink.swift */,
 			);
 			path = Shared;
@@ -5808,6 +5810,7 @@
 				11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */,
 				114CBAEA2839FC2500A9BAFF /* SecurityExceptions.test.swift */,
 				114CBAEC283AB92D00A9BAFF /* SecTrust+TestAdditions.swift */,
+				42EEEFE42E2792B20080E973 /* Service.test.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -8144,7 +8147,6 @@
 				11AF4D23249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				4264906F2C0F1CCA002155CC /* View+RoundedCorner.swift in Sources */,
 				11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
-				4235075E2CDB756800A19902 /* HAServices.swift in Sources */,
 				1182620224F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
 				B6872E672226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
@@ -8187,6 +8189,7 @@
 				4264906C2C0F1B60002155CC /* AssistChatItem.swift in Sources */,
 				424151FA2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */,
 				42070EED2BAC523F0031E96F /* AssistService.swift in Sources */,
+				42EEEFE22E2791430080E973 /* Service.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B613936A24F728F8002B8C5D /* InputOutputDeviceSensor.swift in Sources */,
 				11F20BFD274D5DA900DFB163 /* Server+Fakes.swift in Sources */,
@@ -8413,6 +8416,7 @@
 				427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */,
 				11BA5EC92759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				11B38EE4275C54A200205C7B /* FireEventIntentHandler.swift in Sources */,
+				42EEEFE32E2791430080E973 /* Service.swift in Sources */,
 				1120C5842749C6350046C38B /* ServerProviding.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
@@ -8559,7 +8563,6 @@
 				4278CB892D01F81B00CFAAC9 /* AppGesture.swift in Sources */,
 				115BC8282676F44E00452430 /* FocusSensor.swift in Sources */,
 				1104FCBF2532755400B8BE34 /* WatchBackgroundRefreshScheduler.swift in Sources */,
-				4235075D2CDB756800A19902 /* HAServices.swift in Sources */,
 				429821172CD0DDCD005ECD39 /* HAButtonStyles.swift in Sources */,
 				4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */,
 				11B38EE8275C54A200205C7B /* WidgetActionsIntentHandler.swift in Sources */,
@@ -8683,6 +8686,7 @@
 				1165707C2702BAF5003906A7 /* DiskCache.test.swift in Sources */,
 				11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */,
 				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,
+				42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */,
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
 				114CBAEB2839FC2500A9BAFF /* SecurityExceptions.test.swift in Sources */,
 				11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */,

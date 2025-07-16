@@ -45,9 +45,7 @@ final class ScriptAppIntent: AppIntent {
                 continuation.resume(returning: false)
                 return
             }
-            let domain = Domain.script.rawValue
-            let service = script.entityId.replacingOccurrences(of: "\(domain).", with: "")
-            api.CallService(domain: domain, service: service, serviceData: [:], triggerSource: .AppIntent)
+            api.turnOnScript(scriptEntityId: script.entityId, triggerSource: .AppIntent)
                 .pipe { [weak self] result in
                     switch result {
                     case .fulfilled:

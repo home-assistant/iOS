@@ -157,7 +157,7 @@ final class WatchCommunicatorService {
                 message: message,
                 magicItemId: itemId,
                 domain: .scene,
-                serviceName: "turn_on",
+                serviceName: Service.turnOn.rawValue,
                 serviceData: ["entity_id": itemId],
                 responseIdentifier: responseIdentifier
             )
@@ -171,7 +171,7 @@ final class WatchCommunicatorService {
                 message: message,
                 magicItemId: itemId,
                 domain: domain,
-                serviceName: "toggle",
+                serviceName: Service.toggle.rawValue,
                 serviceData: ["entity_id": itemId],
                 responseIdentifier: responseIdentifier
             )

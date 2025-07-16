@@ -369,6 +369,12 @@ public class HomeAssistantAPI {
         )
     }
 
+    public func turnOnScript(scriptEntityId: String, triggerSource: AppTriggerSource) -> Promise<Void> {
+        CallService(domain: Domain.script.rawValue, service: Service.turnOn.rawValue, serviceData: [
+            "entity_id": scriptEntityId,
+        ], triggerSource: triggerSource)
+    }
+
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
             guard let queryUrl = server.info.connection.activeAPIURL()?
@@ -637,7 +643,11 @@ public class HomeAssistantAPI {
         actionID: String,
         source: AppTriggerSource
     ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
-        (serviceDomain: "scene", serviceName: "turn_on", serviceData: ["entity_id": actionID])
+        (
+            serviceDomain: Domain.scene.rawValue,
+            serviceName: Service.turnOn.rawValue,
+            serviceData: ["entity_id": actionID]
+        )
     }
 
     public func tagEvent(
