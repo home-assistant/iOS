@@ -10,7 +10,7 @@ public extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": domain.rawValue,
-                "service": "toggle",
+                "service": Service.toggle.rawValue,
                 "target": [
                     "entity_id": entityId,
                 ],
@@ -25,7 +25,7 @@ public extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": Domain.script.rawValue,
-                "service": "turn_on",
+                "service": Service.turnOn.rawValue,
                 "target": [
                     "entity_id": entityId,
                 ],
@@ -39,8 +39,8 @@ public extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": "scene",
-                "service": "turn_on",
+                "domain": Domain.scene.rawValue,
+                "service": Service.turnOn.rawValue,
                 "target": [
                     "entity_id": entityId,
                 ],
@@ -56,7 +56,7 @@ public extension HATypedRequest {
             type: "call_service",
             data: [
                 "domain": domain.rawValue,
-                "service": "press",
+                "service": Service.press.rawValue,
                 "target": [
                     "entity_id": entityId,
                 ],
@@ -70,8 +70,8 @@ public extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": "lock",
-                "service": "lock",
+                "domain": Domain.lock.rawValue,
+                "service": Service.lock.rawValue,
                 "target": [
                     "entity_id": entityId,
                 ],
@@ -85,8 +85,8 @@ public extension HATypedRequest {
         HATypedRequest<HAResponseVoid>(request: .init(
             type: "call_service",
             data: [
-                "domain": "lock",
-                "service": "unlock",
+                "domain": Domain.lock.rawValue,
+                "service": Service.unlock.rawValue,
                 "target": [
                     "entity_id": entityId,
                 ],

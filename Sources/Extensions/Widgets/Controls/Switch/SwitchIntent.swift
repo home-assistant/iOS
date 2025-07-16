@@ -21,9 +21,9 @@ struct SwitchIntent: SetValueIntent {
             return .result()
         }
 
-        var service = HAServices.toggle
+        var service = Service.toggle.rawValue
         if !toggle {
-            service = value ? HAServices.turnOn : HAServices.turnOff
+            service = value ? Service.turnOn.rawValue : Service.turnOff.rawValue
         }
 
         // This intent can also handle for example, input_boolean

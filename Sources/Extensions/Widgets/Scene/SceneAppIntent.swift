@@ -46,7 +46,7 @@ final class SceneAppIntent: AppIntent {
             }
             api.CallService(
                 domain: Domain.scene.rawValue,
-                service: "turn_on",
+                service: Service.turnOn.rawValue,
                 serviceData: ["entity_id": scene.entityId],
                 triggerSource: .AppIntent
             )

@@ -21,9 +21,9 @@ struct LightIntent: SetValueIntent {
             return .result()
         }
 
-        var service = HAServices.toggle
+        var service = Service.toggle.rawValue
         if !toggle {
-            service = value ? HAServices.turnOn : HAServices.turnOff
+            service = value ? Service.turnOn.rawValue : Service.turnOff.rawValue
         }
 
         let _ = await withCheckedContinuation { continuation in

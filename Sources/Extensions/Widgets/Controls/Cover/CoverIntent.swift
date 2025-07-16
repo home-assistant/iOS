@@ -21,9 +21,9 @@ struct CoverIntent: SetValueIntent {
             return .result()
         }
 
-        var service = HAServices.toggle
+        var service = Service.toggle.rawValue
         if !toggle {
-            service = value ? HAServices.openCover : HAServices.closeCover
+            service = value ? Service.openCover.rawValue : Service.closeCover.rawValue
         }
 
         let _ = await withCheckedContinuation { continuation in
