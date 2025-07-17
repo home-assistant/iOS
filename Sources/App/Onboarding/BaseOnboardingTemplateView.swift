@@ -5,6 +5,7 @@ struct BaseOnboardingTemplateView<Icon: View>: View {
     let icon: Icon
     let title: String
     let subtitle: String
+    let bannerText: String?
     let primaryButtonTitle: String
     let primaryButtonAction: () -> Void
     let secondaryButtonTitle: String?
@@ -14,6 +15,7 @@ struct BaseOnboardingTemplateView<Icon: View>: View {
         @ViewBuilder icon: () -> Icon,
         title: String,
         subtitle: String,
+        bannerText: String? = nil,
         primaryButtonTitle: String,
         primaryButtonAction: @escaping () -> Void,
         secondaryButtonTitle: String? = nil,
@@ -22,6 +24,7 @@ struct BaseOnboardingTemplateView<Icon: View>: View {
         self.icon = icon()
         self.title = title
         self.subtitle = subtitle
+        self.bannerText = bannerText
         self.primaryButtonTitle = primaryButtonTitle
         self.primaryButtonAction = primaryButtonAction
         self.secondaryButtonTitle = secondaryButtonTitle
@@ -44,6 +47,14 @@ struct BaseOnboardingTemplateView<Icon: View>: View {
                 Text(subtitle)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
+                if let bannerText {
+                    HABannerView(
+                        icon: {
+                            Image(.casita)
+                        },
+                        text: bannerText
+                    )
+                }
             }
             .padding(DesignSystem.Spaces.two)
         }
@@ -70,6 +81,7 @@ struct BaseOnboardingTemplateView<Icon: View>: View {
         icon: { Image(systemName: "globe") },
         title: "Access outside your home",
         subtitle: "If you are interested in logging in to Home Assistant installation while away, you will have to make your instance remotely accessible. You can set this up in your Home Assistant instance.\n\nRight now, you can only connect while on your home network.",
+        bannerText: "Your location will only be used to check if you are connected to your local network. It will not be shared with anyone.",
         primaryButtonTitle: "Skip for now",
         primaryButtonAction: {},
         secondaryButtonTitle: "I know my external URL",

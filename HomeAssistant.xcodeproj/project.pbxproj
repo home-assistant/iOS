@@ -968,6 +968,7 @@
 		42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */; };
 		42E9AFFF2CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
 		42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */; };
+		42EAE73F2E28F37D00703C38 /* HABannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EAE73E2E28F37D00703C38 /* HABannerView.swift */; };
 		42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */; };
 		42EEEFE22E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
 		42EEEFE32E2791430080E973 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE12E2791430080E973 /* Service.swift */; };
@@ -2440,6 +2441,7 @@
 		42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingErrorView.swift; sourceTree = "<group>"; };
 		42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		42E9AFFE2CE63944009DDA46 /* AudioOutputSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioOutputSensor.swift; sourceTree = "<group>"; };
+		42EAE73E2E28F37D00703C38 /* HABannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HABannerView.swift; sourceTree = "<group>"; };
 		42EB03092C6E4D0E00A184A6 /* WatchMagicViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMagicViewRow.swift; sourceTree = "<group>"; };
 		42EEEFE12E2791430080E973 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
@@ -4882,6 +4884,7 @@
 				427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */,
 				42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */,
 				42F3E1482E1D22B400F4E6FC /* HATextField.swift */,
+				42EAE73E2E28F37D00703C38 /* HABannerView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -8491,6 +8494,7 @@
 				11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				110ED56325A563D600489AF7 /* DisplaySensor.swift in Sources */,
 				424151FB2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */,
+				42EAE73F2E28F37D00703C38 /* HABannerView.swift in Sources */,
 				42DE75D32D1061A600FF379F /* PanelsUpdater.swift in Sources */,
 				11AF4D16249C8083006C74C0 /* With.swift in Sources */,
 				11B38EEC275C54A200205C7B /* IntentHandlerFactory.swift in Sources */,

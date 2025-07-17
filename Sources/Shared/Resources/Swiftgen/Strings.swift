@@ -1794,6 +1794,18 @@ public enum L10n {
       /// Home Assistant Invite
       public static var title: String { return L10n.tr("Localizable", "onboarding.invitation.title") }
     }
+    public enum LocalAccess {
+      /// Your location will only be used to check if you are connected to your local network. It will not be shared with anyone.
+      public static var bannerText: String { return L10n.tr("Localizable", "onboarding.local_access.banner_text") }
+      /// This app can connect directly to your Home Assistant installation when you are on the same network. For doing that, this app needs location access to check your network details.
+      public static var body: String { return L10n.tr("Localizable", "onboarding.local_access.body") }
+      /// Share my network location
+      public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.local_access.primary_button") }
+      /// Do not share
+      public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.local_access.secondary_button") }
+      /// Get secure local connection
+      public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.title") }
+    }
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }

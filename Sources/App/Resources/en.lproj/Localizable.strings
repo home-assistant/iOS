@@ -1275,3 +1275,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "yes_label" = "Yes";
 "mac.navigation.go_back.accessibility_label" = "Navigate back";
 "mac.navigation.go_forward.accessibility_label" = "Navigate forward";
+"onboarding.local_access.title" = "Get secure local connection";
+"onboarding.local_access.body" = "This app can connect directly to your Home Assistant installation when you are on the same network. For doing that, this app needs location access to check your network details.";
+"onboarding.local_access.primary_button" = "Share my network location";
+"onboarding.local_access.secondary_button" = "Do not share";
+"onboarding.local_access.banner_text" = "Your location will only be used to check if you are connected to your local network. It will not be shared with anyone.";

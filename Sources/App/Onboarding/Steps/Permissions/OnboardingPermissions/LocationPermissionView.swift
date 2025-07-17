@@ -1,5 +1,6 @@
 import Shared
 import SwiftUI
+import SFSafeSymbols
 
 struct LocationPermissionView: View {
     @StateObject private var viewModel = LocationPermissionViewModel()
@@ -7,22 +8,23 @@ struct LocationPermissionView: View {
     let completeAction: () -> Void
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spaces.three) {
-            Text("Location Permission")
-        }
-        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-        .padding()
-        .navigationBarBackButtonHidden(false)
-        .alert(
-            L10n.Onboarding.Permission.Location.Deny.Alert.header,
-            isPresented: $viewModel.showDenyAlert,
-            actions: {
-                Button(L10n.continueLabel, role: .destructive) {
-                    viewModel.requestLocationPermission()
+
+        BaseOnboardingTemplateView(
+            icon: {
+                Image(systemSymbol: .lockFill)
+            },
+            title: L10n.Onboarding.LocalAccess.title,
+            subtitle: L10n.Onboarding.LocalAccess.body,
+            bannerText: L10n.Onboarding.LocalAccess.bannerText,
+            primaryButtonTitle: L10n.Onboarding.LocalAccess.primaryButton,
+            primaryButtonAction: {
+                permission.request { granted, status in
+
                 }
             },
-            message: {
-                Text(verbatim: L10n.Onboarding.Permission.Location.Deny.Alert.body)
+            secondaryButtonTitle: L10n.Onboarding.LocalAccess.secondaryButton,
+            secondaryButtonAction: {
+                
             }
         )
         .onChange(of: viewModel.shouldComplete) { newValue in

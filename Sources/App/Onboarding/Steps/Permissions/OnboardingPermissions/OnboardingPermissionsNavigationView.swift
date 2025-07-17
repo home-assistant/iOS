@@ -15,30 +15,40 @@ struct OnboardingPermissionsNavigationView: View {
     let onboardingServer: Server?
 
     @State private var skipRemoteAccessInput = false
+    @State private var navigationBarBackButtonHidden = true
 
     var body: some View {
-        Group {
-            if let onboardingServer,
-               onboardingServer.info.connection.hasRemoteConnection {
-                // In case we cannot determine user's remote URL
-                RemoteAccessView(skipRemoteAccessInput: $skipRemoteAccessInput, server: onboardingServer) {
-                    skipRemoteAccessInput = true
+        content
+            .navigationBarBackButtonHidden(navigationBarBackButtonHidden)
+            .interactiveDismissDisabled(navigationBarBackButtonHidden)
+            .onDisappear {
+                if Current.location.permissionStatus == .denied {
+                    useLocalConnectionAsRemoteIfNeeded()
+                } else {
+                    addCurrentSSIDAsLocalConnectionSafeNetwork()
                 }
-                NavigationLink("", isActive: $skipRemoteAccessInput) {
-                    permissionsFlow
-                }
-            } else {
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if let onboardingServer,
+           !onboardingServer.info.connection.hasRemoteConnection {
+            // In case we cannot determine user's remote URL
+            RemoteAccessView(skipRemoteAccessInput: $skipRemoteAccessInput, server: onboardingServer) {
+                skipRemoteAccessInput = true
+            }
+            .onAppear {
+                navigationBarBackButtonHidden = true
+            }
+            .onDisappear {
+                navigationBarBackButtonHidden = false
+            }
+            NavigationLink("", isActive: $skipRemoteAccessInput) {
                 permissionsFlow
             }
-        }
-        .navigationBarBackButtonHidden(true)
-        .interactiveDismissDisabled(true)
-        .onDisappear {
-            if Current.location.permissionStatus == .denied {
-                useLocalConnectionAsRemoteIfNeeded()
-            } else {
-                addCurrentSSIDAsLocalConnectionSafeNetwork()
-            }
+        } else {
+            permissionsFlow
         }
     }
 
