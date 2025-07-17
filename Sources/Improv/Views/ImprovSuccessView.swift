@@ -5,7 +5,7 @@ struct ImprovSuccessView: View {
     let action: () -> Void
     var body: some View {
         Spacer()
-        VStack(spacing: Spaces.two) {
+        VStack(spacing: DesignSystem.Spaces.two) {
             ZStack(alignment: .bottomTrailing) {
                 Image(systemName: "wifi.circle.fill")
                     .font(.system(size: 100))
@@ -32,12 +32,9 @@ struct ImprovSuccessView: View {
             action()
         } label: {
             Text(verbatim: L10n.Improv.Button.continue)
-                .foregroundStyle(Color(uiColor: .label))
-                .padding()
         }
-        .frame(maxWidth: .infinity)
-        .background(Color(uiColor: .tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .buttonStyle(.primaryButton)
+        .padding()
     }
 }
 

@@ -157,7 +157,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
 
     private func notifyFrontend() {
         Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
-            controller.webViewExternalMessageHandler.sendExternalBus(message: .init(
+            _ = controller.webViewExternalMessageHandler.sendExternalBus(message: .init(
                 command: WebViewExternalBusOutgoingMessage.improvDiscoveredDeviceSetupDone.rawValue
             ))
         }
@@ -195,7 +195,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     }
                 }
             }, header: {
-                HStack(spacing: Spaces.two) {
+                HStack(spacing: DesignSystem.Spaces.two) {
                     Text(verbatim: L10n.Improv.List.title)
                         .textCase(.uppercase)
                         .font(.footnote)
@@ -235,13 +235,15 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
 
     @ViewBuilder
     private func loadingView(_ message: String) -> some View {
-        VStack(spacing: Spaces.three) {
+        VStack(spacing: DesignSystem.Spaces.four) {
             Spacer()
             ProgressView()
                 .progressViewStyle(.circular)
                 .scaleEffect(.init(floatLiteral: 1.8))
             Text(message)
                 .foregroundStyle(Color(uiColor: .secondaryLabel))
+                .lineLimit(nil)
+                .multilineTextAlignment(.center)
             Spacer()
         }
     }
@@ -266,16 +268,9 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
 }
 
 #Preview {
-    ZStack {
-        VStack {}
-            .background(.blue)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        ImprovDiscoverView<ImprovManager>(
-            improvManager: ImprovManager.shared,
-            deviceName: "12345",
-            redirectRequest: { _ in }
-        )
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    ImprovDiscoverView<ImprovManager>(
+        improvManager: ImprovManager.shared,
+        deviceName: "12345",
+        redirectRequest: { _ in }
+    )
 }
