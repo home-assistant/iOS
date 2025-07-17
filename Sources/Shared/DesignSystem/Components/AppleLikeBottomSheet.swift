@@ -51,28 +51,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     public var body: some View {
         VStack {
             Spacer()
-            VStack {
-                header
-                content
-                    .frame(maxWidth: .infinity)
-                    .padding(contentInsets)
-                    .frame(maxHeight: .infinity)
-            }
-            .padding(.horizontal)
-            .frame(minHeight: bottomSheetMinHeight)
-            .frame(maxWidth: maxWidth, alignment: .center)
-            .background(Color(uiColor: .systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
-            .shadow(color: .black.opacity(0.2), radius: 20)
-            .padding(DesignSystem.Spaces.one)
-            .fixedSize(horizontal: false, vertical: true)
-            .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
-            .onAppear {
-                state = .initial
-                withAnimation(.bouncy) {
-                    displayBottomSheet = true
-                }
-            }
+            bottomSheet
         }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -104,6 +83,30 @@ public struct AppleLikeBottomSheet<Content: View>: View {
         }
     }
 
+    private var bottomSheet: some View {
+        VStack(spacing: .zero) {
+            header
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(contentInsets)
+        }
+        .padding(.horizontal)
+        .frame(minHeight: bottomSheetMinHeight)
+        .frame(maxWidth: maxWidth, alignment: .center)
+        .background(Color(uiColor: .systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: perfectCornerRadius))
+        .shadow(color: .black.opacity(0.2), radius: 20)
+        .padding(DesignSystem.Spaces.one)
+        .fixedSize(horizontal: false, vertical: true)
+        .offset(y: displayBottomSheet ? 0 : bottomSheetMinHeight)
+        .onAppear {
+            state = .initial
+            withAnimation(.bouncy) {
+                displayBottomSheet = true
+            }
+        }
+    }
+
     private func performDismiss() {
         willDismiss?()
         if let customDismiss {
@@ -122,11 +125,15 @@ public struct AppleLikeBottomSheet<Content: View>: View {
     }
 
     private var perfectCornerRadius: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
-        } else {
-            50
-        }
+        let cornerRadius: CGFloat = {
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                return UIScreen.main.displayCornerRadius - DesignSystem.Spaces.one
+            } else {
+                return 50
+            }
+        }()
+        let minimumCornerRadius = DesignSystem.CornerRadius.one
+        return cornerRadius > minimumCornerRadius ? cornerRadius : minimumCornerRadius
     }
 
     @ViewBuilder
@@ -161,43 +168,36 @@ public struct AppleLikeBottomSheet<Content: View>: View {
                             .foregroundStyle(.gray, Color(uiColor: .secondarySystemBackground))
                     })
                 }
-                Spacer()
             }
             .padding(.top, DesignSystem.Spaces.three)
-            .padding([.trailing, .bottom], DesignSystem.Spaces.one)
+            .padding(.horizontal, DesignSystem.Spaces.one)
         }
     }
 }
 
-#Preview {
-    ZStack {
-        VStack {}
-            .background(.blue)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        AppleLikeBottomSheet(title: "Allow notifications?", content: {
-            VStack(spacing: DesignSystem.Spaces.three) {
-                Text(
-                    "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you."
-                )
-                .foregroundStyle(.secondary)
-                VStack(spacing: DesignSystem.Spaces.one) {
-                    Button {} label: {
-                        Text("Allow notifications")
-                    }
-                    .buttonStyle(.primaryButton)
-                    Button {} label: {
-                        Text("Do not allow")
-                    }
-                    .buttonStyle(.secondaryButton)
+#Preview("Allow notifications?") {
+    AppleLikeBottomSheet(title: "Allow notifications?", content: {
+        VStack(spacing: DesignSystem.Spaces.three) {
+            Text(
+                "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you."
+            )
+            .foregroundStyle(.secondary)
+            VStack(spacing: DesignSystem.Spaces.one) {
+                Button {} label: {
+                    Text("Allow notifications")
                 }
+                .buttonStyle(.primaryButton)
+                Button {} label: {
+                    Text("Do not allow")
+                }
+                .buttonStyle(.secondaryButton)
             }
-            .background(.green)
-        }, contentInsets: .init(
-            top: DesignSystem.Spaces.six,
-            leading: DesignSystem.Spaces.two,
-            bottom: DesignSystem.Spaces.half,
-            trailing: DesignSystem.Spaces.two
-        ), state: .constant(.initial), willDismiss: {})
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .background(.green)
+    }, contentInsets: .init(
+        top: DesignSystem.Spaces.six,
+        leading: DesignSystem.Spaces.two,
+        bottom: DesignSystem.Spaces.half,
+        trailing: DesignSystem.Spaces.two
+    ), state: .constant(.initial), willDismiss: {})
 }
