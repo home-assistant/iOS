@@ -19,7 +19,13 @@ struct LocationPermissionView: View {
             primaryButtonTitle: L10n.Onboarding.LocalAccess.primaryButton,
             primaryButtonAction: {
                 permission.request { granted, status in
-
+                    switch status {
+                    case .authorized, .authorizedWhenInUse:
+                        // wait a bit more for "Always" to be granted
+                        break
+                    default: break
+                        // warn what will happen if not granted
+                    }
                 }
             },
             secondaryButtonTitle: L10n.Onboarding.LocalAccess.secondaryButton,
