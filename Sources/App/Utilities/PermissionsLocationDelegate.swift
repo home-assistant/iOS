@@ -43,9 +43,6 @@ final class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
         case .notDetermined:
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
-        case .authorizedWhenInUse:
-            locationManager.delegate = self
-            locationManager.requestAlwaysAuthorization()
         default:
             completionHandler(status.genericStatus)
         }
