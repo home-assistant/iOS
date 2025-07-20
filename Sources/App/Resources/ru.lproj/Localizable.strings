@@ -342,8 +342,8 @@
 "location_change_notification.visit.body" = "Геопозиция обновлена посещением";
 "location_change_notification.watch_context.body" = "Местоположение обновлено через синхронизацию контекста часов";
 "location_change_notification.x_callback_url.body" = "Местоположение обновлено с помощью X-Callback-URL";
-"mac.navigation.go_back.accessibility_label" = "Navigate back";
-"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
+"mac.navigation.go_back.accessibility_label" = "Перейти назад";
+"mac.navigation.go_forward.accessibility_label" = "Перейти вперед";
 "magic_item.action" = "Действие";
 "magic_item.action.assist.pipeline.title" = "Обработчик";
 "magic_item.action.assist.start_listening.title" = "Начать слушать";
@@ -890,7 +890,7 @@ Home Assistant - это бесплатное программное обеспе
 "settings_sensors.periodic_update.off" = "Выкл";
 "settings_sensors.periodic_update.title" = "Период обновления";
 "settings_sensors.permissions.header" = "Разрешения";
-"settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.enable_all" = "Включить все сенсоры";
 "settings_sensors.sensors.header" = "Сенсоры";
 "settings_sensors.settings.footer" = "Изменения будут применены при следующем обновлении.";
 "settings_sensors.settings.header" = "Настройки";

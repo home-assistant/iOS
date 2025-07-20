@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "Obs: Den inbyggda WebRTC-videospelaren är för närvarande en experimentell funktion, ljudet kanske inte fungerar och tillstånd och användning av mikrofonen kan begäras även om den inte används. Använd gränssnittet för webbspelare för avancerade alternativ och tillförlitlig uppspelning.";
 "about.acknowledgements.title" = "Tack till";
 "about.beta.title" = "Gå med i beta";
 "about.chat.title" = "Chatt";
@@ -225,10 +225,10 @@
 "debug.reset.entities_database.title" = "Återställ databasen för app-entiteter";
 "debug_section_label" = "Felsökning";
 "delete" = "Ta bort";
-"device_name.primary_button.title" = "Save";
-"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
-"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
-"device_name.title" = "How would you like to name this device?";
+"device_name.primary_button.title" = "Spara";
+"device_name.subtitle" = "Detta används för att identifiera din enhet i Home Assistant.";
+"device_name.textfield.placeholder" = "Namn på iPhone/iPad/Mac";
+"device_name.title" = "Hur skulle du vilja namnge denna enhet?";
 "done_label" = "Klar";
 "download_manager.downloading.title" = "Laddar ner";
 "download_manager.failed.title" = "Det gick inte att ladda ner filen, fel: %@";
@@ -342,8 +342,8 @@
 "location_change_notification.visit.body" = "Plats uppdaterad via besök";
 "location_change_notification.watch_context.body" = "Platsen uppdaterad via synkronisering av klockans kontext";
 "location_change_notification.x_callback_url.body" = "Plats uppdaterad via X-Callback-URL";
-"mac.navigation.go_back.accessibility_label" = "Navigate back";
-"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
+"mac.navigation.go_back.accessibility_label" = "Navigera tillbaka";
+"mac.navigation.go_forward.accessibility_label" = "Navigera framåt";
 "magic_item.action" = "Åtgärd";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Börja lyssna";
@@ -523,11 +523,11 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.scanning.manual.button.title" = "Ange adress manuellt";
 "onboarding.scanning.manual_hint" = "Hittar du inte din server?";
 "onboarding.scanning.title" = "Söker efter servrar";
-"onboarding.servers.auto_connect.button" = "Connect";
+"onboarding.servers.auto_connect.button" = "Anslut";
 "onboarding.servers.docs.read" = "Läs dokumentationen";
 "onboarding.servers.search.message" = "Letar efter servrar i närheten...";
-"onboarding.servers.title" = "Searching on home network";
-"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
+"onboarding.servers.title" = "Sök på hemnätverket";
+"onboarding.welcome.body" = "Gör att du kan komma åt din Home Assistant-installation när du är på språng. Den körs lokalt i ditt hem via en enhet som Home Assistant Green eller Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.description" = "Den här appen ansluter till din Home Assistant-server och låter dig integrera data om dig och din telefon. \
 \
@@ -535,15 +535,15 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "onboarding.welcome.get_started" = "Kom igång med Home Assistant";
 "onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Läs mer";
-"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
-"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant logga";
+"onboarding.welcome.primary_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.secondary_button" = "Så här kommer du igång";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
 "open_label" = "Öppen";
-"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
-"permission.notification.primary_button" = "Allow notifications";
-"permission.notification.secondary_button" = "Do not allow";
-"permission.notification.title" = "Allow notifications?";
+"permission.notification.body" = "Tillåt aviseringar för att veta vad som händer i ditt hem, från upptäckt av läckage till dörrar som är öppna. Du har full kontroll över vad det berättar för dig.";
+"permission.notification.primary_button" = "Tillåt aviseringar";
+"permission.notification.secondary_button" = "Tillåt inte";
+"permission.notification.title" = "Tillåt aviseringar?";
 "permission.screen.bluetooth.secondary_button" = "Hoppa över";
 "permission.screen.bluetooth.subtitle" = "Home Assistant-appen kan hitta enheter som använder Bluetooth på den här enheten. Tillåt Bluetooth-åtkomst för Home Assistant-appen.";
 "permission.screen.bluetooth.title" = "Sök enheter";
@@ -890,7 +890,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings_sensors.periodic_update.off" = "Av";
 "settings_sensors.periodic_update.title" = "Periodisk uppdatering";
 "settings_sensors.permissions.header" = "Behörigheter";
-"settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.enable_all" = "Aktivera alla sensorer";
 "settings_sensors.sensors.header" = "Sensorer";
 "settings_sensors.settings.footer" = "Ändringar kommer att träda i kraft vid nästa uppdatering.";
 "settings_sensors.settings.header" = "Inställningar";
