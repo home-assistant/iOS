@@ -1942,6 +1942,18 @@ public enum L10n {
         }
       }
     }
+    public enum RemoteAccess {
+      /// Skip for now
+      public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.remote_access.primary_button") }
+      /// I know my external URL
+      public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.remote_access.secondary_button") }
+      /// If you are interested in logging in to Home Assistant installation while away, you will have to make your instance remotely accessible. You can set this up in your Home Assistant instance.
+      /// 
+      /// Right now, you can only connect while on your home network.
+      public static var subtitle: String { return L10n.tr("Localizable", "onboarding.remote_access.subtitle") }
+      /// Access outside your home
+      public static var title: String { return L10n.tr("Localizable", "onboarding.remote_access.title") }
+    }
     public enum Scanning {
       /// Discovered: %@
       public static func discoveredAnnouncement(_ p1: Any) -> String {

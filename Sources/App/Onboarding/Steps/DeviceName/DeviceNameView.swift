@@ -23,7 +23,7 @@ struct DeviceNameView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: DesignSystem.Spaces.three) {
-                    Image(systemSymbol: icon)
+                    Image(.Onboarding.nameDevice)
                         .resizable()
                         .scaledToFit()
                         .frame(height: OnboardingConstants.iconSize)
@@ -80,14 +80,6 @@ struct DeviceNameView: View {
             case .none:
                 break
             }
-        }
-    }
-
-    private var icon: SFSymbol {
-        if #available(iOS 16.1, *) {
-            .macbookAndIphone
-        } else {
-            .iphone
         }
     }
 

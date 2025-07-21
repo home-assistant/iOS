@@ -5,7 +5,6 @@ import Shared
 final class LocationPermissionViewModel: NSObject, ObservableObject {
     @Published var showDenyAlert: Bool = false
     @Published var shouldComplete: Bool = false
-    private let locationManager = CLLocationManager()
     private var webhookSensors: [WebhookSensor] = []
 
     private let sensorIdsToEnableDisable: [WebhookSensorId] = [
@@ -17,11 +16,6 @@ final class LocationPermissionViewModel: NSObject, ObservableObject {
     override init() {
         super.init()
         Current.sensors.register(observer: self)
-    }
-
-    func requestLocationPermission() {
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
     }
 
     func disableLocationSensor() {
@@ -55,32 +49,6 @@ extension LocationPermissionViewModel: SensorObserver {
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
         update.sensors.done { [weak self] sensors in
             self?.webhookSensors = sensors
-        }
-    }
-}
-
-extension LocationPermissionViewModel: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .notDetermined:
-            break
-        case .restricted:
-            break
-        case .denied:
-            disableLocationSensor()
-        case .authorizedAlways:
-            break
-        case .authorizedWhenInUse:
-            manager.requestAlwaysAuthorization()
-        case .authorized:
-            break
-        @unknown default:
-            break
-        }
-
-        guard manager.authorizationStatus != .notDetermined else { return }
-        DispatchQueue.main.async { [weak self] in
-            self?.shouldComplete = true
         }
     }
 }

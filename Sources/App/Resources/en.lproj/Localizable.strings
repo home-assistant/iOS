@@ -1280,3 +1280,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.local_access.primary_button" = "Share my network location";
 "onboarding.local_access.secondary_button" = "Do not share";
 "onboarding.local_access.banner_text" = "Your location will only be used to check if you are connected to your local network. It will not be shared with anyone.";
+"onboarding.remote_access.title" = "Access outside your home";
+"onboarding.remote_access.subtitle" = "If you are interested in logging in to Home Assistant installation while away, you will have to make your instance remotely accessible. You can set this up in your Home Assistant instance.\n\nRight now, you can only connect while on your home network.";
+"onboarding.remote_access.primary_button" = "Skip for now";
+"onboarding.remote_access.secondary_button" = "I know my external URL";

@@ -4,38 +4,45 @@ import SFSafeSymbols
 
 struct LocationPermissionView: View {
     @StateObject private var viewModel = LocationPermissionViewModel()
+    @State private var showLocationSharingScreen = false
     let permission: PermissionType
     let completeAction: () -> Void
 
     var body: some View {
-
-        BaseOnboardingTemplateView(
-            icon: {
-                Image(systemSymbol: .lockFill)
-            },
-            title: L10n.Onboarding.LocalAccess.title,
-            subtitle: L10n.Onboarding.LocalAccess.body,
-            bannerText: L10n.Onboarding.LocalAccess.bannerText,
-            primaryButtonTitle: L10n.Onboarding.LocalAccess.primaryButton,
-            primaryButtonAction: {
-                permission.request { granted, status in
-                    switch status {
-                    case .authorized, .authorizedWhenInUse:
-                        // wait a bit more for "Always" to be granted
-                        break
-                    default: break
-                        // warn what will happen if not granted
+        Group {
+            BaseOnboardingTemplateView(
+                icon: {
+                    Image(.Onboarding.localAccess)
+                },
+                title: L10n.Onboarding.LocalAccess.title,
+                subtitle: L10n.Onboarding.LocalAccess.body,
+                bannerText: L10n.Onboarding.LocalAccess.bannerText,
+                primaryButtonTitle: L10n.Onboarding.LocalAccess.primaryButton,
+                primaryButtonAction: {
+                    permission.request { granted, status in
+                        switch status {
+                        case .authorized, .authorizedWhenInUse:
+                            showLocationSharingScreen = true
+                        default: break
+                            // warn what will happen if not granted
+                        }
                     }
+                },
+                secondaryButtonTitle: L10n.Onboarding.LocalAccess.secondaryButton,
+                secondaryButtonAction: {
+
                 }
-            },
-            secondaryButtonTitle: L10n.Onboarding.LocalAccess.secondaryButton,
-            secondaryButtonAction: {
-                
+            )
+            .onChange(of: viewModel.shouldComplete) { newValue in
+                if newValue {
+                    completeAction()
+                }
             }
-        )
-        .onChange(of: viewModel.shouldComplete) { newValue in
-            if newValue {
-                completeAction()
+
+            NavigationLink("", isActive: $showLocationSharingScreen) {
+                LocationSharingView(permission: permission) {
+                    completeAction()
+                }
             }
         }
     }
@@ -43,4 +50,36 @@ struct LocationPermissionView: View {
 
 #Preview {
     LocationPermissionView(permission: .location) {}
+}
+
+struct LocationSharingView: View {
+    @StateObject private var viewModel = LocationPermissionViewModel()
+    let permission: PermissionType
+    let completeAction: () -> Void
+
+    var body: some View {
+        Group {
+            BaseOnboardingTemplateView(
+                icon: {
+                    Image(.Onboarding.locationAccess)
+                },
+                title: L10n.Onboarding.LocalAccess.title,
+                subtitle: L10n.Onboarding.LocalAccess.body,
+                bannerText: L10n.Onboarding.LocalAccess.bannerText,
+                primaryButtonTitle: L10n.Onboarding.LocalAccess.primaryButton,
+                primaryButtonAction: {
+                    completeAction()
+                },
+                secondaryButtonTitle: L10n.Onboarding.LocalAccess.secondaryButton,
+                secondaryButtonAction: {
+
+                }
+            )
+            .onChange(of: viewModel.shouldComplete) { newValue in
+                if newValue {
+                    completeAction()
+                }
+            }
+        }
+    }
 }

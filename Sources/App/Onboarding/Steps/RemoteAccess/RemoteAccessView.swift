@@ -11,15 +11,16 @@ struct RemoteAccessView: View {
     var body: some View {
         BaseOnboardingTemplateView(
             icon: {
-                Image(systemSymbol: .globe)
+                Image(.Onboarding.noExternalURL)
             },
-            title: "Access outside your home",
-            subtitle: "If you are interested in logging in to Home Assistant installation while away, you will have to make your instance remotely accessible. You can set this up in your Home Assistant instance.\n\nRight now, you can only connect while on your home network.",
-            primaryButtonTitle: "Skip for now",
+            title: L10n.Onboarding.RemoteAccess.title,
+            subtitle: L10n.Onboarding.RemoteAccess.subtitle,
+            primaryButtonTitle: L10n.Onboarding.RemoteAccess.primaryButton,
             primaryButtonAction: { skipRemoteAccessInput = true },
-            secondaryButtonTitle: "I know my external URL",
+            secondaryButtonTitle: L10n.Onboarding.RemoteAccess.secondaryButton,
             secondaryButtonAction: { inputExternalURL = true }
         )
+        .padding(.top, DesignSystem.Spaces.four) // Compensate the absense of nav bar
         .sheet(isPresented: $inputExternalURL) {
             ManualURLEntryView { url in
                 server.update { info in
