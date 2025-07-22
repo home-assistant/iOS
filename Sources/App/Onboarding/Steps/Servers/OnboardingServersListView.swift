@@ -80,7 +80,7 @@ struct OnboardingServersListView: View {
             errorView
         }
         .sheet(isPresented: $showManualInput) {
-            ManualURLEntryView { connectURL in
+            ManualURLEntryView(title: L10n.Onboarding.ManualInput.title, primaryButtonTitle: L10n.Onboarding.ManualInput.primaryButton) { connectURL in
                 viewModel.manualInputLoading = true
                 viewModel.selectInstance(
                     .init(manualURL: connectURL),

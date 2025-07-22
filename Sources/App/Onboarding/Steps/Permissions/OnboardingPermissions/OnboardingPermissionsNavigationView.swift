@@ -14,8 +14,17 @@ enum OnboardingPermissionHandler {
 struct OnboardingPermissionsNavigationView: View {
     let onboardingServer: Server?
 
-    @State private var skipRemoteAccessInput = false
+    // Tracks if user skipped/added manually remote access input
+    @State private var skipOrAddedRemoteAccessInput = false
     @State private var navigationBarBackButtonHidden = true
+
+    // This keeps track of if the user had a remote connection when the screen appeared and differentiate from
+    // the case when it adds the remote url afterwards
+    @State private var hadRemoteConnectionWhenTheScreenAppeared: Bool?
+
+    init(onboardingServer: Server?) {
+        self.onboardingServer = onboardingServer
+    }
 
     var body: some View {
         content
@@ -32,24 +41,15 @@ struct OnboardingPermissionsNavigationView: View {
 
     @ViewBuilder
     private var content: some View {
-        if let onboardingServer,
-           !onboardingServer.info.connection.hasRemoteConnection {
-            // In case we cannot determine user's remote URL
-            RemoteAccessView(skipRemoteAccessInput: $skipRemoteAccessInput, server: onboardingServer) {
-                skipRemoteAccessInput = true
-            }
+        permissionsFlow
             .onAppear {
+                // Prevent going back to servers list, server is onboarded until manually removed
                 navigationBarBackButtonHidden = true
             }
             .onDisappear {
+                // Allow subsequent screens to have back button
                 navigationBarBackButtonHidden = false
             }
-            NavigationLink("", isActive: $skipRemoteAccessInput) {
-                permissionsFlow
-            }
-        } else {
-            permissionsFlow
-        }
     }
 
     @ViewBuilder

@@ -1284,3 +1284,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.remote_access.subtitle" = "If you are interested in logging in to Home Assistant installation while away, you will have to make your instance remotely accessible. You can set this up in your Home Assistant instance.\n\nRight now, you can only connect while on your home network.";
 "onboarding.remote_access.primary_button" = "Skip for now";
 "onboarding.remote_access.secondary_button" = "I know my external URL";
+"onboarding.manual_input.title" = "What is your address?";
+"onboarding.manual_input.primary_button" = "Connect";
+"onboarding.external_url_input.title" = "What is your external URL?";
+"onboarding.external_url_input.subtitle" = "This can be found in the Home Assistant settings, as part of System > Network.";
+"onboarding.external_url_input.primary_button" = "Save";

@@ -12,29 +12,51 @@ struct ManualURLEntryView: View {
     @FocusState private var focused: Bool?
     @State private var showInvalidURLError = false
 
+    let title: String
+    let subtitle: String?
+    let primaryButtonTitle: String
     let connectAction: (URL) -> Void
+
+    init(
+        title: String,
+        subtitle: String? = nil,
+        primaryButtonTitle: String,
+        connectAction: @escaping (URL) -> Void
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.primaryButtonTitle = primaryButtonTitle
+        self.connectAction = connectAction
+    }
 
     var body: some View {
         NavigationView {
-            List {
-                Section(L10n.Onboarding.ManualSetup.TextField.title) {
+            ScrollView {
+                VStack(spacing: DesignSystem.Spaces.three) {
+                    Image(.Onboarding.setupExternalURL)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: OnboardingConstants.iconSize)
+                    Text(title)
+                        .font(DesignSystem.Font.largeTitle.bold())
+                        .multilineTextAlignment(.center)
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(DesignSystem.Font.body)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.secondary)
+                    }
                     HATextField(
-                        placeholder: L10n.Onboarding.ManualSetup.TextField.placeholder,
+                        placeholder: "http://homeassistant.local:8123",
                         text: $urlString,
                         keyboardType: .URL
                     )
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
                     .focused($focused, equals: true)
-                    .onAppear {
-                        focused = true
-                    }
-                }
+                    httpOrHttpsSection
 
-                httpOrHttpsSection
+                }
+                .padding(.horizontal, DesignSystem.Spaces.two)
             }
-            .listStyle(.plain)
-            .navigationTitle(L10n.Onboarding.ManualSetup.title)
             .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -46,6 +68,9 @@ struct ManualURLEntryView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 connectButton
+            }
+            .onAppear {
+                focused = true
             }
             .alert(isPresented: $showInvalidURLError) {
                 Alert(
@@ -67,23 +92,26 @@ struct ManualURLEntryView: View {
            !cleanedURL.starts(with: Constants.http),
            !cleanedURL.starts(with: Constants.https),
            cleanedURL.count >= minCharsToActivateSection {
-            Section(L10n.Onboarding.ManualSetup.HelperSection.title) {
-                HStack {
-                    Button(action: {
-                        urlString = "\(Constants.http)\(urlString)"
-                    }, label: {
-                        Text(verbatim: "\(Constants.http)\(urlString)")
-                    })
-                }
+
+            VStack(alignment: .leading) {
+                Text(L10n.Onboarding.ManualSetup.HelperSection.title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(DesignSystem.Font.headline)
+                    .foregroundStyle(.secondary)
+                Button(action: {
+                    urlString = "\(Constants.http)\(urlString)"
+                }, label: {
+                    Text(verbatim: "\(Constants.http)\(urlString)")
+                })
+                .buttonStyle(.pillButton)
                 Button(action: {
                     urlString = "\(Constants.https)\(urlString)"
                 }, label: {
                     Text(verbatim: "\(Constants.https)\(urlString)")
                 })
+                .buttonStyle(.pillButton)
             }
-            .buttonStyle(.pillButton)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+            .frame(maxWidth: .infinity)
         }
     }
 
@@ -96,7 +124,7 @@ struct ManualURLEntryView: View {
                 showInvalidURLError = true
             }
         } label: {
-            Text(L10n.Onboarding.ManualSetup.connect)
+            Text(primaryButtonTitle)
         }
         .buttonStyle(.primaryButton)
         .padding()
@@ -107,7 +135,7 @@ struct ManualURLEntryView: View {
 #Preview {
     VStack {}
         .sheet(isPresented: .constant(true)) {
-            ManualURLEntryView { _ in
+            ManualURLEntryView(title: "What is your address?", primaryButtonTitle: "Connect") { _ in
             }
         }
 }

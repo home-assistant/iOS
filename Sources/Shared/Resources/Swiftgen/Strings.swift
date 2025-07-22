@@ -1786,6 +1786,14 @@ public enum L10n {
         }
       }
     }
+    public enum ExternalUrlInput {
+      /// Save
+      public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.external_url_input.primary_button") }
+      /// This can be found in the Home Assistant settings, as part of System > Network.
+      public static var subtitle: String { return L10n.tr("Localizable", "onboarding.external_url_input.subtitle") }
+      /// What is your external URL?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.external_url_input.title") }
+    }
     public enum Invitation {
       /// Accept
       public static var acceptButton: String { return L10n.tr("Localizable", "onboarding.invitation.accept_button") }
@@ -1805,6 +1813,12 @@ public enum L10n {
       public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.local_access.secondary_button") }
       /// Get secure local connection
       public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.title") }
+    }
+    public enum ManualInput {
+      /// Connect
+      public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.manual_input.primary_button") }
+      /// What is your address?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.manual_input.title") }
     }
     public enum ManualSetup {
       /// Connect

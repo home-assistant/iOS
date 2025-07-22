@@ -686,7 +686,6 @@
 		425624D22E27C38B00ACD8A6 /* PermissionType+Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624D12E27C38B00ACD8A6 /* PermissionType+Onboarding.swift */; };
 		425624D32E27C3EB00ACD8A6 /* OnboardingPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624BD2E27C1B300ACD8A6 /* OnboardingPermissionManager.swift */; };
 		425624D52E27C61100ACD8A6 /* PermissionsLocationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624BB2E27C13D00ACD8A6 /* PermissionsLocationDelegate.swift */; };
-		425624D82E27CF2000ACD8A6 /* RemoteAccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624D72E27CF2000ACD8A6 /* RemoteAccessView.swift */; };
 		425624DA2E27D16500ACD8A6 /* OnboardingConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624D92E27D16500ACD8A6 /* OnboardingConstants.swift */; };
 		425624DC2E27D49A00ACD8A6 /* BaseOnboardingTemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425624DB2E27D49A00ACD8A6 /* BaseOnboardingTemplateView.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
@@ -2190,7 +2189,6 @@
 		425624BB2E27C13D00ACD8A6 /* PermissionsLocationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsLocationDelegate.swift; sourceTree = "<group>"; };
 		425624BD2E27C1B300ACD8A6 /* OnboardingPermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionManager.swift; sourceTree = "<group>"; };
 		425624D12E27C38B00ACD8A6 /* PermissionType+Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PermissionType+Onboarding.swift"; sourceTree = "<group>"; };
-		425624D72E27CF2000ACD8A6 /* RemoteAccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAccessView.swift; sourceTree = "<group>"; };
 		425624D92E27D16500ACD8A6 /* OnboardingConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingConstants.swift; sourceTree = "<group>"; };
 		425624DB2E27D49A00ACD8A6 /* BaseOnboardingTemplateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingTemplateView.swift; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
@@ -3300,7 +3298,6 @@
 				42905D812E1297BC00250728 /* Welcome */,
 				42905D822E1297C500250728 /* Servers */,
 				4240DF452E1D147C00FB0DE6 /* DeviceName */,
-				425624D62E27CF0A00ACD8A6 /* RemoteAccess */,
 				42905D832E1297D000250728 /* Permissions */,
 			);
 			path = Steps;
@@ -4371,14 +4368,6 @@
 				425624B32E27BED000ACD8A6 /* UNAuthorizationStatus+Permissions.swift */,
 			);
 			path = Permissions;
-			sourceTree = "<group>";
-		};
-		425624D62E27CF0A00ACD8A6 /* RemoteAccess */ = {
-			isa = PBXGroup;
-			children = (
-				425624D72E27CF2000ACD8A6 /* RemoteAccessView.swift */,
-			);
-			path = RemoteAccess;
 			sourceTree = "<group>";
 		};
 		425C5A052CF756CF00206B5B /* Views */ = {
@@ -8052,7 +8041,6 @@
 				42FCCFFF2B9B1C310057783F /* ThreadCredentialsSharingView.swift in Sources */,
 				429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
-				425624D82E27CF2000ACD8A6 /* RemoteAccessView.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				3E02C0F32CA8032500102131 /* WidgetSensorsAppIntent.swift in Sources */,
