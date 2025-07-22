@@ -204,6 +204,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         postOnboardingNotificationPermission()
         resetFrontendCacheIfNeeded()
+        emptyStateObservations()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -300,16 +301,41 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         emptyStateView = emptyState
     }
 
+    private func emptyStateObservations() {
+        // Hide empty state when enter background
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(hideEmptyState),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+
+        // Show empty state again if after entering foreground it is not connected
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(resetEmptyStateTimerWithLatestConnectedState),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+    }
+
     func showEmptyState() {
         UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
             self.emptyStateView?.alpha = 1
         }, completion: nil)
     }
 
-    func hideEmptyState() {
+    @objc func hideEmptyState() {
         UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
             self.emptyStateView?.alpha = 0
         }, completion: nil)
+    }
+
+    // To avoid keeping the empty state on screen when user is disconencted in background
+    // due to innectivity, we reset the empty state timer
+    @objc func resetEmptyStateTimerWithLatestConnectedState() {
+        let state: FrontEndConnectionState = isConnected ? .connected : .disconnected
+        updateFrontendConnectionState(state: state.rawValue)
     }
 
     private func setupWebViewConstraints(statusBarView: UIView) {
