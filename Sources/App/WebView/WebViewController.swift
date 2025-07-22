@@ -331,7 +331,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }, completion: nil)
     }
 
-    // To avoid keeping the empty state on screen when user is disconencted in background
+    // To avoid keeping the empty state on screen when user is disconnected in background
     // due to innectivity, we reset the empty state timer
     @objc func resetEmptyStateTimerWithLatestConnectedState() {
         let state: FrontEndConnectionState = isConnected ? .connected : .disconnected
