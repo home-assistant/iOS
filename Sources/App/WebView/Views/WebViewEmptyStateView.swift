@@ -80,6 +80,7 @@ struct WebViewEmptyStateView: View {
                 #if targetEnvironment(macCatalyst)
                     .padding()
                 #endif
+                    // Using .secondarySystemBackground to visually distinguish the server selection view
                     .background(Color(uiColor: .secondarySystemBackground))
                     .clipShape(Capsule())
                 Spacer()
