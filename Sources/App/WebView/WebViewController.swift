@@ -122,6 +122,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     deinit {
+        removeEmptyStateObservations()
         self.urlObserver = nil
         self.tokens.forEach { $0.cancel() }
     }
@@ -317,6 +318,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+    }
+
+    private func removeEmptyStateObservations() {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 
     func showEmptyState() {
