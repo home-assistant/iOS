@@ -34,7 +34,7 @@ struct WebViewEmptyStateView: View {
     }
 
     private var content: some View {
-        VStack(spacing: Spaces.two) {
+        VStack(spacing: DesignSystem.Spaces.two) {
             Image(.logo)
                 .resizable()
                 .scaledToFit()
@@ -47,8 +47,8 @@ struct WebViewEmptyStateView: View {
                 .font(.callout)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, Spaces.two)
-            VStack(spacing: Spaces.one) {
+                .padding(.horizontal, DesignSystem.Spaces.two)
+            VStack(spacing: DesignSystem.Spaces.one) {
                 Button(action: {
                     retryAction?()
                 }) {
@@ -63,12 +63,12 @@ struct WebViewEmptyStateView: View {
                 .buttonStyle(.secondaryButton)
             }
             .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-            .padding(.horizontal, Spaces.two)
+            .padding(.horizontal, DesignSystem.Spaces.two)
             .padding(.top)
         }
-        .padding(Spaces.three)
+        .padding(DesignSystem.Spaces.three)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: .secondarySystemBackground))
+        .background(Color(uiColor: .systemBackground))
     }
 
     @ViewBuilder
@@ -77,7 +77,10 @@ struct WebViewEmptyStateView: View {
             HStack {
                 Spacer()
                 ServerPickerView(server: server)
-                    .background(Color(uiColor: .systemBackground))
+                #if targetEnvironment(macCatalyst)
+                    .padding()
+                #endif
+                    .background(Color(uiColor: .secondarySystemBackground))
                     .clipShape(Capsule())
                 Spacer()
             }
