@@ -2,7 +2,7 @@ import CoreLocation
 import Foundation
 import Shared
 
-final class LocationPermissionViewModel: NSObject, ObservableObject {
+final class LocationSharingViewModel: NSObject, ObservableObject {
     @Published var showDenyAlert: Bool = false
     @Published var shouldComplete: Bool = false
     private var webhookSensors: [WebhookSensor] = []
@@ -37,7 +37,7 @@ final class LocationPermissionViewModel: NSObject, ObservableObject {
     }
 }
 
-extension LocationPermissionViewModel: SensorObserver {
+extension LocationSharingViewModel: SensorObserver {
     func sensorContainer(
         _ container: SensorContainer,
         didSignalForUpdateBecause reason: SensorContainerUpdateReason,

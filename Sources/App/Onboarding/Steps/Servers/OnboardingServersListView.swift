@@ -24,11 +24,11 @@ struct OnboardingServersListView: View {
 
     let prefillURL: URL?
 
-    init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false) {
+    init(prefillURL: URL? = nil) {
         self.prefillURL = prefillURL
         self
             ._viewModel =
-            .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
+            .init(wrappedValue: OnboardingServersListViewModel())
     }
 
     var body: some View {
@@ -36,11 +36,7 @@ struct OnboardingServersListView: View {
             content
             centerLoader
             autoConnectView
-            NavigationLink(destination: OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer), isActive: .init(get: {
-                viewModel.showPermissionsFlow && viewModel.onboardingServer != nil
-            }, set: { newValue in
-                viewModel.showPermissionsFlow = newValue
-            }), label: {EmptyView()})
+            navigationLinks
         }
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom, content: {
@@ -87,6 +83,17 @@ struct OnboardingServersListView: View {
                     controller: hostingProvider.viewController
                 )
             }
+        }
+    }
+
+    // Links to be activated by the view model and then navigated through the navigation stack
+    @ViewBuilder
+    private var navigationLinks: some View {
+        if let onboardingServer = viewModel.onboardingServer {
+            // Navigate directly to permissions flow
+            NavigationLink(destination: OnboardingPermissionsNavigationView(onboardingServer: onboardingServer), isActive: $viewModel.showPermissionsFlow, label: {EmptyView()})
+            // Navigate first to the 'no remote connection warning' screen
+            NavigationLink(destination: NoRemoteURLView(onboardingServer: onboardingServer), isActive: $viewModel.showNoRemoteURLWarning, label: {EmptyView()})
         }
     }
 

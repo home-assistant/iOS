@@ -17,6 +17,7 @@ final class OnboardingServersListViewModel: ObservableObject {
     @Published var error: Error?
 
     @Published var showPermissionsFlow = false
+    @Published var showNoRemoteURLWarning = false
     @Published var shouldDismiss = false
     @Published var onboardingServer: Server?
 
@@ -27,13 +28,10 @@ final class OnboardingServersListViewModel: ObservableObject {
     private var webhookSensors: [WebhookSensor] = []
     private var discovery = Current.bonjour()
     private var cancellables = Set<AnyCancellable>()
-    private let shouldDismissOnSuccess: Bool
 
-    init(shouldDismissOnSuccess: Bool) {
-        self.shouldDismissOnSuccess = shouldDismissOnSuccess
+    init() {
         discovery.observer = self
         Current.sensors.register(observer: self)
-        Current.onboardingObservation.register(observer: self)
     }
 
     func startDiscovery() {
@@ -126,7 +124,12 @@ final class OnboardingServersListViewModel: ObservableObject {
         discovery.stop()
         onboardingServer = server
         disableNonEssentialSensors(server)
-        showPermissionsFlow = true
+
+        if server.info.connection.hasRemoteConnection {
+            showPermissionsFlow = true
+        } else {
+            showNoRemoteURLWarning = true
+        }
     }
 
     private func disableNonEssentialSensors(_ server: Server) {
@@ -175,14 +178,6 @@ extension OnboardingServersListViewModel: SensorObserver {
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
         update.sensors.done { [weak self] sensors in
             self?.webhookSensors = sensors
-        }
-    }
-}
-
-extension OnboardingServersListViewModel: OnboardingStateObserver {
-    func onboardingStateDidChange(to state: OnboardingState) {
-        if state == .complete, shouldDismissOnSuccess {
-            shouldDismiss = true
         }
     }
 }

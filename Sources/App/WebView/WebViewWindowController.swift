@@ -96,7 +96,7 @@ final class WebViewWindowController {
         case .webView:
             webViewControllerPromise.done { controller in
                 let navigationView = NavigationView {
-                    OnboardingServersListView(prefillURL: inviteURL, shouldDismissOnSuccess: true)
+                    OnboardingServersListView(prefillURL: inviteURL)
                 }.navigationViewStyle(.stack)
                 controller.presentOverlayController(
                     controller: navigationView.embeddedInHostingController(),

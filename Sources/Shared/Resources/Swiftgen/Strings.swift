@@ -1786,14 +1786,6 @@ public enum L10n {
         }
       }
     }
-    public enum ExternalUrlInput {
-      /// Save
-      public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.external_url_input.primary_button") }
-      /// This can be found in the Home Assistant settings, as part of System > Network.
-      public static var subtitle: String { return L10n.tr("Localizable", "onboarding.external_url_input.subtitle") }
-      /// What is your external URL?
-      public static var title: String { return L10n.tr("Localizable", "onboarding.external_url_input.title") }
-    }
     public enum Invitation {
       /// Accept
       public static var acceptButton: String { return L10n.tr("Localizable", "onboarding.invitation.accept_button") }
@@ -1857,6 +1849,16 @@ public enum L10n {
         /// Your Home Assistant URL
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.title") }
       }
+    }
+    public enum NoRemoteURL {
+      /// Got it
+      public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.no_remote_URL.primary_button") }
+      /// Your Home Assistant is only accessible on your home network. You can set up remote access later in your settings, to control your smart home from anywhere. 
+      ///  
+      ///  For now, you're securely connected to your local network.
+      public static var subtitle: String { return L10n.tr("Localizable", "onboarding.no_remote_URL.subtitle") }
+      /// Local by default. Remote when you’re ready.
+      public static var title: String { return L10n.tr("Localizable", "onboarding.no_remote_URL.title") }
     }
     public enum Permission {
       public enum Location {

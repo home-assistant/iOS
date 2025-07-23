@@ -11,7 +11,6 @@ struct OnboardingWelcomeView: View {
     }
 
     @State private var showLearnMore = false
-    @Binding var shouldDismissOnboarding: Bool
 
     var body: some View {
         ScrollView {
@@ -80,10 +79,10 @@ struct OnboardingWelcomeView: View {
 #Preview {
     NavigationView {
         if #available(iOS 18.0, *) {
-            OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
+            OnboardingWelcomeView()
                 .toolbarVisibility(.hidden, for: .navigationBar)
         } else {
-            OnboardingWelcomeView(shouldDismissOnboarding: .constant(false))
+            OnboardingWelcomeView()
         }
     }
 }

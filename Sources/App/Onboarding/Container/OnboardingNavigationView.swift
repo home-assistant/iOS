@@ -2,18 +2,12 @@ import Shared
 import SwiftUI
 
 enum OnboardingStyle: Equatable {
-    enum RequiredType: Equatable {
-        case full
-        case permissions
-    }
-
     case initial
-    case required(RequiredType)
     case secondary
 
     var insertsCancelButton: Bool {
         switch self {
-        case .initial, .required: return false
+        case .initial: return false
         case .secondary: return true
         }
     }
@@ -22,9 +16,7 @@ enum OnboardingStyle: Equatable {
 enum OnboardingNavigation {
     public static var requiredOnboardingStyle: OnboardingStyle? {
         if Current.servers.all.isEmpty {
-            return .required(.full)
-        } else if !OnboardingPermissionHandler.notDeterminedPermissions.isEmpty {
-            return .required(.permissions)
+            return .initial
         } else {
             return nil
         }
@@ -45,16 +37,9 @@ struct OnboardingNavigationView: View {
             Group {
                 switch onboardingStyle {
                 case .initial:
-                    OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
+                    OnboardingWelcomeView()
                 case .secondary:
                     OnboardingServersListView()
-                case let .required(type):
-                    switch type {
-                    case .full:
-                        OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
-                    case .permissions:
-                        OnboardingPermissionsNavigationView(onboardingServer: nil)
-                    }
                 }
             }
             .navigationViewStyle(.stack)

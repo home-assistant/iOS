@@ -611,6 +611,10 @@
 		422F88192D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
 		422F881A2D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */; };
 		422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */; };
+		4230FA622E30CCBA00D09C71 /* NoRemoteURLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4230FA612E30CCBA00D09C71 /* NoRemoteURLView.swift */; };
+		4230FA642E30D83400D09C71 /* LocationSharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4230FA632E30D83400D09C71 /* LocationSharingView.swift */; };
+		4230FA682E30D93400D09C71 /* LocalAccessPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4230FA672E30D93400D09C71 /* LocalAccessPermissionViewModel.swift */; };
+		4230FA6A2E30FDAC00D09C71 /* OnboardingPermissionsNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4230FA692E30FDAC00D09C71 /* OnboardingPermissionsNavigationViewModel.swift */; };
 		423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
@@ -637,13 +641,13 @@
 		424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
 		424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
-		42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */; };
+		42462E692D9ED75900ECC8A7 /* LocalAccessPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocalAccessPermissionView.swift */; };
 		42462E6D2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
 		42462E6E2DA4094300ECC8A7 /* WebhookSensorId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */; };
 		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
-		42462E752DA53F7200ECC8A7 /* LocationPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */; };
+		42462E752DA53F7200ECC8A7 /* LocationSharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E742DA53F7200ECC8A7 /* LocationSharingViewModel.swift */; };
 		42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
 		42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
 		42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
@@ -2106,6 +2110,10 @@
 		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
 		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
+		4230FA612E30CCBA00D09C71 /* NoRemoteURLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoRemoteURLView.swift; sourceTree = "<group>"; };
+		4230FA632E30D83400D09C71 /* LocationSharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSharingView.swift; sourceTree = "<group>"; };
+		4230FA672E30D93400D09C71 /* LocalAccessPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionViewModel.swift; sourceTree = "<group>"; };
+		4230FA692E30FDAC00D09C71 /* OnboardingPermissionsNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModel.swift; sourceTree = "<group>"; };
 		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerSource.swift; sourceTree = "<group>"; };
@@ -2151,10 +2159,10 @@
 		4242A2D02B2B5C9F00E9F001 /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-ES"; path = "es-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewTintedWrapper.swift; sourceTree = "<group>"; };
-		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
+		42462E682D9ED75900ECC8A7 /* LocalAccessPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionView.swift; sourceTree = "<group>"; };
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
 		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
-		42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionViewModel.swift; sourceTree = "<group>"; };
+		42462E742DA53F7200ECC8A7 /* LocationSharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSharingViewModel.swift; sourceTree = "<group>"; };
 		42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizes.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
@@ -3298,6 +3306,7 @@
 				42905D812E1297BC00250728 /* Welcome */,
 				42905D822E1297C500250728 /* Servers */,
 				4240DF452E1D147C00FB0DE6 /* DeviceName */,
+				4230FA602E30CCA500D09C71 /* NoRemoteURL */,
 				42905D832E1297D000250728 /* Permissions */,
 			);
 			path = Steps;
@@ -4223,6 +4232,32 @@
 			path = AppIntents;
 			sourceTree = "<group>";
 		};
+		4230FA602E30CCA500D09C71 /* NoRemoteURL */ = {
+			isa = PBXGroup;
+			children = (
+				4230FA612E30CCBA00D09C71 /* NoRemoteURLView.swift */,
+			);
+			path = NoRemoteURL;
+			sourceTree = "<group>";
+		};
+		4230FA652E30D84D00D09C71 /* LocationSharing */ = {
+			isa = PBXGroup;
+			children = (
+				4230FA632E30D83400D09C71 /* LocationSharingView.swift */,
+				42462E742DA53F7200ECC8A7 /* LocationSharingViewModel.swift */,
+			);
+			path = LocationSharing;
+			sourceTree = "<group>";
+		};
+		4230FA662E30D85400D09C71 /* LocalAccess */ = {
+			isa = PBXGroup;
+			children = (
+				42462E682D9ED75900ECC8A7 /* LocalAccessPermissionView.swift */,
+				4230FA672E30D93400D09C71 /* LocalAccessPermissionViewModel.swift */,
+			);
+			path = LocalAccess;
+			sourceTree = "<group>";
+		};
 		423F44EC2C17232600766A99 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -4496,8 +4531,9 @@
 			isa = PBXGroup;
 			children = (
 				427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */,
-				42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */,
-				42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */,
+				4230FA692E30FDAC00D09C71 /* OnboardingPermissionsNavigationViewModel.swift */,
+				4230FA652E30D84D00D09C71 /* LocationSharing */,
+				4230FA662E30D85400D09C71 /* LocalAccess */,
 			);
 			path = OnboardingPermissions;
 			sourceTree = "<group>";
@@ -7762,6 +7798,7 @@
 				423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
+				4230FA622E30CCBA00D09C71 /* NoRemoteURLView.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
@@ -7861,7 +7898,7 @@
 				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
-				42462E752DA53F7200ECC8A7 /* LocationPermissionViewModel.swift in Sources */,
+				42462E752DA53F7200ECC8A7 /* LocationSharingViewModel.swift in Sources */,
 				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
@@ -7874,6 +7911,7 @@
 				42EFFAEC2C8882DD002F10FC /* CarPlayConfigurationView.swift in Sources */,
 				420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */,
 				420E2AE92C474729004921D8 /* WidgetCircularView.swift in Sources */,
+				4230FA642E30D83400D09C71 /* LocationSharingView.swift in Sources */,
 				11B92AF2266F23DA00786588 /* NotificationManagerLocalPushInterfaceExtension.swift in Sources */,
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
@@ -7950,7 +7988,7 @@
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
-				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
+				42462E692D9ED75900ECC8A7 /* LocalAccessPermissionView.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				42E6C08A2CE4F4FA007CA622 /* DownloadManagerView.swift in Sources */,
@@ -7966,6 +8004,7 @@
 				425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */,
 				42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */,
 				42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */,
+				4230FA682E30D93400D09C71 /* LocalAccessPermissionViewModel.swift in Sources */,
 				42790C442C48077200E31B38 /* ImprovSuccessView.swift in Sources */,
 				429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */,
 				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
@@ -8028,6 +8067,7 @@
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
+				4230FA6A2E30FDAC00D09C71 /* OnboardingPermissionsNavigationViewModel.swift in Sources */,
 				425624D22E27C38B00ACD8A6 /* PermissionType+Onboarding.swift in Sources */,
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,

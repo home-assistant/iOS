@@ -1286,6 +1286,6 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.remote_access.secondary_button" = "I know my external URL";
 "onboarding.manual_input.title" = "What is your address?";
 "onboarding.manual_input.primary_button" = "Connect";
-"onboarding.external_url_input.title" = "What is your external URL?";
-"onboarding.external_url_input.subtitle" = "This can be found in the Home Assistant settings, as part of System > Network.";
-"onboarding.external_url_input.primary_button" = "Save";
+"onboarding.no_remote_URL.title" = "Local by default. Remote when you’re ready.";
+"onboarding.no_remote_URL.subtitle" = "Your Home Assistant is only accessible on your home network. You can set up remote access later in your settings, to control your smart home from anywhere. \n \n For now, you're securely connected to your local network.";
+"onboarding.no_remote_URL.primary_button" = "Got it";
