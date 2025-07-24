@@ -32,10 +32,8 @@ struct LocalAccessPermissionView: View {
                 bannerText: L10n.Onboarding.LocalAccess.bannerText,
                 primaryButtonTitle: L10n.Onboarding.LocalAccess.primaryButton,
                 primaryButtonAction: {
-                    permission.request { granted, status in
-                        viewModel.addCurrentSSIDAsLocalConnectionSafeNetwork {
-                            primaryButtonAction()
-                        }
+                    permission.request { _, _ in
+                        primaryButtonAction()
                     }
                 },
                 secondaryButtonTitle: L10n.Onboarding.LocalAccess.secondaryButton,
