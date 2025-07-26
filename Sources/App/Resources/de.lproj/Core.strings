@@ -122,7 +122,7 @@ Bitte besuche {url}, um die Einrichtung abzuschließen.";
 "component::input_boolean::title" = "Boolesche Eingabe";
 "component::input_button::entity_component::_::state_attributes::editable::state::false" = "Nein";
 "component::input_button::entity_component::_::state_attributes::editable::state::true" = "Ja";
-"component::input_button::title" = "Tasteneingabe";
+"component::input_button::title" = "Tasten-Eingabe";
 "component::input_datetime::entity_component::_::state_attributes::editable::state::false" = "Nein";
 "component::input_datetime::entity_component::_::state_attributes::editable::state::true" = "Ja";
 "component::input_number::entity_component::_::state_attributes::editable::state::false" = "Nein";
