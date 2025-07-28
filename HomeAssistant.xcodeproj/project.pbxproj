@@ -533,11 +533,8 @@
 		42070EF02BAC52630031E96F /* AssistRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283383F2BA1B17C004798C2 /* AssistRequests.swift */; };
 		4207EB762C8754BF00286A2D /* WatchMagicViewRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207EB752C8754BF00286A2D /* WatchMagicViewRowViewModel.swift */; };
 		420ABC122E269A1C00D51D66 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC112E269A1C00D51D66 /* RealmSwift */; };
-		420ABC132E269A1C00D51D66 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC112E269A1C00D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		420ABC152E269CC400D51D66 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC142E269CC400D51D66 /* RealmSwift */; };
-		420ABC162E269CC400D51D66 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC142E269CC400D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		420ABC192E269EBB00D51D66 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC182E269EBB00D51D66 /* RealmSwift */; };
-		420ABC1A2E269EBB00D51D66 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC182E269EBB00D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		420AE9E02CA559FE0020E9CB /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420AE9DF2CA559FE0020E9CB /* Color+hex.swift */; };
 		420AE9E12CA559FE0020E9CB /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420AE9DF2CA559FE0020E9CB /* Color+hex.swift */; };
 		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
@@ -604,12 +601,9 @@
 		422368902D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
 		422368912D40FCDE005911E4 /* CustomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688F2D40FCDE005911E4 /* CustomWidget.swift */; };
 		422445612E26862900902303 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 422445602E26862900902303 /* RealmSwift */; };
-		422445622E26862A00902303 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 422445602E26862900902303 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		422445652E26863200902303 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 422445642E26863200902303 /* RealmSwift */; };
-		422445662E26863200902303 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 422445642E26863200902303 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4224456A2E26875700902303 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 422445692E26875700902303 /* ZIPFoundation */; };
 		4224456C2E2688AA00902303 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4224456B2E2688AA00902303 /* RealmSwift */; };
-		4224456D2E2688AA00902303 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4224456B2E2688AA00902303 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B102B740E4C00E94A71 /* BarcodeScannerView.swift */; };
 		42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42266B242B7A4BA900E94A71 /* BarcodeScannerViewModel.swift */; };
 		4228CFFF2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228CFFE2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift */; };
@@ -1537,7 +1531,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				420ABC1A2E269EBB00D51D66 /* RealmSwift in Embed Frameworks */,
 				110EC9FE251708D5009C9A1B /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -1571,7 +1564,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				420ABC162E269CC400D51D66 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1582,7 +1574,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				422445622E26862A00902303 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1593,7 +1584,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				422445662E26863200902303 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1604,7 +1594,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				4224456D2E2688AA00902303 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1626,7 +1615,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				420ABC132E269A1C00D51D66 /* RealmSwift in Embed Frameworks */,
 				B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
