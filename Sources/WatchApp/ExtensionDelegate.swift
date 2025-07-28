@@ -6,7 +6,6 @@ import UserNotifications
 import WatchKit
 import XCGLogger
 
-@main
 class ExtensionDelegate: NSObject, WKApplicationDelegate {
     // MARK: Fileprivate
 

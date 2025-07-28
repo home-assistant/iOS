@@ -930,6 +930,7 @@
 		42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */; };
 		42D996E52D89863A001737A0 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
 		42D996E62D89863A001737A0 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
+		42DA945D2E37D01400D57D00 /* WatchMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DA945C2E37D01400D57D00 /* WatchMain.swift */; };
 		42DB4D0B2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */; };
 		42DB4D0C2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */; };
 		42DC44332E1C06E5001046C1 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 42DC44322E1C06E5001046C1 /* WebRTC */; };
@@ -2426,6 +2427,7 @@
 		42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddView.swift; sourceTree = "<group>"; };
 		42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddViewModel.swift; sourceTree = "<group>"; };
 		42D996E42D89863A001737A0 /* Bool+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+HA.swift"; sourceTree = "<group>"; };
+		42DA945C2E37D01400D57D00 /* WatchMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMain.swift; sourceTree = "<group>"; };
 		42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerView.swift; sourceTree = "<group>"; };
 		42DC44352E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerViewControls.swift; sourceTree = "<group>"; };
 		42DC8B772E14027000D9999E /* SearchingServersAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingServersAnimationView.swift; sourceTree = "<group>"; };
@@ -5663,6 +5665,7 @@
 				B6CC5D872159D10E00833E5D /* Assets.xcassets */,
 				B6CC5D892159D10E00833E5D /* Info.plist */,
 				42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */,
+				42DA945C2E37D01400D57D00 /* WatchMain.swift */,
 				42F44E0F2E37BAB500C597CB /* WatchHostingController.swift */,
 				42C373B62BC55C3A00898990 /* Home */,
 				426490662C0F1A27002155CC /* Assist */,
@@ -8382,6 +8385,7 @@
 				423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				11169B7C262BDE80005EF90A /* DynamicNotificationController.swift in Sources */,
+				42DA945D2E37D01400D57D00 /* WatchMain.swift in Sources */,
 				11684B7A263F994600B48EC3 /* NotificationSubControllerMJPEG.swift in Sources */,
 				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
 				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
