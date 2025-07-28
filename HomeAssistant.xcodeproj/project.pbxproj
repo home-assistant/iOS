@@ -823,6 +823,8 @@
 		42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */; };
 		42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A892C452DB500C9B43D /* MockWebViewController.swift */; };
 		42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A8F2C4548E100C9B43D /* ImprovDiscoverView.swift */; };
+		42A57BF72E383CC3009BF193 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC182E269EBB00D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		42A57BF82E383CFA009BF193 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 420ABC112E269A1C00D51D66 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		42A818E02BBEA8150083D045 /* AssistViewModel.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818DF2BBEA8150083D045 /* AssistViewModel.test.swift */; };
 		42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E22BBEA9780083D045 /* MockAudioRecorder.swift */; };
 		42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E42BBEAA3A0083D045 /* MockAudioPlayer.swift */; };
@@ -1531,6 +1533,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				42A57BF72E383CC3009BF193 /* RealmSwift in Embed Frameworks */,
 				110EC9FE251708D5009C9A1B /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -1615,6 +1618,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				42A57BF82E383CFA009BF193 /* RealmSwift in Embed Frameworks */,
 				B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
