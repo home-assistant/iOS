@@ -16,6 +16,7 @@ struct ManualURLEntryView: View {
                     TextField(L10n.Onboarding.ManualSetup.TextField.placeholder, text: $urlString)
                         .keyboardType(.URL)
                         .autocorrectionDisabled()
+                        .autocapitalization(.none)
                         .focused($focused, equals: true)
                         .onAppear {
                             focused = true
