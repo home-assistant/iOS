@@ -36,7 +36,7 @@ public struct CloseButton: View {
 
     /// When alternative action is set, the button will execute this action instead of dismissing the view.
     public init(
-        tint: Color = Color.gray,
+        tint: Color = Color.secondary,
         size: Size = .small,
         alternativeAction: (() -> Void)? = nil
     ) {
