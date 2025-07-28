@@ -9,7 +9,7 @@
         <!--Home Assistant-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller title="Home Assistant" fullScreen="YES" id="AgC-eL-Hgc" customClass="WatchHostingController" customModule="WatchExtension_Watch"/>
+                <controller title="Home Assistant" fullScreen="YES" id="AgC-eL-Hgc" customClass="WatchHostingController" customModule="WatchApp" customModuleProvider="target"/>
             </objects>
             <point key="canvasLocation" x="34" y="32"/>
         </scene>
