@@ -483,12 +483,24 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         NSLayoutConstraint.activate([
             stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -DesignSystem.Spaces.half),
             stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: DesignSystem.Spaces.half),
-            buttonStack.leftAnchor.constraint(equalTo: statusBarView.leftAnchor, constant: 68),
             buttonStack.topAnchor.constraint(equalTo: statusBarView.topAnchor),
-            buttonStack.heightAnchor.constraint(equalToConstant: 27),
             openInSafariButton.widthAnchor.constraint(equalToConstant: 11),
             openInSafariButton.heightAnchor.constraint(equalToConstant: 11),
         ])
+
+        // Magic numbers to position it nicely in macOS bar
+        if #available(macOS 26.0, *) {
+            NSLayoutConstraint.activate([
+                buttonStack.leftAnchor.constraint(equalTo: statusBarView.leftAnchor, constant: 78),
+                buttonStack.heightAnchor.constraint(equalToConstant: 30),
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                buttonStack.leftAnchor.constraint(equalTo: statusBarView.leftAnchor, constant: 68),
+                buttonStack.heightAnchor.constraint(equalToConstant: 27),
+            ])
+        }
+
         statusBarButtonsStack = stackView
     }
 
