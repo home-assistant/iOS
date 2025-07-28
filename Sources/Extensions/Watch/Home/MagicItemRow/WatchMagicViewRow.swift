@@ -1,5 +1,6 @@
 import Shared
 import SwiftUI
+import SFSafeSymbols
 
 struct WatchMagicViewRow: View {
     @StateObject private var viewModel: WatchMagicViewRowViewModel
@@ -12,7 +13,7 @@ struct WatchMagicViewRow: View {
         Button {
             viewModel.executeItem()
         } label: {
-            HStack(spacing: Spaces.one) {
+            HStack(spacing: DesignSystem.Spaces.one) {
                 iconToDisplay
                     .animation(.bouncy, value: viewModel.state)
                 Text(viewModel.item.name(info: viewModel.itemInfo))
@@ -20,10 +21,12 @@ struct WatchMagicViewRow: View {
                     .foregroundStyle(textColor)
                     .lineLimit(3)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
                     .padding(.trailing)
             }
+            .frame(maxWidth: .infinity)
         }
-        .listRowBackground(backgroundForWatchItem.cornerRadius(14))
+        .frame(maxWidth: .infinity)
         .confirmationDialog(
             L10n.Watch.Home.Run.Confirmation.title(viewModel.item.name(info: viewModel.itemInfo)),
             isPresented: $viewModel.showConfirmationDialog,
@@ -39,16 +42,22 @@ struct WatchMagicViewRow: View {
                 .tint(.red)
             }
         )
-        .modify { view in
-            if let backgroundColor = viewModel.item.customization?.backgroundColor {
-                view.listRowBackground(
-                    Color(uiColor: .init(hex: backgroundColor))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                )
+        .listRowBackground(Color.clear)
+        .modify({ view in
+            if #available(watchOS 26.0, *) {
+                if let backgroundForWatchItem {
+                    view
+                        .buttonStyle(.glassProminent)
+                        .tint(backgroundForWatchItem)
+                        .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                } else {
+                    view.buttonStyle(.glass)
+                }
             } else {
                 view
+                    .listRowBackground((backgroundForWatchItem ?? Color.gray.opacity(0.3)).cornerRadius(14))
             }
-        }
+        })
         .onChange(of: viewModel.state) { newValue in
             // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
             let currentDevice = WKInterfaceDevice.current()
@@ -82,19 +91,27 @@ struct WatchMagicViewRow: View {
                     .shadow(color: .white, radius: 10)
                     .padding()
             case .success:
-                makeStateImage(systemName: "checkmark.circle.fill")
+                makeStateImage(systemName: .checkmarkCircleFill)
             case .failure:
-                makeStateImage(systemName: "xmark.circle")
+                makeStateImage(systemName: .xmarkCircle)
             }
         }
         .frame(width: 38, height: 38)
-        .background(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3))
-        .clipShape(Circle())
-        .padding([.vertical, .trailing], Spaces.half)
+        .modify({ view in
+            if #available(watchOS 26.0, *) {
+                view
+                    .glassEffect(.clear.tint(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3)), in: .circle)
+            } else {
+                view
+                    .background(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3))
+                    .clipShape(Circle())
+            }
+        })
+        .padding([.vertical, .trailing], DesignSystem.Spaces.half)
     }
 
-    private func makeStateImage(systemName: String) -> some View {
-        Image(systemName: systemName)
+    private func makeStateImage(systemName: SFSymbol) -> some View {
+        Image(systemSymbol: systemName)
             .font(.system(size: 24))
             .foregroundStyle(.white)
             .padding()
@@ -108,11 +125,11 @@ struct WatchMagicViewRow: View {
         }
     }
 
-    private var backgroundForWatchItem: Color {
+    private var backgroundForWatchItem: Color? {
         if let backgroundColor = viewModel.itemInfo.customization?.backgroundColor {
             Color(uiColor: .init(hex: backgroundColor))
         } else {
-            .gray.opacity(0.3)
+            nil
         }
     }
 }
