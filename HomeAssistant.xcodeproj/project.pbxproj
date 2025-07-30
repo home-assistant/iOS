@@ -990,6 +990,8 @@
 		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */; };
+		42F80D7F2E3AC1EB00B5985F /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F80D7E2E3AC1EB00B5985F /* WatchConnectivityManager.swift */; };
+		42F80D802E3AC1EB00B5985F /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F80D7E2E3AC1EB00B5985F /* WatchConnectivityManager.swift */; };
 		42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */; };
 		42F958992BB4684700497981 /* WidgetAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F958972BB4681E00497981 /* WidgetAssist.swift */; };
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
@@ -2477,6 +2479,7 @@
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
+		42F80D7E2E3AC1EB00B5985F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
 		42F958972BB4681E00497981 /* WidgetAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssist.swift; sourceTree = "<group>"; };
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
@@ -4379,6 +4382,7 @@
 				4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */,
 				426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */,
 				4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */,
+				42F80D7E2E3AC1EB00B5985F /* WatchConnectivityManager.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -8115,6 +8119,7 @@
 				B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				420CFC782D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */,
 				11C4628324B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
+				42F80D802E3AC1EB00B5985F /* WatchConnectivityManager.swift in Sources */,
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
@@ -8656,6 +8661,7 @@
 				422368902D40FCDE005911E4 /* CustomWidget.swift in Sources */,
 				D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */,
 				118261F724F8D6B0000795C6 /* SensorProviderDependencies.swift in Sources */,
+				42F80D7F2E3AC1EB00B5985F /* WatchConnectivityManager.swift in Sources */,
 				11C8E8AE24F3778E003E7F89 /* DeviceWrapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

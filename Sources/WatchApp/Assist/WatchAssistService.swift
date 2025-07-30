@@ -49,28 +49,27 @@ final class WatchAssistService: ObservableObject {
 
             Current.Log.verbose("Signaling Assist audio data")
 
-            let metadata: [String: Any] = [
-                "sampleRate": sampleRate,
-                "pipelineId": pipelineId,
-                "serverId": serverId,
-            ]
+            let chunkSize = 32 * 1024 // 32 KB
+            let totalChunks = Int(ceil(Double(audioData.count) / Double(chunkSize)))
 
-            let blob = Blob(
-                identifier: InteractiveImmediateMessages.assistAudioData.rawValue,
-                content: audioData,
-                metadata: metadata
-            )
+            for chunkIndex in 0..<totalChunks {
+                let start = chunkIndex * chunkSize
+                let end = min(start + chunkSize, audioData.count)
+                let chunkData = audioData.subdata(in: start..<end)
 
-            Current.Log.verbose("Sending \(blob.identifier)")
-
-            cancellable = Communicator.shared.transfer(blob) { result in
-                switch result {
-                case .success:
-                    completion(nil)
-                case let .failure(error):
-                    Current.Log.error("Failed to send audio data blob: \(error.localizedDescription)")
-                    completion(error)
-                }
+                // Ideally data transfers are done using an specific method to transfer data
+                // but in reality this has demonstrated to not work well specially in watchOS 26
+                // this logic uses the normal communication messages in chunks for more reliability
+                Communicator.shared.send(.init(identifier: InteractiveImmediateMessages.assistAudioDataChunked.rawValue, content: [
+                    "chunkData": chunkData,
+                    "chunkIndex": chunkIndex,
+                    "totalChunks": totalChunks,
+                    "sampleRate": sampleRate,
+                    "pipelineId": pipelineId,
+                    "serverId": serverId,
+                ], reply: { message in
+                    Current.Log.verbose("Received reply for assist audio chunk #\(chunkIndex): \(message)")
+                }))
             }
         } catch {
             Current.Log.error("Watch assist failed: \(error.localizedDescription)")
