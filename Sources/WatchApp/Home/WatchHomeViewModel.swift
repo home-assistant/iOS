@@ -34,6 +34,9 @@ final class WatchHomeViewModel: ObservableObject {
 
     @MainActor
     func initialRoutine() {
+        // First display whatever is in cache
+        loadCache()
+        // Now fetch new data in the background (shows loading indicator only for this fetch)
         isLoading = true
         requestConfig()
     }
@@ -41,12 +44,12 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     func requestConfig() {
         homeType = .undefined
-        isLoading = true
         guard Communicator.shared.currentReachability != .notReachable else {
             Current.Log.error("iPhone reachability is not immediate reachable")
             loadCache()
             return
         }
+        isLoading = true
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfig.rawValue,
             reply: { [weak self] message in
