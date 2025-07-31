@@ -140,11 +140,26 @@ struct WatchHomeView: View {
         Button(action: {
             showAssist = true
         }, label: {
+            let color: UIColor = {
+                if #available(watchOS 26.0, *) {
+                    return .white
+                } else {
+                    return UIColor(Color.haPrimary)
+                }
+            }()
             Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
                 ofSize: .init(width: 24, height: 24),
-                color: UIColor(Color.haPrimary)
+                color: color
             ))
         })
+        .modify { view in
+            if #available(watchOS 26.0, *) {
+                view
+                    .tint(.haPrimary)
+            } else {
+                view
+            }
+        }
     }
 
     @available(watchOS 10, *)
@@ -163,7 +178,7 @@ struct WatchHomeView: View {
                 .modify { view in
                     if #available(watchOS 26.0, *) {
                         view
-                            .glassEffect(.clear, in: .circle)
+                            .glassEffect(in: .circle)
                     } else {
                         view
                             .padding()
