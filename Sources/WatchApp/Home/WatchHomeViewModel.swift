@@ -16,7 +16,7 @@ final class WatchHomeViewModel: ObservableObject {
     @Published var showAssist = false
     @Published var showError = false
     @Published var errorMessage = ""
-    @Published var currentSSID: String = "MechaMuninho"
+    @Published var currentSSID: String = ""
     @Published private(set) var homeType: WatchHomeType = .undefined
 
     @Published var watchConfig: WatchConfig = .init()
@@ -30,7 +30,7 @@ final class WatchHomeViewModel: ObservableObject {
     func fetchNetworkInfo() async {
         let networkInformation = await Current.networkInformation
         WatchUserDefaults.shared.set(networkInformation?.ssid, key: .watchSSID)
-        currentSSID = networkInformation?.ssid ?? "MechaMuninho"
+        currentSSID = networkInformation?.ssid ?? ""
     }
 
     @MainActor
