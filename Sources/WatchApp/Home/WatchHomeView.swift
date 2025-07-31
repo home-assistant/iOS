@@ -2,6 +2,7 @@ import Shared
 import SwiftUI
 
 struct WatchHomeView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
 
@@ -17,8 +18,24 @@ struct WatchHomeView: View {
                 )
             })
             .onAppear {
-                viewModel.fetchNetworkInfo(completion: nil)
-                viewModel.initialRoutine()
+                Task {
+                    await viewModel.fetchNetworkInfo()
+                    viewModel.initialRoutine()
+                }
+            }
+            .onChange(of: scenePhase) { newValue in
+                switch newValue {
+                case .active:
+                    Task {
+                        await viewModel.fetchNetworkInfo()
+                    }
+                case .background:
+                    break
+                case .inactive:
+                    break
+                @unknown default:
+                    break
+                }
             }
     }
 
@@ -59,7 +76,7 @@ struct WatchHomeView: View {
         List {
             inlineLoader
             listContent
-            appVersion
+            footer
         }
         .id(viewModel.refreshListID)
         .navigationTitle("")
@@ -193,11 +210,33 @@ struct WatchHomeView: View {
             .progressViewStyle(.circular)
     }
 
+    private var footer: some View {
+        VStack(spacing: .zero) {
+            appVersion
+            ssidLabel
+        }
+        .listRowBackground(Color.clear)
+    }
+
     private var appVersion: some View {
         Text(verbatim: AppConstants.version)
             .listRowBackground(Color.clear)
             .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity, alignment: .center)
+    }
+
+    @ViewBuilder
+    private var ssidLabel: some View {
+        if !viewModel.currentSSID.isEmpty {
+            Label {
+                Text(verbatim: viewModel.currentSSID)
+                    .minimumScaleFactor(0.5)
+            } icon: {
+                Image(systemSymbol: .wifi)
+            }
+            .font(DesignSystem.Font.caption2)
+            .foregroundStyle(.secondary.opacity(0.5))
+        }
     }
 
     @ViewBuilder

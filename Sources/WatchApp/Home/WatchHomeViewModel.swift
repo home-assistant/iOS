@@ -16,6 +16,7 @@ final class WatchHomeViewModel: ObservableObject {
     @Published var showAssist = false
     @Published var showError = false
     @Published var errorMessage = ""
+    @Published var currentSSID: String = "MechaMuninho"
     @Published private(set) var homeType: WatchHomeType = .undefined
 
     @Published var watchConfig: WatchConfig = .init()
@@ -25,11 +26,11 @@ final class WatchHomeViewModel: ObservableObject {
     // are different, the list won't refresh. This is a workaround to force a refresh
     @Published var refreshListID: UUID = .init()
 
-    func fetchNetworkInfo(completion: (() -> Void)? = nil) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            WatchUserDefaults.shared.set(hotspotNetwork?.ssid, key: .watchSSID)
-            completion?()
-        }
+    @MainActor
+    func fetchNetworkInfo() async {
+        let networkInformation = await Current.networkInformation
+        WatchUserDefaults.shared.set(networkInformation?.ssid, key: .watchSSID)
+        currentSSID = networkInformation?.ssid ?? "MechaMuninho"
     }
 
     @MainActor
