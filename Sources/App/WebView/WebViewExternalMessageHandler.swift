@@ -60,7 +60,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                                     .threadCredentialsStoreInKeychainEnabled,
                                 "hasAssist": true,
                                 "canSetupImprov": true,
-                                "downloadFileSupported": true
+                                "downloadFileSupported": true,
                             ]
                         ))
                     }
