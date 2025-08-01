@@ -1,4 +1,5 @@
 import CoreBluetooth
+import NetworkExtension
 import CoreLocation
 import CoreMotion
 import Foundation
@@ -443,6 +444,16 @@ public class AppEnvironment {
 
     public var userNotificationCenter: UNUserNotificationCenter {
         UNUserNotificationCenter.current()
+    }
+
+    public var networkInformation: NEHotspotNetwork? {
+        get async {
+            return await withCheckedContinuation { continuation in
+                NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+                    continuation.resume(returning: hotspotNetwork)
+                }
+            }
+        }
     }
 
     #if !os(watchOS)
