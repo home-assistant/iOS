@@ -69,7 +69,6 @@ final class WatchHomeViewModel: ObservableObject {
         )
     }
 
-
     @MainActor
     private func handleMessageResponse(_ message: ImmediateMessage) {
         switch message.identifier {

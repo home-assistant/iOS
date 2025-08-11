@@ -1,6 +1,6 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
-import SFSafeSymbols
 
 struct WatchMagicViewRow: View {
     @StateObject private var viewModel: WatchMagicViewRowViewModel
@@ -99,7 +99,11 @@ struct WatchMagicViewRow: View {
         .modify({ view in
             if #available(watchOS 26.0, *) {
                 view
-                    .glassEffect(.clear.tint(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3)), in: .circle)
+                    .glassEffect(
+                        .clear
+                            .tint(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3)),
+                        in: .circle
+                    )
             } else {
                 view
                     .background(Color(uiColor: .init(hex: viewModel.itemInfo.customization?.iconColor)).opacity(0.3))

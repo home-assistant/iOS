@@ -1,9 +1,8 @@
 import Foundation
-import SwiftUI
 import Shared
+import SwiftUI
 
 final class WatchHostingController: WKHostingController<WatchHomeView> {
-
     override init() {
         super.init()
         MaterialDesignIcons.register()

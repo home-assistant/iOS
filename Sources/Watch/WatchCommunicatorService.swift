@@ -74,7 +74,7 @@ final class WatchCommunicatorService {
             case .assistPipelinesFetch:
                 assistPipelinesFetch(message: message)
             case .assistAudioDataChunked:
-                self.handleAssistAudioChunkedMessage(message)
+                handleAssistAudioChunkedMessage(message)
             case .magicItemPressed:
                 magicItemPressed(message: message)
             }
@@ -101,7 +101,7 @@ final class WatchCommunicatorService {
         message.reply(.init(identifier: "assistAudioChunkAck", content: [
             "acknowledged": true,
             "chunkIndex": chunkIndex,
-            "totalChunks": totalChunks
+            "totalChunks": totalChunks,
         ]))
 
         // Check if all chunks are received
@@ -437,6 +437,6 @@ extension WatchCommunicatorService: ServerObserver {
 
 private extension InteractiveImmediateMessage {
     func toImmediateMessage() -> ImmediateMessage {
-        ImmediateMessage(identifier: self.identifier, content: self.content)
+        ImmediateMessage(identifier: identifier, content: content)
     }
 }

@@ -253,8 +253,8 @@ struct WatchHomeView: View {
                         Label(L10n.reloadLabel, systemSymbol: .arrowTriangle2CirclepathCircle)
                     }
                 }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .font(.footnote)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .font(.footnote)
             }
             .listRowBackground(Color.clear)
         }

@@ -1,9 +1,8 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 @main
 struct WatchMain: App {
-
     @WKApplicationDelegateAdaptor private var extensionDelegate: ExtensionDelegate
 
     init() {
