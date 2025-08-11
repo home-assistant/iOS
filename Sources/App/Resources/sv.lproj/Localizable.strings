@@ -228,7 +228,7 @@
 "device_name.primary_button.title" = "Spara";
 "device_name.subtitle" = "Detta används för att identifiera din enhet i Home Assistant.";
 "device_name.textfield.placeholder" = "Namn på iPhone/iPad/Mac";
-"device_name.title" = "Hur skulle du vilja namnge denna enhet?";
+"device_name.title" = "Hur vill du namnge den här enheten?";
 "done_label" = "Klar";
 "download_manager.downloading.title" = "Laddar ner";
 "download_manager.failed.title" = "Det gick inte att ladda ner filen, fel: %@";
@@ -526,21 +526,21 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.servers.auto_connect.button" = "Anslut";
 "onboarding.servers.docs.read" = "Läs dokumentationen";
 "onboarding.servers.search.message" = "Letar efter servrar i närheten...";
-"onboarding.servers.title" = "Sök på hemnätverket";
+"onboarding.servers.title" = "Söker på hemnätverket";
 "onboarding.welcome.body" = "Gör att du kan komma åt din Home Assistant-installation när du är på språng. Den körs lokalt i ditt hem via en enhet som Home Assistant Green eller Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.description" = "Den här appen ansluter till din Home Assistant-server och låter dig integrera data om dig och din telefon. \
 \
 Home Assistant är gratis och öppen källkod för hemautomatisering med fokus på lokal kontroll och integritet.";
 "onboarding.welcome.get_started" = "Kom igång med Home Assistant";
-"onboarding.welcome.header" = "Home Assistant Companion App";
+"onboarding.welcome.header" = "Home Assistant Companion-app";
 "onboarding.welcome.learn_more" = "Läs mer";
-"onboarding.welcome.logo.accessibility_label" = "Home Assistant logga";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant-logotyp";
 "onboarding.welcome.primary_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.secondary_button" = "Så här kommer du igång";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
 "open_label" = "Öppen";
-"permission.notification.body" = "Tillåt aviseringar för att veta vad som händer i ditt hem, från upptäckt av läckage till dörrar som är öppna. Du har full kontroll över vad det berättar för dig.";
+"permission.notification.body" = "Tillåt aviseringar och få reda på vad som händer i ditt hem, från upptäckt av läckage till dörrar som är öppna. Du har full kontroll över vad som meddelas till dig.";
 "permission.notification.primary_button" = "Tillåt aviseringar";
 "permission.notification.secondary_button" = "Tillåt inte";
 "permission.notification.title" = "Tillåt aviseringar?";
@@ -1176,7 +1176,7 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platshållare";
 "watch.settings.no_items.phone.title" = "Inga objekt konfigurerade, vänligen välj objekt nedan.";
-"web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant håller på att starta om kommer återanslutning ske när den är online igen.";
+"web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant startas om kommer den att återanslutas efter uppstarten.";
 "web_view.empty_state.open_settings_button" = "Öppna appinställningar";
 "web_view.empty_state.retry_button" = "Försök igen";
 "web_view.empty_state.title" = "Du är frånkopplad";
