@@ -788,6 +788,8 @@
 		429106892BA9D5F700D452F9 /* AssistView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429106882BA9D5F700D452F9 /* AssistView+Build.swift */; };
 		4291068C2BA9D79500D452F9 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
 		4291CD962DBA70930024F891 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291CD952DBA70930024F891 /* ActivityViewController.swift */; };
+		4294435E2E4CA86F00328F0C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4294435D2E4CA86F00328F0C /* RealmSwift */; };
+		429443612E4CA8D700328F0C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 429443602E4CA8D700328F0C /* RealmSwift */; };
 		429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */; };
 		429481EB2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EA2DA93FA000A8B468 /* WebViewJavascriptCommandsTests.swift */; };
 		429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429481EC2DA943E700A8B468 /* ListPicker.swift */; };
@@ -1592,6 +1594,16 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4224456E2E2688AA00902303 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		42928CFD2E4A23FC0068E90B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
@@ -3042,6 +3054,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4294435E2E4CA86F00328F0C /* RealmSwift in Frameworks */,
 				420E64C12D676B2400A31E86 /* SnapshotTestingCustomDump in Frameworks */,
 				420E64BF2D676B2400A31E86 /* SnapshotTesting in Frameworks */,
 				420E64BD2D676B2400A31E86 /* InlineSnapshotTesting in Frameworks */,
@@ -3105,6 +3118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				429443612E4CA8D700328F0C /* RealmSwift in Frameworks */,
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
 				78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */,
 			);
@@ -6428,6 +6442,7 @@
 				D03D893F20E0BC1800D4F28D /* Frameworks */,
 				D03D894020E0BC1800D4F28D /* Resources */,
 				F6F1EAA08C3E5179B7848A38 /* [CP] Embed Pods Frameworks */,
+				42928CFD2E4A23FC0068E90B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -10596,6 +10611,16 @@
 		427692E42B98B83200F24321 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedPush;
+		};
+		4294435D2E4CA86F00328F0C /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		429443602E4CA8D700328F0C /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4224455B2E2683DA00902303 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		42DC44322E1C06E5001046C1 /* WebRTC */ = {
 			isa = XCSwiftPackageProductDependency;
