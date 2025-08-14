@@ -173,7 +173,6 @@ enum SettingsRootDataSource {
             $0.hidden = .isCatalyst
             $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                 let controller = CarPlayConfigurationView().embeddedInHostingController()
-                controller.overrideUserInterfaceStyle = .dark
                 return controller
             }, onDismiss: { _ in
 

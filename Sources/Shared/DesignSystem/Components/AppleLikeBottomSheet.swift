@@ -167,6 +167,7 @@ public struct AppleLikeBottomSheet<Content: View>: View {
                             )
                             .foregroundStyle(.gray, Color(uiColor: .secondarySystemBackground))
                     })
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.top, DesignSystem.Spaces.three)

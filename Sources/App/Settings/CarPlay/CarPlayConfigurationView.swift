@@ -57,7 +57,6 @@ struct CarPlayConfigurationView: View {
                     })
                 }
         }
-        .preferredColorScheme(.dark)
         .navigationViewStyle(.stack)
     }
 
@@ -144,7 +143,6 @@ struct CarPlayConfigurationView: View {
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity, alignment: .center)
             .frame(height: 150)
-            .padding()
             .listRowBackground(Color.clear)
     }
 
