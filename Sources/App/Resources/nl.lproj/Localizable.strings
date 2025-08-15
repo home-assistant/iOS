@@ -1,4 +1,4 @@
-"WebRTC_player.experimental.disclaimer" = "Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.";
+"WebRTC_player.experimental.disclaimer" = "Let op: de native WebRTC-videospeler is momenteel een experimentele functie. Audio werkt mogelijk niet en toestemming voor microfoongebruik kan worden gevraagd, ook al is de speler niet in gebruik. Gebruik de webplayerinterface voor geavanceerde opties en betrouwbare weergave.";
 "about.acknowledgements.title" = "Met dank aan";
 "about.beta.title" = "Deelnemen aan bèta";
 "about.chat.title" = "Chat";
@@ -225,10 +225,10 @@
 "debug.reset.entities_database.title" = "App-entiteitendatabase resetten";
 "debug_section_label" = "Debug";
 "delete" = "Verwijder";
-"device_name.primary_button.title" = "Save";
-"device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
-"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
-"device_name.title" = "How would you like to name this device?";
+"device_name.primary_button.title" = "Opslaan";
+"device_name.subtitle" = "Dit wordt gebruikt om je apparaat te identificeren binnen Home Assistant.";
+"device_name.textfield.placeholder" = "iPhone/iPad/Mac-naam";
+"device_name.title" = "Hoe zou je dit apparaat willen noemen?";
 "done_label" = "Klaar";
 "download_manager.downloading.title" = "Downloaden";
 "download_manager.failed.title" = "Downloaden van bestand mislukt, fout: %@";
@@ -342,8 +342,8 @@
 "location_change_notification.visit.body" = "Locatie bijgewerkt via Visit";
 "location_change_notification.watch_context.body" = "Locatie bijgewerkt via Watch context sync";
 "location_change_notification.x_callback_url.body" = "Locatie bijgewerkt via X-Callback-URL";
-"mac.navigation.go_back.accessibility_label" = "Navigate back";
-"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
+"mac.navigation.go_back.accessibility_label" = "Navigeer terug";
+"mac.navigation.go_forward.accessibility_label" = "Navigeer vooruit";
 "magic_item.action" = "Actie";
 "magic_item.action.assist.pipeline.title" = "Pijplijn";
 "magic_item.action.assist.start_listening.title" = "Begin met luisteren";
@@ -467,9 +467,9 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.device_name_check.error.prompt" = "Welke apparaat moet in plaats daarvan worden gebruikt?";
 "onboarding.device_name_check.error.rename_action" = "Hernoemen";
 "onboarding.device_name_check.error.title" = "Er bestaat al een apparaat met de naam ' %1$@ '";
-"onboarding.invitation.accept_button" = "Accept";
+"onboarding.invitation.accept_button" = "Accepteren";
 "onboarding.invitation.other_options" = "Andere opties";
-"onboarding.invitation.title" = "Home Assistant Invite";
+"onboarding.invitation.title" = "Uitnodiging voor Home Assistant";
 "onboarding.manual_setup.connect" = "Verbind";
 "onboarding.manual_setup.couldnt_make_url.message" = "De waarde '%@' was geen geldige URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kan geen URL maken";
@@ -523,11 +523,11 @@ Tags werken op elk apparaat waarop Home Assistant is geïnstalleerd en dat hardw
 "onboarding.scanning.manual.button.title" = "Adres handmatig invoeren";
 "onboarding.scanning.manual_hint" = "Kun je je server niet vinden?";
 "onboarding.scanning.title" = "Scannen naar servers";
-"onboarding.servers.auto_connect.button" = "Connect";
+"onboarding.servers.auto_connect.button" = "Verbinden";
 "onboarding.servers.docs.read" = "Documentatie lezen";
 "onboarding.servers.search.message" = "Op zoek naar servers in de buurt...";
-"onboarding.servers.title" = "Searching on home network";
-"onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
+"onboarding.servers.title" = "Zoeken op het thuisnetwerk";
+"onboarding.welcome.body" = "Hiermee heb je onderweg toegang tot je Home Assistant-installatie. Deze draait lokaal in huis via een apparaat zoals de Home Assistant Green of Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Maak verbinding met mijn Home Assistant";
 "onboarding.welcome.description" = "Deze app maakt verbinding met je Home Assistant-server en maakt het mogelijk gegevens over jou en je telefoon te integreren.\
 \
@@ -535,15 +535,15 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "onboarding.welcome.get_started" = "Aan de slag met Home Assistant";
 "onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Meer informatie";
-"onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
-"onboarding.welcome.primary_button" = "Connect to my Home Assistant";
+"onboarding.welcome.logo.accessibility_label" = "Home Assistant-logo";
+"onboarding.welcome.primary_button" = "Maak verbinding met mijn Home Assistant";
 "onboarding.welcome.secondary_button" = "Aan de slag";
 "onboarding.welcome.title" = "Welkom bij Home Assistant %@!";
 "open_label" = "Open";
-"permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
-"permission.notification.primary_button" = "Allow notifications";
-"permission.notification.secondary_button" = "Do not allow";
-"permission.notification.title" = "Allow notifications?";
+"permission.notification.body" = "Schakel meldingen in en krijg te horen wat er in je huis gebeurt, van het detecteren van lekkages tot openstaande deuren, je hebt volledige controle over wat er gemeld wordt.";
+"permission.notification.primary_button" = "Meldingen toestaan";
+"permission.notification.secondary_button" = "Niet toestaan";
+"permission.notification.title" = "Meldingen toestaan?";
 "permission.screen.bluetooth.secondary_button" = "Overslaan";
 "permission.screen.bluetooth.subtitle" = "De Home Assistant app kan apparaten vinden via Bluetooth van dit apparaat. Sta Bluetooth-toegang toe voor de Home Assistant app.";
 "permission.screen.bluetooth.title" = "Zoek apparaten";
@@ -591,7 +591,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.internal_url_ssids.footer" = "Interne URL wordt gebruikt bij verbinding met de vermelde SSID's";
 "settings.connection_section.internal_url_ssids.header" = "SSID's";
 "settings.connection_section.internal_url_ssids.placeholder" = "MijnLeukeNetwerkNaam";
-"settings.connection_section.invite_to_server" = "Invite someone to this server";
+"settings.connection_section.invite_to_server" = "Iemand uitnodigen voor deze server";
 "settings.connection_section.local_push_description" = "Maak rechtstreeks verbinding met de Home Assistant-server voor pushmeldingen op interne SSID's.";
 "settings.connection_section.location_send_type.setting.exact" = "Exact";
 "settings.connection_section.location_send_type.setting.never" = "Nooit";
@@ -604,7 +604,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.connection_section.sensor_send_type.setting.none" = "Geen";
 "settings.connection_section.sensor_send_type.title" = "Sensoren doorgeven";
 "settings.connection_section.servers" = "Servers";
-"settings.connection_section.servers_footer" = "Reorder to define default server";
+"settings.connection_section.servers_footer" = "Herschik om standaardserver te kiezen";
 "settings.connection_section.servers_header" = "Servers";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Voor toegang tot SSID's op de achtergrond is locatietoestemming 'Altijd' en 'Exacte locatie' vereist. Tik hier om je instellingen te wijzigen.";
 "settings.connection_section.ssid_permission_message" = "Voor toegang tot SSID's op de achtergrond is toestemming voor locatie 'Altijd' vereist. Tik hier om je instellingen te wijzigen.";
@@ -890,7 +890,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings_sensors.periodic_update.off" = "Uit";
 "settings_sensors.periodic_update.title" = "Periodiek bijwerken";
 "settings_sensors.permissions.header" = "Machtigingen";
-"settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.enable_all" = "Schakel alle sensoren in";
 "settings_sensors.sensors.header" = "Sensoren";
 "settings_sensors.settings.footer" = "De wijzigingen zullen bij de volgende update worden toegepast.";
 "settings_sensors.settings.header" = "Instellingen";
@@ -1184,7 +1184,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "web_view.unique_server_selection.title" = "Kies één server";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Standaard";
-"widgets.action.name.moreInfoDialog" = "More info";
+"widgets.action.name.moreInfoDialog" = "Meer informatie";
 "widgets.action.name.navigate" = "Navigeer";
 "widgets.action.name.nothing" = "Niets";
 "widgets.action.name.run_script" = "Script uitvoeren";
@@ -1206,8 +1206,8 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.controls.light.description" = "Zet je licht aan of uit";
 "widgets.controls.light.placeholder_title" = "Kies licht";
 "widgets.controls.light.title" = "Licht";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
-"widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Entiteit";
+"widgets.controls.open_entity.configuration.title" = "Open entiteit";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Kies pagina";
 "widgets.controls.open_page.configuration.parameter.page" = "Pagina";
 "widgets.controls.open_page.configuration.title" = "Open pagina";
@@ -1257,7 +1257,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "widgets.gauge.parameters.value_template" = "Waardesjabloon (0-1)";
 "widgets.gauge.title" = "Meter";
 "widgets.lights.description" = "Licht aan of uit zetten";
-"widgets.open_entity.title" = "Open Entity";
+"widgets.open_entity.title" = "Open entiteit";
 "widgets.open_page.description" = "Open een frontend-pagina in Home Assistant";
 "widgets.open_page.not_configured" = "Geen pagina's beschikbaar";
 "widgets.open_page.title" = "Open pagina";

@@ -4,7 +4,7 @@
 "panel::energy" = "Energie";
 "panel::history" = "Verlauf";
 "panel::logbook" = "Logbuch";
-"panel::mailbox" = "Posteingang";
+"panel::mailbox" = "Postfach";
 "panel::map" = "Karte";
 "panel::media_browser" = "Medien";
 "panel::profile" = "Profil";
