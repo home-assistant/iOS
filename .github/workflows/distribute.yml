@@ -22,7 +22,7 @@ jobs:
       matrix:
         kind: [mac, ios]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Brews
         run: brew bundle
