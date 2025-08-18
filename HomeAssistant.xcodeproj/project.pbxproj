@@ -617,6 +617,7 @@
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
+		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
 		42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		4238DCA42DD1F1E300126434 /* AppSessionValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238DCA32DD1F1E300126434 /* AppSessionValues.swift */; };
@@ -3060,6 +3061,7 @@
 				427692E32B98B82500F24321 /* SharedPush in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */,
+				4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6391,6 +6393,7 @@
 			name = "Shared-iOS";
 			packageProductDependencies = (
 				427692E22B98B82500F24321 /* SharedPush */,
+				4237E6382E5333370023B673 /* ZIPFoundation */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -6642,6 +6645,7 @@
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
 				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
+				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -9663,6 +9667,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = QMQYCKL255;
 			};
 			name = Beta;
 		};
@@ -9874,6 +9879,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = QMQYCKL255;
 			};
 			name = Debug;
 		};
@@ -9881,6 +9887,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = QMQYCKL255;
 			};
 			name = Release;
 		};
@@ -10556,6 +10563,14 @@
 				version = 1.18.1;
 			};
 		};
+		4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.19;
+			};
+		};
 		42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stasel/WebRTC.git";
@@ -10581,6 +10596,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTestingCustomDump;
+		};
+		4237E6382E5333370023B673 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
