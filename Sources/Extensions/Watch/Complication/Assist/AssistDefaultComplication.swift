@@ -1,7 +1,7 @@
 import ClockKit
 import Foundation
 import Shared
-import SwiftUICore
+import SwiftUI
 
 enum AssistDefaultComplication {
     static let title = "Assist"

@@ -121,7 +121,6 @@ PODS:
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
     - ObjcExceptionBridging
-  - ZIPFoundation (0.9.16)
 
 DEPENDENCIES:
   - Alamofire (~> 5.8)
@@ -155,7 +154,6 @@ DEPENDENCIES:
   - Version
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
   - XCGLogger
-  - ZIPFoundation (~> 0.9)
 
 SPEC REPOS:
   trunk:
@@ -186,7 +184,6 @@ SPEC REPOS:
     - UIColor_Hex_Swift
     - Version
     - XCGLogger
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   ColorPickerRow:
@@ -297,8 +294,7 @@ SPEC CHECKSUMS:
   Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
-  ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: dbffac5c46356ce4ccff72aaa9090b1a572a2b6f
+PODFILE CHECKSUM: ab912fdb584a9cf431173e68f4a75f5bfab11b9d
 
 COCOAPODS: 1.15.2

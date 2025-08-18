@@ -60,7 +60,6 @@ abstract_target 'iOS' do
 
   target 'Shared-iOS' do
     shared_fwk_pods
-    pod 'ZIPFoundation', '~> 0.9'
 
     target 'Tests-Shared' do
       inherit! :complete
