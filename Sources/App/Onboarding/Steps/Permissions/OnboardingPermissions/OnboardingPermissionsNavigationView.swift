@@ -15,7 +15,7 @@ struct OnboardingPermissionsNavigationView: View {
     let onboardingServer: Server?
 
     var body: some View {
-        Group {
+        VStack {
             if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
                 LocationPermissionView(permission: permission) {
                     Current.onboardingObservation.complete()
@@ -24,6 +24,8 @@ struct OnboardingPermissionsNavigationView: View {
                 flowEnd
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(uiColor: .systemBackground))
         .onDisappear {
             if Current.location.permissionStatus == .denied {
                 useLocalConnectionAsRemoteIfNeeded()
