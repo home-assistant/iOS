@@ -6,7 +6,7 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case magicItemPressed
     case pushAction = "PushAction"
     case assistPipelinesFetch
-    case assistAudioData
+    case assistAudioDataChunked
     case watchConfig
 }
 

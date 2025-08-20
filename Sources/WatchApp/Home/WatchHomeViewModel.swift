@@ -16,6 +16,7 @@ final class WatchHomeViewModel: ObservableObject {
     @Published var showAssist = false
     @Published var showError = false
     @Published var errorMessage = ""
+    @Published var currentSSID: String = ""
     @Published private(set) var homeType: WatchHomeType = .undefined
 
     @Published var watchConfig: WatchConfig = .init()
@@ -25,15 +26,18 @@ final class WatchHomeViewModel: ObservableObject {
     // are different, the list won't refresh. This is a workaround to force a refresh
     @Published var refreshListID: UUID = .init()
 
-    func fetchNetworkInfo(completion: (() -> Void)? = nil) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            WatchUserDefaults.shared.set(hotspotNetwork?.ssid, key: .watchSSID)
-            completion?()
-        }
+    @MainActor
+    func fetchNetworkInfo() async {
+        let networkInformation = await Current.networkInformation
+        WatchUserDefaults.shared.set(networkInformation?.ssid, key: .watchSSID)
+        currentSSID = networkInformation?.ssid ?? ""
     }
 
     @MainActor
     func initialRoutine() {
+        // First display whatever is in cache
+        loadCache()
+        // Now fetch new data in the background (shows loading indicator only for this fetch)
         isLoading = true
         requestConfig()
     }
@@ -41,18 +45,28 @@ final class WatchHomeViewModel: ObservableObject {
     @MainActor
     func requestConfig() {
         homeType = .undefined
-        isLoading = true
         guard Communicator.shared.currentReachability != .notReachable else {
             Current.Log.error("iPhone reachability is not immediate reachable")
             loadCache()
             return
         }
+        isLoading = true
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfig.rawValue,
             reply: { [weak self] message in
                 self?.handleMessageResponse(message)
             }
         ))
+    }
+
+    func info(for magicItem: MagicItem) -> MagicItem.Info {
+        magicItemsInfo.first(where: {
+            $0.id == magicItem.serverUniqueId
+        }) ?? .init(
+            id: magicItem.id,
+            name: magicItem.id,
+            iconName: ""
+        )
     }
 
     @MainActor
