@@ -15,6 +15,7 @@ struct OnboardingWelcomeViewTests {
                     .toolbarVisibility(.hidden, for: .navigationBar)
             }
         )
+        // TODO: Figure it out a way that views with liquid glass applied show up in the snapshots
         assertLightDarkSnapshots(of: view)
     }
 }

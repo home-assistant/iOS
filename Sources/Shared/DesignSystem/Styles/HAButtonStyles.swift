@@ -1,4 +1,3 @@
-import Foundation
 import SwiftUI
 
 enum HAButtonStylesConstants {
@@ -15,11 +14,19 @@ public struct HAButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline)
             .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
+            .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .padding(.vertical, HAButtonStylesConstants.verticalPadding)
-            .background(isEnabled ? Color.haPrimary : Color.gray)
-            .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
+            .modify { view in
+                if #available(iOS 26.0, watchOS 26.0, *) {
+                    view
+                        .glassEffect(.regular.interactive().tint(isEnabled ? Color.haPrimary : Color.gray))
+                } else {
+                    view
+                        .background(isEnabled ? Color.haPrimary : Color.gray)
+                }
+            }
+            .clipShape(Capsule())
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
     }
 }
@@ -31,7 +38,7 @@ public struct HANeutralButtonStyle: ButtonStyle {
         configuration.label
             .font(.callout.bold())
             .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
+            .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .background(Color.gray)
@@ -47,7 +54,7 @@ public struct HANegativeButtonStyle: ButtonStyle {
         configuration.label
             .font(.callout.bold())
             .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
+            .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .background(isEnabled ? .red : Color.gray)
@@ -63,7 +70,7 @@ public struct HASecondaryButtonStyle: ButtonStyle {
         configuration.label
             .font(.callout.bold())
             .foregroundColor(Color.haPrimary)
-            .frame(maxWidth: .infinity)
+            .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
@@ -78,24 +85,11 @@ public struct HASecondaryNegativeButtonStyle: ButtonStyle {
         configuration.label
             .font(.callout.bold())
             .foregroundColor(.red)
-            .frame(maxWidth: .infinity)
+            .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
-    }
-}
-
-public struct HAPillButtonStyle: ButtonStyle {
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.callout.bold())
-            .foregroundColor(.white)
-            .padding(.vertical, DesignSystem.Spaces.one)
-            .padding(.horizontal, DesignSystem.Spaces.oneAndHalf)
-            .background(Color.haPrimary)
-            .frame(alignment: .leading)
-            .clipShape(Capsule())
     }
 }
 
@@ -105,7 +99,7 @@ public struct HACriticalButtonStyle: ButtonStyle {
             .multilineTextAlignment(.center)
             .font(.callout.bold())
             .foregroundColor(.black)
-            .frame(maxWidth: .infinity)
+            .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .padding()
@@ -123,7 +117,7 @@ public struct HALinkButtonStyle: ButtonStyle {
         configuration.label
             .font(.footnote)
             .foregroundColor(Color.haPrimary)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: DesignSystem.Button.maxWidth)
     }
 }
 
@@ -169,8 +163,16 @@ public extension ButtonStyle where Self == HACriticalButtonStyle {
     }
 }
 
-public extension ButtonStyle where Self == HAPillButtonStyle {
-    static var pillButton: HAPillButtonStyle {
-        HAPillButtonStyle()
+private struct HABasicStylingModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .frame(minHeight: DesignSystem.Button.minHeight)
+            .frame(maxWidth: DesignSystem.Button.maxWidth)
+    }
+}
+
+private extension View {
+    func haButtonBasicSizing() -> some View {
+        modifier(HABasicStylingModifier())
     }
 }
