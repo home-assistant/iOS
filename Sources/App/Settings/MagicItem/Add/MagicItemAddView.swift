@@ -46,22 +46,22 @@ struct MagicItemAddView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                pickerView
-                List {
-                    switch viewModel.selectedItemType {
-                    case .actions:
-                        actionsList
-                    case .scripts:
-                        scriptsPerServerList
-                    case .scenes:
-                        scenesPerServerList
-                    case .entities:
-                        entitiesPerServerList
-                    }
+            List {
+                switch viewModel.selectedItemType {
+                case .actions:
+                    actionsList
+                case .scripts:
+                    scriptsPerServerList
+                case .scenes:
+                    scenesPerServerList
+                case .entities:
+                    entitiesPerServerList
                 }
-                .searchable(text: $viewModel.searchText)
             }
+            .searchable(text: $viewModel.searchText)
+            .safeAreaInset(edge: .top, content: {
+                pickerView
+            })
             .onAppear {
                 autoSelectItemType()
                 viewModel.loadContent()

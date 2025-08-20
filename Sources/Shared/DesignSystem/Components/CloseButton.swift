@@ -46,19 +46,29 @@ public struct CloseButton: View {
     }
 
     public var body: some View {
-        Button(action: {
-            if let alternativeAction {
-                alternativeAction()
-            } else {
-                dismiss()
+        if #available(iOS 26.0, *) {
+            Button(role: .close) {
+                tapAction()
             }
-        }, label: {
-            Image(systemSymbol: .xmarkCircleFill)
-                .resizable()
-                .frame(width: size.size, height: size.size)
-                .foregroundStyle(tint)
-        })
-        .buttonStyle(.plain)
+        } else {
+            Button(action: {
+                tapAction()
+            }, label: {
+                Image(systemSymbol: .xmarkCircleFill)
+                    .resizable()
+                    .frame(width: size.size, height: size.size)
+                    .foregroundStyle(tint)
+            })
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func tapAction() {
+        if let alternativeAction {
+            alternativeAction()
+        } else {
+            dismiss()
+        }
     }
 }
 
