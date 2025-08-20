@@ -24,8 +24,6 @@ struct HAButtonStylesTests {
                         .buttonStyle(.linkButton)
                     Button("criticalButton") {}
                         .buttonStyle(.criticalButton)
-                    Button("pillButton") {}
-                        .buttonStyle(.pillButton)
                 }
                 .padding(.horizontal)
                 .listRowSeparator(.hidden)
@@ -33,6 +31,7 @@ struct HAButtonStylesTests {
             .listStyle(.plain)
         )
 
+        // TODO: Figure it out a way that views with liquid glass applied show up in the snapshots
         assertLightDarkSnapshots(of: listOfButtons)
     }
 }
