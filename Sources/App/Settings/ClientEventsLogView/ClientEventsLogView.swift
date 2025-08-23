@@ -13,6 +13,9 @@ struct ClientEventsLogView: View {
             eventsList
         }
         .searchable(text: $viewModel.searchTerm)
+        .refreshable {
+            viewModel.loadEvents()
+        }
         .navigationTitle(L10n.Settings.EventLog.title)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -20,7 +23,7 @@ struct ClientEventsLogView: View {
                 Button {
                     showClearConfirmation = true
                 } label: {
-                    Text(L10n.ClientEvents.View.clear)
+                    Text(verbatim: L10n.ClientEvents.View.clear)
                 }
                 .confirmationDialog(
                     L10n.ClientEvents.View.ClearConfirm.title,
@@ -31,14 +34,14 @@ struct ClientEventsLogView: View {
                         /* no-op */
                     }
                     Button(L10n.yesLabel, role: .destructive) {
-                        Current.clientEventStore.clearAllEvents().cauterize()
+                        Current.clientEventStore.clearAllEvents()
                         dismiss()
                     }
                 }
             }
         }
         .onAppear {
-            viewModel.subscribeEvents()
+            viewModel.loadEvents()
         }
     }
 
@@ -48,7 +51,7 @@ struct ClientEventsLogView: View {
             listItem(event)
         }
         if filteredEvents.isEmpty {
-            Text(L10n.ClientEvents.noEvents)
+            Text(verbatim: L10n.ClientEvents.noEvents)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .listRowBackground(Color.clear)
                 .font(.headline)
@@ -87,7 +90,10 @@ struct ClientEventsLogView: View {
                         Button {
                             viewModel.resetTypeFilter()
                         } label: {
-                            filterPill(L10n.ClientEvents.EventType.all, selected: viewModel.typeFilter == nil)
+                            PillView(
+                                text: L10n.ClientEvents.EventType.all,
+                                selected: viewModel.typeFilter == nil
+                            )
                         }
                         ForEach(ClientEvent.EventType.allCases.sorted { e1, e2 in
                             e1.displayText < e2.displayText
@@ -95,7 +101,10 @@ struct ClientEventsLogView: View {
                             Button {
                                 viewModel.typeFilter = type
                             } label: {
-                                filterPill(type.displayText, selected: viewModel.typeFilter == type)
+                                PillView(
+                                    text: type.displayText,
+                                    selected: viewModel.typeFilter == type
+                                )
                             }
                         }
                     }
@@ -119,15 +128,6 @@ struct ClientEventsLogView: View {
                 view
             }
         }
-    }
-
-    private func filterPill(_ text: String, selected: Bool) -> some View {
-        Text(text)
-            .foregroundStyle(selected ? .white : Color(uiColor: .label))
-            .padding(Spaces.one)
-            .padding(.horizontal)
-            .background(selected ? Color.asset(Asset.Colors.haPrimary) : Color.secondary.opacity(0.1))
-            .clipShape(Capsule())
     }
 
     private func listItem(_ event: ClientEvent) -> some View {

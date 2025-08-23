@@ -6,10 +6,6 @@ import Shared
 import SwiftUI
 
 class OnboardingAuth {
-    func successController(server: Server?) -> UIViewController {
-        OnboardingPermissionViewControllerFactory.next(server: server)
-    }
-
     func failureController(error: Error) -> UIViewController {
         UIHostingController(rootView: OnboardingErrorView(error: error))
     }
@@ -20,7 +16,7 @@ class OnboardingAuth {
         OnboardingAuthStepConnectivity.self,
     ]
     var postSteps: [OnboardingAuthPostStep.Type] = [
-        OnboardingAuthStepDuplicate.self,
+        OnboardingAuthStepDeviceNaming.self,
         OnboardingAuthStepConfig.self,
         OnboardingAuthStepSensors.self,
         OnboardingAuthStepModels.self,
@@ -209,7 +205,7 @@ private extension ConnectionInfo {
             webhookSecret: nil,
             internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
             internalHardwareAddresses: nil,
-            isLocalPushEnabled: true,
+            isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
             alwaysFallbackToInternalURL: false
         )

@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_16.2.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -22,7 +22,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.1"
@@ -42,11 +42,39 @@ jobs:
             ghcr.io/nicklockwood/swiftformat:0.53.1 \
             --lint --config .swiftformat .
 
+  check-swiftlint-disables:
+    needs: lint
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Scan for `swiftlint:disable` in PR diff
+        id: scan
+        continue-on-error: false
+        run: |
+          git fetch origin master:refs/remotes/origin/master
+          DISABLE_LINES=$(git diff origin/master -- '*.swift' | grep -E '^\+.*// swiftlint:disable' || true)
+          echo "disable_lines<<EOF" >> $GITHUB_OUTPUT
+          echo "$DISABLE_LINES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR if `swiftlint:disable` is found
+        if: steps.scan.outputs.disable_lines != ''
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: swiftlint-disable-check
+          message: |
+            ⚠️ **SwiftLint disabled in this PR**
+
+            The following added lines contain `// swiftlint:disable`. Please verify this is necessary.
+
   test:
+    needs: check-swiftlint-disables
     runs-on: macos-15
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/cache@v4
         name: "Cache: Pods"
@@ -84,7 +112,7 @@ jobs:
       - name: Run tests
         run: bundle exec fastlane test
 
-      - uses: codecov/codecov-action@v5.1.2
+      - uses: codecov/codecov-action@v5.4.3
         name: "Upload Code Coverage"
         with:
           xcode: true
@@ -107,13 +135,14 @@ jobs:
           path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
 
   size:
+    needs: check-swiftlint-disables
     if: |
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
     runs-on: macos-15
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/cache@v4
         name: "Cache: Pods"
         id: cache_pods

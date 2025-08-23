@@ -38,7 +38,7 @@
 "HoH8wg" = "Handlinger";
 "J3qct4" = "Server";
 "JBMp1T" = "Bekræft venligt valg af '${server}'?";
-"JFaYRG" = "Bare for at bekræfte, ønsker du ‘${pipeline}’?";
+"JFaYRG" = "Bare for at bekræfte - ønsker du ‘${pipeline}’?";
 "K4xrvF" = "Fejl";
 "KHH48D" = "Mislykkedes: Home Assistant er ikke tilgængelig i øjeblikket";
 "KJS2jk" = "Mislykkedes: ${error}";
@@ -58,7 +58,7 @@
 "QCGKRz" = "Hvilket sprog?";
 "QVD2lM" = "Servicedata";
 "QmGpOH" = "Fejl";
-"R2PmrD" = "Vil du have hjælp ved at bruge stemmen?";
+"R2PmrD" = "Vil du have hjælp med brug af stemmen?";
 "RCQAlr" = "Hent billede fra ${cameraID}";
 "RMQY3r" = "Send lokalitet til Home Assistant";
 "RsOw3P" = "Skabelonen blev gengivet korrekt";

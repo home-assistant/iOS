@@ -2,8 +2,25 @@ import Shared
 import SwiftUI
 
 struct WatchAssistView: View {
-    @StateObject private var viewModel: WatchAssistViewModel
+    // MARK: - Constants
 
+    private enum Constants {
+        static let micButtonFontSize: CGFloat = 11
+        static let micButtonOffsetY: CGFloat = 22
+        static let micRecordingFontSizeLarge: CGFloat = 80
+        static let micRecordingFontSizeSmall: CGFloat = 50
+        static let micButtonProgressScale: CGFloat = 1.5
+        static let micButtonProgressHeight: CGFloat = 40
+        static let micButtonProgressPadding: CGFloat = DesignSystem.Spaces.half
+        static let micRecordingTextFontSize: CGFloat = 11
+        static let emptyStateImageWidth: CGFloat = 70
+        static let emptyStateImageHeight: CGFloat = 70
+        static let emptyStateImageOpacity: Double = 0.5
+        static let progressViewScale: CGFloat = 2
+    }
+
+    @StateObject private var viewModel: WatchAssistViewModel
+    @State private var isInitialAppearance = true
     private let progressViewId = "progressViewId"
 
     init(
@@ -50,7 +67,11 @@ struct WatchAssistView: View {
         }
         .animation(.easeInOut, value: viewModel.state)
         .onAppear {
-            viewModel.initialRoutine()
+            // Avoid re-trigger when coming back from audio volume screen
+            if isInitialAppearance {
+                isInitialAppearance = false
+                viewModel.initialRoutine()
+            }
         }
         .onDisappear {
             viewModel.endRoutine()
@@ -77,7 +98,7 @@ struct WatchAssistView: View {
 
     private var volumeButton: some View {
         NavigationLink(destination: VolumeView()) {
-            Image(systemName: "speaker.wave.2.fill")
+            Image(systemSymbol: .speakerWave2Fill)
         }
     }
 
@@ -87,7 +108,8 @@ struct WatchAssistView: View {
             .opacity(viewModel.state == .recording ? 1 : 0)
         ProgressView()
             .progressViewStyle(.circular)
-            .scaleEffect(.init(floatLiteral: 2))
+            // This could also be achieved using .controlSize(.large) on watchOS 9+
+            .scaleEffect(Constants.progressViewScale)
             .ignoresSafeArea()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .modify {
@@ -103,19 +125,19 @@ struct WatchAssistView: View {
     @ViewBuilder
     private var micButton: some View {
         if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
-            HStack(spacing: Spaces.one) {
+            HStack(spacing: DesignSystem.Spaces.one) {
                 if viewModel.assistService.deviceReachable {
-                    Text(L10n.Assist.Watch.MicButton.title)
-                    Image(systemName: "mic.fill")
+                    Text(verbatim: L10n.Assist.Watch.MicButton.title)
+                    Image(systemSymbol: .micFill)
                 } else {
-                    Image(systemName: "iphone.slash")
+                    Image(systemSymbol: .iphoneSlash)
                         .foregroundStyle(.red)
                         .padding(.trailing)
                 }
             }
-            .font(.system(size: 11))
+            .font(.system(size: Constants.micButtonFontSize))
             .foregroundStyle(.gray)
-            .offset(y: 22)
+            .offset(y: Constants.micButtonOffsetY)
         }
     }
 
@@ -131,11 +153,11 @@ struct WatchAssistView: View {
     private var micButtonProgressView: some View {
         ProgressView()
             .progressViewStyle(.circular)
-            .scaleEffect(.init(floatLiteral: 1.5))
+            // This could also be achieved using .controlSize(.large) on watchOS 9+
+            .scaleEffect(Constants.micButtonProgressScale)
             .frame(maxWidth: .infinity, alignment: .center)
-            .progressViewStyle(.linear)
-            .frame(height: 40)
-            .padding(Spaces.half)
+            .frame(height: Constants.micButtonProgressHeight)
+            .padding(Constants.micButtonProgressPadding)
             .modify {
                 if #available(watchOS 10, *) {
                     $0.background(.regularMaterial)
@@ -151,20 +173,27 @@ struct WatchAssistView: View {
         Button(action: {
             viewModel.assist()
         }, label: {
-            if #available(watchOS 10.0, *) {
-                Image(systemName: "waveform.circle.fill")
-                    .font(.system(size: 80))
-                    .symbolEffect(
-                        .variableColor.cumulative.dimInactiveLayers.nonReversing,
-                        options: .repeating,
-                        value: viewModel.state
-                    )
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, Color.asset(Asset.Colors.haPrimary))
-                    .frame(maxHeight: .infinity)
-            } else {
-                Image(systemName: "waveform.circle.fill")
-                    .font(.system(size: 50))
+            VStack(spacing: .zero) {
+                if #available(watchOS 10.0, *) {
+                    Image(systemSymbol: .waveformCircleFill)
+                        .font(.system(size: Constants.micRecordingFontSizeLarge))
+                        .symbolEffect(
+                            .variableColor.cumulative.dimInactiveLayers.nonReversing,
+                            options: .repeating,
+                            value: viewModel.state
+                        )
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, Color.haPrimary)
+                } else {
+                    Image(systemSymbol: .waveformCircleFill)
+                        .font(.system(size: Constants.micRecordingFontSizeSmall))
+                }
+                Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                    .font(.system(size: Constants.micRecordingTextFontSize))
+                    .foregroundStyle(.gray)
+                Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                    .font(.footnote.bold())
+                    .padding()
             }
         })
         .buttonStyle(.plain)
@@ -183,7 +212,7 @@ struct WatchAssistView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 // Using LazyVStack instead of List to avoid List minimum row height
-                LazyVStack(spacing: Spaces.one) {
+                LazyVStack(spacing: DesignSystem.Spaces.one) {
                     ForEach(viewModel.chatItems, id: \.id) { item in
                         ChatBubbleView(item: item)
                     }
@@ -207,15 +236,15 @@ struct WatchAssistView: View {
     private var emptyState: some View {
         HStack {
             Spacer()
-            Image(uiImage: Asset.SharedAssets.casitaDark.image)
+            Image(uiImage: Asset.casitaDark.image)
                 .resizable()
                 .frame(
-                    width: 70,
-                    height: 70,
+                    width: Constants.emptyStateImageWidth,
+                    height: Constants.emptyStateImageHeight,
                     alignment: .center
                 )
                 .aspectRatio(contentMode: .fit)
-                .opacity(0.5)
+                .opacity(Constants.emptyStateImageOpacity)
             Spacer()
         }
         .listRowBackground(Color.clear)

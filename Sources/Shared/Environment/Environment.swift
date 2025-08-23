@@ -6,10 +6,11 @@ import GRDB
 import HAKit
 import PromiseKit
 import RealmSwift
+import UserNotifications
 import Version
 import XCGLogger
 
-public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
+public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {
     case fastlaneSnapshot
     case debug
     case beta
@@ -86,12 +87,12 @@ public class AppEnvironment {
     /// Crash reporting and related metadata gathering
     public var crashReporter: CrashReporter = CrashReporterImpl()
 
-    /// Provides URLs usable for storing data.
+    /// Provides current Date
     public var date: () -> Date = Date.init
     public var calendar: () -> Calendar = { Calendar.autoupdatingCurrent }
 
     /// Provides the Client Event store used for local logging.
-    public var clientEventStore = ClientEventStore()
+    public var clientEventStore: ClientEventStoreProtocol = ClientEventStore()
 
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
@@ -100,7 +101,9 @@ public class AppEnvironment {
         Realm.getRealm(objectTypes: objectTypes)
     }
 
-    public var database: DatabaseQueue = .appDatabase
+    public var database: () -> DatabaseQueue = {
+        .appDatabase
+    }
 
     public var watchConfig: () throws -> WatchConfig? = {
         try WatchConfig.config()
@@ -118,15 +121,11 @@ public class AppEnvironment {
         AppEntitiesModel.shared
     }
 
-    public var periodicAppEntitiesUpdater: () -> PeriodicAppEntitiesModelUpdaterProtocol = {
-        PeriodicAppEntitiesModelUpdater.shared
-    }
-
-    public var panelsUpdater: () -> PanelsUpdaterProtocol = {
-        PanelsUpdater.shared
-    }
-
     #if os(iOS)
+    public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
+
+    public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
+
     public var realmFatalPresentation: ((UIViewController) -> Void)?
     #endif
 
@@ -193,6 +192,9 @@ public class AppEnvironment {
     public var updater = Updater()
     public var serverAlerter = ServerAlerter()
     public var notificationAttachmentManager: NotificationAttachmentManager = NotificationAttachmentManagerImpl()
+
+    /// Dispatchque local notifications (From the App to the App, not from Home Assistant)
+    public var notificationDispatcher: LocalNotificationDispatcherProtocol = LocalNotificationDispatcher()
 
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
@@ -421,6 +423,10 @@ public class AppEnvironment {
         ) -> Promise<CLLocation> = {
             CLLocationManager.oneShotLocation(timeout: $0.oneShotTimeout(maximum: $1))
         }
+
+        public var permissionStatus: CLAuthorizationStatus {
+            CLLocationManager().authorizationStatus
+        }
     }
 
     public var location = Location()
@@ -434,4 +440,21 @@ public class AppEnvironment {
     public var bluetoothPermissionStatus: CBManagerAuthorization {
         CBCentralManager.authorization
     }
+
+    public var userNotificationCenter: UNUserNotificationCenter {
+        UNUserNotificationCenter.current()
+    }
+
+    #if !os(watchOS)
+    /// Provides a way to handle Bonjour connections. Such as for scanning for Home Assistant instances.
+    public var bonjour: () -> BonjourProtocol = {
+        Bonjour()
+    }
+
+    /// Handles website data store for the app, such as cookies and local storage.
+    public var websiteDataStoreHandler: WebsiteDataStoreHandlerProtocol = WebsiteDataStoreHandlerImpl.build()
+    #endif
+
+    /// Values stored for the given app session until terminated by the OS.
+    public var appSessionValues: AppSessionValuesProtocol = AppSessionValues.shared
 }

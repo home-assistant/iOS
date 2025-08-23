@@ -20,7 +20,7 @@ struct WatchConfigurationView: View {
                         Button(action: {
                             dismiss()
                         }, label: {
-                            Text(L10n.cancelLabel)
+                            Text(verbatim: L10n.cancelLabel)
                         })
                     }
                     ToolbarItem(placement: .topBarTrailing) {
@@ -34,7 +34,7 @@ struct WatchConfigurationView: View {
                                 }
                             }
                         }, label: {
-                            Text(L10n.Watch.Configuration.Save.title)
+                            Text(verbatim: L10n.Watch.Configuration.Save.title)
                         })
                     }
                 })
@@ -49,10 +49,11 @@ struct WatchConfigurationView: View {
                 guard let itemToAdd else { return }
                 viewModel.addItem(itemToAdd)
             }
+            .preferredColorScheme(.dark)
         })
         .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
             Button(action: {}, label: {
-                Text(L10n.okLabel)
+                Text(verbatim: L10n.okLabel)
             })
         }
     }
@@ -115,7 +116,7 @@ struct WatchConfigurationView: View {
     private var assistSection: some View {
         Section("Assist") {
             Toggle(isOn: $viewModel.watchConfig.assist.showAssist, label: {
-                Text(L10n.Watch.Configuration.ShowAssist.title)
+                Text(verbatim: L10n.Watch.Configuration.ShowAssist.title)
             })
             if viewModel.watchConfig.assist.showAssist {
                 Picker(L10n.Watch.Config.Assist.selectServer, selection: $viewModel.watchConfig.assist.serverId) {
@@ -184,7 +185,7 @@ struct WatchConfigurationView: View {
             itemRow(item: item, info: info)
         } else {
             NavigationLink {
-                MagicItemCustomizationView(mode: .edit, item: item) { updatedMagicItem in
+                MagicItemCustomizationView(mode: .edit, context: .watch, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {
@@ -196,7 +197,7 @@ struct WatchConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
-            Text(info.name)
+            Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: SFSymbol.line3Horizontal.rawValue)
                 .foregroundStyle(.gray)
@@ -219,7 +220,7 @@ struct WatchConfigurationView: View {
             }
             .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
             .clipShape(Circle())
-            Text(itemInfo.name)
+            Text(item.name(info: itemInfo))
                 .font(.system(size: 16))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
@@ -254,13 +255,7 @@ struct WatchConfigurationView: View {
         watchPreview: Bool,
         color: UIColor? = nil
     ) -> UIImage {
-        var icon: MaterialDesignIcons = .abTestingIcon
-        switch item.type {
-        case .action:
-            icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .scene, .entity:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
-        }
+        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
 
         return icon.image(
             ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
@@ -277,7 +272,7 @@ struct WatchConfigurationView: View {
             if viewModel.watchConfig.assist.showAssist {
                 Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
                     ofSize: .init(width: 18, height: 18),
-                    color: Asset.Colors.haPrimary.color
+                    color: .haPrimary
                 ))
                 .padding(Spaces.one)
                 .background(.regularMaterial)
@@ -292,12 +287,12 @@ struct WatchConfigurationView: View {
     }
 
     private var noItemsWatchView: some View {
-        Text(L10n.Watch.Settings.NoItems.Phone.title)
+        Text(verbatim: L10n.Watch.Settings.NoItems.Phone.title)
             .frame(maxWidth: .infinity, alignment: .center)
             .font(.footnote)
             .padding(Spaces.one)
             .background(.gray.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.one))
     }
 }
 

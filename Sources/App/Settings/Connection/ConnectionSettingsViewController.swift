@@ -12,6 +12,13 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
     let server: Server
 
+    private lazy var shareButton = UIBarButtonItem(
+        image: UIImage(systemName: "square.and.arrow.up"),
+        style: .plain,
+        target: self,
+        action: #selector(shareServer)
+    )
+
     init(server: Server) {
         self.server = server
 
@@ -36,24 +43,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
         let connection = Current.api(for: server)?.connection
 
-        if Current.servers.all.count > 1 {
-            form +++ Section(footer: L10n.Settings.ConnectionSection.activateSwipeHint) {
-                _ in
-            } <<< ButtonRow {
-                $0.title = L10n.Settings.ConnectionSection.activateServer
-                $0.onCellSelection { [server] _, _ in
-                    if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
-                        if let url = server.info.connection.activeURL() {
-                            UIApplication.shared.open(url)
-                        }
-                    } else {
-                        Current.sceneManager.webViewWindowControllerPromise.done {
-                            $0.open(server: server)
-                        }
-                    }
-                }
-            }
-        }
+        addActivateButton()
+        addInvitationButtonToNavBar()
 
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -156,7 +147,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 row.displayValueFor = { [server] _ in
                     if server.info.connection.internalSSIDs?.isEmpty ?? true,
                        server.info.connection.internalHardwareAddresses?.isEmpty ?? true,
-                       !server.info.connection.alwaysFallbackToInternalURL {
+                       !server.info.connection.alwaysFallbackToInternalURL,
+                       !ConnectionInfo.shouldFallbackToInternalURL {
                         return "‼️ \(L10n.Settings.ConnectionSection.InternalBaseUrl.RequiresSetup.title)"
                     } else {
                         return server.info.connection.address(for: .internal)?.absoluteString ?? "—"
@@ -299,6 +291,61 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
         // Detect when your view controller is popped and invoke the callback
         if !isMovingToParent {
             onDismissCallback?(self)
+        }
+    }
+
+    private func addInvitationButtonToNavBar() {
+        navigationItem.rightBarButtonItem = shareButton
+    }
+
+    @objc private func shareServer() {
+        guard let invitationServerURL = server.info.connection.invitationURL() else {
+            Current.Log.error("Invitation button failed, no invitation URL found for server \(server.identifier)")
+            return
+        }
+
+        guard let invitationURL = AppConstants.invitationURL(serverURL: invitationServerURL) else {
+            Current.Log
+                .error("Invitation button failed, could not create invitation URL for server \(server.identifier)")
+            return
+        }
+
+        let activityVC = UIActivityViewController(activityItems: [invitationURL], applicationActivities: nil)
+        if let popover = activityVC.popoverPresentationController {
+            popover.sourceView = view
+            popover.sourceRect = CGRect(
+                x: view.bounds.midX,
+                y: view.bounds.midY,
+                width: 0,
+                height: 0
+            )
+            popover.permittedArrowDirections = []
+        }
+        present(activityVC, animated: true, completion: nil)
+    }
+
+    private func addActivateButton() {
+        if Current.servers.all.count > 1 {
+            form +++ Section {
+                _ in
+            } <<< ButtonRow {
+                $0.title = L10n.Settings.ConnectionSection.activateServer
+                $0.onCellSelection { [weak self] _, _ in
+                    self?.activateServerTapped()
+                }
+            }
+        }
+    }
+
+    @objc private func activateServerTapped() {
+        if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
+            if let url = server.info.connection.activeURL() {
+                UIApplication.shared.open(url)
+            }
+        } else {
+            Current.sceneManager.webViewWindowControllerPromise.done {
+                $0.open(server: self.server)
+            }
         }
     }
 }

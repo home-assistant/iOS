@@ -2,16 +2,22 @@ import Foundation
 import MBProgressHUD
 import PromiseKit
 import Shared
+import SwiftUI
 import UIKit
 
 final class WebViewWindowController {
+    enum RootViewControllerType {
+        case onboarding
+        case webView
+    }
+
     let window: UIWindow
     var restorationActivity: NSUserActivity?
 
     var webViewControllerPromise: Guarantee<WebViewController>
 
     private var cachedWebViewControllers = [Identifier<Server>: WebViewController]()
-
+    private var rootViewControllerType: RootViewControllerType?
     private var webViewControllerSeal: (WebViewController) -> Void
     private var onboardingPreloadWebViewController: WebViewController?
 
@@ -28,7 +34,8 @@ final class WebViewWindowController {
         webViewControllerPromise.value?.userActivity
     }
 
-    private func updateRootViewController(to newValue: UIViewController) {
+    private func updateRootViewController(to newValue: UIViewController, type: RootViewControllerType) {
+        rootViewControllerType = type
         let newWebViewController = newValue.children.compactMap { $0 as? WebViewController }.first
 
         // must be before the seal fires, or it may request during deinit of an old one
@@ -41,8 +48,6 @@ final class WebViewWindowController {
             } else {
                 webViewControllerSeal(newWebViewController)
             }
-
-            update(webViewController: newWebViewController)
         } else if webViewControllerPromise.isFulfilled {
             // replacing one, so set up a new promise if necessary
             (webViewControllerPromise, webViewControllerSeal) = Guarantee<WebViewController>.pending()
@@ -60,27 +65,52 @@ final class WebViewWindowController {
     }
 
     func setup() {
-        if let style = OnboardingNavigationViewController.requiredOnboardingStyle {
-            Current.Log.info("showing onboarding \(style)")
-            updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: style))
+        if let style = OnboardingNavigation.requiredOnboardingStyle {
+            Current.Log.info("Showing onboarding \(style)")
+            updateRootViewController(
+                to: OnboardingNavigationView(onboardingStyle: style).embeddedInHostingController(),
+                type: .onboarding
+            )
         } else {
-            if let rootController = window.rootViewController, !rootController.children.isEmpty {
-                Current.Log.info("[iOS 12] state restoration loaded controller, not creating a new one")
-                // not changing anything, but handle the promises
-                updateRootViewController(to: rootController)
+            if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
+                updateRootViewController(
+                    to: webViewNavigationController(rootViewController: webViewController),
+                    type: .webView
+                )
             } else {
-                if let webViewController = makeWebViewIfNotInCache(restorationType: .init(restorationActivity)) {
-                    updateRootViewController(to: webViewNavigationController(rootViewController: webViewController))
-                } else {
-                    updateRootViewController(to: OnboardingNavigationViewController(onboardingStyle: .initial))
-                }
-                restorationActivity = nil
+                updateRootViewController(
+                    to: OnboardingNavigationView(onboardingStyle: .initial).embeddedInHostingController(),
+                    type: .onboarding
+                )
             }
+            restorationActivity = nil
+        }
+    }
+
+    func presentInvitation(url inviteURL: URL?) {
+        guard let inviteURL else { return }
+
+        switch rootViewControllerType {
+        case .onboarding:
+            Current.appSessionValues.inviteURL = inviteURL
+        case .webView:
+            webViewControllerPromise.done { controller in
+                let navigationView = NavigationView {
+                    OnboardingServersListView(prefillURL: inviteURL, shouldDismissOnSuccess: true)
+                }.navigationViewStyle(.stack)
+                controller.presentOverlayController(
+                    controller: navigationView.embeddedInHostingController(),
+                    animated: true
+                )
+            }
+        case nil:
+            Current.Log.error("No root view controller type set, presentInvitation failed")
+            return
         }
     }
 
     private func makeWebViewIfNotInCache(
-        restorationType: WebViewController.RestorationType?,
+        restorationType: WebViewRestorationType?,
         shouldLoadImmediately: Bool = false
     ) -> WebViewController? {
         if let server = restorationType?.server ?? Current.servers.all.first {
@@ -117,9 +147,19 @@ final class WebViewWindowController {
         return currentController
     }
 
-    func navigate(to url: URL, on server: Server) {
-        open(server: server).done { webViewController in
-            webViewController.open(inline: url)
+    func navigate(to url: URL, on server: Server, avoidUnecessaryReload: Bool = false, isComingFromAppIntent: Bool) {
+        open(server: server).pipe { result in
+            switch result {
+            case let .fulfilled(webViewController):
+                webViewController.dismissOverlayController(animated: true, completion: nil)
+                if isComingFromAppIntent {
+                    webViewController.openPanel(url)
+                } else {
+                    webViewController.open(inline: url, avoidUnecessaryReload: avoidUnecessaryReload)
+                }
+            case .rejected:
+                Current.Log.error("Failed to open WebViewController for server \(server.identifier)")
+            }
         }
     }
 
@@ -143,7 +183,10 @@ final class WebViewWindowController {
                     }
                 }()
 
-                updateRootViewController(to: webViewNavigationController(rootViewController: newController))
+                updateRootViewController(
+                    to: webViewNavigationController(rootViewController: newController),
+                    type: .webView
+                )
                 resolver(newController)
             }
 
@@ -171,58 +214,67 @@ final class WebViewWindowController {
         }
     }
 
-    func selectServer(prompt: String? = nil, includeSettings: Bool = false) -> Promise<Server?> {
-        let select = ServerSelectViewController()
-        if let prompt {
-            select.prompt = prompt
-        }
-        if includeSettings {
-            select.navigationItem.rightBarButtonItems = [
-                with(UIBarButtonItem(icon: .cogIcon, target: self, action: #selector(openSettings(_:)))) {
-                    $0.accessibilityLabel = L10n.Settings.NavigationBar.title
-                },
-            ]
-        }
-        let promise = select.result.ensureThen { [weak select] in
-            Guarantee { seal in
-                if let select, select.presentingViewController != nil {
-                    select.dismiss(animated: true, completion: {
-                        seal(())
-                    })
-                } else {
-                    seal(())
-                }
-            }
-        }
-        present(UINavigationController(rootViewController: select))
-        return promise.map {
-            if case let .server(server) = $0 {
-                return server
-            } else {
-                return nil
-            }
-        }
+    func selectServer(prompt: String? = nil, includeSettings: Bool = false, completion: @escaping (Server) -> Void) {
+        let serverSelectView = UIHostingController(rootView: ServerSelectView(
+            prompt: prompt,
+            includeSettings: includeSettings,
+            selectAction: completion
+        ))
+        serverSelectView.view.backgroundColor = .clear
+        serverSelectView.modalPresentationStyle = .overFullScreen
+        serverSelectView.modalTransitionStyle = .crossDissolve
+        present(serverSelectView, animated: false, completion: nil)
     }
 
     func openSelectingServer(
         from: OpenSource,
         urlString openUrlRaw: String,
         skipConfirm: Bool = false,
-        queryParameters: [URLQueryItem]? = nil
+        queryParameters: [URLQueryItem]? = nil,
+        isComingFromAppIntent: Bool
     ) {
-        let serverName = queryParameters?.first(where: { $0.name == "server" })?.value
+        let serverNameOrId = queryParameters?.first(where: { $0.name == "server" })?.value
+        let avoidUnecessaryReload = {
+            if let avoidUnecessaryReloadString =
+                queryParameters?.first(where: { $0.name == "avoidUnecessaryReload" })?.value {
+                return Bool(avoidUnecessaryReloadString) ?? false
+            } else {
+                return false
+            }
+        }()
         let servers = Current.servers.all
 
-        if let first = servers.first, Current.servers.all.count == 1 || serverName != nil {
-            if serverName == "default" || serverName == nil {
-                open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+        if let first = servers.first, Current.servers.all.count == 1 || serverNameOrId != nil {
+            if serverNameOrId == "default" || serverNameOrId == nil {
+                open(
+                    from: from,
+                    server: first,
+                    urlString: openUrlRaw,
+                    skipConfirm: skipConfirm,
+                    isComingFromAppIntent: isComingFromAppIntent
+                )
             } else {
                 if let selectedServer = servers.first(where: { server in
-                    server.info.name.lowercased() == serverName?.lowercased()
+                    server.info.name.lowercased() == serverNameOrId?.lowercased() ||
+                        server.identifier.rawValue == serverNameOrId
                 }) {
-                    open(from: from, server: selectedServer, urlString: openUrlRaw, skipConfirm: skipConfirm)
+                    open(
+                        from: from,
+                        server: selectedServer,
+                        urlString: openUrlRaw,
+                        skipConfirm: skipConfirm,
+                        avoidUnecessaryReload: avoidUnecessaryReload,
+                        isComingFromAppIntent: isComingFromAppIntent
+                    )
                 } else {
-                    open(from: from, server: first, urlString: openUrlRaw, skipConfirm: skipConfirm)
+                    open(
+                        from: from,
+                        server: first,
+                        urlString: openUrlRaw,
+                        skipConfirm: skipConfirm,
+                        avoidUnecessaryReload: avoidUnecessaryReload,
+                        isComingFromAppIntent: isComingFromAppIntent
+                    )
                 }
             }
         } else if Current.servers.all.count > 1 {
@@ -234,17 +286,26 @@ final class WebViewWindowController {
                 prompt = from.message(with: openUrlRaw)
             }
 
-            selectServer(prompt: prompt).done { [self] server in
-                if let server {
-                    open(from: from, server: server, urlString: openUrlRaw, skipConfirm: true)
-                }
-            }.catch { error in
-                Current.Log.error("failed to select server: \(error)")
+            selectServer(prompt: prompt) { [self] server in
+                open(
+                    from: from,
+                    server: server,
+                    urlString: openUrlRaw,
+                    skipConfirm: true,
+                    isComingFromAppIntent: isComingFromAppIntent
+                )
             }
         }
     }
 
-    func open(from: OpenSource, server: Server, urlString openUrlRaw: String, skipConfirm: Bool = false) {
+    func open(
+        from: OpenSource,
+        server: Server,
+        urlString openUrlRaw: String,
+        skipConfirm: Bool = false,
+        avoidUnecessaryReload: Bool = false,
+        isComingFromAppIntent: Bool
+    ) {
         let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
         let externalURL = URL(string: openUrlRaw)
 
@@ -254,7 +315,9 @@ final class WebViewWindowController {
             urlString: openUrlRaw,
             webviewURL: webviewURL,
             externalURL: externalURL,
-            skipConfirm: skipConfirm
+            skipConfirm: skipConfirm,
+            avoidUnecessaryReload: avoidUnecessaryReload,
+            isComingFromAppIntent: isComingFromAppIntent
         )
     }
 
@@ -268,7 +331,9 @@ final class WebViewWindowController {
         urlString openUrlRaw: String,
         webviewURL: URL?,
         externalURL: URL?,
-        skipConfirm: Bool
+        skipConfirm: Bool,
+        avoidUnecessaryReload: Bool = false,
+        isComingFromAppIntent: Bool
     ) {
         guard webviewURL != nil || externalURL != nil else {
             return
@@ -276,7 +341,12 @@ final class WebViewWindowController {
 
         let triggerOpen = { [self] in
             if let webviewURL {
-                navigate(to: webviewURL, on: server)
+                navigate(
+                    to: webviewURL,
+                    on: server,
+                    avoidUnecessaryReload: avoidUnecessaryReload,
+                    isComingFromAppIntent: isComingFromAppIntent
+                )
             } else if let externalURL {
                 openURLInBrowser(externalURL, presentedViewController)
             }
@@ -316,69 +386,13 @@ final class WebViewWindowController {
             triggerOpen()
         }
     }
-
-    private lazy var serverChangeGestures: [UIGestureRecognizer] = {
-        class InlineDelegate: NSObject, UIGestureRecognizerDelegate {
-            func gestureRecognizer(
-                _ gestureRecognizer: UIGestureRecognizer,
-                shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-            ) -> Bool {
-                if let gestureRecognizer = gestureRecognizer as? UISwipeGestureRecognizer {
-                    return gestureRecognizer.direction == .up
-                } else {
-                    return false
-                }
-            }
-        }
-
-        var delegate = InlineDelegate()
-
-        return [.left, .right, .up, .down].map { (direction: UISwipeGestureRecognizer.Direction) in
-            with(UISwipeGestureRecognizer()) {
-                $0.numberOfTouchesRequired = 3
-                $0.direction = direction
-                $0.addTarget(self, action: #selector(gestureHandler(_:)))
-                $0.delegate = delegate
-
-                after(life: $0).done {
-                    withExtendedLifetime(delegate) {
-                        //
-                    }
-                }
-            }
-        }
-    }()
-
-    private func update(webViewController: WebViewController) {
-        for gesture in serverChangeGestures {
-            webViewController.view.addGestureRecognizer(gesture)
-        }
-    }
-
-    @objc private func openSettings(_ sender: UIBarButtonItem) {
-        presentedViewController?.dismiss(animated: true, completion: { [self] in
-            webViewControllerPromise.done { controller in
-                controller.showSettingsViewController()
-            }
-        })
-    }
-
-    @objc private func gestureHandler(_ gesture: UISwipeGestureRecognizer) {
-        guard gesture.state == .ended else {
-            return
-        }
-        let action = Current.settingsStore.gestures.getAction(for: gesture, numberOfTouches: 3)
-        webViewControllerPromise.done({ controller in
-            controller.handleGestureAction(action)
-        })
-    }
 }
 
 extension WebViewWindowController: OnboardingStateObserver {
     func onboardingStateDidChange(to state: OnboardingState) {
         switch state {
         case let .needed(type):
-            guard !(window.rootViewController is OnboardingNavigationViewController) else {
+            if window.rootViewController as? UIHostingController<OnboardingNavigationView> != nil {
                 return
             }
 
@@ -391,8 +405,8 @@ extension WebViewWindowController: OnboardingStateObserver {
             switch type {
             case .error, .logout:
                 if Current.servers.all.isEmpty {
-                    let controller = OnboardingNavigationViewController(onboardingStyle: .initial)
-                    updateRootViewController(to: controller)
+                    let controller = OnboardingNavigationView(onboardingStyle: .initial).embeddedInHostingController()
+                    updateRootViewController(to: controller, type: .onboarding)
 
                     if type.shouldShowError {
                         let alert = UIAlertController(
@@ -426,7 +440,7 @@ extension WebViewWindowController: OnboardingStateObserver {
                 shouldLoadImmediately: true
             )
         case .complete:
-            if window.rootViewController is OnboardingNavigationViewController {
+            if window.rootViewController as? UIHostingController<OnboardingNavigationView> != nil {
                 let controller: WebViewController?
 
                 if let preload = onboardingPreloadWebViewController {
@@ -440,7 +454,10 @@ extension WebViewWindowController: OnboardingStateObserver {
                 }
 
                 if let controller {
-                    updateRootViewController(to: webViewNavigationController(rootViewController: controller))
+                    updateRootViewController(
+                        to: webViewNavigationController(rootViewController: controller),
+                        type: .webView
+                    )
                 }
             }
         }

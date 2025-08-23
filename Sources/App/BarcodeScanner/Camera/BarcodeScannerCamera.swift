@@ -3,7 +3,11 @@ import CoreImage
 import Shared
 import UIKit
 
-class BarcodeScannerCamera: NSObject {
+protocol BarcodeScannerCameraDelegate: AnyObject {
+    func didDetectBarcode(_ code: String, format: String)
+}
+
+final class BarcodeScannerCamera: NSObject {
     private let captureSession = AVCaptureSession()
     private var isCaptureSessionConfigured = false
     private var deviceInput: AVCaptureDeviceInput?
@@ -14,11 +18,38 @@ class BarcodeScannerCamera: NSObject {
     private var allBackCaptureDevices: [AVCaptureDevice] {
         AVCaptureDevice.DiscoverySession(
             deviceTypes: [
+                .builtInTripleCamera,
+                .builtInDualCamera,
                 .builtInWideAngleCamera,
             ],
             mediaType: .video,
             position: .back
         ).devices
+    }
+
+    public var screenSize: CGSize? {
+        didSet {
+            // Prevent unecessary updates
+            guard let screenSize else { return }
+            // Calculate normalized rectOfInterest for AVFoundation
+            let cameraSquareSize = BarcodeScannerView.cameraSquareSize
+            let x = (screenSize.width - cameraSquareSize) / 2.0
+            let y = (screenSize.height - cameraSquareSize) / 2.0
+            // AVFoundation expects (x, y, width, height) in normalized coordinates (0-1),
+            // and (0,0) is top-left of the video in portrait orientation
+            let normalizedX = y / screenSize.height
+            let normalizedY = x / screenSize.width
+            let normalizedWidth = cameraSquareSize / screenSize.height
+            let normalizedHeight = cameraSquareSize / screenSize.width
+            captureSession.beginConfiguration()
+            metadataOutput.rectOfInterest = CGRect(
+                x: normalizedX,
+                y: normalizedY,
+                width: normalizedWidth,
+                height: normalizedHeight
+            )
+            captureSession.commitConfiguration()
+        }
     }
 
     private var availableCaptureDevices: [AVCaptureDevice] {
@@ -40,7 +71,8 @@ class BarcodeScannerCamera: NSObject {
     /// Last time a barcode was detected
     private var lastDetection: Date?
 
-    var barcodeFound: ((_ code: String, _ format: String) -> Void)?
+    weak var delegate: BarcodeScannerCameraDelegate?
+
     var isRunning: Bool {
         captureSession.isRunning
     }
@@ -51,9 +83,10 @@ class BarcodeScannerCamera: NSObject {
 
     var isPreviewPaused = false
 
-    lazy var previewStream: AsyncStream<CIImage> = AsyncStream { continuation in
-        addToPreviewStream = { ciImage in
-            if !self.isPreviewPaused {
+    lazy var previewStream: AsyncStream<CIImage>? = AsyncStream { continuation in
+        addToPreviewStream = { [weak self] ciImage in
+            guard let self else { return }
+            if !isPreviewPaused {
                 continuation.yield(ciImage)
             }
         }
@@ -240,6 +273,9 @@ class BarcodeScannerCamera: NSObject {
                 self.captureSession.stopRunning()
             }
         }
+
+        previewStream = nil
+        addToPreviewStream = nil
     }
 
     func toggleFlashlight() {
@@ -316,7 +352,7 @@ extension BarcodeScannerCamera: AVCaptureMetadataOutputObjectsDelegate {
     ) {
         // Avoid several detections if user keeps camera pointing to the same barcode
         if let lastDetection {
-            guard Date().timeIntervalSince(lastDetection) > 1.5 else { return }
+            guard Current.date().timeIntervalSince(lastDetection) > 1.5 else { return }
         }
 
         if let metadataObject = metadataObjects.first {
@@ -324,48 +360,8 @@ extension BarcodeScannerCamera: AVCaptureMetadataOutputObjectsDelegate {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
             feedbackGenerator.notificationOccurred(.success)
-            lastDetection = Date()
-            barcodeFound?(stringValue, format)
-        }
-    }
-}
-
-private extension UIScreen {
-    var orientation: UIDeviceOrientation {
-        let point = coordinateSpace.convert(CGPoint.zero, to: fixedCoordinateSpace)
-        if point == CGPoint.zero {
-            return .portrait
-        } else if point.x != 0, point.y != 0 {
-            return .portraitUpsideDown
-        } else if point.x == 0, point.y != 0 {
-            return .landscapeRight
-        } else if point.x != 0, point.y == 0 {
-            return .landscapeLeft
-        } else {
-            return .unknown
-        }
-    }
-}
-
-private extension AVMetadataObject.ObjectType {
-    var haString: String {
-        if #available(iOS 15.4, *), self == .codabar {
-            return "codabar"
-        }
-
-        switch self {
-        case .qr: return "qr_code"
-        case .aztec: return "aztec"
-        case .code128: return "code_128"
-        case .code39: return "code_39"
-        case .code93: return "code_93"
-        case .dataMatrix: return "data_matrix"
-        case .ean13: return "ean_13"
-        case .ean8: return "ean_8"
-        case .itf14: return "itf"
-        case .pdf417: return "pdf417"
-        case .upce: return "upc_e"
-        default: return "unknown"
+            lastDetection = Current.date()
+            delegate?.didDetectBarcode(stringValue, format: format)
         }
     }
 }

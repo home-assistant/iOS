@@ -2,22 +2,38 @@ import AVFoundation
 import os.log
 import SwiftUI
 
+protocol BarcodeScannerDataModelDelegate: AnyObject {
+    func didDetectBarcode(_ code: String, format: String)
+}
+
 final class BarcodeScannerDataModel: ObservableObject {
     let camera = BarcodeScannerCamera()
 
     @Published var viewfinderImage: Image?
+    weak var delegate: BarcodeScannerDataModelDelegate?
+
+    private var handleCameraPreviewsTask: Task<Void, Never>?
+
     init() {
-        Task {
+        camera.delegate = self
+        self.handleCameraPreviewsTask = Task {
             await handleCameraPreviews()
         }
     }
 
+    func stop() {
+        handleCameraPreviewsTask?.cancel()
+        camera.stop()
+    }
+
     func handleCameraPreviews() async {
-        let imageStream = camera.previewStream
-            .map(\.image)
+        guard let previewStream = camera.previewStream else {
+            return
+        }
+        let imageStream = previewStream.map(\.image)
 
         for await image in imageStream {
-            Task { @MainActor in
+            await MainActor.run {
                 viewfinderImage = image
             }
         }
@@ -29,6 +45,12 @@ final class BarcodeScannerDataModel: ObservableObject {
 
     func turnOffFlashlight() {
         camera.turnOffFlashlight()
+    }
+}
+
+extension BarcodeScannerDataModel: BarcodeScannerCameraDelegate {
+    func didDetectBarcode(_ code: String, format: String) {
+        delegate?.didDetectBarcode(code, format: format)
     }
 }
 

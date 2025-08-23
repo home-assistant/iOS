@@ -1,8 +1,8 @@
 import Foundation
 
-extension URL {
+public extension URL {
     /// Return true if receiver's host and scheme is equal to `otherURL`
-    public func baseIsEqual(to otherURL: URL) -> Bool {
+    func baseIsEqual(to otherURL: URL) -> Bool {
         host?.lowercased() == otherURL.host?.lowercased()
             && portWithFallback == otherURL.portWithFallback
             && scheme?.lowercased() == otherURL.scheme?.lowercased()
@@ -10,8 +10,15 @@ extension URL {
             && password == otherURL.password
     }
 
+    /// Return true if receiver's URL  is equal to `otherURL` ignoring query params
+    func isEqualIgnoringQueryParams(to otherURL: URL) -> Bool {
+        baseIsEqual(to: otherURL) &&
+            (path == otherURL.path || path == "\(otherURL.path)/0")
+        // Workaround for Home Assistant behavior where /0 is added to the end
+    }
+
     // port will be removed if 80 or 443 by WKWebView, so we provide defaults for comparison
-    var portWithFallback: Int? {
+    internal var portWithFallback: Int? {
         if let port {
             return port
         }
@@ -23,7 +30,7 @@ extension URL {
         }
     }
 
-    public func sanitized() -> URL {
+    func sanitized() -> URL {
         guard path.hasSuffix("/"),
               var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return self
@@ -36,7 +43,7 @@ extension URL {
         return components.url ?? self
     }
 
-    func adapting(url: URL) -> URL {
+    internal func adapting(url: URL) -> URL {
         guard
             let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
             var futureComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {

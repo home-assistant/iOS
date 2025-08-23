@@ -1,24 +1,22 @@
 @testable import HomeAssistant
 import Improv_iOS
+import SwiftMessages
 import SwiftUI
 import XCTest
 
 final class WebViewExternalMessageHandlerTests: XCTestCase {
     private var sut: WebViewExternalMessageHandler!
     private var mockWebViewController: MockWebViewController!
-    private var mockLocalNotificationDispatcher: MockLocalNotificationDispatcher!
 
     override func setUp() async throws {
         mockWebViewController = MockWebViewController()
-        mockLocalNotificationDispatcher = MockLocalNotificationDispatcher()
         sut = WebViewExternalMessageHandler(
-            improvManager: ImprovManager.shared,
-            localNotificationDispatcher: mockLocalNotificationDispatcher
+            improvManager: ImprovManager.shared
         )
         sut.webViewController = mockWebViewController
     }
 
-    func testHandleExternalMessageConfigScreenShowShowSettings() {
+    @MainActor func testHandleExternalMessageConfigScreenShowShowSettings() {
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -27,14 +25,14 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertTrue(mockWebViewController.overlayAppController is UINavigationController)
+        XCTAssertTrue(mockWebViewController.overlayedController is UINavigationController)
         XCTAssertTrue(
-            (mockWebViewController.overlayAppController as? UINavigationController)?.viewControllers
+            (mockWebViewController.overlayedController as? UINavigationController)?.viewControllers
                 .first is SettingsViewController
         )
     }
 
-    func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
+    @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -46,7 +44,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertEqual(mockWebViewController.lastEvaluatedJavaScriptScript, "notifyThemeColors()")
     }
 
-    func testHandleExternalMessageBarCodeScanPresentsScanner() {
+    @MainActor func testHandleExternalMessageBarCodeScanPresentsScanner() {
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -59,10 +57,10 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertTrue(mockWebViewController.overlayAppController is BarcodeScannerHostingController)
+        XCTAssertTrue(mockWebViewController.overlayedController is BarcodeScannerHostingController)
     }
 
-    func testHandleExternalMessageBarCodeCloseClosesScanner() {
+    @MainActor func testHandleExternalMessageBarCodeCloseClosesScanner() {
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -89,8 +87,21 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertTrue(mockWebViewController.dismissControllerAboveOverlayControllerCalled)
     }
 
-    func testHandleExternalMessageBarCodeNotifyNotifies() {
+    @MainActor func testHandleExternalMessageBarCodeNotifyNotifies() {
         let dictionary: [String: Any] = [
+            "id": 1,
+            "message": "",
+            "command": "",
+            "type": "bar_code/scan",
+            "payload": [
+                "title": "abc",
+                "description": "abc2",
+            ],
+        ]
+        // Open scanner
+        sut.handleExternalMessage(dictionary)
+
+        let dictionary2: [String: Any] = [
             "id": 1,
             "message": "",
             "command": "",
@@ -100,12 +111,12 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
             ],
         ]
 
-        sut.handleExternalMessage(dictionary)
-
-        XCTAssertTrue(mockWebViewController.lastPresentedController is UIAlertController)
+        sut.handleExternalMessage(dictionary2)
+        let swiftMessage = SwiftMessages.current(id: "BarcodeScannerMessage")
+        XCTAssertNotNil(swiftMessage)
     }
 
-    func testHandleExternalMessageStoreInPlatformKeychainOpenTransferFlow() {
+    @MainActor func testHandleExternalMessageStoreInPlatformKeychainOpenTransferFlow() {
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -121,17 +132,16 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         XCTAssertTrue(
             mockWebViewController
-                .lastPresentedController is UIHostingController<
+                .overlayedController is UIHostingController<
                     ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
                 >
         )
-        XCTAssertEqual(mockWebViewController.lastPresentedControllerAnimated, true)
-        XCTAssertEqual(mockWebViewController.lastPresentedController?.modalTransitionStyle, .crossDissolve)
-        XCTAssertEqual(mockWebViewController.lastPresentedController?.modalPresentationStyle, .overFullScreen)
-        XCTAssertEqual(mockWebViewController.lastPresentedController?.view.backgroundColor, .clear)
+        XCTAssertEqual(mockWebViewController.overlayedController?.modalTransitionStyle, .crossDissolve)
+        XCTAssertEqual(mockWebViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
+        XCTAssertEqual(mockWebViewController.overlayedController?.view.backgroundColor, .clear)
     }
 
-    func testHandleExternalMessageImportThreadCredentialsStartImportFlow() {
+    @MainActor func testHandleExternalMessageImportThreadCredentialsStartImportFlow() {
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -143,17 +153,16 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         XCTAssertTrue(
             mockWebViewController
-                .lastPresentedController is UIHostingController<
+                .overlayedController is UIHostingController<
                     ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
                 >
         )
-        XCTAssertEqual(mockWebViewController.lastPresentedControllerAnimated, true)
-        XCTAssertEqual(mockWebViewController.lastPresentedController?.modalTransitionStyle, .crossDissolve)
-        XCTAssertEqual(mockWebViewController.lastPresentedController?.modalPresentationStyle, .overFullScreen)
-        XCTAssertEqual(mockWebViewController.lastPresentedController?.view.backgroundColor, .clear)
+        XCTAssertEqual(mockWebViewController.overlayedController?.modalTransitionStyle, .crossDissolve)
+        XCTAssertEqual(mockWebViewController.overlayedController?.modalPresentationStyle, .overFullScreen)
+        XCTAssertEqual(mockWebViewController.overlayedController?.view.backgroundColor, .clear)
     }
 
-    func testHandleExternalMessageShowAssistShowsAssist() {
+    @MainActor func testHandleExternalMessageShowAssistShowsAssist() {
         let dictionary: [String: Any] = [
             "id": 1,
             "message": "",
@@ -163,6 +172,6 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
 
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertTrue(mockWebViewController.overlayAppController is UIHostingController<AssistView>)
+        XCTAssertTrue(mockWebViewController.overlayedController is UIHostingController<AssistView>)
     }
 }

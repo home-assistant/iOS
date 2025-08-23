@@ -1,12 +1,17 @@
 import Foundation
-import Shared
 
 public protocol BonjourObserver: AnyObject {
     func bonjour(_ bonjour: Bonjour, didAdd instance: DiscoveredHomeAssistant)
     func bonjour(_ bonjour: Bonjour, didRemoveInstanceWithName name: String)
 }
 
-public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
+public protocol BonjourProtocol {
+    var observer: BonjourObserver? { get set }
+    func start()
+    func stop()
+}
+
+public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate, BonjourProtocol {
     public weak var observer: BonjourObserver?
 
     private var browser: NetServiceBrowser

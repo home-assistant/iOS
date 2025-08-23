@@ -20,9 +20,11 @@ enum WebViewExternalBusMessage: String, CaseIterable {
 }
 
 enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
+    case showSidebar = "sidebar/show"
     case showAutomationEditor = "automation/editor/show"
     case barCodeScanResult = "bar_code/scan_result"
     case barCodeScanAborted = "bar_code/aborted"
     case improvDiscoveredDevice = "improv/discovered_device"
     case improvDiscoveredDeviceSetupDone = "improv/device_setup_done"
+    case navigate = "navigate"
 }

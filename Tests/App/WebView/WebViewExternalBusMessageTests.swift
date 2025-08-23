@@ -30,6 +30,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
     }
 
     func test_externalBus_outgoing_messageKeys() {
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.showSidebar.rawValue, "sidebar/show")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue, "automation/editor/show")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanResult.rawValue, "bar_code/scan_result")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanAborted.rawValue, "bar_code/aborted")
@@ -38,7 +39,11 @@ final class WebViewExternalBusMessageTests: XCTestCase {
             WebViewExternalBusOutgoingMessage.improvDiscoveredDeviceSetupDone.rawValue,
             "improv/device_setup_done"
         )
+        XCTAssertEqual(
+            WebViewExternalBusOutgoingMessage.navigate.rawValue,
+            "navigate"
+        )
 
-        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 5)
+        XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 7)
     }
 }

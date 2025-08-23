@@ -95,7 +95,7 @@ class ZoneManager {
 
         // although technically the processor also does this, it does it after some async processing.
         // let's be very confident that we're not going to miss out on an update due to being suspended
-        Current.backgroundTask(withName: "zone-manager-perform-event") { _ in
+        Current.backgroundTask(withName: BackgroundTask.zoneManagerPerformEvent.rawValue) { _ in
             processor.perform(event: event)
         }.get { [weak self] _ in
             // a location change means we should consider changing our monitored regions
@@ -108,8 +108,9 @@ class ZoneManager {
                 type: .locationUpdate,
                 payload: logPayload
             ))
+            return Promise.value(())
         }.catch { error in
-            Current.Log.error("final error for \(event): \(error)")
+            Current.Log.error("ZoneManagerPerformEvent background task error for \(event): \(error)")
 
             var updatedPayload = logPayload
             updatedPayload["error"] = String(describing: error)
@@ -118,7 +119,13 @@ class ZoneManager {
                 text: "Didn't update: \(error.localizedDescription)",
                 type: .locationUpdate,
                 payload: updatedPayload
-            )).cauterize()
+            ))
+
+            Current.notificationDispatcher.send(.init(
+                id: .debug,
+                title: "DEBUG: Failed to perform ZoneManager event",
+                body: "Event: \(event.eventType.description), error: \(error.localizedDescription)"
+            ))
         }
     }
 
@@ -133,7 +140,21 @@ class ZoneManager {
                 return
             }
             let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
-            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).cauterize()
+            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).pipe { result in
+                switch result {
+                case .fulfilled:
+                    Current.Log.info("Fired ZoneManager event")
+                case let .rejected(error):
+                    let message = "Failed to fire ZoneManager event: \(error.localizedDescription)"
+                    Current.Log.error(message)
+                    Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
+                    Current.notificationDispatcher.send(.init(
+                        id: .debug,
+                        title: "DEBUG: Failed to fire ZoneManager",
+                        body: message
+                    ))
+                }
+            }
         case .locationChange:
             break
         }
@@ -168,7 +189,7 @@ class ZoneManager {
                 payload: [
                     "region": String(describing: region),
                 ]
-            )).cauterize()
+            ))
             locationManager.stopMonitoring(for: region)
         }
 
@@ -179,7 +200,7 @@ class ZoneManager {
                 payload: [
                     "region": String(describing: region),
                 ]
-            )).cauterize()
+            ))
 
             collector.ignoreNextState(for: region)
             locationManager.startMonitoring(for: region)

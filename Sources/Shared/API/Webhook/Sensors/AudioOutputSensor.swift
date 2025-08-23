@@ -5,14 +5,34 @@ import HAKit
 import Intents
 import PromiseKit
 
-final class iOSAudioOutputSensorUpdateSignaler: SensorProviderUpdateSignaler {
+final class iOSAudioOutputSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     private var cancellables: Set<AnyCancellable> = []
+    private let signal: () -> Void
+
     init(signal: @escaping () -> Void) {
+        self.signal = signal
+        super.init(relatedSensorsIds: [
+            .iPhoneAudioOutput,
+        ])
+    }
+
+    override func observe() {
+        super.observe()
+        guard !isObserving else { return }
         NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)
-            .sink { _ in
-                signal()
+            .sink { [weak self] _ in
+                self?.signal()
             }
             .store(in: &cancellables)
+        isObserving = true
+    }
+
+    override func stopObserving() {
+        super.stopObserving()
+        guard isObserving else { return }
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
+        isObserving = false
     }
 }
 
@@ -29,7 +49,7 @@ final class AudioOutputSensor: SensorProvider {
         let audioOutput = getAudioOutput().compactMap(\.type).joined(separator: ", ")
         sensors.append(.init(
             name: "Audio Output",
-            uniqueID: "iphone-audio-output",
+            uniqueID: WebhookSensorId.iPhoneAudioOutput.rawValue,
             icon: "mdi:volume-high",
             state: audioOutput
         ))

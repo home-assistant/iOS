@@ -4,37 +4,105 @@ import SwiftUI
 struct GesturesSetupView: View {
     @StateObject private var viewModel = GesturesSetupViewModel()
     @State private var swipeRightState = HAGestureAction.showSidebar
+
+    @State var directions: [UISwipeGestureRecognizer.Direction] = [
+        .left, .right, .up,
+    ]
+
     var body: some View {
         List {
             AppleLikeListTopRowHeader(
-                image: Image(uiImage: MaterialDesignIcons.gestureIcon.image(
-                    ofSize: .init(width: 80, height: 80),
-                    color: Asset.Colors.haPrimary.color
-                )),
+                image: .gestureIcon,
                 title: L10n.Gestures.Screen.title,
                 subtitle: L10n.Gestures.Screen.body
             )
+
             Section {
                 ForEach(
-                    HAGesture.allCases.sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
+                    AppGesture.allCases.filter({ $0.direction == nil })
+                        .sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
                     id: \.self
                 ) { gesture in
-                    Picker(gesture.localizedString, selection: .init(get: {
-                        viewModel.selection(for: gesture)
-                    }, set: { newValue in
-                        viewModel.setSelection(for: gesture, newValue: newValue)
-                    })) {
-                        ForEach(HAGestureAction.allCases, id: \.self) { action in
-                            makeRow(gestureAction: action)
-                        }
+                    let selection = viewModel.selection(for: gesture)
+                    ListPicker(
+                        title: gesture.localizedString,
+                        selection: .init(get: {
+                            .init(id: selection.rawValue, title: selection.localizedString)
+                        }, set: { selectedItem in
+                            guard let newValue = HAGestureAction(rawValue: selectedItem.id) else {
+                                return
+                            }
+                            viewModel.setSelection(for: gesture, newValue: newValue)
+                        }),
+                        content: gestureActionsPickerContent
+                    )
+                }
+            }
+
+            ForEach(directions, id: \.rawValue) { direction in
+                Section(title(for: direction)) {
+                    ForEach(
+                        AppGesture.allCases.filter({ $0.direction == direction })
+                            .sorted(by: { $0.setupScreenOrder < $1.setupScreenOrder }),
+                        id: \.self
+                    ) { gesture in
+                        let selection = viewModel.selection(for: gesture)
+                        ListPicker(
+                            title: gesture.localizedString,
+                            selection: .init(get: {
+                                .init(id: selection.rawValue, title: selection.localizedString)
+                            }, set: { selectedItem in
+                                guard let newValue = HAGestureAction(rawValue: selectedItem.id) else {
+                                    return
+                                }
+                                viewModel.setSelection(for: gesture, newValue: newValue)
+                            }),
+                            content: gestureActionsPickerContent
+                        )
                     }
+                }
+            }
+        }
+        .removeListsPaddingWithAppleLikeHeader()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(role: .destructive) {
+                    viewModel.resetGestures()
+                } label: {
+                    Text(L10n.Gestures.Reset.title)
                 }
             }
         }
     }
 
+    private var gestureActionsPickerContent: ListPickerContent {
+        var sections: [ListPickerContent.Section] = []
+        for category in HAGestureActionCategory.allCases {
+            let items = HAGestureAction.allCases.filter({ $0.category == category }).map { action in
+                ListPickerContent.Item(id: action.rawValue, title: action.localizedString)
+            }
+            sections.append(.init(id: category.rawValue, title: category.localizedString, items: items))
+        }
+        return .init(sections: sections)
+    }
+
     private func makeRow(gestureAction: HAGestureAction) -> some View {
         Text(gestureAction.localizedString).tag(gestureAction)
+    }
+
+    private func title(for direction: UISwipeGestureRecognizer.Direction) -> String {
+        switch direction {
+        case .up:
+            return L10n.Gestures.Swipe.Up.header
+        case .down:
+            return L10n.Gestures.Swipe.Down.header
+        case .left:
+            return L10n.Gestures.Swipe.Left.header
+        case .right:
+            return L10n.Gestures.Swipe.Right.header
+        default:
+            return ""
+        }
     }
 }
 

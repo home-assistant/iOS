@@ -4,6 +4,7 @@ import PromiseKit
 
 public protocol MagicItemProviderProtocol {
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void)
+    func loadInformation() async -> [String: [HAAppEntity]]
     func getInfo(for item: MagicItem) -> MagicItem.Info?
 }
 
@@ -21,6 +22,25 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         }
     }
 
+    func loadInformation() async -> [String: [HAAppEntity]] {
+        await withCheckedContinuation { continuation in
+            loadAppEntities {
+                continuation.resume()
+            }
+        }
+        await withCheckedContinuation { continuation in
+            migrateWatchConfig {
+                continuation.resume()
+            }
+        }
+        await withCheckedContinuation { continuation in
+            migrateCarPlayConfig {
+                continuation.resume()
+            }
+        }
+        return entitiesPerServer
+    }
+
     func migrateCarPlayConfig(completion: @escaping () -> Void) {
         guard var carPlayConfig = try? Current.carPlayConfig() else {
             completion()
@@ -29,7 +49,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         carPlayConfig.quickAccessItems = migrateItemsIfNeeded(items: carPlayConfig.quickAccessItems)
 
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try carPlayConfig.update(db)
             }
         } catch {
@@ -47,7 +67,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         watchConfig.items = migrateItemsIfNeeded(items: watchConfig.items)
 
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try watchConfig.update(db)
             }
         } catch {
@@ -61,7 +81,7 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         var serversCompletedFetchCount = 0
         Current.servers.all.forEach { [weak self] server in
             do {
-                let entities: [HAAppEntity] = try Current.database.read { db in
+                let entities: [HAAppEntity] = try Current.database().read { db in
                     try HAAppEntity
                         .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                         .fetchAll(db)
@@ -147,8 +167,9 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             return .init(
                 id: entityItem.id,
                 name: entityItem.name,
-                iconName: entityItem.icon ?? Domain(rawValue: entityItem.domain)?.icon.name ?? MaterialDesignIcons
-                    .dotsGridIcon.name,
+                iconName: entityItem.icon ??
+                    Domain(rawValue: entityItem.domain)?.icon(deviceClass: entityItem.rawDeviceClass).name ??
+                    MaterialDesignIcons.dotsGridIcon.name,
                 customization: item.customization
             )
         }

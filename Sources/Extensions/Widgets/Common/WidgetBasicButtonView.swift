@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import SwiftUI
 
-struct WidgetBasicButtonView: WidgetBasicViewInterface {
+struct WidgetBasicButtonView: WidgetBasicViewProtocol {
     @Environment(\.widgetFamily) private var widgetFamily
 
     let model: WidgetBasicViewModel
@@ -59,7 +59,7 @@ struct WidgetBasicButtonView: WidgetBasicViewInterface {
                 .fixedSize(horizontal: false, vertical: false)
         }
         .frame(width: sizeStyle.iconCircleSize.width, height: sizeStyle.iconCircleSize.height)
-        .background(model.iconColor.opacity(0.3))
+        .background(model.showIconBackground ? model.iconColor.opacity(0.3) : Color.clear)
         .clipShape(Circle())
     }
 
@@ -67,7 +67,7 @@ struct WidgetBasicButtonView: WidgetBasicViewInterface {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .condensed, .compressed:
+                case .regular, .compact, .compressed:
                     HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
                         icon
                         VStack(alignment: .leading, spacing: .zero) {

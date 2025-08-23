@@ -109,7 +109,7 @@ enum WidgetFamilySizes {
         let compactBreakpoint = WidgetFamilySizes.compactSizeBreakpoint(for: family)
         let compressedBreakpoint = WidgetFamilySizes.compressedBreakpoint(for: family)
 
-        let condensed = compactBreakpoint < modelsCount
+        let compact = modelsCount > compactBreakpoint
         let compressed = modelsCount > compressedBreakpoint
 
         let compactRowCount = compactBreakpoint / WidgetFamilySizes.columns(
@@ -119,9 +119,9 @@ enum WidgetFamilySizes {
 
         if compressed {
             return .compressed
-        } else if condensed {
-            return .condensed
-        } else if rowsCount < compactRowCount {
+        } else if compact {
+            return .compact
+        } else if compactRowCount >= rowsCount {
             return .expanded
         } else {
             return .regular

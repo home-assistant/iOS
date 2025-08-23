@@ -3,7 +3,7 @@ import Foundation
 import Shared
 import SwiftUI
 
-struct WidgetBasicSensorView: WidgetBasicViewInterface {
+struct WidgetBasicSensorView: WidgetBasicViewProtocol {
     @Environment(\.widgetFamily) private var widgetFamily
 
     let model: WidgetBasicViewModel
@@ -64,7 +64,7 @@ struct WidgetBasicSensorView: WidgetBasicViewInterface {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
-                case .regular, .condensed, .compressed:
+                case .regular, .compact, .compressed:
                     HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
                         VStack(alignment: .leading, spacing: .zero) {
                             subtext

@@ -19,7 +19,7 @@ struct WidgetCircularView: View {
                 color: .white
             ))
             .foregroundStyle(.ultraThickMaterial)
-            Image(uiImage: Self.scaleLogo(logo: Asset.SharedAssets.logo.image, size: 10))
+            Image(uiImage: Self.scaleLogo(logo: Asset.logo.image, size: 10))
         }
         .padding()
         .background(Color(uiColor: .secondarySystemBackground))

@@ -274,8 +274,8 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "Ενεργό";
 "component::wled::entity::select::live_override::state:::0" = "Ανενεργό";
 "component::wled::entity::select::live_override::state:::1" = "Ενεργό";
-"component::wolflink::entity::sensor::state::state::aus" = "Απενεργοποιημένο";
-"component::wolflink::entity::sensor::state::state::ein" = "Ενεργοποιημένο";
+"component::wolflink::entity::sensor::state::state::aus" = "Ανενεργό";
+"component::wolflink::entity::sensor::state::state::ein" = "Ενεργό";
 "component::wolflink::entity::sensor::state::state::standby" = "Αναμονή";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "Ανενεργό";
 "component::yamaha::services::enable_output::fields::enabled::name" = "Ενεργοποιημένο";

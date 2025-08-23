@@ -105,7 +105,7 @@
 "component::improv_ble::config::flow_title" = "{name}";
 "component::improv_ble::config::progress::authorize" = "此设备需要授权，请按其授权按钮或查阅设备手册了解如何继续。";
 "component::improv_ble::config::progress::provisioning" = "此设备正连接到无线网络。";
-"component::improv_ble::config::step::bluetooth_confirm::description" = "您要设置”{name}“吗 ？";
+"component::improv_ble::config::step::bluetooth_confirm::description" = "您要设置“{name}”吗 ？";
 "component::improv_ble::config::step::identify::description" = "此设备现正标识自己，例如通过闪烁或发出蜂鸣声。";
 "component::improv_ble::config::step::main_menu::description" = "选择下一步。";
 "component::improv_ble::config::step::main_menu::menu_options::identify" = "识别设备";
@@ -274,8 +274,8 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "激活";
 "component::wled::entity::select::live_override::state:::0" = "关闭";
 "component::wled::entity::select::live_override::state:::1" = "开启";
-"component::wolflink::entity::sensor::state::state::aus" = "已禁用";
-"component::wolflink::entity::sensor::state::state::ein" = "已启用";
+"component::wolflink::entity::sensor::state::state::aus" = "关闭";
+"component::wolflink::entity::sensor::state::state::ein" = "开启";
 "component::wolflink::entity::sensor::state::state::standby" = "待机";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "关闭";
 "component::yamaha::services::enable_output::fields::enabled::name" = "已启用";

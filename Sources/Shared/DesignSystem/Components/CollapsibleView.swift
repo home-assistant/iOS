@@ -5,12 +5,16 @@ public struct CollapsibleView<CollapsedContent: View, ExpandedContent: View>: Vi
     @ViewBuilder public let collapsedContent: () -> CollapsedContent
     @ViewBuilder public let expandedContent: () -> ExpandedContent
 
+    private let startExpanded: Bool
+
     public init(
+        startExpanded: Bool = false,
         @ViewBuilder collapsedContent: @escaping () -> CollapsedContent,
         @ViewBuilder expandedContent: @escaping () -> ExpandedContent
     ) {
         self.collapsedContent = collapsedContent
         self.expandedContent = expandedContent
+        self.startExpanded = startExpanded
     }
 
     public var body: some View {
@@ -23,6 +27,9 @@ public struct CollapsibleView<CollapsedContent: View, ExpandedContent: View>: Vi
             }
             .frame(maxWidth: .infinity)
             .animation(nil, value: expanded)
+            .onAppear {
+                expanded = startExpanded
+            }
             .onTapGesture {
                 withAnimation(.easeInOut) {
                     expanded.toggle()

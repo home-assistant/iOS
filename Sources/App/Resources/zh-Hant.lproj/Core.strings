@@ -274,8 +274,8 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "啟用";
 "component::wled::entity::select::live_override::state:::0" = "關閉";
 "component::wled::entity::select::live_override::state:::1" = "開啟";
-"component::wolflink::entity::sensor::state::state::aus" = "已關閉";
-"component::wolflink::entity::sensor::state::state::ein" = "已啟用";
+"component::wolflink::entity::sensor::state::state::aus" = "關閉";
+"component::wolflink::entity::sensor::state::state::ein" = "開啟";
 "component::wolflink::entity::sensor::state::state::standby" = "待命";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "關閉";
 "component::yamaha::services::enable_output::fields::enabled::name" = "已啟用";

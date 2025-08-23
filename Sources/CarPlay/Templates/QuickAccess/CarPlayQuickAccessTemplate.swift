@@ -107,7 +107,12 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                     Current.Log.error("Failed to create placeholder entity for magic item id: \(magicItem.id)")
                     return .init(text: "", detailText: "")
                 }
-                let entityProvider = CarPlayEntityListItem(serverId: magicItem.serverId, entity: placeholderItem)
+                let entityProvider = CarPlayEntityListItem(
+                    serverId: magicItem.serverId,
+                    entity: placeholderItem,
+                    magicItem: magicItem,
+                    magicItemInfo: info
+                )
                 let listItem = entityProvider.template
                 listItem.handler = { [weak self] _, _ in
                     self?.itemTap(
@@ -165,13 +170,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func executeMagicItem(_ magicItem: MagicItem, item: CPListItem, currentItemState: String = "") {
         guard let server = Current.servers.all.first(where: { server in
             server.identifier.rawValue == magicItem.serverId
-        }), let api = Current.api(for: server) else {
+        }) else {
             Current.Log.error("Failed to get server for magic item id: \(magicItem.id)")
             displayItemResultIcon(on: item, success: false)
             return
         }
-        api.executeMagicItem(item: magicItem, currentItemState: currentItemState) { success in
-            self.displayItemResultIcon(on: item, success: success)
+        magicItem.execute(on: server, source: .CarPlay) { [weak self] success in
+            self?.displayItemResultIcon(on: item, success: success)
         }
     }
 
@@ -181,7 +186,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         completion: @escaping () -> Void
     ) {
         let alert = CPAlertTemplate(titleVariants: [
-            L10n.Watch.Home.Run.Confirmation.title(info.name),
+            L10n.Watch.Home.Run.Confirmation.title(item.name(info: info)),
         ], actions: [
             .init(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { [weak self] _ in
                 self?.interfaceController?.dismissTemplate(animated: true, completion: nil)

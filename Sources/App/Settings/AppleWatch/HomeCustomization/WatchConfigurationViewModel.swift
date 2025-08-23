@@ -49,7 +49,7 @@ final class WatchConfigurationViewModel: ObservableObject {
 
     func deleteConfiguration(completion: (Bool) -> Void) {
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 try WatchConfig.deleteAll(db)
                 completion(true)
             }
@@ -61,7 +61,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     @MainActor
     func save(completion: (Bool) -> Void) {
         do {
-            try Current.database.write { db in
+            try Current.database().write { db in
                 if watchConfig.id != WatchConfig.watchConfigId {
                     // Previous config needs to be explicit deleted because when WatchConfig was released
                     // the ID wasn't static, so it was possible to have multiple rows in the table

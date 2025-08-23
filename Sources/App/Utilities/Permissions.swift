@@ -145,39 +145,44 @@ public enum PermissionType {
         }
     }
 
-    var enableBulletPoints: [(MaterialDesignIcons, String)] {
+    struct BulletPoint {
+        var id = UUID().uuidString
+        let icon: MaterialDesignIcons
+        let text: String
+    }
+
+    var enableBulletPoints: [BulletPoint] {
         switch self {
         case .location:
             return [
-                (.homeAutomationIcon, L10n.Onboarding.Permissions.Location.Bullet.automations),
-                (.mapOutlineIcon, L10n.Onboarding.Permissions.Location.Bullet.history),
-                (.wifiIcon, L10n.Onboarding.Permissions.Location.Bullet.wifi),
+                BulletPoint(icon: .homeAutomationIcon, text: L10n.Onboarding.Permissions.Location.Bullet.automations),
+                BulletPoint(icon: .mapOutlineIcon, text: L10n.Onboarding.Permissions.Location.Bullet.history),
+                BulletPoint(icon: .wifiIcon, text: L10n.Onboarding.Permissions.Location.Bullet.wifi),
             ]
         case .motion:
             return [
-                (.walkIcon, L10n.Onboarding.Permissions.Motion.Bullet.steps),
-                (.mapMarkerDistanceIcon, L10n.Onboarding.Permissions.Motion.Bullet.distance),
-                (.bikeIcon, L10n.Onboarding.Permissions.Motion.Bullet.activity),
+                BulletPoint(icon: .walkIcon, text: L10n.Onboarding.Permissions.Motion.Bullet.steps),
+                BulletPoint(icon: .mapMarkerDistanceIcon, text: L10n.Onboarding.Permissions.Motion.Bullet.distance),
+                BulletPoint(icon: .bikeIcon, text: L10n.Onboarding.Permissions.Motion.Bullet.activity),
             ]
         case .notification:
             return [
-                (.alertDecagramIcon, L10n.Onboarding.Permissions.Notification.Bullet.alert),
-                (.textIcon, L10n.Onboarding.Permissions.Notification.Bullet.commands),
-                (.bellBadgeOutlineIcon, L10n.Onboarding.Permissions.Notification.Bullet.badge),
+                BulletPoint(icon: .alertDecagramIcon, text: L10n.Onboarding.Permissions.Notification.Bullet.alert),
+                BulletPoint(icon: .textIcon, text: L10n.Onboarding.Permissions.Notification.Bullet.commands),
+                BulletPoint(icon: .bellBadgeOutlineIcon, text: L10n.Onboarding.Permissions.Notification.Bullet.badge),
             ]
         case .focus:
             return [
-                (.homeAutomationIcon, L10n.Onboarding.Permissions.Focus.Bullet.automations),
-                (.cancelIcon, L10n.Onboarding.Permissions.Focus.Bullet.instant),
+                BulletPoint(icon: .homeAutomationIcon, text: L10n.Onboarding.Permissions.Focus.Bullet.automations),
+                BulletPoint(icon: .cancelIcon, text: L10n.Onboarding.Permissions.Focus.Bullet.instant),
             ]
         }
     }
 
     var status: PermissionStatus {
-        let locationManager = CLLocationManager()
         switch self {
         case .location:
-            guard CLLocationManager.locationServicesEnabled() else { return .restricted }
+            let locationManager = CLLocationManager()
             return locationManager.authorizationStatus.genericStatus
         case .motion:
             return CMMotionActivityManager.authorizationStatus().genericStatus

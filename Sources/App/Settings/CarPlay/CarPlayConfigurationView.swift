@@ -21,7 +21,7 @@ struct CarPlayConfigurationView: View {
                         Button(action: {
                             dismiss()
                         }, label: {
-                            Text(L10n.cancelLabel)
+                            Text(verbatim: L10n.cancelLabel)
                         })
                     }
                     ToolbarItem(placement: .topBarTrailing) {
@@ -35,7 +35,7 @@ struct CarPlayConfigurationView: View {
                                 }
                             }
                         }, label: {
-                            Text(L10n.Watch.Configuration.Save.title)
+                            Text(verbatim: L10n.Watch.Configuration.Save.title)
                         })
                     }
                 })
@@ -53,11 +53,10 @@ struct CarPlayConfigurationView: View {
                 })
                 .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
                     Button(action: {}, label: {
-                        Text(L10n.okLabel)
+                        Text(verbatim: L10n.okLabel)
                     })
                 }
         }
-        .preferredColorScheme(.dark)
         .navigationViewStyle(.stack)
     }
 
@@ -105,7 +104,7 @@ struct CarPlayConfigurationView: View {
             itemRow(item: item, info: info)
         } else {
             NavigationLink {
-                MagicItemCustomizationView(mode: .edit, item: item) { updatedMagicItem in
+                MagicItemCustomizationView(mode: .edit, context: .carPlay, item: item) { updatedMagicItem in
                     viewModel.updateItem(updatedMagicItem)
                 }
             } label: {
@@ -117,7 +116,7 @@ struct CarPlayConfigurationView: View {
     private func itemRow(item: MagicItem, info: MagicItem.Info) -> some View {
         HStack {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
-            Text(info.name)
+            Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "line.3.horizontal")
                 .foregroundStyle(.gray)
@@ -130,13 +129,7 @@ struct CarPlayConfigurationView: View {
         watchPreview: Bool,
         color: UIColor? = nil
     ) -> UIImage {
-        var icon: MaterialDesignIcons = .dotsGridIcon
-        switch item.type {
-        case .action, .scene:
-            icon = MaterialDesignIcons(named: itemInfo.iconName)
-        case .script, .entity:
-            icon = MaterialDesignIcons(serversideValueNamed: itemInfo.iconName, fallback: .dotsGridIcon)
-        }
+        let icon: MaterialDesignIcons = item.icon(info: itemInfo)
 
         return icon.image(
             ofSize: .init(width: watchPreview ? 24 : 18, height: watchPreview ? 24 : 18),
@@ -150,7 +143,6 @@ struct CarPlayConfigurationView: View {
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: .infinity, alignment: .center)
             .frame(height: 150)
-            .padding()
             .listRowBackground(Color.clear)
     }
 
@@ -188,12 +180,12 @@ struct CarPlayConfigurationView: View {
                     viewModel.deleteTab(at: indexSet)
                 }
             } header: {
-                Text("Active")
+                Text(L10n.CarPlay.Tabs.Active.title)
             } footer: {
-                Text("Swipe left to remove tab")
+                Text(L10n.CarPlay.Tabs.Active.DeleteAction.title)
             }
             if viewModel.config.tabs.count != CarPlayTab.allCases.count {
-                Section("Inactive") {
+                Section(L10n.CarPlay.Tabs.Inactive.title) {
                     ForEach(CarPlayTab.allCases.filter({ tab in
                         !viewModel.config.tabs.contains(tab)
                     }), id: \.rawValue) { tab in

@@ -80,7 +80,12 @@ public struct AssistResponse: HADataDecodable {
     public init(data: HAData) throws {
         self.data = try? data.decode("data")
         let type = try data.decode("type") as String
-        self.type = AssistEvent(rawValue: type)!
+        if let eventType = AssistEvent(rawValue: type) {
+            self.type = eventType
+        } else {
+            Current.Log.error("Unknown assist event type: \(type)")
+            self.type = .unknown
+        }
         self.timestamp = try data.decode("timestamp")
     }
 
@@ -93,16 +98,25 @@ public struct AssistResponse: HADataDecodable {
         public let ttsOutput: TtsOutput?
         public let code: String?
         public let message: String?
+        public var chatLogDelta: ChatLogDelta?
 
         public init(data: HAData) throws {
             self.pipeline = try? data.decode("data")
             self.language = try? data.decode("language")
             self.intentOutput = try? data.decode("intent_output")
+            self.chatLogDelta = try? data.decode("chat_log_delta")
             self.runnerData = try? data.decode("runner_data")
             self.sttOutput = try? data.decode("stt_output")
             self.ttsOutput = try? data.decode("tts_output")
             self.code = try? data.decode("code")
             self.message = try? data.decode("message")
+        }
+
+        public struct ChatLogDelta: HADataDecodable {
+            public let content: String?
+            public init(data: HAData) throws {
+                self.content = try? data.decode("content")
+            }
         }
 
         public struct SttOutput: HADataDecodable {
@@ -115,7 +129,7 @@ public struct AssistResponse: HADataDecodable {
         public struct TtsOutput: HADataDecodable {
             public let urlPath: String?
             public init(data: HAData) throws {
-                // Even thought API name it 'url' it is just the path without the base url
+                // Even though API name it 'url' it is just the path without the base url
                 self.urlPath = try? data.decode("url")
             }
         }
@@ -134,10 +148,12 @@ public struct AssistResponse: HADataDecodable {
             public init(data: HAData) throws {
                 self.response = try? data.decode("response")
                 self.conversationId = try? data.decode("conversation_id")
+                self.continueConversation = (try? data.decode("continue_conversation")) ?? false
             }
 
             public let response: Response?
             public let conversationId: String?
+            public let continueConversation: Bool
         }
 
         public struct Response: HADataDecodable {
@@ -183,7 +199,15 @@ public enum AssistEvent: String, Codable {
     case intentEnd = "intent-end"
     case ttsStart = "tts-start"
     case ttsEnd = "tts-end"
+    case intentProgress = "intent-progress"
     case error = "error"
+    case unknown
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = AssistEvent(rawValue: rawValue) ?? .unknown
+    }
 }
 
 /// Saved in database
@@ -202,5 +226,11 @@ public struct AssistPipelines: Codable, FetchableRecord, PersistableRecord {
         self.serverId = serverId
         self.preferredPipeline = pipelineResponse.preferredPipeline
         self.pipelines = pipelineResponse.pipelines
+    }
+
+    public static func config() throws -> [AssistPipelines]? {
+        try Current.database().read({ db in
+            try AssistPipelines.fetchAll(db)
+        })
     }
 }

@@ -4,10 +4,11 @@ import WidgetKit
 #if os(iOS) || os(macOS)
 public enum DataWidgetsUpdater {
     public static func update() {
-        DataWidgetsUpdater.updateControlCenterControls()
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.gauge.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.details.rawValue)
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.sensors.rawValue)
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetsKind.custom.rawValue)
+        DataWidgetsUpdater.updateControlCenterControls()
     }
 
     public static func updateControlCenterControls() {

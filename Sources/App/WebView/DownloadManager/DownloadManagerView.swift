@@ -20,7 +20,11 @@ struct DownloadManagerView: View {
         }
         .onDisappear {
             viewModel.cancelDownload()
-            viewModel.deleteFile()
+
+            // For mac the file should remain in the download folder to keep expected behavior
+            if !Current.isCatalyst {
+                viewModel.deleteFile()
+            }
         }
         .onChange(of: viewModel.finished) { _, newValue in
             if newValue, Current.isCatalyst {
@@ -37,11 +41,9 @@ struct DownloadManagerView: View {
             fileCard
             failedCard
         } else {
-            ProgressView()
-                .progressViewStyle(.circular)
-                .scaleEffect(2)
+            HAProgressView(style: .large)
                 .padding(Spaces.four)
-            Text(L10n.DownloadManager.Downloading.title)
+            Text(verbatim: L10n.DownloadManager.Downloading.title)
                 .font(.title.bold())
             fileCard
             Text(viewModel.progress)
@@ -76,7 +78,7 @@ struct DownloadManagerView: View {
                     .bounce,
                     options: .nonRepeating
                 )
-            Text(L10n.DownloadManager.Finished.title)
+            Text(verbatim: L10n.DownloadManager.Finished.title)
                 .font(.title.bold())
             if let url = viewModel.lastURLCreated {
                 if Current.isCatalyst {
@@ -85,16 +87,19 @@ struct DownloadManagerView: View {
                     } label: {
                         Label(viewModel.fileName, systemSymbol: .folder)
                     }
+                    .buttonStyle(.primaryButton)
                 } else {
                     ShareLink(viewModel.fileName, item: url)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                         .padding()
                         .foregroundStyle(.white)
-                        .background(Color.asset(Asset.Colors.haPrimary))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .background(Color.haPrimary)
+                        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
                         .padding()
-                        .onAppear(perform: {
+                        .onAppear {
                             shareWrapper = .init(url: url)
-                        })
+                        }
                         .sheet(item: $shareWrapper, onDismiss: {}, content: { data in
                             ActivityViewController(shareWrapper: data)
                         })
@@ -111,7 +116,7 @@ struct DownloadManagerView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.gray.opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
         .padding()
     }
 
@@ -121,7 +126,7 @@ struct DownloadManagerView: View {
             .multilineTextAlignment(.leading)
             .padding()
             .background(.red.opacity(0.5))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
             .padding()
     }
 }
@@ -132,18 +137,4 @@ struct DownloadManagerView: View {
     } else {
         Text("Hey there")
     }
-}
-
-struct ShareWrapper: Identifiable {
-    let id = UUID()
-    let url: URL
-}
-
-struct ActivityViewController: UIViewControllerRepresentable {
-    let shareWrapper: ShareWrapper
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [shareWrapper.url], applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

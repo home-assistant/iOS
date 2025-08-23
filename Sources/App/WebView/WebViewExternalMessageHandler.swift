@@ -2,25 +2,34 @@ import CoreBluetooth
 import Foundation
 import Improv_iOS
 import PromiseKit
-import Shared
+@preconcurrency import Shared
 import SwiftMessages
 import SwiftUI
 
-final class WebViewExternalMessageHandler {
+protocol WebViewExternalMessageHandlerProtocol {
+    var webViewController: WebViewControllerProtocol? { get set }
+    func handleExternalMessage(_ dictionary: [String: Any])
+    func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
+
+    // TODO: Move these methods below to their proper handlers
+    func scanImprov()
+    func stopImprovScanIfNeeded()
+    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool, animated: Bool)
+}
+
+final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
-    private let localNotificationDispatcher: LocalNotificationDispatcherProtocol
 
     private var improvController: UIViewController?
 
     init(
-        improvManager: any ImprovManagerProtocol,
-        localNotificationDispatcher: LocalNotificationDispatcherProtocol
+        improvManager: any ImprovManagerProtocol
     ) {
         self.improvManager = improvManager
-        self.localNotificationDispatcher = localNotificationDispatcher
     }
 
+    @MainActor
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
             Current.Log.error("WebViewExternalMessageHandler has nil webViewController")
@@ -51,6 +60,7 @@ final class WebViewExternalMessageHandler {
                                     .threadCredentialsStoreInKeychainEnabled,
                                 "hasAssist": true,
                                 "canSetupImprov": true,
+                                "downloadFileSupported": true,
                             ]
                         ))
                     }
@@ -68,7 +78,7 @@ final class WebViewExternalMessageHandler {
                     Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
                     return
                 }
-                webViewController.updateSettingsButton(state: connEvt)
+                webViewController.updateFrontendConnectionState(state: connEvt)
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
@@ -113,15 +123,13 @@ final class WebViewExternalMessageHandler {
                     incomingMessageId: incomingMessageId
                 )
             case .barCodeScannerClose:
-                if webViewController.overlayAppController as? BarcodeScannerHostingController != nil {
+                if webViewController.overlayedController as? BarcodeScannerHostingController != nil {
                     webViewController.dismissControllerAboveOverlayController()
                     webViewController.dismissOverlayController(animated: true, completion: nil)
                 }
             case .barCodeScannerNotify:
                 guard let message = incomingMessage.Payload?["message"] as? String else { return }
-                let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-                alert.addAction(.init(title: L10n.okLabel, style: .default))
-                webViewController.presentController(alert, animated: false)
+                presentBarcodeScannerMessage(message: message)
             case .threadStoreCredentialInAppleKeychain:
                 guard let macExtendedAddress = incomingMessage.Payload?["mac_extended_address"] as? String,
                       let activeOperationalDataset = incomingMessage.Payload?["active_operational_dataset"] as? String else { return }
@@ -198,8 +206,10 @@ final class WebViewExternalMessageHandler {
                     webViewController?.evaluateJavaScript(script, completion: { _, error in
                         if let error {
                             Current.Log.error("failed to fire message to externalBus: \(error)")
+                            seal.reject(error)
+                        } else {
+                            seal.fulfill(())
                         }
-                        seal.resolve(error)
                     })
                 } catch {
                     Current.Log.error("failed to send \(message): \(error)")
@@ -224,7 +234,7 @@ final class WebViewExternalMessageHandler {
             threadManagementView.view.backgroundColor = .clear
             threadManagementView.modalPresentationStyle = .overFullScreen
             threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController.presentController(threadManagementView, animated: true)
+            webViewController.presentOverlayController(controller: threadManagementView, animated: true)
         }
     }
 
@@ -241,7 +251,7 @@ final class WebViewExternalMessageHandler {
             threadManagementView.view.backgroundColor = .clear
             threadManagementView.modalPresentationStyle = .overFullScreen
             threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController?.presentController(threadManagementView, animated: true)
+            webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
         }
     }
 
@@ -313,7 +323,7 @@ final class WebViewExternalMessageHandler {
                     alert.addAction(.init(title: L10n.continueLabel, style: .destructive, handler: { [weak self] _ in
                         self?.comissionMatterDevice()
                     }))
-                    self?.webViewController?.presentController(alert, animated: false)
+                    self?.webViewController?.presentOverlayController(controller: alert, animated: false)
                 } else {
                     Current.Log
                         .verbose(
@@ -325,6 +335,30 @@ final class WebViewExternalMessageHandler {
         } else {
             comissionMatterDevice()
         }
+    }
+
+    @MainActor
+    private func presentBarcodeScannerMessage(message: String) {
+        var config = SwiftMessages.Config()
+        config.dimMode = .none
+        config.presentationStyle = .bottom
+        config.duration = .seconds(seconds: 3)
+        let view = MessageView.viewFromNib(layout: .cardView)
+        view.configureContent(
+            title: nil,
+            body: message,
+            iconImage: nil,
+            iconText: nil,
+            buttonImage: nil,
+            buttonTitle: nil,
+            buttonTapHandler: { _ in
+                DispatchQueue.main.async {
+                    SwiftMessages.hide()
+                }
+            }
+        )
+        view.id = "BarcodeScannerMessage"
+        SwiftMessages.show(config: config, view: view)
     }
 
     private func cleanPreferredThreadCredentials() {
@@ -375,19 +409,14 @@ final class WebViewExternalMessageHandler {
             improvManager.delegate = self
             improvManager.scan()
         default:
-            guard (BluetoothPermissionScreenDisplayedCount().value ?? 0) < 2 else {
-                Current.Log
-                    .info(
-                        "Bluetooth permission screen already displayed twice and no decision was made by the user, permission won't be asked again."
-                    )
-                return
-            }
+            // Mac Catalyst doesn't trigger bluetooth permission for some reason
+            guard !Current.isCatalyst else { return }
             let bluetoothPermissionView = UIHostingController(rootView: BluetoothPermissionView())
             webViewController?.presentOverlayController(controller: bluetoothPermissionView, animated: true)
         }
     }
 
-    func presentImprov(deviceName: String?) {
+    private func presentImprov(deviceName: String?) {
         improvManager.stopScan()
         improvManager.delegate = nil
 

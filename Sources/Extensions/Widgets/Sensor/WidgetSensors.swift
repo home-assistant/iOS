@@ -24,7 +24,7 @@ struct WidgetSensors: Widget {
                         interactionType: .appIntent(.refresh),
                         icon: MaterialDesignIcons(
                             serversideValueNamed: sensor.icon ?? "",
-                            fallback: .temperatureKelvinIcon
+                            fallback: .dotsGridIcon
                         ),
                         useCustomColors: false
                     )

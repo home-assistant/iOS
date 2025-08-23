@@ -5,6 +5,37 @@ import Version
 
 /// Contains shared constants
 public enum AppConstants {
+    public enum WebURLs {
+        public static var homeAssistant = URL(string: "https://www.home-assistant.io")!
+        public static var homeAssistantGetStarted = URL(string: "https://www.home-assistant.io/installation/")!
+        public static var companionAppDocs = URL(string: "https://companion.home-assistant.io")!
+        public static var companionAppDocsTroubleshooting =
+            URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors")!
+        public static var beta = URL(string: "https://companion.home-assistant.io/app/ios/beta")!
+        public static var betaMac = URL(string: "https://companion.home-assistant.io/app/ios/beta_mac")!
+        public static var review = URL(string: "https://companion.home-assistant.io/app/ios/review")!
+        public static var reviewMac = URL(string: "https://companion.home-assistant.io/app/ios/review_mac")!
+        public static var translate = URL(string: "https://companion.home-assistant.io/app/ios/translate")!
+        public static var forums = URL(string: "https://community.home-assistant.io/")!
+        public static var chat = URL(string: "https://companion.home-assistant.io/app/ios/chat")!
+        public static var twitter = URL(string: "https://twitter.com/home_assistant")!
+        public static var facebook = URL(string: "https://www.facebook.com/292963007723872")!
+        public static var repo = URL(string: "https://companion.home-assistant.io/app/ios/repo")!
+        public static var issues = URL(string: "https://companion.home-assistant.io/app/ios/issues")!
+    }
+
+    public enum QueryItems: String, CaseIterable {
+        case openMoreInfoDialog = "more-info-entity-id"
+        case isComingFromAppIntent = "isComingFromAppIntent"
+    }
+
+    public enum WebRTC {
+        public static let iceServers = [
+            "stun:stun.home-assistant.io:80",
+            "stun:stun.home-assistant.io:3478",
+        ]
+    }
+
     /// Home Assistant Blue
     public static var tintColor: UIColor {
         #if os(iOS)
@@ -65,6 +96,57 @@ public enum AppConstants {
         }
     }
 
+    public static func invitationURL(serverURL: URL) -> URL? {
+        guard let encodedURLString = serverURL.absoluteString
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            return nil
+        }
+        return URL(string: "https://my.home-assistant.io/invite/#url=\(encodedURLString)")
+    }
+
+    public static func navigateDeeplinkURL(
+        path: String,
+        serverId: String,
+        queryParams: String? = nil,
+        avoidUnecessaryReload: Bool
+    ) -> URL? {
+        var url = URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)navigate/\(path)?server=\(serverId)&avoidUnecessaryReload=\(avoidUnecessaryReload)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+        )
+
+        if let queryParams, let newURL = URL(string: "\(url?.absoluteString ?? "")&\(queryParams)") {
+            url = newURL
+        }
+
+        return url
+    }
+
+    public static func openPageDeeplinkURL(path: String, serverId: String) -> URL? {
+        AppConstants.navigateDeeplinkURL(path: path, serverId: serverId, avoidUnecessaryReload: true)?
+            .withWidgetAuthenticity()
+    }
+
+    public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
+        AppConstants.navigateDeeplinkURL(
+            path: "lovelace",
+            serverId: serverId,
+            queryParams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
+            avoidUnecessaryReload: true
+        )?.withWidgetAuthenticity()
+    }
+
+    public static func openCameraDeeplinkURL(entityId: String, serverId: String) -> URL? {
+        URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)camera/?entityId=\(entityId)&serverId=\(serverId)&\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+        )
+    }
+
+    public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
+        URL(
+            string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"
+        )?.withWidgetAuthenticity()
+    }
+
     /// The App Group ID used by the app and extensions for sharing data.
     public static var AppGroupID: String {
         "group." + BundleID.lowercased()
@@ -96,6 +178,54 @@ public enum AppConstants {
         return databaseURL
     }
 
+    public static var clientEventsFile: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("databases", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create Client Events file")
+            }
+        }
+        let eventsURL = directoryURL.appendingPathComponent("clientEvents.json")
+        return eventsURL
+    }
+
+    public static var widgetsCacheURL: URL = {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("caches/widgets", isDirectory: true)
+        return directoryURL
+    }()
+
+    public static func widgetCachedStates(widgetId: String) -> URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.widgetsCacheURL
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to create Client Events file")
+            }
+        }
+        let eventsURL = directoryURL.appendingPathComponent("/widgetId-\(widgetId).json")
+        return eventsURL
+    }
+
+    public static var watchMagicItemsInfo: URL {
+        let fileManager = FileManager.default
+        let directoryURL = Self.AppGroupContainer.appendingPathComponent("caches", isDirectory: true)
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            } catch {
+                Current.Log.error("Failed to magic items info file")
+            }
+        }
+        let eventsURL = directoryURL.appendingPathComponent("magicItemsInfo.json")
+        return eventsURL
+    }
+
     public static var LogsDirectory: URL {
         let fileManager = FileManager.default
         let directoryURL = AppGroupContainer.appendingPathComponent("logs", isDirectory: true)
@@ -112,16 +242,28 @@ public enum AppConstants {
     }
 
     public static var DownloadsDirectory: URL {
-        let fileManager = FileManager.default
-        let directoryURL = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
-            .appendingPathComponent(
+        var directoryURL: URL = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
+
+        // Save directly in macOS Downloads folder if running on Catalyst and allowed access to download folder when
+        // prompted.
+        if Current.isCatalyst, let macDownloadFolder = FileManager.default.urls(
+            for: .downloadsDirectory,
+            in: .userDomainMask
+        ).first {
+            directoryURL = macDownloadFolder
+        } else {
+            directoryURL = directoryURL.appendingPathComponent(
                 "Downloads",
                 isDirectory: true
             )
-
-        if !fileManager.fileExists(atPath: directoryURL.path) {
+        }
+        if !FileManager.default.fileExists(atPath: directoryURL.path) {
             do {
-                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(
+                    at: directoryURL,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
             } catch {
                 fatalError("Error while attempting to create downloads path URL: \(error)")
             }
@@ -194,6 +336,8 @@ public extension Version {
     /// The version where the app can subscribe to entities changes with a filter (e.g. only state changes from sensor
     /// domain)
     static let canSubscribeEntitiesChangesWithFilter: Version = .init(major: 2024, minor: 10)
+    /// Allows app to ask frontend to navigate to a specific page
+    static let canNavigateThroughFrontend: Version = .init(major: 2025, minor: 6, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))

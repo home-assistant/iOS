@@ -24,7 +24,7 @@ struct MagicItemProviderTests {
             .init(id: "light.one", serverId: "1", type: .entity),
         ]
 
-        try await Current.database.write { [watchConfig, carPlayConfig] db in
+        try await Current.database().write { [watchConfig, carPlayConfig] db in
             try WatchConfig.deleteAll(db)
             try CarPlayConfig.deleteAll(db)
             try watchConfig.insert(db)
@@ -52,7 +52,8 @@ struct MagicItemProviderTests {
                     serverId: "2",
                     domain: "script",
                     name: "Script One",
-                    icon: nil
+                    icon: nil,
+                    rawDeviceClass: ""
                 ),
                 .init(
                     id: "2-scene.one",
@@ -60,7 +61,8 @@ struct MagicItemProviderTests {
                     serverId: "2",
                     domain: "scene",
                     name: "Scene One",
-                    icon: nil
+                    icon: nil,
+                    rawDeviceClass: ""
                 ),
             ],
         ]
@@ -83,13 +85,15 @@ struct MagicItemProviderTests {
         #expect(newWatchConfig?.items == [
             .init(id: "script.one", serverId: "2", type: .script),
             .init(id: "scene.one", serverId: "2", type: .scene),
-            .init(id: "light.one", serverId: "2", type: .entity),
+            // No replacement provided so item stays the same
+            .init(id: "light.one", serverId: "1", type: .entity),
         ])
 
         #expect(newCarPlayConfig?.quickAccessItems == [
             .init(id: "script.one", serverId: "2", type: .script),
             .init(id: "scene.one", serverId: "2", type: .scene),
-            .init(id: "light.one", serverId: "2", type: .entity),
+            // No replacement provided so item stays the same
+            .init(id: "light.one", serverId: "1", type: .entity),
         ])
     }
 }

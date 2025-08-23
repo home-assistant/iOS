@@ -21,7 +21,7 @@ public class LastUpdateSensor: SensorProvider {
         }
 
         return .value([
-            with(WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")) {
+            with(WebhookSensor(name: "Last Update Trigger", uniqueID: WebhookSensorId.lastUpdateTrigger.rawValue)) {
                 $0.Icon = icon
                 $0.State = request.lastUpdateReason
             },

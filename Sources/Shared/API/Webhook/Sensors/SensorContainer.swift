@@ -26,7 +26,8 @@ public protocol SensorObserver: AnyObject {
     )
     func sensorContainer(
         _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
     )
 }
 
@@ -216,7 +217,7 @@ public class SensorContainer {
         observers
             .allObjects
             .compactMap { $0 as? SensorObserver }
-            .forEach { $0.sensorContainer(self, didSignalForUpdateBecause: reason) }
+            .forEach { $0.sensorContainer(self, didSignalForUpdateBecause: reason, lastUpdate: lastUpdate) }
     }
 
     private func updateSignaled(from type: SensorProvider.Type) {

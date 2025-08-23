@@ -17,7 +17,7 @@ jobs:
       - uses: fwal/setup-swift@v2
         with:
           swift-version: "5.8"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run Tests
         run: swift test
         working-directory: Sources/PushServer

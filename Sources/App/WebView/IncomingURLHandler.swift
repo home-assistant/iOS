@@ -3,6 +3,7 @@ import Foundation
 import PromiseKit
 import SafariServices
 import Shared
+import SwiftUI
 
 class IncomingURLHandler {
     private(set) weak var windowController: WebViewWindowController!
@@ -12,6 +13,20 @@ class IncomingURLHandler {
         registerCallbackURLKitHandlers()
     }
 
+    enum IncomingURLAction: String {
+        case xCallbackURL = "x-callback-url"
+        case callService = "call_service"
+        case fireEvent = "fire_event"
+        case sendLocation = "send_location"
+        case performAction = "perform_action"
+        case assist
+        case navigate
+        case invite
+        case createCustomWidget = "createcustomwidget"
+        case camera
+    }
+
+    // swiftlint:disable cyclomatic_complexity
     @discardableResult
     func handle(url: URL) -> Bool {
         Current.Log.verbose("Received URL: \(url)")
@@ -20,68 +35,175 @@ class IncomingURLHandler {
             serviceData = queryItems
         }
         guard let host = url.host else { return true }
-        switch host.lowercased() {
-        case "x-callback-url":
-            return Manager.shared.handleOpen(url: url)
-        case "call_service":
-            confirmAction(
-                title: L10n.UrlHandler.CallService.Confirm.title,
-                message: L10n.UrlHandler.CallService.Confirm.message(url.pathComponents[1]),
-                handler: { self.callServiceURLHandler(url, serviceData) }
-            )
-        case "fire_event":
-            confirmAction(
-                title: L10n.UrlHandler.FireEvent.Confirm.title,
-                message: L10n.UrlHandler.FireEvent.Confirm.message(url.pathComponents[1]),
-                handler: { self.fireEventURLHandler(url, serviceData) }
-            )
-        case "send_location":
-            confirmAction(
-                title: L10n.UrlHandler.SendLocation.Confirm.title,
-                message: L10n.UrlHandler.SendLocation.Confirm.message,
-                handler: { self.sendLocationURLHandler() }
-            )
-        case "perform_action":
-            performActionURLHandler(url, serviceData: serviceData)
-        case "navigate": // homeassistant://navigate/lovelace/dashboard
-            guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-                return false
-            }
+        if let requestedAction = IncomingURLAction(rawValue: host.lowercased()) {
+            switch requestedAction {
+            case .xCallbackURL:
+                return Manager.shared.handleOpen(url: url)
+            case .callService:
+                confirmAction(
+                    title: L10n.UrlHandler.CallService.Confirm.title,
+                    message: L10n.UrlHandler.CallService.Confirm.message(url.pathComponents[1]),
+                    handler: { self.callServiceURLHandler(url, serviceData) }
+                )
+            case .fireEvent:
+                confirmAction(
+                    title: L10n.UrlHandler.FireEvent.Confirm.title,
+                    message: L10n.UrlHandler.FireEvent.Confirm.message(url.pathComponents[1]),
+                    handler: { self.fireEventURLHandler(url, serviceData) }
+                )
+            case .sendLocation:
+                confirmAction(
+                    title: L10n.UrlHandler.SendLocation.Confirm.title,
+                    message: L10n.UrlHandler.SendLocation.Confirm.message,
+                    handler: { self.sendLocationURLHandler() }
+                )
+            case .performAction:
+                performActionURLHandler(url, serviceData: serviceData)
+            case .camera:
+                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                    return false
+                }
+                components.scheme = nil
+                components.host = nil
 
-            components.scheme = nil
-            components.host = nil
+                let queryParameters = components.queryItems
+                let serverId = queryParameters?.first(where: { $0.name == "serverId" })?.value
 
-            let queryParameters = components.queryItems
-            let isFromWidget = components.popWidgetAuthenticity()
-            let server = components.popWidgetServer(isFromWidget: isFromWidget)
+                guard let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value,
+                      let server = Current.servers.all.first(where: { server in
+                          server.identifier.rawValue == serverId
+                      }) else {
+                    Current.Log.error("No server found for open camera URL: \(url)")
+                    return false
+                }
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        let view = WebRTCVideoPlayerView(
+                            server: server,
+                            cameraEntityId: entityId
+                        ).embeddedInHostingController()
+                        view.modalPresentationStyle = .overFullScreen
+                        webViewController.present(view, animated: true)
+                    }
+            case .navigate: // homeassistant://navigate/lovelace/dashboard
+                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                    return false
+                }
 
-            guard let rawURL = components.url?.absoluteString else {
-                return false
-            }
+                components.scheme = nil
+                components.host = nil
 
-            if
-                let presenting = windowController.presentedViewController,
-                presenting is SFSafariViewController {
-                // Dismiss my.* controller if it's on top - we don't get any other indication
-                presenting.dismiss(animated: true, completion: { [windowController] in
-                    windowController?.openSelectingServer(
+                let queryParameters = components.queryItems
+                let isFromWidget = components.popWidgetAuthenticity()
+                let server = components.popWidgetServer(isFromWidget: isFromWidget)
+                let isComingFromAppIntent: Bool = {
+                    if let value = queryParameters?
+                        .first(where: { $0.name == AppConstants.QueryItems.isComingFromAppIntent.rawValue })?.value {
+                        return Bool(value) ?? false
+                    } else {
+                        return false
+                    }
+                }()
+
+                guard let rawURL = components.url?.absoluteString else {
+                    return false
+                }
+
+                if
+                    let presenting = windowController.presentedViewController,
+                    presenting is SFSafariViewController {
+                    // Dismiss my.* controller if it's on top - we don't get any other indication
+                    presenting.dismiss(animated: true, completion: { [windowController] in
+                        windowController?.openSelectingServer(
+                            from: .deeplink,
+                            urlString: rawURL,
+                            skipConfirm: true,
+                            queryParameters: queryParameters,
+                            isComingFromAppIntent: false
+                        )
+                    })
+                } else if let server {
+                    windowController.open(
+                        from: .deeplink,
+                        server: server,
+                        urlString: rawURL,
+                        skipConfirm: isFromWidget,
+                        isComingFromAppIntent: isComingFromAppIntent
+                    )
+                } else {
+                    windowController.openSelectingServer(
                         from: .deeplink,
                         urlString: rawURL,
-                        skipConfirm: true,
-                        queryParameters: queryParameters
+                        skipConfirm: isFromWidget,
+                        queryParameters: queryParameters,
+                        isComingFromAppIntent: isComingFromAppIntent
                     )
-                })
-            } else if let server {
-                windowController.open(from: .deeplink, server: server, urlString: rawURL, skipConfirm: isFromWidget)
-            } else {
-                windowController.openSelectingServer(
-                    from: .deeplink,
-                    urlString: rawURL,
-                    skipConfirm: isFromWidget,
-                    queryParameters: queryParameters
-                )
+                }
+            case .assist:
+                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                      let queryParameters = components.queryItems else {
+                    return false
+                }
+
+                let serverId = queryParameters.first(where: { $0.name == "serverId" })?.value ?? ""
+                let pipelineId = queryParameters.first(where: { $0.name == "pipelineId" })?.value ?? ""
+                let startlistening = Bool(
+                    queryParameters.first(where: { $0.name == "startListening" })?
+                        .value ?? "false"
+                ) ?? true
+
+                guard let server = Current.servers.all.first(where: {
+                    $0.identifier.rawValue == serverId
+                }) ?? Current.servers.all.first else { return false }
+
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        webViewController.webViewExternalMessageHandler.showAssist(
+                            server: server,
+                            pipeline: pipelineId,
+                            autoStartRecording: startlistening,
+                            animated: false
+                        )
+                    }
+            case .createCustomWidget:
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        let controller = UIHostingController(rootView: AnyView(
+                            NavigationView {
+                                WidgetBuilderView()
+                                    .toolbar {
+                                        ToolbarItem(placement: .topBarTrailing) {
+                                            CloseButton {
+                                                webViewController.dismissOverlayController(
+                                                    animated: true,
+                                                    completion: nil
+                                                )
+                                            }
+                                        }
+                                    }
+                            }
+                        ))
+                        webViewController.presentOverlayController(controller: controller, animated: true)
+                    }
+            case .invite:
+                // homeassistant://invite#url=http%3A%2F%2Fhomeassistant.local%3A8123
+                Current.Log.verbose("Received Home Assistant invitation URL: \(url)")
+                guard let fragment = url.fragment else {
+                    Current.Log.error("Home Assistant invitation does not contain a fragment (e.g. #url=...)")
+                    return false
+                }
+
+                // Convert fragment into query items (#url=... -> ?url=...)
+                let components = URLComponents(string: "?\(fragment)")
+                let urlParam = components?.queryItems?.first(where: { $0.name == "url" })?.value
+
+                let inviteUrl = URL(string: urlParam.orEmpty)
+
+                Current.sceneManager.webViewWindowControllerPromise.done { windowController in
+                    windowController.presentInvitation(url: inviteUrl)
+                }
             }
-        default:
+        } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
             showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
         }
@@ -150,13 +272,15 @@ class IncomingURLHandler {
                             from: .deeplink,
                             server: server,
                             urlString: urlString,
-                            skipConfirm: true
+                            skipConfirm: true,
+                            isComingFromAppIntent: false
                         )
                     } else {
                         windowController.openSelectingServer(
                             from: .deeplink,
                             urlString: urlString,
-                            skipConfirm: true
+                            skipConfirm: true,
+                            isComingFromAppIntent: false
                         )
                     }
                     return true
@@ -170,7 +294,7 @@ class IncomingURLHandler {
     }
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
-        Current.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
+        Current.backgroundTask(withName: BackgroundTask.shortcutItem.rawValue) { remaining -> Promise<Void> in
             switch shortcutItem.type {
             case HAApplicationShortcutItem.sendLocation.rawValue:
                 return firstly {
@@ -374,7 +498,8 @@ extension IncomingURLHandler {
                             return api.CallService(
                                 domain: serviceDomain,
                                 service: serviceName,
-                                serviceData: serviceData
+                                serviceData: serviceData,
+                                triggerSource: .URLHandler
                             )
                         } else {
                             throw XCallbackError.generalError
@@ -490,7 +615,12 @@ extension IncomingURLHandler {
 
         firstly { () -> Promise<Void> in
             if let api = Current.apis.first {
-                return api.CallService(domain: domain, service: service, serviceData: serviceData)
+                return api.CallService(
+                    domain: domain,
+                    service: service,
+                    serviceData: serviceData,
+                    triggerSource: .URLHandler
+                )
             } else {
                 throw HomeAssistantAPI.APIError.notConfigured
             }
@@ -538,10 +668,10 @@ extension IncomingURLHandler {
             return
         }
 
-        let source: HomeAssistantAPI.ActionSource = {
+        let source: AppTriggerSource = {
             if
                 let sourceString = serviceData["source"],
-                let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
+                let source = AppTriggerSource(rawValue: sourceString) {
                 return source
             } else {
                 return .URLHandler

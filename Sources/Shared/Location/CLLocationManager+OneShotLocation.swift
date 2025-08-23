@@ -185,6 +185,7 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         (self.promise, self.seal) = Promise<CLLocation>.pending()
         self.locationManager = locationManager
 
+        // swiftlint:disable prohibit_environment_assignment
         Current.isPerformingSingleShotLocationQuery = true
 
         super.init()
@@ -202,6 +203,7 @@ final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
             Current.isPerformingSingleShotLocationQuery = false
         }
+        // swiftlint:enable prohibit_environment_assignment
 
         timeout.done { [weak self] in
             // we can be weak here because the alternative is that we're already resolved

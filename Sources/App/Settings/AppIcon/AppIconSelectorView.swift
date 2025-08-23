@@ -15,7 +15,7 @@ struct AppIconSelectorView: View {
 
     var body: some View {
         List {
-            Text(L10n.SettingsDetails.General.AppIcon.Explanation.title)
+            Text(verbatim: L10n.SettingsDetails.General.AppIcon.Explanation.title)
                 .font(.footnote)
             ForEach(AppIcon.allCases, id: \.self) { icon in
                 makeRow(name: sectionNameForIcon(icon), icons: [

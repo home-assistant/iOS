@@ -30,7 +30,7 @@ pod 'Improv-iOS', '~> 0.0.6'
 pod 'SFSafeSymbols', '~> 5.3'
 
 pod 'RealmSwift'
-pod 'GRDB.swift', git: 'https://github.com/groue/GRDB.swift.git', tag: 'v6.29.3'
+pod 'GRDB.swift', git: 'https://github.com/groue/GRDB.swift.git', tag: 'v7.0.0'
 pod 'UIColor_Hex_Swift'
 pod 'Version'
 pod 'XCGLogger'
@@ -60,7 +60,6 @@ abstract_target 'iOS' do
 
   target 'Shared-iOS' do
     shared_fwk_pods
-    pod 'ZIPFoundation', '~> 0.9'
 
     target 'Tests-Shared' do
       inherit! :complete
@@ -88,6 +87,7 @@ abstract_target 'iOS' do
     end
   end
 
+  target 'SharedTesting'
   target 'Extensions-Intents'
   target 'Extensions-Matter'
   target 'Extensions-NotificationContent'

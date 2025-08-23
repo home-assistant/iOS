@@ -99,7 +99,7 @@ public class SettingsStore {
     }
     #endif
 
-    public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible {
+    public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible, Hashable {
         public let zoom: Int
 
         init?(preference: Int) {
@@ -194,6 +194,16 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "macNativeFeaturesOnly")
+        }
+    }
+
+    /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it
+    public var migratedOptInLocalPush: Bool {
+        get {
+            prefs.bool(forKey: "migratedOptInLocalPush")
+        }
+        set {
+            prefs.set(newValue, forKey: "migratedOptInLocalPush")
         }
     }
 
@@ -296,6 +306,14 @@ public class SettingsStore {
             switch self {
             case .dockAndMenuBar, .dock: return true
             case .menuBar: return false
+            }
+        }
+
+        public var title: String {
+            switch self {
+            case .dock: return L10n.SettingsDetails.General.Visibility.Options.dock
+            case .dockAndMenuBar: return L10n.SettingsDetails.General.Visibility.Options.dockAndMenuBar
+            case .menuBar: return L10n.SettingsDetails.General.Visibility.Options.menuBar
             }
         }
     }
@@ -414,10 +432,10 @@ public class SettingsStore {
     }
 
     #if os(iOS)
-    public var gestures: [HAGesture: HAGestureAction] {
+    public var gestures: [AppGesture: HAGestureAction] {
         get {
             guard let data = prefs.data(forKey: "gesturesSettings"),
-                  let decodedGestures = try? JSONDecoder().decode([HAGesture: HAGestureAction].self, from: data) else {
+                  let decodedGestures = try? JSONDecoder().decode([AppGesture: HAGestureAction].self, from: data) else {
                 Current.Log.error("Failed to decode gestures from settings")
                 return .defaultGestures
             }
@@ -433,6 +451,40 @@ public class SettingsStore {
         }
     }
     #endif
+
+    /// [ServerId: NeedsFrontendReset]
+    public var serverNeedsFrontendReset: [String: Bool] {
+        get {
+            if let data = prefs.data(forKey: "serverNeedsFrontendReset"),
+               let decoded = try? JSONDecoder().decode([String: Bool].self, from: data) {
+                return decoded
+            } else {
+                return [:]
+            }
+        }
+        set {
+            do {
+                let encoded = try JSONEncoder().encode(newValue)
+                prefs.set(encoded, forKey: "serverNeedsFrontendReset")
+            } catch {
+                Current.Log
+                    .error("Failed to encode server needs frontend reset settings, error \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // MARK: - Debug settings
+
+    /// Debug options to receive local notifications when something goes wrong
+    /// e.g. location update in background fails
+    public var receiveDebugNotifications: Bool {
+        get {
+            prefs.bool(forKey: "receiveDebugNotifications")
+        }
+        set {
+            prefs.set(newValue, forKey: "receiveDebugNotifications")
+        }
+    }
 
     // MARK: - Private helpers
 
@@ -452,11 +504,5 @@ public class SettingsStore {
         let okayChars: Set<Character> =
             Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890")
         return String(text.filter { okayChars.contains($0) })
-    }
-}
-
-public class BluetoothPermissionScreenDisplayedCount: UserDefaultsValueSync<Int> {
-    public init() {
-        super.init(settingsKey: "bluetoothPermissionScreenPresentedCount")
     }
 }

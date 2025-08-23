@@ -1,8 +1,8 @@
 import Foundation
 import SwiftUI
 
-final class HostingController: WKHostingController<WatchHomeCoordinatorView> {
-    override var body: WatchHomeCoordinatorView {
-        WatchHomeCoordinatorView()
+final class HostingController: WKHostingController<WatchHomeView> {
+    override var body: WatchHomeView {
+        WatchHomeView()
     }
 }

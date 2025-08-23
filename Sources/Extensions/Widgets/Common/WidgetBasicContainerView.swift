@@ -9,54 +9,242 @@ struct WidgetBasicContainerView: View {
     let emptyViewGenerator: () -> AnyView
     let contents: [WidgetBasicViewModel]
     let type: WidgetType
+    let showLastUpdate: Bool
 
-    init(emptyViewGenerator: @escaping () -> AnyView, contents: [WidgetBasicViewModel], type: WidgetType) {
+    init(
+        emptyViewGenerator: @escaping () -> AnyView,
+        contents: [WidgetBasicViewModel],
+        type: WidgetType,
+        showLastUpdate: Bool = false
+    ) {
         self.emptyViewGenerator = emptyViewGenerator
         self.contents = contents
         self.type = type
+        self.showLastUpdate = showLastUpdate
     }
 
     var body: some View {
-        Group {
+        WidgetBasicContainerWrapperView(
+            emptyViewGenerator: emptyViewGenerator,
+            contents: contents,
+            type: type,
+            showLastUpdate: showLastUpdate,
+            family: family
+        )
+    }
+}
+
+@available(iOS 18, *)
+struct WidgetBasicContainerView_Previews: PreviewProvider {
+    struct WidgetBasicContainerViewPreviewData {
+        let modelsCount: Int
+        let withSubtitle: Bool
+        let withIconBackgroundColor: Bool
+    }
+
+    static var previews: some View {
+        WidgetBasicContainerView_Previews.systemSmallConfigurations.previews()
+        WidgetBasicContainerView_Previews.systemMediumConfigurations.previews()
+        WidgetBasicContainerView_Previews.systemLargeConfigurations.previews()
+    }
+
+    static var systemSmallConfigurations: SnapshottablePreviewConfigurations<WidgetBasicContainerViewPreviewData> =
+        .init(
+            configurations: Self.configurations(for: .systemSmall)
+        ) { previewData in
+            widgetBasicContainerView(
+                modelsCount: previewData.modelsCount,
+                withSubtitle: previewData.withSubtitle,
+                withIconBackgroundColor: previewData.withIconBackgroundColor,
+                familySize: .systemSmall
+            )
+            .previewContext(WidgetPreviewContext(family: WidgetFamily.systemSmall))
+        }
+
+    static var systemMediumConfigurations: SnapshottablePreviewConfigurations<WidgetBasicContainerViewPreviewData> =
+        .init(
+            configurations: Self.configurations(for: .systemMedium)
+        ) { previewData in
+            widgetBasicContainerView(
+                modelsCount: previewData.modelsCount,
+                withSubtitle: previewData.withSubtitle,
+                withIconBackgroundColor: previewData.withIconBackgroundColor,
+                familySize: .systemMedium
+            )
+            .previewContext(WidgetPreviewContext(family: WidgetFamily.systemMedium))
+        }
+
+    static var systemLargeConfigurations: SnapshottablePreviewConfigurations<WidgetBasicContainerViewPreviewData> =
+        .init(
+            configurations: Self.configurations(for: .systemLarge)
+        ) { previewData in
+            widgetBasicContainerView(
+                modelsCount: previewData.modelsCount,
+                withSubtitle: previewData.withSubtitle,
+                withIconBackgroundColor: previewData.withIconBackgroundColor,
+                familySize: .systemLarge
+            )
+            .previewContext(WidgetPreviewContext(family: WidgetFamily.systemLarge))
+        }
+
+    private static func maxTiles(for familySize: WidgetFamily) -> Int {
+        switch familySize {
+        case .systemSmall: 3
+        case .systemMedium: 6
+        case .systemLarge: 12
+        default: 12
+        }
+    }
+
+    private static func configurations(for familySize: WidgetFamily)
+        -> [
+            SnapshottablePreviewConfigurations<WidgetBasicContainerViewPreviewData>
+                .Configuration<WidgetBasicContainerViewPreviewData>
+        ] {
+        (1 ... maxTiles(for: familySize))
+            .flatMap { maxTiles in
+                [
+                    .init(
+                        item: .init(
+                            modelsCount: maxTiles,
+                            withSubtitle: true,
+                            withIconBackgroundColor: true
+                        ),
+                        name: previewName(
+                            "withSubtitleWithIconBackground",
+                            widgetFamily: familySize,
+                            tilesCount: maxTiles
+                        )
+                    ),
+                    .init(
+                        item: .init(
+                            modelsCount: maxTiles,
+                            withSubtitle: true,
+                            withIconBackgroundColor: false
+                        ),
+                        name: previewName(
+                            "withSubtitleWithoutIconBackground",
+                            widgetFamily: familySize,
+                            tilesCount: maxTiles
+                        )
+                    ),
+                    .init(
+                        item: .init(
+                            modelsCount: maxTiles,
+                            withSubtitle: false,
+                            withIconBackgroundColor: true
+                        ),
+                        name: previewName(
+                            "withoutSubtitleWithIconBackground",
+                            widgetFamily: familySize,
+                            tilesCount: maxTiles
+                        )
+                    ),
+                    .init(
+                        item: .init(
+                            modelsCount: maxTiles,
+                            withSubtitle: false,
+                            withIconBackgroundColor: false
+                        ),
+                        name: previewName(
+                            "withoutSubtitleWithoutIconBackground",
+                            widgetFamily: familySize,
+                            tilesCount: maxTiles
+                        )
+                    ),
+                ]
+            }
+    }
+
+    private static func previewName(
+        _ base: String,
+        widgetFamily: WidgetFamily,
+        tilesCount: Int
+    ) -> String {
+        "\(base)-\(widgetFamily.description)-\(String(format: "%02d", tilesCount))_tiles"
+    }
+
+    private static func widgetBasicContainerView(
+        modelsCount: Int,
+        withSubtitle: Bool,
+        withIconBackgroundColor: Bool,
+        familySize: WidgetFamily
+    ) -> some View {
+        WidgetBasicContainerWrapperView(
+            emptyViewGenerator: {
+                AnyView(EmptyView())
+            },
+            contents: models(
+                count: modelsCount,
+                withSubtitle: withSubtitle,
+                withIconBackgroundColor: withIconBackgroundColor
+            ),
+            type: .custom,
+            family: familySize
+        )
+    }
+
+    private static func models(
+        count: Int,
+        withSubtitle: Bool,
+        withIconBackgroundColor: Bool
+    ) -> [WidgetBasicViewModel] {
+        (0 ..< count).map { index in
+            WidgetBasicViewModel(
+                id: "\(index)",
+                title: "Title \(index)",
+                subtitle: withSubtitle ? "Subtitle \(index)" : nil,
+                interactionType: .appIntent(.refresh),
+                icon: .abTestingIcon,
+                showIconBackground: withIconBackgroundColor
+            )
+        }
+    }
+}
+
+/// This wrapper only exists so it can be snapshot tested with the proper family size which is not possible with the
+/// `WidgetBasicContainerView` and the environment variable
+struct WidgetBasicContainerWrapperView: View {
+    let emptyViewGenerator: () -> AnyView
+    let contents: [WidgetBasicViewModel]
+    let type: WidgetType
+    let showLastUpdate: Bool
+    let family: WidgetFamily
+
+    init(
+        emptyViewGenerator: @escaping () -> AnyView,
+        contents: [WidgetBasicViewModel],
+        type: WidgetType,
+        showLastUpdate: Bool = false,
+        family: WidgetFamily
+    ) {
+        self.emptyViewGenerator = emptyViewGenerator
+        self.contents = contents
+        self.type = type
+        self.showLastUpdate = showLastUpdate
+        self.family = family
+    }
+
+    var body: some View {
+        VStack {
             if contents.isEmpty {
                 emptyViewGenerator()
             } else {
-                content(for: contents)
+                content(for: Array(contents.prefix(WidgetFamilySizes.size(for: family))))
+            }
+            if showLastUpdate, !contents.isEmpty {
+                Group {
+                    Text("\(L10n.Widgets.Custom.ShowUpdateTime.title) ") + Text(Date.now, style: .time)
+                }
+                .font(.system(size: 10).bold())
+                .frame(maxWidth: .infinity, alignment: .center)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, DesignSystem.Spaces.half)
+                .opacity(0.5)
             }
         }
         // Whenever Apple allow apps to use material backgrounds we should update this
-        .widgetBackground(Color.asset(Asset.Colors.primaryBackground))
-    }
-
-    @available(iOS 16.4, *)
-    private func intent(for model: WidgetBasicViewModel) -> (any AppIntent)? {
-        switch model.interactionType {
-        case .widgetURL:
-            return nil
-        case let .appIntent(widgetIntentType):
-            switch widgetIntentType {
-            case .action:
-                let intent = PerformAction()
-                intent.action = IntentActionAppEntity(id: model.id, displayString: model.title)
-                intent.hapticConfirmation = true
-                return intent
-            case let .script(id, entityId, serverId, name, showConfirmationNotification):
-                let intent = ScriptAppIntent()
-                intent.script = .init(
-                    id: id,
-                    entityId: entityId,
-                    serverId: serverId,
-                    serverName: "", // not used in this context
-                    displayString: name,
-                    iconName: "" // not used in this context
-                )
-                intent.hapticConfirmation = true
-                intent.showConfirmationNotification = showConfirmationNotification
-                return intent
-            case .refresh:
-                return ReloadWidgetsAppIntent()
-            }
-        }
+        .widgetBackground(.primaryBackground)
     }
 
     @ViewBuilder
@@ -64,7 +252,8 @@ struct WidgetBasicContainerView: View {
         let modelsCount = models.count
         let columnCount = WidgetFamilySizes.columns(family: family, modelCount: modelsCount)
         let rows = Array(WidgetFamilySizes.rows(count: columnCount, models: models))
-        basicView(
+        WidgetBasicView(
+            type: type,
             rows: rows,
             sizeStyle: WidgetFamilySizes.sizeStyle(
                 family: family,
@@ -72,71 +261,6 @@ struct WidgetBasicContainerView: View {
                 rowsCount: rows.count
             )
         )
-    }
-
-    @ViewBuilder
-    private func basicView(rows: [[WidgetBasicViewModel]], sizeStyle: WidgetBasicSizeStyle) -> some View {
-        let spacing = sizeStyle == .compressed ? .zero : Spaces.one
-        VStack(alignment: .leading, spacing: spacing) {
-            ForEach(rows, id: \.self) { column in
-                HStack(spacing: spacing) {
-                    ForEach(column) { model in
-                        if case let .widgetURL(url) = model.interactionType {
-                            Link(destination: url.withWidgetAuthenticity()) {
-                                if #available(iOS 18.0, *) {
-                                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
-                                } else {
-                                    normalView(model: model, sizeStyle: sizeStyle)
-                                }
-                            }
-                        } else {
-                            if #available(iOS 17.0, *), let intent = intent(for: model) {
-                                Button(intent: intent) {
-                                    tintedWrapperView(model: model, sizeStyle: sizeStyle)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        .padding([.single, .compressed].contains(sizeStyle) ? 0 : Spaces.one)
-    }
-
-    private func normalView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        switch type {
-        case .button:
-            return AnyView(WidgetBasicButtonView(
-                model: model,
-                sizeStyle: sizeStyle,
-                tinted: false
-            ))
-        case .sensor:
-            return AnyView(WidgetBasicSensorView(
-                model: model,
-                sizeStyle: sizeStyle,
-                tinted: false
-            ))
-        }
-    }
-
-    @available(iOS 16.0, *)
-    private func tintedWrapperView(model: WidgetBasicViewModel, sizeStyle: WidgetBasicSizeStyle) -> some View {
-        switch type {
-        case .button:
-            return AnyView(WidgetBasicViewTintedWrapper(
-                model: model,
-                sizeStyle: sizeStyle,
-                viewType: WidgetBasicButtonView.self
-            ))
-        case .sensor:
-            return AnyView(WidgetBasicViewTintedWrapper(
-                model: model,
-                sizeStyle: sizeStyle,
-                viewType: WidgetBasicSensorView.self
-            ))
-        }
     }
 
     // This is all widgets that are on the lock screen
@@ -147,10 +271,5 @@ struct WidgetBasicContainerView: View {
         } else {
             []
         }
-    }
-
-    enum WidgetType: String {
-        case button
-        case sensor
     }
 }

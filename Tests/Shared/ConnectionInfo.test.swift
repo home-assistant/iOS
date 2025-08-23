@@ -3,6 +3,10 @@ import Version
 import XCTest
 
 class ConnectionInfoTests: XCTestCase {
+    override func setUp() async throws {
+        ConnectionInfo.shouldFallbackToInternalURL = false
+    }
+
     func testInternalOnlyURL() {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
@@ -597,5 +601,90 @@ class ConnectionInfoTests: XCTestCase {
                 0xBA,
             ]
         )
+    }
+
+    func testInvitationURLForCloud() {
+        let internalURL = URL(string: "http://internal.com:8123")
+        let remoteURL = URL(string: "http://remote.com:8123")
+        let cloudURL = URL(string: "http://cloud.com:8123")
+        let useCloud = true
+        var info = ConnectionInfo(
+            externalURL: remoteURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: cloudURL,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            alwaysFallbackToInternalURL: false
+        )
+
+        info.useCloud = useCloud
+        XCTAssertEqual(info.invitationURL(), cloudURL)
+    }
+
+    func testInvitationURLForRemoteWithCloudOff() {
+        let internalURL = URL(string: "http://internal.com:8123")
+        let remoteURL = URL(string: "http://remote.com:8123")
+        let cloudURL = URL(string: "http://cloud.com:8123")
+        let useCloud = false
+        var info = ConnectionInfo(
+            externalURL: remoteURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: cloudURL,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            alwaysFallbackToInternalURL: false
+        )
+
+        info.useCloud = useCloud
+        XCTAssertEqual(info.invitationURL(), remoteURL)
+    }
+
+    func testInvitationURLForRemoteWithoutCloud() {
+        let internalURL = URL(string: "http://internal.com:8123")
+        let remoteURL = URL(string: "http://remote.com:8123")
+        let info = ConnectionInfo(
+            externalURL: remoteURL,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            alwaysFallbackToInternalURL: false
+        )
+
+        XCTAssertEqual(info.invitationURL(), remoteURL)
+    }
+
+    func testInvitationURLForInternal() {
+        let internalURL = URL(string: "http://internal.com:8123")
+        let info = ConnectionInfo(
+            externalURL: nil,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            alwaysFallbackToInternalURL: false
+        )
+
+        XCTAssertEqual(info.invitationURL(), internalURL)
     }
 }

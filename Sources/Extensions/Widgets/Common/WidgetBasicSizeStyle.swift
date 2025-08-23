@@ -2,10 +2,10 @@ import Foundation
 import Shared
 import SwiftUI
 
-public enum WidgetBasicSizeStyle {
+public enum WidgetBasicSizeStyle: CaseIterable {
     case single
     case expanded
-    case condensed
+    case compact
     /// Minimum size possible for widget, removing padding and borders as well
     case compressed
     case regular
@@ -14,8 +14,10 @@ public enum WidgetBasicSizeStyle {
         switch self {
         case .single, .expanded:
             return .subheadline
-        case .condensed, .regular, .compressed:
+        case .compact, .regular:
             return .footnote
+        case .compressed:
+            return .caption
         }
     }
 
@@ -23,8 +25,10 @@ public enum WidgetBasicSizeStyle {
         switch self {
         case .single, .expanded:
             return .footnote
-        case .regular, .condensed, .compressed:
-            return .system(size: 12)
+        case .regular, .compact:
+            return .caption
+        case .compressed:
+            return .caption2
         }
     }
 
@@ -36,10 +40,10 @@ public enum WidgetBasicSizeStyle {
             size = 32
         case .expanded:
             size = 28
-        case .regular:
+        case .regular, .compact:
             size = 20
-        case .condensed, .compressed:
-            size = 14
+        case .compressed:
+            size = 15
         }
 
         return .custom(MaterialDesignIcons.familyName, size: size)
@@ -52,8 +56,10 @@ public enum WidgetBasicSizeStyle {
             return .init(width: 48, height: 48)
         case .expanded:
             return .init(width: 42, height: 42)
-        case .regular, .condensed, .compressed:
+        case .regular, .compact:
             return .init(width: 38, height: 38)
+        case .compressed:
+            return .init(width: 30, height: 30)
         }
     }
 }

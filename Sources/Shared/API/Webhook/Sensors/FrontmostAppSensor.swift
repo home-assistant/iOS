@@ -1,23 +1,44 @@
 import Foundation
 import PromiseKit
 
-final class FrontmostAppSensorUpdateSignaler: SensorProviderUpdateSignaler {
+final class FrontmostAppSensorUpdateSignaler: BaseSensorUpdateSignaler, SensorProviderUpdateSignaler {
     let signal: () -> Void
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        super.init(relatedSensorsIds: [
+            .frontmostApp,
+        ])
+    }
 
+    @objc private func frontmostAppDidChange(_ note: Notification) {
+        signal()
+    }
+
+    override func observe() {
+        super.observe()
         #if targetEnvironment(macCatalyst)
+        guard !isObserving else { return }
         Current.macBridge.workspaceNotificationCenter.addObserver(
             self,
             selector: #selector(frontmostAppDidChange(_:)),
             name: Current.macBridge.frontmostApplicationDidChangeNotification,
             object: nil
         )
+        isObserving = true
         #endif
     }
 
-    @objc private func frontmostAppDidChange(_ note: Notification) {
-        signal()
+    override func stopObserving() {
+        super.stopObserving()
+        #if targetEnvironment(macCatalyst)
+        guard isObserving else { return }
+        Current.macBridge.workspaceNotificationCenter.removeObserver(
+            self,
+            name: Current.macBridge.frontmostApplicationDidChangeNotification,
+            object: nil
+        )
+        isObserving = false
+        #endif
     }
 }
 
@@ -43,7 +64,7 @@ final class FrontmostAppSensor: SensorProvider {
 
         sensors.append(with(WebhookSensor(
             name: "Frontmost App",
-            uniqueID: "frontmost_app",
+            uniqueID: WebhookSensorId.frontmostApp.rawValue,
             icon: "mdi:traffic-light",
             state: frontmost?.localizedName ?? "None"
         )) {

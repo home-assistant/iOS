@@ -25,6 +25,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         Domain.inputBoolean,
         Domain.inputButton,
         Domain.lock,
+        Domain.camera,
     ].map(\.rawValue)
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {
@@ -73,11 +74,12 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
             serverId: server.identifier.rawValue,
             domain: $0.domain,
             name: $0.attributes.friendlyName ?? $0.entityId,
-            icon: $0.attributes.icon
+            icon: $0.attributes.icon,
+            rawDeviceClass: $0.attributes.dictionary["device_class"] as? String
         ) }).sorted(by: { $0.id < $1.id })
 
         do {
-            let cachedEntities = try Current.database.read { db in
+            let cachedEntities = try Current.database().read { db in
                 try HAAppEntity
                     .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == server.identifier.rawValue)
                     .orderByPrimaryKey()
@@ -88,7 +90,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                     .verbose(
                         "Updating App Entities for \(server.info.name), cached entities were different than new entities"
                     )
-                try Current.database.write { db in
+                try Current.database().write { db in
                     try HAAppEntity.deleteAll(db, ids: cachedEntities.map(\.id))
                     for entity in appEntities {
                         try entity.insert(db)
@@ -98,7 +100,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                     text: "Updated database App Entities for \(server.info.name)",
                     type: .database,
                     payload: ["entities_count": appEntities.count]
-                )).cauterize()
+                ))
             }
         } catch {
             Current.Log.error("Failed to get cache for App Entities, error: \(error.localizedDescription)")
@@ -106,7 +108,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
                 text: "Update database App Entities FAILED for \(server.info.name)",
                 type: .database,
                 payload: ["error": error.localizedDescription]
-            )).cauterize()
+            ))
         }
     }
 }

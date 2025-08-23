@@ -6,8 +6,13 @@ import Communicator
 #endif
 
 public struct ConnectionInfo: Codable, Equatable {
+    // TODO: Remove when location permission enforcement is in place
+    /// Developer toggle used while enforcement of location permision is not ready
+    /// Used as feature toggle
+    public static var shouldFallbackToInternalURL = true
+
     private var externalURL: URL?
-    private var internalURL: URL?
+    public private(set) var internalURL: URL?
     private var remoteUIURL: URL?
     public var webhookID: String
     public var webhookSecret: String?
@@ -200,16 +205,37 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .internal
             url = internalURL
         } else {
-            activeURLType = .none
-            url = nil
-            /*
-             No URL that can be used in this context is available
-             This can happen when only internal URL is set and
-             user tries to access the App remotely
-             */
+            // TODO: Remove when location permission enforcement is in place
+            if ConnectionInfo.shouldFallbackToInternalURL {
+                activeURLType = .internal
+                url = internalURL
+            } else {
+                activeURLType = .none
+                url = nil
+                /*
+                 No URL that can be used in this context is available
+                 This can happen when only internal URL is set and
+                 user tries to access the App remotely
+                 */
+            }
         }
 
         return url?.sanitized()
+    }
+
+    /// Returns the url that should be used at this moment to share with someone else to access the Home Assistant
+    /// instance.
+    /// Cloud > Remote > Internal
+    public func invitationURL() -> URL? {
+        if useCloud, let remoteUIURL {
+            return remoteUIURL.sanitized()
+        } else if let externalURL {
+            return externalURL.sanitized()
+        } else if let internalURL {
+            return internalURL.sanitized()
+        } else {
+            return nil
+        }
     }
 
     /// Returns the activeURL with /api appended.

@@ -35,7 +35,7 @@ public class StorageSensor: SensorProvider {
     private static func sensor(for volumes: [URLResourceKey: Int64]) throws -> WebhookSensor {
         let sensor = WebhookSensor(
             name: "Storage",
-            uniqueID: "storage",
+            uniqueID: WebhookSensorId.storage.rawValue,
             icon: .databaseIcon,
             state: "Unknown"
         )

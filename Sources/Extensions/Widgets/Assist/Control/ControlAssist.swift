@@ -19,7 +19,7 @@ struct ControlAssist: ControlWidget {
                 // ControlWidget can only display SF Symbol (Custom Assist SFSymbol)
                 Label("Assist", image: "message-processing-outline")
             }
-            .tint(.init(uiColor: Asset.Colors.haPrimary.color))
+            .tint(.haPrimary)
         }
         .displayName(.init(stringLiteral: "Assist"))
         .description(.init(stringLiteral: L10n.Widgets.Controls.Assist.description))

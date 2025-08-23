@@ -64,6 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setDefaults()
 
+        // swiftlint:disable prohibit_environment_assignment
         Current.backgroundTask = ApplicationBackgroundTaskRunner()
 
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
@@ -83,6 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #else
         Current.tags = iOSTagManager()
         #endif
+        // swiftlint:enable prohibit_environment_assignment
 
         notificationManager.setupNotifications()
         setupFirebase()
@@ -95,7 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
             type: .unknown
         )
-        Current.clientEventStore.addEvent(event).cauterize()
+        Current.clientEventStore.addEvent(event)
 
         zoneManager = ZoneManager()
 
@@ -103,6 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupWatchCommunicator()
         setupUIApplicationShortcutItems()
+        migrateIfNeeded()
 
         return true
     }
@@ -206,21 +209,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
-        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
-        Current.Log.verbose("Background fetch activated at \(timestamp)!")
-
-        DataWidgetsUpdater.update()
-
-        #if !targetEnvironment(macCatalyst)
-        if UIDevice.current.userInterfaceIdiom == .phone, case .paired = Communicator.shared.currentWatchState {
-            Current.Log.verbose("Requesting watch sync from background fetch")
-            Communicator.shared.send(GuaranteedMessage(identifier: GuaranteedMessages.sync.rawValue)) { error in
-                Current.Log.error("Failed to request watch sync from background fetch: \(error)")
-            }
-        }
-        #endif
-
-        Current.backgroundTask(withName: "background-fetch") { remaining in
+        Current.clientEventStore.addEvent(ClientEvent(text: "Background fetch activated", type: .backgroundOperation))
+        Current.backgroundTask(withName: BackgroundTask.backgroundFetch.rawValue) { remaining in
             let updatePromise: Promise<Void>
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
                Current.settingsStore.locationSources.backgroundFetch {
@@ -424,6 +414,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 localizedSubtitle: nil,
                 icon: .init(systemSymbol: .gear)
             )]
+        }
+    }
+
+    private func migrateIfNeeded() {
+        resetLocalPush()
+    }
+
+    /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it
+    private func resetLocalPush() {
+        if !Current.settingsStore.migratedOptInLocalPush {
+            for server in Current.servers.all {
+                server.update { info in
+                    info.connection.isLocalPushEnabled = false
+                }
+            }
+            Current.settingsStore.migratedOptInLocalPush = true
+            Current.Log.info("Reset local push for all servers due to migration")
+        } else {
+            Current.Log.info("No need to reset local push, migration already done")
         }
     }
 

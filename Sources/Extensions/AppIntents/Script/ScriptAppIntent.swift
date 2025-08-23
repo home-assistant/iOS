@@ -1,5 +1,4 @@
 import AppIntents
-import AudioToolbox
 import Foundation
 import PromiseKit
 import SFSafeSymbols
@@ -37,9 +36,7 @@ final class ScriptAppIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
         if hapticConfirmation {
-            // Unfortunately this is the only 'haptics' that work with widgets
-            // ideally in the future this should use CoreHaptics for a better experience
-            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+            AppIntentHaptics.notify()
         }
 
         let success: Bool = try await withCheckedThrowingContinuation { continuation in
@@ -48,9 +45,7 @@ final class ScriptAppIntent: AppIntent {
                 continuation.resume(returning: false)
                 return
             }
-            let domain = Domain.script.rawValue
-            let service = script.entityId.replacingOccurrences(of: "\(domain).", with: "")
-            api.CallService(domain: domain, service: service, serviceData: [:])
+            api.turnOnScript(scriptEntityId: script.entityId, triggerSource: .AppIntent)
                 .pipe { [weak self] result in
                     switch result {
                     case .fulfilled:
@@ -65,7 +60,7 @@ final class ScriptAppIntent: AppIntent {
                 }
         }
         if showConfirmationNotification {
-            LocalNotificationDispatcher().send(.init(
+            Current.notificationDispatcher.send(.init(
                 id: .scriptAppIntentRun,
                 title: success ? L10n.AppIntents.Scripts.SuccessMessage.content(script.displayString) : L10n.AppIntents
                     .Scripts.FailureMessage.content(script.displayString)

@@ -26,7 +26,7 @@ struct ControlScript: ControlWidget {
                 // ControlWidget can only display SF Symbol
                 Label(template.intentScriptEntity.displayString, systemImage: template.icon.id)
             }
-            .tint(.init(uiColor: Asset.Colors.haPrimary.color))
+            .tint(.haPrimary)
         }
         .displayName(.init(stringLiteral: L10n.Widgets.Controls.Script.displayName))
         .description(.init(stringLiteral: L10n.Widgets.Controls.Script.description))

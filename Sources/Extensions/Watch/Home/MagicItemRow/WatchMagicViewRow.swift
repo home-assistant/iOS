@@ -15,7 +15,7 @@ struct WatchMagicViewRow: View {
             HStack(spacing: Spaces.one) {
                 iconToDisplay
                     .animation(.bouncy, value: viewModel.state)
-                Text(viewModel.itemInfo.name)
+                Text(viewModel.item.name(info: viewModel.itemInfo))
                     .font(.body.bold())
                     .foregroundStyle(textColor)
                     .lineLimit(3)
@@ -25,16 +25,16 @@ struct WatchMagicViewRow: View {
         }
         .listRowBackground(backgroundForWatchItem.cornerRadius(14))
         .confirmationDialog(
-            L10n.Watch.Home.Run.Confirmation.title(viewModel.itemInfo.name),
+            L10n.Watch.Home.Run.Confirmation.title(viewModel.item.name(info: viewModel.itemInfo)),
             isPresented: $viewModel.showConfirmationDialog,
             actions: {
                 Button(action: {
                     viewModel.confirmationAction()
                 }, label: {
-                    Text(L10n.yesLabel)
+                    Text(verbatim: L10n.yesLabel)
                 })
                 Button(action: {}, label: {
-                    Text(L10n.cancelLabel)
+                    Text(verbatim: L10n.cancelLabel)
                 })
                 .tint(.red)
             }

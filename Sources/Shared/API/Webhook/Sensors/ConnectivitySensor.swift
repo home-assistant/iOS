@@ -5,21 +5,75 @@ import CoreTelephony
 import Reachability
 #endif
 
-final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler {
+final class ConnectivitySensorUpdateSignaler: SensorProviderUpdateSignaler, SensorObserver {
+    private var isObserving = false
     let signal: () -> Void
+
+    #if DEBUG
+    /// Used for unit test to identify when observation is ready
+    var notifyObservation: (() -> Void)?
+    #endif
+
     init(signal: @escaping () -> Void) {
         self.signal = signal
+        Current.sensors.register(observer: self)
+    }
 
+    @objc private func connectivityDidChange(_ note: Notification) {
+        signal()
+    }
+
+    private func observe() {
+        guard !isObserving else { return }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(connectivityDidChange(_:)),
             name: Current.connectivity.connectivityDidChangeNotification(),
             object: nil
         )
+        isObserving = true
+
+        #if DEBUG
+        notifyObservation?()
+        #endif
     }
 
-    @objc private func connectivityDidChange(_ note: Notification) {
-        signal()
+    private func stopObserving() {
+        guard isObserving else { return }
+        NotificationCenter.default.removeObserver(
+            self,
+            name: Current.connectivity.connectivityDidChangeNotification(),
+            object: nil
+        )
+        isObserving = false
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
+        update.sensors.done { [weak self] sensors in
+            let activeRelatedSensors = sensors.filter({ sensor in
+                sensor.UniqueID == WebhookSensorId.connectivitySSID.rawValue ||
+                    sensor.UniqueID == WebhookSensorId.connectivityBSID.rawValue ||
+                    sensor.UniqueID == WebhookSensorId.connectivityConnectionType.rawValue
+            })
+
+            let activeSensors = activeRelatedSensors.filter({ sensor in
+                Current.sensors.isEnabled(sensor: sensor)
+            })
+
+            if activeSensors.isEmpty {
+                self?.stopObserving()
+            } else {
+                self?.observe()
+            }
+        }
+    }
+
+    func sensorContainer(
+        _ container: SensorContainer,
+        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
+        lastUpdate: SensorObserverUpdate?
+    ) {
+        /* no-op */
     }
 }
 
@@ -73,7 +127,7 @@ public class ConnectivitySensor: SensorProvider {
         }
 
         return .value([
-            with(WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid")) { sensor in
+            with(WebhookSensor(name: "SSID", uniqueID: WebhookSensorId.connectivitySSID.rawValue)) { sensor in
                 if let ssid = Current.connectivity.currentWiFiSSID() {
                     sensor.State = ssid
                     sensor.Icon = "mdi:wifi"
@@ -82,7 +136,7 @@ public class ConnectivitySensor: SensorProvider {
                     sensor.Icon = "mdi:wifi-off"
                 }
             },
-            with(WebhookSensor(name: "BSSID", uniqueID: "connectivity_bssid")) { sensor in
+            with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
                 if let bssid = Current.connectivity.currentWiFiBSSID() {
                     sensor.State = bssid
                     sensor.Icon = "mdi:wifi-star"
@@ -102,7 +156,10 @@ public class ConnectivitySensor: SensorProvider {
         let simple = Current.connectivity.simpleNetworkType()
 
         return .value([
-            with(WebhookSensor(name: "Connection Type", uniqueID: "connectivity_connection_type")) { sensor in
+            with(WebhookSensor(
+                name: "Connection Type",
+                uniqueID: WebhookSensorId.connectivityConnectionType.rawValue
+            )) { sensor in
                 sensor.State = simple.description
                 sensor.Icon = simple.icon
 
