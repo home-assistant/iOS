@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Entwicklerwerkzeuge";
 "panel::energy" = "Energie";
 "panel::history" = "Verlauf";
-"panel::logbook" = "Logbuch";
+"panel::logbook" = "Aktivität";
 "panel::mailbox" = "Postfach";
 "panel::map" = "Karte";
 "panel::media_browser" = "Medien";
