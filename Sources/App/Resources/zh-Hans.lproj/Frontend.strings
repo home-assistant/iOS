@@ -3,7 +3,7 @@
 "panel::developer_tools" = "开发者工具";
 "panel::energy" = "能源";
 "panel::history" = "历史";
-"panel::logbook" = "日志";
+"panel::logbook" = "活动";
 "panel::mailbox" = "邮箱";
 "panel::map" = "地图";
 "panel::media_browser" = "媒体";

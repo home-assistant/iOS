@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Alat pengembang";
 "panel::energy" = "Energi";
 "panel::history" = "Riwayat";
-"panel::logbook" = "Catatan Log";
+"panel::logbook" = "Aktivitas";
 "panel::mailbox" = "Kotak Pesan";
 "panel::map" = "Peta";
 "panel::media_browser" = "Media";
