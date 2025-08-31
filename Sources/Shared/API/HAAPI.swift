@@ -332,7 +332,7 @@ public class HomeAssistantAPI {
 
                 if let version = try? Version(hassVersion: config.Version) {
                     if serverInfo.version != version {
-                        // Reset frontend cache since server version changed
+                        // Reset client cache since server version changed
                         Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] = true
                     }
 

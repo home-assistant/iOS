@@ -663,7 +663,7 @@ Home Assistant е безплатен и с отворен код софтуер 
 "settings.reset_section.reset_alert.title" = "Нулиране";
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Нулиране";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.reset_section.reset_web_cache.title" = "Reset client cache";
 "settings.server_select.page_title" = "Сървър";
 "settings.server_select.title" = "Сървър";
 "settings.status_section.header" = "Състояние";

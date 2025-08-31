@@ -973,11 +973,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     private func resetFrontendCacheIfNeeded(completion: (() -> Void)? = nil) {
-        // Reset the frontend cache if needed, e.g. after a server version change
+        // Reset the client cache if needed, e.g. after a server version change
         if Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] ?? false {
-            Current.Log.info("Resetting frontend cache for server \(server.info.name)")
+            Current.Log.info("Resetting client cache for server \(server.info.name)")
             Current.websiteDataStoreHandler.cleanCache { [weak self] in
-                Current.Log.info("Frontend cache reset completed")
+                Current.Log.info("Client cache reset completed")
                 guard let self else { return }
                 Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] = nil
                 completion?()

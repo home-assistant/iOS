@@ -2395,7 +2395,7 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_row.title") }
       }
       public enum ResetWebCache {
-        /// Reset frontend cache
+        /// Reset client cache
         public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_web_cache.title") }
       }
     }

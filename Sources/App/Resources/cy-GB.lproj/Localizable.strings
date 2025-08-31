@@ -663,7 +663,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.reset_section.reset_alert.title" = "Ailosod";
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Ailosod";
-"settings.reset_section.reset_web_cache.title" = "Ailosod frontend cache";
+"settings.reset_section.reset_web_cache.title" = "Ailosod client cache";
 "settings.server_select.page_title" = "Server";
 "settings.server_select.title" = "Server";
 "settings.status_section.header" = "Statws";

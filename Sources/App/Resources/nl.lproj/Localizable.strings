@@ -663,7 +663,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "settings.reset_section.reset_alert.title" = "Herstel";
 "settings.reset_section.reset_app.title" = "App resetten (servers en gegevens verwijderen)";
 "settings.reset_section.reset_row.title" = "Herstel";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.reset_section.reset_web_cache.title" = "Reset client cache";
 "settings.server_select.page_title" = "Server";
 "settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
