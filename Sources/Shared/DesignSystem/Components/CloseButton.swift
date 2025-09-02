@@ -33,22 +33,34 @@ public struct CloseButton: View {
     private let alternativeAction: (() -> Void)?
     private let tint: Color
     private let size: Size
+    private let forceIconOnly: Bool
 
     /// When alternative action is set, the button will execute this action instead of dismissing the view.
     public init(
         tint: Color = Color.secondary,
         size: Size = .small,
+        forceIconOnly: Bool = false,
         alternativeAction: (() -> Void)? = nil
     ) {
         self.alternativeAction = alternativeAction
         self.tint = tint
         self.size = size
+        self.forceIconOnly = forceIconOnly
     }
 
     public var body: some View {
         if #available(iOS 26.0, *) {
-            Button(role: .close) {
-                tapAction()
+            if forceIconOnly {
+                Button(action: {
+                    tapAction()
+                }, label: {
+                    Image(systemSymbol: .xmark)
+                })
+                .buttonStyle(.glass)
+            } else {
+                Button(role: .close) {
+                    tapAction()
+                }
             }
         } else {
             Button(action: {

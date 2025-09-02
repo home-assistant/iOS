@@ -22,7 +22,7 @@ struct WebViewEmptyStateView: View {
     private var header: some View {
         Group {
             serverSelection
-            CloseButton(size: .medium) {
+            CloseButton(size: .medium, forceIconOnly: true) {
                 dismissAction?()
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
