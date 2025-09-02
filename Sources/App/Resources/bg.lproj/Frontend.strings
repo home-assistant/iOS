@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Инструменти за разработчици";
 "panel::energy" = "Енергия";
 "panel::history" = "История";
-"panel::logbook" = "Дневник";
+"panel::logbook" = "Дейност";
 "panel::mailbox" = "Пощенска кутия";
 "panel::map" = "Карта";
 "panel::media_browser" = "Медии";

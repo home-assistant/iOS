@@ -342,8 +342,8 @@
 "location_change_notification.visit.body" = "Lokasi diperbarui melalui Kunjungan";
 "location_change_notification.watch_context.body" = "Lokasi diperbarui melalui sinkronisasi konteks jam tangan";
 "location_change_notification.x_callback_url.body" = "Lokasi diperbarui melalui X-Callback-URL";
-"mac.navigation.go_back.accessibility_label" = "Navigate back";
-"mac.navigation.go_forward.accessibility_label" = "Navigate forward";
+"mac.navigation.go_back.accessibility_label" = "Menavigasi mundur";
+"mac.navigation.go_forward.accessibility_label" = "Menavigasi maju";
 "magic_item.action" = "Aksi";
 "magic_item.action.assist.pipeline.title" = "Saluran";
 "magic_item.action.assist.start_listening.title" = "Mulai dengarkan";
@@ -890,7 +890,7 @@ Home Assistant adalah perangkat lunak otomasi rumah gratis dan sumber terbuka de
 "settings_sensors.periodic_update.off" = "Mati";
 "settings_sensors.periodic_update.title" = "Pembaruan Berkala";
 "settings_sensors.permissions.header" = "Izin";
-"settings_sensors.sensors.enable_all" = "Enable all sensors";
+"settings_sensors.sensors.enable_all" = "Aktifkan semua sensor";
 "settings_sensors.sensors.header" = "Sensor";
 "settings_sensors.settings.footer" = "Perubahan akan diterapkan pada pembaruan berikutnya.";
 "settings_sensors.settings.header" = "Pengaturan";

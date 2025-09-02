@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Utvecklarverktyg";
 "panel::energy" = "Energi";
 "panel::history" = "Historik";
-"panel::logbook" = "Loggbok";
+"panel::logbook" = "Aktivitet";
 "panel::mailbox" = "Brevlåda";
 "panel::map" = "Karta";
 "panel::media_browser" = "Media";
