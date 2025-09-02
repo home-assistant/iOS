@@ -663,7 +663,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Reset";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.reset_section.reset_web_cache.title" = "Reset client cache";
 "settings.server_select.page_title" = "സെർവർ";
 "settings.server_select.title" = "സെർവർ";
 "settings.status_section.header" = "Status";

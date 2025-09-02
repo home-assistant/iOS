@@ -663,7 +663,7 @@ Home Assistant היא תוכנת אוטומציה ביתית חינמית ובק
 "settings.reset_section.reset_alert.title" = "איפוס";
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "איפוס";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.reset_section.reset_web_cache.title" = "Reset client cache";
 "settings.server_select.page_title" = "שרת";
 "settings.server_select.title" = "שרת";
 "settings.status_section.header" = "מצב";
