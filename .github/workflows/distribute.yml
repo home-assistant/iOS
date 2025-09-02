@@ -39,6 +39,9 @@ jobs:
       - name: Install iOS
         run: xcodebuild -downloadPlatform iOS
 
+      - name: Install watchOS
+        run: xcodebuild -downloadPlatform watchOS
+
       - name: Build ${{ matrix.kind }}
         run: |
           bundle exec fastlane ${{ matrix.kind }} build
