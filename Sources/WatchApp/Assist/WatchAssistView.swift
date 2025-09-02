@@ -100,6 +100,14 @@ struct WatchAssistView: View {
         NavigationLink(destination: VolumeView()) {
             Image(systemSymbol: .speakerWave2Fill)
         }
+        .modify { view in
+            if #available(watchOS 26.0, *) {
+                view
+                    .tint(.green)
+            } else {
+                view
+            }
+        }
     }
 
     @ViewBuilder
@@ -113,7 +121,9 @@ struct WatchAssistView: View {
             .ignoresSafeArea()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .modify {
-                if #available(watchOS 10, *) {
+                if #available(watchOS 26.0, *) {
+                    $0.glassEffect(.clear, in: .circle)
+                } else if #available(watchOS 10, *) {
                     $0.background(.regularMaterial)
                 } else {
                     $0.background(.black.opacity(0.5))
@@ -173,7 +183,7 @@ struct WatchAssistView: View {
         Button(action: {
             viewModel.assist()
         }, label: {
-            VStack(spacing: .zero) {
+            VStack(spacing: DesignSystem.Spaces.one) {
                 if #available(watchOS 10.0, *) {
                     Image(systemSymbol: .waveformCircleFill)
                         .font(.system(size: Constants.micRecordingFontSizeLarge))
@@ -188,12 +198,13 @@ struct WatchAssistView: View {
                     Image(systemSymbol: .waveformCircleFill)
                         .font(.system(size: Constants.micRecordingFontSizeSmall))
                 }
-                Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
-                    .font(.system(size: Constants.micRecordingTextFontSize))
-                    .foregroundStyle(.gray)
-                Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
-                    .font(.footnote.bold())
-                    .padding()
+                VStack(spacing: .zero) {
+                    Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                        .font(.system(size: Constants.micRecordingTextFontSize))
+                        .foregroundStyle(.gray)
+                    Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                        .font(.footnote.bold())
+                }
             }
         })
         .buttonStyle(.plain)
