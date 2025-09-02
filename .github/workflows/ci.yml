@@ -109,6 +109,12 @@ jobs:
         if: steps.cache_pods.outputs.cache-hit != 'true'
         run: bundle exec pod install --repo-update
 
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.0-beta'
+      - name: Install iOS
+        run: xcodebuild -downloadPlatform iOS
+
       - name: Run tests
         run: bundle exec fastlane test
 
