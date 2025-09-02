@@ -114,7 +114,7 @@ jobs:
           xcode-version: '26.0-beta'
       - name: Install iOS
         run: xcodebuild -downloadPlatform iOS
-        
+
       - name: Install watchOS
         run: xcodebuild -downloadPlatform watchOS
 
