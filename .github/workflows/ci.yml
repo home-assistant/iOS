@@ -114,6 +114,9 @@ jobs:
           xcode-version: '26.0-beta'
       - name: Install iOS
         run: xcodebuild -downloadPlatform iOS
+        
+      - name: Install watchOS
+        run: xcodebuild -downloadPlatform watchOS
 
       - name: Run tests
         run: bundle exec fastlane test
