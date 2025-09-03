@@ -204,7 +204,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         postOnboardingNotificationPermission()
-        resetFrontendCacheIfNeeded()
         emptyStateObservations()
     }
 
@@ -971,21 +970,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             ]
         ))
     }
-
-    private func resetFrontendCacheIfNeeded(completion: (() -> Void)? = nil) {
-        // Reset the frontend cache if needed, e.g. after a server version change
-        if Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] ?? false {
-            Current.Log.info("Resetting frontend cache for server \(server.info.name)")
-            Current.websiteDataStoreHandler.cleanCache { [weak self] in
-                Current.Log.info("Frontend cache reset completed")
-                guard let self else { return }
-                Current.settingsStore.serverNeedsFrontendReset[server.identifier.rawValue] = nil
-                completion?()
-            }
-        } else {
-            completion?()
-        }
-    }
 }
 
 // MARK: - WebView
@@ -1305,16 +1289,12 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func load(request: URLRequest) {
-        resetFrontendCacheIfNeeded { [weak self] in
-            Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
-            self?.webView.load(request)
-        }
+        Current.Log.verbose("Requesting webView navigation to \(String(describing: request.url?.absoluteString))")
+        webView.load(request)
     }
 
     func reload() {
-        resetFrontendCacheIfNeeded { [weak self] in
-            Current.Log.verbose("Reload webView requested")
-            self?.webView.reload()
-        }
+        Current.Log.verbose("Reload webView requested")
+        webView.reload()
     }
 }
