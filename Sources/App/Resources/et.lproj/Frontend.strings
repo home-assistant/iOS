@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Arendaja tööriistad";
 "panel::energy" = "Energia";
 "panel::history" = "Ajalugu";
-"panel::logbook" = "Logi";
+"panel::logbook" = "Tegevused";
 "panel::mailbox" = "Postkast";
 "panel::map" = "Kaart";
 "panel::media_browser" = "Meediamängija";
