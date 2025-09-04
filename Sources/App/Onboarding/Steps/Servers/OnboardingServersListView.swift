@@ -288,15 +288,7 @@ struct OnboardingServersListView: View {
     @ViewBuilder
     private var list: some View {
         ForEach(viewModel.discoveredInstances, id: \.uuid) { instance in
-            if #available(iOS 17, *) {
-                Section {
-                    serverRow(instance: instance)
-                }
-                .frame(minHeight: Current.isCatalyst ? 60 : nil)
-                .listSectionSpacing(.compact)
-            } else {
-                serverRow(instance: instance)
-            }
+            serverRow(instance: instance)
         }
         .disabled(viewModel.currentlyInstanceLoading != nil)
         if !viewModel.discoveredInstances.isEmpty {
@@ -329,8 +321,12 @@ struct OnboardingServersListView: View {
                 internalOrExternalURLString: instance.internalOrExternalURL.absoluteString,
                 isLoading: instance == viewModel.currentlyInstanceLoading
             )
+            // To make button tappable in any part of it
+            .contentShape(Rectangle())
         })
         .tint(Color(uiColor: .label))
+        .buttonStyle(.plain)
+        .frame(maxWidth: DesignSystem.List.rowMaxWidth)
     }
 
     private var manualInputButton: some View {
