@@ -65,6 +65,10 @@ public enum DesignSystem {
 
     public enum Button {
         public static let minHeight: CGFloat = 40
-        public static let maxWidth: CGFloat = 600
+        public static let maxWidth: CGFloat = 380
+    }
+
+    public enum List {
+        public static let rowMaxWidth: CGFloat = 380
     }
 }

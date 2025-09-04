@@ -4,7 +4,6 @@ enum HAButtonStylesConstants {
     static var cornerRadius: CGFloat = 12
     static var disabledOpacity: CGFloat = 0.5
     static var horizontalPadding: CGFloat = 20
-    static var verticalPadding: CGFloat = 14
 }
 
 public struct HAButtonStyle: ButtonStyle {
@@ -16,7 +15,6 @@ public struct HAButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .modify { view in
                 if #available(iOS 26.0, watchOS 26.0, *) {
                     view
@@ -40,7 +38,6 @@ public struct HANeutralButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .background(Color.gray)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
@@ -56,7 +53,6 @@ public struct HANegativeButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .background(isEnabled ? .red : Color.gray)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
@@ -72,7 +68,6 @@ public struct HASecondaryButtonStyle: ButtonStyle {
             .foregroundColor(Color.haPrimary)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
     }
@@ -87,7 +82,6 @@ public struct HASecondaryNegativeButtonStyle: ButtonStyle {
             .foregroundColor(.red)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
     }
@@ -101,7 +95,6 @@ public struct HACriticalButtonStyle: ButtonStyle {
             .foregroundColor(.black)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .padding(.vertical, HAButtonStylesConstants.verticalPadding)
             .padding()
             .background(.red.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
