@@ -95,7 +95,6 @@ public struct HACriticalButtonStyle: ButtonStyle {
             .foregroundColor(.black)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .padding()
             .background(.red.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius))
             .overlay(RoundedRectangle(cornerRadius: HAButtonStylesConstants.cornerRadius).stroke(
