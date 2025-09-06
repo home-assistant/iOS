@@ -228,7 +228,7 @@
 "device_name.primary_button.title" = "Save";
 "device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
 "device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
-"device_name.title" = "How would you like to name this device?";
+"device_name.title" = "What would you like to call this device?";
 "done_label" = "Done";
 "download_manager.downloading.title" = "Downloading";
 "download_manager.failed.title" = "Failed to download file, error: %@";

@@ -1176,7 +1176,7 @@ Home Assistant is gratis en open source domotica-software met een focus op lokal
 "watch.labels.selected_pipeline.title" = "Pijplijn";
 "watch.placeholder_complication_name" = "Tijdelijke aanduiding";
 "watch.settings.no_items.phone.title" = "Geen items geconfigureerd, kies hieronder items.";
-"web_view.empty_state.body" = "Controleer je verbinding of probeer het later opnieuw. Als Home Assistant opnieuw wordt opstart, wordt de verbinding hersteld zodra deze weer beschikbaar is.";
+"web_view.empty_state.body" = "Controleer je verbinding of probeer het later opnieuw. Als Home Assistant opnieuw wordt opgestart, wordt de verbinding hersteld zodra deze weer beschikbaar is.";
 "web_view.empty_state.open_settings_button" = "App-instellingen openen";
 "web_view.empty_state.retry_button" = "Opnieuw proberen";
 "web_view.empty_state.title" = "Je hebt geen verbinding meer";
