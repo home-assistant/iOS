@@ -143,7 +143,7 @@ Navštivte {url} a dokončete nastavení.";
 "component::litterrobot::services::set_sleep_mode::fields::enabled::name" = "Povoleno";
 "component::lock::entity_component::_::state::locked" = "Zamčeno";
 "component::lock::entity_component::_::state::unlocked" = "Odemčeno";
-"component::lock::title" = "Zamknout";
+"component::lock::title" = "Zámek";
 "component::lutron_caseta::device_automation::trigger_subtype::off" = "Vypnuto";
 "component::lutron_caseta::device_automation::trigger_subtype::on" = "Zapnuto";
 "component::media_player::entity_component::_::state::idle" = "Nečinný";
