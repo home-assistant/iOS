@@ -13,6 +13,10 @@ final class WatchCommunicatorService {
     private var assistService: AssistServiceProtocol?
     private var pendingAudioData: Data?
 
+    // [sessionKey: [chunkIndex: Data]]
+    private var audioChunks: [String: [Int: Data]] = [:]
+    private var audioChunkCounts: [String: Int] = [:]
+
     func setup() {
         Current.servers.add(observer: self)
 
@@ -32,14 +36,6 @@ final class WatchCommunicatorService {
         }
 
         setupMessages()
-
-        Blob.observations.store[.init(queue: .main)] = { [weak self] blob in
-            Current.Log.verbose("Received blob: \(blob.identifier)")
-
-            if blob.identifier == InteractiveImmediateMessages.assistAudioData.rawValue {
-                self?.assistAudioData(blob: blob)
-            }
-        }
 
         Context.observations.store[.init(queue: .main)] = { context in
             Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
@@ -77,12 +73,48 @@ final class WatchCommunicatorService {
                 pushAction(message: message)
             case .assistPipelinesFetch:
                 assistPipelinesFetch(message: message)
-            case .assistAudioData:
-                // This will be handled by Blob observation due to amount of data
-                break
+            case .assistAudioDataChunked:
+                handleAssistAudioChunkedMessage(message)
             case .magicItemPressed:
                 magicItemPressed(message: message)
             }
+        }
+    }
+
+    private func handleAssistAudioChunkedMessage(_ message: InteractiveImmediateMessage) {
+        guard let chunkData = message.content["chunkData"] as? Data,
+              let chunkIndex = message.content["chunkIndex"] as? Int,
+              let totalChunks = message.content["totalChunks"] as? Int,
+              let serverId = message.content["serverId"] as? String,
+              let pipelineId = message.content["pipelineId"] as? String else {
+            Current.Log.error("Invalid chunked message data")
+            return
+        }
+        let sessionKey = serverId + "_" + pipelineId
+        if audioChunks[sessionKey] == nil {
+            audioChunks[sessionKey] = [:]
+        }
+        audioChunks[sessionKey]?[chunkIndex] = chunkData
+        audioChunkCounts[sessionKey] = totalChunks
+
+        // Reply acknowledging receipt of this chunk
+        message.reply(.init(identifier: "assistAudioChunkAck", content: [
+            "acknowledged": true,
+            "chunkIndex": chunkIndex,
+            "totalChunks": totalChunks,
+        ]))
+
+        // Check if all chunks are received
+        if let receivedChunks = audioChunks[sessionKey],
+           receivedChunks.count == totalChunks {
+            // Assemble data in order
+            let sortedChunks = receivedChunks.keys.sorted().compactMap { receivedChunks[$0] }
+            let combinedData = sortedChunks.reduce(Data(), +)
+            // Clean up
+            audioChunks.removeValue(forKey: sessionKey)
+            audioChunkCounts.removeValue(forKey: sessionKey)
+            // Call assistAudioData
+            assistAudioData(message: message.toImmediateMessage(), data: combinedData)
         }
     }
 
@@ -291,23 +323,22 @@ extension WatchCommunicatorService {
         }
     }
 
-    private func assistAudioData(blob: Blob) {
-        let serverId = blob.metadata?["serverId"] as? String
+    private func assistAudioData(message: ImmediateMessage, data: Data) {
+        let serverId = message.content["serverId"] as? String
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
             .servers.all.first else {
-            let errorMessage = "No server available to execute message \(blob.identifier)"
+            let errorMessage = "No server available to execute message \(message.identifier)"
             Current.Log.warning(errorMessage)
             return
         }
 
-        let pipelineId = blob.metadata?["pipelineId"] as? String
-        guard let sampleRate = blob.metadata?["sampleRate"] as? Double else {
-            let errorMessage = "No sample rate received in message \(blob.identifier)"
+        let pipelineId = message.content["pipelineId"] as? String
+        guard let sampleRate = message.content["sampleRate"] as? Double else {
+            let errorMessage = "No sample rate received in message \(message.identifier)"
             Current.Log.error(errorMessage)
             return
         }
-        let audioData = blob.content
-        pendingAudioData = audioData
+        pendingAudioData = data
         initAssistServiceIfNeeded(server: server).assist(source: .audio(
             pipelineId: pipelineId,
             audioSampleRate: sampleRate
@@ -401,5 +432,11 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
         _ = HomeAssistantAPI.SyncWatchContext()
+    }
+}
+
+private extension InteractiveImmediateMessage {
+    func toImmediateMessage() -> ImmediateMessage {
+        ImmediateMessage(identifier: identifier, content: content)
     }
 }
