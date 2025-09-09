@@ -225,9 +225,9 @@
 "debug.reset.entities_database.title" = "Reset app entities database";
 "debug_section_label" = "Debug";
 "delete" = "Usuń";
-"device_name.primary_button.title" = "Save";
+"device_name.primary_button.title" = "Zapisz";
 "device_name.subtitle" = "This is used to identify your device in your Home Assistant.";
-"device_name.textfield.placeholder" = "iPhone/iPad/Mac name";
+"device_name.textfield.placeholder" = "Nazwa iPhone/iPad/Mac";
 "device_name.title" = "How would you like to name this device?";
 "done_label" = "Gotowe";
 "download_manager.downloading.title" = "Downloading";
@@ -348,7 +348,7 @@
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Start listening";
 "magic_item.action.assist.title" = "Assist";
-"magic_item.action.navigation_path.placeholder" = "e.g. /lovelace/cameras";
+"magic_item.action.navigation_path.placeholder" = "np. /lovelace/cameras";
 "magic_item.action.navigation_path.title" = "Navigation path";
 "magic_item.action.on_tap" = "On tap";
 "magic_item.action.script.title" = "Script";
@@ -521,7 +521,7 @@
 "onboarding.scanning.manual.button.title" = "Enter address manually";
 "onboarding.scanning.manual_hint" = "Nie możesz znaleźć swojego serwera?";
 "onboarding.scanning.title" = "Wyszukiwanie serwerów Home Assistanta";
-"onboarding.servers.auto_connect.button" = "Connect";
+"onboarding.servers.auto_connect.button" = "Połącz";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Searching on home network";
@@ -603,7 +603,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.sensor_send_type.title" = "Sensory wysłane";
 "settings.connection_section.servers" = "Serwery";
 "settings.connection_section.servers_footer" = "Reorder to define default server";
-"settings.connection_section.servers_header" = "Servers";
+"settings.connection_section.servers_header" = "Serwery";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
 "settings.connection_section.ssid_permission_message" = "Dostęp do identyfikatorów SSID w tle wymaga, aby ustawienia lokalizacji były ustawione na „Zawsze”. Kliknij tutaj, aby zmienić ustawienia.";
 "settings.connection_section.validate_error.edit_url" = "Edytuj adres URL";
@@ -887,9 +887,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings_sensors.periodic_update.description_mac" = "Po włączeniu, te sensory będą aktualizować się z tą częstotliwością, gdy aplikacja jest otwarta. Niektóre sensory będą aktualizować się częściej.";
 "settings_sensors.periodic_update.off" = "Wyłączona";
 "settings_sensors.periodic_update.title" = "Okresowa aktualizacja";
-"settings_sensors.permissions.header" = "Permissions";
+"settings_sensors.permissions.header" = "Uprawnienia";
 "settings_sensors.sensors.enable_all" = "Enable all sensors";
-"settings_sensors.sensors.header" = "Sensors";
+"settings_sensors.sensors.header" = "Sensory";
 "settings_sensors.settings.footer" = "Zmiany zostaną zastosowane przy kolejnej aktualizacji.";
 "settings_sensors.settings.header" = "Ustawienia";
 "settings_sensors.title" = "Sensory";
@@ -1019,7 +1019,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "watch.debug.delete_db.reset.title" = "Reset configuration";
 "watch.debug.delete_db.title" = "Delete watch configuration";
 "watch.home.cancel_and_use_cache.title" = "Cancel and use cache";
-"watch.home.loading.skip.title" = "Skip";
+"watch.home.loading.skip.title" = "Pomiń";
 "watch.home.run.confirmation.title" = "Are you sure you want to run \"%@\"?";
 "watch.labels.complication_group.circular_small.description" = "Use circular small complications to display content in the corners of the Color watch face.";
 "watch.labels.complication_group.circular_small.name" = "Okrągły Mały";
@@ -1204,7 +1204,7 @@ Home Assistant is free and open source home automation software with a focus on 
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Światło";
-"widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
+"widgets.controls.open_entity.configuration.parameter.entity" = "Encja";
 "widgets.controls.open_entity.configuration.title" = "Open Entity";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Strona";
