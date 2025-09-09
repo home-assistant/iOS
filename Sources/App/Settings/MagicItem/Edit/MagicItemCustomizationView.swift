@@ -112,7 +112,7 @@ struct MagicItemCustomizationView: View {
 
     private func mainInformationView(info: MagicItem.Info) -> some View {
         Section {
-            HStack(spacing: Spaces.two) {
+            HStack(spacing: DesignSystem.Spaces.two) {
                 IconPicker(
                     selectedIcon: .init(get: {
                         viewModel.item.icon(info: info)
@@ -142,13 +142,6 @@ struct MagicItemCustomizationView: View {
             }
         } header: {
             Text(verbatim: L10n.MagicItem.DisplayText.title)
-        } footer: {
-            if viewModel.item.type == .script {
-                Text(verbatim: L10n.MagicItem.NameAndIcon.footer)
-            }
-            if viewModel.item.type == .scene {
-                Text(verbatim: L10n.MagicItem.NameAndIcon.Footer.scenes)
-            }
         }
     }
 
