@@ -6,10 +6,6 @@ struct WatchHomeView: View {
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
 
-    init() {
-        MaterialDesignIcons.register()
-    }
-
     var body: some View {
         navigation
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
