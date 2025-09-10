@@ -675,6 +675,8 @@
 		425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573D92B57DDE000145217 /* WindowScenesManager.test.swift */; };
 		425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */; };
 		425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EC2B58904000145217 /* CarPlayEntityListItem.swift */; };
+		425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
+		425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -2167,6 +2169,7 @@
 		425573EA2B588FFB00145217 /* CarPlayListItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayListItemProvider.swift; sourceTree = "<group>"; };
 		425573EC2B58904000145217 /* CarPlayEntityListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntityListItem.swift; sourceTree = "<group>"; };
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
+		425762722E71A8B800AE5083 /* ModalCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalCloseButton.swift; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
@@ -4828,6 +4831,7 @@
 				42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */,
 				4254C4CC2D103F7B00245021 /* ExternalLinkButton.swift */,
 				42B74A5C2D36A47E00C37304 /* CloseButton.swift */,
+				425762722E71A8B800AE5083 /* ModalCloseButton.swift */,
 				42CB330E2DAE530400491DCE /* SettingsButton.swift */,
 				42C131CF2D66084C00AF48E6 /* PillView.swift */,
 				427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */,
@@ -8249,6 +8253,7 @@
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				11ADF941267D34B20040A7E3 /* NotificationsCommandManager.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
+				425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */,
 				113E73112518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295724F30E2500C8A7D1 /* Updater.swift in Sources */,
 				42BB4C382CD26490003E47FD /* HATypedRequest+App.swift in Sources */,
@@ -8401,6 +8406,7 @@
 				420CFC792D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */,
 				42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */,
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
+				425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */,
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */,

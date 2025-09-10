@@ -53,7 +53,7 @@ struct BarcodeScannerView: View {
         VStack(spacing: 8) {
             HStack {
                 Spacer()
-                CloseButton(tint: .white, size: .medium) {
+                ModalCloseButton(tint: .white) {
                     viewModel.aborted(.canceled)
                     dismiss()
                 }
