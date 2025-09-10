@@ -366,6 +366,8 @@
 "magic_item.item_type.script.list.title" = "Scripts";
 "magic_item.item_type.selection.list.title" = "Item type";
 "magic_item.name.title" = "Name";
+"magic_item.name_and_icon.footer" = "Edit script name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scripts'.";
+"magic_item.name_and_icon.footer.scenes" = "Edit scene name and icon in frontend under 'Settings' > 'Automations & scenes' > 'Scenes'.";
 "magic_item.require_confirmation.title" = "Require confirmation";
 "magic_item.text_color.title" = "Text color";
 "magic_item.use_custom_colors.title" = "Use custom colors";
