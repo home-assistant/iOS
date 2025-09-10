@@ -22,8 +22,8 @@ public struct ModalCloseButton: View {
             Image(systemSymbol: .xmark)
                 .resizable()
                 .frame(width: 16, height: 16)
-                .buttonStyle(.plain)
         })
+        .buttonStyle(.plain)
         .foregroundStyle(tint)
     }
 
