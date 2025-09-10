@@ -10,7 +10,7 @@ struct WebRTCVideoPlayerViewControls: View {
             VStack {
                 HStack {
                     Spacer()
-                    CloseButton(tint: .white, size: .large) {
+                    ModalCloseButton(tint: .white) {
                         close()
                     }
                     .padding(16)

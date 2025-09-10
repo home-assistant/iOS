@@ -279,7 +279,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private func setupEmptyState() {
         let emptyState = WebViewEmptyStateWrapperView(server: server) { [weak self] in
             self?.hideEmptyState()
-            self?.reload()
+            self?.refresh()
         } settingsAction: { [weak self] in
             self?.showSettingsViewController()
         } dismissAction: { [weak self] in
@@ -1275,8 +1275,8 @@ extension WebViewController: WebViewControllerProtocol {
         if state == .connected {
             hideEmptyState()
         } else {
-            // Start a 4-second timer. If not interrupted by a 'connected' state, set alpha to 1.
-            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: false) { [weak self] _ in
+            // Start a 10-second timer. If not interrupted by a 'connected' state, set alpha to 1.
+            emptyStateTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
                 self?.showEmptyState()
             }
         }
