@@ -23,9 +23,11 @@ struct ControlCover: ControlWidget {
                 intent.value = !template.value
                 intent.toggle = false
                 return intent
-            }()) {
+            }(), label: {
                 Label(template.name, systemImage: template.icon.id)
-            }
+            }, valueLabel: { isOn in
+                Label(isOn ? L10n.openLabel : L10n.closeLabel, systemImage: template.icon.id)
+            })
             .tint(Color.haPrimary)
         }
         .displayName(.init(stringLiteral: L10n.Widgets.Controls.Cover.title))
