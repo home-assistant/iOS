@@ -9,6 +9,12 @@ struct ManualURLEntryView: View {
 
     let connectAction: (URL) -> Void
 
+    // Centralized schemes to avoid hardcoded duplication
+    private enum URLScheme: String, CaseIterable {
+        case http = "http://"
+        case https = "https://"
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -52,25 +58,23 @@ struct ManualURLEntryView: View {
     @ViewBuilder
     private var httpOrHttpsSection: some View {
         let cleanedURL = urlString.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        // 7 is the count of http:// chars
-        let minCharsToActivateSection = 7
+        // Use the length of the shortest scheme to determine activation threshold
+        let minCharsToActivateSection = URLScheme.allCases.map { $0.rawValue.count }.min() ?? 0
+
+        // Check if the input already starts with any of our supported schemes
+        let hasSupportedScheme = URLScheme.allCases.contains { cleanedURL.hasPrefix($0.rawValue) }
+
         if !cleanedURL.isEmpty,
-           !cleanedURL.starts(with: "http://"),
-           !cleanedURL.starts(with: "https://"),
+           !hasSupportedScheme,
            cleanedURL.count >= minCharsToActivateSection {
             Section(L10n.Onboarding.ManualSetup.HelperSection.title) {
-                HStack {
+                ForEach(URLScheme.allCases, id: \.rawValue) { scheme in
                     Button(action: {
-                        urlString = "http://\(urlString)"
+                        urlString = scheme.rawValue + urlString
                     }, label: {
-                        Text(verbatim: "http://\(urlString)")
+                        Text(verbatim: scheme.rawValue + urlString)
                     })
                 }
-                Button(action: {
-                    urlString = "https://\(urlString)"
-                }, label: {
-                    Text(verbatim: "https://\(urlString)")
-                })
             }
             .buttonStyle(.primaryButton)
             .listRowBackground(Color.clear)
