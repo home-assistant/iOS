@@ -35,7 +35,7 @@ public struct HAOutlinedButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
-            .foregroundColor(.haPrimary)
+            .foregroundColor(isEnabled ? .haPrimary : Color.gray)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .overlay(
