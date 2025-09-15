@@ -16,7 +16,7 @@ struct ManualURLEntryView: View {
     }
 
     // Use the length of the shortest scheme to determine activation threshold
-    private let minCharsToActivateSection = URLScheme.allCases.map { $0.rawValue.count }.min() ?? 0
+    private let minCharsToActivateSection = URLScheme.allCases.map(\.rawValue.count).min() ?? 0
 
     var body: some View {
         NavigationView {
