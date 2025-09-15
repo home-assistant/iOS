@@ -15,6 +15,9 @@ struct ManualURLEntryView: View {
         case https = "https://"
     }
 
+    // Use the length of the shortest scheme to determine activation threshold
+    private let minCharsToActivateSection = URLScheme.allCases.map { $0.rawValue.count }.min() ?? 0
+
     var body: some View {
         NavigationView {
             List {
@@ -58,8 +61,6 @@ struct ManualURLEntryView: View {
     @ViewBuilder
     private var httpOrHttpsSection: some View {
         let cleanedURL = urlString.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        // Use the length of the shortest scheme to determine activation threshold
-        let minCharsToActivateSection = URLScheme.allCases.map { $0.rawValue.count }.min() ?? 0
 
         // Check if the input already starts with any of our supported schemes
         let hasSupportedScheme = URLScheme.allCases.contains { cleanedURL.hasPrefix($0.rawValue) }
