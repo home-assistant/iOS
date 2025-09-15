@@ -42,15 +42,17 @@ struct WatchMagicViewRow: View {
                 .tint(.red)
             }
         )
-        .listRowBackground(Color.clear)
         .modify({ view in
             if #available(watchOS 26.0, *) {
                 if let backgroundForWatchItem {
                     view
+                        .listRowBackground(Color.clear)
                         .buttonStyle(.glassProminent)
                         .tint(backgroundForWatchItem)
                 } else {
-                    view.buttonStyle(.glass)
+                    view
+                        .listRowBackground(Color.clear)
+                        .buttonStyle(.glass)
                 }
             } else {
                 view
