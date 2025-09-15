@@ -29,6 +29,23 @@ public struct HAButtonStyle: ButtonStyle {
     }
 }
 
+public struct HAOutlinedButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled: Bool
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.headline)
+            .foregroundColor(isEnabled ? Color.haPrimary : Color.gray)
+            .haButtonBasicSizing()
+            .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
+            .overlay(
+                Capsule()
+                    .stroke(isEnabled ? Color.haColorBorderPrimaryQuiet : Color.gray, lineWidth: 1)
+            )
+            .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
+    }
+}
+
 public struct HANeutralButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
 
@@ -116,6 +133,12 @@ public struct HALinkButtonStyle: ButtonStyle {
 public extension ButtonStyle where Self == HAButtonStyle {
     static var primaryButton: HAButtonStyle {
         HAButtonStyle()
+    }
+}
+
+public extension ButtonStyle where Self == HAOutlinedButtonStyle {
+    static var outlinedButton: HAOutlinedButtonStyle {
+        HAOutlinedButtonStyle()
     }
 }
 
