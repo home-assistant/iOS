@@ -35,7 +35,7 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.0-beta'
+          xcode-version: '26.0'
       - name: Install iOS
         run: xcodebuild -downloadPlatform iOS
 
