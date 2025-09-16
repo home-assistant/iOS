@@ -96,20 +96,20 @@
 "component::improv_ble::config::abort::cannot_connect" = "Verbindung fehlgeschlagen";
 "component::improv_ble::config::abort::characteristic_missing" = "Das Gerät ist entweder bereits mit WLAN verbunden oder kann keine Verbindung mehr herstellen. Wenn du es mit einem anderen Netzwerk verbinden möchtest, versuche zunächst, es auf die Werkseinstellungen zurückzusetzen.";
 "component::improv_ble::config::abort::no_devices_found" = "Keine Geräte im Netzwerk gefunden";
-"component::improv_ble::config::abort::provision_successful" = "Das Gerät hat sich erfolgreich mit dem WLAN-Netzwerk verbunden.";
-"component::improv_ble::config::abort::provision_successful_url" = "Das Gerät hat sich erfolgreich mit dem WLAN-Netzwerk verbunden. \
+"component::improv_ble::config::abort::provision_successful" = "Das Gerät hat sich erfolgreich mit dem WLAN verbunden.";
+"component::improv_ble::config::abort::provision_successful_url" = "Das Gerät hat sich erfolgreich mit dem WLAN verbunden.\
 \
-Bitte besuche {url}, um die Einrichtung abzuschließen.";
+Bitte [klicke hier]({url}), um die Einrichtung abzuschließen.";
 "component::improv_ble::config::abort::unknown" = "Unerwarteter Fehler";
-"component::improv_ble::config::error::unable_to_connect" = "Das Gerät konnte keine Verbindung zum WLAN-Netzwerk herstellen. Überprüfe, ob SSID und Passwort korrekt sind, und versuche es erneut.";
+"component::improv_ble::config::error::unable_to_connect" = "Das Gerät konnte keine Verbindung zum WLAN herstellen. Überprüfe, ob SSID und Passwort korrekt sind, und versuche es erneut.";
 "component::improv_ble::config::flow_title" = "{name}";
 "component::improv_ble::config::progress::authorize" = "Das Gerät erfordert eine Autorisierung. Bitte drücke seine Autorisierungstaste oder lies im Handbuch des Geräts nach, wie du vorgehen musst.";
-"component::improv_ble::config::progress::provisioning" = "Das Gerät stellt eine Verbindung zum WLAN-Netzwerk her.";
+"component::improv_ble::config::progress::provisioning" = "Das Gerät stellt eine Verbindung zum WLAN her.";
 "component::improv_ble::config::step::bluetooth_confirm::description" = "Möchtest du {name} einrichten?";
 "component::improv_ble::config::step::identify::description" = "Das Gerät identifiziert sich nun selbst, beispielsweise durch Blinken oder Piepen.";
 "component::improv_ble::config::step::main_menu::description" = "Wähle den nächsten Schritt.";
 "component::improv_ble::config::step::main_menu::menu_options::identify" = "Gerät identifizieren";
-"component::improv_ble::config::step::main_menu::menu_options::provision" = "Gerät mit einem WLAN-Netzwerk verbinden";
+"component::improv_ble::config::step::main_menu::menu_options::provision" = "Gerät mit einem WLAN verbinden";
 "component::improv_ble::config::step::provision::data::password" = "Passwort";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
 "component::improv_ble::config::step::provision::description" = "Gib WLAN-Anmeldedaten ein, um das Gerät mit deinem Netzwerk zu verbinden.";
