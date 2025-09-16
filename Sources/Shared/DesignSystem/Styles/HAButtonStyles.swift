@@ -15,15 +15,7 @@ public struct HAButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .modify { view in
-                if #available(iOS 26.0, watchOS 26.0, *) {
-                    view
-                        .glassEffect(.regular.interactive().tint(isEnabled ? Color.haPrimary : Color.gray))
-                } else {
-                    view
-                        .background(isEnabled ? Color.haPrimary : Color.gray)
-                }
-            }
+            .background(isEnabled ? Color.haPrimary : Color.gray)
             .clipShape(Capsule())
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
     }
