@@ -24,7 +24,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case improvConfigureDevice = "improv/configure_device"
 
     static var configResult: [String: Any] {
-        return [
+        [
             "hasSettingsScreen": !Current.isCatalyst,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
