@@ -98,8 +98,8 @@
 "component::improv_ble::config::abort::no_devices_found" = "网络上未找到任何设备";
 "component::improv_ble::config::abort::provision_successful" = "设备已成功连接到无线网络。";
 "component::improv_ble::config::abort::provision_successful_url" = "设备已成功连接到无线网络。 \
-\
-请访问 {url} 完成设置。";
+ \
+请【单击此处】({url}) 完成设置。";
 "component::improv_ble::config::abort::unknown" = "意外错误";
 "component::improv_ble::config::error::unable_to_connect" = "此设备无法连接到无线网络。请检查 SSID 和密码是否正确，然后重试。";
 "component::improv_ble::config::flow_title" = "{name}";
