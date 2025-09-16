@@ -2,7 +2,7 @@
 import XCTest
 
 final class WebViewExternalBusMessageTests: XCTestCase {
-    func test_externalBus_messageKeys() {
+    func testExternalBusMessageKeys() {
         XCTAssertEqual(WebViewExternalBusMessage.configGet.rawValue, "config/get")
         XCTAssertEqual(WebViewExternalBusMessage.configScreenShow.rawValue, "config_screen/show")
         XCTAssertEqual(WebViewExternalBusMessage.haptic.rawValue, "haptic")
@@ -29,7 +29,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 16)
     }
 
-    func test_externalBus_outgoing_messageKeys() {
+    func testExternalBusOutgoingMessageKeys() {
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showSidebar.rawValue, "sidebar/show")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue, "automation/editor/show")
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.barCodeScanResult.rawValue, "bar_code/scan_result")
@@ -45,5 +45,26 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
 
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 7)
+    }
+
+    func testConfigResultIncludesAllExpectedKeys() {
+        let result = WebViewExternalBusMessage.configResult
+
+        // Expected keys currently defined in WebViewExternalBusMessage.configResult
+        let expectedKeys: Set<String> = [
+            "hasSettingsScreen",
+            "canWriteTag",
+            "canCommissionMatter",
+            "canImportThreadCredentials",
+            "hasBarCodeScanner",
+            "canTransferThreadCredentialsToKeychain",
+            "hasAssist",
+            "canSetupImprov",
+            "downloadFileSupported",
+            "appVersion",
+        ]
+
+        let actualKeys = Set(result.keys)
+        XCTAssertTrue(expectedKeys.isSubset(of: actualKeys), "Missing keys: \(expectedKeys.subtracting(actualKeys))")
     }
 }

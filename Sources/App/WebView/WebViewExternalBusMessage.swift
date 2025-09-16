@@ -1,5 +1,10 @@
 import Foundation
+import Shared
 
+/// External Bus message types used by the web view integration.
+/// - See: Home Assistant External Bus docs: https://developers.home-assistant.io/docs/frontend/external-bus
+/// - See: Frontend implementation:
+/// https://github.com/home-assistant/frontend/blob/dev/src/external_app/external_messaging.ts
 enum WebViewExternalBusMessage: String, CaseIterable {
     case configGet = "config/get"
     case configScreenShow = "config_screen/show"
@@ -17,6 +22,20 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case assistShow = "assist/show"
     case scanForImprov = "improv/scan"
     case improvConfigureDevice = "improv/configure_device"
+
+    static var configResult: [String: Any] = [
+        "hasSettingsScreen": !Current.isCatalyst,
+        "canWriteTag": Current.tags.isNFCAvailable,
+        "canCommissionMatter": Current.matter.isAvailable,
+        "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
+        "hasBarCodeScanner": true,
+        "canTransferThreadCredentialsToKeychain": Current.matter
+            .threadCredentialsStoreInKeychainEnabled,
+        "hasAssist": true,
+        "canSetupImprov": true,
+        "downloadFileSupported": true,
+        "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
+    ]
 }
 
 enum WebViewExternalBusOutgoingMessage: String, CaseIterable {

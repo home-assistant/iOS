@@ -50,18 +50,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                         seal(WebSocketMessage(
                             id: incomingMessage.ID!,
                             type: "result",
-                            result: [
-                                "hasSettingsScreen": !Current.isCatalyst,
-                                "canWriteTag": Current.tags.isNFCAvailable,
-                                "canCommissionMatter": Current.matter.isAvailable,
-                                "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
-                                "hasBarCodeScanner": true,
-                                "canTransferThreadCredentialsToKeychain": Current.matter
-                                    .threadCredentialsStoreInKeychainEnabled,
-                                "hasAssist": true,
-                                "canSetupImprov": true,
-                                "downloadFileSupported": true,
-                            ]
+                            result: WebViewExternalBusMessage.configResult
                         ))
                     }
                 }
