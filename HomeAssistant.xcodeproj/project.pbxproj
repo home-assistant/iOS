@@ -514,6 +514,7 @@
 		4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */; };
 		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
+		4201605F2E79A68C00F68044 /* BasePermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201605E2E79A68C00F68044 /* BasePermissionView.swift */; };
 		420461692C8F29440062E89F /* ControlLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420461682C8F29440062E89F /* ControlLight.swift */; };
 		4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */; };
 		4206DE5C2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE5B2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift */; };
@@ -2033,6 +2034,7 @@
 		4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsView.swift; sourceTree = "<group>"; };
 		4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetDetailsAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Details/WidgetDetailsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
+		4201605E2E79A68C00F68044 /* BasePermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasePermissionView.swift; sourceTree = "<group>"; };
 		420461682C8F29440062E89F /* ControlLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLight.swift; sourceTree = "<group>"; };
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
 		4206DE5B2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebViewExternalMessageHandler.swift; sourceTree = "<group>"; };
@@ -4735,6 +4737,7 @@
 			isa = PBXGroup;
 			children = (
 				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
+				4201605E2E79A68C00F68044 /* BasePermissionView.swift */,
 			);
 			path = Permissions;
 			sourceTree = "<group>";
@@ -8211,6 +8214,7 @@
 			files = (
 				423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
+				4201605F2E79A68C00F68044 /* BasePermissionView.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
