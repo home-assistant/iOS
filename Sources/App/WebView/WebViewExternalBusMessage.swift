@@ -23,19 +23,21 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case scanForImprov = "improv/scan"
     case improvConfigureDevice = "improv/configure_device"
 
-    static var configResult: [String: Any] = [
-        "hasSettingsScreen": !Current.isCatalyst,
-        "canWriteTag": Current.tags.isNFCAvailable,
-        "canCommissionMatter": Current.matter.isAvailable,
-        "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
-        "hasBarCodeScanner": true,
-        "canTransferThreadCredentialsToKeychain": Current.matter
-            .threadCredentialsStoreInKeychainEnabled,
-        "hasAssist": true,
-        "canSetupImprov": true,
-        "downloadFileSupported": true,
-        "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-    ]
+    static var configResult: [String: Any] {
+        return [
+            "hasSettingsScreen": !Current.isCatalyst,
+            "canWriteTag": Current.tags.isNFCAvailable,
+            "canCommissionMatter": Current.matter.isAvailable,
+            "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
+            "hasBarCodeScanner": true,
+            "canTransferThreadCredentialsToKeychain": Current.matter
+                .threadCredentialsStoreInKeychainEnabled,
+            "hasAssist": true,
+            "canSetupImprov": true,
+            "downloadFileSupported": true,
+            "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
+        ]
+    }
 }
 
 enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
