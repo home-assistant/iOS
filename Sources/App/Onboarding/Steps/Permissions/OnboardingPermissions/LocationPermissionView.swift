@@ -7,84 +7,36 @@ struct LocationPermissionView: View {
     let completeAction: () -> Void
 
     var body: some View {
-        VStack(spacing: Spaces.three) {
-            header
-            Spacer()
-            actionButtons
-        }
-        .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-        .padding()
-        .alert(
-            L10n.Onboarding.Permission.Location.Deny.Alert.header,
-            isPresented: $viewModel.showDenyAlert,
-            actions: {
-                Button(L10n.continueLabel, role: .destructive) {
-                    viewModel.requestLocationPermission()
-                }
+        BasePermissionView(
+            illustration: {
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [6]))
+                    .frame(width: 120, height: 120)
+                    .foregroundStyle(.secondary)
+                    .overlay(
+                        Text("Illustration")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    )
+                    .padding(.top, DesignSystem.Spaces.four)
             },
-            message: {
-                Text(verbatim: L10n.Onboarding.Permission.Location.Deny.Alert.body)
+            title: "Use this device's location for automations",
+            primaryDescription: "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.",
+            secondaryDescription: "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.",
+            primaryActionTitle: "Share my location",
+            primaryAction: {
+                viewModel.requestLocationPermission()
+            },
+            secondaryActionTitle: "Do not share my location",
+            secondaryAction: {
+                // TODO: Move to the next screen without requesting permission
             }
         )
+        .navigationBarTitleDisplayMode(.inline)
         .onChange(of: viewModel.shouldComplete) { newValue in
             if newValue {
                 completeAction()
             }
-        }
-    }
-
-    @ViewBuilder
-    private var header: some View {
-        VStack(spacing: Spaces.two) {
-            Image(uiImage: permission.enableIcon.image(
-                ofSize: .init(width: 100, height: 100),
-                color: nil
-            ).withRenderingMode(.alwaysTemplate))
-                .foregroundStyle(Color.haPrimary)
-            Text(verbatim: permission.title)
-                .font(.title.bold())
-            Text(verbatim: permission.enableDescription)
-                .multilineTextAlignment(.center)
-                .opacity(0.5)
-            bullets
-                .padding(.top, Spaces.one)
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private var bullets: some View {
-        VStack(alignment: .leading) {
-            ForEach(permission.enableBulletPoints, id: \.id) { bullet in
-                makeBulletRow(bullet)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func makeBulletRow(_ bullet: PermissionType.BulletPoint) -> some View {
-        HStack(spacing: Spaces.one) {
-            Image(uiImage: bullet.icon.image(ofSize: .init(width: 35, height: 35), color: .accent))
-                .foregroundStyle(Color.haPrimary)
-            Text(verbatim: bullet.text)
-                .font(.body.bold())
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
-        }
-    }
-
-    private var actionButtons: some View {
-        VStack(spacing: Spaces.two) {
-            Button(action: {
-                viewModel.enableLocationSensor()
-                viewModel.requestLocationPermission()
-            }, label: {
-                Text(L10n.continueLabel)
-            })
-            .buttonStyle(.primaryButton)
-            Button(action: {}, label: {
-                Text(L10n.Onboarding.Permissions.changeLaterNote)
-            })
-            .buttonStyle(.linkButton)
         }
     }
 }
