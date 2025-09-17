@@ -33,15 +33,6 @@ jobs:
       - name: Install Pods
         run: bundle exec pod install --repo-update
 
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '26.0'
-      - name: Install iOS
-        run: xcodebuild -downloadPlatform iOS
-
-      - name: Install watchOS
-        run: xcodebuild -downloadPlatform watchOS
-
       - name: Build ${{ matrix.kind }}
         run: |
           bundle exec fastlane ${{ matrix.kind }} build
