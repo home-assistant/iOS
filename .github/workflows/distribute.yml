@@ -33,6 +33,12 @@ jobs:
       - name: Install Pods
         run: bundle exec pod install --repo-update
 
+      - name: Clean up keychain and provisioning profile
+        if: ${{ always() }}
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
+  
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '26.0'
