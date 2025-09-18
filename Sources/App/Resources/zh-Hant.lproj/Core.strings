@@ -99,7 +99,7 @@
 "component::improv_ble::config::abort::provision_successful" = "裝置已成功連線至 Wi-Fi 網路。";
 "component::improv_ble::config::abort::provision_successful_url" = "裝置已成功連線至 Wi-Fi 網路。\
 \
-請瀏覽 {url} 以完成設定。";
+請跟隨[設定指引]({url}) 完成設定。";
 "component::improv_ble::config::abort::unknown" = "未預期錯誤";
 "component::improv_ble::config::error::unable_to_connect" = "該裝置無法連接到 Wi-Fi 網路。請檢查 SSID 和密碼是否正確，然後再試一次。";
 "component::improv_ble::config::flow_title" = "{name}";

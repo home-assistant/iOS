@@ -210,7 +210,7 @@ public enum CoreStrings {
   public static var componentImprovBleConfigAbortProvisionSuccessful: String { return CoreStrings.tr("Core", "component::improv_ble::config::abort::provision_successful") }
   /// The device has successfully connected to the Wi-Fi network.
   /// 
-  /// Please [click here]({url}) to finish setup.
+  /// Please finish the setup by following the [setup instructions]({url}).
   public static var componentImprovBleConfigAbortProvisionSuccessfulUrl: String { return CoreStrings.tr("Core", "component::improv_ble::config::abort::provision_successful_url") }
   /// Unexpected error
   public static var componentImprovBleConfigAbortUnknown: String { return CoreStrings.tr("Core", "component::improv_ble::config::abort::unknown") }
