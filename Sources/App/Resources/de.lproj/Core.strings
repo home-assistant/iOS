@@ -99,7 +99,7 @@
 "component::improv_ble::config::abort::provision_successful" = "Das Gerät hat sich erfolgreich mit dem WLAN verbunden.";
 "component::improv_ble::config::abort::provision_successful_url" = "Das Gerät hat sich erfolgreich mit dem WLAN verbunden.\
 \
-Bitte [klicke hier]({url}), um die Einrichtung abzuschließen.";
+Bitte schließe die Einrichtung ab, indem du den [Einrichtungsanweisungen]({url}) folgst.";
 "component::improv_ble::config::abort::unknown" = "Unerwarteter Fehler";
 "component::improv_ble::config::error::unable_to_connect" = "Das Gerät konnte keine Verbindung zum WLAN herstellen. Überprüfe, ob SSID und Passwort korrekt sind, und versuche es erneut.";
 "component::improv_ble::config::flow_title" = "{name}";

@@ -99,7 +99,7 @@
 "component::improv_ble::config::abort::provision_successful" = "Устройството е успешно свързано към Wi-Fi мрежата.";
 "component::improv_ble::config::abort::provision_successful_url" = "The device has successfully connected to the Wi-Fi network.\
 \
-Please [click here]({url}) to finish setup.";
+Please finish the setup by following the [setup instructions]({url}).";
 "component::improv_ble::config::abort::unknown" = "Неочаквана грешка";
 "component::improv_ble::config::error::unable_to_connect" = "The device could not connect to the Wi-Fi network. Check that the SSID and password are correct and try again.";
 "component::improv_ble::config::flow_title" = "{name}";

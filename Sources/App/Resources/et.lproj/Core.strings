@@ -97,9 +97,9 @@
 "component::improv_ble::config::abort::characteristic_missing" = "Seade on juba Wi-Fi-ga ühendatud või ei saa enam Wi-Fi-ga ühendust luua. Kui soovid selle teise võrguga ühendada, proovi see esmalt tehaseseadetele lähtestada.";
 "component::improv_ble::config::abort::no_devices_found" = "Võrgust ei leitud ühtegi seadet";
 "component::improv_ble::config::abort::provision_successful" = "Seade on edukalt ühendatud Wi-Fi võrguga.";
-"component::improv_ble::config::abort::provision_successful_url" = "Seade on edukalt ühendatud Wi-Fi võrguga. \
-\
- Seadistamise lõpetamiseks külasta {url} .";
+"component::improv_ble::config::abort::provision_successful_url" = "Seade on edukalt WiFi-võrguga ühendatud. \
+ \
+ Palun lõpeta seadistamine järgides [seadistusjuhiseid]( {url} ).";
 "component::improv_ble::config::abort::unknown" = "Ootamatu tõrge";
 "component::improv_ble::config::error::unable_to_connect" = "Seade ei saanud Wi-Fi-võrguga ühendust luua. Kontrolli kas SSID ja salasõna on õiged ja proovi uuesti.";
 "component::improv_ble::config::flow_title" = "{name}";

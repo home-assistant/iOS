@@ -99,7 +99,7 @@
 "component::improv_ble::config::abort::provision_successful" = "Zařízení se úspěšně připojilo k síti Wi-Fi.";
 "component::improv_ble::config::abort::provision_successful_url" = "Zařízení se úspěšně připojilo k síti Wi-Fi.\
 \
-Navštivte {url} a dokončete nastavení.";
+Dokončete nastavení podle [pokynů]({url}).";
 "component::improv_ble::config::abort::unknown" = "Neočekávaná chyba";
 "component::improv_ble::config::error::unable_to_connect" = "Zařízení se nemohlo připojit k síti Wi-Fi. Zkontrolujte správnost SSID a hesla a zkuste to znovu.";
 "component::improv_ble::config::flow_title" = "{name}";
