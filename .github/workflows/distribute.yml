@@ -22,7 +22,7 @@ jobs:
       matrix:
         kind: [mac, ios]
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
 
       - name: Install Brews
         run: brew bundle
@@ -33,7 +33,7 @@ jobs:
       - name: Install Pods
         run: bundle exec pod install --repo-update
 
-      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
+      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd  # v1.6.0
         with:
           xcode-version: '26.0'
       - name: Install iOS
@@ -64,33 +64,33 @@ jobs:
       - name: Dump Version Information
         run: cat Configuration/Version.xcconfig
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         name: "Upload iOS IPA"
         if: success() && matrix.kind == 'ios'
         with:
           name: ios-app-store.ipa
           path: build/ios/Home Assistant.ipa
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         name: "Upload iOS dSYMs"
         if: success() && matrix.kind == 'ios'
         with:
           name: ios.dSYM.zip
           path: build/ios/Home Assistant.app.dSYM.zip
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         name: "Upload Mac Developer ID App"
         if: success() && matrix.kind == 'mac'
         with:
           name: mac-developer-id.zip
           path: build/macos/home-assistant-mac.zip
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         name: "Upload Mac App Store Package"
         if: success() && matrix.kind == 'mac'
         with:
           name: mac-app-store.pkg
           path: build/macos/Home Assistant.pkg
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         name: "Upload Mac dSYMs"
         if: success() && matrix.kind == 'mac'
         with:
