@@ -99,7 +99,7 @@
 "component::improv_ble::config::abort::provision_successful" = "Устройство успешно подключилось к сети Wi-Fi.";
 "component::improv_ble::config::abort::provision_successful_url" = "Устройство успешно подключилось к сети Wi-Fi.\
 \
-Пожалуйста, перейдите по {url}, чтобы завершить настройку.";
+Пожалуйста, завершите настройку, следуя [инструкции по настройке]({url}).";
 "component::improv_ble::config::abort::unknown" = "Непредвиденная ошибка";
 "component::improv_ble::config::error::unable_to_connect" = "Устройству не удалось подключиться к сети Wi-Fi. Проверьте правильность SSID и пароля и повторите попытку.";
 "component::improv_ble::config::flow_title" = "{name}";
