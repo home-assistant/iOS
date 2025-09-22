@@ -40,7 +40,7 @@ final class NotificationSubControllerMedia: NotificationSubController {
 
         self.api = api
 
-        if let image = UIImage(data: data) {
+        if let data = try? Data(contentsOf: url, options: .alwaysMapped), let image = UIImage(data: data) {
             self.media = .image(image)
         } else {
             self.media = .playable(url)
@@ -57,20 +57,16 @@ final class NotificationSubControllerMedia: NotificationSubController {
         endSecurityScopeURL?.stopAccessingSecurityScopedResource()
     }
 
-    func start(with elements: NotificationElements) -> Promise<Void> {
+    func start() -> DynamicContent {
         switch media {
         case let .playable(url):
-            elements.movie.setHidden(false)
-            elements.movie.setLoops(true)
-            elements.movie.setMovieURL(url)
-            elements.movie.play()
+            return .video(url: url)
         case let .image(image):
-            elements.image.setHidden(false)
-            elements.image.setImage(image)
+            return .image(image)
         }
-
-        return .value(())
     }
 
-    func stop() {}
+    func stop() {
+        endSecurityScopeURL?.stopAccessingSecurityScopedResource()
+    }
 }

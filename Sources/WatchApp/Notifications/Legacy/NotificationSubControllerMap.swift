@@ -3,6 +3,7 @@ import PromiseKit
 import Shared
 import UserNotifications
 import WatchKit
+import MapKit
 
 class NotificationSubControllerMap: NotificationSubController {
     let api: HomeAssistantAPI
@@ -33,18 +34,23 @@ class NotificationSubControllerMap: NotificationSubController {
         nil
     }
 
-    func start(with elements: NotificationElements) -> Promise<Void> {
-        elements.map.setHidden(false)
-
+    func start() -> DynamicContent {
+        // Build pins
         var pinLocations: [CLLocationCoordinate2D] = [location]
+        var pins: [MKPointAnnotation] = []
 
-        elements.map.addAnnotation(location, with: .red)
+        let firstPin = MKPointAnnotation()
+        firstPin.coordinate = location
+        pins.append(firstPin)
 
         if let secondLocation {
             pinLocations.append(secondLocation)
-            elements.map.addAnnotation(secondLocation, with: .green)
+            let secondPin = MKPointAnnotation()
+            secondPin.coordinate = secondLocation
+            pins.append(secondPin)
         }
 
+        // Compute region: single pin = default span; two pins = fit both
         var region = MKCoordinateRegion(
             center: pinLocations[0],
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
@@ -54,9 +60,7 @@ class NotificationSubControllerMap: NotificationSubController {
             region = MKCoordinateRegion(coordinates: pinLocations)
         }
 
-        elements.map.setRegion(region)
-
-        return .value(())
+        return .map(region: region, pins: pins)
     }
 
     func stop() {
@@ -93,3 +97,4 @@ extension MKCoordinateRegion {
         self.init(center: center, span: span)
     }
 }
+

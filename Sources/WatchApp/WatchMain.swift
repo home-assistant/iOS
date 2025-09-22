@@ -1,5 +1,8 @@
 import Shared
 import SwiftUI
+import UserNotifications
+import WatchKit
+import MapKit
 
 @main
 struct WatchMain: App {
@@ -13,5 +16,7 @@ struct WatchMain: App {
         WindowGroup {
             WatchHomeView()
         }
+        WKNotificationScene(controller: DynamicNotificationScene.self, category: "DYNAMIC")
     }
 }
+

@@ -24,26 +24,22 @@ class NotificationSubControllerMJPEG: NotificationSubController {
 
     private var streamer: MJPEGStreamer?
 
-    func start(with elements: NotificationElements) -> Promise<Void> {
-        elements.image.setHidden(true)
-
+    func start() -> DynamicContent {
         let streamer = api.VideoStreamer()
         self.streamer = streamer
 
-        return Promise<Void> { seal in
-            guard let apiURL = api.server.info.connection.activeAPIURL() else {
-                seal.reject(ServerConnectionError.noActiveURL(api.server.info.name))
+        return .mpegVideo { [weak self] imageStream in
+            guard let self, let apiURL = api.server.info.connection.activeAPIURL() else {
+//                seal.reject(ServerConnectionError.noActiveURL(api.server.info.name))
                 return
             }
             let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
 
             streamer.streamImages(fromURL: queryUrl) { uiImage, error in
                 if let error {
-                    seal.reject(error)
+//                    seal.reject(error)
                 } else if let uiImage {
-                    seal.fulfill(())
-                    elements.image.setHidden(false)
-                    elements.image.setImage(uiImage)
+                    imageStream(uiImage)
                 }
             }
         }

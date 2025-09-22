@@ -967,6 +967,9 @@
 		42F9589C2BB4691D00497981 /* WidgetAssistProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */; };
 		42F9589F2BB4707F00497981 /* WidgetAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9589D2BB4705E00497981 /* WidgetAssistView.swift */; };
 		42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */; };
+		42FC709B2E81A43D00A7B0D9 /* DynamicNotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC709A2E81A43D00A7B0D9 /* DynamicNotificationViewModel.swift */; };
+		42FC709D2E81A45300A7B0D9 /* DynamicNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC709C2E81A45300A7B0D9 /* DynamicNotificationView.swift */; };
+		42FC709F2E81A46100A7B0D9 /* DynamicNotificationScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FC709E2E81A46100A7B0D9 /* DynamicNotificationScene.swift */; };
 		42FCCFA82B9A05400057783F /* View+RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */; };
 		42FCCFD62B9B195D0057783F /* Image+SharedAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */; };
 		42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCCFD72B9B19F70057783F /* ThreadClientService.swift */; };
@@ -1011,9 +1014,7 @@
 		42FFD5692E8188E000A1EFA3 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FFD5442E8188E000A1EFA3 /* WatchHomeView.swift */; };
 		42FFD56A2E8188E000A1EFA3 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FFD5332E8188E000A1EFA3 /* WatchAssistService.swift */; };
 		42FFD56B2E8188E000A1EFA3 /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FFD5312E8188E000A1EFA3 /* VolumeView.swift */; };
-		42FFD56C2E8188E000A1EFA3 /* DynamicNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FFD5482E8188E000A1EFA3 /* DynamicNotificationController.swift */; };
 		42FFD56D2E8188E000A1EFA3 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FFD53E2E8188E000A1EFA3 /* ComplicationController.swift */; };
-		42FFD56F2E8188E000A1EFA3 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42FFD53A2E8188E000A1EFA3 /* Interface.storyboard */; };
 		42FFD5702E8188E000A1EFA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42FFD52F2E8188E000A1EFA3 /* Assets.xcassets */; };
 		42FFD5712E81899B00A1EFA3 /* WKInterfaceDevice+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FFD5502E8188E000A1EFA3 /* WKInterfaceDevice+Size.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
@@ -2411,6 +2412,9 @@
 		42F9589A2BB468F400497981 /* WidgetAssistProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistProvider.swift; sourceTree = "<group>"; };
 		42F9589D2BB4705E00497981 /* WidgetAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistView.swift; sourceTree = "<group>"; };
 		42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistTypingIndicator.swift; sourceTree = "<group>"; };
+		42FC709A2E81A43D00A7B0D9 /* DynamicNotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationViewModel.swift; sourceTree = "<group>"; };
+		42FC709C2E81A45300A7B0D9 /* DynamicNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationView.swift; sourceTree = "<group>"; };
+		42FC709E2E81A46100A7B0D9 /* DynamicNotificationScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationScene.swift; sourceTree = "<group>"; };
 		42FCCFA72B9A05400057783F /* View+RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+RoundedCorner.swift"; sourceTree = "<group>"; };
 		42FCCFD52B9B195D0057783F /* Image+SharedAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Image+SharedAssets.swift"; sourceTree = "<group>"; };
 		42FCCFD72B9B19F70057783F /* ThreadClientService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadClientService.swift; sourceTree = "<group>"; };
@@ -2440,7 +2444,6 @@
 		42FFD5352E8188E000A1EFA3 /* WatchAssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+Build.swift"; sourceTree = "<group>"; };
 		42FFD5362E8188E000A1EFA3 /* WatchAssistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistViewModel.swift; sourceTree = "<group>"; };
 		42FFD5372E8188E000A1EFA3 /* WatchAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAudioRecorder.swift; sourceTree = "<group>"; };
-		42FFD5392E8188E000A1EFA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Interface.storyboard; sourceTree = "<group>"; };
 		42FFD53C2E8188E000A1EFA3 /* AssistDefaultComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistDefaultComplication.swift; sourceTree = "<group>"; };
 		42FFD53E2E8188E000A1EFA3 /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
 		42FFD5402E8188E000A1EFA3 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
@@ -2449,7 +2452,6 @@
 		42FFD5442E8188E000A1EFA3 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		42FFD5452E8188E000A1EFA3 /* WatchHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeViewModel.swift; sourceTree = "<group>"; };
 		42FFD5472E8188E000A1EFA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		42FFD5482E8188E000A1EFA3 /* DynamicNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationController.swift; sourceTree = "<group>"; };
 		42FFD5492E8188E000A1EFA3 /* NotificationSubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubController.swift; sourceTree = "<group>"; };
 		42FFD54A2E8188E000A1EFA3 /* NotificationSubControllerMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMap.swift; sourceTree = "<group>"; };
 		42FFD54B2E8188E000A1EFA3 /* NotificationSubControllerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMedia.swift; sourceTree = "<group>"; };
@@ -4902,6 +4904,17 @@
 			path = Assist;
 			sourceTree = "<group>";
 		};
+		42FC70992E81A43000A7B0D9 /* Legacy */ = {
+			isa = PBXGroup;
+			children = (
+				42FFD5492E8188E000A1EFA3 /* NotificationSubController.swift */,
+				42FFD54A2E8188E000A1EFA3 /* NotificationSubControllerMap.swift */,
+				42FFD54B2E8188E000A1EFA3 /* NotificationSubControllerMedia.swift */,
+				42FFD54C2E8188E000A1EFA3 /* NotificationSubControllerMJPEG.swift */,
+			);
+			path = Legacy;
+			sourceTree = "<group>";
+		};
 		42FCCFD92B9B19F70057783F /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -5019,14 +5032,6 @@
 			path = Assist;
 			sourceTree = "<group>";
 		};
-		42FFD53B2E8188E000A1EFA3 /* Base.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				42FFD53A2E8188E000A1EFA3 /* Interface.storyboard */,
-			);
-			path = Base.lproj;
-			sourceTree = "<group>";
-		};
 		42FFD53D2E8188E000A1EFA3 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
@@ -5066,11 +5071,10 @@
 		42FFD54D2E8188E000A1EFA3 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
-				42FFD5482E8188E000A1EFA3 /* DynamicNotificationController.swift */,
-				42FFD5492E8188E000A1EFA3 /* NotificationSubController.swift */,
-				42FFD54A2E8188E000A1EFA3 /* NotificationSubControllerMap.swift */,
-				42FFD54B2E8188E000A1EFA3 /* NotificationSubControllerMedia.swift */,
-				42FFD54C2E8188E000A1EFA3 /* NotificationSubControllerMJPEG.swift */,
+				42FC70992E81A43000A7B0D9 /* Legacy */,
+				42FC709A2E81A43D00A7B0D9 /* DynamicNotificationViewModel.swift */,
+				42FC709C2E81A45300A7B0D9 /* DynamicNotificationView.swift */,
+				42FC709E2E81A46100A7B0D9 /* DynamicNotificationScene.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -5615,7 +5619,6 @@
 			children = (
 				42FFD52F2E8188E000A1EFA3 /* Assets.xcassets */,
 				42FFD5382E8188E000A1EFA3 /* Assist */,
-				42FFD53B2E8188E000A1EFA3 /* Base.lproj */,
 				42FFD53F2E8188E000A1EFA3 /* Complication */,
 				42FFD5402E8188E000A1EFA3 /* ExtensionDelegate.swift */,
 				42FFD5462E8188E000A1EFA3 /* Home */,
@@ -6898,7 +6901,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42FFD56F2E8188E000A1EFA3 /* Interface.storyboard in Resources */,
 				42FFD5702E8188E000A1EFA3 /* Assets.xcassets in Resources */,
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
 				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
@@ -8309,13 +8311,16 @@
 				42FFD55B2E8188E000A1EFA3 /* ChatBubbleView.swift in Sources */,
 				42FFD55C2E8188E000A1EFA3 /* WatchMagicViewRowViewModel.swift in Sources */,
 				42FFD55D2E8188E000A1EFA3 /* WatchMagicViewRow.swift in Sources */,
+				42FC709D2E81A45300A7B0D9 /* DynamicNotificationView.swift in Sources */,
 				42FFD55E2E8188E000A1EFA3 /* NotificationSubControllerMap.swift in Sources */,
 				42FFD55F2E8188E000A1EFA3 /* WKInterfaceDevice+Size.swift in Sources */,
+				42FC709B2E81A43D00A7B0D9 /* DynamicNotificationViewModel.swift in Sources */,
 				42FFD5602E8188E000A1EFA3 /* WatchAudioRecorder.swift in Sources */,
 				42FFD5612E8188E000A1EFA3 /* WatchAssistView+Build.swift in Sources */,
 				42FFD5622E8188E000A1EFA3 /* NotificationSubController.swift in Sources */,
 				42FFD5632E8188E000A1EFA3 /* Date+ComplicationDivination.swift in Sources */,
 				42FFD5642E8188E000A1EFA3 /* NotificationSubControllerMedia.swift in Sources */,
+				42FC709F2E81A46100A7B0D9 /* DynamicNotificationScene.swift in Sources */,
 				42FFD5652E8188E000A1EFA3 /* AssistDefaultComplication.swift in Sources */,
 				42FFD5662E8188E000A1EFA3 /* WatchMain.swift in Sources */,
 				42FFD5672E8188E000A1EFA3 /* WatchHomeViewModel.swift in Sources */,
@@ -8323,7 +8328,6 @@
 				42FFD5692E8188E000A1EFA3 /* WatchHomeView.swift in Sources */,
 				42FFD56A2E8188E000A1EFA3 /* WatchAssistService.swift in Sources */,
 				42FFD56B2E8188E000A1EFA3 /* VolumeView.swift in Sources */,
-				42FFD56C2E8188E000A1EFA3 /* DynamicNotificationController.swift in Sources */,
 				42FFD56D2E8188E000A1EFA3 /* ComplicationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8915,14 +8919,6 @@
 				4279407E2B8369EA001D7E14 /* bg */,
 			);
 			name = AppIntentVocabulary.plist;
-			sourceTree = "<group>";
-		};
-		42FFD53A2E8188E000A1EFA3 /* Interface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				42FFD5392E8188E000A1EFA3 /* Base */,
-			);
-			name = Interface.storyboard;
 			sourceTree = "<group>";
 		};
 		B60247FE1FBD343000998205 /* InfoPlist.strings */ = {

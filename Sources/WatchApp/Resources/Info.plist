@@ -54,5 +54,24 @@
 	<true/>
 	<key>WKCompanionAppBundleIdentifier</key>
 	<string>$(BUNDLE_ID_PREFIX).HomeAssistant$(BUNDLE_ID_SUFFIX)</string>
+	<key>WKWatchKitApp</key>
+	<dict>
+		<key>WKApplication</key>
+		<dict>
+			<key>WKNotificationScene</key>
+			<array>
+				<dict>
+					<key>WKCategory</key>
+					<array>
+						<string>ha_notification</string>
+						<string>ha_camera</string>
+						<string>ha_map</string>
+					</array>
+					<key>WKStoryboardName</key>
+					<string>Interface</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 </dict>
 </plist>
