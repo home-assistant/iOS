@@ -104,7 +104,7 @@ abstract_target 'watchOS' do
     shared_fwk_pods
   end
 
-  target 'WatchExtension-Watch' do
+  target 'WatchApp' do
     pod 'EMTLoadingIndicator', git: 'https://github.com/hirokimu/EMTLoadingIndicator', branch: 'master'
   end
 end
