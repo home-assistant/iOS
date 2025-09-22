@@ -99,7 +99,7 @@
 "component::improv_ble::config::abort::provision_successful" = "L'appareil s'est connecté avec succès au réseau Wi-Fi.";
 "component::improv_ble::config::abort::provision_successful_url" = "L'appareil s'est connecté avec succès au réseau Wi-Fi.\
 \
-Veuillez visiter {url} pour terminer la configuration.";
+Veuillez terminer la configuration en suivant les [instructions de configuration]({url}).";
 "component::improv_ble::config::abort::unknown" = "Erreur inattendue";
 "component::improv_ble::config::error::unable_to_connect" = "L'appareil n'a pas pu se connecter au réseau Wi-Fi. Vérifiez que le SSID et le mot de passe sont corrects et réessayez.";
 "component::improv_ble::config::flow_title" = "{name}";
