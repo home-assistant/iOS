@@ -50,20 +50,20 @@ end
 
 lane :download_provisioning_profiles do
   ENV['FASTLANE_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
-  ENV['FASTLANE_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
+  ENV['DELIVER_USERNAME'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
 
   %w[ios catalyst macos].each do |platform|
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
       '-p', platform,
-      '-b', ENV.fetch('FASTLANE_TEAM_ID', nil),
+      '-b', ENV.fetch('DELIVER_USERNAME', nil),
       '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
       '-p', platform,
       '-o', '../Configuration/Provisioning/',
-      '-b', ENV.fetch('FASTLANE_TEAM_ID', nil),
+      '-b', ENV.fetch('DELIVER_USERNAME', nil),
       '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
   end
