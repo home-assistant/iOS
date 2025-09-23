@@ -54,7 +54,7 @@ lane :download_provisioning_profiles do
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
       '-p', platform,
       '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', 'abc'),
-      '-u', ENV.fetch('SIGH_USERNAME', nil)
+      '-u', ENV.fetch('SIGH_USERNAME', 'def')
     )
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
