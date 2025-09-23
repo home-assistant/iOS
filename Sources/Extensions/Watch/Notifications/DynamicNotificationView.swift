@@ -119,17 +119,3 @@ struct DynamicNotificationView: View {
         let coordinate: CLLocationCoordinate2D
     }
 }
-
-struct MovieView: WKInterfaceObjectRepresentable {
-    var movieURL: URL
-
-    func makeWKInterfaceObject(context: Context) -> WKInterfaceInlineMovie {
-        .init()
-    }
-
-    func updateWKInterfaceObject(_ movie: WKInterfaceInlineMovie, context: Context) {
-        movie.setLoops(true)
-        movie.setMovieURL(movieURL)
-        movie.playFromBeginning()
-    }
-}
