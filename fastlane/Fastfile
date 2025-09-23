@@ -49,7 +49,7 @@ lane :autocorrect do
 end
 
 lane :download_provisioning_profiles do
-  ENV['FASTLANE_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
+  ENV['FASTLANE_PASSWORD'] = ENV.fetch('DOWNLOAD_PROVISIONING_PROFILES_PASSWORD', nil)
   ENV['HOMEASSISTANT_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
 
   %w[ios catalyst macos].each do |platform|
