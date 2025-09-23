@@ -55,6 +55,7 @@ lane :download_provisioning_profiles do
   ENV['HOMEASSISTANT_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
   ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
 
+  sh('fastlane', 'sigh', 'repair', '--username', ENV['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
   sh('fastlane', 'sigh', 'download_all', '--username', ENV['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
 end
 
