@@ -49,10 +49,9 @@ lane :autocorrect do
 end
 
 lane :download_provisioning_profiles do
-  # we only expose these keys in ci when appropriate
-  ENV['FASTLANE_DONT_STORE_PASSWORD'] = '1'
   ENV['FASTLANE_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
-  ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
+  ENV['FASTLANE_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
+
   %w[ios catalyst macos].each do |platform|
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
