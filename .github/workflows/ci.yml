@@ -208,3 +208,6 @@ jobs:
           EMERGE_PR_NUMBER: ${{ github.event.number }}
           EMERGE_SHA: ${{ github.event.pull_request.head.sha }}
           EMERGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
+          HOMEASSISTANT_APPLE_ID: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
+          HOMEASSISTANT_FASTLANE_SESSION: ${{ secrets.HOMEASSISTANT_FASTLANE_SESSION }}
