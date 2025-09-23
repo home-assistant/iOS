@@ -20,6 +20,7 @@ final class DynamicNotificationViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var content: DynamicContent = .none
+    @Published var notification: UNNotification?
 
     private var streamer: MJPEGStreamer?
     private var securityScopedURL: URL?
@@ -38,6 +39,7 @@ final class DynamicNotificationViewModel: ObservableObject {
     }
 
     func configure(from notification: UNNotification, api: HomeAssistantAPI) {
+        self.notification = notification
         DispatchQueue.main.async {
             self.title = notification.request.content.title
             self.subtitle = notification.request.content.subtitle
@@ -135,33 +137,30 @@ final class DynamicNotificationViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Media handling
+
+    // MARK: - Media handling
+
     private func handleMediaURL(_ url: URL) {
         let didStart = url.startAccessingSecurityScopedResource()
         if didStart {
             securityScopedURL = url
         }
 
-        // Attempt to decode as image; otherwise treat as video
-        do {
-            let data = try Data(contentsOf: url, options: .alwaysMapped)
-            if let img = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.content = .image(img)
-                    self.isLoading = false
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.content = .video(url)
-                    self.isLoading = false
-                }
-            }
-        } catch {
+        if let img = UIImage(contentsOfFile: url.path) {
             DispatchQueue.main.async {
-                self.errorMessage = error.localizedDescription
+                self.content = .image(img)
+                self.isLoading = false
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.content = .video(url)
                 self.isLoading = false
             }
         }
     }
+
+    // MARK: - Map functions
 
     private static func parseDegrees(_ any: Any?) -> CLLocationDegrees? {
         if let d = any as? Double { return d }

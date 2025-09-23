@@ -6,6 +6,10 @@ import WatchKit
 final class DynamicNotificationHostingController: WKUserNotificationHostingController<DynamicNotificationView> {
     private let viewModel = DynamicNotificationViewModel()
 
+    override class var sashColor: Color? { .haPrimary }
+    override class var wantsSashBlur: Bool { true }
+    override class var isInteractive: Bool { true }
+
     override var body: DynamicNotificationView {
         DynamicNotificationView(viewModel: viewModel)
     }
