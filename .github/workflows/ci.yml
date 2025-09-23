@@ -203,6 +203,8 @@ jobs:
           P12_VALUE_IOS_APP_STORE: ${{ secrets.P12_VALUE_IOS_APP_STORE }}
           P12_VALUE_MAC_APP_STORE: ${{ secrets.P12_VALUE_MAC_APP_STORE }}
           P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
+          HOMEASSISTANT_TEAM_ID: ${{ secrets.HOMEASSISTANT_TEAM_ID }}
+          SIGH_USERNAME: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
 
       - name: Build app
         run: bundle exec fastlane ios size
