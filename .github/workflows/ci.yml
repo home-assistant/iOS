@@ -80,7 +80,7 @@ jobs:
           EMERGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HOMEASSISTANT_TEAM_ID: ${{ secrets.HOMEASSISTANT_TEAM_ID }}
           HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
-          SIGH_USERNAME: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
+          HOMEASSISTANT_APPLE_ID: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
 
       - name: Build app
         run: bundle exec fastlane ios size

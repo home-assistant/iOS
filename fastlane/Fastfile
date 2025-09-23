@@ -20,11 +20,11 @@ end
 
 private_lane :setup do
   ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
-  ENV['FASTLANE_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
   ENV['DELIVER_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
   ENV['FASTLANE_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
   ENV['FL_NOTARIZE_ASC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
   ENV['PILOT_APPLE_ID'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  ENV['SIGH_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
   ENV['FL_NOTARIZE_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
   ENV['LOKALISE_API_TOKEN'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_TOKEN', nil)
   ENV['LOKALISE_PROJECT_ID'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_ID', nil)
@@ -53,15 +53,15 @@ lane :download_provisioning_profiles do
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
       '-p', platform,
-      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
-      '-u', ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+      '-b', ENV.fetch('FASTLANE_TEAM_ID', nil),
+      '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
       '-p', platform,
       '-o', '../Configuration/Provisioning/',
-      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
-      '-u', ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+      '-b', ENV.fetch('FASTLANE_TEAM_ID', nil),
+      '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
   end
 end
