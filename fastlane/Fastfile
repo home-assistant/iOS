@@ -57,12 +57,6 @@ lane :download_provisioning_profiles do
 
   %w[ios catalyst macos].each do |platform|
     sh(
-      'bundle', 'exec', 'fastlane', 'sigh', 'repair',
-      '-p', platform,
-      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
-      '-u', ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
-    )
-    sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
       '-p', platform,
       '-o', '../Configuration/Provisioning/',
