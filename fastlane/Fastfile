@@ -20,6 +20,7 @@ end
 
 private_lane :setup do
   ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  ENV['FASTLANE_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
   ENV['DELIVER_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
   ENV['FASTLANE_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
   ENV['FL_NOTARIZE_ASC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
@@ -54,7 +55,7 @@ lane :download_provisioning_profiles do
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
       '-p', platform,
       '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
-      '-u', ENV.fetch('SIGH_USERNAME', 'def')
+      '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
