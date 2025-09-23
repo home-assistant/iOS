@@ -49,22 +49,23 @@ lane :autocorrect do
 end
 
 lane :download_provisioning_profiles do
-  ENV['FASTLANE_PASSWORD'] = ENV.fetch('DOWNLOAD_PROVISIONING_PROFILES_PASSWORD', nil)
+  ENV['FASTLANE_SESSION'] = ENV.fetch('FASTLANE_SESSION', nil)
   ENV['HOMEASSISTANT_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
+  ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
 
   %w[ios catalyst macos].each do |platform|
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
       '-p', platform,
       '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
-      '-u', ENV.fetch('SIGH_USERNAME', nil)
+      '-u', ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
     )
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
       '-p', platform,
       '-o', '../Configuration/Provisioning/',
       '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
-      '-u', ENV.fetch('SIGH_USERNAME', nil)
+      '-u', ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
     )
   end
 end
