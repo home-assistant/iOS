@@ -61,8 +61,8 @@ lane :download_provisioning_profiles do
     '--output_path', '../Configuration/Provisioning'
   )
   sh(
-    'fastlane','sigh','download_all',
-    '--username',ENV.fetch['FASTLANE_USER'],
+    'fastlane', 'sigh', 'download_all',
+    '--username', ENV.fetch['FASTLANE_USER'],
     '--output_path', '../Configuration/Provisioning'
   )
 end
