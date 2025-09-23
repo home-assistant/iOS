@@ -449,6 +449,7 @@ lane :setup_ha_ci do
     FileUtils.rm(tmp_file)
   end
 
+  download_provisioning_profiles
   import_provisioning_profiles
 end
 
