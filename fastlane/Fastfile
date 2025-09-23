@@ -53,7 +53,7 @@ lane :download_provisioning_profiles do
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
       '-p', platform,
-      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
+      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', 'abc'),
       '-u', ENV.fetch('SIGH_USERNAME', nil)
     )
     sh(
