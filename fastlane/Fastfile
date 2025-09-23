@@ -55,8 +55,10 @@ lane :download_provisioning_profiles do
   ENV['HOMEASSISTANT_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
   ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
 
+  # rubocop:disable Layout/LineLength
   sh('fastlane', 'sigh', 'repair', '--username', ENV.fetch['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
   sh('fastlane', 'sigh', 'download_all', '--username', ENV.fetch['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
+  # rubocop:enable Layout/LineLength
 end
 
 lane :import_provisioning_profiles do
