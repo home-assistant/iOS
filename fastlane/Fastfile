@@ -49,6 +49,7 @@ lane :autocorrect do
 end
 
 lane :download_provisioning_profiles do
+  export FASTLANE_PASSWORD = ENV.fetch('FASTLANE_PASSWORD', nil)
   %w[ios catalyst macos].each do |platform|
     sh(
       'bundle', 'exec', 'fastlane', 'sigh', 'repair',
