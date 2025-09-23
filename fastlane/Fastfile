@@ -55,15 +55,12 @@ lane :download_provisioning_profiles do
   ENV['HOMEASSISTANT_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_TEAM_ID', nil)
   ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
 
-  %w[ios catalyst macos].each do |platform|
-    sh(
-      'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
-      '-p', platform,
-      '-o', '../Configuration/Provisioning/',
-      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
-      '-u', ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
-    )
-  end
+  sh(
+    'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
+    '-o', '../Configuration/Provisioning/',
+    '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
+    '-u', ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
+  )
 end
 
 lane :import_provisioning_profiles do
