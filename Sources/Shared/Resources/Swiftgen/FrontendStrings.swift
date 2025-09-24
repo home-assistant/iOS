@@ -20,7 +20,7 @@ public enum FrontendStrings {
   public static var panelEnergy: String { return FrontendStrings.tr("Frontend", "panel::energy") }
   /// History
   public static var panelHistory: String { return FrontendStrings.tr("Frontend", "panel::history") }
-  /// Logbook
+  /// Activity
   public static var panelLogbook: String { return FrontendStrings.tr("Frontend", "panel::logbook") }
   /// Mailbox
   public static var panelMailbox: String { return FrontendStrings.tr("Frontend", "panel::mailbox") }
