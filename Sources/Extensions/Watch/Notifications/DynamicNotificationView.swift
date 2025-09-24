@@ -9,12 +9,14 @@ import UserNotifications
 struct DynamicNotificationView: View {
     @ObservedObject var viewModel: DynamicNotificationViewModel
 
+    @State private var player = AVPlayer()
     private let dynamicContentHeight: CGFloat = 150
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
-            textContent
+            // Dynamic content is presented first to align with watchOS default notification style
             dynamicContentView
+            textContent
             loader
             errorView
         }
@@ -55,19 +57,18 @@ struct DynamicNotificationView: View {
     }
 
     private var textContent: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+        VStack(alignment: .leading, spacing: .zero) {
             if !viewModel.title.isEmpty {
                 Text(viewModel.title)
                     .font(.headline)
             }
             if !viewModel.subtitle.isEmpty {
                 Text(viewModel.subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.headline)
             }
             if !viewModel.body.isEmpty {
                 Text(viewModel.body)
-                    .font(.footnote)
+                    .font(.body)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -81,14 +82,24 @@ struct DynamicNotificationView: View {
             .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 
+    @ViewBuilder
     private func videoPlayer(url: URL) -> some View {
-        VideoPlayer(player: AVPlayer(url: url))
+        VideoPlayer(player: player)
             .frame(maxWidth: .infinity)
             .frame(height: dynamicContentHeight)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
             .onAppear {
-                // Autoplay to mimic WKInterfaceInlineMovie.play()
-                AVPlayer(url: url).play()
+                // Build a new item each time we appear and autoplay shortly after.
+                let item = AVPlayerItem(url: url)
+                player.replaceCurrentItem(with: item)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    player.play()
+                }
+            }
+            .onDisappear {
+                // Release the item so file handles are closed; the view model owns security-scope.
+                player.pause()
+                player.replaceCurrentItem(with: nil)
             }
     }
 

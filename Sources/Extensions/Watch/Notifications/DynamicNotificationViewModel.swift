@@ -135,33 +135,28 @@ final class DynamicNotificationViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Media handling
+
     private func handleMediaURL(_ url: URL) {
         let didStart = url.startAccessingSecurityScopedResource()
         if didStart {
             securityScopedURL = url
         }
 
-        // Attempt to decode as image; otherwise treat as video
-        do {
-            let data = try Data(contentsOf: url, options: .alwaysMapped)
-            if let img = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.content = .image(img)
-                    self.isLoading = false
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.content = .video(url)
-                    self.isLoading = false
-                }
-            }
-        } catch {
+        if let img = UIImage(contentsOfFile: url.path) {
             DispatchQueue.main.async {
-                self.errorMessage = error.localizedDescription
+                self.content = .image(img)
+                self.isLoading = false
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.content = .video(url)
                 self.isLoading = false
             }
         }
     }
+
+    // MARK: - Map functions
 
     private static func parseDegrees(_ any: Any?) -> CLLocationDegrees? {
         if let d = any as? Double { return d }
