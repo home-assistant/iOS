@@ -32,6 +32,7 @@ private_lane :setup do
   ENV['LOKALISE_PROJECT_ID_CORE'] = ENV.fetch('HOMEASSISTANT_LOKALIZE_PROJECT_CORE', nil)
   ENV['PILOT_ITC_PROVIDER'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
   ENV['FASTLANE_ITC_TEAM_ID'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID', nil)
+  ENV['SIGH_USERNAME'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
   ENV['SIGH_PROFILE_PATHS'] = '../Configuration/Provisioning'
 
   app_store_connect_api_key if ENV['APP_STORE_CONNECT_API_KEY_KEY']
@@ -49,21 +50,24 @@ lane :autocorrect do
 end
 
 lane :download_provisioning_profiles do
-  ENV['FASTLANE_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
-  ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'] = ENV.fetch('HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD', nil)
-  ENV['FASTLANE_SESSION'] = ENV.fetch('HOMEASSISTANT_FASTLANE_SESSION', nil)
-  ENV['FASTLANE_USER'] = ENV.fetch('HOMEASSISTANT_APPLE_ID', nil)
-
-  # rubocop:disable Layout/LineLength
-  # rubocop:disable Style/FetchEnvVar
-  sh('fastlane', 'sigh', 'repair', '--username', ENV['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
-  sh('fastlane', 'sigh', 'download_all', '--username', ENV['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
-  # rubocop:enable Layout/LineLength
-  # rubocop:enable Style/FetchEnvVar
+  %w[ios catalyst macos].each do |platform|
+    sh(
+      'bundle', 'exec', 'fastlane', 'sigh', 'repair',
+      '-p', platform,
+      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
+      '-u', ENV.fetch('SIGH_USERNAME', nil)
+    )
+    sh(
+      'bundle', 'exec', 'fastlane', 'sigh', 'download_all',
+      '-p', platform,
+      '-o', '../Configuration/Provisioning/',
+      '-b', ENV.fetch('HOMEASSISTANT_TEAM_ID', nil),
+      '-u', ENV.fetch('SIGH_USERNAME', nil)
+    )
+  end
 end
 
 lane :import_provisioning_profiles do
-  download_provisioning_profiles
   directory = '../Configuration/Provisioning'
 
   Dir.children(directory).each do |file|
