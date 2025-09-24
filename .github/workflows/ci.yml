@@ -109,15 +109,6 @@ jobs:
         if: steps.cache_pods.outputs.cache-hit != 'true'
         run: bundle exec pod install --repo-update
 
-      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd  # v1.6.0
-        with:
-          xcode-version: '26.0'
-      - name: Install iOS
-        run: xcodebuild -downloadPlatform iOS
-
-      - name: Install watchOS
-        run: xcodebuild -downloadPlatform watchOS
-
       - name: Run tests
         run: bundle exec fastlane test
 
@@ -185,15 +176,6 @@ jobs:
         if: steps.cache_pods.outputs.cache-hit != 'true'
         run: bundle exec pod install --repo-update
 
-      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd  # v1.6.0
-        with:
-          xcode-version: '26.0'
-      - name: Install iOS
-        run: xcodebuild -downloadPlatform iOS
-
-      - name: Install watchOS
-        run: xcodebuild -downloadPlatform watchOS
-
       - name: Build app
         run: bundle exec fastlane ios size
         env:
@@ -208,3 +190,6 @@ jobs:
           EMERGE_PR_NUMBER: ${{ github.event.number }}
           EMERGE_SHA: ${{ github.event.pull_request.head.sha }}
           EMERGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
+          HOMEASSISTANT_APPLE_ID: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
+          HOMEASSISTANT_FASTLANE_SESSION: ${{ secrets.HOMEASSISTANT_FASTLANE_SESSION }}
