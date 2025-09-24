@@ -60,8 +60,6 @@ jobs:
           EMERGE_REPO_NAME: ${{ github.repository }}
           EMERGE_SHA: ${{ github.sha }}
           EMERGE_BASE_SHA: ${{ github.event.before }}
-          HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD: ${{ secrets.HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD }}
-          HOMEASSISTANT_APPLE_ID: ${{ secrets.HOMEASSISTANT_APPLE_ID }}
           HOMEASSISTANT_FASTLANE_SESSION: ${{ secrets.HOMEASSISTANT_FASTLANE_SESSION }}
 
       - name: Dump Version Information
