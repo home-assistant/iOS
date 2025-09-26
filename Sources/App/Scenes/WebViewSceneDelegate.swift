@@ -96,7 +96,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        windowController?.clearCachedControllers()
+        // NOTE: Do not call clearCachedControllers() here - causes frontend settings loss
         windowController = nil
         window = nil
         urlHandler = nil
