@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Strumenti per sviluppatori";
 "panel::energy" = "Energia";
 "panel::history" = "Storico";
-"panel::logbook" = "Registro";
+"panel::logbook" = "Attività";
 "panel::mailbox" = "Posta";
 "panel::map" = "Mappa";
 "panel::media_browser" = "Media";

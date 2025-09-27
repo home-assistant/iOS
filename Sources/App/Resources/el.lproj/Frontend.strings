@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Εργαλεία προγραμματιστή";
 "panel::energy" = "Ενέργεια";
 "panel::history" = "Ιστορικό";
-"panel::logbook" = "Αρχείο συμβάντων";
+"panel::logbook" = "Δραστηριότητα";
 "panel::mailbox" = "Γραμματοκιβώτιο";
 "panel::map" = "Χάρτης";
 "panel::media_browser" = "Πολυμέσα";
