@@ -14,7 +14,6 @@ lane :download_provisioning_profiles do
 end
 
 lane :import_provisioning_profiles do
-  download_provisioning_profiles
   directory = '../Configuration/Provisioning'
 
   Dir.children(directory).each do |file|
