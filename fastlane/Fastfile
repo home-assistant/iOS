@@ -395,6 +395,7 @@ end
 
 desc 'Setup Continous Integration'
 lane :setup_ha_ci do
+  download_provisioning_profiles
   raise 'No github run number specified' unless ENV['GITHUB_RUN_NUMBER']
 
   set_version_info(
