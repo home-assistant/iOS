@@ -8,8 +8,8 @@ lane :download_provisioning_profiles do
 
   # rubocop:disable Layout/LineLength
   # Disabled until sigh can handle Apple Distribution certs again
-  # sh('fastlane', 'sigh', 'repair', '--username', ENV['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
-  sh('fastlane', 'sigh', 'download_all', '--username', ENV['FASTLANE_USER'], '--output_path', '../Configuration/Provisioning')
+  # sh('fastlane', 'sigh', 'repair', '--username', ENV.fetch('FASTLANE_USER', nil), '--output_path', '../Configuration/Provisioning')
+  sh('fastlane', 'sigh', 'download_all', '--username', ENV.fetch('FASTLANE_USER', nil), '--output_path', '../Configuration/Provisioning')
   # rubocop:enable Layout/LineLength
 end
 
