@@ -73,7 +73,7 @@ lane :setup_ha_ci do
     )
 
     FileUtils.rm(tmp_file)
-    # rubocop:enable Layout/LineLength
+      # rubocop:enable Layout/LineLength
   end
 
   import_provisioning_profiles
