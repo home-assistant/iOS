@@ -34,7 +34,7 @@
 "actions_configurator.visual_section.server_defined" = "L'aspetto di questa azione è controllato dalla configurazione del server.";
 "addButtonLabel" = "Aggiungi";
 "alert.confirmation.delete_entities.message" = "This will clean your entities from database and it will only reload the next time you open the app from zero.";
-"alert.confirmation.generic.title" = "Are you sure?";
+"alert.confirmation.generic.title" = "Sei sicuro?";
 "alerts.action_automation_editor.unavailable.body" = "Per creare automaticamente un'automazione per un'azione, aggiorna il tuo Home Assistant almeno alla versione 2024.2";
 "alerts.action_automation_editor.unavailable.title" = "É richiesto l'aggiornamento di Home Assistant";
 "alerts.alert.ok" = "OK";
@@ -109,7 +109,7 @@
 "assist.watch.mic_button.title" = "Tocca per";
 "assist.watch.not_reachable.title" = "Assist richiede la connettività iPhone. Il tuo iPhone è attualmente irraggiungibile.";
 "assist.watch.volume.title" = "Controllo del volume";
-"assist_pipeline_picker.placeholder" = "Pick pipeline";
+"assist_pipeline_picker.placeholder" = "Seleziona pipeline";
 "cancel_label" = "Annulla";
 "carPlay.action.intro.item.body" = "Tocca per continuare sul tuo iPhone";
 "carPlay.action.intro.item.title" = "Crea la tua prima azione";
@@ -204,7 +204,7 @@
 "connection.error.failed_connect.cloud_inactive.title" = "You have disabled Home Assistant Cloud use in the app, if you need it for remote access please open companion app settings and enable it.";
 "connection.error.failed_connect.subtitle" = "Check your connection and try again. If you are not at home make sure you have configured remote access.";
 "connection.error.failed_connect.title" = "We couldn't connect to Home Assistant";
-"connection.error.failed_connect.url" = "The app is currently connecting to";
+"connection.error.failed_connect.url" = "L'app si sta attualmente connettendo a";
 "connection.error.generic_title" = "Uh oh! Sembra che non siamo in grado di stabilire una connessione";
 "connection.permission.internal_url.body1" = "Per accedere a Home Assistant in locale in modo sicuro, è necessario concedere l'autorizzazione alla posizione ('Sempre').";
 "connection.permission.internal_url.body2" = "Questa autorizzazione consente a Home Assistant di rilevare la rete wireless a cui sei connesso e di stabilire una connessione locale.";
@@ -233,7 +233,7 @@
 "download_manager.downloading.title" = "Scaricando";
 "download_manager.failed.title" = "Impossibile scaricare il file, errore: %@";
 "download_manager.finished.title" = "Download completato";
-"entity_picker.placeholder" = "Pick entity";
+"entity_picker.placeholder" = "Seleziona entità";
 "error_label" = "Errore";
 "extensions.map.location.new" = "Nuova posizione";
 "extensions.map.location.original" = "Posizione originale";
@@ -620,7 +620,7 @@
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnesso";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
-"settings.debugging.header.subtitle" = "Let's fix that 🐞";
+"settings.debugging.header.subtitle" = "Risolviamo questo 🐞";
 "settings.debugging.header.title" = "Debug";
 "settings.debugging.shake_disclaimer.title" = "Now when you shake the app you can access debug features.";
 "settings.debugging.shake_disclaimer_optional.title" = "Shake the App to open debug";
@@ -673,12 +673,12 @@
 "settings.status_section.version_row.title" = "Versione";
 "settings.template_edit.title" = "Modifica il template";
 "settings.whats_new.title" = "Cosa c'è di nuovo?";
-"settings.widgets.create.add_item.title" = "Add item";
+"settings.widgets.create.add_item.title" = "Aggiungi elemento";
 "settings.widgets.create.footer.title" = "While the widget preview only displays one widget size, your custom widget will be available on multiple sizes respecting the limit of items per size.";
-"settings.widgets.create.items.title" = "Items";
+"settings.widgets.create.items.title" = "Elementi";
 "settings.widgets.create.name.placeholder" = "e.g. Living room favorites";
-"settings.widgets.create.name.title" = "Name";
-"settings.widgets.create.no_items.title" = "No items";
+"settings.widgets.create.name.title" = "Nome";
+"settings.widgets.create.no_items.title" = "Nessun elemento";
 "settings.widgets.create.title" = "Create widget";
 "settings.widgets.custom.delete_all.title" = "Reset all custom widgets";
 "settings.widgets.title" = "Widget";
@@ -1187,7 +1187,7 @@
 "widgets.action.name.moreInfoDialog" = "Più informazioni";
 "widgets.action.name.navigate" = "Navigate";
 "widgets.action.name.nothing" = "Nothing";
-"widgets.action.name.run_script" = "Run Script";
+"widgets.action.name.run_script" = "Esegui script";
 "widgets.actions.description" = "Esegui le azioni di Home Assistant";
 "widgets.actions.not_configured" = "Nessuna azione configurata";
 "widgets.actions.parameters.action" = "Azione";
@@ -1232,7 +1232,7 @@
 "widgets.custom.show_states.param.title" = "Mostra stati (BETA)";
 "widgets.custom.show_update_time.title" = "Last update:";
 "widgets.custom.subtitle" = "Create widgets with your own style";
-"widgets.custom.title" = "Custom widgets";
+"widgets.custom.title" = "Widget personalizzati";
 "widgets.details.description" = "Visualizza gli stati utilizzando Home Assistant nel testo";
 "widgets.details.description_with_warning" = "Display states using from Home Assistant in text. ATTENTION: User needs to be admin for templating access";
 "widgets.details.parameters.action" = "Azione";
@@ -1242,7 +1242,7 @@
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Template del testo superiore";
 "widgets.details.title" = "Dettagli";
-"widgets.entity_state.placeholder" = "Entity state";
+"widgets.entity_state.placeholder" = "Stato dell'entità";
 "widgets.gauge.description" = "Visualizza stati numerici da Home Assistant in un indicatore";
 "widgets.gauge.description_with_warning" = "Display numeric states from Home Assistant in a gauge. ATTENTION: User needs to be admin for templating access";
 "widgets.gauge.parameters.action" = "Azione";

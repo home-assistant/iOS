@@ -3,7 +3,7 @@
 "panel::developer_tools" = "Kehittäjän työkalut";
 "panel::energy" = "Energia";
 "panel::history" = "Historia";
-"panel::logbook" = "Lokikirja";
+"panel::logbook" = "Aktiviteetti";
 "panel::mailbox" = "Postilaatikko";
 "panel::map" = "Kartta";
 "panel::media_browser" = "Mediaselain";
