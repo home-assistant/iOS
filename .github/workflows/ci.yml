@@ -179,8 +179,8 @@ jobs:
       - name: Build app
         run: bundle exec fastlane ios size
         env:
-          P12_KEY_DISTRIBUTION: ${{ secrets.P12_KEY_IOS_APP_STORE }}
-          P12_VALUE_DISTRIBUTION: ${{ secrets.P12_VALUE_IOS_APP_STORE }}
+          P12_KEY_DISTRIBUTION: ${{ secrets.P12_KEY_DISTRIBUTION }}
+          P12_VALUE_DISTRIBUTION: ${{ secrets.P12_VALUE_DISTRIBUTION }}
           P12_KEY_MAC_DEVELOPER_ID: ${{ secrets.P12_KEY_MAC_DEVELOPER_ID }}
           P12_KEY_MAC_DEVELOPER_INSTALLER: ${{ secrets.P12_KEY_MAC_DEVELOPER_INSTALLER }}
           P12_VALUE_MAC_DEVELOPER_ID: ${{ secrets.P12_VALUE_MAC_DEVELOPER_ID }}
