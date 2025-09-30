@@ -55,11 +55,12 @@ lane :setup_ha_ci do
   )
 
   KeyAndValue = Struct.new(:key, :value) # rubocop:disable Lint/ConstantDefinitionInBlock
-
+  # rubocop:disable Layout/LineLength
   [
-    KeyAndValue.new(ENV.fetch('P12_KEY_IOS_APP_STORE', nil), ENV.fetch('P12_VALUE_IOS_APP_STORE', nil)),
-    KeyAndValue.new(ENV.fetch('P12_KEY_MAC_APP_STORE', nil), ENV.fetch('P12_VALUE_MAC_APP_STORE', nil)),
-    KeyAndValue.new(ENV.fetch('P12_KEY_MAC_DEVELOPER_ID', nil), ENV.fetch('P12_VALUE_MAC_DEVELOPER_ID', nil))
+    KeyAndValue.new(ENV.fetch('P12_KEY_DISTRIBUTION', nil), ENV.fetch('P12_VALUE_DISTRIBUTION', nil)),
+    KeyAndValue.new(ENV.fetch('P12_KEY_MAC_DEVELOPER_ID', nil), ENV.fetch('P12_VALUE_MAC_DEVELOPER_ID', nil)),
+    KeyAndValue.new(ENV.fetch('P12_KEY_MAC_DEVELOPER_INSTALLER', nil), ENV.fetch('P12_VALUE_MAC_DEVELOPER_INSTALLER', nil))
+
   ].each do |info|
     tmp_file = '/tmp/import.p12'
     File.write(tmp_file, Base64.decode64(info.value))
@@ -73,6 +74,7 @@ lane :setup_ha_ci do
 
     FileUtils.rm(tmp_file)
   end
+  # rubocop:enable Layout/LineLength
 
   import_provisioning_profiles
 end
