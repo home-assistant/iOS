@@ -55,7 +55,7 @@ lane :setup_ha_ci do
   )
 
   KeyAndValue = Struct.new(:key, :value) # rubocop:disable Lint/ConstantDefinitionInBlock
-  # rubocop:disable Layout/LineLength
+    # rubocop:disable Layout/LineLength
   [
     KeyAndValue.new(ENV.fetch('P12_KEY_DISTRIBUTION', nil), ENV.fetch('P12_VALUE_DISTRIBUTION', nil)),
     KeyAndValue.new(ENV.fetch('P12_KEY_MAC_DEVELOPER_ID', nil), ENV.fetch('P12_VALUE_MAC_DEVELOPER_ID', nil)),
@@ -73,7 +73,7 @@ lane :setup_ha_ci do
     )
 
     FileUtils.rm(tmp_file)
-  # rubocop:enable Layout/LineLength
+    # rubocop:enable Layout/LineLength
   end
 
   import_provisioning_profiles
