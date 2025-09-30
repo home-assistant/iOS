@@ -13,6 +13,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
+### setup_ha_ci
+
+```sh
+[bundle exec] fastlane setup_ha_ci
+```
+
+Setup Continous Integration
+
 ### lint
 
 ```sh
@@ -44,22 +52,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 ```
 
 
-
-### update_dsyms
-
-```sh
-[bundle exec] fastlane update_dsyms
-```
-
-
-
-### update_notification_test_cases
-
-```sh
-[bundle exec] fastlane update_notification_test_cases
-```
-
-Update the test cases from the fcm repo
 
 ### icons
 
@@ -125,13 +117,21 @@ Download App Store Connect metadata from Lokalise and upload to App Store Connec
 
 Set version number
 
-### setup_ha_ci
+### update_notification_test_cases
 
 ```sh
-[bundle exec] fastlane setup_ha_ci
+[bundle exec] fastlane update_notification_test_cases
 ```
 
-Setup Continous Integration
+Update the test cases from the fcm repo
+
+### update_dsyms
+
+```sh
+[bundle exec] fastlane update_dsyms
+```
+
+
 
 ### test
 
