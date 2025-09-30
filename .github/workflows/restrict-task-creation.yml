@@ -5,6 +5,9 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  issues: write
+
 jobs:
   check-authorization:
     runs-on: ubuntu-latest
@@ -37,8 +40,10 @@ jobs:
               body: `Hi @${issueAuthor}, thank you for your contribution!\n\n` +
                     `Task issues are restricted to Open Home Foundation staff and authorized contributors.\n\n` +
                     `If you would like to:\n` +
-                    `- Report a bug: Please use the [bug report form](https://github.com/home-assistant/ios/issues/new?template=bug_report_iOS.md)\n` +
-                    `- Request a feature: Please submit to [Feature Requests](https://github.com/orgs/home-assistant/discussions)\n\n` +
+                    `- Report a bug: Please use the ` +
+                    `[bug report form](https://github.com/home-assistant/ios/issues/new?template=bug_report_iOS.md)\n` +
+                    `- Request a feature: Please submit to ` +
+                    `[Feature Requests](https://github.com/orgs/home-assistant/discussions)\n\n` +
                     `If you believe you should have access to create Task issues, please contact the maintainers.`
             });
 
