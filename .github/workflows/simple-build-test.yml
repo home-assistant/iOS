@@ -1,0 +1,45 @@
+name: Simple Build Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ nameChanged ]
+
+jobs:
+  simple-build:
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Debug - List files and Xcode
+        run: |
+          echo "=== Repository contents ==="
+          ls -la
+          echo "=== Available Xcode versions ==="
+          ls -la /Applications/ | grep Xcode || true
+          echo "=== Current Xcode ==="
+          xcode-select -p
+          echo "=== Xcode version ==="
+          xcodebuild -version
+
+      - name: List available schemes
+        run: |
+          echo "=== Listing workspace schemes ==="
+          xcodebuild -workspace HomeAssistant.xcworkspace -list || true
+
+      - name: Install dependencies
+        run: |
+          gem install cocoapods
+          pod install --repo-update
+
+      - name: Try simple build
+        run: |
+          xcodebuild -workspace HomeAssistant.xcworkspace \
+                     -scheme App-Debug \
+                     -sdk iphonesimulator \
+                     -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' \
+                     -dry-run \
+                     CODE_SIGNING_ALLOWED=NO
