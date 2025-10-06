@@ -6,7 +6,6 @@ struct WatchHomeView: View {
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
 
-
     var body: some View {
         navigation
             ._statusBarHidden(true)
