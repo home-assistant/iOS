@@ -3,9 +3,9 @@ name: iOS Build Check
 on:
   workflow_dispatch:
   push:
-    branches: [ nameChanged ]
+    branches: [ nameChanged, master ]
   pull_request:
-    branches: [ nameChanged ]
+    branches: [ nameChanged, master ]
 
 jobs:
   build:
@@ -16,51 +16,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Ruby (for CocoaPods, if needed)
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+
+      - name: Set up Ruby (for CocoaPods)
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
+          bundler-cache: true
 
-      - name: Install CocoaPods if Podfile exists
+      - name: Install dependencies
         run: |
-          if [ -f Podfile ]; then
-            gem install cocoapods || true
-            pod install --repo-update || true
-          fi
+          bundle install
+          pod install --repo-update
 
-      - name: Detect project/workspace, scheme and build (Simulator)
-        shell: bash
+      - name: Build Debug
         run: |
-          set -euo pipefail
-          echo "Listing repo root files:"
-          ls -la
+          xcodebuild -workspace HomeAssistant.xcworkspace \
+                     -scheme App-Debug \
+                     -sdk iphonesimulator \
+                     -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' \
+                     clean build \
+                     CODE_SIGNING_ALLOWED=NO | tee xcodebuild.log
 
-          WORKSPACE=$(ls *.xcworkspace 2>/dev/null | head -n1 || true)
-          PROJECT=$(ls *.xcodeproj 2>/dev/null | head -n1 || true)
+      - name: Build Release
+        run: |
+          xcodebuild -workspace HomeAssistant.xcworkspace \
+                     -scheme App-Release \
+                     -sdk iphonesimulator \
+                     -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' \
+                     clean build \
+                     CODE_SIGNING_ALLOWED=NO | tee xcodebuild-release.log
 
-          if [ -n "$WORKSPACE" ]; then
-            echo "Found workspace: $WORKSPACE"
-            SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list 2>/dev/null | sed -n '/Schemes:/,/^$/p' | sed '1d' | sed -n '1p' | xargs || true)
-            if [ -z "$SCHEME" ]; then
-              echo "No scheme detected from workspace. Listing content:"
-              xcodebuild -workspace "$WORKSPACE" -list || true
-            fi
-            echo "Using scheme: $SCHEME"
-            xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' clean build | tee xcodebuild.log
-          elif [ -n "$PROJECT" ]; then
-            echo "Found project: $PROJECT"
-            SCHEME=$(xcodebuild -list -project "$PROJECT" 2>/dev/null | sed -n '/Schemes:/,/^$/p' | sed '1d' | sed -n '1p' | xargs || true)
-            echo "Using scheme: $SCHEME"
-            xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' clean build | tee xcodebuild.log
-          else
-            echo "ERROR: No .xcworkspace or .xcodeproj found in repo root. Cannot build."
-            exit 1
-          fi
-
-      - name: Upload build logs and any .app artifact
+      - name: Upload build logs and artifacts
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: build-artifacts
           path: |
             xcodebuild.log
-            build/Build/Products/Debug-iphonesimulator/*.app
+            xcodebuild-release.log
+            ~/Library/Developer/Xcode/DerivedData/SH-PRO-*/Build/Products/Debug-iphonesimulator/*.app
+            ~/Library/Developer/Xcode/DerivedData/SH-PRO-*/Build/Products/Release-iphonesimulator/*.app

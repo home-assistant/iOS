@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 80
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 80
@@ -71,7 +71,7 @@ jobs:
 
   test:
     needs: check-swiftlint-disables
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
@@ -125,21 +125,21 @@ jobs:
           name: test-logs
           path: |
             ~/Library/Logs/DiagnosticReports
-            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
+            ~/Library/Developer/Xcode/DerivedData/SH-PRO-*/Logs/Test
             ~/Library/Logs/scan
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         name: "Upload Simulator App"
         with:
           name: ios-simulator
-          path: ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Build/Products/Debug-iphonesimulator/*.app
+          path: ~/Library/Developer/Xcode/DerivedData/SH-PRO-*/Build/Products/Debug-iphonesimulator/*.app
 
   size:
     needs: check-swiftlint-disables
     if: |
       github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
-    runs-on: macos-15
+      github.event.pull_request.head.repo.full_name == 'Ikrma3/SH-Pro'
+    runs-on: macos-14
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0

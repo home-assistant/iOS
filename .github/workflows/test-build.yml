@@ -1,0 +1,55 @@
+name: Test Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ nameChanged ]
+
+jobs:
+  quick-build-test:
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+
+      - name: List workspace content
+        run: |
+          echo "=== Workspace files ==="
+          ls -la *.xcworkspace *.xcodeproj 2>/dev/null || true
+          
+          echo "=== Available schemes ==="
+          xcodebuild -workspace HomeAssistant.xcworkspace -list
+          
+          echo "=== Testing simple build command ==="
+          xcodebuild -workspace HomeAssistant.xcworkspace \
+                     -scheme App-Debug \
+                     -sdk iphonesimulator \
+                     -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' \
+                     -dry-run \
+                     CODE_SIGNING_ALLOWED=NO
+
+      - name: Set up Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Install CocoaPods dependencies
+        run: |
+          bundle install
+          pod install --repo-update
+
+      - name: Build Debug scheme only
+        run: |
+          xcodebuild -workspace HomeAssistant.xcworkspace \
+                     -scheme App-Debug \
+                     -sdk iphonesimulator \
+                     -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest' \
+                     build \
+                     CODE_SIGNING_ALLOWED=NO \
+                     ONLY_ACTIVE_ARCH=YES
