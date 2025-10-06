@@ -14,8 +14,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+      - name: Check available Xcode versions (use default)
+        run: |
+          echo "=== Available Xcode versions ==="
+          ls -la /Applications/ | grep -i xcode || true
+          echo "=== Current Xcode ==="
+          xcode-select -p
+          echo "=== Xcode version ==="
+          xcodebuild -version
 
       - name: List workspace content
         run: |
