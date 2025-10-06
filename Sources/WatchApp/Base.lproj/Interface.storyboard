@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="24127" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="32700.99.1234" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38"/>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="24017"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="22609"/>
     </dependencies>
     <scenes>
+        <!--Home Assistant-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="HostingController" customModule="WatchExtension_Watch"/>
+            </objects>
+            <point key="canvasLocation" x="34" y="32"/>
+        </scene>
         <!--uppercase MAP-->
         <scene sceneID="68Y-yR-2I3">
             <objects>
                 <notificationController id="h4f-Hf-ll2" userLabel="uppercase MAP">
                     <items>
-                        <label alignment="left" numberOfLines="0" id="p2M-Qe-cqH">
+                        <label alignment="left" text="Title" numberOfLines="0" id="p2M-Qe-cqH">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="R0j-pC-RXg">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="R0j-pC-RXg">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="zei-SN-eTI"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="zei-SN-eTI"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="MAP" id="PaD-pF-3Yk"/>
                     <connections>
@@ -36,13 +43,13 @@
             <objects>
                 <notificationController id="JOO-yq-9Md" userLabel="uppercase CAMERA">
                     <items>
-                        <label alignment="left" numberOfLines="0" id="jQa-FU-AW7">
+                        <label alignment="left" text="Title" numberOfLines="0" id="jQa-FU-AW7">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="xYG-S0-atc">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="xYG-S0-atc">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="yBa-4u-GxD"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="yBa-4u-GxD"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="CAMERA" id="reZ-Qf-LhH"/>
                     <connections>
@@ -61,13 +68,13 @@
             <objects>
                 <notificationController id="QI5-5x-CEK" userLabel="Dynamic Static">
                     <items>
-                        <label alignment="left" numberOfLines="0" id="E7h-tN-FpM">
+                        <label alignment="left" text="Title" numberOfLines="0" id="E7h-tN-FpM">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="RcO-zr-Q0h">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="RcO-zr-Q0h">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="qhB-ey-Ock"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="qhB-ey-Ock"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="DYNAMIC" id="8b7-DD-rBi"/>
                     <connections>
@@ -86,18 +93,18 @@
             <objects>
                 <controller id="CnG-yJ-6kl" customClass="DynamicNotificationController" customModule="WatchExtension_Watch">
                     <items>
-                        <label alignment="center" textAlignment="center" numberOfLines="0" id="TYD-CK-j6b"/>
+                        <label alignment="center" text="Error Label" textAlignment="center" numberOfLines="0" id="TYD-CK-j6b"/>
                         <imageView alignment="center" id="kUn-Nn-n23"/>
                         <imageView alignment="center" id="O47-AI-q5s"/>
                         <map height="150" alignment="left" id="f3v-xS-ups"/>
                         <inlineMovie width="1" height="100" alignment="left" id="zBZ-fe-13e"/>
-                        <label alignment="left" numberOfLines="0" id="vEF-dD-raf">
+                        <label alignment="left" text="Title" numberOfLines="0" id="vEF-dD-raf">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="d7N-vP-Xvn">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="d7N-vP-Xvn">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="nz5-h3-92S"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="nz5-h3-92S"/>
                     </items>
                     <connections>
                         <outlet property="errorLabel" destination="TYD-CK-j6b" id="gGD-ob-HYv"/>
@@ -118,13 +125,13 @@
             <objects>
                 <notificationController id="wuB-AL-wAp" userLabel="lowercase camera">
                     <items>
-                        <label alignment="left" numberOfLines="0" id="HNS-F3-gXN">
+                        <label alignment="left" text="Title" numberOfLines="0" id="HNS-F3-gXN">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="y8B-P5-fhZ">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="y8B-P5-fhZ">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="46V-wi-rMZ"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="46V-wi-rMZ"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="camera" id="Z8Y-fw-yiq"/>
                     <connections>
@@ -143,13 +150,13 @@
             <objects>
                 <notificationController id="9aA-zW-CeC" userLabel="lowercase map">
                     <items>
-                        <label alignment="left" numberOfLines="0" id="8ek-iU-dFj">
+                        <label alignment="left" text="Title" numberOfLines="0" id="8ek-iU-dFj">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="sKS-hF-09x">
+                        <label alignment="left" text="Subtitle" numberOfLines="0" id="sKS-hF-09x">
                             <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                         </label>
-                        <label alignment="left" numberOfLines="0" id="zI6-q8-ION"/>
+                        <label alignment="left" text="Body" numberOfLines="0" id="zI6-q8-ION"/>
                     </items>
                     <notificationCategory key="notificationCategory" identifier="map" id="QIM-ap-Wf9"/>
                     <connections>
@@ -165,7 +172,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="pZE-sj-rAd"/>
+        <segue reference="Kni-jE-Yx9"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.40000000000000002" green="0.78000000000000003" blue="0.95999999999999996" alpha="1" colorSpace="calibratedRGB"/>
 </document>

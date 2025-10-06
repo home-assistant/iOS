@@ -6,7 +6,7 @@ import UserNotifications
 import WatchKit
 import XCGLogger
 
-class ExtensionDelegate: NSObject, WKApplicationDelegate {
+class ExtensionDelegate: NSObject, WKExtensionDelegate {
     // MARK: Fileprivate
 
     fileprivate var watchConnectivityBackgroundPromise: Guarantee<Void>
@@ -20,7 +20,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
         super.init()
     }
 
-    // MARK: - WKApplicationDelegate -
+    // MARK: - WKExtensionDelegate -
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
@@ -31,7 +31,7 @@ class ExtensionDelegate: NSObject, WKApplicationDelegate {
 
         let options: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
 
-        WKApplication.shared().registerForRemoteNotifications()
+        WKExtension.shared().registerForRemoteNotifications()
 
         UNUserNotificationCenter.current().requestAuthorization(options: options) { granted, error in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")

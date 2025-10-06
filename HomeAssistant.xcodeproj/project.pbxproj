@@ -588,6 +588,7 @@
 		42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */; };
 		421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */; };
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
+		421BBC702E93A64B00745EC8 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D842159D10D00833E5D /* Interface.storyboard */; };
 		4221ED352D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
 		4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688A2D40F9B7005911E4 /* WidgetCustom.swift */; };
 		4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
@@ -691,9 +692,6 @@
 		426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490762C0F2403002155CC /* WatchAudioRecorder.swift */; };
 		4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
-		42678F762E81F2CA007FB38F /* DynamicNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42678F752E81F2CA007FB38F /* DynamicNotificationView.swift */; };
-		42678F782E81F2CD007FB38F /* DynamicNotificationHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42678F772E81F2CD007FB38F /* DynamicNotificationHostingController.swift */; };
-		42678F7A2E81F603007FB38F /* DynamicNotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42678F792E81F603007FB38F /* DynamicNotificationViewModel.swift */; };
 		426B73E52DCCE2C7003F778E /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C42D393F0E0062D905 /* EntityPicker.swift */; };
 		426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */; };
@@ -794,6 +792,7 @@
 		4296C3782B91F6260051B63C /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C36C2B90DB630051B63C /* PerformAction.swift */; };
 		4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
 		4296C37B2B92054C0051B63C /* WidgetActionsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */; };
+		429764F62E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */; };
 		4297ADA72C89C74A00790812 /* GRDB+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */; };
 		4297ADA82C89C74A00790812 /* GRDB+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */; };
 		429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */; };
@@ -934,6 +933,12 @@
 		42DEDA9B2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */; };
 		42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2E2CCF918D00D7EC14 /* BluetoothPermissionView.swift */; };
+		42DF98652E93A11000837EA2 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98642E93A11000837EA2 /* HostingController.swift */; };
+		42DF98692E93A1E000837EA2 /* DynamicNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98682E93A1E000837EA2 /* DynamicNotificationController.swift */; };
+		42DF986B2E93A1F300837EA2 /* NotificationSubController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986A2E93A1F300837EA2 /* NotificationSubController.swift */; };
+		42DF986D2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986C2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift */; };
+		42DF986F2E93A21A00837EA2 /* NotificationSubControllerMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */; };
+		42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -978,7 +983,6 @@
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
-		42F6258F2E70698D00ABEE1D /* WatchMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F6258E2E7067FE00ABEE1D /* WatchMain.swift */; };
 		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */; };
@@ -2172,9 +2176,6 @@
 		426490742C0F20FF002155CC /* WatchAssistView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchAssistView+Build.swift"; sourceTree = "<group>"; };
 		426490762C0F2403002155CC /* WatchAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAudioRecorder.swift; sourceTree = "<group>"; };
 		426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hexadecimal.swift"; sourceTree = "<group>"; };
-		42678F752E81F2CA007FB38F /* DynamicNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationView.swift; sourceTree = "<group>"; };
-		42678F772E81F2CD007FB38F /* DynamicNotificationHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationHostingController.swift; sourceTree = "<group>"; };
-		42678F792E81F603007FB38F /* DynamicNotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationViewModel.swift; sourceTree = "<group>"; };
 		426BB0C42D393F0E0062D905 /* EntityPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPicker.swift; sourceTree = "<group>"; };
 		426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinePicker.swift; sourceTree = "<group>"; };
 		426CBB692C9C543F003CA3AC /* ControlSwitchValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSwitchValueProvider.swift; sourceTree = "<group>"; };
@@ -2281,6 +2282,7 @@
 		4296C36C2B90DB630051B63C /* PerformAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		4296C3742B91F0860051B63C /* WidgetActionsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		4296C3792B9205450051B63C /* WidgetActionsAppIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WidgetActionsAppIntent.swift; path = Sources/Extensions/AppIntents/WidgetActionsAppIntent.swift; sourceTree = SOURCE_ROOT; };
+		429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularGlassOrLegacyBackground.swift; sourceTree = "<group>"; };
 		4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntitiesModel.swift; sourceTree = "<group>"; };
 		4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GRDB+Initialization.swift"; sourceTree = "<group>"; };
 		429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewModel.swift; sourceTree = "<group>"; };
@@ -2567,6 +2569,12 @@
 		42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionSensor.swift; sourceTree = "<group>"; };
 		42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionRequestView.swift; sourceTree = "<group>"; };
 		42DF6B2E2CCF918D00D7EC14 /* BluetoothPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionView.swift; sourceTree = "<group>"; };
+		42DF98642E93A11000837EA2 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
+		42DF98682E93A1E000837EA2 /* DynamicNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationController.swift; sourceTree = "<group>"; };
+		42DF986A2E93A1F300837EA2 /* NotificationSubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubController.swift; sourceTree = "<group>"; };
+		42DF986C2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMJPEG.swift; sourceTree = "<group>"; };
+		42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMap.swift; sourceTree = "<group>"; };
+		42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMedia.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
@@ -2604,7 +2612,6 @@
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
-		42F6258E2E7067FE00ABEE1D /* WatchMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMain.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
@@ -3959,9 +3966,11 @@
 		11FA935A263FAA7C0015F1FC /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
-				42678F752E81F2CA007FB38F /* DynamicNotificationView.swift */,
-				42678F792E81F603007FB38F /* DynamicNotificationViewModel.swift */,
-				42678F772E81F2CD007FB38F /* DynamicNotificationHostingController.swift */,
+				42DF98682E93A1E000837EA2 /* DynamicNotificationController.swift */,
+				42DF986A2E93A1F300837EA2 /* NotificationSubController.swift */,
+				42DF986C2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift */,
+				42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */,
+				42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -5280,6 +5289,7 @@
 				4207EB742C87547000286A2D /* MagicItemRow */,
 				428830EA2C6E3A8D0012373D /* WatchHomeView.swift */,
 				428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */,
+				429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -6109,7 +6119,7 @@
 		B6CC5D922159D10E00833E5D /* Watch */ = {
 			isa = PBXGroup;
 			children = (
-				42F6258E2E7067FE00ABEE1D /* WatchMain.swift */,
+				42DF98642E93A11000837EA2 /* HostingController.swift */,
 				426490662C0F1A27002155CC /* Assist */,
 				423F451E2C19D87500766A99 /* Complication */,
 				42C373B62BC55C3A00898990 /* Home */,
@@ -7447,6 +7457,7 @@
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
 				B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */,
 				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
+				421BBC702E93A64B00745EC8 /* Interface.storyboard in Resources */,
 				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8842,29 +8853,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42DF986F2E93A21A00837EA2 /* NotificationSubControllerMap.swift in Sources */,
 				426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */,
 				423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */,
-				42F6258F2E70698D00ABEE1D /* WatchMain.swift in Sources */,
 				428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */,
 				428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */,
-				42678F762E81F2CA007FB38F /* DynamicNotificationView.swift in Sources */,
 				1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */,
 				42EB030A2C6E4D0E00A184A6 /* WatchMagicViewRow.swift in Sources */,
 				42752DF12D50F94C00FC2F37 /* AssistTypingIndicator.swift in Sources */,
+				42DF986B2E93A1F300837EA2 /* NotificationSubController.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				426490752C0F20FF002155CC /* WatchAssistView+Build.swift in Sources */,
 				426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */,
 				4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */,
+				429764F62E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
+				42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */,
 				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
+				42DF986D2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift in Sources */,
 				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
+				42DF98692E93A1E000837EA2 /* DynamicNotificationController.swift in Sources */,
+				42DF98652E93A11000837EA2 /* HostingController.swift in Sources */,
 				4207EB762C8754BF00286A2D /* WatchMagicViewRowViewModel.swift in Sources */,
 				427756CB2C3ED5F700E11D0B /* VolumeView.swift in Sources */,
-				42678F7A2E81F603007FB38F /* DynamicNotificationViewModel.swift in Sources */,
 				4264906E2C0F1B8B002155CC /* WatchAssistViewModel.swift in Sources */,
-				42678F782E81F2CD007FB38F /* DynamicNotificationHostingController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

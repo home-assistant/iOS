@@ -6,8 +6,10 @@ struct WatchHomeView: View {
     @StateObject private var viewModel = WatchHomeViewModel()
     @State private var showAssist = false
 
+
     var body: some View {
         navigation
+            ._statusBarHidden(true)
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
                 showAssist = true
             }
@@ -53,15 +55,6 @@ struct WatchHomeView: View {
         NavigationStack {
             content
                 .persistentSystemOverlays(.hidden)
-                .toolbar {
-                    reloadToolbarButton
-                    if viewModel.showAssist {
-                        assistToolbarButton
-                    }
-                    if viewModel.isLoading {
-                        toolbarLoadingState
-                    }
-                }
         }
     }
 
@@ -74,12 +67,21 @@ struct WatchHomeView: View {
     @ViewBuilder
     private var content: some View {
         List {
-            inlineLoader
+            listHeader
             listContent
             footer
         }
+        // Removing the safe are so our fake navigation bar buttons (header) can be place correctly
+        .ignoresSafeArea([.all], edges: .top)
         .id(viewModel.refreshListID)
         .navigationTitle("")
+        .modify { view in
+            if #available(watchOS 11.0, *) {
+                view.toolbarVisibility(.hidden, for: .navigationBar)
+            } else {
+                view
+            }
+        }
     }
 
     @ViewBuilder
@@ -93,19 +95,21 @@ struct WatchHomeView: View {
     }
 
     @ViewBuilder
-    private var inlineReloadButton: some View {
-        if viewModel.watchConfig.items.isEmpty || viewModel.showError {
-            reloadButton
+    private var listHeader: some View {
+        HStack {
+            navReloadButton
+            Spacer()
+            if viewModel.isLoading {
+                toolbarLoadingState
+            }
+            if viewModel.showAssist {
+                Spacer()
+                assistHeaderButton
+            } else {
+                Spacer()
+            }
         }
-    }
-
-    @ViewBuilder
-    private var inlineLoader: some View {
-        // Loader is displayed in list when watchOS 10 is not available
-        if viewModel.isLoading, #unavailable(watchOS 10.0) {
-            loadingState
-                .listRowBackground(Color.clear)
-        }
+        .listRowBackground(Color.clear)
     }
 
     @ViewBuilder
@@ -122,35 +126,24 @@ struct WatchHomeView: View {
 
     @ViewBuilder
     private var mainContent: some View {
-        assistButtonForOlderDevices
         ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
             WatchMagicViewRow(
                 item: item,
                 itemInfo: viewModel.info(for: item)
             )
         }
-        reloadButton
     }
 
-    @available(watchOS 10, *)
-    private var reloadToolbarButton: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            navReloadButton
-        }
-    }
-
-    @available(watchOS 10, *)
-    private var assistToolbarButton: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            assistButton
-                .modify { view in
-                    if #available(watchOS 11, *) {
-                        view.handGestureShortcut(.primaryAction)
-                    } else {
-                        view
-                    }
+    private var assistHeaderButton: some View {
+        assistButton
+            .modify { view in
+                if #available(watchOS 11, *) {
+                    view.handGestureShortcut(.primaryAction)
+                } else {
+                    view
                 }
-        }
+            }
+            .circularGlassOrLegacyBackground()
     }
 
     private var assistButton: some View {
@@ -169,6 +162,7 @@ struct WatchHomeView: View {
                 color: color
             ))
         })
+        .buttonStyle(.plain)
         .modify { view in
             if #available(watchOS 26.0, *) {
                 view
@@ -179,30 +173,19 @@ struct WatchHomeView: View {
         }
     }
 
-    @available(watchOS 10, *)
     private var navReloadButton: some View {
         Button {
             viewModel.requestConfig()
         } label: {
-            Image(systemSymbol: .arrowCirclepath)
+            Image(systemSymbol: .arrowCounterclockwise)
         }
+        .buttonStyle(.plain)
+        .circularGlassOrLegacyBackground()
     }
 
-    @available(watchOS 10, *)
-    private var toolbarLoadingState: some ToolbarContent {
-        ToolbarItem(placement: .bottomBar) {
-            loadingState
-                .modify { view in
-                    if #available(watchOS 26.0, *) {
-                        view
-                            .glassEffect(in: .circle)
-                    } else {
-                        view
-                            .padding()
-                            .background(.black)
-                    }
-                }
-        }
+    private var toolbarLoadingState: some View {
+        loadingState
+            .circularGlassOrLegacyBackground()
     }
 
     private var loadingState: some View {
@@ -236,37 +219,6 @@ struct WatchHomeView: View {
             }
             .font(DesignSystem.Font.caption2)
             .foregroundStyle(.secondary.opacity(0.5))
-        }
-    }
-
-    @ViewBuilder
-    private var reloadButton: some View {
-        // When watchOS 10 is available, reload is on toolbar
-        if #unavailable(watchOS 10.0) {
-            Button {
-                viewModel.requestConfig()
-            } label: {
-                Group {
-                    if #available(watchOS 10.0, *) {
-                        Label(L10n.reloadLabel, systemSymbol: .arrowCirclepath)
-                    } else {
-                        Label(L10n.reloadLabel, systemSymbol: .arrowTriangle2CirclepathCircle)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .font(.footnote)
-            }
-            .listRowBackground(Color.clear)
-        }
-    }
-
-    @ViewBuilder
-    private var assistButtonForOlderDevices: some View {
-        if #unavailable(watchOS 10),
-           viewModel.watchConfig.assist.showAssist,
-           !viewModel.watchConfig.assist.serverId.isEmpty,
-           !viewModel.watchConfig.assist.pipelineId.isEmpty {
-            assistButton
         }
     }
 }
