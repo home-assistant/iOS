@@ -87,7 +87,7 @@ final class ThreadCredentialsManagementViewModel: ObservableObject {
                 case let .rejected(error):
                     Current.Log
                         .error(
-                            "Failed to transfer thread credentials from apple to home assistant (server name: \(server.info.name): \(error.localizedDescription)"
+                            "Failed to transfer thread credentials from apple to SH-PRO (server name: \(server.info.name): \(error.localizedDescription)"
                         )
                 }
 

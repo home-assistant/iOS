@@ -57,8 +57,8 @@ COPY_PHASE_STRIP = NO
 // overridden on just the main .app target, since it's the only thing we want in archives
 SKIP_INSTALL = YES
 
-// makes the executable more HA-specific so it is in crash logs sorted nicely
-PRODUCT_NAME = HomeAssistant-$(TARGET_NAME)
+// makes the executable more SH-PRO-specific so it is in crash logs sorted nicely
+PRODUCT_NAME = SH-PRO-$(TARGET_NAME)
 PRODUCT_MODULE_NAME = $(TARGET_NAME:c99extidentifier)
 
 // watchOS-specific, to keep us under the 75 MB size limit

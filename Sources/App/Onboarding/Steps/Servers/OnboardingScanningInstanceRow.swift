@@ -60,21 +60,21 @@ struct OnboardingScanningInstanceRow: View {
     List {
         Group {
             OnboardingScanningInstanceRow(
-                name: "Home Assistant",
+                name: "SH-PRO",
                 internalURLString: "https://example.com",
                 externalURLString: "https://example.com",
                 internalOrExternalURLString: "https://example.com",
                 isLoading: true
             )
             OnboardingScanningInstanceRow(
-                name: "Home Assistant",
+                name: "SH-PRO",
                 internalURLString: "https://example.com",
                 externalURLString: "https://example.com",
                 internalOrExternalURLString: "https://example.com",
                 isLoading: false
             )
             OnboardingScanningInstanceRow(
-                name: "Home Assistant",
+                name: "SH-PRO",
                 internalURLString: "https://example.com",
                 externalURLString: "https://example.com",
                 internalOrExternalURLString: "https://example.com",

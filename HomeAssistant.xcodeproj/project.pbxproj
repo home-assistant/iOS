@@ -2886,7 +2886,7 @@
 		B655E923227FF19C00CFDC94 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
 		B655E925227FF19D00CFDC94 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Intents.strings; sourceTree = "<group>"; };
 		B655E927227FF19E00CFDC94 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Intents.strings; sourceTree = "<group>"; };
-		B657A8E61CA646EB00121384 /* Home Assistant Δ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Δ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B657A8E61CA646EB00121384 /* SH-PRO Δ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SH-PRO Δ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -5881,7 +5881,7 @@
 		B657A8E71CA646EB00121384 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B657A8E61CA646EB00121384 /* Home Assistant Δ.app */,
+				B657A8E61CA646EB00121384 /* SH-PRO Δ.app */,
 				B657A8FC1CA646EB00121384 /* HomeAssistant-Tests-App.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistant-Tests-UI.xctest */,
 				B6AAD7A11D827DD40090B220 /* HomeAssistant-Extensions-NotificationService.appex */,
@@ -6711,7 +6711,7 @@
 			);
 			name = App;
 			productName = HomeAssistant;
-			productReference = B657A8E61CA646EB00121384 /* Home Assistant Δ.app */;
+			productReference = B657A8E61CA646EB00121384 /* SH-PRO Δ.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B657A8FB1CA646EB00121384 /* Tests-App */ = {
@@ -9618,7 +9618,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_MODULE_NAME = HomeAssistant;
-				PRODUCT_NAME = HomeAssistant;
+				PRODUCT_NAME = "SH-PRO";
 			};
 			name = Debug;
 		};
@@ -9626,7 +9626,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_MODULE_NAME = HomeAssistant;
-				PRODUCT_NAME = HomeAssistant;
+				PRODUCT_NAME = "SH-PRO";
 			};
 			name = Release;
 		};
@@ -9634,7 +9634,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_MODULE_NAME = HomeAssistant;
-				PRODUCT_NAME = HomeAssistant;
+				PRODUCT_NAME = "SH-PRO";
 			};
 			name = Beta;
 		};
@@ -9888,7 +9888,7 @@
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				INFOPLIST_FILE = Sources/Launcher/Info.plist;
-				PRODUCT_NAME = "Home Assistant Launcher";
+				PRODUCT_NAME = "SH-PRO Launcher";
 				PROVISIONING_SUFFIX = .Launcher;
 				SDKROOT = macosx;
 			};
@@ -9900,7 +9900,7 @@
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				INFOPLIST_FILE = Sources/Launcher/Info.plist;
-				PRODUCT_NAME = "Home Assistant Launcher";
+				PRODUCT_NAME = "SH-PRO Launcher";
 				PROVISIONING_SUFFIX = .Launcher;
 				SDKROOT = macosx;
 			};
@@ -9912,7 +9912,7 @@
 				CODE_SIGN_ENTITLEMENTS = Configuration/Entitlements/Launcher.entitlements;
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				INFOPLIST_FILE = Sources/Launcher/Info.plist;
-				PRODUCT_NAME = "Home Assistant Launcher";
+				PRODUCT_NAME = "SH-PRO Launcher";
 				PROVISIONING_SUFFIX = .Launcher;
 				SDKROOT = macosx;
 			};
@@ -10191,7 +10191,7 @@
 					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
-				PRODUCT_NAME = "Home Assistant β";
+				PRODUCT_NAME = "SH-PRO β";
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -10412,7 +10412,7 @@
 					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
-				PRODUCT_NAME = "Home Assistant Δ";
+				PRODUCT_NAME = "SH-PRO Δ";
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -10456,7 +10456,7 @@
 					"-fprofile-instr-generate",
 				);
 				PRODUCT_MODULE_NAME = HomeAssistant;
-				PRODUCT_NAME = "Home Assistant";
+				PRODUCT_NAME = "SH-PRO";
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
