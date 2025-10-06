@@ -71,7 +71,7 @@ struct WatchHomeView: View {
             listContent
             footer
         }
-        // Removing the safe are so our fake navigation bar buttons (header) can be place correctly
+        // Removing the safe area so our fake navigation bar buttons (header) can be place correctly
         .ignoresSafeArea([.all], edges: .top)
         .id(viewModel.refreshListID)
         .navigationTitle("")
