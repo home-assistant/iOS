@@ -20,9 +20,11 @@ struct ManualURLEntryView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                Section(L10n.Onboarding.ManualSetup.TextField.title) {
-                    TextField(L10n.Onboarding.ManualSetup.TextField.placeholder, text: $urlString)
+            BasePermissionView(illustration: {
+                Image(.Onboarding.pencil)
+            }, title: "What is your Home Assistant address?", primaryDescription: "", content: {
+                VStack {
+                    HATextField(placeholder: L10n.Onboarding.ManualSetup.TextField.placeholder, text: $urlString)
                         .keyboardType(.URL)
                         .autocorrectionDisabled()
                         .autocapitalization(.none)
@@ -30,11 +32,18 @@ struct ManualURLEntryView: View {
                         .onAppear {
                             focused = true
                         }
-                }
 
-                httpOrHttpsSection
+                    httpOrHttpsSection
+                }
+            }, primaryActionTitle: "Connect") {
+                guard !urlString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                if let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                    dismiss()
+                    connectAction(url)
+                } else {
+                    showInvalidURLError = true
+                }
             }
-            .navigationTitle(L10n.Onboarding.ManualSetup.title)
             .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -43,9 +52,6 @@ struct ManualURLEntryView: View {
                         dismiss()
                     }
                 }
-            }
-            .safeAreaInset(edge: .bottom) {
-                connectButton
             }
             .alert(isPresented: $showInvalidURLError) {
                 Alert(
@@ -68,7 +74,12 @@ struct ManualURLEntryView: View {
         if !cleanedURL.isEmpty,
            !hasSupportedScheme,
            cleanedURL.count >= minCharsToActivateSection {
-            Section(L10n.Onboarding.ManualSetup.HelperSection.title) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                Text(L10n.Onboarding.ManualSetup.HelperSection.title)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.top, DesignSystem.Spaces.two)
+                    .multilineTextAlignment(.leading)
                 ForEach(URLScheme.allCases, id: \.rawValue) { scheme in
                     Button(action: {
                         urlString = scheme.rawValue + urlString
@@ -77,27 +88,8 @@ struct ManualURLEntryView: View {
                     })
                 }
             }
-            .buttonStyle(.primaryButton)
-            .listRowBackground(Color.clear)
-            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-            .listRowSeparator(.hidden)
+            .buttonStyle(.outlinedButton)
         }
-    }
-
-    private var connectButton: some View {
-        Button {
-            if let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
-                dismiss()
-                connectAction(url)
-            } else {
-                showInvalidURLError = true
-            }
-        } label: {
-            Text(L10n.Onboarding.ManualSetup.connect)
-        }
-        .buttonStyle(.primaryButton)
-        .padding()
-        .disabled(urlString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
 }
 
