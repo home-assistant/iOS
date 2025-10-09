@@ -541,6 +541,8 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
 "onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
+"onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
+"onboarding.manual_url_entry.primary_action.title" = "Connect";
 "onboarding.location_access.title" = "Use this device's location for automations";
 "onboarding.location_access.primary_description" = "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.";
 "onboarding.location_access.secondary_description" = "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.";

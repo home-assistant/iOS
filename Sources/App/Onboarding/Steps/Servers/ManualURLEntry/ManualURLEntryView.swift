@@ -22,7 +22,7 @@ struct ManualURLEntryView: View {
         NavigationView {
             BaseOnboardingView(illustration: {
                 Image(.Onboarding.pencil)
-            }, title: "What is your Home Assistant address?", primaryDescription: "", content: {
+            }, title: L10n.Onboarding.ManualUrlEntry.title, primaryDescription: "", content: {
                 VStack {
                     HATextField(placeholder: L10n.Onboarding.ManualSetup.TextField.placeholder, text: $urlString)
                         .keyboardType(.URL)
@@ -35,7 +35,7 @@ struct ManualURLEntryView: View {
 
                     httpOrHttpsSection
                 }
-            }, primaryActionTitle: "Connect") {
+            }, primaryActionTitle: L10n.Onboarding.ManualUrlEntry.PrimaryAction.title) {
                 guard !urlString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                 if let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
                     dismiss()
