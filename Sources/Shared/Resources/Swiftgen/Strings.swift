@@ -1794,6 +1794,24 @@ public enum L10n {
       /// Home Assistant Invite
       public static var title: String { return L10n.tr("Localizable", "onboarding.invitation.title") }
     }
+    public enum LocalAccess {
+      /// If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.local_access.description") }
+      /// Next
+      public static var nextButton: String { return L10n.tr("Localizable", "onboarding.local_access.next_button") }
+      /// This data will never be shared with the Home Assistant project or third parties.
+      public static var privacyDisclaimer: String { return L10n.tr("Localizable", "onboarding.local_access.privacy_disclaimer") }
+      /// Let us help secure your remote connection
+      public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.title") }
+      public enum LessSecureOption {
+        /// Less secure: Do not allow this app to know when you're home
+        public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.less_secure_option.title") }
+      }
+      public enum SecureOption {
+        /// Most secure: Allow this app to know when you're home
+        public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.secure_option.title") }
+      }
+    }
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
