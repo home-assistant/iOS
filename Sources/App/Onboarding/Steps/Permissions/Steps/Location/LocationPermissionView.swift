@@ -10,14 +10,14 @@ struct LocationPermissionView: View {
             illustration: {
                 Image(.Onboarding.world)
             },
-            title: "Use this device's location for automations",
-            primaryDescription: "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.",
-            secondaryDescription: "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.",
-            primaryActionTitle: "Share my location",
+            title: L10n.Onboarding.LocationAccess.title,
+            primaryDescription: L10n.Onboarding.LocationAccess.primaryDescription,
+            secondaryDescription: L10n.Onboarding.LocationAccess.secondaryDescription,
+            primaryActionTitle: L10n.Onboarding.LocationAccess.PrimaryAction.title,
             primaryAction: {
                 viewModel.requestLocationPermission()
             },
-            secondaryActionTitle: "Do not share my location",
+            secondaryActionTitle: L10n.Onboarding.LocationAccess.SecondaryAction.title,
             secondaryAction: {
                 viewModel.disableLocationSensor()
                 completeAction()
