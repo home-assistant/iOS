@@ -13,24 +13,26 @@ struct LocationPermissionView: View {
             title: L10n.Onboarding.LocationAccess.title,
             primaryDescription: L10n.Onboarding.LocationAccess.primaryDescription,
             secondaryDescription: L10n.Onboarding.LocationAccess.secondaryDescription,
-            primaryActionTitle: L10n.Onboarding.LocationAccess.PrimaryAction.title,
+            primaryActionTitle: viewModel.showContinueButton ? L10n.continueLabel : L10n.Onboarding.LocationAccess.PrimaryAction.title,
             primaryAction: {
-                viewModel.requestLocationPermission()
+                if viewModel.showContinueButton {
+                    completeAction()
+                } else {
+                    viewModel.requestLocationPermission()
+                }
             },
-            secondaryActionTitle: L10n.Onboarding.LocationAccess.SecondaryAction.title,
+            secondaryActionTitle: viewModel.showContinueButton ? nil :L10n.Onboarding.LocationAccess.SecondaryAction.title,
             secondaryAction: {
-                viewModel.disableLocationSensor()
-                completeAction()
+                if !viewModel.showContinueButton {
+                    viewModel.disableLocationSensor()
+                    completeAction()
+                }
             }
         )
+        .animation(.easeInOut(duration: 0.3), value: viewModel.showContinueButton)
         // Mimic navigation bar that is not present in this screen but is in the next
         .padding(.top, DesignSystem.Spaces.four)
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.shouldComplete) { shouldComplete in
-            if shouldComplete {
-                completeAction()
-            }
-        }
     }
 }
 

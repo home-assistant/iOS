@@ -9,17 +9,55 @@ struct OnboardingPermissionsNavigationView: View {
     var body: some View {
         NavigationView {
             VStack {
-                LocationPermissionView {
-                    guard !showLocalAccessChoices else { return }
-                    showLocalAccessChoices = true
-                }
-                NavigationLink("", isActive: $showLocalAccessChoices) {
-                    LocalAccessPermissionView(server: onboardingServer)
-                }
+                location
+                localAccessNavigationLink
             }
         }
         .navigationViewStyle(.stack)
         .navigationBarHidden(true)
+    }
+
+    private var location: some View {
+        LocationPermissionView {
+            guard !showLocalAccessChoices else { return }
+            showLocalAccessChoices = true
+        }
+    }
+
+    private var localAccessNavigationLink: some View {
+        NavigationLink("", isActive: $showLocalAccessChoices) {
+            VStack {
+                LocalAccessPermissionView(server: onboardingServer, completeAction: {
+                    showHomeNetworkConfiguration = true
+                })
+                homeNetworkInputNavigationLink
+            }
+        }
+    }
+
+    private var homeNetworkInputNavigationLink: some View {
+        NavigationLink("", isActive: $showHomeNetworkConfiguration) {
+            HomeNetworkInputView(onNext: { networkSSID in
+                if let networkSSID {
+                    saveNetworkSSID(networkSSID)
+                }
+                completeOnboarding()
+            }, onSkip: {
+                completeOnboarding()
+            })
+        }
+    }
+
+    private func saveNetworkSSID(_ ssid: String) {
+        onboardingServer.update { info in
+            info.connection.internalSSIDs = [ssid]
+        }
+    }
+
+    private func completeOnboarding() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            Current.onboardingObservation.complete()
+        }
     }
 
     // Since user gave location access we can use it's current network SSID as Home identifier

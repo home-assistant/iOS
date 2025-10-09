@@ -23,8 +23,14 @@ struct LocalAccessPermissionView: View {
         ),
     ]
 
-    init(server: Server) {
+    let completeAction: () -> Void
+
+    init(
+        server: Server,
+        completeAction: @escaping () -> Void
+    ) {
         _viewModel = .init(wrappedValue: LocalAccessPermissionViewModel(server: server))
+        self.completeAction = completeAction
     }
 
     var body: some View {
@@ -38,7 +44,6 @@ struct LocalAccessPermissionView: View {
             content: {
                 VStack(spacing: DesignSystem.Spaces.four) {
                     SelectionOptionView(options: locationOptions, selection: $viewModel.selection)
-
                     HStack(spacing: DesignSystem.Spaces.two) {
                         Image(systemSymbol: .lock)
                             .foregroundStyle(.haPrimary)
@@ -51,16 +56,6 @@ struct LocalAccessPermissionView: View {
                         Spacer()
                     }
                     .padding(.horizontal, DesignSystem.Spaces.two)
-                    NavigationLink("", isActive: $viewModel.showHomeNetworkConfiguration) {
-                        HomeNetworkInputView(onNext: { networkSSID in
-                            if let networkSSID {
-                                viewModel.saveNetworkSSID(networkSSID)
-                            }
-                            completeOnboarding()
-                        }, onSkip: {
-                            completeOnboarding()
-                        })
-                    }
                 }
             },
             primaryActionTitle: L10n.Onboarding.LocalAccess.nextButton,
@@ -69,20 +64,19 @@ struct LocalAccessPermissionView: View {
             },
             secondaryActionTitle: nil,
             secondaryAction: {
-                viewModel.secondaryAction()
-                completeOnboarding()
+                completeAction()
             }
         )
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func completeOnboarding() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            Current.onboardingObservation.complete()
+        .onChange(of: viewModel.shouldComplete) { shouldComplete in
+            if shouldComplete {
+                completeAction()
+            }
         }
+
     }
 }
 
 #Preview {
-    LocalAccessPermissionView(server: ServerFixture.standard)
+    LocalAccessPermissionView(server: ServerFixture.standard, completeAction: {})
 }
