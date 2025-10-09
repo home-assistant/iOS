@@ -514,6 +514,8 @@
 		4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */; };
 		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
+		42014B182E9683040019031C /* SelectionOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42014B172E9683040019031C /* SelectionOptionView.swift */; };
+		42014B1A2E96836E0019031C /* SelectionOptionView-Usage.md in Resources */ = {isa = PBXBuildFile; fileRef = 42014B192E96836E0019031C /* SelectionOptionView-Usage.md */; };
 		4201605F2E79A68C00F68044 /* BasePermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201605E2E79A68C00F68044 /* BasePermissionView.swift */; };
 		420160612E79ACAC00F68044 /* LocalAccessPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */; };
 		420461692C8F29440062E89F /* ControlLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420461682C8F29440062E89F /* ControlLight.swift */; };
@@ -842,6 +844,7 @@
 		42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A612D36B08600C37304 /* WidgetBasicView.swift */; };
 		42B74A642D36B17000C37304 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
 		42B74A662D37C2C000C37304 /* WidgetCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */; };
+		42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFEB2E97AF070056BADC /* LocalAccessPermissionViewModel.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
 		42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */; };
 		42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */; };
@@ -2035,6 +2038,8 @@
 		4080D5BD2C319AA000099C88 /* WidgetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsView.swift; sourceTree = "<group>"; };
 		4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetDetailsAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Details/WidgetDetailsAppIntent.swift; sourceTree = SOURCE_ROOT; };
 		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
+		42014B172E9683040019031C /* SelectionOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionOptionView.swift; sourceTree = "<group>"; };
+		42014B192E96836E0019031C /* SelectionOptionView-Usage.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "SelectionOptionView-Usage.md"; sourceTree = "<group>"; };
 		4201605E2E79A68C00F68044 /* BasePermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasePermissionView.swift; sourceTree = "<group>"; };
 		420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionView.swift; sourceTree = "<group>"; };
 		420461682C8F29440062E89F /* ControlLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLight.swift; sourceTree = "<group>"; };
@@ -2495,6 +2500,7 @@
 		42B74A5C2D36A47E00C37304 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
 		42B74A612D36B08600C37304 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationViewModel.swift; sourceTree = "<group>"; };
+		42B7BFEB2E97AF070056BADC /* LocalAccessPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionViewModel.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.swift; sourceTree = "<group>"; };
 		42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.test.swift; sourceTree = "<group>"; };
@@ -4632,9 +4638,9 @@
 			isa = PBXGroup;
 			children = (
 				427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */,
-				42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */,
-				420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */,
-				42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */,
+				42B7BFE92E97A7070056BADC /* Location */,
+				42B7BFEA2E97A7160056BADC /* LocalAccess */,
+				42014B192E96836E0019031C /* SelectionOptionView-Usage.md */,
 			);
 			path = OnboardingPermissions;
 			sourceTree = "<group>";
@@ -5181,6 +5187,25 @@
 				4206FFB92DAD58DB0087626C /* ConnectionInfo+WebView.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		42B7BFE92E97A7070056BADC /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */,
+				42462E742DA53F7200ECC8A7 /* LocationPermissionViewModel.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		42B7BFEA2E97A7160056BADC /* LocalAccess */ = {
+			isa = PBXGroup;
+			children = (
+				420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */,
+				42B7BFEB2E97AF070056BADC /* LocalAccessPermissionViewModel.swift */,
+				42014B172E9683040019031C /* SelectionOptionView.swift */,
+			);
+			path = LocalAccess;
 			sourceTree = "<group>";
 		};
 		42B942F42CAA1E4400E36E02 /* Payload */ = {
@@ -7379,6 +7404,7 @@
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
 				B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */,
+				42014B1A2E96836E0019031C /* SelectionOptionView-Usage.md in Resources */,
 				B606160F1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav in Resources */,
 				B606161B1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav in Resources */,
 				B606169A1D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav in Resources */,
@@ -8357,6 +8383,7 @@
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
+				42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */,
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
@@ -8467,6 +8494,7 @@
 				1185DFB2271FF53800ED7D9A /* OnboardingAuthStepDeviceNaming.swift in Sources */,
 				4291CD962DBA70930024F891 /* ActivityViewController.swift in Sources */,
 				427FEE632D9EA1400047C00C /* OnboardingNavigationViewModel.swift in Sources */,
+				42014B182E9683040019031C /* SelectionOptionView.swift in Sources */,
 				429481ED2DA943E700A8B468 /* ListPicker.swift in Sources */,
 				42F1DA5D2B4BF85F002729BC /* WindowScenesManager.swift in Sources */,
 				42E5542D2E128AE4008A160D /* ServerPickerView.swift in Sources */,

@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 import Shared
+import UIKit
 
 final class LocationPermissionViewModel: NSObject, ObservableObject {
     @Published var showDenyAlert: Bool = false
@@ -20,6 +21,17 @@ final class LocationPermissionViewModel: NSObject, ObservableObject {
     }
 
     func requestLocationPermission() {
+        switch Current.location.permissionStatus {
+        case .denied, .restricted:
+            // Open iOS settings
+            if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsUrl)
+            }
+        case .authorizedWhenInUse, .authorizedAlways:
+            shouldComplete = true
+        default:
+            break
+        }
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
     }
@@ -78,9 +90,15 @@ extension LocationPermissionViewModel: CLLocationManagerDelegate {
             break
         }
 
-        guard manager.authorizationStatus != .notDetermined else { return }
-        DispatchQueue.main.async { [weak self] in
-            self?.shouldComplete = true
+        // Enable sensors if we have permission and user has chosen to allow location
+        if [.authorizedWhenInUse, .authorizedAlways].contains(manager.authorizationStatus)  {
+            enableLocationSensor()
         }
+
+//        // Only complete if the user has made a choice
+//        guard manager.authorizationStatus != .notDetermined else { return }
+//        DispatchQueue.main.async { [weak self] in
+//            self?.shouldComplete = true
+//        }
     }
 }
