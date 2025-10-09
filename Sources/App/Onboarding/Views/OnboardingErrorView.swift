@@ -11,7 +11,7 @@ struct OnboardingErrorView: View {
     let error: Error
 
     var body: some View {
-        VStack(spacing: Spaces.two) {
+        VStack(spacing: DesignSystem.Spaces.two) {
             Text(verbatim: L10n.Onboarding.ConnectionError.title)
                 .font(.title.bold())
             Image(systemSymbol: .xmarkCircleFill)
