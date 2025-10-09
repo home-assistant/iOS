@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct SelectionOption: Identifiable, Hashable {
     let id = UUID()
@@ -7,7 +7,7 @@ struct SelectionOption: Identifiable, Hashable {
     let title: String
     let subtitle: String?
     let isRecommended: Bool
-    
+
     init(value: String, title: String, subtitle: String? = nil, isRecommended: Bool = false) {
         self.value = value
         self.title = title
@@ -21,7 +21,7 @@ struct SelectionOptionView<SelectionType: Hashable>: View {
     let allowsMultipleSelection: Bool
     @Binding var singleSelection: SelectionType?
     @Binding var multipleSelection: Set<SelectionType>
-    
+
     // Single selection initializer
     init(
         options: [SelectionOption],
@@ -32,7 +32,7 @@ struct SelectionOptionView<SelectionType: Hashable>: View {
         self._singleSelection = selection
         self._multipleSelection = .constant(Set<SelectionType>())
     }
-    
+
     // Multiple selection initializer
     init(
         options: [SelectionOption],
@@ -43,7 +43,7 @@ struct SelectionOptionView<SelectionType: Hashable>: View {
         self._singleSelection = .constant(nil)
         self._multipleSelection = multipleSelection
     }
-    
+
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.two) {
             ForEach(options) { option in
@@ -58,7 +58,7 @@ struct SelectionOptionView<SelectionType: Hashable>: View {
             }
         }
     }
-    
+
     private func isSelected(_ option: SelectionOption) -> Bool {
         if let selectionType = option.value as? SelectionType, allowsMultipleSelection {
             return multipleSelection.contains(selectionType)
@@ -66,7 +66,7 @@ struct SelectionOptionView<SelectionType: Hashable>: View {
             return singleSelection as? String == option.value
         }
     }
-    
+
     private func handleSelection(_ option: SelectionOption) {
         if let selectionType = option.value as? SelectionType, allowsMultipleSelection {
             let value = selectionType
@@ -86,7 +86,7 @@ private struct SelectionOptionRow: View {
     let isSelected: Bool
     let allowsMultipleSelection: Bool
     let onTap: () -> Void
-    
+
     var body: some View {
         Button(action: onTap) {
             HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
@@ -102,7 +102,7 @@ private struct SelectionOptionRow: View {
                         .font(DesignSystem.Font.caption)
                         .foregroundStyle(.primary)
                         .multilineTextAlignment(.leading)
-                    
+
                     if let subtitle = option.subtitle {
                         Text(subtitle)
                             .font(DesignSystem.Font.caption2)
@@ -110,7 +110,7 @@ private struct SelectionOptionRow: View {
                             .multilineTextAlignment(.leading)
                     }
                 }
-                
+
                 Spacer()
             }
             .padding(DesignSystem.Spaces.two)
@@ -133,13 +133,13 @@ private struct SelectionOptionRow: View {
 private struct SelectionIndicator: View {
     let isSelected: Bool
     let isMultipleSelection: Bool
-    
+
     var body: some View {
         ZStack {
             Circle()
                 .stroke(isSelected ? Color.haPrimary : Color.gray.opacity(0.5), lineWidth: 2)
                 .frame(width: 20, height: 20)
-            
+
             if isSelected {
                 if isMultipleSelection {
                     // Checkmark for multiple selection
@@ -159,7 +159,7 @@ private struct SelectionIndicator: View {
 
 #Preview("Single Selection") {
     @State var selection: String? = "secure"
-    
+
     let options = [
         SelectionOption(
             value: "secure",
@@ -172,12 +172,12 @@ private struct SelectionIndicator: View {
             title: "Less secure: Do not allow this app to know when you're home",
             subtitle: nil,
             isRecommended: false
-        )
+        ),
     ]
-    
+
     return VStack {
         SelectionOptionView(options: options, selection: $selection)
-        
+
         Text("Selected: \(selection ?? "None")")
             .padding()
     }
@@ -186,7 +186,7 @@ private struct SelectionIndicator: View {
 
 #Preview("Multiple Selection") {
     @State var selections: Set<String> = ["option1"]
-    
+
     let options = [
         SelectionOption(
             value: "option1",
@@ -205,12 +205,12 @@ private struct SelectionIndicator: View {
             title: "Third Option",
             subtitle: nil,
             isRecommended: false
-        )
+        ),
     ]
-    
+
     return VStack {
         SelectionOptionView(options: options, multipleSelection: $selections)
-        
+
         Text("Selected: \(Array(selections).joined(separator: ", "))")
             .padding()
     }

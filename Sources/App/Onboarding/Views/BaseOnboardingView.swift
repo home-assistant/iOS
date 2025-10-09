@@ -1,13 +1,5 @@
-//
-//  BasePermissionView.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 16/9/25.
-//  Copyright © 2025 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 /// A reusable screen scaffold for onboarding-style pages:
 /// - Illustration at the top
@@ -37,7 +29,6 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     // Layout tuning
     private let verticalSpacing: CGFloat
     private let maxContentWidth: CGFloat = Sizes.maxWidthForLargerScreens
-
 
     // MARK: - Inits
 

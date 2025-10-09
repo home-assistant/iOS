@@ -1,13 +1,5 @@
-//
-//  HomeNetworkInputView.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 9/10/25.
-//  Copyright © 2025 Home Assistant. All rights reserved.
-//
-
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct HomeNetworkInputView: View {
     @State private var networkName: String = ""
@@ -31,24 +23,26 @@ struct HomeNetworkInputView: View {
                             .font(DesignSystem.Font.footnote)
                             .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        
+
                         HATextField(placeholder: "Network name", text: $networkName)
                             .autocorrectionDisabled()
                             .textInputAutocapitalization(.never)
                     }
-                    
+
                     HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
                         Image(systemSymbol: .infoCircleFill)
                             .foregroundStyle(.blue)
                             .font(.system(size: 20))
-                        
+
                         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                             Text("Make sure to set up your home network correctly.")
                                 .font(DesignSystem.Font.body.weight(.medium))
-                            
-                            Text("Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.")
-                                .font(DesignSystem.Font.caption)
-                                .foregroundStyle(.secondary)
+
+                            Text(
+                                "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server."
+                            )
+                            .font(DesignSystem.Font.caption)
+                            .foregroundStyle(.secondary)
                         }
                     }
                     .padding(DesignSystem.Spaces.two)
@@ -78,7 +72,7 @@ struct HomeNetworkInputView: View {
             }
         }
     }
-    
+
     private func loadCurrentNetworkInfo() {
         Task {
             let networkInfo = await Current.networkInformation
@@ -100,4 +94,3 @@ struct HomeNetworkInputView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
