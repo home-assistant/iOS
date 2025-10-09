@@ -35,5 +35,5 @@ struct LocationPermissionView: View {
 }
 
 #Preview {
-    LocationPermissionView() {}
+    LocationPermissionView {}
 }

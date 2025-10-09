@@ -9,14 +9,13 @@ struct OnboardingPermissionsNavigationView: View {
     var body: some View {
         NavigationView {
             VStack {
-                LocationPermissionView() {
+                LocationPermissionView {
                     guard !showLocalAccessChoices else { return }
                     showLocalAccessChoices = true
                 }
                 NavigationLink("", isActive: $showLocalAccessChoices) {
                     LocalAccessPermissionView(server: onboardingServer)
                 }
-
             }
         }
         .navigationViewStyle(.stack)

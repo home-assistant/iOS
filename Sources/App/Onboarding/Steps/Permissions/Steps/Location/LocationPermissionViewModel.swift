@@ -91,7 +91,7 @@ extension LocationPermissionViewModel: CLLocationManagerDelegate {
         }
 
         // Enable sensors if we have permission and user has chosen to allow location
-        if [.authorizedWhenInUse, .authorizedAlways].contains(manager.authorizationStatus)  {
+        if [.authorizedWhenInUse, .authorizedAlways].contains(manager.authorizationStatus) {
             enableLocationSensor()
         }
 

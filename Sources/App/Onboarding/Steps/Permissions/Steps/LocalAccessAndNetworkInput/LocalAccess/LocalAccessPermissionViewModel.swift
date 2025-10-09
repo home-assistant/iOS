@@ -1,11 +1,3 @@
-//
-//  LocalAccessPermissionViewModel.swift
-//  App
-//
-//  Created by Bruno Pantaleão on 9/10/25.
-//  Copyright © 2025 Home Assistant. All rights reserved.
-//
-
 import Foundation
 import Shared
 

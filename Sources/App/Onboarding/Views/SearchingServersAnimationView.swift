@@ -1,5 +1,6 @@
-import SwiftUI
 import Shared
+import SwiftUI
+
 struct SearchingServersAnimationView: View {
     enum Constants {
         static let dotsSize: CGFloat = 200
@@ -86,6 +87,8 @@ struct SearchingServersAnimationView: View {
         List {
             Text("Example")
         }
-        SearchingServersAnimationView(text: "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.")
+        SearchingServersAnimationView(
+            text: "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it."
+        )
     }
 }

@@ -20,7 +20,7 @@ struct LocalAccessPermissionView: View {
             title: "Less secure: Do not allow this app to know when you're home",
             subtitle: nil,
             isRecommended: false
-        )
+        ),
     ]
 
     init(server: Server) {
@@ -47,7 +47,7 @@ struct LocalAccessPermissionView: View {
                         Text("This data will never be shared with the Home Assistant project or third parties.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        
+
                         Spacer()
                     }
                     .padding(.horizontal, DesignSystem.Spaces.two)
