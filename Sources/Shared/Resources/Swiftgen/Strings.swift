@@ -1812,6 +1812,22 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.secure_option.title") }
       }
     }
+    public enum LocationAccess {
+      /// Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.
+      public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.location_access.primary_description") }
+      /// This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.
+      public static var secondaryDescription: String { return L10n.tr("Localizable", "onboarding.location_access.secondary_description") }
+      /// Use this device's location for automations
+      public static var title: String { return L10n.tr("Localizable", "onboarding.location_access.title") }
+      public enum PrimaryAction {
+        /// Share my location
+        public static var title: String { return L10n.tr("Localizable", "onboarding.location_access.primary_action.title") }
+      }
+      public enum SecondaryAction {
+        /// Do not share my location
+        public static var title: String { return L10n.tr("Localizable", "onboarding.location_access.secondary_action.title") }
+      }
+    }
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
