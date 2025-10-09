@@ -27,7 +27,7 @@ struct LocalAccessPermissionView: View {
     ]
 
     var body: some View {
-        BasePermissionView(
+        BaseOnboardingView(
             illustration: {
                 Image(.Onboarding.lock)
             },

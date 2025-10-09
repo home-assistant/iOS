@@ -9,7 +9,7 @@
 import SwiftUI
 import Shared
 
-/// A reusable screen scaffold for permission-style pages:
+/// A reusable screen scaffold for onboarding-style pages:
 /// - Illustration at the top
 /// - Big, centered title
 /// - One or two body paragraphs
@@ -17,7 +17,7 @@ import Shared
 /// - Optional list of selectable choices (radio-style)
 /// - Optional informational callout below choices
 /// - Bottom area with primary button and optional secondary button
-public struct BasePermissionView<Illustration: View, Content: View>: View {
+public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     // MARK: - Inputs
 
     private let illustration: () -> Illustration
@@ -174,7 +174,7 @@ public struct BasePermissionView<Illustration: View, Content: View>: View {
 
 #Preview("Location permission example (simple)") {
     NavigationView {
-        BasePermissionView(
+        BaseOnboardingView(
             illustration: {
                 Image(.Onboarding.world)
             },
@@ -192,7 +192,7 @@ public struct BasePermissionView<Illustration: View, Content: View>: View {
 
 #Preview("With injected content") {
     NavigationView {
-        BasePermissionView(
+        BaseOnboardingView(
             illustration: {
                 Image(.Onboarding.world)
             },

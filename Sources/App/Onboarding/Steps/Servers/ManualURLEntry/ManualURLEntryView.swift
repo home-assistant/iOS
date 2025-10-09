@@ -20,7 +20,7 @@ struct ManualURLEntryView: View {
 
     var body: some View {
         NavigationView {
-            BasePermissionView(illustration: {
+            BaseOnboardingView(illustration: {
                 Image(.Onboarding.pencil)
             }, title: "What is your Home Assistant address?", primaryDescription: "", content: {
                 VStack {
