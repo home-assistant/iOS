@@ -10,7 +10,7 @@ struct DeviceNameView: View {
     }
 
     @Environment(\.dismiss) private var dismiss
-    @State private var deviceName: String = UIDevice.current.name
+    @State private var deviceName: String = ""
     let errorMessage: String?
     let saveAction: (String) -> Void
     let cancelAction: () -> Void
@@ -23,10 +23,10 @@ struct DeviceNameView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: DesignSystem.Spaces.three) {
-                    Image(systemSymbol: icon)
+                    Image(.Onboarding.pencil)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 100)
+                        .frame(height: 150)
                         .foregroundStyle(.haPrimary)
                     Text(L10n.DeviceName.title)
                         .font(DesignSystem.Font.largeTitle.bold())
@@ -48,6 +48,13 @@ struct DeviceNameView: View {
                     }
                 }
                 .padding(DesignSystem.Spaces.two)
+                .onAppear {
+                    #if DEBUG
+                    deviceName = "Simulator \(UUID().uuidString.prefix(4))"
+                    #else
+                    deviceName = UIDevice.current.name
+                    #endif
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -80,14 +87,6 @@ struct DeviceNameView: View {
             case .none:
                 break
             }
-        }
-    }
-
-    private var icon: SFSymbol {
-        if #available(iOS 16.1, *) {
-            .macbookAndIphone
-        } else {
-            .iphone
         }
     }
 

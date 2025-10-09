@@ -13,38 +13,59 @@ enum OnboardingPermissionHandler {
 
 struct OnboardingPermissionsNavigationView: View {
     let onboardingServer: Server?
+    @State private var showLocalAccessChoices = false
 
     var body: some View {
-        VStack {
-            if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
-                LocationPermissionView(permission: permission) {
-                    Current.onboardingObservation.complete()
+        NavigationView {
+            VStack {
+                LocationPermissionView() {
+                    guard !showLocalAccessChoices else { return }
+                    showLocalAccessChoices = true
                 }
-            } else {
-                flowEnd
+                NavigationLink("", isActive: $showLocalAccessChoices) {
+                    LocalAccessPermissionView {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            Current.onboardingObservation.complete()
+                        }
+                    }
+                }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: .systemBackground))
-        .onDisappear {
-            if Current.location.permissionStatus == .denied {
-                useLocalConnectionAsRemoteIfNeeded()
-            } else {
-                addCurrentSSIDAsLocalConnectionSafeNetwork()
-            }
-        }
+        .navigationViewStyle(.stack)
+        .navigationBarHidden(true)
     }
 
-    private var flowEnd: some View {
-        Image(systemSymbol: .checkmark)
-            .foregroundStyle(.green)
-            .font(.system(size: 100))
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    Current.onboardingObservation.complete()
-                }
-            }
-    }
+//    var body: some View {
+//        VStack {
+//            if let permission = OnboardingPermissionHandler.notDeterminedPermissions.first, permission == .location {
+//                LocationPermissionView(permission: permission) {
+//                    Current.onboardingObservation.complete()
+//                }
+//            } else {
+//                flowEnd
+//            }
+//        }
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//        .background(Color(uiColor: .systemBackground))
+//        .onDisappear {
+//            if Current.location.permissionStatus == .denied {
+//                useLocalConnectionAsRemoteIfNeeded()
+//            } else {
+//                addCurrentSSIDAsLocalConnectionSafeNetwork()
+//            }
+//        }
+//    }
+
+//    private var flowEnd: some View {
+//        Image(systemSymbol: .checkmark)
+//            .foregroundStyle(.green)
+//            .font(.system(size: 100))
+//            .onAppear {
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                    Current.onboardingObservation.complete()
+//                }
+//            }
+//    }
 
     // Since user gave location access we can use it's current network SSID as Home identifier
     private func addCurrentSSIDAsLocalConnectionSafeNetwork() {

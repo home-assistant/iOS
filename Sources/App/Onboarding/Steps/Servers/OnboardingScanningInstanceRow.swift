@@ -26,6 +26,8 @@ struct OnboardingScanningInstanceRow: View {
                     Text(externalURLString)
                         .font(.caption2)
                         .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

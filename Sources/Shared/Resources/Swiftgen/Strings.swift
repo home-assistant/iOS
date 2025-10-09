@@ -1969,8 +1969,6 @@ public enum L10n {
       }
     }
     public enum Welcome {
-      /// Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.
-      public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.body") }
       /// Connect to my Home Assistant
       public static var continueButton: String { return L10n.tr("Localizable", "onboarding.welcome.continue_button") }
       /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
@@ -1985,8 +1983,6 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
       /// Connect to my Home Assistant
       public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button") }
-      /// Getting started
-      public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.secondary_button") }
       /// Welcome to Home Assistant %@!
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
@@ -1994,6 +1990,14 @@ public enum L10n {
       public enum Logo {
         /// Home Assistant logo
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "onboarding.welcome.logo.accessibility_label") }
+      }
+      public enum Updated {
+        /// Access your Home Assistant server on the go using this app. 
+        /// 
+        /// Home Assistant is open source, advocates for privacy and runs locally in your home.
+        public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.updated.body") }
+        /// Learn more
+        public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.updated.secondary_button") }
       }
     }
   }

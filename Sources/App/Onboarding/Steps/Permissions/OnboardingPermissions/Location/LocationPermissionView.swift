@@ -3,22 +3,12 @@ import SwiftUI
 
 struct LocationPermissionView: View {
     @StateObject private var viewModel = LocationPermissionViewModel()
-    let permission: PermissionType
     let completeAction: () -> Void
 
     var body: some View {
         BasePermissionView(
             illustration: {
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [6]))
-                    .frame(width: 120, height: 120)
-                    .foregroundStyle(.secondary)
-                    .overlay(
-                        Text("Illustration")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    )
-                    .padding(.top, DesignSystem.Spaces.four)
+                Image(.Onboarding.world)
             },
             title: "Use this device's location for automations",
             primaryDescription: "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.",
@@ -29,12 +19,13 @@ struct LocationPermissionView: View {
             },
             secondaryActionTitle: "Do not share my location",
             secondaryAction: {
-                // TODO: Move to the next screen without requesting permission
+                viewModel.disableLocationSensor()
+                completeAction()
             }
         )
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.shouldComplete) { newValue in
-            if newValue {
+        .onChange(of: viewModel.shouldComplete) { shouldComplete in
+            if shouldComplete {
                 completeAction()
             }
         }
@@ -42,5 +33,5 @@ struct LocationPermissionView: View {
 }
 
 #Preview {
-    LocationPermissionView(permission: .location) {}
+    LocationPermissionView() {}
 }

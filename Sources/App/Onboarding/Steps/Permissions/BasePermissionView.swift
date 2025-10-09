@@ -98,8 +98,16 @@ public struct BasePermissionView<Illustration: View, Content: View>: View {
         ScrollView {
             VStack(spacing: verticalSpacing) {
                 Spacer(minLength: DesignSystem.Spaces.four)
-                illustration()
-                    .frame(maxWidth: .infinity, alignment: .center)
+                if let image = illustration() as? Image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 150)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    illustration()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
 
                 Text(title)
                     .font(DesignSystem.Font.largeTitle.bold())
@@ -168,16 +176,7 @@ public struct BasePermissionView<Illustration: View, Content: View>: View {
     NavigationView {
         BasePermissionView(
             illustration: {
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [6]))
-                    .frame(width: 120, height: 120)
-                    .foregroundStyle(.secondary)
-                    .overlay(
-                        Text("Illustration")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    )
-                    .padding(.top, DesignSystem.Spaces.four)
+                Image(.Onboarding.world)
             },
             title: "Use this device's location for automations",
             primaryDescription: "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.",
@@ -195,12 +194,7 @@ public struct BasePermissionView<Illustration: View, Content: View>: View {
     NavigationView {
         BasePermissionView(
             illustration: {
-                Image(systemName: "location.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 96, height: 96)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, DesignSystem.Spaces.four)
+                Image(.Onboarding.world)
             },
             title: "Use this device's location for automations",
             primaryDescription: "Location sharing enables powerful automations.",
