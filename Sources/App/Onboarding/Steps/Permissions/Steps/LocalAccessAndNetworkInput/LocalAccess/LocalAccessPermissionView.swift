@@ -11,13 +11,13 @@ struct LocalAccessPermissionView: View {
     private let locationOptions = [
         SelectionOption(
             value: LocalAccessPermissionOptions.secure.rawValue,
-            title: "Most secure: Allow this app to know when you're home",
+            title: L10n.Onboarding.LocalAccess.SecureOption.title,
             subtitle: nil,
             isRecommended: true
         ),
         SelectionOption(
             value: LocalAccessPermissionOptions.lessSecure.rawValue,
-            title: "Less secure: Do not allow this app to know when you're home",
+            title: L10n.Onboarding.LocalAccess.LessSecureOption.title,
             subtitle: nil,
             isRecommended: false
         ),
@@ -32,8 +32,8 @@ struct LocalAccessPermissionView: View {
             illustration: {
                 Image(.Onboarding.lock)
             },
-            title: "Let us help secure your remote connection",
-            primaryDescription: "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.",
+            title: L10n.Onboarding.LocalAccess.title,
+            primaryDescription: L10n.Onboarding.LocalAccess.description,
             secondaryDescription: nil,
             content: {
                 VStack(spacing: DesignSystem.Spaces.four) {
@@ -44,7 +44,7 @@ struct LocalAccessPermissionView: View {
                             .foregroundStyle(.haPrimary)
                             .font(DesignSystem.Font.body)
 
-                        Text("This data will never be shared with the Home Assistant project or third parties.")
+                        Text(L10n.Onboarding.LocalAccess.privacyDisclaimer)
                             .font(.caption)
                             .foregroundStyle(.secondary)
 
@@ -63,7 +63,7 @@ struct LocalAccessPermissionView: View {
                     }
                 }
             },
-            primaryActionTitle: "Next",
+            primaryActionTitle: L10n.Onboarding.LocalAccess.nextButton,
             primaryAction: {
                 viewModel.primaryAction()
             },

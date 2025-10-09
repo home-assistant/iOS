@@ -13,17 +13,17 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     // MARK: - Inputs
 
     private let illustration: () -> Illustration
-    private let title: LocalizedStringKey
-    private let primaryDescription: LocalizedStringKey
-    private let secondaryDescription: LocalizedStringKey?
+    private let title: String
+    private let primaryDescription: String
+    private let secondaryDescription: String?
 
     // Optional injected content placed below the secondary description
     private let content: (() -> Content)?
 
-    private let primaryActionTitle: LocalizedStringKey
+    private let primaryActionTitle: String
     private let primaryAction: () -> Void
 
-    private let secondaryActionTitle: LocalizedStringKey?
+    private let secondaryActionTitle: String?
     private let secondaryAction: (() -> Void)?
 
     // Layout tuning
@@ -35,13 +35,13 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     /// Iinitializer that accepts custom content below the descriptions.
     public init(
         @ViewBuilder illustration: @escaping () -> Illustration,
-        title: LocalizedStringKey,
-        primaryDescription: LocalizedStringKey,
-        secondaryDescription: LocalizedStringKey? = nil,
+        title: String,
+        primaryDescription: String,
+        secondaryDescription: String? = nil,
         @ViewBuilder content: @escaping () -> Content,
-        primaryActionTitle: LocalizedStringKey,
+        primaryActionTitle: String,
         primaryAction: @escaping () -> Void,
-        secondaryActionTitle: LocalizedStringKey? = nil,
+        secondaryActionTitle: String? = nil,
         secondaryAction: (() -> Void)? = nil,
         illustrationTopPadding: CGFloat = DesignSystem.Spaces.four,
         verticalSpacing: CGFloat = DesignSystem.Spaces.three
@@ -61,12 +61,12 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     /// No custom content initializer.
     public init(
         @ViewBuilder illustration: @escaping () -> Illustration,
-        title: LocalizedStringKey,
-        primaryDescription: LocalizedStringKey,
-        secondaryDescription: LocalizedStringKey? = nil,
-        primaryActionTitle: LocalizedStringKey,
+        title: String,
+        primaryDescription: String,
+        secondaryDescription: String? = nil,
+        primaryActionTitle: String,
         primaryAction: @escaping () -> Void,
-        secondaryActionTitle: LocalizedStringKey? = nil,
+        secondaryActionTitle: String? = nil,
         secondaryAction: (() -> Void)? = nil,
         illustrationTopPadding: CGFloat = DesignSystem.Spaces.four,
         verticalSpacing: CGFloat = DesignSystem.Spaces.three
