@@ -526,6 +526,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "Read documentation";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
+"onboarding.servers.search.loader.text" = "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.";
 "onboarding.servers.title" = "Searching on home network";
 "onboarding.welcome.updated.body" = "Access your Home Assistant server on the go using this app. \n
 Home Assistant is open source, advocates for privacy and runs locally in your home.";

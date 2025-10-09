@@ -108,7 +108,14 @@ struct OnboardingServersListView: View {
                     autoConnectInstance = nil
                 }
             )
+            .onDisappear {
+                hideCenterLoader()
+            }
         }
+    }
+
+    private func hideCenterLoader() {
+        viewModel.showCenterLoader = false
     }
 
     private func autoConnectViewContent(instance: DiscoveredHomeAssistant?) -> some View {
@@ -137,9 +144,11 @@ struct OnboardingServersListView: View {
     private func scheduleAutoConnect() {
         autoConnectWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak viewModel] in
-            if viewModel?.discoveredInstances.count == 1 {
-                viewModel?.showCenterLoader = false
-                autoConnectInstance = viewModel?.discoveredInstances.first
+            guard let viewModel else { return }
+            if viewModel.discoveredInstances.count == 1 {
+                autoConnectInstance = viewModel.discoveredInstances.first
+            } else if viewModel.discoveredInstances.count > 1 {
+                hideCenterLoader()
             }
         }
         autoConnectWorkItem = workItem
@@ -153,7 +162,7 @@ struct OnboardingServersListView: View {
 
     private func scheduleCenterLoaderDimiss(amountOfTimeToWaitToDismissCenterLoader: CGFloat) {
         DispatchQueue.main.asyncAfter(deadline: .now() + amountOfTimeToWaitToDismissCenterLoader) {
-            viewModel.showCenterLoader = false
+            hideCenterLoader()
         }
     }
 
@@ -227,9 +236,12 @@ struct OnboardingServersListView: View {
     }
 
     private var centerLoader: some View {
-        SearchingServersAnimationView()
+        SearchingServersAnimationView(text: L10n.Onboarding.Servers.Search.Loader.text)
+            .padding(.horizontal)
+            .offset(y: autoConnectInstance == nil ? 0 : -100)
             .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
             .animation(.easeInOut, value: viewModel.showCenterLoader)
+            .animation(.easeInOut, value: autoConnectInstance)
     }
 
     @ViewBuilder
@@ -248,7 +260,7 @@ struct OnboardingServersListView: View {
         .onAppear {
             // No need for center loader logic neither auto connect in invitation context
             cancelAutoConnect()
-            viewModel.showCenterLoader = false
+            hideCenterLoader()
         }
         Button {
             viewModel.selectInstance(.init(manualURL: url), controller: hostingProvider.viewController)
