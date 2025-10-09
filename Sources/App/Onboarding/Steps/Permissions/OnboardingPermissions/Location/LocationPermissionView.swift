@@ -6,7 +6,7 @@ struct LocationPermissionView: View {
     let completeAction: () -> Void
 
     var body: some View {
-        BasePermissionView(
+        BaseOnboardingView(
             illustration: {
                 Image(.Onboarding.world)
             },

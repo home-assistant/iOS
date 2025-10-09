@@ -516,7 +516,7 @@
 		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		42014B182E9683040019031C /* SelectionOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42014B172E9683040019031C /* SelectionOptionView.swift */; };
 		42014B1A2E96836E0019031C /* SelectionOptionView-Usage.md in Resources */ = {isa = PBXBuildFile; fileRef = 42014B192E96836E0019031C /* SelectionOptionView-Usage.md */; };
-		4201605F2E79A68C00F68044 /* BasePermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201605E2E79A68C00F68044 /* BasePermissionView.swift */; };
+		4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */; };
 		420160612E79ACAC00F68044 /* LocalAccessPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */; };
 		420461692C8F29440062E89F /* ControlLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420461682C8F29440062E89F /* ControlLight.swift */; };
 		4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */; };
@@ -2040,7 +2040,7 @@
 		4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDetailsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42014B172E9683040019031C /* SelectionOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionOptionView.swift; sourceTree = "<group>"; };
 		42014B192E96836E0019031C /* SelectionOptionView-Usage.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "SelectionOptionView-Usage.md"; sourceTree = "<group>"; };
-		4201605E2E79A68C00F68044 /* BasePermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasePermissionView.swift; sourceTree = "<group>"; };
+		4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingView.swift; sourceTree = "<group>"; };
 		420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionView.swift; sourceTree = "<group>"; };
 		420461682C8F29440062E89F /* ControlLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLight.swift; sourceTree = "<group>"; };
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
@@ -4745,7 +4745,7 @@
 		42905D832E1297D000250728 /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
-				4201605E2E79A68C00F68044 /* BasePermissionView.swift */,
+				4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */,
 				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
 			);
 			path = Permissions;
@@ -8243,7 +8243,7 @@
 			files = (
 				423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
-				4201605F2E79A68C00F68044 /* BasePermissionView.swift in Sources */,
+				4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,
 				1185DF9A271FE60F00ED7D9A /* OnboardingAuthStep.swift in Sources */,
