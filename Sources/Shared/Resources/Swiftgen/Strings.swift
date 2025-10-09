@@ -1866,6 +1866,14 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.title") }
       }
     }
+    public enum ManualUrlEntry {
+      /// What is your Home Assistant address?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.manual_url_entry.title") }
+      public enum PrimaryAction {
+        /// Connect
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_url_entry.primary_action.title") }
+      }
+    }
     public enum NetworkInput {
       /// Indicate when you're connected to your home network. This can be used to, for example, use the internal connection URL or disable the app lock when at home.
       public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.network_input.primary_description") }
