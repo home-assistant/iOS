@@ -1966,6 +1966,10 @@ public enum L10n {
       public enum Search {
         /// Looking for servers nearby...
         public static var message: String { return L10n.tr("Localizable", "onboarding.servers.search.message") }
+        public enum Loader {
+          /// Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.
+          public static var text: String { return L10n.tr("Localizable", "onboarding.servers.search.loader.text") }
+        }
       }
     }
     public enum Welcome {
