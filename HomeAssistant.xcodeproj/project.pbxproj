@@ -4631,15 +4631,13 @@
 			path = ManualURLEntry;
 			sourceTree = "<group>";
 		};
-		427FEE642D9EBC340047C00C /* OnboardingPermissions */ = {
+		427FEE642D9EBC340047C00C /* Steps */ = {
 			isa = PBXGroup;
 			children = (
-				427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */,
 				42B7BFE92E97A7070056BADC /* Location */,
 				42B7BFEA2E97A7160056BADC /* LocalAccess */,
-				42014B192E96836E0019031C /* SelectionOptionView-Usage.md */,
 			);
-			path = OnboardingPermissions;
+			path = Steps;
 			sourceTree = "<group>";
 		};
 		428338412BA1BAF3004798C2 /* Constants */ = {
@@ -4742,7 +4740,8 @@
 		42905D832E1297D000250728 /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
-				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
+				427FEE652D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift */,
+				427FEE642D9EBC340047C00C /* Steps */,
 			);
 			path = Permissions;
 			sourceTree = "<group>";
@@ -5199,6 +5198,7 @@
 			children = (
 				420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */,
 				42B7BFEB2E97AF070056BADC /* LocalAccessPermissionViewModel.swift */,
+				42014B192E96836E0019031C /* SelectionOptionView-Usage.md */,
 				42014B172E9683040019031C /* SelectionOptionView.swift */,
 			);
 			path = LocalAccess;

@@ -57,11 +57,8 @@
 		<string>$(PRODUCT_MODULE_NAME).IntentHandler</string>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting "Always Allow" for the best location experience.
-        Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>We also need permission to access location &apos;Always&apos; so the App can perform background operations. \n Without that the App is unable to decide which connection (local or remote) to use in background and will prefer remote always.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>This app needs location access to connect directly to your Home Assistant installation. \n 1. Your location will only be used to check if you are connected to your local network. \n 2. It will not be shared with anyone. \n 3. If you do not allow this, the app will always connect over the internet instead. If not configured, it will protect your data and refuse the connection.</string>
 </dict>
 </plist>
