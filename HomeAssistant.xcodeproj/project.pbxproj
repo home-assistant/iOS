@@ -3775,9 +3775,6 @@
 			isa = PBXGroup;
 			children = (
 				42DC8B762E14026100D9999E /* Views */,
-				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
-				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
-				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
 				1168BF34271811B300DD4D15 /* API */,
 				1168BF36271811D800DD4D15 /* Container */,
 				1168BF35271811C200DD4D15 /* Steps */,
@@ -4745,7 +4742,6 @@
 		42905D832E1297D000250728 /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
-				4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */,
 				427FEE642D9EBC340047C00C /* OnboardingPermissions */,
 			);
 			path = Permissions;
@@ -5453,6 +5449,10 @@
 		42DC8B762E14026100D9999E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */,
+				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
+				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
+				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
 				42DC8B772E14027000D9999E /* SearchingServersAnimationView.swift */,
 			);
 			path = Views;

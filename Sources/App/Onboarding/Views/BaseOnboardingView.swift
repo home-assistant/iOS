@@ -97,17 +97,19 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     public var body: some View {
         ScrollView {
             VStack(spacing: verticalSpacing) {
-                Spacer(minLength: DesignSystem.Spaces.four)
-                if let image = illustration() as? Image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 150)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                } else {
-                    illustration()
-                        .frame(maxWidth: .infinity, alignment: .center)
+                Group {
+                    if let image = illustration() as? Image {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 150)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    } else {
+                        illustration()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
                 }
+                .padding(.top, DesignSystem.Spaces.two)
 
                 Text(title)
                     .font(DesignSystem.Font.largeTitle.bold())
@@ -127,7 +129,6 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                             .multilineTextAlignment(.center)
                     }
 
-                    // Injected content appears here, below the secondary description
                     if let content {
                         content()
                     }
