@@ -5,7 +5,7 @@ import UIKit
 
 final class LocationPermissionViewModel: NSObject, ObservableObject {
     @Published var showDenyAlert: Bool = false
-    @Published var shouldComplete: Bool = false
+    @Published var showContinueButton: Bool = false
     private let locationManager = CLLocationManager()
     private var webhookSensors: [WebhookSensor] = []
 
@@ -18,6 +18,7 @@ final class LocationPermissionViewModel: NSObject, ObservableObject {
     override init() {
         super.init()
         Current.sensors.register(observer: self)
+        showContinueButton = [.authorizedWhenInUse, .authorizedAlways].contains(Current.location.permissionStatus)
     }
 
     func requestLocationPermission() {
@@ -28,7 +29,7 @@ final class LocationPermissionViewModel: NSObject, ObservableObject {
                 UIApplication.shared.open(settingsUrl)
             }
         case .authorizedWhenInUse, .authorizedAlways:
-            shouldComplete = true
+            showContinueButton = true
         default:
             break
         }
@@ -95,10 +96,10 @@ extension LocationPermissionViewModel: CLLocationManagerDelegate {
             enableLocationSensor()
         }
 
-//        // Only complete if the user has made a choice
-//        guard manager.authorizationStatus != .notDetermined else { return }
-//        DispatchQueue.main.async { [weak self] in
-//            self?.shouldComplete = true
-//        }
+        // Only complete if the user has made a choice
+        guard manager.authorizationStatus != .notDetermined else { return }
+        DispatchQueue.main.async { [weak self] in
+            self?.showContinueButton = true
+        }
     }
 }
