@@ -88,7 +88,9 @@ struct OnboardingServersListView: View {
         }, set: { newValue in
             viewModel.showPermissionsFlow = newValue
         })) {
-            OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer)
+            // isPresented guarantees onboardingServer
+            // swiftlint:disable:next force_unwrapping
+            OnboardingPermissionsNavigationView(onboardingServer: viewModel.onboardingServer!)
         }
     }
 

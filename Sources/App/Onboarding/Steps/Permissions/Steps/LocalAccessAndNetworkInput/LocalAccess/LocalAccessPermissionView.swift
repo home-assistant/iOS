@@ -7,10 +7,7 @@ enum LocalAccessPermissionOptions: String {
 }
 
 struct LocalAccessPermissionView: View {
-    @StateObject private var viewModel = LocalAccessPermissionViewModel()
-
-    let completeAction: () -> Void
-
+    @StateObject private var viewModel: LocalAccessPermissionViewModel
     private let locationOptions = [
         SelectionOption(
             value: LocalAccessPermissionOptions.secure.rawValue,
@@ -25,6 +22,10 @@ struct LocalAccessPermissionView: View {
             isRecommended: false
         )
     ]
+
+    init(server: Server) {
+        _viewModel = .init(wrappedValue: LocalAccessPermissionViewModel(server: server))
+    }
 
     var body: some View {
         BaseOnboardingView(
@@ -50,26 +51,38 @@ struct LocalAccessPermissionView: View {
                         Spacer()
                     }
                     .padding(.horizontal, DesignSystem.Spaces.two)
+                    NavigationLink("", isActive: $viewModel.showHomeNetworkConfiguration) {
+                        HomeNetworkInputView(onNext: { networkSSID in
+                            if let networkSSID {
+                                viewModel.saveNetworkSSID(networkSSID)
+                            }
+                            completeOnboarding()
+                        }, onSkip: {
+                            completeOnboarding()
+                        })
+                    }
                 }
             },
             primaryActionTitle: "Next",
             primaryAction: {
-                // Handle selection and continue
-                print("Selected option: \(viewModel.selection ?? "None")")
-                completeAction()
+                viewModel.primaryAction()
             },
             secondaryActionTitle: nil,
-            secondaryAction: nil
+            secondaryAction: {
+                viewModel.secondaryAction()
+                completeOnboarding()
+            }
         )
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.shouldComplete) { shouldComplete in
-            if shouldComplete {
-                completeAction()
-            }
+    }
+
+    private func completeOnboarding() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            Current.onboardingObservation.complete()
         }
     }
 }
 
 #Preview {
-    LocalAccessPermissionView() {}
+    LocalAccessPermissionView(server: ServerFixture.standard)
 }

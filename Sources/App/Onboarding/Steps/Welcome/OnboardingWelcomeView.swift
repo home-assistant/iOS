@@ -72,7 +72,7 @@ struct OnboardingWelcomeView: View {
             .tint(Color.haPrimary)
             .buttonStyle(.secondaryButton)
         }
-        .padding([.horizontal, .bottom], DesignSystem.Spaces.two)
+        .padding([.horizontal, .top], DesignSystem.Spaces.two)
         .background(Color(uiColor: .systemBackground))
     }
 }

@@ -10,8 +10,14 @@ import Foundation
 import Shared
 
 final class LocalAccessPermissionViewModel: ObservableObject {
-    @Published var shouldComplete = false
+    @Published var showHomeNetworkConfiguration = false
     @Published var selection: String? = LocalAccessPermissionOptions.secure.rawValue
+
+    let server: Server
+
+    init(server: Server) {
+        self.server = server
+    }
 
     func primaryAction() {
         switch selection {
@@ -19,7 +25,7 @@ final class LocalAccessPermissionViewModel: ObservableObject {
             if [.authorizedAlways, .authorizedWhenInUse].contains(Current.location.permissionStatus) {
                 // User already gave permission previously to access it's location
                 // so we can securely proceed
-                shouldComplete = true
+                showHomeNetworkConfiguration = true
             } else {
                 // TODO: request user location permission
             }
@@ -31,7 +37,15 @@ final class LocalAccessPermissionViewModel: ObservableObject {
         }
     }
 
+    func saveNetworkSSID(_ ssid: String) {
+        server.update { info in
+            info.connection.internalSSIDs = [ssid]
+        }
+    }
+
     func secondaryAction() {
-        // TODO: Show warning
+        server.update { info in
+            info.connection.internalSSIDs = nil
+        }
     }
 }

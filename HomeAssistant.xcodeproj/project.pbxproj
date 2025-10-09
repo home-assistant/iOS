@@ -845,6 +845,8 @@
 		42B74A642D36B17000C37304 /* ReloadWidgetsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53F02C4EA314003C8415 /* ReloadWidgetsAppIntent.swift */; };
 		42B74A662D37C2C000C37304 /* WidgetCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */; };
 		42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFEB2E97AF070056BADC /* LocalAccessPermissionViewModel.swift */; };
+		42B7BFEF2E97CDE40056BADC /* HomeNetworkInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFEE2E97CDE40056BADC /* HomeNetworkInputView.swift */; };
+		42B7BFF12E97D1540056BADC /* HomeNetworkInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFF02E97D1540056BADC /* HomeNetworkInputViewModel.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
 		42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */; };
 		42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */; };
@@ -2501,6 +2503,8 @@
 		42B74A612D36B08600C37304 /* WidgetBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicView.swift; sourceTree = "<group>"; };
 		42B74A652D37C2C000C37304 /* WidgetCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationViewModel.swift; sourceTree = "<group>"; };
 		42B7BFEB2E97AF070056BADC /* LocalAccessPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionViewModel.swift; sourceTree = "<group>"; };
+		42B7BFEE2E97CDE40056BADC /* HomeNetworkInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkInputView.swift; sourceTree = "<group>"; };
+		42B7BFF02E97D1540056BADC /* HomeNetworkInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkInputViewModel.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
 		42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.swift; sourceTree = "<group>"; };
 		42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.test.swift; sourceTree = "<group>"; };
@@ -4635,7 +4639,7 @@
 			isa = PBXGroup;
 			children = (
 				42B7BFE92E97A7070056BADC /* Location */,
-				42B7BFEA2E97A7160056BADC /* LocalAccess */,
+				42B7BFEA2E97A7160056BADC /* LocalAccessAndNetworkInput */,
 			);
 			path = Steps;
 			sourceTree = "<group>";
@@ -5193,7 +5197,25 @@
 			path = Location;
 			sourceTree = "<group>";
 		};
-		42B7BFEA2E97A7160056BADC /* LocalAccess */ = {
+		42B7BFEA2E97A7160056BADC /* LocalAccessAndNetworkInput */ = {
+			isa = PBXGroup;
+			children = (
+				42B7BFF22E97EC8C0056BADC /* LocalAccess */,
+				42B7BFED2E97CDBE0056BADC /* NetworkInput */,
+			);
+			path = LocalAccessAndNetworkInput;
+			sourceTree = "<group>";
+		};
+		42B7BFED2E97CDBE0056BADC /* NetworkInput */ = {
+			isa = PBXGroup;
+			children = (
+				42B7BFEE2E97CDE40056BADC /* HomeNetworkInputView.swift */,
+				42B7BFF02E97D1540056BADC /* HomeNetworkInputViewModel.swift */,
+			);
+			path = NetworkInput;
+			sourceTree = "<group>";
+		};
+		42B7BFF22E97EC8C0056BADC /* LocalAccess */ = {
 			isa = PBXGroup;
 			children = (
 				420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */,
@@ -8272,6 +8294,7 @@
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
+				42B7BFEF2E97CDE40056BADC /* HomeNetworkInputView.swift in Sources */,
 				42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */,
 				429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListView.swift in Sources */,
@@ -8443,6 +8466,7 @@
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
+				42B7BFF12E97D1540056BADC /* HomeNetworkInputViewModel.swift in Sources */,
 				425573D32B55770D00145217 /* CarPlayDomainsListViewModel.swift in Sources */,
 				1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */,
 				425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */,
