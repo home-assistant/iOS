@@ -23,6 +23,8 @@ struct LocationPermissionView: View {
                 completeAction()
             }
         )
+        // Mimic navigation bar that is not present in this screen but is in the next
+        .padding(.top, DesignSystem.Spaces.four)
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: viewModel.shouldComplete) { shouldComplete in
             if shouldComplete {

@@ -102,7 +102,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 150)
+                            .frame(height: 130)
                             .frame(maxWidth: .infinity, alignment: .center)
                     } else {
                         illustration()
@@ -166,7 +166,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
             }
         }
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
-        .padding([.horizontal, .bottom], DesignSystem.Spaces.two)
+        .padding([.horizontal, .top], DesignSystem.Spaces.two)
         .background(Color(uiColor: .systemBackground).opacity(0.95))
     }
 }
