@@ -739,6 +739,7 @@
 		42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */; };
 		4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
+		427AE07E2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427AE07D2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift */; };
 		427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */; };
@@ -2245,6 +2246,7 @@
 		42790C432C48077200E31B38 /* ImprovSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovSuccessView.swift; sourceTree = "<group>"; };
 		42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLikeBottomSheet.swift; sourceTree = "<group>"; };
 		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		427AE07D2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessOnlyDisclaimerView.swift; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
 		427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListView.swift; sourceTree = "<group>"; };
 		427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.swift; sourceTree = "<group>"; };
@@ -4627,6 +4629,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		427AE07C2E99250C001E30CA /* LocalAccessOnlyDisclaimer */ = {
+			isa = PBXGroup;
+			children = (
+				427AE07D2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift */,
+			);
+			path = LocalAccessOnlyDisclaimer;
+			sourceTree = "<group>";
+		};
 		427FEE0C2D9C221D0047C00C /* ManualURLEntry */ = {
 			isa = PBXGroup;
 			children = (
@@ -4638,6 +4648,7 @@
 		427FEE642D9EBC340047C00C /* Steps */ = {
 			isa = PBXGroup;
 			children = (
+				427AE07C2E99250C001E30CA /* LocalAccessOnlyDisclaimer */,
 				42B7BFE92E97A7070056BADC /* Location */,
 				42B7BFEA2E97A7160056BADC /* LocalAccessAndNetworkInput */,
 			);
@@ -8264,6 +8275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */,
+				427AE07E2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
 				4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
