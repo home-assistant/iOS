@@ -541,6 +541,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
 "onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.title" = "Welcome to Home Assistant %@!";
+"onboarding.local_only_disclaimer.title" = "Local by default.\nRemote when you're ready.";
+"onboarding.local_only_disclaimer.primary_description" = "Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.";
+"onboarding.local_only_disclaimer.secondary_description" = "For now, you're securely connected to your local network.";
+"onboarding.local_only_disclaimer.primary_button.title" = "Got it";
 "onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
 "onboarding.manual_url_entry.primary_action.title" = "Connect";
 "onboarding.location_access.title" = "Use this device's location for automations";

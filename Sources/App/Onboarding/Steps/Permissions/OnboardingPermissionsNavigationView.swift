@@ -2,50 +2,77 @@ import Shared
 import SwiftUI
 
 struct OnboardingPermissionsNavigationView: View {
+    enum Steps {
+        case disclaimer
+        case location
+        case localAccess
+        case homeNetwork
+    }
+
+    @State private var step: Steps = .disclaimer
+    @State private var lastStep: Steps = .disclaimer
+
     let onboardingServer: Server
-    @State private var showLocalAccessChoices = false
-    @State private var showHomeNetworkConfiguration = false
+
+    @Environment(\.layoutDirection) private var layoutDirection
 
     var body: some View {
-        NavigationView {
-            VStack {
+        ZStack {
+            switch step {
+            case .disclaimer:
+                disclaimer
+                    .transition(pushTransition)
+                    .id(Steps.disclaimer)
+                    .zIndex(Double(index(for: .disclaimer)))
+            case .location:
                 location
-                localAccessNavigationLink
+                    .transition(pushTransition)
+                    .id(Steps.location)
+                    .zIndex(Double(index(for: .location)))
+            case .localAccess:
+                localAccess
+                    .transition(pushTransition)
+                    .id(Steps.localAccess)
+                    .zIndex(Double(index(for: .localAccess)))
+            case .homeNetwork:
+                homeNetworkInput
+                    .transition(pushTransition)
+                    .id(Steps.homeNetwork)
+                    .zIndex(Double(index(for: .homeNetwork)))
             }
         }
-        .navigationViewStyle(.stack)
-        .navigationBarHidden(true)
+        .animation(.easeInOut(duration: 0.3), value: step)
+        .onChange(of: step) { newValue in
+            // Update the last step after deciding transition direction
+            lastStep = newValue
+        }
+    }
+
+    private var disclaimer: some View {
+        LocalAccessOnlyDisclaimerView {
+            step = .location
+        }
     }
 
     private var location: some View {
         LocationPermissionView {
-            guard !showLocalAccessChoices else { return }
-            showLocalAccessChoices = true
+            step = .localAccess
         }
     }
-
-    private var localAccessNavigationLink: some View {
-        NavigationLink("", isActive: $showLocalAccessChoices) {
-            VStack {
-                LocalAccessPermissionView(server: onboardingServer, completeAction: {
-                    showHomeNetworkConfiguration = true
-                })
-                homeNetworkInputNavigationLink
+    private var localAccess: some View {
+        LocalAccessPermissionView(server: onboardingServer, completeAction: {
+            step = .homeNetwork
+        })
+    }
+    private var homeNetworkInput: some View {
+        HomeNetworkInputView(onNext: { networkSSID in
+            if let networkSSID {
+                saveNetworkSSID(networkSSID)
             }
-        }
-    }
-
-    private var homeNetworkInputNavigationLink: some View {
-        NavigationLink("", isActive: $showHomeNetworkConfiguration) {
-            HomeNetworkInputView(onNext: { networkSSID in
-                if let networkSSID {
-                    saveNetworkSSID(networkSSID)
-                }
-                completeOnboarding()
-            }, onSkip: {
-                completeOnboarding()
-            })
-        }
+            completeOnboarding()
+        }, onSkip: {
+            completeOnboarding()
+        })
     }
 
     private func saveNetworkSSID(_ ssid: String) {
@@ -82,6 +109,37 @@ struct OnboardingPermissionsNavigationView: View {
                 serverInfo.connection.set(address: nil, for: .internal)
             }
         }
+    }
+
+    // MARK: - Animation
+    // Mimics UINavigationController push/pop animation
+    private func index(for step: Steps) -> Int {
+        switch step {
+        case .disclaimer: return 0
+        case .location: return 1
+        case .localAccess: return 2
+        case .homeNetwork: return 3
+        }
+    }
+
+    private var isAdvancing: Bool {
+        index(for: step) >= index(for: lastStep)
+    }
+
+    private var pushTransition: AnyTransition {
+        // Respect layout direction (RTL vs LTR)
+        let leading: Edge = layoutDirection == .leftToRight ? .leading : .trailing
+        let trailing: Edge = layoutDirection == .leftToRight ? .trailing : .leading
+
+        // Forward: insert from trailing, remove to leading (push)
+        // Backward: insert from leading, remove to trailing (pop)
+        let insertionEdge: Edge = isAdvancing ? trailing : leading
+        let removalEdge: Edge = isAdvancing ? leading : trailing
+
+        return .asymmetric(
+            insertion: .move(edge: insertionEdge).combined(with: .opacity),
+            removal: .move(edge: removalEdge).combined(with: .opacity)
+        )
     }
 }
 

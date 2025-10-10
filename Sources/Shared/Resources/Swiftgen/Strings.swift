@@ -1812,6 +1812,19 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.secure_option.title") }
       }
     }
+    public enum LocalOnlyDisclaimer {
+      /// Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.
+      public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.primary_description") }
+      /// For now, you're securely connected to your local network.
+      public static var secondaryDescription: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.secondary_description") }
+      /// Local by default.
+      /// Remote when you're ready.
+      public static var title: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.title") }
+      public enum PrimaryButton {
+        /// Got it
+        public static var title: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.primary_button.title") }
+      }
+    }
     public enum LocationAccess {
       /// Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.
       public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.location_access.primary_description") }

@@ -20,14 +20,16 @@ struct OnboardingScanningInstanceRow: View {
                 Text(name)
                     .font(.headline)
                 Text(internalURLString ?? internalOrExternalURLString)
-                    .font(.subheadline)
+                    .font(DesignSystem.Font.caption)
                     .foregroundColor(.secondary)
+                    .privacySensitive()
                 if let externalURLString {
                     Text(externalURLString)
                         .font(.caption2)
                         .foregroundColor(.secondary)
                         .lineLimit(1)
                         .truncationMode(.middle)
+                        .privacySensitive()
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
