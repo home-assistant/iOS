@@ -99,7 +99,7 @@
 "component::improv_ble::config::abort::provision_successful" = "ההתקן התחבר בהצלחה לרשת ה-Wi-Fi.";
 "component::improv_ble::config::abort::provision_successful_url" = "ההתקן התחבר בהצלחה לרשת ה-Wi-Fi.\
 \
-יש לבקר בכתובת {url} כדי לסיים את ההגדרה.";
+יש לסיים את ההגדרה באמצעות ביצוע [הוראות ההתקנה]({url}).";
 "component::improv_ble::config::abort::unknown" = "שגיאה בלתי צפויה";
 "component::improv_ble::config::error::unable_to_connect" = "ההתקן לא הצליח להתחבר לרשת ה-Wi-Fi. נא לודא שה-SSID והסיסמה נכונים ולנסות שוב.";
 "component::improv_ble::config::flow_title" = "{name}";
