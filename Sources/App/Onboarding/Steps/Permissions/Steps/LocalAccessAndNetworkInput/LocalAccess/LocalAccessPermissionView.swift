@@ -7,7 +7,8 @@ enum LocalAccessPermissionOptions: String {
 }
 
 struct LocalAccessPermissionView: View {
-    @StateObject private var viewModel: LocalAccessPermissionViewModel
+    @StateObject private var viewModel = LocalAccessPermissionViewModel()
+
     private let locationOptions = [
         SelectionOption(
             value: LocalAccessPermissionOptions.secure.rawValue,
@@ -23,15 +24,8 @@ struct LocalAccessPermissionView: View {
         ),
     ]
 
-    let completeAction: () -> Void
-
-    init(
-        server: Server,
-        completeAction: @escaping () -> Void
-    ) {
-        _viewModel = .init(wrappedValue: LocalAccessPermissionViewModel(server: server))
-        self.completeAction = completeAction
-    }
+    let primaryAction: () -> Void
+    let secondaryAction: () -> Void
 
     var body: some View {
         BaseOnboardingView(
@@ -60,22 +54,26 @@ struct LocalAccessPermissionView: View {
             },
             primaryActionTitle: L10n.Onboarding.LocalAccess.nextButton,
             primaryAction: {
-                viewModel.primaryAction()
+                if viewModel.selection == LocalAccessPermissionOptions.secure.rawValue {
+                    primaryAction()
+                } else {
+                    // Considered as if the user decided to ignore
+                    secondaryAction()
+                }
             },
             secondaryActionTitle: nil,
             secondaryAction: {
-                completeAction()
+                secondaryAction()
             }
         )
-        .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.shouldComplete) { shouldComplete in
-            if shouldComplete {
-                completeAction()
-            }
-        }
     }
 }
 
 #Preview {
-    LocalAccessPermissionView(server: ServerFixture.standard, completeAction: {})
+    LocalAccessPermissionView {
+        
+    } secondaryAction: {
+
+    }
+
 }

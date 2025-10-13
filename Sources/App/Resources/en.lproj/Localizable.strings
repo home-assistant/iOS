@@ -1209,6 +1209,9 @@ Home Assistant is free and open source home automation software with a focus on 
 "web_view.empty_state.title" = "You're disconnected";
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";
+"web_view.no_url_available.title" = "We can't connect to Home Assistant";
+"web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \n\n ➡️  Please open the App settings and update your security choices or URLs.";
+"web_view.no_url_available.primary_button.title" = "Open App settings";
 "widgets.action.name.assist" = "Assist";
 "widgets.action.name.default" = "Default";
 "widgets.action.name.moreInfoDialog" = "More info";

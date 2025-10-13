@@ -2,30 +2,5 @@ import Foundation
 import Shared
 
 final class LocalAccessPermissionViewModel: ObservableObject {
-    @Published var shouldComplete = false
     @Published var selection: String? = LocalAccessPermissionOptions.secure.rawValue
-
-    let server: Server
-
-    init(server: Server) {
-        self.server = server
-    }
-
-    func primaryAction() {
-        switch selection {
-        case LocalAccessPermissionOptions.secure.rawValue:
-            if [.authorizedAlways, .authorizedWhenInUse].contains(Current.location.permissionStatus) {
-                // User already gave permission previously to access it's location
-                // so we can securely proceed
-                shouldComplete = true
-            } else {
-                // TODO: request user location permission
-            }
-        case LocalAccessPermissionOptions.lessSecure.rawValue:
-            // TODO: Show warning
-            break
-        default:
-            assertionFailure("Non-mapped selection")
-        }
-    }
 }

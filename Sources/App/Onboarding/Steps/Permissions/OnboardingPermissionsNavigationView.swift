@@ -27,6 +27,7 @@ struct OnboardingPermissionsNavigationView: View {
         }
     }
 
+    @StateObject private var viewModel: OnboardingPermissionsNavigationViewModel
     @State private var currentStepIndex: Int = 0
     @State private var lastStepIndex: Int = 0
 
@@ -52,6 +53,11 @@ struct OnboardingPermissionsNavigationView: View {
                 completionView
             },
         ]
+    }
+
+    init(onboardingServer: Server) {
+        self._viewModel = .init(wrappedValue: OnboardingPermissionsNavigationViewModel(onboardingServer: onboardingServer))
+        self.onboardingServer = onboardingServer
     }
 
     var body: some View {
@@ -95,14 +101,20 @@ struct OnboardingPermissionsNavigationView: View {
 
     private var location: some View {
         LocationPermissionView {
+            viewModel.requestLocationPermissionToShareWithHomeAssistant()
+        } secondaryAction: {
+            viewModel.disableLocationSensor()
             nextStep()
         }
     }
 
     private var localAccess: some View {
-        LocalAccessPermissionView(server: onboardingServer, completeAction: {
+        LocalAccessPermissionView {
+            viewModel.requestLocationPermissionForSecureLocalConnection()
+        } secondaryAction: {
+            viewModel.setLessSecureLocalConnection()
             nextStep()
-        })
+        }
     }
 
     private var homeNetworkInput: some View {

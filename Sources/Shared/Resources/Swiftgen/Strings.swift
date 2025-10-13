@@ -4223,6 +4223,18 @@ public enum L10n {
       /// You're disconnected
       public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.title") }
     }
+    public enum NoUrlAvailable {
+      /// 🔐  Due to your security choices, there's no active URL that we are allowed to use. 
+      /// 
+      ///  ➡️  Please open the app settings and select a URL to use.
+      public static var body: String { return L10n.tr("Localizable", "web_view.no_url_available.body") }
+      /// We can't connect to Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.title") }
+      public enum PrimaryButton {
+        /// Open App settings
+        public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.primary_button.title") }
+      }
+    }
     public enum ServerSelection {
       /// Choose server
       public static var title: String { return L10n.tr("Localizable", "web_view.server_selection.title") }

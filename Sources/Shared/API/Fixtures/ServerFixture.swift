@@ -15,7 +15,7 @@ public enum ServerFixture {
                 internalHardwareAddresses: nil,
                 isLocalPushEnabled: false,
                 securityExceptions: .init(exceptions: []),
-                alwaysFallbackToInternalURL: false
+                localAccessSecurityLevel: .undefined
             ),
             token: .init(
                 accessToken: "",

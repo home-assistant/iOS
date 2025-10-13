@@ -545,13 +545,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         return config
     }
 
-    private func showNoActiveURLError() {
-        Current.Log.info("Showing noActiveURLError")
-        webView.scrollView.refreshControl?.endRefreshing()
-        guard !(overlayedController is NoActiveURLViewController) else { return }
-        presentOverlayController(controller: NoActiveURLViewController(server: server), animated: true)
-    }
-
     private func getLatestConfig() {
         _ = Current.api(for: server)?.getConfig()
     }
@@ -594,6 +587,19 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
         }
+    }
+
+    private func showNoActiveURLError() {
+        // Alert the user that there's no URL that the App can use
+        let alert = UIAlertController(
+            title: L10n.WebView.NoUrlAvailable.title,
+            message: L10n.WebView.NoUrlAvailable.body,
+            preferredStyle: .alert
+        )
+        alert.addAction(.init(title: L10n.WebView.NoUrlAvailable.PrimaryButton.title, style: .default, handler: { [weak self] _ in
+            self?.showSettingsViewController()
+        }))
+        present(alert, animated: true)
     }
 
     @objc private func loadActiveURLIfNeeded() {
@@ -714,7 +720,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             repeats: true,
             block: { [weak self] timer in
                 if let self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
-                    webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
+                    _ = webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
                 }
 
                 if UIApplication.shared.applicationState == .active {
@@ -953,7 +959,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             showActionAutomationEditorNotAvailable()
             return
         }
-        webViewExternalMessageHandler.sendExternalBus(message: .init(
+        _ = webViewExternalMessageHandler.sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
             payload: [
                 "config": [
