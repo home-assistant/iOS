@@ -1,69 +1,106 @@
 import Shared
 import SwiftUI
 
+// This view handles navigation between different permission request steps during onboarding.
+// It is not using NavigationView/Stack because for some unknown reason location permission dialog
+// is popping the screen and no solution was found to prevent that until now.
 struct OnboardingPermissionsNavigationView: View {
-    enum Steps {
+    enum StepID: String, CaseIterable, Identifiable {
         case disclaimer
         case location
         case localAccess
         case homeNetwork
+        
+        var id: String { rawValue }
+    }
+    
+    struct Step: Identifiable {
+        let id: StepID
+        let index: Int
+        let view: AnyView
+        
+        init<V: View>(id: StepID, index: Int, @ViewBuilder view: () -> V) {
+            self.id = id
+            self.index = index
+            self.view = AnyView(view())
+        }
     }
 
-    @State private var step: Steps = .disclaimer
-    @State private var lastStep: Steps = .disclaimer
+    @State private var currentStepIndex: Int = 0
+    @State private var lastStepIndex: Int = 0
 
     let onboardingServer: Server
 
     @Environment(\.layoutDirection) private var layoutDirection
+    
+    private var steps: [Step] {
+        [
+            Step(id: .disclaimer, index: 0) {
+                disclaimer
+            },
+            Step(id: .location, index: 1) {
+                location
+            },
+            Step(id: .localAccess, index: 2) {
+                localAccess
+            },
+            Step(id: .homeNetwork, index: 3) {
+                homeNetworkInput
+            }
+        ]
+    }
 
     var body: some View {
         ZStack {
-            switch step {
-            case .disclaimer:
-                disclaimer
-                    .transition(pushTransition)
-                    .id(Steps.disclaimer)
-                    .zIndex(Double(index(for: .disclaimer)))
-            case .location:
-                location
-                    .transition(pushTransition)
-                    .id(Steps.location)
-                    .zIndex(Double(index(for: .location)))
-            case .localAccess:
-                localAccess
-                    .transition(pushTransition)
-                    .id(Steps.localAccess)
-                    .zIndex(Double(index(for: .localAccess)))
-            case .homeNetwork:
-                homeNetworkInput
-                    .transition(pushTransition)
-                    .id(Steps.homeNetwork)
-                    .zIndex(Double(index(for: .homeNetwork)))
+            ForEach(steps) { step in
+                if step.index == currentStepIndex {
+                    step.view
+                        .transition(pushTransition)
+                        .id(step.id)
+                        .zIndex(Double(step.index))
+                }
             }
         }
-        .animation(.easeInOut(duration: 0.3), value: step)
-        .onChange(of: step) { newValue in
+        .animation(.easeInOut(duration: 0.3), value: currentStepIndex)
+        .onChange(of: currentStepIndex) { newValue in
             // Update the last step after deciding transition direction
-            lastStep = newValue
+            lastStepIndex = newValue
         }
+    }
+    
+    private func navigateToStep(at index: Int) {
+        guard index >= 0 && index < steps.count else { return }
+        
+        // Add haptic feedback for forward navigation
+        if index > currentStepIndex {
+            Current.impactFeedback.impactOccurred()
+        }
+        
+        currentStepIndex = index
+    }
+    
+    private func nextStep() {
+        navigateToStep(at: currentStepIndex + 1)
     }
 
     private var disclaimer: some View {
         LocalAccessOnlyDisclaimerView {
-            step = .location
+            nextStep()
         }
     }
 
     private var location: some View {
         LocationPermissionView {
-            step = .localAccess
+            nextStep()
         }
     }
+    
     private var localAccess: some View {
         LocalAccessPermissionView(server: onboardingServer, completeAction: {
-            step = .homeNetwork
+            nextStep()
         })
     }
+    
     private var homeNetworkInput: some View {
         HomeNetworkInputView(onNext: { networkSSID in
             if let networkSSID {
@@ -87,43 +124,11 @@ struct OnboardingPermissionsNavigationView: View {
         }
     }
 
-    // Since user gave location access we can use it's current network SSID as Home identifier
-    private func addCurrentSSIDAsLocalConnectionSafeNetwork() {
-        Current.connectivity.syncNetworkInformation {
-            if let currentSSID = Current.connectivity.currentWiFiSSID() {
-                // Update SSIDs if we have access to them, since we're gonna need it later
-                onboardingServer.info.connection.internalSSIDs = [currentSSID]
-            } else {
-                Current.Log.verbose("No onboarding server or no SSID available")
-            }
-        }
-    }
-
-    /* If the app can't determine user location and user does not have remote connection configured
-     the app will use the local IP as remote access. */
-    private func useLocalConnectionAsRemoteIfNeeded() {
-        if onboardingServer.info.connection.address(for: .external) == nil,
-           onboardingServer.info.connection.address(for: .remoteUI) == nil {
-            onboardingServer.update { serverInfo in
-                serverInfo.connection.set(address: serverInfo.connection.internalURL, for: .external)
-                serverInfo.connection.set(address: nil, for: .internal)
-            }
-        }
-    }
-
     // MARK: - Animation
     // Mimics UINavigationController push/pop animation
-    private func index(for step: Steps) -> Int {
-        switch step {
-        case .disclaimer: return 0
-        case .location: return 1
-        case .localAccess: return 2
-        case .homeNetwork: return 3
-        }
-    }
 
     private var isAdvancing: Bool {
-        index(for: step) >= index(for: lastStep)
+        currentStepIndex >= lastStepIndex
     }
 
     private var pushTransition: AnyTransition {
