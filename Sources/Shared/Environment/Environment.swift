@@ -128,6 +128,8 @@ public class AppEnvironment {
     public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
 
     public var realmFatalPresentation: ((UIViewController) -> Void)?
+
+    public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
     #endif
 
     public var style: Style = .init()
