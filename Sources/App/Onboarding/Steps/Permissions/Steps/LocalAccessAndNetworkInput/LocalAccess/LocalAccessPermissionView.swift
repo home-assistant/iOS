@@ -73,7 +73,6 @@ struct LocalAccessPermissionView: View {
                 completeAction()
             }
         }
-
     }
 }
 

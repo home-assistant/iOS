@@ -15,12 +15,12 @@ struct LocationPermissionView: View {
             secondaryDescription: L10n.Onboarding.LocationAccess.secondaryDescription,
             primaryActionTitle: L10n.Onboarding.LocationAccess.PrimaryAction.title,
             primaryAction: {
-                    viewModel.requestLocationPermission()
+                viewModel.requestLocationPermission()
             },
             secondaryActionTitle: L10n.Onboarding.LocationAccess.SecondaryAction.title,
             secondaryAction: {
-                    viewModel.disableLocationSensor()
-                    completeAction()
+                viewModel.disableLocationSensor()
+                completeAction()
             }
         )
         // Mimic navigation bar that is not present in this screen but is in the next

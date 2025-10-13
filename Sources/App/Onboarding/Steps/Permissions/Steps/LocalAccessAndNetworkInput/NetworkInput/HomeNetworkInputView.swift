@@ -24,9 +24,12 @@ struct HomeNetworkInputView: View {
                             .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
-                        HATextField(placeholder: L10n.Onboarding.NetworkInput.InputField.placeholder, text: $networkName)
-                            .autocorrectionDisabled()
-                            .textInputAutocapitalization(.never)
+                        HATextField(
+                            placeholder: L10n.Onboarding.NetworkInput.InputField.placeholder,
+                            text: $networkName
+                        )
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
                     }
 
                     HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {

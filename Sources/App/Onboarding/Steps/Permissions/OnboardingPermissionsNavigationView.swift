@@ -10,16 +10,16 @@ struct OnboardingPermissionsNavigationView: View {
         case location
         case localAccess
         case homeNetwork
-        
+
         var id: String { rawValue }
     }
-    
+
     struct Step: Identifiable {
         let id: StepID
         let index: Int
         let view: AnyView
-        
-        init<V: View>(id: StepID, index: Int, @ViewBuilder view: () -> V) {
+
+        init(id: StepID, index: Int, @ViewBuilder view: () -> some View) {
             self.id = id
             self.index = index
             self.view = AnyView(view())
@@ -32,7 +32,7 @@ struct OnboardingPermissionsNavigationView: View {
     let onboardingServer: Server
 
     @Environment(\.layoutDirection) private var layoutDirection
-    
+
     private var steps: [Step] {
         [
             Step(id: .disclaimer, index: 0) {
@@ -46,7 +46,7 @@ struct OnboardingPermissionsNavigationView: View {
             },
             Step(id: .homeNetwork, index: 3) {
                 homeNetworkInput
-            }
+            },
         ]
     }
 
@@ -67,18 +67,18 @@ struct OnboardingPermissionsNavigationView: View {
             lastStepIndex = newValue
         }
     }
-    
+
     private func navigateToStep(at index: Int) {
-        guard index >= 0 && index < steps.count else { return }
-        
+        guard index >= 0, index < steps.count else { return }
+
         // Add haptic feedback for forward navigation
         if index > currentStepIndex {
             Current.impactFeedback.impactOccurred()
         }
-        
+
         currentStepIndex = index
     }
-    
+
     private func nextStep() {
         navigateToStep(at: currentStepIndex + 1)
     }
@@ -94,13 +94,13 @@ struct OnboardingPermissionsNavigationView: View {
             nextStep()
         }
     }
-    
+
     private var localAccess: some View {
         LocalAccessPermissionView(server: onboardingServer, completeAction: {
             nextStep()
         })
     }
-    
+
     private var homeNetworkInput: some View {
         HomeNetworkInputView(onNext: { networkSSID in
             if let networkSSID {
@@ -125,6 +125,7 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     // MARK: - Animation
+
     // Mimics UINavigationController push/pop animation
 
     private var isAdvancing: Bool {
