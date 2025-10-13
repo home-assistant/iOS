@@ -70,10 +70,5 @@ struct LocalAccessPermissionView: View {
 }
 
 #Preview {
-    LocalAccessPermissionView {
-        
-    } secondaryAction: {
-
-    }
-
+    LocalAccessPermissionView {} secondaryAction: {}
 }

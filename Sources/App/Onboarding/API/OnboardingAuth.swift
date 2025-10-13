@@ -54,7 +54,7 @@ class OnboardingAuth {
                 // not super necessary but prevents making a duplicate connection during this session
                 Current.cachedApis[api.server.identifier] = api
             }.then { server in
-                return steps(.complete).map { server }
+                steps(.complete).map { server }
             }.recover(policy: .allErrors) { [self] error -> Promise<Server> in
                 when(resolved: undoConfigure(api: api)).then { _ in Promise<Server>(error: error) }
             }

@@ -2,7 +2,6 @@ import Shared
 import SwiftUI
 
 struct LocationPermissionView: View {
-
     let primaryAction: () -> Void
     let secondaryAction: () -> Void
 
@@ -27,9 +26,5 @@ struct LocationPermissionView: View {
 }
 
 #Preview {
-    LocationPermissionView {
-
-    } secondaryAction: {
-
-    }
+    LocationPermissionView {} secondaryAction: {}
 }

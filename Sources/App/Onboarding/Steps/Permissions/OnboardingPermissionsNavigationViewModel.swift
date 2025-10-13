@@ -1,11 +1,3 @@
-//
-//  OnboardingPermissionsNavigationViewModel.swift
-//  HomeAssistant
-//
-//  Created by Bruno Pantaleão on 13/10/25.
-//  Copyright © 2025 Home Assistant. All rights reserved.
-//
-
 import CoreLocation
 import Foundation
 import Shared

@@ -596,9 +596,13 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             message: L10n.WebView.NoUrlAvailable.body,
             preferredStyle: .alert
         )
-        alert.addAction(.init(title: L10n.WebView.NoUrlAvailable.PrimaryButton.title, style: .default, handler: { [weak self] _ in
-            self?.showSettingsViewController()
-        }))
+        alert.addAction(.init(
+            title: L10n.WebView.NoUrlAvailable.PrimaryButton.title,
+            style: .default,
+            handler: { [weak self] _ in
+                self?.showSettingsViewController()
+            }
+        ))
         present(alert, animated: true)
     }
 

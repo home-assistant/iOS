@@ -56,7 +56,9 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     init(onboardingServer: Server) {
-        self._viewModel = .init(wrappedValue: OnboardingPermissionsNavigationViewModel(onboardingServer: onboardingServer))
+        self
+            ._viewModel =
+            .init(wrappedValue: OnboardingPermissionsNavigationViewModel(onboardingServer: onboardingServer))
         self.onboardingServer = onboardingServer
     }
 
