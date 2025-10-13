@@ -50,6 +50,10 @@ public struct ConnectionInfo: Codable, Equatable {
         remoteUIURL != nil
     }
 
+    public var hasRemoteConnectionSetup: Bool {
+        externalURL != nil || remoteUIURL != nil
+    }
+
     public var overrideActiveURLType: URLType?
     public private(set) var activeURLType: URLType = .external
 

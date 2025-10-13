@@ -44,21 +44,12 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     private var lastStepIndex: Int = 0
 
     private let locationManager = CLLocationManager()
-    private var webhookSensors: [WebhookSensor] = []
     private let onboardingServer: Server
-
-    private let sensorIdsToEnableDisable: [WebhookSensorId] = [
-        .geocodedLocation,
-        .connectivityBSID,
-        .connectivitySSID,
-    ]
 
     // MARK: - Step Management
 
     /// Returns all available steps in the onboarding flow
-    var steps: [StepID] {
-        StepID.allCases
-    }
+    let steps: [StepID]
 
     /// Determines if the user is advancing forward through the steps (for animation purposes)
     var isAdvancing: Bool {
@@ -73,8 +64,16 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
     init(onboardingServer: Server) {
         self.onboardingServer = onboardingServer
+
+        var steps = StepID.allCases
+
+        // No need to display local access only disclaimer when user already has remote connection setup
+        if onboardingServer.info.connection.hasRemoteConnectionSetup {
+            steps.removeAll(where: { $0 == .disclaimer })
+        }
+        self.steps = steps
+
         super.init()
-        Current.sensors.register(observer: self)
     }
 
     // MARK: - Navigation Methods
@@ -154,9 +153,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Disables location-related sensors when permission is denied or not wanted
     /// - Note: Affects geocoded location, WiFi BSSID, and SSID sensors
     func disableLocationSensor() {
-        for sensor in locationRelatedSensors() {
-            Current.sensors.setEnabled(false, for: sensor)
-        }
+        onboardingServer.info.setSetting(value: ServerLocationPrivacy.never, for: .locationPrivacy)
     }
 
     // MARK: - Private Location Methods
@@ -164,9 +161,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Enables location-related sensors when permission is granted
     /// - Note: Affects geocoded location, WiFi BSSID, and SSID sensors
     private func enableLocationSensor() {
-        for sensor in locationRelatedSensors() {
-            Current.sensors.setEnabled(true, for: sensor)
-        }
+        onboardingServer.info.setSetting(value: ServerLocationPrivacy.exact, for: .locationPrivacy)
     }
 
     /// Handles the actual location permission request based on current authorization status
@@ -189,14 +184,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         }
     }
 
-    /// Returns the list of location-related sensors that can be enabled/disabled
-    /// - Returns: Array of WebhookSensor objects for location-related functionality
-    private func locationRelatedSensors() -> [WebhookSensor] {
-        webhookSensors.filter { sensor in
-            sensorIdsToEnableDisable.map(\.rawValue).contains(sensor.UniqueID)
-        }
-    }
-
     /// Applies the appropriate configuration based on the location permission context
     /// - Note: Enables sensors for Home Assistant sharing or sets security level for local connections
     private func applyLocationPermissionNeeds() {
@@ -213,27 +200,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         }
 
         nextStep()
-    }
-}
-
-// MARK: - SensorObserver Protocol
-
-extension OnboardingPermissionsNavigationViewModel: SensorObserver {
-    /// Called when sensor container signals for update - no action needed for onboarding
-    func sensorContainer(
-        _ container: SensorContainer,
-        didSignalForUpdateBecause reason: SensorContainerUpdateReason,
-        lastUpdate: SensorObserverUpdate?
-    ) {
-        /* no-op */
-    }
-
-    /// Updates the local webhook sensors array when sensors are updated
-    /// - Note: This ensures we have the latest sensor information for enable/disable operations
-    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
-        update.sensors.done { [weak self] sensors in
-            self?.webhookSensors = sensors
-        }
     }
 }
 
