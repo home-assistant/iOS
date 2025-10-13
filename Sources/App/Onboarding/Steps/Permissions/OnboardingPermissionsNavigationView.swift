@@ -10,6 +10,7 @@ struct OnboardingPermissionsNavigationView: View {
         case location
         case localAccess
         case homeNetwork
+        case completion
 
         var id: String { rawValue }
     }
@@ -47,6 +48,9 @@ struct OnboardingPermissionsNavigationView: View {
             Step(id: .homeNetwork, index: 3) {
                 homeNetworkInput
             },
+            Step(id: .completion, index: 4) {
+                completionView
+            },
         ]
     }
 
@@ -61,7 +65,7 @@ struct OnboardingPermissionsNavigationView: View {
                 }
             }
         }
-        .animation(.easeInOut(duration: 0.3), value: currentStepIndex)
+        .animation(DesignSystem.Animation.default, value: currentStepIndex)
         .onChange(of: currentStepIndex) { newValue in
             // Update the last step after deciding transition direction
             lastStepIndex = newValue
@@ -106,10 +110,21 @@ struct OnboardingPermissionsNavigationView: View {
             if let networkSSID {
                 saveNetworkSSID(networkSSID)
             }
-            completeOnboarding()
+            navigateToCompletionScreen()
         }, onSkip: {
-            completeOnboarding()
+            navigateToCompletionScreen()
         })
+    }
+
+    private var completionView: some View {
+        // Empty screen that will fade out
+        Color.clear
+            .onAppear {
+                // Start fade out animation after a short delay
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    completeOnboarding()
+                }
+            }
     }
 
     private func saveNetworkSSID(_ ssid: String) {
@@ -118,8 +133,12 @@ struct OnboardingPermissionsNavigationView: View {
         }
     }
 
+    private func navigateToCompletionScreen() {
+        nextStep()
+    }
+
     private func completeOnboarding() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             Current.onboardingObservation.complete()
         }
     }
@@ -133,6 +152,11 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     private var pushTransition: AnyTransition {
+        // Special handling for completion screen - always fade out
+        if currentStepIndex == steps.count - 1, steps[currentStepIndex].id == .completion {
+            return .opacity
+        }
+
         // Respect layout direction (RTL vs LTR)
         let leading: Edge = layoutDirection == .leftToRight ? .leading : .trailing
         let trailing: Edge = layoutDirection == .leftToRight ? .trailing : .leading
