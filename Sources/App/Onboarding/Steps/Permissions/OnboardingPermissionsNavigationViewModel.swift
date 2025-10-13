@@ -4,15 +4,44 @@ import Shared
 import UIKit
 
 final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject {
+    /// Defines the different steps in the onboarding permissions flow
+    enum StepID: String, CaseIterable, Identifiable {
+        /// Initial disclaimer step explaining local access functionality
+        case disclaimer
+        /// Location permission request step for sharing location with Home Assistant
+        case location
+        /// Local access permission step for secure local connections
+        case localAccess
+        /// Home network SSID input step for trusted network configuration
+        case homeNetwork
+        /// Final completion step that triggers onboarding completion
+        case completion
+
+        var id: String { rawValue }
+    }
+
+    /// Tracks the context in which location permission is being requested
     enum LocationPermissionContext {
+        /// Location permission has not been requested yet
         case notRequested
+        /// Location permission is being requested to share location data with Home Assistant
         case shareWithHomeAssistant
+        /// Location permission is being requested for secure local network connections
         case secureLocalConnection
     }
 
-    @Published var locationPermissionGranted: Bool = false
+    // MARK: - Published Properties
+    
+    /// Current step index in the onboarding flow (0-based)
+    @Published var currentStepIndex: Int = 0
 
+    /// The context in which location permission is being requested
     @Published var locationPermissionContext: LocationPermissionContext = .notRequested
+
+    // MARK: - Private Properties
+    
+    /// Tracks the previous step index for determining animation direction
+    private var lastStepIndex: Int = 0
 
     private let locationManager = CLLocationManager()
     private var webhookSensors: [WebhookSensor] = []
@@ -24,76 +53,166 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         .connectivitySSID,
     ]
 
+    // MARK: - Step Management
+    
+    /// Returns all available steps in the onboarding flow
+    var steps: [StepID] {
+        StepID.allCases
+    }
+
+    /// Determines if the user is advancing forward through the steps (for animation purposes)
+    var isAdvancing: Bool {
+        currentStepIndex >= lastStepIndex
+    }
+
+    /// Returns the current step based on the current step index
+    var currentStep: StepID {
+        guard currentStepIndex < steps.count else { return .completion }
+        return steps[currentStepIndex]
+    }
+
     init(onboardingServer: Server) {
         self.onboardingServer = onboardingServer
         super.init()
         Current.sensors.register(observer: self)
     }
 
+    // MARK: - Navigation Methods
+    
+    /// Navigates to a specific step in the onboarding flow
+    /// - Parameter index: The target step index (0-based)
+    /// - Note: Provides haptic feedback for forward navigation and validates bounds
+    func navigateToStep(at index: Int) {
+        guard index >= 0, index < steps.count else { return }
+
+        // Add haptic feedback for forward navigation
+        if index > currentStepIndex {
+            Current.impactFeedback.impactOccurred()
+        }
+
+        // Update the last step after deciding transition direction
+        lastStepIndex = currentStepIndex
+        currentStepIndex = index
+    }
+
+    /// Advances to the next step in the onboarding flow
+    /// - Note: Uses navigateToStep internally to handle bounds checking and feedback
+    func nextStep() {
+        navigateToStep(at: currentStepIndex + 1)
+    }
+
+    // MARK: - Step-Specific Actions
+    
+    /// Saves the home network SSID to the onboarding server configuration
+    /// - Parameter ssid: The network SSID to save for trusted local connections
+    /// - Note: This is used in the homeNetwork step to configure secure local access
+    func saveNetworkSSID(_ ssid: String) {
+        onboardingServer.update { info in
+            info.connection.internalSSIDs = [ssid]
+        }
+    }
+
+    /// Completes the onboarding process after a brief delay
+    /// - Note: Called from the completion step to finalize the onboarding flow
+    func completeOnboarding() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            Current.onboardingObservation.complete()
+        }
+    }
+
+    // MARK: - Location Permission Management
+    
+    /// Requests location permission specifically for sharing location data with Home Assistant
+    /// - Note: Sets context to shareWithHomeAssistant before requesting permission
     func requestLocationPermissionToShareWithHomeAssistant() {
         locationPermissionContext = .shareWithHomeAssistant
         requestLocationPermission()
     }
 
+    /// Requests location permission specifically for secure local network connections
+    /// - Note: Sets context to secureLocalConnection before requesting permission
     func requestLocationPermissionForSecureLocalConnection() {
         locationPermissionContext = .secureLocalConnection
         requestLocationPermission()
     }
 
+    /// Configures the server for less secure local connections (when location permission is denied)
+    /// - Note: Sets security level to .lessSecure as fallback option
     func setLessSecureLocalConnection() {
         onboardingServer.update { info in
             info.connection.localAccessSecurityLevel = .lessSecure
         }
     }
 
+    /// Disables location-related sensors when permission is denied or not wanted
+    /// - Note: Affects geocoded location, WiFi BSSID, and SSID sensors
     func disableLocationSensor() {
         for sensor in locationRelatedSensors() {
             Current.sensors.setEnabled(false, for: sensor)
         }
     }
 
+    // MARK: - Private Location Methods
+    
+    /// Enables location-related sensors when permission is granted
+    /// - Note: Affects geocoded location, WiFi BSSID, and SSID sensors
     private func enableLocationSensor() {
         for sensor in locationRelatedSensors() {
             Current.sensors.setEnabled(true, for: sensor)
         }
     }
 
+    /// Handles the actual location permission request based on current authorization status
+    /// - Note: Opens settings if denied/restricted, grants immediately if already authorized,
+    ///         or requests permission if not determined
     private func requestLocationPermission() {
         switch Current.location.permissionStatus {
         case .denied, .restricted:
-            // Open iOS settings
+            // Open iOS settings for user to manually enable location
             if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(settingsUrl)
             }
         case .authorizedWhenInUse, .authorizedAlways:
-            locationPermissionGranted = true
+            // Permission already granted, apply the context-specific needs
             applyLocationPermissionNeeds()
         default:
+            // Permission not determined, request it from the system
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
         }
     }
 
+    /// Returns the list of location-related sensors that can be enabled/disabled
+    /// - Returns: Array of WebhookSensor objects for location-related functionality
     private func locationRelatedSensors() -> [WebhookSensor] {
         webhookSensors.filter { sensor in
             sensorIdsToEnableDisable.map(\.rawValue).contains(sensor.UniqueID)
         }
     }
 
+    /// Applies the appropriate configuration based on the location permission context
+    /// - Note: Enables sensors for Home Assistant sharing or sets security level for local connections
     private func applyLocationPermissionNeeds() {
         if locationPermissionContext == .shareWithHomeAssistant {
+            // Enable location sensors for sharing with Home Assistant
             enableLocationSensor()
         }
 
         if locationPermissionContext == .secureLocalConnection {
+            // Configure most secure local connection using location data
             onboardingServer.update { info in
                 info.connection.localAccessSecurityLevel = .mostSecure
             }
         }
+
+        nextStep()
     }
 }
 
+// MARK: - SensorObserver Protocol
+
 extension OnboardingPermissionsNavigationViewModel: SensorObserver {
+    /// Called when sensor container signals for update - no action needed for onboarding
     func sensorContainer(
         _ container: SensorContainer,
         didSignalForUpdateBecause reason: SensorContainerUpdateReason,
@@ -102,6 +221,8 @@ extension OnboardingPermissionsNavigationViewModel: SensorObserver {
         /* no-op */
     }
 
+    /// Updates the local webhook sensors array when sensors are updated
+    /// - Note: This ensures we have the latest sensor information for enable/disable operations
     func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
         update.sensors.done { [weak self] sensors in
             self?.webhookSensors = sensors
@@ -109,31 +230,40 @@ extension OnboardingPermissionsNavigationViewModel: SensorObserver {
     }
 }
 
+// MARK: - CLLocationManagerDelegate Protocol
+
 extension OnboardingPermissionsNavigationViewModel: CLLocationManagerDelegate {
+    /// Handles changes in location authorization status during the onboarding flow
+    /// - Parameter manager: The location manager that triggered the authorization change
+    /// - Note: This is called when the user responds to location permission requests
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .notDetermined:
+            // Initial state - no action needed yet
             break
         case .restricted:
+            // Location services restricted by parental controls or device management
             break
         case .denied:
+            // User explicitly denied location access - disable related sensors
             disableLocationSensor()
         case .authorizedAlways:
+            // Full location access granted - no additional action needed
             break
         case .authorizedWhenInUse:
+            // Limited location access - request always authorization for better functionality
             manager.requestAlwaysAuthorization()
         case .authorized:
+            // Legacy authorization status - handled below
             break
         @unknown default:
+            // Handle future authorization statuses
             break
         }
 
-        guard [.authorizedWhenInUse, .authorizedAlways].contains(manager.authorizationStatus) else { return }
-
-        DispatchQueue.main.async { [weak self] in
-            self?.locationPermissionGranted = true
-        }
-
+        // Only proceed if we have some form of location authorization
+        // No need to proceed if permission is .authorizedAlways since the code has run before for .authorizedWhenInUse
+        guard manager.authorizationStatus == .authorizedWhenInUse else { return }
         applyLocationPermissionNeeds()
     }
 }
