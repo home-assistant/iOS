@@ -5,16 +5,27 @@ import Version
 import Communicator
 #endif
 
-public struct ConnectionInfo: Codable, Equatable {
-    public enum LocalAccessSecurityLevel: Codable {
-        // User has not opted in or out of security checks
-        case undefined
-        // Checks for home network before connecting to non-https URLs
-        case mostSecure
-        // Allows non-https URLs always
-        case lessSecure
-    }
+public enum LocalAccessSecurityLevel: String, Codable {
+    // User has not opted in or out of security checks
+    case undefined
+    // Checks for home network before connecting to non-https URLs
+    case mostSecure
+    // Allows non-https URLs always
+    case lessSecure
 
+    public var description: String {
+        switch self {
+        case .undefined:
+            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.Undefined.title
+        case .mostSecure:
+            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.MostSecure.title
+        case .lessSecure:
+            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.LessSecure.title
+        }
+    }
+}
+
+public struct ConnectionInfo: Codable, Equatable {
     private var externalURL: URL?
     public private(set) var internalURL: URL?
     private var remoteUIURL: URL?

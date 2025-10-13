@@ -3,6 +3,8 @@ import SwiftUI
 
 struct HomeNetworkInputView: View {
     @State private var networkName: String = ""
+    @State private var showingEmptyNetworkAlert = false
+    @State private var showingSkipAlert = false
     @StateObject private var viewModel = HomeNetworkInputViewModel()
 
     let onNext: (String?) -> Void
@@ -57,15 +59,33 @@ struct HomeNetworkInputView: View {
             },
             primaryActionTitle: L10n.Onboarding.NetworkInput.PrimaryButton.title,
             primaryAction: {
-                if networkName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    onNext(nil)
+                let trimmedNetworkName = networkName.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmedNetworkName.isEmpty {
+                    showingEmptyNetworkAlert = true
                 } else {
-                    onNext(networkName.trimmingCharacters(in: .whitespacesAndNewlines))
+                    onNext(trimmedNetworkName)
                 }
             },
             secondaryActionTitle: L10n.Onboarding.NetworkInput.SecondaryButton.title,
-            secondaryAction: onSkip
+            secondaryAction: {
+                showingSkipAlert = true
+            }
         )
+        .alert(L10n.Onboarding.NetworkInput.NoNetwork.Alert.title, isPresented: $showingEmptyNetworkAlert) {
+            Button(L10n.okLabel) {}
+        } message: {
+            Text(L10n.Onboarding.NetworkInput.NoNetwork.Alert.body)
+        }
+        .alert("Are you sure?", isPresented: $showingSkipAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Skip") {
+                onSkip()
+            }
+        } message: {
+            Text(
+                "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant."
+            )
+        }
         .onAppear {
             loadCurrentNetworkInfo()
         }

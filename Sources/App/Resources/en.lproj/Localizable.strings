@@ -566,6 +566,12 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
 "onboarding.network_input.primary_button.title" = "Next";
 "onboarding.network_input.secondary_button.title" = "Skip";
+
+
+"onboarding.network_input.no_network.alert.title" = "Network name required";
+"onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
+
+
 "open_label" = "Open";
 "permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
 "permission.notification.primary_button" = "Allow notifications";
@@ -646,6 +652,10 @@ Home Assistant is free and open source home automation software with a focus on 
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Retry Count: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Disconnected";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.connection_section.local_access_security_level.title" = "Local access security";
+"settings.connection_section.local_access_security_level.undefined.title" = "Not configured";
+"settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
 "settings.debugging.critical_section.footer" = "Make sure you are aware that these operations cannot be reverted.";
 "settings.debugging.header.subtitle" = "Let's fix that 🐞";
 "settings.debugging.header.title" = "Debug";

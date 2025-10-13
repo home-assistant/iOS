@@ -1904,6 +1904,14 @@ public enum L10n {
         /// Wi-Fi network connected
         public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.input_field.title") }
       }
+      public enum NoNetwork {
+        public enum Alert {
+          /// Please enter a network name to continue.
+          public static var body: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.alert.body") }
+          /// Network name required
+          public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.alert.title") }
+        }
+      }
       public enum PrimaryButton {
         /// Next
         public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.primary_button.title") }
@@ -2248,6 +2256,22 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.header") }
         /// MyFunnyNetworkName
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.placeholder") }
+      }
+      public enum LocalAccessSecurityLevel {
+        /// Local access security
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.title") }
+        public enum LessSecure {
+          /// Less secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.less_secure.title") }
+        }
+        public enum MostSecure {
+          /// Most secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.most_secure.title") }
+        }
+        public enum Undefined {
+          /// Not configured
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.undefined.title") }
+        }
       }
       public enum LocationSendType {
         /// Location Sent

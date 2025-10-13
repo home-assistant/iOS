@@ -31,7 +31,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     }
 
     // MARK: - Published Properties
-    
+
     /// Current step index in the onboarding flow (0-based)
     @Published var currentStepIndex: Int = 0
 
@@ -39,7 +39,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     @Published var locationPermissionContext: LocationPermissionContext = .notRequested
 
     // MARK: - Private Properties
-    
+
     /// Tracks the previous step index for determining animation direction
     private var lastStepIndex: Int = 0
 
@@ -54,7 +54,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     ]
 
     // MARK: - Step Management
-    
+
     /// Returns all available steps in the onboarding flow
     var steps: [StepID] {
         StepID.allCases
@@ -78,7 +78,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     }
 
     // MARK: - Navigation Methods
-    
+
     /// Navigates to a specific step in the onboarding flow
     /// - Parameter index: The target step index (0-based)
     /// - Note: Provides haptic feedback for forward navigation and validates bounds
@@ -95,6 +95,13 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         currentStepIndex = index
     }
 
+    /// Navigates to a specific step by its identifier
+    func navigateToStep(_ stepId: StepID) {
+        if let index = steps.firstIndex(of: stepId) {
+            navigateToStep(at: index)
+        }
+    }
+
     /// Advances to the next step in the onboarding flow
     /// - Note: Uses navigateToStep internally to handle bounds checking and feedback
     func nextStep() {
@@ -102,7 +109,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     }
 
     // MARK: - Step-Specific Actions
-    
+
     /// Saves the home network SSID to the onboarding server configuration
     /// - Parameter ssid: The network SSID to save for trusted local connections
     /// - Note: This is used in the homeNetwork step to configure secure local access
@@ -121,7 +128,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     }
 
     // MARK: - Location Permission Management
-    
+
     /// Requests location permission specifically for sharing location data with Home Assistant
     /// - Note: Sets context to shareWithHomeAssistant before requesting permission
     func requestLocationPermissionToShareWithHomeAssistant() {
@@ -153,7 +160,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     }
 
     // MARK: - Private Location Methods
-    
+
     /// Enables location-related sensors when permission is granted
     /// - Note: Affects geocoded location, WiFi BSSID, and SSID sensors
     private func enableLocationSensor() {

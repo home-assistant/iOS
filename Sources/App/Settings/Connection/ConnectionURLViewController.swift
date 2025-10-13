@@ -64,8 +64,6 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
         let givenURL = (form.rowBy(tag: RowTag.url.rawValue) as? URLRow)?.value
         let useCloud = (form.rowBy(tag: RowTag.useCloud.rawValue) as? SwitchRow)?.value
         let localPush = (form.rowBy(tag: RowTag.localPush.rawValue) as? SwitchRow)?.value
-        let alwaysFallbackToInternalURL = (form.rowBy(tag: RowTag.alwaysFallbackToInternalURL.rawValue) as? SwitchRow)?
-            .value
 
         func commit() {
             server.update { info in

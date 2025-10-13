@@ -6,26 +6,60 @@ enum LocalAccessPermissionOptions: String {
     case lessSecure
 }
 
+struct LocalAccessPermissionViewInNavigationView: View {
+    @Environment(\.dismiss) private var dismiss
+    let initialSelection: LocalAccessSecurityLevel?
+    let action: (LocalAccessSecurityLevel) -> Void
+
+    init(initialSelection: LocalAccessSecurityLevel? = nil, action: @escaping (LocalAccessSecurityLevel) -> Void) {
+        self.initialSelection = initialSelection
+        self.action = action
+    }
+
+    var body: some View {
+        NavigationView {
+            LocalAccessPermissionView(initialSelection: initialSelection) { selection in
+                action(selection)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    CloseButton {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+}
+
 struct LocalAccessPermissionView: View {
-    @StateObject private var viewModel = LocalAccessPermissionViewModel()
+    @StateObject private var viewModel: LocalAccessPermissionViewModel
+    private let hasInitialSelection: Bool
+
+    init(initialSelection: LocalAccessSecurityLevel? = nil, action: @escaping (LocalAccessSecurityLevel) -> Void) {
+        self._viewModel = StateObject(wrappedValue: LocalAccessPermissionViewModel(initialSelection: initialSelection))
+        self.hasInitialSelection = initialSelection != nil
+        self.action = action
+    }
 
     private let locationOptions = [
         SelectionOption(
-            value: LocalAccessPermissionOptions.secure.rawValue,
+            value: LocalAccessSecurityLevel.mostSecure.rawValue,
             title: L10n.Onboarding.LocalAccess.SecureOption.title,
             subtitle: nil,
             isRecommended: true
         ),
         SelectionOption(
-            value: LocalAccessPermissionOptions.lessSecure.rawValue,
+            value: LocalAccessSecurityLevel.lessSecure.rawValue,
             title: L10n.Onboarding.LocalAccess.LessSecureOption.title,
             subtitle: nil,
             isRecommended: false
         ),
     ]
 
-    let primaryAction: () -> Void
-    let secondaryAction: () -> Void
+    let action: (LocalAccessSecurityLevel) -> Void
 
     var body: some View {
         BaseOnboardingView(
@@ -37,7 +71,11 @@ struct LocalAccessPermissionView: View {
             secondaryDescription: nil,
             content: {
                 VStack(spacing: DesignSystem.Spaces.four) {
-                    SelectionOptionView(options: locationOptions, selection: $viewModel.selection)
+                    SelectionOptionView(options: locationOptions, selection: .init(get: {
+                        viewModel.selection.rawValue
+                    }, set: { newValue in
+                        viewModel.selection = LocalAccessSecurityLevel(rawValue: newValue ?? "") ?? .mostSecure
+                    }))
                     HStack(spacing: DesignSystem.Spaces.two) {
                         Image(systemSymbol: .lock)
                             .foregroundStyle(.haPrimary)
@@ -52,23 +90,15 @@ struct LocalAccessPermissionView: View {
                     .padding(.horizontal, DesignSystem.Spaces.two)
                 }
             },
-            primaryActionTitle: L10n.Onboarding.LocalAccess.nextButton,
+            primaryActionTitle: hasInitialSelection ? L10n.saveLabel : L10n.Onboarding.LocalAccess.nextButton,
             primaryAction: {
-                if viewModel.selection == LocalAccessPermissionOptions.secure.rawValue {
-                    primaryAction()
-                } else {
-                    // Considered as if the user decided to ignore
-                    secondaryAction()
-                }
-            },
-            secondaryActionTitle: nil,
-            secondaryAction: {
-                secondaryAction()
+                action(viewModel.selection)
             }
         )
     }
 }
 
 #Preview {
-    LocalAccessPermissionView {} secondaryAction: {}
+    LocalAccessPermissionView(initialSelection: .lessSecure) { _ in
+    }
 }

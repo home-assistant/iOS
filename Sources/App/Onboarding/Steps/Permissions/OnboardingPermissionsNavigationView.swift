@@ -64,11 +64,16 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     private var localAccess: some View {
-        LocalAccessPermissionView {
-            viewModel.requestLocationPermissionForSecureLocalConnection()
-        } secondaryAction: {
-            viewModel.setLessSecureLocalConnection()
-            viewModel.nextStep()
+        LocalAccessPermissionView { localAccessSecurityLevel in
+            switch localAccessSecurityLevel {
+            case .undefined:
+                assertionFailure("undefined should not be possible here")
+            case .mostSecure:
+                viewModel.requestLocationPermissionForSecureLocalConnection()
+            case .lessSecure:
+                viewModel.setLessSecureLocalConnection()
+                viewModel.navigateToStep(.completion)
+            }
         }
     }
 
