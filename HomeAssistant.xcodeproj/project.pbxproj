@@ -842,6 +842,7 @@
 		42ACC2952E9E78500045A3FD /* ManualURLEntryView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2932E9E78170045A3FD /* ManualURLEntryView.test.swift */; };
 		42ACC2992E9E789D0045A3FD /* DeviceNameView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2982E9E789D0045A3FD /* DeviceNameView.test.swift */; };
 		42ACC29C2E9E7A6E0045A3FD /* SelectionOptionView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC29A2E9E7A4D0045A3FD /* SelectionOptionView.test.swift */; };
+		42ACC29F2E9E7BBB0045A3FD /* OnboardingScanningInstanceRow.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC29D2E9E7B8C0045A3FD /* OnboardingScanningInstanceRow.test.swift */; };
 		42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */; };
 		42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */; };
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
@@ -2514,6 +2515,7 @@
 		42ACC2932E9E78170045A3FD /* ManualURLEntryView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualURLEntryView.test.swift; sourceTree = "<group>"; };
 		42ACC2982E9E789D0045A3FD /* DeviceNameView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceNameView.test.swift; sourceTree = "<group>"; };
 		42ACC29A2E9E7A4D0045A3FD /* SelectionOptionView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionOptionView.test.swift; sourceTree = "<group>"; };
+		42ACC29D2E9E7B8C0045A3FD /* OnboardingScanningInstanceRow.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScanningInstanceRow.test.swift; sourceTree = "<group>"; };
 		42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorableStateKey.swift; sourceTree = "<group>"; };
 		42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSettingsUpdateReason.swift; sourceTree = "<group>"; };
 		42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerProtocol.swift; sourceTree = "<group>"; };
@@ -4327,6 +4329,7 @@
 		42196AD92DA5AF7A00BD501E /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				42ACC29D2E9E7B8C0045A3FD /* OnboardingScanningInstanceRow.test.swift */,
 				42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */,
 				42ACC29A2E9E7A4D0045A3FD /* SelectionOptionView.test.swift */,
 				42ACC2932E9E78170045A3FD /* ManualURLEntryView.test.swift */,
@@ -8651,6 +8654,7 @@
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,
 				428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */,
+				42ACC29F2E9E7BBB0045A3FD /* OnboardingScanningInstanceRow.test.swift in Sources */,
 				428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */,
 				42A818E32BBEA9780083D045 /* MockAudioRecorder.swift in Sources */,
 				11ED439A27265DE800B5FD45 /* OnboardingAuthStepRegister.test.swift in Sources */,
