@@ -1911,6 +1911,22 @@ public enum L10n {
           /// Network name required
           public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.alert.title") }
         }
+        public enum Skip {
+          public enum Alert {
+            /// You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.
+            public static var body: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.body") }
+            /// Are you sure?
+            public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.title") }
+            public enum PrimaryButton {
+              /// Cancel
+              public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.primary_button.title") }
+            }
+            public enum SecondaryButton {
+              /// Skip
+              public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.secondary_button.title") }
+            }
+          }
+        }
       }
       public enum PrimaryButton {
         /// Next

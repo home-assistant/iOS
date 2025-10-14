@@ -76,15 +76,13 @@ struct HomeNetworkInputView: View {
         } message: {
             Text(L10n.Onboarding.NetworkInput.NoNetwork.Alert.body)
         }
-        .alert("Are you sure?", isPresented: $showingSkipAlert) {
-            Button("Cancel", role: .cancel) {}
-            Button("Skip") {
+        .alert(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.title, isPresented: $showingSkipAlert) {
+            Button(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.PrimaryButton.title, role: .cancel) {}
+            Button(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.SecondaryButton.title) {
                 onSkip()
             }
         } message: {
-            Text(
-                "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant."
-            )
+            Text(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.body)
         }
         .onAppear {
             loadCurrentNetworkInfo()

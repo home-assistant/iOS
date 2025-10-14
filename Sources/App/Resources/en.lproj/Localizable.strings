@@ -566,12 +566,12 @@ Home Assistant is free and open source home automation software with a focus on 
 "onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
 "onboarding.network_input.primary_button.title" = "Next";
 "onboarding.network_input.secondary_button.title" = "Skip";
-
-
 "onboarding.network_input.no_network.alert.title" = "Network name required";
 "onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
-
-
+"onboarding.network_input.no_network.skip.alert.title" = "Are you sure?";
+"onboarding.network_input.no_network.skip.alert.body" = "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.";
+"onboarding.network_input.no_network.skip.alert.primary_button.title" = "Cancel";
+"onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Skip";
 "open_label" = "Open";
 "permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
 "permission.notification.primary_button" = "Allow notifications";
