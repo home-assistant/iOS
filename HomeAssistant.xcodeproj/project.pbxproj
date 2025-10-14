@@ -835,6 +835,7 @@
 		42AC94A42CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
 		42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
 		42ACC2862E9E74C80045A3FD /* BaseOnboardingView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */; };
+		42ACC2892E9E75940045A3FD /* LocalAccessOnlyDisclaimerView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2872E9E753A0045A3FD /* LocalAccessOnlyDisclaimerView.test.swift */; };
 		42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */; };
 		42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */; };
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
@@ -2500,6 +2501,7 @@
 		42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationViewModel.swift; sourceTree = "<group>"; };
 		42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCardStyleModifier.swift; sourceTree = "<group>"; };
 		42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingView.test.swift; sourceTree = "<group>"; };
+		42ACC2872E9E753A0045A3FD /* LocalAccessOnlyDisclaimerView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessOnlyDisclaimerView.test.swift; sourceTree = "<group>"; };
 		42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorableStateKey.swift; sourceTree = "<group>"; };
 		42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSettingsUpdateReason.swift; sourceTree = "<group>"; };
 		42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerProtocol.swift; sourceTree = "<group>"; };
@@ -4316,6 +4318,7 @@
 				42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */,
 				42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */,
 				428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */,
+				42ACC2872E9E753A0045A3FD /* LocalAccessOnlyDisclaimerView.test.swift */,
 				42196AD62DA5AF7A00BD501E /* ServersList */,
 				42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */,
 			);
@@ -8653,6 +8656,7 @@
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
 				420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
+				42ACC2892E9E75940045A3FD /* LocalAccessOnlyDisclaimerView.test.swift in Sources */,
 				11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */,
 				11ED439C2726600000B5FD45 /* OnboardingAuthStepSensors.test.swift in Sources */,
 				42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */,
