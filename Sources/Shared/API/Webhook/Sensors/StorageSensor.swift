@@ -67,6 +67,14 @@ public class StorageSensor: SensorProvider {
             $0.formattingContext = .standalone
             $0.zeroPadsFractionDigits = true
         }
+        
+        // Custom formatter for consistent locale-independent formatting
+        private let numberFormatter = with(NumberFormatter()) {
+            $0.numberStyle = .decimal
+            $0.minimumFractionDigits = 2
+            $0.maximumFractionDigits = 2
+            $0.locale = Locale(identifier: "en_US_POSIX")
+        }
 
         init(volumes: [URLResourceKey: Int64]) throws {
             func value(of key: URLResourceKey) throws -> Int64 {
@@ -94,7 +102,12 @@ public class StorageSensor: SensorProvider {
         }
 
         func byteString(for keyPath: KeyPath<Self, Int64>) -> String {
-            formatter.string(fromByteCount: self[keyPath: keyPath])
+            let bytes = self[keyPath: keyPath]
+            let gb = Double(bytes) / 1_000_000_000.0 // Using decimal GB (1000^3)
+            
+            // Use custom number formatter for consistent locale-independent formatting
+            let formattedNumber = numberFormatter.string(from: NSNumber(value: gb)) ?? String(format: "%.2f", gb)
+            return "\(formattedNumber) GB"
         }
     }
     #endif
