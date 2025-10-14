@@ -37,11 +37,9 @@ struct SelectionOptionViewTests {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
-        @State var selection: String? = nil
-        
+
         let view = AnyView(
-            SelectionOptionView(options: sampleOptions, selection: $selection)
+            SelectionOptionView(options: sampleOptions, selection: .constant(nil))
                 .padding()
         )
         
@@ -53,11 +51,9 @@ struct SelectionOptionViewTests {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
-        @State var selection: String? = "secure"
-        
+
         let view = AnyView(
-            SelectionOptionView(options: sampleOptions, selection: $selection)
+            SelectionOptionView(options: sampleOptions, selection: .constant("secure"))
                 .padding()
         )
         
@@ -69,11 +65,9 @@ struct SelectionOptionViewTests {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
-        @State var selection: String? = "secure" // This is the recommended option
-        
+
         let view = AnyView(
-            SelectionOptionView(options: sampleOptions, selection: $selection)
+            SelectionOptionView(options: sampleOptions, selection: .constant("secure"))
                 .padding()
         )
         
@@ -87,11 +81,9 @@ struct SelectionOptionViewTests {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
-        @State var selections: Set<String> = []
-        
+
         let view = AnyView(
-            SelectionOptionView(options: sampleOptions, multipleSelection: $selections)
+            SelectionOptionView(options: sampleOptions, multipleSelection: .constant([]))
                 .padding()
         )
         
@@ -104,10 +96,8 @@ struct SelectionOptionViewTests {
             return
         }
         
-        @State var selections: Set<String> = ["secure", "custom"]
-        
         let view = AnyView(
-            SelectionOptionView(options: sampleOptions, multipleSelection: $selections)
+            SelectionOptionView(options: sampleOptions, multipleSelection: .constant(["secure", "custom"]))
                 .padding()
         )
         
@@ -119,11 +109,9 @@ struct SelectionOptionViewTests {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
-        @State var selections: Set<String> = ["secure"] // This is the recommended option
-        
+
         let view = AnyView(
-            SelectionOptionView(options: sampleOptions, multipleSelection: $selections)
+            SelectionOptionView(options: sampleOptions, multipleSelection: .constant(["secure"]))
                 .padding()
         )
         
@@ -146,11 +134,9 @@ struct SelectionOptionViewTests {
                 isRecommended: true
             )
         ]
-        
-        @State var selection: String? = nil
-        
+
         let view = AnyView(
-            SelectionOptionView(options: singleOption, selection: $selection)
+            SelectionOptionView(options: singleOption, selection: .constant(nil))
                 .padding()
         )
         
@@ -177,11 +163,9 @@ struct SelectionOptionViewTests {
                 isRecommended: false
             )
         ]
-        
-        @State var selection: String? = "long_title"
-        
+
         let view = AnyView(
-            SelectionOptionView(options: longTextOptions, selection: $selection)
+            SelectionOptionView(options: longTextOptions, selection: .constant("long_title"))
                 .padding()
                 .frame(maxWidth: 320) // Constrain width to force wrapping
         )
@@ -200,11 +184,9 @@ struct SelectionOptionViewTests {
             SelectionOption(value: "option2", title: "Second Option"),
             SelectionOption(value: "option3", title: "Third Option")
         ]
-        
-        @State var selections: Set<String> = ["option1", "option3"]
-        
+                
         let view = AnyView(
-            SelectionOptionView(options: optionsWithoutSubtitles, multipleSelection: $selections)
+            SelectionOptionView(options: optionsWithoutSubtitles, multipleSelection: .constant(["option1", "option3"]))
                 .padding()
         )
         
