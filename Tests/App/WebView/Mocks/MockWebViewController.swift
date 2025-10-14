@@ -26,7 +26,7 @@ final class MockWebViewController: WebViewControllerProtocol {
     var lastNavigateToPathPath: String?
     var updateImprovEntryViewCalled = false
     var lastUpdateImprovEntryViewState = false
-    var reloadCalled = false
+    var refreshCalled = false
     var presentAlertControllerCalled = false
 
     init() {
@@ -93,8 +93,8 @@ final class MockWebViewController: WebViewControllerProtocol {
         lastNavigateToPathPath = path
     }
 
-    func reload() {
-        reloadCalled = true
+    func refresh() {
+        refreshCalled = true
     }
 
     func presentAlertController(controller: UIViewController, animated: Bool) {

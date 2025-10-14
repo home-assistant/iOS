@@ -16,8 +16,19 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         case homeNetwork
         /// Final completion step that triggers onboarding completion
         case completion
+        /// Step indicating preferences were updated successfully
+        case updatePreferencesSuccess
 
         var id: String { rawValue }
+
+        /// Default onboarding flow steps
+        static var `default`: [StepID] = [.disclaimer, .location, .localAccess, .homeNetwork, .completion]
+        /// Flow when user already has remote connection setup, skipping local access disclaimer
+        static var remoteConnectionCompatible: [StepID] = [.location, .localAccess, .homeNetwork, .completion]
+        /// Flow for updating local access security level preference
+        static var updateLocalAccessSecurityLevelPreference: [StepID] = [.localAccess, .homeNetwork, .updatePreferencesSuccess]
+        /// Flow for updating location permission preference
+        static var updateLocationPermission: [StepID] = [.location, .localAccess, .homeNetwork, .updatePreferencesSuccess]
     }
 
     /// Tracks the context in which location permission is being requested
@@ -62,16 +73,22 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         return steps[currentStepIndex]
     }
 
-    init(onboardingServer: Server) {
+    init(onboardingServer: Server, steps: [StepID]? = nil) {
         self.onboardingServer = onboardingServer
 
-        var steps = StepID.allCases
+        if let customSteps = steps {
+            // Use externally provided steps
+            self.steps = customSteps
+        } else {
+            // Use default logic to determine steps
+            var defaultSteps = StepID.default
 
-        // No need to display local access only disclaimer when user already has remote connection setup
-        if onboardingServer.info.connection.hasRemoteConnectionSetup {
-            steps.removeAll(where: { $0 == .disclaimer })
+            // No need to display local access only disclaimer when user already has remote connection setup
+            if onboardingServer.info.connection.hasRemoteConnectionSetup {
+                defaultSteps = StepID.remoteConnectionCompatible
+            }
+            self.steps = defaultSteps
         }
-        self.steps = steps
 
         super.init()
     }

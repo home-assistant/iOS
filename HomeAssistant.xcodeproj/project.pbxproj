@@ -777,6 +777,7 @@
 		428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
 		428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
+		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
 		428EDB682DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
 		428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */; };
@@ -2280,6 +2281,7 @@
 		4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAppIntent.swift; sourceTree = "<group>"; };
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
+		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
 		42905D842E12B00900250728 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		42905D882E12BA4500250728 /* OnboardingWelcomeView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.test.swift; sourceTree = "<group>"; };
@@ -5487,6 +5489,7 @@
 				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
 				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
 				42DC8B772E14027000D9999E /* SearchingServersAnimationView.swift */,
+				428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -8498,6 +8501,7 @@
 				42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */,
+				428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,

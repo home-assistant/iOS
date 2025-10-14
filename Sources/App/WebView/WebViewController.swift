@@ -205,6 +205,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         postOnboardingNotificationPermission()
         emptyStateObservations()
+        checkForLocalSecurityLevelDecisionNeeded()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -299,6 +300,39 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         emptyState.alpha = 0
         emptyStateView = emptyState
+    }
+
+    /// If user has not chosen 'Most secure' or 'Less secure' local access yet, this triggers a screen for decision
+    private func checkForLocalSecurityLevelDecisionNeeded() {
+        if Current.location.permissionStatus == .notDetermined {
+            Current.Log.verbose("User has not decided location permission yet")
+            showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
+        } else if server.info.connection.localAccessSecurityLevel == .undefined {
+            Current.Log.verbose("User has not decided local access security level yet")
+            showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference)
+        } else {
+            Current.Log.verbose("User decided \(server.info.connection.localAccessSecurityLevel) for local access security level")
+        }
+    }
+
+    private func showOnboardingPermissions(steps: [OnboardingPermissionsNavigationViewModel.StepID]) {
+        let controller = NavigationView {
+            OnboardingPermissionsNavigationView(onboardingServer: server, steps: steps)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton { [weak self] in
+                            self?.dismiss(animated: true)
+                        }
+                    }
+                }
+                .onDisappear { [weak self] in
+                    self?.refresh()
+                }
+        }.embeddedInHostingController()
+
+        // Prevent controller on being dismissed on swipe down
+        controller.isModalInPresentation = true
+        presentOverlayController(controller: controller, animated: true)
     }
 
     private func emptyStateObservations() {
@@ -639,19 +673,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         load(request: request)
     }
 
-    @objc private func refresh() {
-        // called via menu/keyboard shortcut too
-        if let webviewURL = server.info.connection.webviewURL() {
-            if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
-                reload()
-            } else {
-                load(request: URLRequest(url: webviewURL))
-            }
-        } else {
-            showNoActiveURLError()
-        }
-    }
-
     @objc private func swipe(_ gesture: UISwipeGestureRecognizer) {
         guard gesture.state == .ended else {
             return
@@ -944,6 +965,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 completion(false)
             }
         }
+    }
+
+    /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
+    private func reload() {
+        Current.Log.verbose("Reload webView requested")
+        webView.reload()
     }
 
     public func showSettingsViewController() {
@@ -1303,8 +1330,20 @@ extension WebViewController: WebViewControllerProtocol {
         webView.load(request)
     }
 
-    func reload() {
-        Current.Log.verbose("Reload webView requested")
-        webView.reload()
+    @objc func refresh() {
+        Current.connectivity.syncNetworkInformation { [weak self] in
+            guard let self else { return }
+            // called via menu/keyboard shortcut too
+            if let webviewURL = server.info.connection.webviewURL() {
+                if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
+                    reload()
+                } else {
+                    load(request: URLRequest(url: webviewURL))
+                }
+            } else {
+                showNoActiveURLError()
+            }
+        }
     }
+
 }

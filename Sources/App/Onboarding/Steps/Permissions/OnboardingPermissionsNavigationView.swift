@@ -10,11 +10,12 @@ struct OnboardingPermissionsNavigationView: View {
     let onboardingServer: Server
 
     @Environment(\.layoutDirection) private var layoutDirection
+    @Environment(\.dismiss) private var dismiss
 
-    init(onboardingServer: Server) {
+    init(onboardingServer: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID]? = nil) {
         self
             ._viewModel =
-            .init(wrappedValue: OnboardingPermissionsNavigationViewModel(onboardingServer: onboardingServer))
+            .init(wrappedValue: OnboardingPermissionsNavigationViewModel(onboardingServer: onboardingServer, steps: steps))
         self.onboardingServer = onboardingServer
     }
 
@@ -45,6 +46,8 @@ struct OnboardingPermissionsNavigationView: View {
             homeNetworkInput
         case .completion:
             completionView
+        case .updatePreferencesSuccess:
+            checkmarkSuccessView
         }
     }
 
@@ -72,7 +75,11 @@ struct OnboardingPermissionsNavigationView: View {
                 viewModel.requestLocationPermissionForSecureLocalConnection()
             case .lessSecure:
                 viewModel.setLessSecureLocalConnection()
-                viewModel.navigateToStep(.completion)
+                if viewModel.steps.contains(.completion) {
+                    viewModel.navigateToStep(.completion)
+                } else if viewModel.steps.contains(.updatePreferencesSuccess) {
+                    viewModel.navigateToStep(.updatePreferencesSuccess)
+                }
             }
         }
     }
@@ -97,6 +104,17 @@ struct OnboardingPermissionsNavigationView: View {
                     viewModel.completeOnboarding()
                 }
             }
+    }
+
+    private var checkmarkSuccessView: some View {
+        // View that display success animation and dismisses the flow shortly after
+        CheckmarkDrawOnView()
+        .onAppear {
+            // Dismiss after a short delay to allow the user to see the success state
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                dismiss()
+            }
+        }
     }
 
     private func navigateToCompletionScreen() {
@@ -131,4 +149,11 @@ struct OnboardingPermissionsNavigationView: View {
 
 #Preview {
     OnboardingPermissionsNavigationView(onboardingServer: ServerFixture.standard)
+}
+
+#Preview("Custom Steps") {
+    OnboardingPermissionsNavigationView(
+        onboardingServer: ServerFixture.standard,
+        steps: [.location, .localAccess, .completion]
+    )
 }

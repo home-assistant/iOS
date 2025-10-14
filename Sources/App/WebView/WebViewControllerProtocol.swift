@@ -16,7 +16,7 @@ protocol WebViewControllerProtocol: AnyObject {
     func dismissControllerAboveOverlayController()
     func updateFrontendConnectionState(state: String)
     func navigateToPath(path: String)
-    func reload()
+    func refresh()
     func load(request: URLRequest)
     func showSettingsViewController()
     func openDebug()
