@@ -231,6 +231,7 @@ public struct ConnectionInfo: Codable, Equatable {
             url = internalURL
         } else {
             url = nil
+            activeURLType = .none
         }
 
         return url?.sanitized()

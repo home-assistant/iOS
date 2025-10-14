@@ -3,10 +3,6 @@ import Version
 import XCTest
 
 class ConnectionInfoTests: XCTestCase {
-    override func setUp() async throws {
-        ConnectionInfo.shouldFallbackToInternalURL = false
-    }
-
     func testInternalOnlyURL() {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
@@ -20,7 +16,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         info.internalSSIDs = ["unit_tests"]
@@ -45,12 +41,11 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         info.internalSSIDs = []
         Current.connectivity.currentWiFiSSID = { "" }
-        info.alwaysFallbackToInternalURL = true
 
         XCTAssertEqual(info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .internal)
@@ -58,7 +53,7 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
     }
 
-    func testInternalOnlyURLWithoutSSIDWithoutAlwaysFallbackEnabled() {
+    func testInternalOnlyURLWithoutSSIDWithLocalAccessSecurityLevelMostSecure() {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -71,12 +66,11 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .mostSecure
         )
 
         info.internalSSIDs = []
         Current.connectivity.currentWiFiSSID = { "" }
-        info.alwaysFallbackToInternalURL = false
 
         XCTAssertEqual(info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .none)
@@ -97,7 +91,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .mostSecure
         )
 
         Current.connectivity.currentWiFiSSID = { nil }
@@ -121,7 +115,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         info.useCloud = true
@@ -131,7 +125,7 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
     }
 
-    func testRemoteOnlyURLWithUseCloudOffAndNoSSIDNeitherInternalURL() {
+    func testRemoteOnlyURLWithUseCloudOffAndNoSSIDNeitherInternalURLWithLocalAccessSecurityLevelMostSecure() {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -144,7 +138,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .mostSecure
         )
 
         info.useCloud = false
@@ -167,7 +161,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), url)
@@ -207,7 +201,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -247,7 +241,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -277,7 +271,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         info.useCloud = true
@@ -305,7 +299,7 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
     }
 
-    func testInternalRemoteURLWithoutSSIDDefined() {
+    func testInternalRemoteURLWithoutSSIDDefinedWithMostSecureLocalAccessLevel() {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let remoteURL = URL(string: "http://remote.example.com:8123")
         var info = ConnectionInfo(
@@ -319,7 +313,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .mostSecure
         )
 
         XCTAssertEqual(info.activeURL(), nil)
@@ -343,7 +337,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -393,7 +387,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .mostSecure
         )
 
         // valid override states
@@ -455,7 +449,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), nil)
@@ -479,7 +473,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         Current.connectivity.currentWiFiSSID = { nil }
@@ -509,7 +503,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         let oldVersion = Version(major: 2022, minor: 2)
@@ -619,7 +613,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         info.useCloud = useCloud
@@ -642,7 +636,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         info.useCloud = useCloud
@@ -663,7 +657,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.invitationURL(), remoteURL)
@@ -682,7 +676,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            alwaysFallbackToInternalURL: false
+            localAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.invitationURL(), internalURL)

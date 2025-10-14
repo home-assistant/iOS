@@ -2085,7 +2085,7 @@ public enum L10n {
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "onboarding.welcome.logo.accessibility_label") }
       }
       public enum Updated {
-        /// Access your Home Assistant server on the go using this app. 
+        /// Access your Home Assistant server on the go. 
         /// 
         /// Home Assistant is open source, advocates for privacy and runs locally in your home.
         public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.updated.body") }
