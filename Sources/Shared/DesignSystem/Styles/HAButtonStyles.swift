@@ -191,6 +191,6 @@ private extension View {
     }
 
     func haButtonFlexSizing() -> some View {
-        modifier(HABasicStylingModifier())
+        modifier(HAFlexStylingModifier())
     }
 }
