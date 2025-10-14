@@ -146,9 +146,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
                 row.displayValueFor = { [server] _ in
                     if server.info.connection.internalSSIDs?.isEmpty ?? true,
-                       server.info.connection.internalHardwareAddresses?.isEmpty ?? true,
-                       !server.info.connection.alwaysFallbackToInternalURL,
-                       !ConnectionInfo.shouldFallbackToInternalURL {
+                       server.info.connection.internalHardwareAddresses?.isEmpty ?? true {
                         return "‼️ \(L10n.Settings.ConnectionSection.InternalBaseUrl.RequiresSetup.title)"
                     } else {
                         return server.info.connection.address(for: .internal)?.absoluteString ?? "—"
@@ -178,6 +176,30 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }), onDismiss: { [navigationController] _ in
                     navigationController?.popViewController(animated: true)
                 })
+            }
+
+            <<< ButtonRow { row in
+                row.cellStyle = .value1
+                row.title = L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.title
+                row.displayValueFor = { [server] _ in
+                    server.info.connection.localAccessSecurityLevel.description
+                }
+                row.onCellSelection { [weak self] _, _ in
+                    guard let self else { return }
+                    present(
+                        LocalAccessPermissionViewInNavigationView(
+                            initialSelection: server.info.connection.localAccessSecurityLevel,
+                            action: { localAccessSecurityLevel in
+                                self.server.update { info in
+                                    info.connection.localAccessSecurityLevel = localAccessSecurityLevel
+                                }
+                                self.dismiss(animated: true)
+                            }
+                        )
+                        .embeddedInHostingController(),
+                        animated: true
+                    )
+                }
             }
 
             +++ Section(L10n.SettingsDetails.Privacy.title)

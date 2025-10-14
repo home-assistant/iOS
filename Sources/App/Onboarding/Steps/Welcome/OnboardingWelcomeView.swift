@@ -53,7 +53,7 @@ struct OnboardingWelcomeView: View {
 
     private var textBlock: some View {
         VStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
-            Text(verbatim: L10n.Onboarding.Welcome.body)
+            Text(verbatim: L10n.Onboarding.Welcome.Updated.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -66,13 +66,13 @@ struct OnboardingWelcomeView: View {
                 Text(verbatim: L10n.Onboarding.Welcome.primaryButton)
             }
             .buttonStyle(.primaryButton)
-            Button(L10n.Onboarding.Welcome.secondaryButton) {
+            Button(L10n.Onboarding.Welcome.Updated.secondaryButton) {
                 showLearnMore = true
             }
             .tint(Color.haPrimary)
             .buttonStyle(.secondaryButton)
         }
-        .padding([.horizontal, .bottom], DesignSystem.Spaces.two)
+        .padding([.horizontal, .top], DesignSystem.Spaces.two)
         .background(Color(uiColor: .systemBackground))
     }
 }

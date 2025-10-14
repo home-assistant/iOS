@@ -71,4 +71,10 @@ public enum DesignSystem {
     public enum List {
         public static let rowMaxWidth: CGFloat = 380
     }
+
+    public enum Animation {
+        public static let `default`: SwiftUICore.Animation = .easeInOut(duration: 0.3)
+        public static let easeInOutFaster: SwiftUICore.Animation = .easeInOut(duration: 0.1)
+        public static let easeInOutSlower: SwiftUICore.Animation = .easeInOut(duration: 0.8)
+    }
 }

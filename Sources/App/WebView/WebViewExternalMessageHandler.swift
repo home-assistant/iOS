@@ -368,7 +368,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             // but the errors aren't public, so we can't compare -- the apple ui shows errors visually though
             Current.Log.error(error)
         }.finally { [weak self] in
-            self?.webViewController?.reload()
+            self?.webViewController?.refresh()
         }
     }
 

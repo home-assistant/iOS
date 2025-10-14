@@ -28,7 +28,7 @@ public struct HAOutlinedButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline)
             .foregroundColor(isEnabled ? Color.haPrimary : Color.gray)
-            .haButtonBasicSizing()
+            .haButtonFlexSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .overlay(
                 Capsule()
@@ -178,8 +178,19 @@ private struct HABasicStylingModifier: ViewModifier {
     }
 }
 
+private struct HAFlexStylingModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .frame(minHeight: DesignSystem.Button.minHeight)
+    }
+}
+
 private extension View {
     func haButtonBasicSizing() -> some View {
         modifier(HABasicStylingModifier())
+    }
+
+    func haButtonFlexSizing() -> some View {
+        modifier(HAFlexStylingModifier())
     }
 }

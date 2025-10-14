@@ -205,6 +205,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         postOnboardingNotificationPermission()
         emptyStateObservations()
+        checkForLocalSecurityLevelDecisionNeeded()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -299,6 +300,45 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         emptyState.alpha = 0
         emptyStateView = emptyState
+    }
+
+    /// If user has not chosen 'Most secure' or 'Less secure' local access yet, this triggers a screen for decision
+    private func checkForLocalSecurityLevelDecisionNeeded() {
+        if Current.location.permissionStatus == .notDetermined {
+            Current.Log.verbose("User has not decided location permission yet")
+            showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
+        } else if server.info.connection.localAccessSecurityLevel == .undefined {
+            Current.Log.verbose("User has not decided local access security level yet")
+            showOnboardingPermissions(
+                steps: OnboardingPermissionsNavigationViewModel.StepID
+                    .updateLocalAccessSecurityLevelPreference
+            )
+        } else {
+            Current.Log
+                .verbose(
+                    "User decided \(server.info.connection.localAccessSecurityLevel) for local access security level"
+                )
+        }
+    }
+
+    private func showOnboardingPermissions(steps: [OnboardingPermissionsNavigationViewModel.StepID]) {
+        let controller = NavigationView {
+            OnboardingPermissionsNavigationView(onboardingServer: server, steps: steps)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton { [weak self] in
+                            self?.dismiss(animated: true)
+                        }
+                    }
+                }
+                .onDisappear { [weak self] in
+                    self?.refresh()
+                }
+        }.embeddedInHostingController()
+
+        // Prevent controller on being dismissed on swipe down
+        controller.isModalInPresentation = true
+        presentOverlayController(controller: controller, animated: true)
     }
 
     private func emptyStateObservations() {
@@ -545,13 +585,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         return config
     }
 
-    private func showNoActiveURLError() {
-        Current.Log.info("Showing noActiveURLError")
-        webView.scrollView.refreshControl?.endRefreshing()
-        guard !(overlayedController is NoActiveURLViewController) else { return }
-        presentOverlayController(controller: NoActiveURLViewController(server: server), animated: true)
-    }
-
     private func getLatestConfig() {
         _ = Current.api(for: server)?.getConfig()
     }
@@ -596,6 +629,23 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    private func showNoActiveURLError() {
+        // Alert the user that there's no URL that the App can use
+        let alert = UIAlertController(
+            title: L10n.WebView.NoUrlAvailable.title,
+            message: L10n.WebView.NoUrlAvailable.body,
+            preferredStyle: .alert
+        )
+        alert.addAction(.init(
+            title: L10n.WebView.NoUrlAvailable.PrimaryButton.title,
+            style: .default,
+            handler: { [weak self] _ in
+                self?.showSettingsViewController()
+            }
+        ))
+        present(alert, animated: true)
+    }
+
     @objc private func loadActiveURLIfNeeded() {
         guard let webviewURL = server.info.connection.webviewURL() else {
             Current.Log.info("not loading, no url")
@@ -627,19 +677,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         load(request: request)
-    }
-
-    @objc private func refresh() {
-        // called via menu/keyboard shortcut too
-        if let webviewURL = server.info.connection.webviewURL() {
-            if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
-                reload()
-            } else {
-                load(request: URLRequest(url: webviewURL))
-            }
-        } else {
-            showNoActiveURLError()
-        }
     }
 
     @objc private func swipe(_ gesture: UISwipeGestureRecognizer) {
@@ -714,7 +751,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             repeats: true,
             block: { [weak self] timer in
                 if let self, Current.date().timeIntervalSince(timer.fireDate) > 30.0 {
-                    webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
+                    _ = webViewExternalMessageHandler.sendExternalBus(message: .init(command: "restart"))
                 }
 
                 if UIApplication.shared.applicationState == .active {
@@ -936,6 +973,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
+    /// Manual reload does not take care of internal/external URL changes, prefer using `refresh()`
+    private func reload() {
+        Current.Log.verbose("Reload webView requested")
+        webView.reload()
+    }
+
     public func showSettingsViewController() {
         getLatestConfig()
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
@@ -953,7 +996,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             showActionAutomationEditorNotAvailable()
             return
         }
-        webViewExternalMessageHandler.sendExternalBus(message: .init(
+        _ = webViewExternalMessageHandler.sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.showAutomationEditor.rawValue,
             payload: [
                 "config": [
@@ -1293,8 +1336,19 @@ extension WebViewController: WebViewControllerProtocol {
         webView.load(request)
     }
 
-    func reload() {
-        Current.Log.verbose("Reload webView requested")
-        webView.reload()
+    @objc func refresh() {
+        Current.connectivity.syncNetworkInformation { [weak self] in
+            guard let self else { return }
+            // called via menu/keyboard shortcut too
+            if let webviewURL = server.info.connection.webviewURL() {
+                if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
+                    reload()
+                } else {
+                    load(request: URLRequest(url: webviewURL))
+                }
+            } else {
+                showNoActiveURLError()
+            }
+        }
     }
 }

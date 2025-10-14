@@ -1,3 +1,4 @@
+import Shared
 import SwiftUI
 
 struct SearchingServersAnimationView: View {
@@ -8,25 +9,54 @@ struct SearchingServersAnimationView: View {
         static let animationDuration: Double = 5
         static let logoPulseScale: CGFloat = 1.15
         static let logoPulseDuration: Double = 0.8
+        static let secondsUntilShowText: CGFloat = 8
     }
 
     @State private var rotation: Double = 0
     @State private var direction: Double = 1
     @State private var logoScale: CGFloat = 1.0
+    @State private var showText: Bool = false
+
+    let text: String?
+
+    init(text: String? = nil) {
+        self.text = text
+    }
 
     var body: some View {
-        ZStack {
-            dots
-            logo
+        VStack(spacing: DesignSystem.Spaces.three) {
+            ZStack {
+                dots
+                logo
+            }
+
+            Text(text ?? "")
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(height: showText ? nil : 0)
+                .frame(width: showText ? nil : 0)
+                .opacity(showText ? 1 : 0)
+                .animation(.easeInOut, value: showText)
         }
         .onAppear {
             animateLogoPulse()
             withAnimation(Animation.linear(duration: Constants.animationDuration).repeatForever(autoreverses: false)) {
                 rotation = direction * Constants.rotationDegrees
             }
+            if text != nil {
+                scheduleText()
+            }
         }
         .onDisappear {
             rotation = 0
+        }
+    }
+
+    private func scheduleText() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.secondsUntilShowText) {
+            withAnimation {
+                showText = true
+            }
         }
     }
 
@@ -57,6 +87,8 @@ struct SearchingServersAnimationView: View {
         List {
             Text("Example")
         }
-        SearchingServersAnimationView()
+        SearchingServersAnimationView(
+            text: "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it."
+        )
     }
 }

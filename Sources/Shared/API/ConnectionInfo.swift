@@ -5,12 +5,27 @@ import Version
 import Communicator
 #endif
 
-public struct ConnectionInfo: Codable, Equatable {
-    // TODO: Remove when location permission enforcement is in place
-    /// Developer toggle used while enforcement of location permision is not ready
-    /// Used as feature toggle
-    public static var shouldFallbackToInternalURL = true
+public enum LocalAccessSecurityLevel: String, Codable {
+    // User has not opted in or out of security checks
+    case undefined
+    // Checks for home network before connecting to non-https URLs
+    case mostSecure
+    // Allows non-https URLs always
+    case lessSecure
 
+    public var description: String {
+        switch self {
+        case .undefined:
+            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.Undefined.title
+        case .mostSecure:
+            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.MostSecure.title
+        case .lessSecure:
+            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.LessSecure.title
+        }
+    }
+}
+
+public struct ConnectionInfo: Codable, Equatable {
     private var externalURL: URL?
     public private(set) var internalURL: URL?
     private var remoteUIURL: URL?
@@ -18,7 +33,7 @@ public struct ConnectionInfo: Codable, Equatable {
     public var webhookSecret: String?
     public var useCloud: Bool = false
     public var cloudhookURL: URL?
-    public var alwaysFallbackToInternalURL: Bool = false
+    public var localAccessSecurityLevel: LocalAccessSecurityLevel = .undefined
     public var internalSSIDs: [String]? {
         didSet {
             overrideActiveURLType = nil
@@ -33,6 +48,10 @@ public struct ConnectionInfo: Codable, Equatable {
 
     public var canUseCloud: Bool {
         remoteUIURL != nil
+    }
+
+    public var hasRemoteConnectionSetup: Bool {
+        externalURL != nil || remoteUIURL != nil
     }
 
     public var overrideActiveURLType: URLType?
@@ -62,7 +81,7 @@ public struct ConnectionInfo: Codable, Equatable {
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
         securityExceptions: SecurityExceptions,
-        alwaysFallbackToInternalURL: Bool
+        localAccessSecurityLevel: LocalAccessSecurityLevel
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -74,7 +93,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
         self.securityExceptions = securityExceptions
-        self.alwaysFallbackToInternalURL = alwaysFallbackToInternalURL
+        self.localAccessSecurityLevel = localAccessSecurityLevel
     }
 
     public init(from decoder: Decoder) throws {
@@ -89,10 +108,10 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalHardwareAddresses =
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
-        self.alwaysFallbackToInternalURL = try container.decodeIfPresent(
-            Bool.self,
-            forKey: .alwaysFallbackToInternalURL
-        ) ?? false
+        self.localAccessSecurityLevel = try container.decodeIfPresent(
+            LocalAccessSecurityLevel.self,
+            forKey: .localAccessSecurityLevel
+        ) ?? .undefined
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
         self.securityExceptions = try container.decodeIfPresent(
             SecurityExceptions.self,
@@ -193,31 +212,26 @@ public struct ConnectionInfo: Codable, Equatable {
         let url: URL?
 
         if let internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
+            // Home network, local connection
             activeURLType = .internal
             url = internalURL
         } else if let remoteUIURL, useCloud {
+            // Home Assistant Cloud connection
             activeURLType = .remoteUI
             url = remoteUIURL
         } else if let externalURL {
+            // Custom remote connection
             activeURLType = .external
             url = externalURL
-        } else if let internalURL, alwaysFallbackToInternalURL {
+        } else if let internalURL, [.lessSecure, .undefined].contains(localAccessSecurityLevel) {
+            // Falback to internal URL if no other URL is set
+            // In case user opted to not check for home network or haven't made a decision yet
+            // we allow usage of internal URL as fallback
             activeURLType = .internal
             url = internalURL
         } else {
-            // TODO: Remove when location permission enforcement is in place
-            if ConnectionInfo.shouldFallbackToInternalURL {
-                activeURLType = .internal
-                url = internalURL
-            } else {
-                activeURLType = .none
-                url = nil
-                /*
-                 No URL that can be used in this context is available
-                 This can happen when only internal URL is set and
-                 user tries to access the App remotely
-                 */
-            }
+            url = nil
+            activeURLType = .none
         }
 
         return url?.sanitized()

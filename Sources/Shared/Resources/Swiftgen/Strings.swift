@@ -1794,6 +1794,53 @@ public enum L10n {
       /// Home Assistant Invite
       public static var title: String { return L10n.tr("Localizable", "onboarding.invitation.title") }
     }
+    public enum LocalAccess {
+      /// If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.
+      public static var description: String { return L10n.tr("Localizable", "onboarding.local_access.description") }
+      /// Next
+      public static var nextButton: String { return L10n.tr("Localizable", "onboarding.local_access.next_button") }
+      /// This data will never be shared with the Home Assistant project or third parties.
+      public static var privacyDisclaimer: String { return L10n.tr("Localizable", "onboarding.local_access.privacy_disclaimer") }
+      /// Let us help secure your remote connection
+      public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.title") }
+      public enum LessSecureOption {
+        /// Less secure: Do not allow this app to know when you're home
+        public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.less_secure_option.title") }
+      }
+      public enum SecureOption {
+        /// Most secure: Allow this app to know when you're home
+        public static var title: String { return L10n.tr("Localizable", "onboarding.local_access.secure_option.title") }
+      }
+    }
+    public enum LocalOnlyDisclaimer {
+      /// Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.
+      public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.primary_description") }
+      /// For now, you're securely connected to your local network.
+      public static var secondaryDescription: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.secondary_description") }
+      /// Local by default.
+      /// Remote when you're ready.
+      public static var title: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.title") }
+      public enum PrimaryButton {
+        /// Got it
+        public static var title: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.primary_button.title") }
+      }
+    }
+    public enum LocationAccess {
+      /// Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.
+      public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.location_access.primary_description") }
+      /// This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.
+      public static var secondaryDescription: String { return L10n.tr("Localizable", "onboarding.location_access.secondary_description") }
+      /// Use this device's location for automations
+      public static var title: String { return L10n.tr("Localizable", "onboarding.location_access.title") }
+      public enum PrimaryAction {
+        /// Share my location
+        public static var title: String { return L10n.tr("Localizable", "onboarding.location_access.primary_action.title") }
+      }
+      public enum SecondaryAction {
+        /// Do not share my location
+        public static var title: String { return L10n.tr("Localizable", "onboarding.location_access.secondary_action.title") }
+      }
+    }
     public enum ManualSetup {
       /// Connect
       public static var connect: String { return L10n.tr("Localizable", "onboarding.manual_setup.connect") }
@@ -1830,6 +1877,64 @@ public enum L10n {
         public static var placeholder: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.placeholder") }
         /// Your Home Assistant URL
         public static var title: String { return L10n.tr("Localizable", "onboarding.manual_setup.text_field.title") }
+      }
+    }
+    public enum ManualUrlEntry {
+      /// What is your Home Assistant address?
+      public static var title: String { return L10n.tr("Localizable", "onboarding.manual_url_entry.title") }
+      public enum PrimaryAction {
+        /// Connect
+        public static var title: String { return L10n.tr("Localizable", "onboarding.manual_url_entry.primary_action.title") }
+      }
+    }
+    public enum NetworkInput {
+      /// Indicate when you're connected to your home network. This can be used to, for example, use the internal connection URL or disable the app lock when at home.
+      public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.network_input.primary_description") }
+      /// Define your home network
+      public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.title") }
+      public enum Disclaimer {
+        /// Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.
+        public static var body: String { return L10n.tr("Localizable", "onboarding.network_input.disclaimer.body") }
+        /// Make sure to set up your home network correctly.
+        public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.disclaimer.title") }
+      }
+      public enum InputField {
+        /// Network name
+        public static var placeholder: String { return L10n.tr("Localizable", "onboarding.network_input.input_field.placeholder") }
+        /// Wi-Fi network connected
+        public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.input_field.title") }
+      }
+      public enum NoNetwork {
+        public enum Alert {
+          /// Please enter a network name to continue.
+          public static var body: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.alert.body") }
+          /// Network name required
+          public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.alert.title") }
+        }
+        public enum Skip {
+          public enum Alert {
+            /// You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.
+            public static var body: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.body") }
+            /// Are you sure?
+            public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.title") }
+            public enum PrimaryButton {
+              /// Cancel
+              public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.primary_button.title") }
+            }
+            public enum SecondaryButton {
+              /// Skip
+              public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.no_network.skip.alert.secondary_button.title") }
+            }
+          }
+        }
+      }
+      public enum PrimaryButton {
+        /// Next
+        public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.primary_button.title") }
+      }
+      public enum SecondaryButton {
+        /// Skip
+        public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.secondary_button.title") }
       }
     }
     public enum Permission {
@@ -1966,11 +2071,13 @@ public enum L10n {
       public enum Search {
         /// Looking for servers nearby...
         public static var message: String { return L10n.tr("Localizable", "onboarding.servers.search.message") }
+        public enum Loader {
+          /// Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.
+          public static var text: String { return L10n.tr("Localizable", "onboarding.servers.search.loader.text") }
+        }
       }
     }
     public enum Welcome {
-      /// Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.
-      public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.body") }
       /// Connect to my Home Assistant
       public static var continueButton: String { return L10n.tr("Localizable", "onboarding.welcome.continue_button") }
       /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
@@ -1985,8 +2092,6 @@ public enum L10n {
       public static var learnMore: String { return L10n.tr("Localizable", "onboarding.welcome.learn_more") }
       /// Connect to my Home Assistant
       public static var primaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.primary_button") }
-      /// Getting started
-      public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.secondary_button") }
       /// Welcome to Home Assistant %@!
       public static func title(_ p1: Any) -> String {
         return L10n.tr("Localizable", "onboarding.welcome.title", String(describing: p1))
@@ -1994,6 +2099,14 @@ public enum L10n {
       public enum Logo {
         /// Home Assistant logo
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "onboarding.welcome.logo.accessibility_label") }
+      }
+      public enum Updated {
+        /// Access your Home Assistant server on the go. 
+        /// 
+        /// Home Assistant is open source, advocates for privacy and runs locally in your home.
+        public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.updated.body") }
+        /// Learn more
+        public static var secondaryButton: String { return L10n.tr("Localizable", "onboarding.welcome.updated.secondary_button") }
       }
     }
   }
@@ -2159,6 +2272,22 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.header") }
         /// MyFunnyNetworkName
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.placeholder") }
+      }
+      public enum LocalAccessSecurityLevel {
+        /// Local access security
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.title") }
+        public enum LessSecure {
+          /// Less secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.less_secure.title") }
+        }
+        public enum MostSecure {
+          /// Most secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.most_secure.title") }
+        }
+        public enum Undefined {
+          /// Not configured
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.undefined.title") }
+        }
       }
       public enum LocationSendType {
         /// Location Sent
@@ -4133,6 +4262,18 @@ public enum L10n {
       public static var retryButton: String { return L10n.tr("Localizable", "web_view.empty_state.retry_button") }
       /// You're disconnected
       public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.title") }
+    }
+    public enum NoUrlAvailable {
+      /// 🔐  Due to your security choices, there's no URL that we are allowed to use. 
+      /// 
+      ///  ➡️  Please open the App settings and update your security choices or URLs.
+      public static var body: String { return L10n.tr("Localizable", "web_view.no_url_available.body") }
+      /// We can't connect to Home Assistant
+      public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.title") }
+      public enum PrimaryButton {
+        /// Open App settings
+        public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.primary_button.title") }
+      }
     }
     public enum ServerSelection {
       /// Choose server
