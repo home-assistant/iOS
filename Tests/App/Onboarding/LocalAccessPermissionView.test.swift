@@ -19,7 +19,7 @@ struct LocalAccessPermissionViewTests {
         )
         assertLightDarkSnapshots(of: view, named: "no-initial-selection")
     }
-    
+
     @MainActor @Test func testWithMostSecureInitialSelectionSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
@@ -35,7 +35,7 @@ struct LocalAccessPermissionViewTests {
         )
         assertLightDarkSnapshots(of: view, named: "most-secure-initial-selection")
     }
-    
+
     @MainActor @Test func testWithLessSecureInitialSelectionSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")

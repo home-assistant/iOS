@@ -1,8 +1,8 @@
 @testable import HomeAssistant
+import Shared
 import SnapshotTesting
 import SwiftUI
 import Testing
-import Shared
 
 struct HomeNetworkInputViewTests {
     @MainActor @Test func testEmptyNetworkSnapshot() async throws {

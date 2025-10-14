@@ -1,8 +1,8 @@
 @testable import HomeAssistant
+import Shared
 import SnapshotTesting
 import SwiftUI
 import Testing
-import Shared
 
 struct BaseOnboardingViewTests {
     @MainActor @Test func testSimpleSnapshot() async throws {
@@ -29,7 +29,7 @@ struct BaseOnboardingViewTests {
         )
         assertLightDarkSnapshots(of: view, named: "simple")
     }
-    
+
     @MainActor @Test func testWithInjectedContentSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
@@ -69,7 +69,7 @@ struct BaseOnboardingViewTests {
         )
         assertLightDarkSnapshots(of: view, named: "with-injected-content")
     }
-    
+
     @MainActor @Test func testWithoutSecondaryActionSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
@@ -91,7 +91,7 @@ struct BaseOnboardingViewTests {
         )
         assertLightDarkSnapshots(of: view, named: "no-secondary-action")
     }
-    
+
     @MainActor @Test func testWithoutSecondaryDescriptionSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")

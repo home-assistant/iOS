@@ -8,7 +8,7 @@ struct ManualURLEntryView: View {
     @State private var showInvalidURLError = false
 
     let connectAction: (URL) -> Void
-    
+
     init(initialURL: String = "", connectAction: @escaping (URL) -> Void) {
         self._urlString = State(initialValue: initialURL)
         self.connectAction = connectAction

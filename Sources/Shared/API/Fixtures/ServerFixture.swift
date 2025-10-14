@@ -23,9 +23,9 @@ public enum ServerFixture {
         ),
         version: "123"
     )
-    
+
     private static let originalStandardInfo = standardInfo
-    
+
     public static var standard: Server {
         Server(identifier: "123", getter: {
             standardInfo
@@ -34,7 +34,7 @@ public enum ServerFixture {
             return true
         })
     }
-    
+
     /// Reset all fixtures to their original state - call this between tests
     public static func reset() {
         standardInfo = originalStandardInfo
@@ -64,7 +64,7 @@ public enum ServerFixture {
         ),
         version: "2023.12.0"
     )
-    
+
     private static let originalRemoteConnectionInfo = remoteConnectionInfo
 
     /// Server with remote connection setup for testing remote-compatible flows
@@ -99,7 +99,7 @@ public enum ServerFixture {
         ),
         version: "2023.12.0"
     )
-    
+
     private static let originalLessSecureAccessInfo = lessSecureAccessInfo
 
     /// Server with less secure local access configured

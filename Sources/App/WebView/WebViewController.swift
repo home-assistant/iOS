@@ -309,9 +309,15 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
         } else if server.info.connection.localAccessSecurityLevel == .undefined {
             Current.Log.verbose("User has not decided local access security level yet")
-            showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocalAccessSecurityLevelPreference)
+            showOnboardingPermissions(
+                steps: OnboardingPermissionsNavigationViewModel.StepID
+                    .updateLocalAccessSecurityLevelPreference
+            )
         } else {
-            Current.Log.verbose("User decided \(server.info.connection.localAccessSecurityLevel) for local access security level")
+            Current.Log
+                .verbose(
+                    "User decided \(server.info.connection.localAccessSecurityLevel) for local access security level"
+                )
         }
     }
 
@@ -1345,5 +1351,4 @@ extension WebViewController: WebViewControllerProtocol {
             }
         }
     }
-
 }

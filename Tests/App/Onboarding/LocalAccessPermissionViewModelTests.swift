@@ -1,13 +1,11 @@
-import Testing
-import Testing
-import Foundation
 import Combine
-import Shared
+import Foundation
 @testable import HomeAssistant
+import Shared
+import Testing
 
 @Suite("LocalAccessPermissionViewModel Tests")
 struct LocalAccessPermissionViewModelTests {
-
     // MARK: - Initialization Tests
 
     @Test("Initialization with default selection")

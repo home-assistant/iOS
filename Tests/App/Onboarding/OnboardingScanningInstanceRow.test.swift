@@ -1,19 +1,18 @@
 @testable import HomeAssistant
+import Shared
 import SnapshotTesting
 import SwiftUI
 import Testing
-import Shared
 
 struct OnboardingScanningInstanceRowTests {
-    
     // MARK: - Basic State Tests
-    
+
     @MainActor @Test func testBasicInstanceRowSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Home Assistant",
@@ -24,16 +23,16 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "basic-instance-row")
     }
-    
+
     @MainActor @Test func testLoadingStateSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Home Assistant",
@@ -44,18 +43,18 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "loading-state")
     }
-    
+
     // MARK: - URL Configuration Tests
-    
+
     @MainActor @Test func testInternalURLOnlySnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Local Home Assistant",
@@ -66,16 +65,16 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "internal-url-only")
     }
-    
+
     @MainActor @Test func testNoInternalURLSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Remote Home Assistant",
@@ -86,16 +85,16 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "no-internal-url")
     }
-    
+
     @MainActor @Test func testBothURLsSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Full Setup Home Assistant",
@@ -106,18 +105,18 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "both-urls")
     }
-    
+
     // MARK: - Text Content Variations
-    
+
     @MainActor @Test func testLongNameSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "My Very Long Home Assistant Instance Name That Should Wrap",
@@ -128,16 +127,16 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "long-name")
     }
-    
+
     @MainActor @Test func testLongURLsSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Home Assistant",
@@ -149,16 +148,16 @@ struct OnboardingScanningInstanceRowTests {
             .padding()
             .frame(maxWidth: 320) // Constrain width to test truncation
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "long-urls")
     }
-    
+
     @MainActor @Test func testShortNameSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "HA",
@@ -169,18 +168,18 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "short-name")
     }
-    
+
     // MARK: - Loading State Variations
-    
+
     @MainActor @Test func testLoadingWithLongContentSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Long Named Home Assistant Instance",
@@ -191,16 +190,16 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "loading-with-long-content")
     }
-    
+
     @MainActor @Test func testLoadingWithMinimalContentSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "HA",
@@ -211,18 +210,18 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "loading-minimal-content")
     }
-    
+
     // MARK: - Edge Cases
-    
+
     @MainActor @Test func testIPAddressURLsSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "IP-based Home Assistant",
@@ -233,16 +232,16 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "ip-address-urls")
     }
-    
+
     @MainActor @Test func testHTTPVsHTTPSSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Mixed Protocol Instance",
@@ -253,18 +252,18 @@ struct OnboardingScanningInstanceRowTests {
             )
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "http-vs-https")
     }
-    
+
     // MARK: - List Context Tests
-    
+
     @MainActor @Test func testMultipleInstancesInListSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             VStack(spacing: DesignSystem.Spaces.two) {
                 OnboardingScanningInstanceRow(
@@ -274,7 +273,7 @@ struct OnboardingScanningInstanceRowTests {
                     internalOrExternalURLString: "https://homeassistant.local:8123",
                     isLoading: false
                 )
-                
+
                 OnboardingScanningInstanceRow(
                     name: "Backup Instance",
                     internalURLString: "http://192.168.1.101:8123",
@@ -282,7 +281,7 @@ struct OnboardingScanningInstanceRowTests {
                     internalOrExternalURLString: "http://192.168.1.101:8123",
                     isLoading: true
                 )
-                
+
                 OnboardingScanningInstanceRow(
                     name: "Remote Only",
                     internalURLString: nil,
@@ -293,7 +292,7 @@ struct OnboardingScanningInstanceRowTests {
             }
             .padding()
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "multiple-instances-list")
     }
 }
@@ -301,13 +300,12 @@ struct OnboardingScanningInstanceRowTests {
 // MARK: - Integration Tests
 
 extension OnboardingScanningInstanceRowTests {
-    
     @MainActor @Test func testAccessibilitySnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Accessible Home Assistant",
@@ -319,16 +317,16 @@ extension OnboardingScanningInstanceRowTests {
             .padding()
             .environment(\.sizeCategory, .accessibilityExtraLarge)
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "accessibility-large-text")
     }
-    
+
     @MainActor @Test func testConstrainedWidthSnapshot() async throws {
         guard #available(iOS 18.0, *) else {
             assertionFailure("Snapshot tests should only run on iOS 18.0 and later")
             return
         }
-        
+
         let view = AnyView(
             OnboardingScanningInstanceRow(
                 name: "Constrained Width Test",
@@ -340,7 +338,7 @@ extension OnboardingScanningInstanceRowTests {
             .padding()
             .frame(width: 280) // Very constrained width
         )
-        
+
         assertLightDarkSnapshots(of: view, named: "constrained-width")
     }
 }

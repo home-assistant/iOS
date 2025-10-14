@@ -30,12 +30,12 @@ struct DeviceNameViewTests {
         } cancelAction: {
             // Cancel action for testing
         }
-        
+
         #if DEBUG
         // Use the debug method to set a prefilled name for testing
         view.setDeviceName("iPhone")
         #endif
-        
+
         let testView = AnyView(
             view.toolbarVisibility(.hidden, for: .navigationBar)
         )

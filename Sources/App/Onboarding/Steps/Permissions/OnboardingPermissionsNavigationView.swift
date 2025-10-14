@@ -15,7 +15,10 @@ struct OnboardingPermissionsNavigationView: View {
     init(onboardingServer: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID]? = nil) {
         self
             ._viewModel =
-            .init(wrappedValue: OnboardingPermissionsNavigationViewModel(onboardingServer: onboardingServer, steps: steps))
+            .init(wrappedValue: OnboardingPermissionsNavigationViewModel(
+                onboardingServer: onboardingServer,
+                steps: steps
+            ))
         self.onboardingServer = onboardingServer
     }
 
@@ -109,12 +112,12 @@ struct OnboardingPermissionsNavigationView: View {
     private var checkmarkSuccessView: some View {
         // View that display success animation and dismisses the flow shortly after
         CheckmarkDrawOnView()
-        .onAppear {
-            // Dismiss after a short delay to allow the user to see the success state
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                dismiss()
+            .onAppear {
+                // Dismiss after a short delay to allow the user to see the success state
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    dismiss()
+                }
             }
-        }
     }
 
     private func navigateToCompletionScreen() {

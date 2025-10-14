@@ -67,7 +67,7 @@ public class StorageSensor: SensorProvider {
             $0.formattingContext = .standalone
             $0.zeroPadsFractionDigits = true
         }
-        
+
         // Custom formatter for consistent locale-independent formatting
         private let numberFormatter = with(NumberFormatter()) {
             $0.numberStyle = .decimal
@@ -104,7 +104,7 @@ public class StorageSensor: SensorProvider {
         func byteString(for keyPath: KeyPath<Self, Int64>) -> String {
             let bytes = self[keyPath: keyPath]
             let gb = Double(bytes) / 1_000_000_000.0 // Using decimal GB (1000^3)
-            
+
             // Use custom number formatter for consistent locale-independent formatting
             let formattedNumber = numberFormatter.string(from: NSNumber(value: gb)) ?? String(format: "%.2f", gb)
             return "\(formattedNumber) GB"

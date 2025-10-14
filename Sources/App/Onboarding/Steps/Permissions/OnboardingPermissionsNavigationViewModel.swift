@@ -26,9 +26,18 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         /// Flow when user already has remote connection setup, skipping local access disclaimer
         static var remoteConnectionCompatible: [StepID] = [.location, .localAccess, .homeNetwork, .completion]
         /// Flow for updating local access security level preference
-        static var updateLocalAccessSecurityLevelPreference: [StepID] = [.localAccess, .homeNetwork, .updatePreferencesSuccess]
+        static var updateLocalAccessSecurityLevelPreference: [StepID] = [
+            .localAccess,
+            .homeNetwork,
+            .updatePreferencesSuccess,
+        ]
         /// Flow for updating location permission preference
-        static var updateLocationPermission: [StepID] = [.location, .localAccess, .homeNetwork, .updatePreferencesSuccess]
+        static var updateLocationPermission: [StepID] = [
+            .location,
+            .localAccess,
+            .homeNetwork,
+            .updatePreferencesSuccess,
+        ]
     }
 
     /// Tracks the context in which location permission is being requested
