@@ -3,11 +3,16 @@ import SwiftUI
 
 struct ManualURLEntryView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var urlString = ""
+    @State private var urlString: String
     @FocusState private var focused: Bool?
     @State private var showInvalidURLError = false
 
     let connectAction: (URL) -> Void
+    
+    init(initialURL: String = "", connectAction: @escaping (URL) -> Void) {
+        self._urlString = State(initialValue: initialURL)
+        self.connectAction = connectAction
+    }
 
     // Centralized schemes to avoid hardcoded duplication
     private enum URLScheme: String, CaseIterable {

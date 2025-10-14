@@ -839,6 +839,8 @@
 		42ACC28C2E9E76170045A3FD /* LocationPermissionView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC28A2E9E75F70045A3FD /* LocationPermissionView.test.swift */; };
 		42ACC28F2E9E769A0045A3FD /* LocalAccessPermissionView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC28D2E9E767B0045A3FD /* LocalAccessPermissionView.test.swift */; };
 		42ACC2922E9E77210045A3FD /* HomeNetworkInputView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2902E9E76FA0045A3FD /* HomeNetworkInputView.test.swift */; };
+		42ACC2952E9E78500045A3FD /* ManualURLEntryView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2932E9E78170045A3FD /* ManualURLEntryView.test.swift */; };
+		42ACC2992E9E789D0045A3FD /* DeviceNameView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ACC2982E9E789D0045A3FD /* DeviceNameView.test.swift */; };
 		42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */; };
 		42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */; };
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
@@ -2508,6 +2510,8 @@
 		42ACC28A2E9E75F70045A3FD /* LocationPermissionView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.test.swift; sourceTree = "<group>"; };
 		42ACC28D2E9E767B0045A3FD /* LocalAccessPermissionView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionView.test.swift; sourceTree = "<group>"; };
 		42ACC2902E9E76FA0045A3FD /* HomeNetworkInputView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkInputView.test.swift; sourceTree = "<group>"; };
+		42ACC2932E9E78170045A3FD /* ManualURLEntryView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualURLEntryView.test.swift; sourceTree = "<group>"; };
+		42ACC2982E9E789D0045A3FD /* DeviceNameView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceNameView.test.swift; sourceTree = "<group>"; };
 		42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorableStateKey.swift; sourceTree = "<group>"; };
 		42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSettingsUpdateReason.swift; sourceTree = "<group>"; };
 		42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerProtocol.swift; sourceTree = "<group>"; };
@@ -4322,6 +4326,8 @@
 			isa = PBXGroup;
 			children = (
 				42ACC2842E9E74940045A3FD /* BaseOnboardingView.test.swift */,
+				42ACC2932E9E78170045A3FD /* ManualURLEntryView.test.swift */,
+				42ACC2982E9E789D0045A3FD /* DeviceNameView.test.swift */,
 				42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */,
 				428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */,
 				42ACC2872E9E753A0045A3FD /* LocalAccessOnlyDisclaimerView.test.swift */,
@@ -8633,6 +8639,7 @@
 				42FCD0032B9B1CB70057783F /* ThreadCredentialsSharingViewModel.test.swift in Sources */,
 				42ACC28C2E9E76170045A3FD /* LocationPermissionView.test.swift in Sources */,
 				42FCD0042B9B1CB70057783F /* ThreadCredentialsSharing.test.swift in Sources */,
+				42ACC2952E9E78500045A3FD /* ManualURLEntryView.test.swift in Sources */,
 				42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */,
 				428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */,
 				42A42A6C2DC37F09000ABBAF /* AboutView.test.swift in Sources */,
@@ -8646,6 +8653,7 @@
 				42196AD22DA5AF3D00BD501E /* MockBonjour.swift in Sources */,
 				11EFD3C027261AA4000AF78B /* OnboardingAuthStepDeviceNaming.test.swift in Sources */,
 				42A818E52BBEAA3A0083D045 /* MockAudioPlayer.swift in Sources */,
+				42ACC2992E9E789D0045A3FD /* DeviceNameView.test.swift in Sources */,
 				42F8D8682DC3B0500022DE43 /* GesturesSetupView.test.swift in Sources */,
 				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
 				11ED439827265B9C00B5FD45 /* OnboardingAuthStepNotify.test.swift in Sources */,
