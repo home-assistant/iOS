@@ -1815,8 +1815,6 @@ public enum L10n {
     public enum LocalOnlyDisclaimer {
       /// Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.
       public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.primary_description") }
-      /// For now, you're securely connected to your local network.
-      public static var secondaryDescription: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.secondary_description") }
       /// Local by default.
       /// Remote when you're ready.
       public static var title: String { return L10n.tr("Localizable", "onboarding.local_only_disclaimer.title") }
