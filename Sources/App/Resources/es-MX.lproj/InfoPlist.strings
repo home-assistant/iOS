@@ -4,11 +4,9 @@
 "NSFocusStatusUsageDescription" = "Report your focus status as a sensor.";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  We also need permission to access location 'Always' so the App can perform background operations. \n\n ⚠️  Without that, the App is unable to decide which connection (local or remote) to use in background and will use remote always.";
-
-"NSLocationWhenInUseUsageDescription" = "This app needs location access to connect directly to your Home Assistant installation. \n \n 1️⃣ Your location will only be used to check if you are connected to your local network. \n \n 2️⃣ It will not be shared with anyone. \n \n 3️⃣ If you do not allow this, the app will always connect over the internet instead. If not configured, it will protect your data and refuse the connection.";
-
+"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationUsageDescription" = "When enabled, your device location is sent to your Home Assistant server as a device tracker.";
+"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSMicrophoneUsageDescription" = "Record audio using your Home Assistant frontend.";
 "NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
 "NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";

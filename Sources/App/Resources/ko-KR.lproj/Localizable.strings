@@ -470,6 +470,22 @@
 "onboarding.invitation.accept_button" = "Accept";
 "onboarding.invitation.other_options" = "기타 옵션";
 "onboarding.invitation.title" = "Home Assistant Invite";
+"onboarding.local_access.description" = "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.";
+"onboarding.local_access.less_secure_option.title" = "Less secure: Do not allow this app to know when you're home";
+"onboarding.local_access.next_button" = "Next";
+"onboarding.local_access.privacy_disclaimer" = "This data will never be shared with the Home Assistant project or third parties.";
+"onboarding.local_access.secure_option.title" = "Most secure: Allow this app to know when you're home";
+"onboarding.local_access.title" = "Let us help secure your remote connection";
+"onboarding.local_only_disclaimer.primary_button.title" = "Got it";
+"onboarding.local_only_disclaimer.primary_description" = "Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.";
+"onboarding.local_only_disclaimer.secondary_description" = "For now, you're securely connected to your local network.";
+"onboarding.local_only_disclaimer.title" = "Local by default.\
+Remote when you're ready.";
+"onboarding.location_access.primary_action.title" = "Share my location";
+"onboarding.location_access.primary_description" = "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.";
+"onboarding.location_access.secondary_action.title" = "Do not share my location";
+"onboarding.location_access.secondary_description" = "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.";
+"onboarding.location_access.title" = "Use this device's location for automations";
 "onboarding.manual_setup.connect" = "연결";
 "onboarding.manual_setup.couldnt_make_url.message" = "'%@'은 유효한 URL이 아닙니다.";
 "onboarding.manual_setup.couldnt_make_url.title" = "URL을 생성할 수 없습니다.";
@@ -482,6 +498,22 @@
 "onboarding.manual_setup.text_field.placeholder" = "예: http://homeassistant.local:8123";
 "onboarding.manual_setup.text_field.title" = "귀하의 Home Assistant URL";
 "onboarding.manual_setup.title" = "URL 입력하기";
+"onboarding.manual_url_entry.primary_action.title" = "Connect";
+"onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
+"onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
+"onboarding.network_input.disclaimer.title" = "Make sure to set up your home network correctly.";
+"onboarding.network_input.input_field.placeholder" = "Network name";
+"onboarding.network_input.input_field.title" = "Wi-Fi network connected";
+"onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
+"onboarding.network_input.no_network.alert.title" = "Network name required";
+"onboarding.network_input.no_network.skip.alert.body" = "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.";
+"onboarding.network_input.no_network.skip.alert.primary_button.title" = "Cancel";
+"onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Skip";
+"onboarding.network_input.no_network.skip.alert.title" = "Are you sure?";
+"onboarding.network_input.primary_button.title" = "Next";
+"onboarding.network_input.primary_description" = "Indicate when you're connected to your home network. This can be used to, for example, use the internal connection URL or disable the app lock when at home.";
+"onboarding.network_input.secondary_button.title" = "Skip";
+"onboarding.network_input.title" = "Define your home network";
 "onboarding.permission.location.buttons.allow_and_share" = "Home Assistant와 허용 및 공유";
 "onboarding.permission.location.buttons.allow_for_app" = "앱 사용만 허용";
 "onboarding.permission.location.buttons.deny" = "거부";
@@ -525,6 +557,7 @@
 "onboarding.scanning.title" = "서버를 찾는 중";
 "onboarding.servers.auto_connect.button" = "Connect";
 "onboarding.servers.docs.read" = "문서 읽기";
+"onboarding.servers.search.loader.text" = "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.";
 "onboarding.servers.search.message" = "근처의 서버를 찾고 있습니다...";
 "onboarding.servers.title" = "Searching on home network";
 "onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
@@ -539,6 +572,10 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "onboarding.welcome.primary_button" = "Connect to my Home Assistant";
 "onboarding.welcome.secondary_button" = "시작하기";
 "onboarding.welcome.title" = "Home Assistant %@에 오신것을 환영합니다!";
+"onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
+\
+Home Assistant is open source, advocates for privacy and runs locally in your home.";
+"onboarding.welcome.updated.secondary_button" = "Learn more";
 "open_label" = "열기";
 "permission.notification.body" = "Enable notifications and get what's happening in your home, from detecting leaks to doors left open, you have full control over what it tells you.";
 "permission.notification.primary_button" = "Allow notifications";
@@ -592,6 +629,10 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.invite_to_server" = "Invite someone to this server";
+"settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.local_access_security_level.title" = "Local access security";
+"settings.connection_section.local_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.local_push_description" = "내부 SSID에 있을 때 푸시 알림을 위해 Home Assistant 서버에 직접 연결합니다.";
 "settings.connection_section.location_send_type.setting.exact" = "정확한";
 "settings.connection_section.location_send_type.setting.never" = "절대 안됨";
@@ -1180,6 +1221,11 @@ Home Assistant는 로컬 제어 및 개인 정보 보호에 중점을 둔 무료
 "web_view.empty_state.open_settings_button" = "앱 설정 열기";
 "web_view.empty_state.retry_button" = "재시도";
 "web_view.empty_state.title" = "연결이 끊어졌습니다";
+"web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \
+\
+ ➡️  Please open the App settings and update your security choices or URLs.";
+"web_view.no_url_available.primary_button.title" = "Open App settings";
+"web_view.no_url_available.title" = "We can't connect to Home Assistant";
 "web_view.server_selection.title" = "서버 선택";
 "web_view.unique_server_selection.title" = "하나의 서버를 선택하세요";
 "widgets.action.name.assist" = "Assist";
