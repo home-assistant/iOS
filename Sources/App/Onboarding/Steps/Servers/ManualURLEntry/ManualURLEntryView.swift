@@ -85,15 +85,18 @@ struct ManualURLEntryView: View {
                     .foregroundColor(.secondary)
                     .padding(.top, DesignSystem.Spaces.two)
                     .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 ForEach(URLScheme.allCases, id: \.rawValue) { scheme in
                     Button(action: {
                         urlString = scheme.rawValue + urlString
                     }, label: {
                         Text(verbatim: scheme.rawValue + urlString)
                     })
+                    .frame(alignment: .leading)
                 }
             }
             .buttonStyle(.outlinedButton)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 }
