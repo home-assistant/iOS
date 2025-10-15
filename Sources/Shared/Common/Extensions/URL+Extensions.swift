@@ -100,7 +100,8 @@ public extension URL {
         // Check for private IPv6 ranges
         if let ipv6 = IPv6Address(host) {
             let data = ipv6.rawValue
-            if data.count >= 2, data[0] == 0xFE, data[1] == 0x80 { // fe80::/10 link-local
+            // fe80::/10 link-local: first byte 0xFE, top two bits of second byte are 10
+            if data.count >= 2, data[0] == 0xFE, (data[1] & 0xC0) == 0x80 {
                 return true
             }
         }
