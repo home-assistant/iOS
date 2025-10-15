@@ -61,11 +61,11 @@ struct WidgetBuilderView: View {
                     ))
                     Text("BETA")
                         .font(.caption)
-                        .padding(.horizontal, Spaces.one)
-                        .padding(.vertical, Spaces.half)
+                        .padding(.horizontal, DesignSystem.Spaces.one)
+                        .padding(.vertical, DesignSystem.Spaces.half)
                         .background(.regularMaterial)
                         .clipShape(Capsule())
-                        .offset(x: Spaces.oneAndHalf, y: 0)
+                        .offset(x: DesignSystem.Spaces.oneAndHalf, y: 0)
                 }
             ),
             title: L10n.Widgets.Custom.title,

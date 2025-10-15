@@ -38,6 +38,11 @@ final class MagicItemProvider: MagicItemProviderProtocol {
                 continuation.resume()
             }
         }
+        await withCheckedContinuation { continuation in
+            migrateWidgetsConfig {
+                continuation.resume()
+            }
+        }
         return entitiesPerServer
     }
 
@@ -74,6 +79,26 @@ final class MagicItemProvider: MagicItemProviderProtocol {
             Current.Log.error("Failed to save migration Watch config, error: \(error.localizedDescription)")
         }
 
+        completion()
+    }
+
+    func migrateWidgetsConfig(completion: @escaping () -> Void) {
+        guard let customWidgets = try? Current.customWidgets() else {
+            completion()
+            return
+        }
+        for customWidget in customWidgets {
+            var customWidget = customWidget
+            customWidget.items = migrateItemsIfNeeded(items: customWidget.items)
+
+            do {
+                try Current.database().write { db in
+                    try customWidget.update(db)
+                }
+            } catch {
+                Current.Log.error("Failed to save migration custom widgets, error: \(error.localizedDescription)")
+            }
+        }
         completion()
     }
 

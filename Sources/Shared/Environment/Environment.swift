@@ -110,6 +110,10 @@ public class AppEnvironment {
         try WatchConfig.config()
     }
 
+    public var customWidgets: () throws -> [CustomWidget] = {
+        try CustomWidget.widgets() ?? []
+    }
+
     public var carPlayConfig: () throws -> CarPlayConfig? = {
         try CarPlayConfig.config()
     }
