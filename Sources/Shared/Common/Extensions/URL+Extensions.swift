@@ -1,4 +1,5 @@
 import Foundation
+import Network
 
 public extension URL {
     /// Return true if receiver's host and scheme is equal to `otherURL`
@@ -58,4 +59,55 @@ public extension URL {
 
         return futureComponents.url ?? url
     }
+
+    /// Best effort to return true if the URL points to a local resource (file or local network)
+    var isLocal: Bool {
+        guard let host = host?.lowercased() else {
+            // No host → likely a file:// or relative URL
+            return scheme == "file"
+        }
+
+        // Common local hostnames
+        if ["localhost", "127.0.0.1", "::1"].contains(host) {
+            return true
+        }
+
+        // Local TLDs
+        let localTLDs = [".local", ".lan", ".home", ".internal", ".localdomain"]
+        if localTLDs.contains(where: { host.hasSuffix($0) }) {
+            return true
+        }
+
+        // Check for private IPv4 ranges
+        if let ip = IPv4Address(host) {
+            let data = ip.rawValue
+            guard data.count == 4 else { return false }
+
+            let octets = (data[0], data[1], data[2], data[3])
+
+            switch octets {
+            case (10, _, _, _),
+                 (192, 168, _, _),
+                 (169, 254, _, _):
+                return true
+            case let (172, b, _, _) where (16 ... 31).contains(b):
+                return true
+            default:
+                break
+            }
+        }
+
+        // Check for private IPv6 ranges
+        if let ipv6 = IPv6Address(host) {
+            let data = ipv6.rawValue
+            if data.count >= 2, data[0] == 0xFE, data[1] == 0x80 { // fe80::/10 link-local
+                return true
+            }
+        }
+
+        return false
+    }
+
+    /// Best effort to return true if the URL uses a public, remote FQDN or IP
+    var isRemote: Bool { !isLocal }
 }
