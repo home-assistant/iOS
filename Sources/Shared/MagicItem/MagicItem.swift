@@ -15,7 +15,7 @@ public struct MagicItem: Codable, Equatable, Hashable {
 
     /// Id match it's type Id, e.g. "script.open_gate"
     public let id: String
-    public let serverId: String
+    public var serverId: String
     public let type: ItemType
     public var customization: Customization?
     public var action: ItemAction?
