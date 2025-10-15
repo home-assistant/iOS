@@ -58,6 +58,9 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// The context in which location permission is being requested
     @Published var locationPermissionContext: LocationPermissionContext = .notRequested
 
+    /// SSID Stored into server settings
+    @Published var storedSSIDSuccessfully: Bool = false
+
     // MARK: - Private Properties
 
     /// Tracks the previous step index for determining animation direction
@@ -139,8 +142,12 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// - Parameter ssid: The network SSID to save for trusted local connections
     /// - Note: This is used in the homeNetwork step to configure secure local access
     func saveNetworkSSID(_ ssid: String) {
-        onboardingServer.update { info in
+        onboardingServer.update { [weak self] info in
             info.connection.internalSSIDs = [ssid]
+
+            DispatchQueue.main.async {
+                self?.storedSSIDSuccessfully = true
+            }
         }
     }
 

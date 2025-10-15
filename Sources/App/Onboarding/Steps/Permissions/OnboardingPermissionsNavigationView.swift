@@ -92,10 +92,14 @@ struct OnboardingPermissionsNavigationView: View {
             if let networkSSID {
                 viewModel.saveNetworkSSID(networkSSID)
             }
-            navigateToCompletionScreen()
         }, onSkip: {
             navigateToCompletionScreen()
         })
+        .onChange(of: viewModel.storedSSIDSuccessfully) { newValue in
+            if newValue {
+                navigateToCompletionScreen()
+            }
+        }
     }
 
     private var completionView: some View {
