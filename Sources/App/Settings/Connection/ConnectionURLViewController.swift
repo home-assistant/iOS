@@ -226,17 +226,7 @@ final class ConnectionURLViewController: HAFormViewController, TypedRowControlle
             }
             <<< InfoLabelRow {
                 $0.tag = RowTag.internalURLWarning.rawValue
-                if server.info.connection.internalSSIDs?.isEmpty ?? true,
-                   server.info.connection.internalHardwareAddresses?.isEmpty ?? true {
-                    #if targetEnvironment(macCatalyst)
-                    $0.title = "‼️" + L10n.Settings.ConnectionSection.InternalBaseUrl.SsidBssidRequired.title
-                    #else
-                    $0.title = "‼️" + L10n.Settings.ConnectionSection.InternalBaseUrl.SsidRequired.title
-
-                    #endif
-                } else {
-                    $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.SsidRequired.title
-                }
+                $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.SsidRequired.title
             }
 
         if urlType.isAffectedBySSID {
