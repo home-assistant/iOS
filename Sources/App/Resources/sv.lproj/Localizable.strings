@@ -470,6 +470,22 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.invitation.accept_button" = "Acceptera";
 "onboarding.invitation.other_options" = "Andra alternativ";
 "onboarding.invitation.title" = "Home Assistant-inbjudan";
+"onboarding.local_access.description" = "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.";
+"onboarding.local_access.less_secure_option.title" = "Less secure: Do not allow this app to know when you're home";
+"onboarding.local_access.next_button" = "Next";
+"onboarding.local_access.privacy_disclaimer" = "This data will never be shared with the Home Assistant project or third parties.";
+"onboarding.local_access.secure_option.title" = "Most secure: Allow this app to know when you're home";
+"onboarding.local_access.title" = "Let us help secure your remote connection";
+"onboarding.local_only_disclaimer.primary_button.title" = "Got it";
+"onboarding.local_only_disclaimer.primary_description" = "Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.";
+"onboarding.local_only_disclaimer.secondary_description" = "For now, you're securely connected to your local network.";
+"onboarding.local_only_disclaimer.title" = "Local by default.\
+Remote when you're ready.";
+"onboarding.location_access.primary_action.title" = "Share my location";
+"onboarding.location_access.primary_description" = "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.";
+"onboarding.location_access.secondary_action.title" = "Do not share my location";
+"onboarding.location_access.secondary_description" = "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.";
+"onboarding.location_access.title" = "Use this device's location for automations";
 "onboarding.manual_setup.connect" = "Anslut";
 "onboarding.manual_setup.couldnt_make_url.message" = "Värdet '%@' var inte en giltig URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Kunde inte skapa en URL";
@@ -482,6 +498,22 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.manual_setup.text_field.placeholder" = "t.ex. http://homeassistant.local:8123";
 "onboarding.manual_setup.text_field.title" = "Din Home Assistant-URL";
 "onboarding.manual_setup.title" = "Ange URL";
+"onboarding.manual_url_entry.primary_action.title" = "Connect";
+"onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
+"onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
+"onboarding.network_input.disclaimer.title" = "Make sure to set up your home network correctly.";
+"onboarding.network_input.input_field.placeholder" = "Network name";
+"onboarding.network_input.input_field.title" = "Wi-Fi network connected";
+"onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
+"onboarding.network_input.no_network.alert.title" = "Network name required";
+"onboarding.network_input.no_network.skip.alert.body" = "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.";
+"onboarding.network_input.no_network.skip.alert.primary_button.title" = "Cancel";
+"onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Skip";
+"onboarding.network_input.no_network.skip.alert.title" = "Are you sure?";
+"onboarding.network_input.primary_button.title" = "Next";
+"onboarding.network_input.primary_description" = "Indicate when you're connected to your home network. This can be used to, for example, use the internal connection URL or disable the app lock when at home.";
+"onboarding.network_input.secondary_button.title" = "Skip";
+"onboarding.network_input.title" = "Define your home network";
 "onboarding.permission.location.buttons.allow_and_share" = "Tillåt samt dela med Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Tillåt endast i appanvändning";
 "onboarding.permission.location.buttons.deny" = "Neka";
@@ -525,6 +557,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.scanning.title" = "Söker efter servrar";
 "onboarding.servers.auto_connect.button" = "Anslut";
 "onboarding.servers.docs.read" = "Läs dokumentationen";
+"onboarding.servers.search.loader.text" = "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.";
 "onboarding.servers.search.message" = "Letar efter servrar i närheten...";
 "onboarding.servers.title" = "Söker på hemnätverket";
 "onboarding.welcome.body" = "Gör att du kan komma åt din Home Assistant-installation när du är på språng. Den körs lokalt i ditt hem via en enhet som Home Assistant Green eller Raspberry Pi.";
@@ -539,6 +572,10 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "onboarding.welcome.primary_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.secondary_button" = "Så här kommer du igång";
 "onboarding.welcome.title" = "Välkommen till Home Assistant %@!";
+"onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
+\
+Home Assistant is open source, advocates for privacy and runs locally in your home.";
+"onboarding.welcome.updated.secondary_button" = "Learn more";
 "open_label" = "Öppen";
 "permission.notification.body" = "Tillåt aviseringar och få reda på vad som händer i ditt hem, från upptäckt av läckage till dörrar som är öppna. Du har full kontroll över vad som meddelas till dig.";
 "permission.notification.primary_button" = "Tillåt aviseringar";
@@ -592,6 +629,10 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "settings.connection_section.internal_url_ssids.header" = "SSID:n";
 "settings.connection_section.internal_url_ssids.placeholder" = "MittRoligaNätverksNamn";
 "settings.connection_section.invite_to_server" = "Bjud in någon till den här servern";
+"settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.local_access_security_level.title" = "Local access security";
+"settings.connection_section.local_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.local_push_description" = "Anslut direkt till Home Assistant-servern för push-notiser när du använder internt SSID.";
 "settings.connection_section.location_send_type.setting.exact" = "Exakt";
 "settings.connection_section.location_send_type.setting.never" = "Aldrig";
@@ -1180,6 +1221,11 @@ Home Assistant är gratis och öppen källkod för hemautomatisering med fokus p
 "web_view.empty_state.open_settings_button" = "Öppna appinställningar";
 "web_view.empty_state.retry_button" = "Försök igen";
 "web_view.empty_state.title" = "Du är frånkopplad";
+"web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \
+\
+ ➡️  Please open the App settings and update your security choices or URLs.";
+"web_view.no_url_available.primary_button.title" = "Open App settings";
+"web_view.no_url_available.title" = "We can't connect to Home Assistant";
 "web_view.server_selection.title" = "Välj server";
 "web_view.unique_server_selection.title" = "Välj en server";
 "widgets.action.name.assist" = "Assist";
