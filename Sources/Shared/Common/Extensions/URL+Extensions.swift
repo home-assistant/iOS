@@ -104,6 +104,10 @@ public extension URL {
             if data.count >= 2, data[0] == 0xFE, (data[1] & 0xC0) == 0x80 {
                 return true
             }
+            // fc00::/7 Unique Local Address (ULA): first byte & 0xFE == 0xFC
+            if data.count >= 1, (data[0] & 0xFE) == 0xFC {
+                return true
+            }
         }
 
         return false
