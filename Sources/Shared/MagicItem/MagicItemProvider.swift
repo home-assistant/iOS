@@ -82,6 +82,15 @@ final class MagicItemProvider: MagicItemProviderProtocol {
         completion()
     }
 
+    /**
+     Migrates the configuration of custom widgets by updating their items if needed and saving the changes to the database.
+     
+     - Parameter completion: A closure to be called after the migration process is complete, regardless of success or failure.
+     
+     This function attempts to load all custom widgets from the database. For each widget, it updates its items using `migrateItemsIfNeeded(items:)`
+     and writes the updated widget back to the database. If an error occurs during loading or saving, it logs the error and continues processing.
+     The completion handler is always called at the end of the process.
+     */
     func migrateWidgetsConfig(completion: @escaping () -> Void) {
         guard let customWidgets = try? Current.customWidgets() else {
             completion()
