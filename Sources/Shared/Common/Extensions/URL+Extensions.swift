@@ -73,7 +73,7 @@ public extension URL {
         }
 
         // Local TLDs
-        let localTLDs = [".local", ".lan", ".home", ".internal", ".localdomain"]
+        let localTLDs = [".local", ".lan", ".home", ".internal", ".localdomain", ".home.arpa"]
         if localTLDs.contains(where: { host.hasSuffix($0) }) {
             return true
         }
