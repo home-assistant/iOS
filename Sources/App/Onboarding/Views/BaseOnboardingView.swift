@@ -156,6 +156,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                 .tint(Color.haPrimary)
             }
         }
+        .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : .zero)
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding([.horizontal, .top], DesignSystem.Spaces.two)
         .background(Color(uiColor: .systemBackground).opacity(0.95))
