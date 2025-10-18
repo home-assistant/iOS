@@ -572,10 +572,10 @@ Remote when you're ready.";
 "onboarding.welcome.primary_button" = "Conectar-se ao meu Home Assistant";
 "onboarding.welcome.secondary_button" = "Primeiros passos";
 "onboarding.welcome.title" = "Bem-vindo ao Home Assistant %@ !";
-"onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
+"onboarding.welcome.updated.body" = "Acesse o servidor do seu Home Assistant em qualquer lugar.\
 \
-Home Assistant is open source, advocates for privacy and runs locally in your home.";
-"onboarding.welcome.updated.secondary_button" = "Learn more";
+O Home Assistant é de código aberto, defende a privacidade e funciona localmente na sua casa.";
+"onboarding.welcome.updated.secondary_button" = "Saiba mais";
 "open_label" = "Abrir";
 "permission.notification.body" = "Ative as notificações e saiba o que está acontecendo na sua casa, desde a detecção de vazamentos até portas deixadas abertas. Você tem controle total sobre o que o alarme diz.";
 "permission.notification.primary_button" = "Permitir notificações";

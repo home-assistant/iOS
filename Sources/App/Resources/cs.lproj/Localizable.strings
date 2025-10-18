@@ -470,22 +470,22 @@
 "onboarding.invitation.accept_button" = "Přijmout";
 "onboarding.invitation.other_options" = "Další volby";
 "onboarding.invitation.title" = "Pozvánka do Home Asistenta";
-"onboarding.local_access.description" = "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.";
-"onboarding.local_access.less_secure_option.title" = "Less secure: Do not allow this app to know when you're home";
-"onboarding.local_access.next_button" = "Next";
-"onboarding.local_access.privacy_disclaimer" = "This data will never be shared with the Home Assistant project or third parties.";
-"onboarding.local_access.secure_option.title" = "Most secure: Allow this app to know when you're home";
-"onboarding.local_access.title" = "Let us help secure your remote connection";
-"onboarding.local_only_disclaimer.primary_button.title" = "Got it";
-"onboarding.local_only_disclaimer.primary_description" = "Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.";
-"onboarding.local_only_disclaimer.secondary_description" = "For now, you're securely connected to your local network.";
-"onboarding.local_only_disclaimer.title" = "Local by default.\
-Remote when you're ready.";
-"onboarding.location_access.primary_action.title" = "Share my location";
-"onboarding.location_access.primary_description" = "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.";
-"onboarding.location_access.secondary_action.title" = "Do not share my location";
-"onboarding.location_access.secondary_description" = "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.";
-"onboarding.location_access.title" = "Use this device's location for automations";
+"onboarding.local_access.description" = "Pokud tato aplikace ví, kdy nejste doma, může zvolit bezpečnější způsob připojení k vašemu systému Home Assistant. To vyžaduje povolení lokalizačních služeb.";
+"onboarding.local_access.less_secure_option.title" = "Méně bezpečné: Nedovolí této aplikaci vědět, kdy jste doma";
+"onboarding.local_access.next_button" = "Další";
+"onboarding.local_access.privacy_disclaimer" = "Tato data nebudou nikdy sdílena s projektem Home Assistant ani s třetími stranami.";
+"onboarding.local_access.secure_option.title" = "Nejbezpečnější: Povolí této aplikaci vědět, kdy jste doma";
+"onboarding.local_access.title" = "Pomůžeme vám zabezpečit vzdálené připojení";
+"onboarding.local_only_disclaimer.primary_button.title" = "Rozumím";
+"onboarding.local_only_disclaimer.primary_description" = "Váš Home Assistant je přístupný jen ve vaší domácí síti. Abyste mohli svou chytrou domácnost ovládat odkudkoli, můžete si vzdálený přístup nastavit později v Nastavení.";
+"onboarding.local_only_disclaimer.secondary_description" = "Prozatím jste bezpečně připojeni k vaší místní síti.";
+"onboarding.local_only_disclaimer.title" = "Ve výchozím nastavení lokální.\
+Vzdálené, až budete připraveni.";
+"onboarding.location_access.primary_action.title" = "Sdílet mou polohu";
+"onboarding.location_access.primary_description" = "Sdílení polohy umožňuje výkonné automatizace, jako je například vypnutí topení, když odcházíte z domova. Tato možnost sdílí polohu zařízení jen s vaším systémem Home Assistant.";
+"onboarding.location_access.secondary_action.title" = "Nesdílet mou polohu";
+"onboarding.location_access.secondary_description" = "Tato data zůstávají u vás doma a nikdy se neodesílají třetím stranám. Pomáhají také posílit zabezpečení vašeho připojení k aplikaci Home Assistant.";
+"onboarding.location_access.title" = "Použít polohu tohoto zařízení pro automatizace";
 "onboarding.manual_setup.connect" = "Připojit";
 "onboarding.manual_setup.couldnt_make_url.message" = "Hodnota \"%@\" není platná URL.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Nelze vytvořit URL.";
@@ -498,22 +498,22 @@ Remote when you're ready.";
 "onboarding.manual_setup.text_field.placeholder" = "např. http://homeassistant.local:8123";
 "onboarding.manual_setup.text_field.title" = "Adresa URL Home Assistanta";
 "onboarding.manual_setup.title" = "Zadat URL";
-"onboarding.manual_url_entry.primary_action.title" = "Connect";
-"onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
-"onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
-"onboarding.network_input.disclaimer.title" = "Make sure to set up your home network correctly.";
-"onboarding.network_input.input_field.placeholder" = "Network name";
-"onboarding.network_input.input_field.title" = "Wi-Fi network connected";
-"onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
-"onboarding.network_input.no_network.alert.title" = "Network name required";
-"onboarding.network_input.no_network.skip.alert.body" = "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.";
-"onboarding.network_input.no_network.skip.alert.primary_button.title" = "Cancel";
-"onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Skip";
-"onboarding.network_input.no_network.skip.alert.title" = "Are you sure?";
-"onboarding.network_input.primary_button.title" = "Next";
-"onboarding.network_input.primary_description" = "Indicate when you're connected to your home network. This can be used to, for example, use the internal connection URL or disable the app lock when at home.";
-"onboarding.network_input.secondary_button.title" = "Skip";
-"onboarding.network_input.title" = "Define your home network";
+"onboarding.manual_url_entry.primary_action.title" = "Připojit";
+"onboarding.manual_url_entry.title" = "Jaká je adresa vašeho Home Assistanta?";
+"onboarding.network_input.disclaimer.body" = "Přidávání veřejných sítí Wi-Fi nebo používání více ethernetových/VPN připojení může neúmyslně zpřístupnit informace o vaší aplikaci či serveru nebo k nim mít přístup.";
+"onboarding.network_input.disclaimer.title" = "Ujistěte se, že máte správně nastavenou domácí síť.";
+"onboarding.network_input.input_field.placeholder" = "Název sítě";
+"onboarding.network_input.input_field.title" = "Je připojena síť Wi-Fi";
+"onboarding.network_input.no_network.alert.body" = "Pro pokračování zadejte název sítě.";
+"onboarding.network_input.no_network.alert.title" = "Je vyžadován název sítě";
+"onboarding.network_input.no_network.skip.alert.body" = "Nenastavili jste domácí síť. Můžete ji nastavit později v nastavení aplikace. Do té doby budeme pro přístup k aplikaci Home Assistant používat jen vaše vzdálené připojení (pokud existuje).";
+"onboarding.network_input.no_network.skip.alert.primary_button.title" = "Zrušit";
+"onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Přeskočit";
+"onboarding.network_input.no_network.skip.alert.title" = "Jste si jisti?";
+"onboarding.network_input.primary_button.title" = "Další";
+"onboarding.network_input.primary_description" = "Zobrazuje, kdy jste připojeni k domácí síti. Toto lze použít například k použití interní adresy URL pro připojení nebo k deaktivaci zámku aplikace, když jste doma.";
+"onboarding.network_input.secondary_button.title" = "Přeskočit";
+"onboarding.network_input.title" = "Definujte svou domácí síť";
 "onboarding.permission.location.buttons.allow_and_share" = "Povolit a sdílet s Home Assistantem";
 "onboarding.permission.location.buttons.allow_for_app" = "Povolit jen použití aplikace";
 "onboarding.permission.location.buttons.deny" = "Odmítnout";
@@ -557,7 +557,7 @@ Remote when you're ready.";
 "onboarding.scanning.title" = "Vyhledávání serverů";
 "onboarding.servers.auto_connect.button" = "Připojit";
 "onboarding.servers.docs.read" = "Přečíst si dokumentaci";
-"onboarding.servers.search.loader.text" = "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.";
+"onboarding.servers.search.loader.text" = "Zkontrolujte, zda je Home Assistant zapnutý a zda jste připojeni ke stejné síti. Pokud znáte adresu, můžete ji zadat ručně.";
 "onboarding.servers.search.message" = "Hledání serverů v okolí...";
 "onboarding.servers.title" = "Vyhledávání v domácí síti";
 "onboarding.welcome.body" = "Umožní vám přístup k vaší instalaci Home Assistant na cestách. Běží lokálně ve vaší domácnosti prostřednictvím zařízení, jako je Home Assistant Green nebo Raspberry Pi.";
@@ -572,10 +572,10 @@ Home Assistant je bezplatný a otevřený software pro domácí automatizaci se 
 "onboarding.welcome.primary_button" = "Připojit k mému Home Assistantovi";
 "onboarding.welcome.secondary_button" = "Začínáme";
 "onboarding.welcome.title" = "Vítejte v Home Assistantovi %@!";
-"onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
-\
-Home Assistant is open source, advocates for privacy and runs locally in your home.";
-"onboarding.welcome.updated.secondary_button" = "Learn more";
+"onboarding.welcome.updated.body" = "Přistupujte k serveru Home Assistant na cestách.\
+ \
+Home Assistant je open source, chrání soukromí a běží lokálně u vás doma.";
+"onboarding.welcome.updated.secondary_button" = "Více informací";
 "open_label" = "Otevřít";
 "permission.notification.body" = "Povolte oznámení a získejte přehled o tom, co se děje ve vaší domácnosti; od detekce netěsností až po otevřené dveře - máte plnou kontrolu nad vším.";
 "permission.notification.primary_button" = "Povolit oznámení";
@@ -629,10 +629,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "NázevMéSítě";
 "settings.connection_section.invite_to_server" = "Pozvěte někoho na tento server";
-"settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
-"settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
-"settings.connection_section.local_access_security_level.title" = "Local access security";
-"settings.connection_section.local_access_security_level.undefined.title" = "Not configured";
+"settings.connection_section.local_access_security_level.less_secure.title" = "Méně bezpečné";
+"settings.connection_section.local_access_security_level.most_secure.title" = "Nejbezpečnější";
+"settings.connection_section.local_access_security_level.title" = "Zabezpečení lokálního přístupu";
+"settings.connection_section.local_access_security_level.undefined.title" = "Nenastaveno";
 "settings.connection_section.local_push_description" = "Přímé připojení k serveru Home Assistant pro push oznámení na interních SSID.";
 "settings.connection_section.location_send_type.setting.exact" = "Přesná";
 "settings.connection_section.location_send_type.setting.never" = "Nikdy";
@@ -1221,11 +1221,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.empty_state.open_settings_button" = "Otevřít nastavení aplikace";
 "web_view.empty_state.retry_button" = "Zkusit znovu";
 "web_view.empty_state.title" = "Jste odpojeni";
-"web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \
-\
- ➡️  Please open the App settings and update your security choices or URLs.";
-"web_view.no_url_available.primary_button.title" = "Open App settings";
-"web_view.no_url_available.title" = "We can't connect to Home Assistant";
+"web_view.no_url_available.body" = "🔐 Vzhledem k vašim bezpečnostním nastavením nemáme povoleno používat žádnou URL adresu.\
+ \
+➡️ Otevřete nastavení aplikace a aktualizujte svá bezpečnostní nastavení nebo URL adresy.";
+"web_view.no_url_available.primary_button.title" = "Otevřít nastavení aplikace";
+"web_view.no_url_available.title" = "Nemůžeme se připojit k Home Assistantovi";
 "web_view.server_selection.title" = "Vyberte server";
 "web_view.unique_server_selection.title" = "Vybrat jeden server";
 "widgets.action.name.assist" = "Assist";
