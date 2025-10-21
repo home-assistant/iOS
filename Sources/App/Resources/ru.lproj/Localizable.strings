@@ -470,22 +470,22 @@
 "onboarding.invitation.accept_button" = "Принять";
 "onboarding.invitation.other_options" = "Другие варианты";
 "onboarding.invitation.title" = "Приглашение Home Assistant";
-"onboarding.local_access.description" = "If this app knows when you’re away from home, it can choose a more secure way to connect to your Home Assistant system. This requires location services to be enabled.";
-"onboarding.local_access.less_secure_option.title" = "Less secure: Do not allow this app to know when you're home";
-"onboarding.local_access.next_button" = "Next";
-"onboarding.local_access.privacy_disclaimer" = "This data will never be shared with the Home Assistant project or third parties.";
-"onboarding.local_access.secure_option.title" = "Most secure: Allow this app to know when you're home";
-"onboarding.local_access.title" = "Let us help secure your remote connection";
-"onboarding.local_only_disclaimer.primary_button.title" = "Got it";
-"onboarding.local_only_disclaimer.primary_description" = "Your Home Assistant is only accessible on your home network. To control your smart home from anywhere, you can set up remote access later in your settings.";
-"onboarding.local_only_disclaimer.secondary_description" = "For now, you're securely connected to your local network.";
-"onboarding.local_only_disclaimer.title" = "Local by default.\
-Remote when you're ready.";
-"onboarding.location_access.primary_action.title" = "Share my location";
-"onboarding.location_access.primary_description" = "Location sharing enables powerful automations, such as turning off the heating when you leave home. This option shares the device’s location only with your Home Assistant system.";
-"onboarding.location_access.secondary_action.title" = "Do not share my location";
-"onboarding.location_access.secondary_description" = "This data stays in your home and is never sent to third parties. It also helps strengthen the security of your connection to Home Assistant.";
-"onboarding.location_access.title" = "Use this device's location for automations";
+"onboarding.local_access.description" = "Если это приложение знает, когда вы находитесь вне дома, оно может выбрать более безопасный способ подключения к вашей системе Home Assistant. Для этого необходимо включить службы местоположения.";
+"onboarding.local_access.less_secure_option.title" = "Менее безопасно: Не разрешать этому приложению знать, когда вы дома";
+"onboarding.local_access.next_button" = "Далее";
+"onboarding.local_access.privacy_disclaimer" = "Эти данные никогда не будут переданы проекту Home Assistant или третьим лицам.";
+"onboarding.local_access.secure_option.title" = "Наиболее безопасно: Разрешить этому приложению знать, когда вы дома";
+"onboarding.local_access.title" = "Позвольте нам помочь защитить ваше удаленное соединение";
+"onboarding.local_only_disclaimer.primary_button.title" = "Понятно";
+"onboarding.local_only_disclaimer.primary_description" = "Ваш Home Assistant доступен только в домашней сети. Чтобы управлять умным домом из любого места, вы можете настроить удаленный доступ позже в настройках.";
+"onboarding.local_only_disclaimer.secondary_description" = "На данный момент вы безопасно подключены к вашей локальной сети.";
+"onboarding.local_only_disclaimer.title" = "Локально по умолчанию. \
+Удаленно, когда будете готовы.";
+"onboarding.location_access.primary_action.title" = "Делиться своим местоположением";
+"onboarding.location_access.primary_description" = "Обмен данными о местоположении позволяет создавать мощные автоматизации, например, отключение отопления при выходе из дома. Эта опция передает местоположение устройства только вашей системе Home Assistant.";
+"onboarding.location_access.secondary_action.title" = "Не делиться своим местоположением";
+"onboarding.location_access.secondary_description" = "Эти данные остаются в вашем доме и никогда не передаются третьим лицам. Они также помогают укрепить безопасность вашего подключения к Home Assistant.";
+"onboarding.location_access.title" = "Используйте местоположение этого устройства для автоматизации";
 "onboarding.manual_setup.connect" = "Подключиться";
 "onboarding.manual_setup.couldnt_make_url.message" = "Значение '%@' не является допустимым URL-адресом.";
 "onboarding.manual_setup.couldnt_make_url.title" = "Не удалось создать URL-адрес";
@@ -498,22 +498,22 @@ Remote when you're ready.";
 "onboarding.manual_setup.text_field.placeholder" = "например, http://homeassistant.local:8123";
 "onboarding.manual_setup.text_field.title" = "URL-адрес вашего Home Assistant";
 "onboarding.manual_setup.title" = "Введите URL-адрес";
-"onboarding.manual_url_entry.primary_action.title" = "Connect";
-"onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
-"onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
-"onboarding.network_input.disclaimer.title" = "Make sure to set up your home network correctly.";
-"onboarding.network_input.input_field.placeholder" = "Network name";
-"onboarding.network_input.input_field.title" = "Wi-Fi network connected";
-"onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
-"onboarding.network_input.no_network.alert.title" = "Network name required";
-"onboarding.network_input.no_network.skip.alert.body" = "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.";
-"onboarding.network_input.no_network.skip.alert.primary_button.title" = "Cancel";
-"onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Skip";
-"onboarding.network_input.no_network.skip.alert.title" = "Are you sure?";
-"onboarding.network_input.primary_button.title" = "Next";
-"onboarding.network_input.primary_description" = "Indicate when you're connected to your home network. This can be used to, for example, use the internal connection URL or disable the app lock when at home.";
-"onboarding.network_input.secondary_button.title" = "Skip";
-"onboarding.network_input.title" = "Define your home network";
+"onboarding.manual_url_entry.primary_action.title" = "Подключить";
+"onboarding.manual_url_entry.title" = "Какой адрес вашего Home Assistant?";
+"onboarding.network_input.disclaimer.body" = "Добавление общедоступных Wi-Fi сетей или использование нескольких подключений Ethernet/VPN может непреднамеренно раскрыть информацию о вашем приложении или сервере или предоставить к ним доступ.";
+"onboarding.network_input.disclaimer.title" = "Убедитесь, что вы правильно настроили домашнюю сеть.";
+"onboarding.network_input.input_field.placeholder" = "Название сети";
+"onboarding.network_input.input_field.title" = "Wi-Fi сеть подключена";
+"onboarding.network_input.no_network.alert.body" = "Пожалуйста, введите название сети для продолжения.";
+"onboarding.network_input.no_network.alert.title" = "Требуется название сети";
+"onboarding.network_input.no_network.skip.alert.body" = "Вы не настроили домашнюю сеть. Вы можете настроить ее позже в настройках приложения, а до этого мы будем использовать только удаленное подключение (если оно существует) для доступа к Home Assistant.";
+"onboarding.network_input.no_network.skip.alert.primary_button.title" = "Отмена";
+"onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Пропустить";
+"onboarding.network_input.no_network.skip.alert.title" = "Вы уверены?";
+"onboarding.network_input.primary_button.title" = "Далее";
+"onboarding.network_input.primary_description" = "Указывать, подключены ли вы к домашней сети. Это можно использовать, например, для использования внутреннего URL-адреса подключения или отключения блокировки приложений, когда вы дома.";
+"onboarding.network_input.secondary_button.title" = "Пропустить";
+"onboarding.network_input.title" = "Определите домашнюю сеть";
 "onboarding.permission.location.buttons.allow_and_share" = "Разрешить и поделиться с Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Разрешить использование только в приложении";
 "onboarding.permission.location.buttons.deny" = "Запретить";
@@ -557,7 +557,7 @@ Remote when you're ready.";
 "onboarding.scanning.title" = "Сканирование серверов";
 "onboarding.servers.auto_connect.button" = "Подключиться";
 "onboarding.servers.docs.read" = "Читать документацию";
-"onboarding.servers.search.loader.text" = "Check that your Home Assistant is powered on and you're connected to the same network. You can enter the address manually if you know it.";
+"onboarding.servers.search.loader.text" = "Убедитесь, что ваш Home Assistant включен и вы подключены к той же сети. Вы можете ввести адрес вручную, если знаете его.";
 "onboarding.servers.search.message" = "Ищу серверы поблизости...";
 "onboarding.servers.title" = "Поиск в домашней сети";
 "onboarding.welcome.body" = "Позволяет получить доступ к вашей установке Home Assistant в пути. Работает локально в вашем доме через устройство, такое как Home Assistant Green или Raspberry Pi.";
@@ -572,10 +572,10 @@ Home Assistant - это бесплатное программное обеспе
 "onboarding.welcome.primary_button" = "Подключиться к моему Home Assistant";
 "onboarding.welcome.secondary_button" = "Начало работы";
 "onboarding.welcome.title" = "Добро пожаловать в Home Assistant %@!";
-"onboarding.welcome.updated.body" = "Access your Home Assistant server on the go. \
-\
-Home Assistant is open source, advocates for privacy and runs locally in your home.";
-"onboarding.welcome.updated.secondary_button" = "Learn more";
+"onboarding.welcome.updated.body" = "Получите доступ к серверу Home Assistant, где бы вы ни находились. \
+ \
+Home Assistant — это приложение с открытым исходным кодом, которое обеспечивает конфиденциальность и работает локально у вас дома.";
+"onboarding.welcome.updated.secondary_button" = "Узнать больше";
 "open_label" = "Открыто";
 "permission.notification.body" = "Включите уведомления и получайте информацию о том, что происходит у вас дома: от обнаружения утечек до незакрытых дверей. Вы полностью контролируете то, что вам сообщает система.";
 "permission.notification.primary_button" = "Разрешить уведомления";
@@ -629,10 +629,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.internal_url_ssids.header" = "Выбранные SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "МояДомашняяСеть";
 "settings.connection_section.invite_to_server" = "Пригласить кого-нибудь на этот сервер";
-"settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
-"settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
-"settings.connection_section.local_access_security_level.title" = "Local access security";
-"settings.connection_section.local_access_security_level.undefined.title" = "Not configured";
+"settings.connection_section.local_access_security_level.less_secure.title" = "Менее безопасный";
+"settings.connection_section.local_access_security_level.most_secure.title" = "Самый безопасный";
+"settings.connection_section.local_access_security_level.title" = "Безопасность локального доступа";
+"settings.connection_section.local_access_security_level.undefined.title" = "Не настроено";
 "settings.connection_section.local_push_description" = "Напрямую подключайтесь к серверу Home Assistant для получения push-уведомлений при использовании внутренних SSID.";
 "settings.connection_section.location_send_type.setting.exact" = "Точное";
 "settings.connection_section.location_send_type.setting.never" = "Никогда";
@@ -1221,11 +1221,11 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.empty_state.open_settings_button" = "Открыть настройки приложения";
 "web_view.empty_state.retry_button" = "Повторить";
 "web_view.empty_state.title" = "Вы отключены";
-"web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \
+"web_view.no_url_available.body" = "🔐 Из-за ваших настроек безопасности мы не можем использовать URL-адрес. \
 \
- ➡️  Please open the App settings and update your security choices or URLs.";
-"web_view.no_url_available.primary_button.title" = "Open App settings";
-"web_view.no_url_available.title" = "We can't connect to Home Assistant";
+➡️ Откройте настройки приложения и обновите параметры безопасности или URL-адреса.";
+"web_view.no_url_available.primary_button.title" = "Открыть настройки приложения";
+"web_view.no_url_available.title" = "Мы не можем подключиться к Home Assistant";
 "web_view.server_selection.title" = "Выберите сервер";
 "web_view.unique_server_selection.title" = "Выберите один сервер";
 "widgets.action.name.assist" = "Assist";
