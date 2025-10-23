@@ -14,18 +14,20 @@ public enum DesignSystem {
         public static let title3: SwiftUICore.Font = .title3
         /// Headline (17pt, semibold)
         public static let headline: SwiftUICore.Font = .headline
-        /// Subheadline (15pt)
-        public static let subheadline: SwiftUICore.Font = .subheadline
         /// Body (17pt)
         public static let body: SwiftUICore.Font = .body
         /// Callout (16pt)
         public static let callout: SwiftUICore.Font = .callout
+        /// Subheadline (15pt)
+        public static let subheadline: SwiftUICore.Font = .subheadline
         /// Footnote (13pt)
         public static let footnote: SwiftUICore.Font = .footnote
         /// Caption (12pt)
         public static let caption: SwiftUICore.Font = .caption
         /// Caption2 (11pt)
         public static let caption2: SwiftUICore.Font = .caption2
+        /// Caption3 (10pt)
+        public static let caption3: SwiftUICore.Font = .system(size: 10)
     }
 
     // 8-point system
