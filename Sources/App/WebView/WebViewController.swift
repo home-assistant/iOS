@@ -334,8 +334,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 .onDisappear { [weak self] in
                     self?.refresh()
                 }
-                .navigationViewStyle(.stack)
-        }.embeddedInHostingController()
+        }.navigationViewStyle(.stack).embeddedInHostingController()
 
         // Prevent controller on being dismissed on swipe down
         controller.isModalInPresentation = true
