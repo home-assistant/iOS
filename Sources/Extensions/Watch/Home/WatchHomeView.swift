@@ -7,7 +7,7 @@ struct WatchHomeView: View {
     @State private var showAssist = false
 
     var body: some View {
-        navigation
+        content
             ._statusBarHidden(true)
             .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
                 showAssist = true
@@ -38,29 +38,6 @@ struct WatchHomeView: View {
                     break
                 }
             }
-    }
-
-    @ViewBuilder
-    private var navigation: some View {
-        if #available(watchOS 10, *) {
-            watchOS10Content
-        } else {
-            olderWatchOSContent
-        }
-    }
-
-    @available(watchOS 10, *)
-    private var watchOS10Content: some View {
-        NavigationStack {
-            content
-                .persistentSystemOverlays(.hidden)
-        }
-    }
-
-    private var olderWatchOSContent: some View {
-        NavigationView {
-            content
-        }
     }
 
     @ViewBuilder
@@ -97,18 +74,11 @@ struct WatchHomeView: View {
     private var listHeader: some View {
         HStack {
             navReloadButton
-            Spacer()
-            if viewModel.isLoading {
-                toolbarLoadingState
-            }
-            if viewModel.showAssist {
-                Spacer()
-                assistHeaderButton
-            } else {
-                Spacer()
-            }
+            toolbarLoadingState
+            assistHeaderButton
         }
         .listRowBackground(Color.clear)
+        .padding(.top, DesignSystem.Spaces.one)
     }
 
     @ViewBuilder
@@ -133,16 +103,24 @@ struct WatchHomeView: View {
         }
     }
 
+    @ViewBuilder
     private var assistHeaderButton: some View {
-        assistButton
-            .modify { view in
-                if #available(watchOS 11, *) {
-                    view.handGestureShortcut(.primaryAction)
-                } else {
-                    view
+        if viewModel.showAssist {
+            assistButton
+                .modify { view in
+                    if #available(watchOS 11, *) {
+                        view.handGestureShortcut(.primaryAction)
+                    } else {
+                        view
+                    }
                 }
-            }
-            .circularGlassOrLegacyBackground()
+                .circularGlassOrLegacyBackground(tint: .haPrimary)
+        } else {
+            // Reserve space to keep the loader centered
+            Rectangle()
+                .foregroundStyle(Color.clear)
+                .frame(width: 44, height: 44)
+        }
     }
 
     private var assistButton: some View {
@@ -182,9 +160,15 @@ struct WatchHomeView: View {
         .circularGlassOrLegacyBackground()
     }
 
+    @ViewBuilder
     private var toolbarLoadingState: some View {
-        loadingState
-            .circularGlassOrLegacyBackground()
+        HStack {
+            if viewModel.isLoading {
+                loadingState
+                    .circularGlassOrLegacyBackground()
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var loadingState: some View {
@@ -201,10 +185,14 @@ struct WatchHomeView: View {
     }
 
     private var appVersion: some View {
-        Text(verbatim: AppConstants.version)
-            .listRowBackground(Color.clear)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .center)
+        VStack(alignment: .center, spacing: .zero) {
+            Text(verbatim: AppConstants.version)
+            Text(verbatim: "(\(AppConstants.build))")
+                .font(DesignSystem.Font.caption3)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .listRowBackground(Color.clear)
+        .foregroundStyle(.secondary)
     }
 
     @ViewBuilder
