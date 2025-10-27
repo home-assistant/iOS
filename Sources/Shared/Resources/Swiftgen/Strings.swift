@@ -512,6 +512,8 @@ public enum L10n {
   }
 
   public enum AssistPipelinePicker {
+    /// No pipelines available
+    public static var noPipelines: String { return L10n.tr("Localizable", "assist_pipeline_picker.no_pipelines") }
     /// Pick pipeline
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
   }

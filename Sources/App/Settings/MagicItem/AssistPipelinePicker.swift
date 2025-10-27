@@ -11,7 +11,7 @@ struct AssistPipelinePicker: View {
     @Binding private var selectedPipelineId: String?
     @State private var searchTerm = ""
 
-    @State private var assistService: AssistServiceProtocol?
+    @State private var assistServices: [AssistServiceProtocol] = []
 
     init(selectedServerId: Binding<String?>, selectedPipelineId: Binding<String?>) {
         self._selectedServerId = selectedServerId
@@ -45,7 +45,7 @@ struct AssistPipelinePicker: View {
                         }
                     } else if assistConfigs.isEmpty {
                         Section {
-                            Text("No pipelines available")
+                            Text(L10n.AssistPipelinePicker.noPipelines)
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -130,24 +130,24 @@ struct AssistPipelinePicker: View {
 
         for server in Current.servers.all {
             group.enter()
-            assistService = AssistService(server: server)
-            assistService?.fetchPipelines { _ in
-                DispatchQueue.main.async {
-                    do {
-                        assistConfigs = try AssistPipelines.config() ?? []
-                    } catch {
-                        Current.Log
-                            .error(
-                                "Failed to fetch assist pipelines after server \(server.info.name) fetch, error: \(error)"
-                            )
-                    }
-                    group.leave()
-                }
+            let assistService = AssistService(server: server)
+            assistServices.append(assistService)
+            assistService.fetchPipelines { _ in
+                group.leave()
             }
         }
 
         group.notify(queue: .main) {
             isLoading = false
+            assistServices = []
+            do {
+                assistConfigs = try AssistPipelines.config() ?? []
+            } catch {
+                Current.Log
+                    .error(
+                        "Failed to fetch assist pipelines after server fetch, error: \(error)"
+                    )
+            }
         }
     }
 }
