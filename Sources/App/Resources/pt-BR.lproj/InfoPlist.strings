@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Opcionalmente, habilite o rastreamento entre sites se sua configuração exigir.";
 "NSFocusStatusUsageDescription" = "Informe seu estado de foco como um sensor.";
 "NSLocalNetworkUsageDescription" = "Localize e comunique-se com sua instância do Home Assistant.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Sugerimos selecionar \"Sempre permitir\" para obter a melhor experiência de localização. Selecionar \"Somente durante o uso do aplicativo\" desativará iBeacons, cercas geográficas, atualizações de localização em segundo plano e relatórios precisos.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  We also need permission to access location 'Always' so the App can perform background operations. \n\n ⚠️  Without that, the App is unable to decide which connection (local or remote) to use in background and will use remote always.";
 "NSLocationAlwaysUsageDescription" = "Sempre precisamos de acesso à sua localização para recursos como iBeacons, cercas geográficas, atualizações de localização em segundo plano e relatórios precisos.";
 "NSLocationUsageDescription" = "Quando ativado, a localização do seu dispositivo é enviada para o servidor do Home Assistant como um rastreador de dispositivo.";
-"NSLocationWhenInUseUsageDescription" = "Apenas permitir o acesso à localização enquanto o aplicativo estiver em uso desativará iBeacons, geofences, atualizações de localização em segundo plano e relatórios precisos.";
+"NSLocationWhenInUseUsageDescription" = "This app needs location access to connect directly to your Home Assistant installation. \n \n 1️⃣ Your location will only be used to check if you are connected to your local network. \n \n 2️⃣ It will not be shared with anyone. \n \n 3️⃣ If you do not allow this, the app will always connect over the internet instead. If not configured, it will protect your data and refuse the connection.";
 "NSMicrophoneUsageDescription" = "Grave áudio usando o frontend do Home Assistant.";
 "NSMotionUsageDescription" = "O movimento é usado para melhorar as atualizações de localização com o tipo de movimento atual, bem como fornecer dados básicos de pedômetro.";
 "NSPhotoLibraryAddUsageDescription" = "O acesso à Biblioteca de fotos é necessário para permitir salvar fotos da visualização da web.";
