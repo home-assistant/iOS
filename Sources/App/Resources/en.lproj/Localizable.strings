@@ -110,6 +110,7 @@
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
 "assist.watch.volume.title" = "Volume control";
 "assist_pipeline_picker.placeholder" = "Pick pipeline";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";

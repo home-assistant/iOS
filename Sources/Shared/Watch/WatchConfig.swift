@@ -19,10 +19,10 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
 
     public struct Assist: Codable, Equatable {
         public var showAssist: Bool
-        public var serverId: String
-        public var pipelineId: String
+        public var serverId: String?
+        public var pipelineId: String?
 
-        public init(showAssist: Bool, serverId: String = "", pipelineId: String = "") {
+        public init(showAssist: Bool, serverId: String? = nil, pipelineId: String? = nil) {
             self.showAssist = showAssist
             self.serverId = serverId
             self.pipelineId = pipelineId
