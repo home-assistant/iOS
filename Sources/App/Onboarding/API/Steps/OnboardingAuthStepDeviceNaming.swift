@@ -100,6 +100,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
         return Promise<Void> { seal in
             let view = UIHostingController(rootView: DeviceNameView(errorMessage: errorMessage, saveAction: { name in
+                // TODO: Update registeredDevices list to avoid error when user deletes another device while onboarding and wants to use the same name
                 guard name.isEmpty == false,
                       !registeredDevices.contains(where: { $0.matches(name: name) }) else {
                     promptForDeviceName(
