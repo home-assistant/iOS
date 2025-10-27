@@ -46,17 +46,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     static var firstUserDeviceNameInput = true
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
-        let devices = firstly { () -> Promise<[HAData]> in
-            api.connection.send(.init(type: "config/device_registry/list")).promise.compactMap {
-                if case let .array(value) = $0 {
-                    return value
-                } else {
-                    throw HomeAssistantAPI.APIError.invalidResponse
-                }
-            }
-        }.compactMapValues { value -> RegisteredDevice? in
-            try? RegisteredDevice(data: value)
-        }
+        let devices = fetchDeviceList()
 
         let timeout: Promise<[RegisteredDevice]> = after(seconds: timeout).then { () -> Promise<[RegisteredDevice]> in
             switch api.connection.state {
@@ -100,9 +90,7 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
 
         return Promise<Void> { seal in
             let view = UIHostingController(rootView: DeviceNameView(errorMessage: errorMessage, saveAction: { name in
-                // TODO: Update registeredDevices list to avoid error when user deletes another device while onboarding and wants to use the same name
-                guard name.isEmpty == false,
-                      !registeredDevices.contains(where: { $0.matches(name: name) }) else {
+                guard name.isEmpty == false else {
                     promptForDeviceName(
                         deviceName: deviceName,
                         errorMessage: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
@@ -112,9 +100,31 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
                     return
                 }
 
-                api.server.info.setSetting(value: name, for: .overrideDeviceName)
-                resetFirstUserDeviceNameInput()
-                seal.fulfill(())
+                // Fetch updated device list to ensure we have current data
+                fetchDeviceList().done { updatedDevices in
+                    if updatedDevices.contains(where: { $0.matches(name: name) }) {
+                        // Name conflicts with a registered device
+                        promptForDeviceName(
+                            deviceName: deviceName,
+                            errorMessage: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
+                            registeredDevices: updatedDevices,
+                            sender: sender
+                        ).pipe(to: seal.resolve)
+                    } else {
+                        // No conflict, proceed with the name
+                        api.server.info.setSetting(value: name, for: .overrideDeviceName)
+                        resetFirstUserDeviceNameInput()
+                        seal.fulfill(())
+                    }
+                }.catch { _ in
+                    // If we can't fetch updated list, fall back to showing error with original list
+                    promptForDeviceName(
+                        deviceName: deviceName,
+                        errorMessage: L10n.Onboarding.DeviceNameCheck.Error.title(deviceName),
+                        registeredDevices: registeredDevices,
+                        sender: sender
+                    ).pipe(to: seal.resolve)
+                }
             }, cancelAction: {
                 resetFirstUserDeviceNameInput()
                 seal.reject(PMKError.cancelled)
@@ -127,5 +137,19 @@ struct OnboardingAuthStepDeviceNaming: OnboardingAuthPostStep {
     // In case the flow is completed or cancelled, we reset the first user device name input flag.
     private func resetFirstUserDeviceNameInput() {
         OnboardingAuthStepDeviceNaming.firstUserDeviceNameInput = true
+    }
+
+    private func fetchDeviceList() -> Promise<[RegisteredDevice]> {
+        firstly { () -> Promise<[HAData]> in
+            api.connection.send(.init(type: "config/device_registry/list")).promise.compactMap {
+                if case let .array(value) = $0 {
+                    return value
+                } else {
+                    throw HomeAssistantAPI.APIError.invalidResponse
+                }
+            }
+        }.compactMapValues { value -> RegisteredDevice? in
+            try? RegisteredDevice(data: value)
+        }
     }
 }
