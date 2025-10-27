@@ -205,8 +205,8 @@ final class WatchHomeViewModel: ObservableObject {
             self?.magicItemsInfo = magicItemsInfo
 
             if config.assist.showAssist,
-               !config.assist.serverId.isEmpty,
-               !config.assist.pipelineId.isEmpty {
+               config.assist.serverId != nil,
+               config.assist.pipelineId != nil {
                 self?.showAssist = true
             } else {
                 self?.showAssist = false

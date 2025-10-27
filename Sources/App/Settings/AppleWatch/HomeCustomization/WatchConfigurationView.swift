@@ -41,9 +41,6 @@ struct WatchConfigurationView: View {
         }
         .interactiveDismissDisabled(true)
         .preferredColorScheme(.dark)
-        .onChange(of: viewModel.watchConfig.assist.serverId) { newValue in
-            viewModel.loadPipelines(for: newValue)
-        }
         .sheet(isPresented: $viewModel.showAddItem, content: {
             MagicItemAddView(context: .watch) { itemToAdd in
                 guard let itemToAdd else { return }
@@ -119,17 +116,13 @@ struct WatchConfigurationView: View {
                 Text(verbatim: L10n.Watch.Configuration.ShowAssist.title)
             })
             if viewModel.watchConfig.assist.showAssist {
-                Picker(L10n.Watch.Config.Assist.selectServer, selection: $viewModel.watchConfig.assist.serverId) {
-                    ForEach(viewModel.servers, id: \.identifier.rawValue) { server in
-                        Text(server.info.name)
-                            .tag(server.identifier.rawValue)
-                    }
-                }
-                Picker(L10n.Watch.Labels.SelectedPipeline.title, selection: $viewModel.watchConfig.assist.pipelineId) {
-                    ForEach(viewModel.assistPipelines, id: \.id) { pipeline in
-                        Text(pipeline.name)
-                            .tag(pipeline.id)
-                    }
+                HStack {
+                    Text(L10n.Watch.Labels.SelectedPipeline.title)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    AssistPipelinePicker(
+                        selectedServerId: $viewModel.watchConfig.assist.serverId,
+                        selectedPipelineId: $viewModel.watchConfig.assist.pipelineId
+                    )
                 }
             }
         }

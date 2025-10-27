@@ -13,10 +13,15 @@ struct WatchHomeView: View {
                 showAssist = true
             }
             .fullScreenCover(isPresented: $showAssist, content: {
-                WatchAssistView.build(
-                    serverId: viewModel.watchConfig.assist.serverId,
-                    pipelineId: viewModel.watchConfig.assist.pipelineId
-                )
+                if let serverId = viewModel.watchConfig.assist.serverId,
+                   let pipelineId = viewModel.watchConfig.assist.pipelineId {
+                    WatchAssistView.build(
+                        serverId: serverId,
+                        pipelineId: pipelineId
+                    )
+                } else {
+                    fatalError("Assist launched without serverId or pipelineId")
+                }
             })
             .onAppear {
                 Task {

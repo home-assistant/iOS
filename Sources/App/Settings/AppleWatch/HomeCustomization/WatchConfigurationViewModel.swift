@@ -78,17 +78,6 @@ final class WatchConfigurationViewModel: ObservableObject {
         }
     }
 
-    func loadPipelines(for serverId: String) {
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { return }
-        AssistService(server: server).fetchPipelines { [weak self] pipelinesResponse in
-            guard let self else { return }
-            assistPipelines = pipelinesResponse?.pipelines ?? []
-            if watchConfig.assist.pipelineId.isEmpty {
-                watchConfig.assist.pipelineId = pipelinesResponse?.preferredPipeline ?? ""
-            }
-        }
-    }
-
     @MainActor
     private func loadDatabase() {
         do {
@@ -108,9 +97,6 @@ final class WatchConfigurationViewModel: ObservableObject {
     private func setConfig(_ config: WatchConfig) {
         DispatchQueue.main.async { [weak self] in
             self?.watchConfig = config
-            if config.assist.serverId.isEmpty {
-                self?.watchConfig.assist.serverId = Current.servers.all.first?.identifier.rawValue ?? ""
-            }
         }
     }
 

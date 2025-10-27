@@ -5,10 +5,13 @@ import SwiftUI
 struct AssistPipelinePicker: View {
     /// Returns serverId and selected pipeline
     @State private var showList = false
+    @State private var isLoading = false
     @State private var assistConfigs: [AssistPipelines] = []
     @Binding private var selectedServerId: String?
     @Binding private var selectedPipelineId: String?
     @State private var searchTerm = ""
+
+    @State private var assistService: AssistServiceProtocol?
 
     init(selectedServerId: Binding<String?>, selectedPipelineId: Binding<String?>) {
         self._selectedServerId = selectedServerId
@@ -31,6 +34,22 @@ struct AssistPipelinePicker: View {
         .sheet(isPresented: $showList) {
             NavigationView {
                 List {
+                    if isLoading {
+                        Section {
+                            HStack {
+                                Spacer()
+                                HAProgressView()
+                                Spacer()
+                            }
+                            .padding()
+                        }
+                    } else if assistConfigs.isEmpty {
+                        Section {
+                            Text("No pipelines available")
+                                .foregroundColor(.secondary)
+                        }
+                    }
+
                     ForEach(assistConfigs, id: \.serverId) { config in
                         Section(serverName(serverId: config.serverId)) {
                             ForEach(config.pipelines.filter({ pipeline in
@@ -60,11 +79,19 @@ struct AssistPipelinePicker: View {
                 .onAppear {
                     fetchPipelines()
                 }
+                .navigationViewStyle(.stack)
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
                             showList = false
                         }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            requestPipelines()
+                        }, label: {
+                            Image(systemSymbol: .arrowClockwise)
+                        })
                     }
                 }
             }
@@ -86,8 +113,41 @@ struct AssistPipelinePicker: View {
     private func fetchPipelines() {
         do {
             assistConfigs = try AssistPipelines.config() ?? []
+            if assistConfigs.isEmpty {
+                requestPipelines()
+            }
         } catch {
             Current.Log.error("Failed to fetch assist pipelines for assist pipeline picker, error: \(error)")
+            requestPipelines()
+        }
+    }
+
+    private func requestPipelines() {
+        Current.Log.info("No assist pipelines available in database requesting fetch from servers")
+        isLoading = true
+
+        let group = DispatchGroup()
+
+        for server in Current.servers.all {
+            group.enter()
+            assistService = AssistService(server: server)
+            assistService?.fetchPipelines { _ in
+                DispatchQueue.main.async {
+                    do {
+                        assistConfigs = try AssistPipelines.config() ?? []
+                    } catch {
+                        Current.Log
+                            .error(
+                                "Failed to fetch assist pipelines after server \(server.info.name) fetch, error: \(error)"
+                            )
+                    }
+                    group.leave()
+                }
+            }
+        }
+
+        group.notify(queue: .main) {
+            isLoading = false
         }
     }
 }

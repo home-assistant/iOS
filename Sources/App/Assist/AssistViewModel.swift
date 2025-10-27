@@ -222,7 +222,9 @@ extension AssistViewModel: AudioRecorderDelegate {
     }
 
     func didStopRecording() {
-        isRecording = false
+        DispatchQueue.main.async { [weak self] in
+            self?.isRecording = false
+        }
     }
 }
 
