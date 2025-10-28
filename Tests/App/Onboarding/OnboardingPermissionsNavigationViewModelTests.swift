@@ -204,7 +204,7 @@ struct OnboardingPermissionsNavigationViewModelTests {
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         viewModel.setLessSecureLocalConnection()
-        #expect(server.info.connection.localAccessSecurityLevel == .lessSecure)
+        #expect(server.info.connection.connectionAccessSecurityLevel == .lessSecure)
     }
 
     @Test("Disable location sensor")

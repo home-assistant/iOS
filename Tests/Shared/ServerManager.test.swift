@@ -537,7 +537,7 @@ class ServerManagerTests: XCTestCase {
             internalHardwareAddresses: ["internal_hardware"],
             isLocalPushEnabled: true,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         let tokenInfo = TokenInfo(

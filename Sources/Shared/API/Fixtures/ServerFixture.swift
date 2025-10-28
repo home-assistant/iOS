@@ -14,7 +14,7 @@ public enum ServerFixture {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(exceptions: []),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         ),
         token: .init(
             accessToken: "",
@@ -55,7 +55,7 @@ public enum ServerFixture {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(exceptions: []),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         ),
         token: .init(
             accessToken: "access-token",
@@ -90,7 +90,7 @@ public enum ServerFixture {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(exceptions: []),
-            localAccessSecurityLevel: .lessSecure
+            connectionAccessSecurityLevel: .lessSecure
         ),
         token: .init(
             accessToken: "access-token",

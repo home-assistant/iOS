@@ -185,7 +185,7 @@ class WebhookManagerTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: true,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         let nextAPIWebhookURL = nextConnectionInfo.webhookURL()
