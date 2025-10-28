@@ -4,11 +4,9 @@ import SwiftUI
 struct HomeNetworkInputView: View {
     @State private var networkName: String = ""
     @State private var showingEmptyNetworkAlert = false
-    @State private var showingSkipAlert = false
     @StateObject private var viewModel = HomeNetworkInputViewModel()
 
     let onNext: (String?) -> Void
-    let onSkip: () -> Void
 
     var body: some View {
         BaseOnboardingView(
@@ -65,24 +63,12 @@ struct HomeNetworkInputView: View {
                 } else {
                     onNext(trimmedNetworkName)
                 }
-            },
-            secondaryActionTitle: L10n.Onboarding.NetworkInput.SecondaryButton.title,
-            secondaryAction: {
-                showingSkipAlert = true
             }
         )
         .alert(L10n.Onboarding.NetworkInput.NoNetwork.Alert.title, isPresented: $showingEmptyNetworkAlert) {
             Button(L10n.okLabel) {}
         } message: {
             Text(L10n.Onboarding.NetworkInput.NoNetwork.Alert.body)
-        }
-        .alert(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.title, isPresented: $showingSkipAlert) {
-            Button(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.PrimaryButton.title, role: .cancel) {}
-            Button(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.SecondaryButton.title) {
-                onSkip()
-            }
-        } message: {
-            Text(L10n.Onboarding.NetworkInput.NoNetwork.Skip.Alert.body)
         }
         .onAppear {
             loadCurrentNetworkInfo()
@@ -107,9 +93,6 @@ struct HomeNetworkInputView: View {
         HomeNetworkInputView(
             onNext: { networkName in
                 print("Next tapped with network: \(networkName ?? "nil")")
-            },
-            onSkip: {
-                print("Skip tapped")
             }
         )
         .navigationBarTitleDisplayMode(.inline)

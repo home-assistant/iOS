@@ -624,6 +624,8 @@
 		42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		4238DCA42DD1F1E300126434 /* AppSessionValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238DCA32DD1F1E300126434 /* AppSessionValues.swift */; };
 		4238DCA52DD1F1E300126434 /* AppSessionValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238DCA32DD1F1E300126434 /* AppSessionValues.swift */; };
+		4238E8532EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238E8522EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift */; };
+		4238E8572EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4238E8562EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift */; };
 		4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */; };
 		423B5E092D67781A0000CB95 /* WidgetBasicContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E027010D8400A8F818 /* WidgetBasicContainerView.swift */; };
 		423B5E0A2D6778370000CB95 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
@@ -806,6 +808,9 @@
 		429821142CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */; };
 		429821172CD0DDCD005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
 		429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */; };
+		4298587E2EB1025E00E33710 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
+		4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4298587D2EB1025E00E33710 /* LocationManager.swift */; };
+		429858862EB1066400E33710 /* LocationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429858832EB102D000E33710 /* LocationManagerTests.swift */; };
 		429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */; };
 		429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */; };
 		429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */; };
@@ -2125,6 +2130,8 @@
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerSource.swift; sourceTree = "<group>"; };
 		4238DCA32DD1F1E300126434 /* AppSessionValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionValues.swift; sourceTree = "<group>"; };
+		4238E8522EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSecurityLevelBlockView.swift; sourceTree = "<group>"; };
+		4238E8562EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSecurityLevelBlockViewModel.swift; sourceTree = "<group>"; };
 		4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUserDefaults.swift; sourceTree = "<group>"; };
 		423F44EF2C17238200766A99 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -2317,6 +2324,8 @@
 		4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GRDB+Initialization.swift"; sourceTree = "<group>"; };
 		429821132CD0DD85005ECD39 /* BluetoothPermissionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewModel.swift; sourceTree = "<group>"; };
 		429821162CD0DDCD005ECD39 /* HAButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.swift; sourceTree = "<group>"; };
+		4298587D2EB1025E00E33710 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		429858832EB102D000E33710 /* LocationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerTests.swift; sourceTree = "<group>"; };
 		429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRestorationType.swift; sourceTree = "<group>"; };
 		429AFE5B2DB7BE4000AF0836 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		429AFE5D2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTemplateEditor.swift; sourceTree = "<group>"; };
@@ -4865,6 +4874,15 @@
 			path = Styles;
 			sourceTree = "<group>";
 		};
+		4298587C2EB0F84000E33710 /* ConnectionSecurityLevelBlock */ = {
+			isa = PBXGroup;
+			children = (
+				4238E8522EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift */,
+				4238E8562EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift */,
+			);
+			path = ConnectionSecurityLevelBlock;
+			sourceTree = "<group>";
+		};
 		429AFE5A2DB7BE3200AF0836 /* General */ = {
 			isa = PBXGroup;
 			children = (
@@ -5354,6 +5372,7 @@
 		42BE698B2C4691E000745ECA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4298587C2EB0F84000E33710 /* ConnectionSecurityLevelBlock */,
 				42F73F582E264A7A00B704A9 /* StatusBarViews */,
 				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */,
@@ -5712,6 +5731,7 @@
 		46C62BA32D8A382F002C0001 /* SharedTesting */ = {
 			isa = PBXGroup;
 			children = (
+				429858832EB102D000E33710 /* LocationManagerTests.swift */,
 				46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */,
 				46C62BA52D8A3833002C0001 /* SnapshottablePreviewConfigurations+SnapshotTesting.swift */,
 				46C62BA22D8A382F002C0001 /* SharedTesting.h */,
@@ -6373,6 +6393,7 @@
 				420F53E92C4E9D43003C8415 /* Widget */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
 				4254C4C92D103ABB00245021 /* ExternalLink.swift */,
+				4298587D2EB1025E00E33710 /* LocationManager.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -8498,6 +8519,7 @@
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,
 				42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
+				4238E8572EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,
@@ -8623,6 +8645,7 @@
 				42DC8B782E14027000D9999E /* SearchingServersAnimationView.swift in Sources */,
 				42B980DE2DC3599300BC5C08 /* PrivacyView.swift in Sources */,
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
+				4238E8532EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,
 				4206FFBA2DAD58DB0087626C /* ConnectionInfo+WebView.swift in Sources */,
@@ -8790,6 +8813,7 @@
 				42DB4D0C2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */,
 				4297ADA72C89C74A00790812 /* GRDB+Initialization.swift in Sources */,
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
+				4298587F2EB1025E00E33710 /* LocationManager.swift in Sources */,
 				420CFC6A2D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */,
 				1164D9DF25FB1B9800515E8A /* UIBarButtonItem+Additions.swift in Sources */,
 				11B38EF6275C54A300205C7B /* PickAServerError.swift in Sources */,
@@ -9135,6 +9159,7 @@
 				111858DA24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				D0EEF317214DD7A400D1D360 /* DiscoveredHomeAssistant.swift in Sources */,
 				117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
+				4298587E2EB1025E00E33710 /* LocationManager.swift in Sources */,
 				11B6774D28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
 				110AA55C25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				4278C9C12C8F226500A7B5F4 /* GuaranteedMessages.swift in Sources */,
@@ -9329,6 +9354,7 @@
 				114CBAEB2839FC2500A9BAFF /* SecurityExceptions.test.swift in Sources */,
 				11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */,
 				1130A5742751B29E00640E38 /* PerServerContainer.test.swift in Sources */,
+				429858862EB1066400E33710 /* LocationManagerTests.swift in Sources */,
 				116570802702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift in Sources */,
 				1179E42D24F9FAA100D4E307 /* SensorProviderDependencies.test.swift in Sources */,
 				11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */,

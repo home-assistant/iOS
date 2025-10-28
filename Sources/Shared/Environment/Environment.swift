@@ -474,4 +474,6 @@ public class AppEnvironment {
 
     /// Values stored for the given app session until terminated by the OS.
     public var appSessionValues: AppSessionValuesProtocol = AppSessionValues.shared
+
+    public var locationManager: LocationManagerProtocol = LocationManager()
 }

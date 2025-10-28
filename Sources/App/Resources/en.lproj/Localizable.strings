@@ -1222,10 +1222,17 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "web_view.empty_state.open_settings_button" = "Open App settings";
 "web_view.empty_state.retry_button" = "Retry";
 "web_view.empty_state.title" = "You're disconnected";
-"web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \
-\
- ➡️  Please open the App settings and update your security choices or URLs.";
-"web_view.no_url_available.primary_button.title" = "Open App settings";
+"connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.title" = "You're disconnected";
+
+"connection_security_level_block.change_preference.title" = "Change connection preference";
+"connection_security_level_block.open_settings.title" = "Open settings";
+"connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Grant location permission";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Connect to your home network";
+"connection_security_level_block.requirement.title" = "Missing requirements";
+"connection_security_level_block.requirement.learn_more.title" = "Learn more";
+
 "web_view.no_url_available.title" = "We can't connect to Home Assistant";
 "web_view.server_selection.title" = "Choose server";
 "web_view.unique_server_selection.title" = "Choose one server";

@@ -15,9 +15,6 @@ struct HomeNetworkInputViewTests {
                 HomeNetworkInputView(
                     onNext: { _ in
                         // Next action for testing
-                    },
-                    onSkip: {
-                        // Skip action for testing
                     }
                 )
                 .toolbarVisibility(.hidden, for: .navigationBar)
