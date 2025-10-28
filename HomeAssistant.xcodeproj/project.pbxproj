@@ -595,6 +595,7 @@
 		421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */; };
 		421B1C1D2BD65C04001ED18C /* View+ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */; };
 		421BBC702E93A64B00745EC8 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D842159D10D00833E5D /* Interface.storyboard */; };
+		421D89A22EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421D89A12EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift */; };
 		4221ED352D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
 		4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688A2D40F9B7005911E4 /* WidgetCustom.swift */; };
 		4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
@@ -2112,6 +2113,7 @@
 		42196ADD2DA5B58200BD501E /* OnboardingNavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationTests.swift; sourceTree = "<group>"; };
 		421B1C172BD6524E001ED18C /* WidgetBuilderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderViewModel.swift; sourceTree = "<group>"; };
 		421B1C1B2BD65BFA001ED18C /* View+ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifier.swift"; sourceTree = "<group>"; };
+		421D89A12EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingViewModifiers.swift; sourceTree = "<group>"; };
 		4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseUpdater.swift; sourceTree = "<group>"; };
 		4223688A2D40F9B7005911E4 /* WidgetCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustom.swift; sourceTree = "<group>"; };
 		4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustomTimelineProvider.swift; sourceTree = "<group>"; };
@@ -5550,6 +5552,7 @@
 			isa = PBXGroup;
 			children = (
 				4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */,
+				421D89A12EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift */,
 				42E95C562CA45EFA0010ECE3 /* OnboardingErrorView.swift */,
 				42E95C582CA46AD50010ECE3 /* ShareActivityView.swift */,
 				42E95C542CA44FC90010ECE3 /* SafariWebView.swift */,
@@ -8633,6 +8636,7 @@
 				42FCCFFF2B9B1C310057783F /* ThreadCredentialsSharingView.swift in Sources */,
 				429106872BA9D22500D452F9 /* AudioRecorder.swift in Sources */,
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
+				421D89A22EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				3E02C0F32CA8032500102131 /* WidgetSensorsAppIntent.swift in Sources */,

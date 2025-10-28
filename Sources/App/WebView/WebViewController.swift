@@ -309,7 +309,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if Current.location.permissionStatus == .notDetermined {
             Current.Log.verbose("User has not decided location permission yet")
             showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
-        } else if server.info.connection.localAccessSecurityLevel == .undefined {
+        } else if server.info.connection.connectionAccessSecurityLevel == .undefined {
             Current.Log.verbose("User has not decided local access security level yet")
             showOnboardingPermissions(
                 steps: OnboardingPermissionsNavigationViewModel.StepID
@@ -318,7 +318,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         } else {
             Current.Log
                 .verbose(
-                    "User decided \(server.info.connection.localAccessSecurityLevel) for local access security level"
+                    "User decided \(server.info.connection.connectionAccessSecurityLevel) for local access security level"
                 )
         }
     }

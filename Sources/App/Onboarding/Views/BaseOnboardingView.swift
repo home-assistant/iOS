@@ -10,6 +10,11 @@ import SwiftUI
 /// - Optional informational callout below choices
 /// - Bottom area with primary button and optional secondary button
 public struct BaseOnboardingView<Illustration: View, Content: View>: View {
+    // MARK: - Environment
+
+    @Environment(\.hideOnboardingTitle) private var hideOnboardingTitle
+    @Environment(\.hideOnboardingIcon) private var hideOnboardingIcon
+
     // MARK: - Inputs
 
     private let illustration: () -> Illustration
@@ -88,24 +93,28 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     public var body: some View {
         ScrollView {
             VStack(spacing: verticalSpacing) {
-                Group {
-                    if let image = illustration() as? Image {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: 130)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    } else {
-                        illustration()
-                            .frame(maxWidth: .infinity, alignment: .center)
+                if !hideOnboardingIcon {
+                    Group {
+                        if let image = illustration() as? Image {
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 130)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else {
+                            illustration()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
                     }
+                    .padding(.top, DesignSystem.Spaces.two)
                 }
-                .padding(.top, DesignSystem.Spaces.two)
 
-                Text(title)
-                    .font(DesignSystem.Font.largeTitle.bold())
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DesignSystem.Spaces.two)
+                if !hideOnboardingTitle {
+                    Text(title)
+                        .font(DesignSystem.Font.largeTitle.bold())
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, DesignSystem.Spaces.two)
+                }
 
                 VStack(spacing: DesignSystem.Spaces.two) {
                     Text(primaryDescription)

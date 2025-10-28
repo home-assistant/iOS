@@ -109,8 +109,8 @@
 "assist.watch.mic_button.title" = "Tap to";
 "assist.watch.not_reachable.title" = "Assist requires iPhone connectivity. Your iPhone is currently unreachable.";
 "assist.watch.volume.title" = "Volume control";
-"assist_pipeline_picker.placeholder" = "Pick pipeline";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
+"assist_pipeline_picker.placeholder" = "Pick pipeline";
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
@@ -630,10 +630,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.invite_to_server" = "Invite someone to this server";
-"settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
-"settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
-"settings.connection_section.local_access_security_level.title" = "Local access security";
-"settings.connection_section.local_access_security_level.undefined.title" = "Not configured";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.location_send_type.setting.exact" = "Exact";
 "settings.connection_section.location_send_type.setting.never" = "Never";

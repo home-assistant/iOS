@@ -70,8 +70,8 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     private var localAccess: some View {
-        LocalAccessPermissionView { localAccessSecurityLevel in
-            switch localAccessSecurityLevel {
+        LocalAccessPermissionView { connectionAccessSecurityLevel in
+            switch connectionAccessSecurityLevel {
             case .undefined:
                 assertionFailure("undefined should not be possible here")
             case .mostSecure:

@@ -200,7 +200,7 @@ private extension ConnectionInfo {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         // default cloud to on

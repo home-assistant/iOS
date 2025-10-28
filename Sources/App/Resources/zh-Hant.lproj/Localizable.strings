@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "點擊";
 "assist.watch.not_reachable.title" = "助理需要 iPhone 連線、目前無法存取您的 iPhone。";
 "assist.watch.volume.title" = "音量控制";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "選擇助理設定";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "於 iPhone 點擊繼續";

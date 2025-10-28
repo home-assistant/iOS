@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Ketuk untuk";
 "assist.watch.not_reachable.title" = "Assist memerlukan konektivitas iPhone. iPhone Anda saat ini tidak dapat dijangkau.";
 "assist.watch.volume.title" = "Pengatur volume";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Pilih saluran";
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";

@@ -2254,6 +2254,22 @@ public enum L10n {
           public static var title: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.title") }
         }
       }
+      public enum ConnectionAccessSecurityLevel {
+        /// Connection security level
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.title") }
+        public enum LessSecure {
+          /// Less secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.less_secure.title") }
+        }
+        public enum MostSecure {
+          /// Most secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.most_secure.title") }
+        }
+        public enum Undefined {
+          /// Not configured
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.connection_access_security_level.undefined.title") }
+        }
+      }
       public enum DeleteServer {
         /// Are you sure you wish to delete this server?
         public static var message: String { return L10n.tr("Localizable", "settings.connection_section.delete_server.message") }
@@ -2313,22 +2329,6 @@ public enum L10n {
         public static var header: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.header") }
         /// MyFunnyNetworkName
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.placeholder") }
-      }
-      public enum LocalAccessSecurityLevel {
-        /// Local access security
-        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.title") }
-        public enum LessSecure {
-          /// Less secure
-          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.less_secure.title") }
-        }
-        public enum MostSecure {
-          /// Most secure
-          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.most_secure.title") }
-        }
-        public enum Undefined {
-          /// Not configured
-          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.undefined.title") }
-        }
       }
       public enum LocationSendType {
         /// Location Sent

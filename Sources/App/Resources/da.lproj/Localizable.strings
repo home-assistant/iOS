@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Tryk for";
 "assist.watch.not_reachable.title" = "Assist kræver iPhone-forbindelse. Din iPhone er i øjeblikket ikke tilgængelig.";
 "assist.watch.volume.title" = "Lydstyrkekontrol";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Vælg pipeline";
 "cancel_label" = "Annullér";
 "carPlay.action.intro.item.body" = "Tryk for at fortsætte på din iPhone";

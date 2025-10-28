@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Πατήστε για να";
 "assist.watch.not_reachable.title" = "Το Assist απαιτεί συνδεσιμότητα iPhone. Το iPhone σας δεν είναι προσβάσιμο αυτή τη στιγμή.";
 "assist.watch.volume.title" = "Ελεγχος έντασης";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Επιλογή pipeline";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";

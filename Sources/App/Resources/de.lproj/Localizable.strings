@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Tippe zum";
 "assist.watch.not_reachable.title" = "Assist erfordert eine iPhone-Verbindung. Dein iPhone ist derzeit nicht erreichbar.";
 "assist.watch.volume.title" = "Lautstärkeregler";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Pipeline auswählen";
 "cancel_label" = "Abbrechen";
 "carPlay.action.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";

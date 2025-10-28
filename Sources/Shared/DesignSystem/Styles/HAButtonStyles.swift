@@ -4,10 +4,16 @@ enum HAButtonStylesConstants {
     static var cornerRadius: CGFloat = 12
     static var disabledOpacity: CGFloat = 0.5
     static var horizontalPadding: CGFloat = 20
+    static var highlightedOpacity: CGFloat = 0.8
+    static var highlightedScale: CGFloat = 0.95
+    static var hoverOpacity: CGFloat = 0.9
+    static var hoverScale: CGFloat = 1.02
+    static var animationDuration: Double = 0.1
 }
 
 public struct HAButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
+    @State private var isHovering = false
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -15,9 +21,58 @@ public struct HAButtonStyle: ButtonStyle {
             .foregroundColor(.white)
             .haButtonBasicSizing()
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
-            .background(isEnabled ? Color.haPrimary : Color.gray)
+            .background(backgroundColorForState(
+                isEnabled: isEnabled,
+                isPressed: configuration.isPressed,
+                isHovering: isHovering
+            ))
             .clipShape(Capsule())
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
+            .scaleEffect(scaleForState(isPressed: configuration.isPressed, isHovering: isHovering))
+            .animation(.easeInOut(duration: HAButtonStylesConstants.animationDuration), value: configuration.isPressed)
+            .animation(.easeInOut(duration: HAButtonStylesConstants.animationDuration), value: isHovering)
+        #if !os(watchOS)
+            .onHover { hovering in
+                if isEnabled {
+                    isHovering = hovering
+                }
+            }
+        #endif
+    }
+
+    private func backgroundColorForState(isEnabled: Bool, isPressed: Bool, isHovering: Bool) -> Color {
+        if !isEnabled {
+            return Color.gray
+        }
+
+        if isPressed {
+            return Color.haPrimary.opacity(HAButtonStylesConstants.highlightedOpacity)
+        }
+
+        if isHovering {
+            return Color.haPrimary.opacity(HAButtonStylesConstants.hoverOpacity)
+        }
+
+        return Color.haPrimary
+    }
+
+    private func scaleForState(isPressed: Bool, isHovering: Bool) -> CGFloat {
+        if isPressed {
+            return HAButtonStylesConstants.highlightedScale
+        }
+
+        if isHovering {
+            return HAButtonStylesConstants.hoverScale
+        }
+
+        return 1.0
+    }
+}
+
+#Preview {
+    VStack {
+        Button("Primary Button") {}
+            .buttonStyle(.primaryButton)
     }
 }
 

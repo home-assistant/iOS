@@ -5,7 +5,7 @@ import Version
 import Communicator
 #endif
 
-public enum LocalAccessSecurityLevel: String, Codable {
+public enum ConnectionSecurityLevel: String, Codable {
     // User has not opted in or out of security checks
     case undefined
     // Checks for home network before connecting to non-https URLs
@@ -16,11 +16,11 @@ public enum LocalAccessSecurityLevel: String, Codable {
     public var description: String {
         switch self {
         case .undefined:
-            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.Undefined.title
+            return L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.Undefined.title
         case .mostSecure:
-            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.MostSecure.title
+            return L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.MostSecure.title
         case .lessSecure:
-            return L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.LessSecure.title
+            return L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.LessSecure.title
         }
     }
 }
@@ -33,7 +33,7 @@ public struct ConnectionInfo: Codable, Equatable {
     public var webhookSecret: String?
     public var useCloud: Bool = false
     public var cloudhookURL: URL?
-    public var localAccessSecurityLevel: LocalAccessSecurityLevel = .undefined
+    public var connectionAccessSecurityLevel: ConnectionSecurityLevel = .undefined
     public var internalSSIDs: [String]? {
         didSet {
             overrideActiveURLType = nil
@@ -81,7 +81,7 @@ public struct ConnectionInfo: Codable, Equatable {
         internalHardwareAddresses: [String]?,
         isLocalPushEnabled: Bool,
         securityExceptions: SecurityExceptions,
-        localAccessSecurityLevel: LocalAccessSecurityLevel
+        connectionAccessSecurityLevel: ConnectionSecurityLevel
     ) {
         self.externalURL = externalURL
         self.internalURL = internalURL
@@ -93,7 +93,7 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalHardwareAddresses = internalHardwareAddresses
         self.isLocalPushEnabled = isLocalPushEnabled
         self.securityExceptions = securityExceptions
-        self.localAccessSecurityLevel = localAccessSecurityLevel
+        self.connectionAccessSecurityLevel = connectionAccessSecurityLevel
     }
 
     public init(from decoder: Decoder) throws {
@@ -108,9 +108,9 @@ public struct ConnectionInfo: Codable, Equatable {
         self.internalHardwareAddresses =
             try container.decodeIfPresent([String].self, forKey: .internalHardwareAddresses)
         self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
-        self.localAccessSecurityLevel = try container.decodeIfPresent(
-            LocalAccessSecurityLevel.self,
-            forKey: .localAccessSecurityLevel
+        self.connectionAccessSecurityLevel = try container.decodeIfPresent(
+            ConnectionSecurityLevel.self,
+            forKey: .connectionAccessSecurityLevel
         ) ?? .undefined
         self.isLocalPushEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLocalPushEnabled) ?? true
         self.securityExceptions = try container.decodeIfPresent(
@@ -223,7 +223,7 @@ public struct ConnectionInfo: Codable, Equatable {
             // Custom remote connection
             activeURLType = .external
             url = externalURL
-        } else if let internalURL, [.lessSecure, .undefined].contains(localAccessSecurityLevel) {
+        } else if let internalURL, [.lessSecure, .undefined].contains(connectionAccessSecurityLevel) {
             // Falback to internal URL if no other URL is set
             // In case user opted to not check for home network or haven't made a decision yet
             // we allow usage of internal URL as fallback
