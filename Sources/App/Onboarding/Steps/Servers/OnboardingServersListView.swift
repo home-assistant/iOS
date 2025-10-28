@@ -187,7 +187,7 @@ struct OnboardingServersListView: View {
                         color: .accent
                     ))
                 })
-                .fullScreenCover(isPresented: $showDocumentation) {
+                .sheet(isPresented: $showDocumentation) {
                     SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
                 }
             }
