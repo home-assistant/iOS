@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "假如設定需要，可選項開啟跨網站追蹤。";
 "NSFocusStatusUsageDescription" = "以感測器方式回報專注狀態。";
 "NSLocalNetworkUsageDescription" = "與 Home Assistant 設備確認與進行通訊。";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "建議您使用「永遠允許提供座標」以獲得最好的定位體驗。「只允許在使用 app 的期間提供座標資訊」將會自動關閉 iBeacons、地理圍欄、背景更新等功能。";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 另外還需要設定 '永遠' 允許存取位置權限，以便應用程式可以執行背景操作。\n\n ⚠️ 沒有此權限，應用程式將無法決定在背景使用哪個連線（本地或遠端），並將始終使用遠端連線。";
 "NSLocationAlwaysUsageDescription" = "程式需要提供以下權限，如存取 iBeacons、地址圍欄、背景運作等功能來取得目前的座標更新與精確度回報資訊。";
 "NSLocationUsageDescription" = "開啟後，將會以 Device Tracker 傳送裝置位置至 Home Assistant 伺服器。";
-"NSLocationWhenInUseUsageDescription" = "只允許在使用 App 的期間內提供座標資訊，將會自動關閉 iBeacons、地理圍欄、背景座標更新與精確度回報資訊。";
+"NSLocationWhenInUseUsageDescription" = "此應用程式需要位置存取權限、才能直接連線至您的 Home Assistant 安裝。\n \n 1️⃣ 您的位置資訊將僅用於檢查是否已連線至本機網路。\n \n 2️⃣ 位置資訊不會與任何人分享。\n \n 3️⃣ 如果不允許此操作，應用程式將始終透過網際網路連線。如果未設定，它將保護您的資料並拒絕連線。";
 "NSMicrophoneUsageDescription" = "使用 Home Assistant frontend 進行錄音。";
 "NSMotionUsageDescription" = "動作用以使用動作類別改善座標更新，及提供基本計步資料。";
 "NSPhotoLibraryAddUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";

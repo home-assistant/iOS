@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Tryck för att";
 "assist.watch.not_reachable.title" = "Assistenten kräver iPhone-anslutning. Din iPhone är för närvarande inte nåbar.";
 "assist.watch.volume.title" = "Volymkontroll";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Välj pipeline";
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Tryck för att fortsätta på din iPhone";

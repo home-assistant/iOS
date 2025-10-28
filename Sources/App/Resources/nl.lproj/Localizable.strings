@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Tik om";
 "assist.watch.not_reachable.title" = "Assist vereist iPhone-connectiviteit. Je iPhone is nu niet bereikbaar.";
 "assist.watch.volume.title" = "Volumeregeling";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Kies pijplijn";
 "cancel_label" = "Annuleren";
 "carPlay.action.intro.item.body" = "Tik op om verder te gaan op je iPhone";

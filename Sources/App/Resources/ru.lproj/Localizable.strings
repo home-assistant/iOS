@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Нажмите, чтобы";
 "assist.watch.not_reachable.title" = "Assist требует подключения к iPhone. В данный момент ваш iPhone недоступен.";
 "assist.watch.volume.title" = "Громкость";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Выберите обработчик";
 "cancel_label" = "Отмена";
 "carPlay.action.intro.item.body" = "Нажмите, чтобы продолжить на iPhone";
