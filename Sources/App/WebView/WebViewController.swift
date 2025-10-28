@@ -340,6 +340,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         // Prevent controller on being dismissed on swipe down
         controller.isModalInPresentation = true
+        controller.view.tag = WebViewControllerOverlayedViewTags.onboardingPermissions.rawValue
         presentOverlayController(controller: controller, animated: true)
     }
 
@@ -636,18 +637,49 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let controller = ConnectionSecurityLevelBlockView(server: server).embeddedInHostingController()
         controller.modalPresentationStyle = .fullScreen
         controller.isModalInPresentation = true
-        presentOverlayController(controller: controller, animated: false)
+        controller.view.tag = WebViewControllerOverlayedViewTags.noActiveURLError.rawValue
+        controller.modalTransitionStyle = .crossDissolve
+
+        guard ![
+            WebViewControllerOverlayedViewTags.noActiveURLError.rawValue,
+            WebViewControllerOverlayedViewTags.settingsView.rawValue,
+            WebViewControllerOverlayedViewTags.onboardingPermissions.rawValue,
+        ].contains(presentedViewController?.view.tag ?? -1) else {
+            Current.Log.info("No active URL scree was not presented because of high priority view already visible")
+            return
+        }
+
+        presentOverlayController(controller: controller, animated: true)
+    }
+
+    private func hideNoActiveURLError() {
+        if presentedViewController?.view.tag == WebViewControllerOverlayedViewTags.noActiveURLError.rawValue {
+            presentedViewController?.dismiss(animated: true)
+        }
     }
 
     @objc private func loadActiveURLIfNeeded() {
+        guard !loadActiveURLIfNeededInProgress else {
+            Current.Log.info("loadActiveURLIfNeeded already in progress, skipping")
+            return
+        }
+
+        loadActiveURLIfNeededInProgress = true
         Current.Log.info("loadActiveURLIfNeeded called")
+
         Current.connectivity.syncNetworkInformation { [weak self] in
+            defer {
+                self?.loadActiveURLIfNeededInProgress = false
+            }
+
             guard let self else { return }
             guard let webviewURL = server.info.connection.webviewURL() else {
                 Current.Log.info("not loading, no url")
                 showNoActiveURLError()
                 return
             }
+
+            hideNoActiveURLError()
 
             guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
                 // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
@@ -984,6 +1016,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let settingsView = SettingsViewController()
             settingsView.hidesBottomBarWhenPushed = true
             let navController = UINavigationController(rootViewController: settingsView)
+            navController.view.tag = WebViewControllerOverlayedViewTags.settingsView.rawValue
             presentOverlayController(controller: navController, animated: true)
         }
     }
@@ -1343,6 +1376,7 @@ extension WebViewController: WebViewControllerProtocol {
                 } else {
                     load(request: URLRequest(url: webviewURL))
                 }
+                hideNoActiveURLError()
             } else {
                 showNoActiveURLError()
             }

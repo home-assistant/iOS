@@ -681,4 +681,24 @@ class ConnectionInfoTests: XCTestCase {
 
         XCTAssertEqual(info.invitationURL(), internalURL)
     }
+
+    func testFallbackToInternalURLWhenItIsHTTPS() {
+        let internalURL = URL(string: "https://internal.com:8123")
+        var info = ConnectionInfo(
+            externalURL: nil,
+            internalURL: internalURL,
+            cloudhookURL: nil,
+            remoteUIURL: nil,
+            webhookID: "webhook_id1",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .mostSecure
+        )
+
+        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(info.activeURLType, .internal)
+    }
 }

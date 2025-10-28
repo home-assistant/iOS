@@ -8,6 +8,11 @@ import UIKit
 import Version
 
 class ConnectionSettingsViewController: HAFormViewController, RowControllerType {
+    fileprivate enum RowTag: String {
+        case externalURL
+        case internalURL
+    }
+
     public var onDismissCallback: ((UIViewController) -> Void)?
 
     let server: Server
@@ -144,13 +149,17 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
+                row.tag = RowTag.internalURL.rawValue
                 row.displayValueFor = { [server] _ in
                     server.info.connection.address(for: .internal)?.absoluteString ?? "—"
                 }
                 row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
                     ConnectionURLViewController(server: server, urlType: .internal, row: row)
-                }), onDismiss: { [navigationController] _ in
+                }), onDismiss: { [weak self, navigationController] _ in
                     navigationController?.popViewController(animated: true)
+                    self?.form.forEach { section in
+                        section.evaluateHidden()
+                    }
                 })
 
                 row.evaluateHidden()
@@ -159,6 +168,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+                row.tag = RowTag.externalURL.rawValue
                 row.displayValueFor = { [server] _ in
                     if server.info.connection.useCloud, server.info.connection.canUseCloud {
                         return L10n.Settings.ConnectionSection.HomeAssistantCloud.title
@@ -168,13 +178,25 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                 }
                 row.presentationMode = .show(controllerProvider: .callback(builder: { [server] in
                     ConnectionURLViewController(server: server, urlType: .external, row: row)
-                }), onDismiss: { [navigationController] _ in
+                }), onDismiss: { [weak self, navigationController] _ in
                     navigationController?.popViewController(animated: true)
+                    self?.form.forEach { section in
+                        section.evaluateHidden()
+                    }
                 })
+
+                row.evaluateHidden()
             }
 
             <<< ButtonRow { row in
                 row.cellStyle = .value1
+                row.hidden = .function([
+                    RowTag.externalURL.rawValue,
+                    RowTag.internalURL.rawValue,
+                ], { [weak self] _ in
+                    // We only display this section is user has non-HTTPS URL configured as internal or external
+                    !(self?.server.info.connection.hasNonHTTPSURLOption ?? false)
+                })
                 row.title = L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title
                 row.displayValueFor = { [server] _ in
                     server.info.connection.connectionAccessSecurityLevel.description
@@ -195,6 +217,8 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                         animated: true
                     )
                 }
+
+                row.evaluateHidden()
             }
 
             +++ Section(L10n.SettingsDetails.Privacy.title)

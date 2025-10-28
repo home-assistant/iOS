@@ -210,7 +210,6 @@ struct ConnectionSecurityLevelBlockView: View {
 
     private func reload() {
         Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { webView in
-            dismiss()
             webView.refresh()
         }
     }
