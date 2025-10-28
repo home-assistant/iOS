@@ -1,11 +1,13 @@
+import Combine
 import Shared
 import SwiftUI
 
-struct ManualURLEntryView: View {
+struct ManualURLEntryView: View, KeyboardReadable {
     @Environment(\.dismiss) private var dismiss
     @State private var urlString: String
     @FocusState private var focused: Bool?
     @State private var showInvalidURLError = false
+    @State private var isKeyboardVisible = false
 
     let connectAction: (URL) -> Void
 
@@ -49,6 +51,8 @@ struct ManualURLEntryView: View {
                     showInvalidURLError = true
                 }
             }
+            .hideOnboardingTitle(isKeyboardVisible)
+            .hideOnboardingIcon(isKeyboardVisible)
             .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -64,6 +68,9 @@ struct ManualURLEntryView: View {
                     message: Text(verbatim: L10n.Onboarding.ManualSetup.InputError.message),
                     dismissButton: .default(Text(verbatim: L10n.okLabel))
                 )
+            }
+            onReceive(keyboardPublisher) { newIsKeyboardVisible in
+                isKeyboardVisible = newIsKeyboardVisible
             }
         }
     }
@@ -107,4 +114,24 @@ struct ManualURLEntryView: View {
             ManualURLEntryView { _ in
             }
         }
+}
+
+/// Publisher to read keyboard changes.
+protocol KeyboardReadable {
+    var keyboardPublisher: AnyPublisher<Bool, Never> { get }
+}
+
+extension KeyboardReadable {
+    var keyboardPublisher: AnyPublisher<Bool, Never> {
+        Publishers.Merge(
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillShowNotification)
+                .map { _ in true },
+
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillHideNotification)
+                .map { _ in false }
+        )
+        .eraseToAnyPublisher()
+    }
 }

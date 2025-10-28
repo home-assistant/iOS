@@ -29,7 +29,7 @@ struct OnboardingWelcomeView: View {
         .safeAreaInset(edge: .bottom, content: {
             continueButtonBlock
         })
-        .fullScreenCover(isPresented: $showLearnMore) {
+        .sheet(isPresented: $showLearnMore) {
             SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
         }
     }
