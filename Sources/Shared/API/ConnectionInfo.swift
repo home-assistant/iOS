@@ -54,6 +54,23 @@ public struct ConnectionInfo: Codable, Equatable {
         externalURL != nil || remoteUIURL != nil
     }
 
+    public var hasNonHTTPSURLOption: Bool {
+        let https = "https"
+        if let externalURL, externalURL.scheme?.lowercased() != https {
+            return true
+        }
+
+        if let internalURL, internalURL.scheme?.lowercased() != https {
+            return true
+        }
+
+        if let remoteUIURL, remoteUIURL.scheme?.lowercased() != https {
+            return true
+        }
+
+        return false
+    }
+
     public var overrideActiveURLType: URLType?
     public private(set) var activeURLType: URLType = .external
 
@@ -227,6 +244,10 @@ public struct ConnectionInfo: Codable, Equatable {
             // Falback to internal URL if no other URL is set
             // In case user opted to not check for home network or haven't made a decision yet
             // we allow usage of internal URL as fallback
+            activeURLType = .internal
+            url = internalURL
+        } else if let internalURL, internalURL.scheme == "https" {
+            // Falback to internal URL if no other URL is set and internal URL is HTTPS
             activeURLType = .internal
             url = internalURL
         } else {

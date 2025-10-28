@@ -895,6 +895,41 @@ public enum L10n {
     }
   }
 
+  public enum ConnectionSecurityLevelBlock {
+    /// Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.
+    public static var body: String { return L10n.tr("Localizable", "connection_security_level_block.body") }
+    /// You're disconnected
+    public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.title") }
+    public enum ChangePreference {
+      /// Change connection preference
+      public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.change_preference.title") }
+    }
+    public enum OpenSettings {
+      /// Open settings
+      public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.open_settings.title") }
+    }
+    public enum Requirement {
+      /// Missing requirements
+      public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.requirement.title") }
+      public enum HomeNetworkMissing {
+        /// Configure local network
+        public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.requirement.home_network_missing.title") }
+      }
+      public enum LearnMore {
+        /// Learn more
+        public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.requirement.learn_more.title") }
+      }
+      public enum LocationPermissionMissing {
+        /// Grant location permission
+        public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.requirement.location_permission_missing.title") }
+      }
+      public enum NotOnHomeNetwork {
+        /// Connect to your home network
+        public static var title: String { return L10n.tr("Localizable", "connection_security_level_block.requirement.not_on_home_network.title") }
+      }
+    }
+  }
+
   public enum Database {
     public enum Problem {
       /// Delete Database & Quit App
@@ -4270,16 +4305,8 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.title") }
     }
     public enum NoUrlAvailable {
-      /// 🔐  Due to your security choices, there's no URL that we are allowed to use. 
-      /// 
-      ///  ➡️  Please open the App settings and update your security choices or URLs.
-      public static var body: String { return L10n.tr("Localizable", "web_view.no_url_available.body") }
       /// We can't connect to Home Assistant
       public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.title") }
-      public enum PrimaryButton {
-        /// Open App settings
-        public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.primary_button.title") }
-      }
     }
     public enum ServerSelection {
       /// Choose server
