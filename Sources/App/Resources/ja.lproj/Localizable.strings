@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "タップして";
 "assist.watch.not_reachable.title" = "アシストには iPhone の接続が必要です。現在、iPhone にアクセスできません。";
 "assist.watch.volume.title" = "音量調節";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "パイプラインを選択";
 "cancel_label" = "キャンセル";
 "carPlay.action.intro.item.body" = "iPhoneで続けるをタップ";

@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Dokunun";
 "assist.watch.not_reachable.title" = "Assist için iPhone bağlantısı gerekir. iPhone'unuza şu anda erişilemiyor.";
 "assist.watch.volume.title" = "Ses seviyesi kontrolü";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "İşlem hattını seçin";
 "cancel_label" = "İptal";
 "carPlay.action.intro.item.body" = "iPhone'unuzda devam etmek için dokunun";

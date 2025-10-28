@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
 "assist.watch.volume.title" = "Ovládání hlasitosti";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Vyberte pipeline";
 "cancel_label" = "Zrušit";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";

@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Puuduta, et";
 "assist.watch.not_reachable.title" = "Assist nõuab iPhone'i ühenduvust.  iPhone pole praegu kättesaadav.";
 "assist.watch.volume.title" = "Helitugevuse reguleerimine";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Vali voog";
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";

@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "Koppintson ide";
 "assist.watch.not_reachable.title" = "Az Assist használatához iPhone csatlakozás szükséges. Az Ön iPhone-ja jelenleg nem elérhető.";
 "assist.watch.volume.title" = "Hangerőszabályzó";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Válasszon folyamatot";
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";

@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "点按";
 "assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";
 "assist.watch.volume.title" = "音量控制";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "选取管道";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "在您的 iPhone 上点击并继续";

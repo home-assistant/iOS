@@ -109,6 +109,7 @@
 "assist.watch.mic_button.title" = "탭하여";
 "assist.watch.not_reachable.title" = "Assist 기능은 아이폰 연결이 필요합니다. 현재 아이폰에 연결할 수 없습니다.";
 "assist.watch.volume.title" = "음량 조절";
+"assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "파이프라인 선택";
 "cancel_label" = "취소";
 "carPlay.action.intro.item.body" = "iPhone에서 계속하려면 탭하세요.";
