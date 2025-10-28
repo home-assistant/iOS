@@ -15,7 +15,7 @@ extension ServerInfo {
                 internalHardwareAddresses: nil,
                 isLocalPushEnabled: true,
                 securityExceptions: .init(),
-                localAccessSecurityLevel: .undefined
+                connectionAccessSecurityLevel: .undefined
             ),
             token: .init(
                 accessToken: "FakeAccessToken",

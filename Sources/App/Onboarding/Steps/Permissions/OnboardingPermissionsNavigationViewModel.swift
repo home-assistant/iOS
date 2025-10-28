@@ -179,7 +179,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// - Note: Sets security level to .lessSecure as fallback option
     func setLessSecureLocalConnection() {
         onboardingServer.update { info in
-            info.connection.localAccessSecurityLevel = .lessSecure
+            info.connection.connectionAccessSecurityLevel = .lessSecure
         }
     }
 
@@ -228,7 +228,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         if locationPermissionContext == .secureLocalConnection {
             // Configure most secure local connection using location data
             onboardingServer.update { info in
-                info.connection.localAccessSecurityLevel = .mostSecure
+                info.connection.connectionAccessSecurityLevel = .mostSecure
             }
         }
 

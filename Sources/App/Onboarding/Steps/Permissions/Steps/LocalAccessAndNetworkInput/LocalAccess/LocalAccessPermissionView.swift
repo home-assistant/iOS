@@ -8,10 +8,10 @@ enum LocalAccessPermissionOptions: String {
 
 struct LocalAccessPermissionViewInNavigationView: View {
     @Environment(\.dismiss) private var dismiss
-    let initialSelection: LocalAccessSecurityLevel?
-    let action: (LocalAccessSecurityLevel) -> Void
+    let initialSelection: ConnectionSecurityLevel?
+    let action: (ConnectionSecurityLevel) -> Void
 
-    init(initialSelection: LocalAccessSecurityLevel? = nil, action: @escaping (LocalAccessSecurityLevel) -> Void) {
+    init(initialSelection: ConnectionSecurityLevel? = nil, action: @escaping (ConnectionSecurityLevel) -> Void) {
         self.initialSelection = initialSelection
         self.action = action
     }
@@ -38,7 +38,7 @@ struct LocalAccessPermissionView: View {
     @StateObject private var viewModel: LocalAccessPermissionViewModel
     private let hasInitialSelection: Bool
 
-    init(initialSelection: LocalAccessSecurityLevel? = nil, action: @escaping (LocalAccessSecurityLevel) -> Void) {
+    init(initialSelection: ConnectionSecurityLevel? = nil, action: @escaping (ConnectionSecurityLevel) -> Void) {
         self._viewModel = StateObject(wrappedValue: LocalAccessPermissionViewModel(initialSelection: initialSelection))
         self.hasInitialSelection = initialSelection != nil
         self.action = action
@@ -46,20 +46,20 @@ struct LocalAccessPermissionView: View {
 
     private let locationOptions = [
         SelectionOption(
-            value: LocalAccessSecurityLevel.mostSecure.rawValue,
+            value: ConnectionSecurityLevel.mostSecure.rawValue,
             title: L10n.Onboarding.LocalAccess.SecureOption.title,
             subtitle: nil,
             isRecommended: true
         ),
         SelectionOption(
-            value: LocalAccessSecurityLevel.lessSecure.rawValue,
+            value: ConnectionSecurityLevel.lessSecure.rawValue,
             title: L10n.Onboarding.LocalAccess.LessSecureOption.title,
             subtitle: nil,
             isRecommended: false
         ),
     ]
 
-    let action: (LocalAccessSecurityLevel) -> Void
+    let action: (ConnectionSecurityLevel) -> Void
 
     var body: some View {
         BaseOnboardingView(
@@ -74,7 +74,7 @@ struct LocalAccessPermissionView: View {
                     SelectionOptionView(options: locationOptions, selection: .init(get: {
                         viewModel.selection.rawValue
                     }, set: { newValue in
-                        viewModel.selection = LocalAccessSecurityLevel(rawValue: newValue ?? "") ?? .mostSecure
+                        viewModel.selection = ConnectionSecurityLevel(rawValue: newValue ?? "") ?? .mostSecure
                     }))
                     HStack(spacing: DesignSystem.Spaces.two) {
                         Image(systemSymbol: .lock)

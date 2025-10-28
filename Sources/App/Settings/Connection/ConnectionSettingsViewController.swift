@@ -175,18 +175,18 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
             <<< ButtonRow { row in
                 row.cellStyle = .value1
-                row.title = L10n.Settings.ConnectionSection.LocalAccessSecurityLevel.title
+                row.title = L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title
                 row.displayValueFor = { [server] _ in
-                    server.info.connection.localAccessSecurityLevel.description
+                    server.info.connection.connectionAccessSecurityLevel.description
                 }
                 row.onCellSelection { [weak self] _, _ in
                     guard let self else { return }
                     present(
                         LocalAccessPermissionViewInNavigationView(
-                            initialSelection: server.info.connection.localAccessSecurityLevel,
-                            action: { localAccessSecurityLevel in
+                            initialSelection: server.info.connection.connectionAccessSecurityLevel,
+                            action: { connectionAccessSecurityLevel in
                                 self.server.update { info in
-                                    info.connection.localAccessSecurityLevel = localAccessSecurityLevel
+                                    info.connection.connectionAccessSecurityLevel = connectionAccessSecurityLevel
                                 }
                                 self.dismiss(animated: true)
                             }

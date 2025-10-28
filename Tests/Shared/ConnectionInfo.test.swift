@@ -16,7 +16,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         info.internalSSIDs = ["unit_tests"]
@@ -41,7 +41,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         info.internalSSIDs = []
@@ -66,7 +66,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .mostSecure
+            connectionAccessSecurityLevel: .mostSecure
         )
 
         info.internalSSIDs = []
@@ -91,7 +91,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .mostSecure
+            connectionAccessSecurityLevel: .mostSecure
         )
 
         Current.connectivity.currentWiFiSSID = { nil }
@@ -115,7 +115,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         info.useCloud = true
@@ -138,7 +138,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .mostSecure
+            connectionAccessSecurityLevel: .mostSecure
         )
 
         info.useCloud = false
@@ -161,7 +161,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), url)
@@ -201,7 +201,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -241,7 +241,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -271,7 +271,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         info.useCloud = true
@@ -313,7 +313,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .mostSecure
+            connectionAccessSecurityLevel: .mostSecure
         )
 
         XCTAssertEqual(info.activeURL(), nil)
@@ -337,7 +337,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), externalURL)
@@ -387,7 +387,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .mostSecure
+            connectionAccessSecurityLevel: .mostSecure
         )
 
         // valid override states
@@ -449,7 +449,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.activeURL(), nil)
@@ -473,7 +473,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         Current.connectivity.currentWiFiSSID = { nil }
@@ -503,7 +503,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         let oldVersion = Version(major: 2022, minor: 2)
@@ -613,7 +613,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         info.useCloud = useCloud
@@ -636,7 +636,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         info.useCloud = useCloud
@@ -657,7 +657,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.invitationURL(), remoteURL)
@@ -676,7 +676,7 @@ class ConnectionInfoTests: XCTestCase {
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: .init(),
-            localAccessSecurityLevel: .undefined
+            connectionAccessSecurityLevel: .undefined
         )
 
         XCTAssertEqual(info.invitationURL(), internalURL)
