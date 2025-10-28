@@ -96,7 +96,7 @@ public enum LocationPermissionState {
         if let permissionState = userInfo["permissionState"] as? LocationPermissionState {
             self = permissionState
         } else {
-            fatalError("Missing permissionState in userInfo")
+            fatalError("Failed to initialize LocationPermissionState: userInfo dictionary must contain a \"permissionState\" key with a LocationPermissionState value")
         }
     }
 }
