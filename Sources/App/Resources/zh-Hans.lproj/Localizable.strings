@@ -109,7 +109,7 @@
 "assist.watch.mic_button.title" = "点按";
 "assist.watch.not_reachable.title" = "“语音助手”功能需要 iPhone 连接。您的 iPhone 当前无法访问。";
 "assist.watch.volume.title" = "音量控制";
-"assist_pipeline_picker.no_pipelines" = "No pipelines available";
+"assist_pipeline_picker.no_pipelines" = "没有可用的管道";
 "assist_pipeline_picker.placeholder" = "选取管道";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "在您的 iPhone 上点击并继续";
@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "高级";
 "connection_error.more_details_section.title" = "更多详情";
 "connection_error.open_settings.title" = "打开设置";
+"connection_security_level_block.body" = "由于您选择的连接安全设置是“最安全”，因此我们无法使用任何网址。";
+"connection_security_level_block.change_preference.title" = "更改连接首选项";
+"connection_security_level_block.open_settings.title" = "打开设置";
+"connection_security_level_block.requirement.home_network_missing.title" = "配置本地网络";
+"connection_security_level_block.requirement.learn_more.title" = "了解更多";
+"connection_security_level_block.requirement.location_permission_missing.title" = "授予位置权限";
+"connection_security_level_block.requirement.not_on_home_network.title" = "连接到您的家庭网络";
+"connection_security_level_block.requirement.title" = "缺少要求";
+"connection_security_level_block.title" = "您已断开连接。";
 "continue_label" = "继续";
 "copy_label" = "复制";
 "database.problem.delete" = "删除数据库并退出应用程序";
@@ -604,6 +613,10 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.always_fallback_internal.title" = "始终回退到内部网址";
 "settings.connection_section.cloud_overrides_external" = "通过云连接时，不会使用外部 URL。除非您想禁用云，否则您不需要配置一个。";
 "settings.connection_section.connecting_via" = "链接方式";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "低安全";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "最安全";
+"settings.connection_section.connection_access_security_level.title" = "连接安全级别";
+"settings.connection_section.connection_access_security_level.undefined.title" = "未配置";
 "settings.connection_section.delete_server.message" = "您确实要删除此服务器吗 ？";
 "settings.connection_section.delete_server.progress" = "正在删除服务器...";
 "settings.connection_section.delete_server.title" = "删除服务器";

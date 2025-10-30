@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Расширенные";
 "connection_error.more_details_section.title" = "Подробнее";
 "connection_error.open_settings.title" = "Открыть настройки";
+"connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.change_preference.title" = "Change connection preference";
+"connection_security_level_block.open_settings.title" = "Open settings";
+"connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";
+"connection_security_level_block.requirement.learn_more.title" = "Learn more";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Grant location permission";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Connect to your home network";
+"connection_security_level_block.requirement.title" = "Missing requirements";
+"connection_security_level_block.title" = "You're disconnected";
 "continue_label" = "Продолжить";
 "copy_label" = "Копировать";
 "database.problem.delete" = "Удалить базу данных и выйти из приложения";
@@ -607,6 +616,10 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.always_fallback_internal.title" = "Всегда обращаться к внутреннему URL";
 "settings.connection_section.cloud_overrides_external" = "При подключении через облако внешний URL-адрес использоваться не будет. Вам не нужно настраивать его, если вы не хотите отключить облако.";
 "settings.connection_section.connecting_via" = "Подключен через";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.delete_server.message" = "Вы уверены, что хотите удалить этот сервер?";
 "settings.connection_section.delete_server.progress" = "Удаление сервера…";
 "settings.connection_section.delete_server.title" = "Удалить сервер";

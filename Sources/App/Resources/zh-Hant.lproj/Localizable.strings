@@ -109,7 +109,7 @@
 "assist.watch.mic_button.title" = "點擊";
 "assist.watch.not_reachable.title" = "助理需要 iPhone 連線、目前無法存取您的 iPhone。";
 "assist.watch.volume.title" = "音量控制";
-"assist_pipeline_picker.no_pipelines" = "No pipelines available";
+"assist_pipeline_picker.no_pipelines" = "沒有可用的助理設定";
 "assist_pipeline_picker.placeholder" = "選擇助理設定";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "於 iPhone 點擊繼續";
@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "進階";
 "connection_error.more_details_section.title" = "更多資訊";
 "connection_error.open_settings.title" = "開啟設定";
+"connection_security_level_block.body" = "由於您的連線安全性選項（'最安全'）、因此無法使用任何網址。";
+"connection_security_level_block.change_preference.title" = "變更連線設定";
+"connection_security_level_block.open_settings.title" = "開啟設定";
+"connection_security_level_block.requirement.home_network_missing.title" = "設定本地端網路";
+"connection_security_level_block.requirement.learn_more.title" = "了解更多";
+"connection_security_level_block.requirement.location_permission_missing.title" = "授予座標權限";
+"connection_security_level_block.requirement.not_on_home_network.title" = "連線至您的家庭網路";
+"connection_security_level_block.requirement.title" = "缺少需求";
+"connection_security_level_block.title" = "您已斷線";
 "continue_label" = "繼續";
 "copy_label" = "複製";
 "database.problem.delete" = "刪除資料數據並退出 App";
@@ -607,6 +616,10 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.always_fallback_internal.title" = "保持回落至內部網址";
 "settings.connection_section.cloud_overrides_external" = "當透過 Cloud 連線時，將不使用外部 URL。不需要進行設定，除非您想關閉 Cloud 服務。";
 "settings.connection_section.connecting_via" = "連線模式";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "安全性較低";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "最安全";
+"settings.connection_section.connection_access_security_level.title" = "連線安全等級";
+"settings.connection_section.connection_access_security_level.undefined.title" = "尚未設定";
 "settings.connection_section.delete_server.message" = "確定要刪除伺服器？";
 "settings.connection_section.delete_server.progress" = "正在刪除伺服器...";
 "settings.connection_section.delete_server.title" = "刪除伺服器";

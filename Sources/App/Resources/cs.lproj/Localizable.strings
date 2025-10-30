@@ -109,7 +109,7 @@
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
 "assist.watch.volume.title" = "Ovládání hlasitosti";
-"assist_pipeline_picker.no_pipelines" = "No pipelines available";
+"assist_pipeline_picker.no_pipelines" = "Nejsou k dispozici žádné pipelines";
 "assist_pipeline_picker.placeholder" = "Vyberte pipeline";
 "cancel_label" = "Zrušit";
 "carPlay.action.intro.item.body" = "Klepnutím pokračujte na vašem iPhonu";
@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Rozšířené";
 "connection_error.more_details_section.title" = "Více informací";
 "connection_error.open_settings.title" = "Otevřít nastavení";
+"connection_security_level_block.body" = "Vzhledem k vámi zvolenému zabezpečení připojení (\"Nejbezpečnější\") neexistuje žádná URL adresa, kterou můžeme použít.";
+"connection_security_level_block.change_preference.title" = "Změnit preferenci připojení";
+"connection_security_level_block.open_settings.title" = "Otevřít nastavení";
+"connection_security_level_block.requirement.home_network_missing.title" = "Nastavit místní síť";
+"connection_security_level_block.requirement.learn_more.title" = "Více informací";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Udělit oprávnění k přístupu k poloze";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Připojit se k domácí síti";
+"connection_security_level_block.requirement.title" = "Chybějící požadavky";
+"connection_security_level_block.title" = "Jste odpojeni";
 "continue_label" = "Pokračovat";
 "copy_label" = "Kopírovat";
 "database.problem.delete" = "Smazat databázi a ukončit aplikaci";
@@ -607,6 +616,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.always_fallback_internal.title" = "Vždy se vrátit na interní adresu URL";
 "settings.connection_section.cloud_overrides_external" = "Při připojování přes Cloud se externí URL nepoužívá. Není nutné ji nastavovat, pokud nechcete používat Cloud.";
 "settings.connection_section.connecting_via" = "Připojeno přes";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Méně bezpečné";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Nejbezpečnější";
+"settings.connection_section.connection_access_security_level.title" = "Úroveň zabezpečení připojení";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Nenastaveno";
 "settings.connection_section.delete_server.message" = "Opravdu chcete smazat tento server?";
 "settings.connection_section.delete_server.progress" = "Mazání serveru...";
 "settings.connection_section.delete_server.title" = "Smazat server";

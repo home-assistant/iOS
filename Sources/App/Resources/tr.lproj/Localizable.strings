@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Gelişmiş";
 "connection_error.more_details_section.title" = "Daha fazla detay";
 "connection_error.open_settings.title" = "Ayarları aç";
+"connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.change_preference.title" = "Change connection preference";
+"connection_security_level_block.open_settings.title" = "Open settings";
+"connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";
+"connection_security_level_block.requirement.learn_more.title" = "Learn more";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Grant location permission";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Connect to your home network";
+"connection_security_level_block.requirement.title" = "Missing requirements";
+"connection_security_level_block.title" = "You're disconnected";
 "continue_label" = "Devam et";
 "copy_label" = "Kopyala";
 "database.problem.delete" = "Veritabanını Sil ve Uygulamadan Çık";
@@ -607,6 +616,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.always_fallback_internal.title" = "Her zaman dahili URL'ye geri dönün";
 "settings.connection_section.cloud_overrides_external" = "Bulut yoluyla bağlanırken, Harici URL kullanılmayacaktır. Bulutu devre dışı bırakmak istemediğiniz sürece bir tane yapılandırmanıza gerek yoktur.";
 "settings.connection_section.connecting_via" = "Üzerinden bağlandı";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.delete_server.message" = "Bu sunucuyu silmek istediğinizden emin misiniz?";
 "settings.connection_section.delete_server.progress" = "Sunucu Siliniyor…";
 "settings.connection_section.delete_server.title" = "Sunucuyu Sil";

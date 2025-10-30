@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Täpsem";
 "connection_error.more_details_section.title" = "Rohkem teavet";
 "connection_error.open_settings.title" = "Ava sätted";
+"connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.change_preference.title" = "Change connection preference";
+"connection_security_level_block.open_settings.title" = "Open settings";
+"connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";
+"connection_security_level_block.requirement.learn_more.title" = "Learn more";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Grant location permission";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Connect to your home network";
+"connection_security_level_block.requirement.title" = "Missing requirements";
+"connection_security_level_block.title" = "You're disconnected";
 "continue_label" = "Jätka";
 "copy_label" = "Kopeeri";
 "database.problem.delete" = "Kustuta andmebaas ja sulge rakendus";
@@ -607,6 +616,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.always_fallback_internal.title" = "Alati tagasipöördumine sisemise URL-i juurde";
 "settings.connection_section.cloud_overrides_external" = "Pilve kaudu ühenduse loomisel välist URL-i ei kasutata. Seda ei pea konfigureerima, välja arvatud juhul, kui soovid pilve keelata.";
 "settings.connection_section.connecting_via" = "Ühendatud läbi";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.delete_server.message" = "Kas oled kindel, et soovite selle serveri kustutada?";
 "settings.connection_section.delete_server.progress" = "Serveri kustutamine…";
 "settings.connection_section.delete_server.title" = "Kustuta server";

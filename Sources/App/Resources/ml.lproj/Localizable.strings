@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "വിപുലമായത്";
 "connection_error.more_details_section.title" = "More details";
 "connection_error.open_settings.title" = "ക്രമീകരണങ്ങൾ തുറക്കുക";
+"connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.change_preference.title" = "Change connection preference";
+"connection_security_level_block.open_settings.title" = "Open settings";
+"connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";
+"connection_security_level_block.requirement.learn_more.title" = "Learn more";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Grant location permission";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Connect to your home network";
+"connection_security_level_block.requirement.title" = "Missing requirements";
+"connection_security_level_block.title" = "You're disconnected";
 "continue_label" = "തുടരുക";
 "copy_label" = "Copy";
 "database.problem.delete" = "Delete Database & Quit App";
@@ -607,6 +616,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "settings.connection_section.connecting_via" = "Connected via";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.delete_server.message" = "ഈ സെർവർ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?";
 "settings.connection_section.delete_server.progress" = "സെർവർ ഇല്ലാതാക്കുന്നു...";
 "settings.connection_section.delete_server.title" = "സെർവർ ഇല്ലാതാക്കുക";

@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "如果您的配置需要，可以选择启用跨网站跟踪。";
 "NSFocusStatusUsageDescription" = "以传感器形式报告您的专注模式状态。";
 "NSLocalNetworkUsageDescription" = "定位并与您的 Home Assistant 实例通信。";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "我们建议选择“始终允许”以获得最佳位置体验。选择“使用应用期间”时，iBeacons，地理围栏，后台位置更新和准确性报告等功能将无法使用。";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵  我们还需要”始终“访问位置信息的权限，以便应用可以执行后台操作。\n\n ⚠️ 没有此权限，应用将无法决定在后台时食用哪种连接（本地或远程），并将一直使用远程连接。";
 "NSLocationAlwaysUsageDescription" = "我们需要持续获取您的位置用于 iBeacons、地理围栏、后台位置更新和准确性报告等功能。";
 "NSLocationUsageDescription" = "启用后，您的设备位置信息将作为设备跟踪器发送到 Home Assistant 服务器。";
-"NSLocationWhenInUseUsageDescription" = "只允许“使用应用期间”访问您的位置，将禁用 iBeacons、地理围栏、后台位置更新和准确性报告等功能。";
+"NSLocationWhenInUseUsageDescription" = "此应用需要访问您的位置信息才能直接连接到您的 Home Assistant 系统。\n\n 1️⃣ 您的位置信息仅用于检查您是否已连接到本地网络。\n\n 2️⃣ 您的位置信息不会与任何人共享。\n\n 3️⃣ 如果您不允许访问位置信息，应用将始终通过互联网连接。如果未进行配置，应用将保护您的数据并拒绝连接。";
 "NSMicrophoneUsageDescription" = "应用程序在前台打开时，使用 Home Assistant 录制音频。";
 "NSMotionUsageDescription" = "动作以当前动作类别来改善位置更新，以及提供基本的计步数据。";
 "NSPhotoLibraryAddUsageDescription" = "需要访问照片库才能保存网页视图中的照片。";

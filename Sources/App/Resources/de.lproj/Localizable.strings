@@ -109,7 +109,7 @@
 "assist.watch.mic_button.title" = "Tippe zum";
 "assist.watch.not_reachable.title" = "Assist erfordert eine iPhone-Verbindung. Dein iPhone ist derzeit nicht erreichbar.";
 "assist.watch.volume.title" = "Lautstärkeregler";
-"assist_pipeline_picker.no_pipelines" = "No pipelines available";
+"assist_pipeline_picker.no_pipelines" = "Keine Pipelines verfügbar";
 "assist_pipeline_picker.placeholder" = "Pipeline auswählen";
 "cancel_label" = "Abbrechen";
 "carPlay.action.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";
@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Erweitert";
 "connection_error.more_details_section.title" = "Mehr Details";
 "connection_error.open_settings.title" = "Einstellungen öffnen";
+"connection_security_level_block.body" = "Aufgrund deiner Auswahl der Verbindungssicherheit („Am sichersten“) gibt es keine URL, die wir verwenden dürfen.";
+"connection_security_level_block.change_preference.title" = "Verbindungseinstellung ändern";
+"connection_security_level_block.open_settings.title" = "Einstellungen öffnen";
+"connection_security_level_block.requirement.home_network_missing.title" = "Lokales Netzwerk konfigurieren";
+"connection_security_level_block.requirement.learn_more.title" = "Weitere Informationen";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Standortberechtigung erteilen";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Mit deinem Heimnetzwerk verbinden";
+"connection_security_level_block.requirement.title" = "Fehlende Voraussetzungen";
+"connection_security_level_block.title" = "Du bist nicht verbunden";
 "continue_label" = "Weiter";
 "copy_label" = "Kopieren";
 "database.problem.delete" = "Datenbank löschen & App beenden";
@@ -607,6 +616,10 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.always_fallback_internal.title" = "Immer auf interne URL zurückgreifen";
 "settings.connection_section.cloud_overrides_external" = "Bei Verbindung über die Cloud wird die externe URL nicht verwendet. Du musst keine URL einrichten, außer du möchtest die Cloud deaktivieren.";
 "settings.connection_section.connecting_via" = "Verbunden über";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Weniger sicher";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Am sichersten";
+"settings.connection_section.connection_access_security_level.title" = "Sicherheitsstufe der Verbindung";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Nicht konfiguriert";
 "settings.connection_section.delete_server.message" = "Möchtest du diesen Server wirklich löschen?";
 "settings.connection_section.delete_server.progress" = "Server wird gelöscht …";
 "settings.connection_section.delete_server.title" = "Server löschen";

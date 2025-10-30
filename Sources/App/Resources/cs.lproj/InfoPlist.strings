@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Volitelně povolte sledování napříč weby, pokud to Vaše konfigurace vyžaduje.";
 "NSFocusStatusUsageDescription" = "Hlásí stav zaostření jako senzor.";
 "NSLocalNetworkUsageDescription" = "Hledá a komunikuje s Vaší instancí Home Assistanta.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Doporučujeme vybrat možnost \"Trvale\", abyste získali nejlepší informace o poloze. Výběrem \"Při používání aplikace\" deaktivujete iBeacons, geofence, aktualizace polohy na pozadí a přesné hlášení.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n🔵 Také potřebujeme povolení k přístupu k poloze \"Trvale\", aby aplikace mohla provádět operace na pozadí.\n\n⚠️ Bez něj se aplikace nedokáže rozhodnout, které připojení (lokální nebo vzdálené) použije na pozadí, a bude vždy používat vzdálené.";
 "NSLocationAlwaysUsageDescription" = "Vždy potřebujeme přístup k Vaší poloze pro funkce, jako jsou iBeacons, geofence, aktualizace polohy na pozadí a přesné hlášení.";
 "NSLocationUsageDescription" = "Když je tato volba povolena, poloha Vašeho zařízení se odesílá na server Home Assistanta jako sledovač zařízení.";
-"NSLocationWhenInUseUsageDescription" = "Povolení přístupu k poloze jen při používání aplikace deaktivuje iBeacons, geofence, aktualizace polohy na pozadí a přesné hlášení.";
+"NSLocationWhenInUseUsageDescription" = "Tato aplikace potřebuje přístup k poloze, aby se mohla přímo připojit k vaší instalaci aplikace Home Assistant.\n\n1️⃣ Vaše poloha bude použita jen k ověření, zda jste připojeni k místní síti.\n\n2️⃣ Nebude s nikým sdílena.\n\n3️⃣ Pokud není povoleno, aplikace se bude vždy připojovat přes internet. Pokud není nenastaveno, ochrání vaše data a připojení odmítne.";
 "NSMicrophoneUsageDescription" = "Nahrávejte zvuk pomocí frontendu Home Assistanta.";
 "NSMotionUsageDescription" = "Pohyb se používá ke zlepšení aktualizace polohy pomocí aktuálního typu pohybu a k poskytování základních údajů o krokoměru.";
 "NSPhotoLibraryAddUsageDescription" = "Přístup do knihovny fotek je nutný k tomu, aby je bylo možné ukládat  z webového zobrazení.";

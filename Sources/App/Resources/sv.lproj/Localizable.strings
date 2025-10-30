@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Avancerad";
 "connection_error.more_details_section.title" = "Mer information";
 "connection_error.open_settings.title" = "Öppna inställningar";
+"connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.change_preference.title" = "Change connection preference";
+"connection_security_level_block.open_settings.title" = "Open settings";
+"connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";
+"connection_security_level_block.requirement.learn_more.title" = "Learn more";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Grant location permission";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Connect to your home network";
+"connection_security_level_block.requirement.title" = "Missing requirements";
+"connection_security_level_block.title" = "You're disconnected";
 "continue_label" = "Fortsätt";
 "copy_label" = "Kopiera";
 "database.problem.delete" = "Radera databas och stäng appen";
@@ -606,6 +615,10 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.always_fallback_internal.title" = "Fall alltid tillbaka på intern URL";
 "settings.connection_section.cloud_overrides_external" = "Vid anslutning via Cloud används inte den externa URL:en. Du behöver inte konfigurera den så länge du inte vill inaktivera Cloud.";
 "settings.connection_section.connecting_via" = "Ansluten via";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.delete_server.message" = "Är du säker på att du vill radera den här servern?";
 "settings.connection_section.delete_server.progress" = "Tar bort server...";
 "settings.connection_section.delete_server.title" = "Ta bort server";
