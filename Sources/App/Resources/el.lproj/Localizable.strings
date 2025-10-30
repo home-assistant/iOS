@@ -109,7 +109,7 @@
 "assist.watch.mic_button.title" = "Πατήστε για να";
 "assist.watch.not_reachable.title" = "Το Assist απαιτεί συνδεσιμότητα iPhone. Το iPhone σας δεν είναι προσβάσιμο αυτή τη στιγμή.";
 "assist.watch.volume.title" = "Ελεγχος έντασης";
-"assist_pipeline_picker.no_pipelines" = "No pipelines available";
+"assist_pipeline_picker.no_pipelines" = "Δεν υπάρχουν διαθέσιμα pipelines";
 "assist_pipeline_picker.placeholder" = "Επιλογή pipeline";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Για προχωρημένους";
 "connection_error.more_details_section.title" = "Περισσότερες λεπτομέρειες";
 "connection_error.open_settings.title" = "Ανοιγμα ρυθμίσεων";
+"connection_security_level_block.body" = "Λόγω της επιλογής ασφάλειας της σύνδεσής σας (\"Πιο ασφαλής\"), δεν υπάρχει διεύθυνση URL που να μπορούμε να χρησιμοποιήσουμε.";
+"connection_security_level_block.change_preference.title" = "Αλλαγή προτίμησης σύνδεσης";
+"connection_security_level_block.open_settings.title" = "Ανοιγμα ρυθμίσεων";
+"connection_security_level_block.requirement.home_network_missing.title" = "Διαμόρφωση τοπικού δικτύου";
+"connection_security_level_block.requirement.learn_more.title" = "Μάθετε περισσότερα";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Χορήγηση άδειας τοποθεσίας";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Συνδεθείτε στο δίκτυο του σπιτιού σας";
+"connection_security_level_block.requirement.title" = "Λείπουν απαιτήσεις";
+"connection_security_level_block.title" = "Είστε αποσυνδεδεμένος/η";
 "continue_label" = "Συνέχεια";
 "copy_label" = "Αντιγραφή";
 "database.problem.delete" = "Διαγραφή βάσης δεδομένων και έξοδος από την εφαρμογή";
@@ -607,6 +616,10 @@
 "settings.connection_section.always_fallback_internal.title" = "Πάντα εναλλακτική στην εσωτερική διεύθυνση URL";
 "settings.connection_section.cloud_overrides_external" = "Κατά τη σύνδεση μέσω Cloud, το εξωτερικό URL δεν θα χρησιμοποιηθεί. Δεν χρειάζεται να διαμορφώσετε κανένα, εκτός εάν θέλετε να απενεργοποιήσετε το Cloud.";
 "settings.connection_section.connecting_via" = "Συνδεδεμένο μέσω";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Λιγότερο ασφαλές";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Πιο ασφαλές";
+"settings.connection_section.connection_access_security_level.title" = "Επίπεδο ασφάλειας σύνδεσης";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Δεν έχει ρυθμιστεί";
 "settings.connection_section.delete_server.message" = "Θέλετε σίγουρα να διαγράψετε αυτόν τον διακομιστή;";
 "settings.connection_section.delete_server.progress" = "Διαγραφή διακομιστή…";
 "settings.connection_section.delete_server.title" = "Διαγραφή διακομιστή";

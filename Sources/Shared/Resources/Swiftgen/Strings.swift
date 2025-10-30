@@ -2330,6 +2330,22 @@ public enum L10n {
         /// MyFunnyNetworkName
         public static var placeholder: String { return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.placeholder") }
       }
+      public enum LocalAccessSecurityLevel {
+        /// Local access security
+        public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.title") }
+        public enum LessSecure {
+          /// Less secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.less_secure.title") }
+        }
+        public enum MostSecure {
+          /// Most secure
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.most_secure.title") }
+        }
+        public enum Undefined {
+          /// Not configured
+          public static var title: String { return L10n.tr("Localizable", "settings.connection_section.local_access_security_level.undefined.title") }
+        }
+      }
       public enum LocationSendType {
         /// Location Sent
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.title") }
@@ -4305,8 +4321,16 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "web_view.empty_state.title") }
     }
     public enum NoUrlAvailable {
+      /// 🔐  Due to your security choices, there's no URL that we are allowed to use. 
+      /// 
+      ///  ➡️  Please open the App settings and update your security choices or URLs.
+      public static var body: String { return L10n.tr("Localizable", "web_view.no_url_available.body") }
       /// We can't connect to Home Assistant
       public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.title") }
+      public enum PrimaryButton {
+        /// Open App settings
+        public static var title: String { return L10n.tr("Localizable", "web_view.no_url_available.primary_button.title") }
+      }
     }
     public enum ServerSelection {
       /// Choose server

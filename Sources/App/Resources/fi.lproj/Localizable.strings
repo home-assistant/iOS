@@ -218,6 +218,15 @@
 "connection_error.advanced_section.title" = "Edistynyt";
 "connection_error.more_details_section.title" = "Lisätietoja";
 "connection_error.open_settings.title" = "Avaa asetukset";
+"connection_security_level_block.body" = "Due to your connection security choice ('Most secure'), there's no URL that we are allowed to use.";
+"connection_security_level_block.change_preference.title" = "Change connection preference";
+"connection_security_level_block.open_settings.title" = "Open settings";
+"connection_security_level_block.requirement.home_network_missing.title" = "Configure local network";
+"connection_security_level_block.requirement.learn_more.title" = "Learn more";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Grant location permission";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Connect to your home network";
+"connection_security_level_block.requirement.title" = "Missing requirements";
+"connection_security_level_block.title" = "You're disconnected";
 "continue_label" = "Jatka";
 "copy_label" = "Kopioi";
 "database.problem.delete" = "Poista tietokanta ja sulje sovellus";
@@ -607,6 +616,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.always_fallback_internal.title" = "Always fallback to internal URL";
 "settings.connection_section.cloud_overrides_external" = "Kun yhteys muodostetaan Cloudin kautta, Ulkoista URL-osoitetta ei käytetä. Sinun ei tarvitse määrittää sitä, ellet halua poistaa Cloudia käytöstä.";
 "settings.connection_section.connecting_via" = "Yhdistetty kautta";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
+"settings.connection_section.connection_access_security_level.title" = "Connection security level";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
 "settings.connection_section.delete_server.message" = "Haluatko varmasti poistaa tämän palvelimen?";
 "settings.connection_section.delete_server.progress" = "Poistetaan palvelinta…";
 "settings.connection_section.delete_server.title" = "Poista palvelin";
