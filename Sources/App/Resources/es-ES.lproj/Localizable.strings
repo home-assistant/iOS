@@ -650,7 +650,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.local_push_description" = "Directly connect to the Home Assistant server for push notifications when on internal SSIDs.";
 "settings.connection_section.location_send_type.setting.exact" = "Exact";
 "settings.connection_section.location_send_type.setting.never" = "Nunca";
-"settings.connection_section.location_send_type.setting.zone_only" = "Zone Name Only";
+"settings.connection_section.location_send_type.setting.zone_only" = "Zone only";
 "settings.connection_section.location_send_type.title" = "Location Sent";
 "settings.connection_section.logged_in_as" = "Logged in as";
 "settings.connection_section.no_base_url.title" = "No URL";

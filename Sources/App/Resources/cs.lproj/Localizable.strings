@@ -650,7 +650,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.local_push_description" = "Přímé připojení k serveru Home Assistant pro push oznámení na interních SSID.";
 "settings.connection_section.location_send_type.setting.exact" = "Přesná";
 "settings.connection_section.location_send_type.setting.never" = "Nikdy";
-"settings.connection_section.location_send_type.setting.zone_only" = "Jen název zóny";
+"settings.connection_section.location_send_type.setting.zone_only" = "Jen zóna";
 "settings.connection_section.location_send_type.title" = "Odeslaná poloha";
 "settings.connection_section.logged_in_as" = "Přihlášen jako";
 "settings.connection_section.no_base_url.title" = "Žádná adresa URL";
