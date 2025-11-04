@@ -47,6 +47,7 @@ struct MagicItemAddView: View {
     var body: some View {
         NavigationView {
             List {
+                pickerView
                 switch viewModel.selectedItemType {
                 case .actions:
                     actionsList
@@ -59,9 +60,6 @@ struct MagicItemAddView: View {
                 }
             }
             .searchable(text: $viewModel.searchText)
-            .safeAreaInset(edge: .top, content: {
-                pickerView
-            })
             .onAppear {
                 autoSelectItemType()
                 viewModel.loadContent()
@@ -76,6 +74,7 @@ struct MagicItemAddView: View {
                 }
             })
         }
+        .navigationViewStyle(.stack)
     }
 
     @ViewBuilder
@@ -101,7 +100,8 @@ struct MagicItemAddView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .padding()
+            .listRowBackground(Color.clear)
+            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
         }
     }
 

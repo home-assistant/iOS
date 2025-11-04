@@ -85,6 +85,7 @@ struct EntityPicker: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
     }
 
     private func fetchEntities() {
