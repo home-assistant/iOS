@@ -2354,7 +2354,7 @@ public enum L10n {
           public static var exact: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.exact") }
           /// Never
           public static var never: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.never") }
-          /// Zone Name Only
+          /// Zone only
           public static var zoneOnly: String { return L10n.tr("Localizable", "settings.connection_section.location_send_type.setting.zone_only") }
         }
       }

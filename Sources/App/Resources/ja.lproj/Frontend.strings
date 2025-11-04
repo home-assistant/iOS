@@ -3,7 +3,7 @@
 "panel::developer_tools" = "開発者ツール";
 "panel::energy" = "エネルギー";
 "panel::history" = "履歴";
-"panel::logbook" = "ログブック";
+"panel::logbook" = "アクティビティ";
 "panel::mailbox" = "メールボックス";
 "panel::map" = "地図";
 "panel::media_browser" = "メディア";
