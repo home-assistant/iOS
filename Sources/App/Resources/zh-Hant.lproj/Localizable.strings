@@ -650,7 +650,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.local_push_description" = "當使用內部 SSID 網路時，直接連線至 Home Assistant 伺服器以進行推播通知。";
 "settings.connection_section.location_send_type.setting.exact" = "精確";
 "settings.connection_section.location_send_type.setting.never" = "未執行";
-"settings.connection_section.location_send_type.setting.zone_only" = "僅區域名稱";
+"settings.connection_section.location_send_type.setting.zone_only" = "僅區域";
 "settings.connection_section.location_send_type.title" = "座標傳送";
 "settings.connection_section.logged_in_as" = "登入帳號：";
 "settings.connection_section.no_base_url.title" = "沒有網址";
