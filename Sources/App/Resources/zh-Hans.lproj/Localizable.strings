@@ -647,7 +647,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.local_push_description" = "使用内网 SSID 时，直接连接到 Home Assistant 服务器以获取推送通知。";
 "settings.connection_section.location_send_type.setting.exact" = "精确";
 "settings.connection_section.location_send_type.setting.never" = "从不";
-"settings.connection_section.location_send_type.setting.zone_only" = "仅区域名称";
+"settings.connection_section.location_send_type.setting.zone_only" = "仅限区域";
 "settings.connection_section.location_send_type.title" = "位置已发送";
 "settings.connection_section.logged_in_as" = "当前用户";
 "settings.connection_section.no_base_url.title" = "没有网址";
