@@ -65,11 +65,9 @@ final class MagicItemAddViewModel: ObservableObject {
         guard let areasAndItsEntities = serversAreasAndItsEntities[serverId] else {
             return ""
         }
-        for (areaId, entityIds) in areasAndItsEntities {
-            if entityIds.contains(entity.entityId) {
-                if let area = areasService.area(for: areaId, serverId: serverId) {
-                    return area.name
-                }
+        for (areaId, entityIds) in areasAndItsEntities where entityIds.contains(entity.entityId) {
+            if let area = areasService.area(for: areaId, serverId: serverId) {
+                return area.name
             }
         }
         return entity.entityId
