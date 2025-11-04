@@ -78,6 +78,7 @@ struct ConnectionSecurityLevelBlockView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
     }
 
     private var content: some View {

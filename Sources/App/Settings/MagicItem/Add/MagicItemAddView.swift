@@ -191,7 +191,7 @@ struct MagicItemAddView: View {
             } label: {
                 MagicItemRow(
                     title: entity.name,
-                    subtitle: entity.entityId,
+                    subtitle: viewModel.subtitleForEntity(entity: entity, serverId: serverId),
                     entityIcon: {
                         if let entityIconName = entity.icon {
                             return MaterialDesignIcons(serversideValueNamed: entityIconName, fallback: .dotsGridIcon)
