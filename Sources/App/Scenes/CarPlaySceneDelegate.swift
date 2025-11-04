@@ -129,6 +129,9 @@ class CarPlaySceneDelegate: UIResponder {
                 ],
             ]
         }
+
+        // Guarantee fresh data
+        Current.api(for: server)?.connection.disconnect()
         entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states(filter)
             .subscribe { [weak self] _, states in
                 self?.allTemplates.forEach {
