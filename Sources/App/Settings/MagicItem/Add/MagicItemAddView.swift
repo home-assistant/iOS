@@ -234,7 +234,7 @@ struct MagicItemRow: View {
     }
 
     var body: some View {
-        HStack(spacing: Spaces.one) {
+        HStack(spacing: DesignSystem.Spaces.two) {
             HStack {
                 if showIcon, let entityIcon {
                     Image(uiImage: entityIcon.image(

@@ -642,6 +642,7 @@
 		424151FB2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424151F92CD8EF2200D7A6F9 /* MagicItem+Migration.swift */; };
 		424151FC2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
 		424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
+		4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */; };
 		424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */; };
@@ -2175,6 +2176,7 @@
 		4242A2CF2B2B5C9E00E9F001 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = sv; path = sv.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2D02B2B5C9F00E9F001 /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-ES"; path = "es-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
 		4242A2D12B2B5C9F00E9F001 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "es-MX"; path = "es-MX.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
+		4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityPickerViewModel.swift; sourceTree = "<group>"; };
 		424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewTintedWrapper.swift; sourceTree = "<group>"; };
 		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
@@ -4522,6 +4524,7 @@
 				4251AA972C6B9D30004CCC9D /* Edit */,
 				42D5ACD72C64C0CF00D9C4E2 /* Add */,
 				426BB0C42D393F0E0062D905 /* EntityPicker.swift */,
+				4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */,
 				426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */,
 			);
 			path = MagicItem;
@@ -8593,6 +8596,7 @@
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
+				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,
 				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				42D3E4B72C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift in Sources */,

@@ -3,29 +3,26 @@ import Shared
 import SwiftUI
 
 struct EntityPicker: View {
+    @StateObject private var viewModel: EntityPickerViewModel
+
     /// Returns entityId
-    let domainFilter: Domain?
-    @State private var showList = false
-    @State private var entities: [HAAppEntity] = []
     @Binding private var selectedEntity: HAAppEntity?
-    @State private var searchTerm = ""
-    @State private var selectedServerId: String?
 
     init(selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?) {
-        self.domainFilter = domainFilter
         self._selectedEntity = selectedEntity
+        self._viewModel = .init(wrappedValue: EntityPickerViewModel(domainFilter: domainFilter))
     }
 
     var body: some View {
         button
-            .sheet(isPresented: $showList) {
+            .sheet(isPresented: $viewModel.showList) {
                 screen
             }
     }
 
     private var button: some View {
         Button(action: {
-            showList = true
+            viewModel.showList = true
         }, label: {
             if let name = selectedEntity?.name {
                 Text(name)
@@ -38,20 +35,20 @@ struct EntityPicker: View {
     private var screen: some View {
         NavigationView {
             List {
-                ServersPickerPillList(selectedServerId: $selectedServerId)
-                ForEach(entities.filter({ entity in
-                    if searchTerm.count > 2 {
-                        return entity.serverId == selectedServerId && (
-                            entity.name.lowercased().contains(searchTerm.lowercased()) ||
-                                entity.entityId.lowercased().contains(searchTerm.lowercased())
+                ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+                ForEach(viewModel.entities.filter({ entity in
+                    if viewModel.searchTerm.count > 2 {
+                        return entity.serverId == viewModel.selectedServerId && (
+                            entity.name.lowercased().contains(viewModel.searchTerm.lowercased()) ||
+                                entity.entityId.lowercased().contains(viewModel.searchTerm.lowercased())
                         )
                     } else {
-                        return entity.serverId == selectedServerId
+                        return entity.serverId == viewModel.selectedServerId
                     }
                 }), id: \.id) { entity in
                     Button(action: {
                         selectedEntity = entity
-                        showList = false
+                        viewModel.showList = false
                     }, label: {
                         VStack {
                             Group {
@@ -70,35 +67,21 @@ struct EntityPicker: View {
                     .tint(.accentColor)
                 }
             }
-            .searchable(text: $searchTerm)
+            .searchable(text: $viewModel.searchTerm)
             .onAppear {
-                fetchEntities()
-                if selectedServerId == nil {
-                    selectedServerId = Current.servers.all.first?.identifier.rawValue
+                viewModel.fetchEntities()
+                if viewModel.selectedServerId == nil {
+                    viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
-                        showList = false
+                        viewModel.showList = false
                     }
                 }
             }
         }
         .navigationViewStyle(.stack)
-    }
-
-    private func fetchEntities() {
-        do {
-            var newEntities = try HAAppEntity.config() ?? []
-            if let domainFilter {
-                newEntities = newEntities.filter({ entity in
-                    entity.domain == domainFilter.rawValue
-                })
-            }
-            entities = newEntities
-        } catch {
-            Current.Log.error("Failed to fetch entities for entity picker, error: \(error)")
-        }
     }
 }
