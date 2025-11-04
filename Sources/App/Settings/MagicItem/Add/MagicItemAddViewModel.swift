@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import GRDB
+import HAKit
 import PromiseKit
 import Shared
 
@@ -20,7 +21,11 @@ final class MagicItemAddViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var selectedServerId: String?
 
+    /// [ServerId: [AreaId: Set<EntityId>]]
+    @Published var serversAreasAndItsEntities: [String: [String: Set<String>]] = [:]
+
     private var entitiesSubscription: AnyCancellable?
+    private var areasService: AreasServiceProtocol = AreasService()
 
     init() {
         self.entitiesSubscription = $entities.sink { entities in
@@ -51,6 +56,21 @@ final class MagicItemAddViewModel: ObservableObject {
     func loadContent() {
         loadAppEntities()
         loadActions()
+        Task {
+            await loadEntitiesForAreas()
+        }
+    }
+
+    func subtitleForEntity(entity: HAAppEntity, serverId: String) -> String {
+        guard let areasAndItsEntities = serversAreasAndItsEntities[serverId] else {
+            return ""
+        }
+        for (areaId, entityIds) in areasAndItsEntities where entityIds.contains(entity.entityId) {
+            if let area = areasService.area(for: areaId, serverId: serverId) {
+                return area.name
+            }
+        }
+        return entity.entityId
     }
 
     @MainActor
@@ -69,5 +89,15 @@ final class MagicItemAddViewModel: ObservableObject {
         actions = Current.realm().objects(Action.self)
             .filter({ $0.Scene == nil })
             .sorted(by: { $0.Position < $1.Position })
+    }
+
+    private func loadEntitiesForAreas() async {
+        for server in Current.servers.all {
+            let areasAndItsEntities = await areasService.fetchAreasAndItsEntities(for: server)
+            let serverId = server.identifier.rawValue
+            await MainActor.run { [serverId, areasAndItsEntities] in
+                self.serversAreasAndItsEntities[serverId] = areasAndItsEntities
+            }
+        }
     }
 }

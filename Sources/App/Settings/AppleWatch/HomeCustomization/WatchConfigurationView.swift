@@ -145,12 +145,16 @@ struct WatchConfigurationView: View {
         ZStack(alignment: .top) {
             List {
                 VStack {}.padding(.top, 40)
-                ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
-                    makeWatchItem(item: item)
+                Group {
+                    ForEach(viewModel.watchConfig.items, id: \.serverUniqueId) { item in
+                        makeWatchItem(item: item)
+                    }
+                    if viewModel.watchConfig.items.isEmpty {
+                        noItemsWatchView
+                    }
                 }
-                if viewModel.watchConfig.items.isEmpty {
-                    noItemsWatchView
-                }
+                .listRowSeparator(.hidden)
+                .listRowSpacing(DesignSystem.Spaces.half)
             }
             .animation(.default, value: viewModel.watchConfig.items)
             .listStyle(.plain)
@@ -205,11 +209,11 @@ struct WatchConfigurationView: View {
             customization: nil
         )
 
-        return HStack(spacing: Spaces.one) {
+        return HStack(spacing: DesignSystem.Spaces.one) {
             VStack {
                 Image(uiImage: image(for: item, itemInfo: itemInfo, watchPreview: true))
                     .foregroundColor(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)))
-                    .padding(Spaces.one)
+                    .padding(DesignSystem.Spaces.one)
             }
             .background(Color(uiColor: .init(hex: itemInfo.customization?.iconColor)).opacity(0.3))
             .clipShape(Circle())
@@ -218,11 +222,11 @@ struct WatchConfigurationView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(textColorForWatchItem(itemInfo: itemInfo))
         }
-        .padding(Spaces.one)
+        .padding(DesignSystem.Spaces.one)
         .frame(width: 190, height: 55)
         .background(backgroundForWatchItem(itemInfo: itemInfo))
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .padding(.vertical, -Spaces.one)
+        .padding(.vertical, -DesignSystem.Spaces.one)
         .listRowSeparator(.hidden)
     }
 
