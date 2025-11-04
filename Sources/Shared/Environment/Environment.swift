@@ -126,6 +126,10 @@ public class AppEnvironment {
         AppEntitiesModel.shared
     }
 
+    public var areasProvider: () -> AreasServiceProtocol = {
+        AreasService.shared
+    }
+
     #if os(iOS)
     public var appDatabaseUpdater: AppDatabaseUpdaterProtocol = AppDatabaseUpdater.shared
 

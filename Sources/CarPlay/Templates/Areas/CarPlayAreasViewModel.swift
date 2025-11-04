@@ -10,7 +10,7 @@ final class CarPlayAreasViewModel {
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
     private var entities: HACachedStates?
-
+    private var currentTask: Task<Void, Never>?
     private var preferredServerId: String {
         prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
     }
@@ -25,21 +25,18 @@ final class CarPlayAreasViewModel {
             return
         }
 
-        guard let connection = Current.api(for: server)?.connection else {
+        guard Current.api(for: server)?.connection != nil else {
             Current.Log.error("No API available to update CarPlayAreasViewModel")
             return
         }
 
-        request?.cancel()
-        request = connection.send(HATypedRequest<[HAAreaResponse]>.fetchAreas(), completion: { [weak self] result in
-            switch result {
-            case let .success(data):
-                self?.fetchEntitiesForAreas(data, server: server)
-            case let .failure(error):
-                self?.templateProvider?.template.updateSections([])
-                Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
+        currentTask?.cancel()
+        currentTask = Task {
+            let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
+            await MainActor.run {
+                self.updateAreas(allEntitiesPerArea: areasAndEntities, server: server)
             }
-        })
+        }
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
@@ -47,64 +44,9 @@ final class CarPlayAreasViewModel {
         entitiesListTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
     }
 
-    private func fetchEntitiesForAreas(_ areas: [HAAreaResponse], server: Server) {
-        guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available to fetch entities for areas")
-            return
-        }
-
-        request?.cancel()
-        request = connection.send(
-            HATypedRequest<[HAEntityAreaResponse]>.fetchEntitiesWithAreas(),
-            completion: { [weak self] result in
-                switch result {
-                case let .success(data):
-                    self?.fetchDeviceForAreas(areas, entitiesWithAreas: data, server: server)
-                case let .failure(error):
-                    self?.templateProvider?.template.updateSections([])
-                    Current.Log.error(userInfo: ["Failed to retrieve areas and entities": error.localizedDescription])
-                }
-            }
-        )
-    }
-
-    private func fetchDeviceForAreas(
-        _ areas: [HAAreaResponse],
-        entitiesWithAreas: [HAEntityAreaResponse],
-        server: Server
-    ) {
-        guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available to fetch devices for areas")
-            return
-        }
-
-        request?.cancel()
-        request = connection.send(
-            HATypedRequest<[HADeviceAreaResponse]>.fetchDevicesWithAreas(),
-            completion: { [weak self] result in
-                switch result {
-                case let .success(data):
-                    self?.updateAreas(areas, entitiesAndAreas: entitiesWithAreas, devicesAndAreas: data, server: server)
-                case let .failure(error):
-                    self?.templateProvider?.template.updateSections([])
-                    Current.Log.error(userInfo: ["Failed to retrieve areas and devices": error.localizedDescription])
-                }
-            }
-        )
-    }
-
-    private func updateAreas(
-        _ areas: [HAAreaResponse],
-        entitiesAndAreas: [HAEntityAreaResponse],
-        devicesAndAreas: [HADeviceAreaResponse],
-        server: Server
-    ) {
-        let allEntitiesPerArea = AreaProvider.getAllEntitiesFromArea(
-            devicesAndAreas: devicesAndAreas,
-            entitiesAndAreas: entitiesAndAreas
-        )
-
-        let items = areas.sorted(by: { a1, a2 in
+    private func updateAreas(allEntitiesPerArea: [String: Set<String>], server: Server) {
+        let areas = Current.areasProvider().areas[server.identifier.rawValue]
+        let items = areas?.sorted(by: { a1, a2 in
             a1.name < a2.name
         }).compactMap { area -> CPListItem? in
             guard let entityIdsForAreaId = allEntitiesPerArea[area.areaId] else { return nil }
@@ -118,7 +60,7 @@ final class CarPlayAreasViewModel {
                 completion()
             }
             return item
-        }
+        } ?? []
 
         templateProvider?.paginatedList.updateItems(items: items)
     }
