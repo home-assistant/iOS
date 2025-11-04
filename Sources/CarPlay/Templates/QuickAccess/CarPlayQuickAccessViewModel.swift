@@ -21,20 +21,12 @@ final class CarPlayQuickAccessViewModel {
     }
 
     func sendIntroNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = L10n.CarPlay.Notification.QuickAccess.Intro.title
-        content.body = L10n.CarPlay.Notification.QuickAccess.Intro.body
-        content.sound = UNNotificationSound.default
-        let request = UNNotificationRequest(
-            identifier: NotificationIdentifier.carPlayIntro.rawValue,
-            content: content,
-            trigger: nil
+        Current.notificationDispatcher.send(
+            .init(
+                id: NotificationIdentifier.carPlayIntro,
+                title: L10n.CarPlay.Notification.QuickAccess.Intro.title,
+                body: L10n.CarPlay.Notification.QuickAccess.Intro.body
+            )
         )
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error {
-                Current.Log
-                    .info("Error scheduling CarPlay Introduction action notification: \(error.localizedDescription)")
-            }
-        }
     }
 }
