@@ -607,7 +607,7 @@
 		4228D0012DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */; };
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
-		422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */; };
+		422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreasService.test.swift */; };
 		422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */; };
@@ -637,13 +637,13 @@
 		423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */; };
 		423F45212C19D89100766A99 /* AssistDefaultComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F45202C19D89100766A99 /* AssistDefaultComplication.swift */; };
 		4240DF472E1D148F00FB0DE6 /* DeviceNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4240DF462E1D148F00FB0DE6 /* DeviceNameView.swift */; };
-		424123882CDCEB66007EDE70 /* AreaProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424123872CDCEB66007EDE70 /* AreaProvider.swift */; };
 		424151FA2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424151F92CD8EF2200D7A6F9 /* MagicItem+Migration.swift */; };
 		424151FB2CD8EF2200D7A6F9 /* MagicItem+Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424151F92CD8EF2200D7A6F9 /* MagicItem+Migration.swift */; };
 		424151FC2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
 		424151FD2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0B82C888AA10081461D /* CarPlayConfig.swift */; };
 		4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */; };
-		4245DC032EBA42C3005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
+		4245DC042EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
+		4245DC052EBA7919005E0E04 /* AreasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245DC022EBA42C3005E0E04 /* AreasService.swift */; };
 		424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		424627342C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424627322C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift */; };
 		42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */; };
@@ -2126,7 +2126,7 @@
 		4228CFFE2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewScriptMessageHandler.swift; sourceTree = "<group>"; };
 		4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKUserContentControllerMessageTests.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
-		422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.test.swift; sourceTree = "<group>"; };
+		422E626B2CDCF00A00987BD0 /* AreasService.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.test.swift; sourceTree = "<group>"; };
 		422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetToggleAppIntent.swift; sourceTree = "<group>"; };
 		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
 		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
@@ -2142,7 +2142,6 @@
 		423F44FE2C186E4500766A99 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
 		423F45202C19D89100766A99 /* AssistDefaultComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistDefaultComplication.swift; sourceTree = "<group>"; };
 		4240DF462E1D148F00FB0DE6 /* DeviceNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceNameView.swift; sourceTree = "<group>"; };
-		424123872CDCEB66007EDE70 /* AreaProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.swift; sourceTree = "<group>"; };
 		424151F92CD8EF2200D7A6F9 /* MagicItem+Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MagicItem+Migration.swift"; sourceTree = "<group>"; };
 		4242A2B12B2B5C8000E9F001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		4242A2B22B2B5C8100E9F001 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ca-ES"; path = "ca-ES.lproj/AppIntentVocabulary.plist"; sourceTree = "<group>"; };
@@ -4423,7 +4422,7 @@
 		422E626A2CDCF00000987BD0 /* Area */ = {
 			isa = PBXGroup;
 			children = (
-				422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */,
+				422E626B2CDCF00A00987BD0 /* AreasService.test.swift */,
 			);
 			path = Area;
 			sourceTree = "<group>";
@@ -4560,7 +4559,6 @@
 				42F1DA6A2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift */,
 				425573CD2B5574F100145217 /* CarPlayAreasViewModel.swift */,
 				425573CB2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift */,
-				424123872CDCEB66007EDE70 /* AreaProvider.swift */,
 			);
 			path = Areas;
 			sourceTree = "<group>";
@@ -5552,7 +5550,6 @@
 			children = (
 				42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */,
 				42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */,
-				4245DC022EBA42C3005E0E04 /* AreasService.swift */,
 			);
 			path = Add;
 			sourceTree = "<group>";
@@ -6369,6 +6366,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				4245DC022EBA42C3005E0E04 /* AreasService.swift */,
 				420CFC612D3F9C15009A94F3 /* Database */,
 				4278CB822D01F09400CFAAC9 /* AppGesture.swift */,
 				424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */,
@@ -8424,11 +8422,9 @@
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
 				42BF7F342DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */,
 				426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */,
-				4245DC032EBA42C3005E0E04 /* AreasService.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
-				424123882CDCEB66007EDE70 /* AreaProvider.swift in Sources */,
 				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
@@ -8734,7 +8730,7 @@
 				42A42A6A2DC37311000ABBAF /* PrivacyView.test.swift in Sources */,
 				42FCD0082B9B1ECE0057783F /* SimulatorThreadClientService.swift in Sources */,
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
-				422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */,
+				422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				42ACC2922E9E77210045A3FD /* HomeNetworkInputView.test.swift in Sources */,
 				42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */,
@@ -8941,6 +8937,7 @@
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				1121CD4A27128A970071C2AA /* UIView+StackView.swift in Sources */,
 				42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */,
+				4245DC052EBA7919005E0E04 /* AreasService.swift in Sources */,
 				11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
 				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
@@ -9224,6 +9221,7 @@
 				11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
+				4245DC042EBA7919005E0E04 /* AreasService.swift in Sources */,
 				42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */,
 				42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */,
 				42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */,

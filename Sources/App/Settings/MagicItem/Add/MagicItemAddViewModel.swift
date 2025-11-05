@@ -25,7 +25,6 @@ final class MagicItemAddViewModel: ObservableObject {
     @Published var serversAreasAndItsEntities: [String: [String: Set<String>]] = [:]
 
     private var entitiesSubscription: AnyCancellable?
-    private var areasService: AreasServiceProtocol = AreasService()
 
     init() {
         self.entitiesSubscription = $entities.sink { entities in
@@ -66,7 +65,7 @@ final class MagicItemAddViewModel: ObservableObject {
             return ""
         }
         for (areaId, entityIds) in areasAndItsEntities where entityIds.contains(entity.entityId) {
-            if let area = areasService.area(for: areaId, serverId: serverId) {
+            if let area = Current.areasProvider().area(for: areaId, serverId: serverId) {
                 return area.name
             }
         }
@@ -93,7 +92,7 @@ final class MagicItemAddViewModel: ObservableObject {
 
     private func loadEntitiesForAreas() async {
         for server in Current.servers.all {
-            let areasAndItsEntities = await areasService.fetchAreasAndItsEntities(for: server)
+            let areasAndItsEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
             let serverId = server.identifier.rawValue
             await MainActor.run { [serverId, areasAndItsEntities] in
                 self.serversAreasAndItsEntities[serverId] = areasAndItsEntities
