@@ -1937,7 +1937,7 @@ public enum L10n {
       }
       public enum Hardware {
         public enum InputField {
-          /// Hardware Address (BSSID)
+          /// Hardware Address
           public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.hardware.input_field.title") }
         }
       }
