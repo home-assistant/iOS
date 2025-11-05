@@ -1,9 +1,10 @@
 @testable import HomeAssistant
+@testable import Shared
 import Testing
 
-struct AreaProviderTests {
+struct AreasServiceTests {
     @Test func validateGivenEntitiesAndDevicesReturnAreaAndContent() async throws {
-        let result = AreaProvider.getAllEntitiesFromArea(
+        let result = AreasService().testGetAllEntitiesFromArea(
             devicesAndAreas: [
                 .init(areaId: "1", deviceId: "1"),
                 .init(areaId: "1", deviceId: "2"),
