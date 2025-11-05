@@ -72,20 +72,22 @@ struct HomeNetworkInputView: View {
         }
     }
 
+    @ViewBuilder
     private var hardwareAddressField: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            Text("Hardware Address (BSSID)")
-                .font(DesignSystem.Font.footnote)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        if !hardwareAddress.isEmpty {
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+                Text("Hardware Address (BSSID)")
+                    .font(DesignSystem.Font.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-            HATextField(
-                placeholder: "00:00:00:00:00:00",
-                text: $hardwareAddress
-            )
-            .autocorrectionDisabled()
-            .textInputAutocapitalization(.never)
-            .opacity(hardwareAddress.isEmpty ? 0 : 1)
+                HATextField(
+                    placeholder: "00:00:00:00:00:00",
+                    text: $hardwareAddress
+                )
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+            }
         }
     }
 
