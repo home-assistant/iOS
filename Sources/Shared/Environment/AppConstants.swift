@@ -22,6 +22,8 @@ public enum AppConstants {
         public static var facebook = URL(string: "https://www.facebook.com/292963007723872")!
         public static var repo = URL(string: "https://companion.home-assistant.io/app/ios/repo")!
         public static var issues = URL(string: "https://companion.home-assistant.io/app/ios/issues")!
+        public static var companionAppConnectionSecurityLevel =
+            URL(string: "https://companion.home-assistant.io/docs/getting_started/connection-security-level")!
     }
 
     public enum QueryItems: String, CaseIterable {
