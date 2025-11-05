@@ -650,7 +650,7 @@
 "settings.connection_section.local_push_description" = "Συνδεθείτε απευθείας στο διακομιστή Home Assistant για ειδοποιήσεις push όταν βρίσκεστε σε εσωτερικά SSID.";
 "settings.connection_section.location_send_type.setting.exact" = "Ακριβής";
 "settings.connection_section.location_send_type.setting.never" = "Ποτέ";
-"settings.connection_section.location_send_type.setting.zone_only" = "Μόνο όνομα ζώνης";
+"settings.connection_section.location_send_type.setting.zone_only" = "Μόνο ζώνη";
 "settings.connection_section.location_send_type.title" = "Αποστολή τοποθεσίας";
 "settings.connection_section.logged_in_as" = "Συνδεδεμένο ως";
 "settings.connection_section.no_base_url.title" = "Δεν υπάρχει URL";
