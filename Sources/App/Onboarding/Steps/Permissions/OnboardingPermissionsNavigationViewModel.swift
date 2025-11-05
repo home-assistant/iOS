@@ -146,8 +146,8 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
             if let ssid = context.networkName {
                 info.connection.internalSSIDs = [ssid]
             }
-            if let bssid = context.hardwareAddress {
-                info.connection.internalHardwareAddresses = [bssid]
+            if let hardwareAddress = context.hardwareAddress {
+                info.connection.internalHardwareAddresses = [hardwareAddress]
             }
             DispatchQueue.main.async {
                 self?.storedSSIDSuccessfully = true

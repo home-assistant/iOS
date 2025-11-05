@@ -194,8 +194,8 @@ struct ConnectionSecurityLevelBlockView: View {
                     if let ssid = context.networkName {
                         info.connection.internalSSIDs = [ssid]
                     }
-                    if let bssid = context.hardwareAddress {
-                        info.connection.internalHardwareAddresses = [bssid]
+                    if let hardwareAddress = context.hardwareAddress {
+                        info.connection.internalHardwareAddresses = [hardwareAddress]
                     }
 
                     showHomeNetworkSettings = false
