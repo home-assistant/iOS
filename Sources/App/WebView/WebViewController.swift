@@ -1,4 +1,3 @@
-import Alamofire
 import AVFoundation
 import AVKit
 import CoreLocation
@@ -221,7 +220,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // No need to load URL, HomeAssistantAPI.didConnectNotification will trigger it if needed
+        loadActiveURLIfNeeded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -468,10 +467,45 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         ])
 
         if Current.isCatalyst {
-            setupStatusBarButtons(statusBarView: statusBarView)
+            setupStatusBarButtons(in: statusBarView)
         }
 
         return statusBarView
+    }
+
+    private func setupStatusBarButtons(in statusBarView: UIView) {
+        // Remove existing stack if present
+        if let statusBarButtonsStack {
+            statusBarButtonsStack.removeFromSuperview()
+            self.statusBarButtonsStack = nil
+        }
+
+        let configuration = StatusBarButtonsConfigurator.Configuration(
+            server: server,
+            servers: Current.servers.all,
+            actions: .init(
+                refresh: { [weak self] in
+                    self?.refresh()
+                },
+                openServer: { [weak self] server in
+                    self?.openServer(server)
+                },
+                openInSafari: { [weak self] in
+                    self?.openServerInSafari()
+                },
+                goBack: { [weak self] in
+                    self?.goBack()
+                },
+                goForward: { [weak self] in
+                    self?.goForward()
+                }
+            )
+        )
+
+        statusBarButtonsStack = StatusBarButtonsConfigurator.setupButtons(
+            in: statusBarView,
+            configuration: configuration
+        )
     }
 
     private func setupStatusBarButtons(statusBarView: UIView) {
@@ -494,7 +528,29 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             self.statusBarButtonsStack = nil
         }
 
-        let arrangedSubviews: [UIView] = Current.servers.all.count > 1 ? [picker] : []
+        let reloadButton = UIButton(type: .custom)
+        reloadButton.setImage(UIImage(systemSymbol: .arrowClockwise), for: .normal)
+        reloadButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
+
+        // Wrap reload button in a circle view with padding
+        let circleContainer = UIView()
+        circleContainer.backgroundColor = UIColor.systemGray5
+        circleContainer.layer.cornerRadius = 14 // Adjust size as needed
+        circleContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        circleContainer.addSubview(reloadButton)
+        reloadButton.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            circleContainer.widthAnchor.constraint(equalToConstant: 28),
+            circleContainer.heightAnchor.constraint(equalToConstant: 28),
+            reloadButton.centerXAnchor.constraint(equalTo: circleContainer.centerXAnchor),
+            reloadButton.centerYAnchor.constraint(equalTo: circleContainer.centerYAnchor),
+            reloadButton.widthAnchor.constraint(equalToConstant: 20),
+            reloadButton.heightAnchor.constraint(equalToConstant: 20),
+        ])
+
+        let arrangedSubviews: [UIView] = Current.servers.all.count > 1 ? [circleContainer, picker] : [circleContainer]
 
         let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
         stackView.axis = .horizontal
