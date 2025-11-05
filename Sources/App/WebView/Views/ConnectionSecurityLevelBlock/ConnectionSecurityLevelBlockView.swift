@@ -137,6 +137,7 @@ struct ConnectionSecurityLevelBlockView: View {
                             }
                     }
                 }
+                .frame(maxWidth: DesignSystem.Button.maxWidth)
                 .padding(.top)
             }
         }
