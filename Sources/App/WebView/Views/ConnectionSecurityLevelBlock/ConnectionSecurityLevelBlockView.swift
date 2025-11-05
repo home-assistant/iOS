@@ -12,7 +12,7 @@ struct ConnectionSecurityLevelBlockView: View {
 
     let server: Server
 
-    private let learnMoreLink = AppConstants.WebURLs.companionAppDocs
+    private let learnMoreLink = AppConstants.WebURLs.companionAppConnectionSecurityLevel
 
     init(server: Server) {
         self._viewModel = .init(wrappedValue: ConnectionSecurityLevelBlockViewModel(server: server))

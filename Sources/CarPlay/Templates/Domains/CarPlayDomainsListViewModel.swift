@@ -22,11 +22,6 @@ final class CarPlayDomainsListViewModel {
             return
         }
         self.entities = entities
-
-        let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first
-
-        guard let server else { return }
-
         let entityDomains = Set(entities.all.map(\.domain))
         let domains = entityDomains.compactMap({ Domain(rawValue: $0) }).filter(\.isCarPlaySupported)
             .sorted(by: { d1, d2 in
