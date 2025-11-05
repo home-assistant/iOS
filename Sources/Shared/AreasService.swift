@@ -170,4 +170,14 @@ final class AreasService: AreasServiceProtocol {
 
         return areasAndEntitiesDict
     }
+
+    #if DEBUG
+    /// For testing purposes only
+    public func testGetAllEntitiesFromArea(
+        devicesAndAreas: [HADeviceAreaResponse],
+        entitiesAndAreas: [HAEntityAreaResponse]
+    ) -> [String: Set<String>] {
+        getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
+    }
+    #endif
 }

@@ -607,7 +607,7 @@
 		4228D0012DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */; };
 		422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */; };
 		422E25EE2C80019D00256D87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
-		422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */; };
+		422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422E626B2CDCF00A00987BD0 /* AreasService.test.swift */; };
 		422F88132D42806400706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */; };
 		422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */; };
@@ -2126,7 +2126,7 @@
 		4228CFFE2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewScriptMessageHandler.swift; sourceTree = "<group>"; };
 		4228D0002DB903AA00FC6912 /* WKUserContentControllerMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKUserContentControllerMessageTests.swift; sourceTree = "<group>"; };
 		422E25EC2C7FF28900256D87 /* ControlScriptsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScriptsValueProvider.swift; sourceTree = "<group>"; };
-		422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaProvider.test.swift; sourceTree = "<group>"; };
+		422E626B2CDCF00A00987BD0 /* AreasService.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreasService.test.swift; sourceTree = "<group>"; };
 		422F88122D42806400706A0A /* CustomWidgetToggleAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetToggleAppIntent.swift; sourceTree = "<group>"; };
 		422F88152D428E8300706A0A /* CustomWidgetActivateAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetActivateAppIntent.swift; sourceTree = "<group>"; };
 		422F88182D42989E00706A0A /* CustomWidgetPressButtonAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetPressButtonAppIntent.swift; sourceTree = "<group>"; };
@@ -4422,7 +4422,7 @@
 		422E626A2CDCF00000987BD0 /* Area */ = {
 			isa = PBXGroup;
 			children = (
-				422E626B2CDCF00A00987BD0 /* AreaProvider.test.swift */,
+				422E626B2CDCF00A00987BD0 /* AreasService.test.swift */,
 			);
 			path = Area;
 			sourceTree = "<group>";
@@ -8730,7 +8730,7 @@
 				42A42A6A2DC37311000ABBAF /* PrivacyView.test.swift in Sources */,
 				42FCD0082B9B1ECE0057783F /* SimulatorThreadClientService.swift in Sources */,
 				42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */,
-				422E626C2CDCF00A00987BD0 /* AreaProvider.test.swift in Sources */,
+				422E626C2CDCF00A00987BD0 /* AreasService.test.swift in Sources */,
 				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
 				42ACC2922E9E77210045A3FD /* HomeNetworkInputView.test.swift in Sources */,
 				42B980DC2DC256A300BC5C08 /* SensorRow.test.swift in Sources */,
