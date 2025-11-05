@@ -141,10 +141,14 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Saves the home network SSID to the onboarding server configuration
     /// - Parameter ssid: The network SSID to save for trusted local connections
     /// - Note: This is used in the homeNetwork step to configure secure local access
-    func saveNetworkSSID(_ ssid: String) {
+    func saveHomeNetwork(_ context: HomeNetworkInputView.HomeNetworkInputViewSubmitContext) {
         onboardingServer.update { [weak self] info in
-            info.connection.internalSSIDs = [ssid]
-
+            if let ssid = context.networkName {
+                info.connection.internalSSIDs = [ssid]
+            }
+            if let bssid = context.hardwareAddress {
+                info.connection.internalHardwareAddresses = [bssid]
+            }
             DispatchQueue.main.async {
                 self?.storedSSIDSuccessfully = true
             }

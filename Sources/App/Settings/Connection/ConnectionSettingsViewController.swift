@@ -190,13 +190,6 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
 
             <<< ButtonRow { row in
                 row.cellStyle = .value1
-                row.hidden = .function([
-                    RowTag.externalURL.rawValue,
-                    RowTag.internalURL.rawValue,
-                ], { [weak self] _ in
-                    // We only display this section is user has non-HTTPS URL configured as internal or external
-                    !(self?.server.info.connection.hasNonHTTPSURLOption ?? false)
-                })
                 row.title = L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title
                 row.displayValueFor = { [server] _ in
                     server.info.connection.connectionAccessSecurityLevel.description
@@ -217,8 +210,6 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                         animated: true
                     )
                 }
-
-                row.evaluateHidden()
             }
 
             +++ Section(L10n.SettingsDetails.Privacy.title)

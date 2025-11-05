@@ -13,6 +13,7 @@ struct ConnectionSecurityLevelBlockView: View {
     let server: Server
 
     private let learnMoreLink = AppConstants.WebURLs.companionAppConnectionSecurityLevel
+    private let minSheetHeight: CGFloat = 800
 
     init(server: Server) {
         self._viewModel = .init(wrappedValue: ConnectionSecurityLevelBlockViewModel(server: server))
@@ -47,38 +48,54 @@ struct ConnectionSecurityLevelBlockView: View {
             .onAppear {
                 viewModel.loadRequirements()
             }
-            .sheet(isPresented: $showSettings) {
-                embed(UINavigationController(rootViewController: SettingsViewController()))
-                    .onDisappear {
-                        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                            .done { webView in
-                                dismiss()
-                                webView.refresh()
-                            }
-                    }
-            }
-            .sheet(isPresented: $showHomeNetworkSettings) {
+            #if targetEnvironment(macCatalyst)
+            .fullScreenCover(isPresented: $showHomeNetworkSettings) {
                 homeNetworkView
             }
-            .sheet(isPresented: $showConnectionSecurityPreferences) {
+            .fullScreenCover(isPresented: $showConnectionSecurityPreferences) {
                 connectionPreferencesView
             }
-            .onReceive(NotificationCenter.default.publisher(for: .locationPermissionDidChange)) { notification in
-                if let userInfo = notification.userInfo {
-                    let state = LocationPermissionState(userInfo: userInfo)
-                    switch state {
-                    case .notDetermined:
-                        Current.Log.info("Location permission not determined")
-                    case .denied, .restricted:
-                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                    case .authorizedWhenInUse, .authorizedAlways:
-                        // Handle permission change - reload requirements to update UI
-                        viewModel.loadRequirements()
+            .fullScreenCover(isPresented: $showSettings) {
+                settingsView
+            }
+            #else
+            .sheet(isPresented: $showHomeNetworkSettings) {
+                    homeNetworkView
+                }
+                .sheet(isPresented: $showConnectionSecurityPreferences) {
+                    connectionPreferencesView
+                }
+                .sheet(isPresented: $showSettings) {
+                    settingsView
+                }
+            #endif
+                .onReceive(NotificationCenter.default.publisher(for: .locationPermissionDidChange)) { notification in
+                    if let userInfo = notification.userInfo {
+                        let state = LocationPermissionState(userInfo: userInfo)
+                        switch state {
+                        case .notDetermined:
+                            Current.Log.info("Location permission not determined")
+                        case .denied, .restricted:
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                        case .authorizedWhenInUse, .authorizedAlways:
+                            // Handle permission change - reload requirements to update UI
+                            viewModel.loadRequirements()
+                        }
                     }
                 }
-            }
         }
         .navigationViewStyle(.stack)
+    }
+
+    private var settingsView: some View {
+        embed(UINavigationController(rootViewController: SettingsViewController()))
+            .onDisappear {
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webView in
+                        dismiss()
+                        webView.refresh()
+                    }
+            }
     }
 
     private var content: some View {
@@ -168,10 +185,15 @@ struct ConnectionSecurityLevelBlockView: View {
 
     private var homeNetworkView: some View {
         NavigationView(content: {
-            HomeNetworkInputView(onNext: { ssid in
-                guard let ssid else { return }
+            HomeNetworkInputView(onNext: { context in
                 server.update { info in
-                    info.connection.internalSSIDs = [ssid]
+                    if let ssid = context.networkName {
+                        info.connection.internalSSIDs = [ssid]
+                    }
+                    if let bssid = context.hardwareAddress {
+                        info.connection.internalHardwareAddresses = [bssid]
+                    }
+
                     showHomeNetworkSettings = false
                 }
             })
