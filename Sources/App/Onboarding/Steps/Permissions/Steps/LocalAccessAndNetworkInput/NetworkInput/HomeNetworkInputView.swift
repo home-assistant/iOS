@@ -76,7 +76,7 @@ struct HomeNetworkInputView: View {
     private var hardwareAddressField: some View {
         if !hardwareAddress.isEmpty {
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-                Text("Hardware Address (BSSID)")
+                Text(L10n.Onboarding.NetworkInput.Hardware.InputField.title)
                     .font(DesignSystem.Font.footnote)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)

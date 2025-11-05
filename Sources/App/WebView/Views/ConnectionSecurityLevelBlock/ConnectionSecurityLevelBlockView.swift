@@ -165,7 +165,11 @@ struct ConnectionSecurityLevelBlockView: View {
     private var bottomButtons: some View {
         VStack(spacing: DesignSystem.Spaces.one) {
             Button(action: {
-                showSettings = true
+                if Current.isCatalyst {
+                    Current.sceneManager.activateAnyScene(for: .settings)
+                } else {
+                    showSettings = true
+                }
             }) {
                 Text(L10n.ConnectionSecurityLevelBlock.OpenSettings.title)
             }
