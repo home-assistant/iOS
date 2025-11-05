@@ -121,7 +121,7 @@ struct HomeNetworkInputView: View {
             if trimmedNetworkName.isEmpty, trimmedHardwareAddress.isEmpty {
                 showingEmptyNetworkAlert = true
             } else {
-                onNext(.init(networkName: trimmedNetworkName, hardwareAddress: hardwareAddress))
+                onNext(.init(networkName: trimmedNetworkName, hardwareAddress: trimmedHardwareAddress))
             }
         } else {
             if trimmedNetworkName.isEmpty {
