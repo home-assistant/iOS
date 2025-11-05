@@ -13,7 +13,6 @@ struct ConnectionSecurityLevelBlockView: View {
     let server: Server
 
     private let learnMoreLink = AppConstants.WebURLs.companionAppConnectionSecurityLevel
-    private let minSheetHeight: CGFloat = 800
 
     init(server: Server) {
         self._viewModel = .init(wrappedValue: ConnectionSecurityLevelBlockViewModel(server: server))
