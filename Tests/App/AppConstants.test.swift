@@ -35,6 +35,10 @@ struct AppConstantsTests {
         assert(AppConstants.WebURLs.facebook.absoluteString == "https://www.facebook.com/292963007723872")
         assert(AppConstants.WebURLs.repo.absoluteString == "https://companion.home-assistant.io/app/ios/repo")
         assert(AppConstants.WebURLs.issues.absoluteString == "https://companion.home-assistant.io/app/ios/issues")
+        assert(
+            AppConstants.WebURLs.companionAppConnectionSecurityLevel
+                .absoluteString == "https://companion.home-assistant.io/docs/getting_started/connection-security-level"
+        )
     }
 
     @Test func testQueryItemsRawValues() async throws {
