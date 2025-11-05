@@ -128,7 +128,12 @@ struct ConnectionSecurityLevelBlockView: View {
                             .onTapGesture {
                                 switch requirement {
                                 case .homeNetworkMissing:
-                                    showHomeNetworkSettings = true
+                                    if !(server.info.connection.internalHardwareAddresses?.isEmpty ?? true) ||
+                                        !(server.info.connection.internalSSIDs?.isEmpty ?? true) {
+                                        openSettings()
+                                    } else {
+                                        showHomeNetworkSettings = true
+                                    }
                                 case .locationPermission:
                                     Current.locationManager.requestLocationPermission()
                                 case .notOnHomeNetwork:
@@ -144,6 +149,14 @@ struct ConnectionSecurityLevelBlockView: View {
         .padding(DesignSystem.Spaces.three)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: .systemBackground))
+    }
+
+    private func openSettings() {
+        if Current.isCatalyst {
+            Current.sceneManager.activateAnyScene(for: .settings)
+        } else {
+            showSettings = true
+        }
     }
 
     private func requirementItem(systemSymbol: SFSymbol, title: String) -> some View {
@@ -166,11 +179,7 @@ struct ConnectionSecurityLevelBlockView: View {
     private var bottomButtons: some View {
         VStack(spacing: DesignSystem.Spaces.one) {
             Button(action: {
-                if Current.isCatalyst {
-                    Current.sceneManager.activateAnyScene(for: .settings)
-                } else {
-                    showSettings = true
-                }
+                openSettings()
             }) {
                 Text(L10n.ConnectionSecurityLevelBlock.OpenSettings.title)
             }
