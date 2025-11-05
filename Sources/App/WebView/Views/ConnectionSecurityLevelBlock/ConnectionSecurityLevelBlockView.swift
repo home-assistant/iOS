@@ -128,12 +128,7 @@ struct ConnectionSecurityLevelBlockView: View {
                             .onTapGesture {
                                 switch requirement {
                                 case .homeNetworkMissing:
-                                    if !(server.info.connection.internalHardwareAddresses?.isEmpty ?? true) ||
-                                        !(server.info.connection.internalSSIDs?.isEmpty ?? true) {
-                                        openSettings()
-                                    } else {
-                                        showHomeNetworkSettings = true
-                                    }
+                                    showHomeNetworkSettings = true
                                 case .locationPermission:
                                     Current.locationManager.requestLocationPermission()
                                 case .notOnHomeNetwork:
