@@ -2,7 +2,7 @@ import Shared
 import SwiftUI
 
 struct HomeNetworkInputView: View {
-    struct HomeNetworkInputViewSubmitContext {
+    struct SubmitContext {
         let networkName: String?
         let hardwareAddress: String?
     }
@@ -12,7 +12,7 @@ struct HomeNetworkInputView: View {
     @State private var showingEmptyNetworkAlert = false
     @StateObject private var viewModel = HomeNetworkInputViewModel()
 
-    let onNext: (HomeNetworkInputViewSubmitContext) -> Void
+    let onNext: (SubmitContext) -> Void
 
     var body: some View {
         BaseOnboardingView(
