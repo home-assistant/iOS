@@ -167,13 +167,13 @@ struct OnboardingPermissionsNavigationViewModelTests {
 
     // MARK: - Network SSID Tests
 
-    @Test("Save network SSID")
-    func saveNetworkSSID() async throws {
+    @Test("Save Home Network")
+    func saveHomeNetwork() async throws {
         let server = ServerFixture.standard
         let viewModel = OnboardingPermissionsNavigationViewModel(onboardingServer: server)
 
         let testSSID = "TestNetwork"
-        viewModel.saveNetworkSSID(testSSID)
+        viewModel.saveHomeNetwork(.init(networkName: testSSID, hardwareAddress: nil))
 
         #expect(server.info.connection.internalSSIDs == [testSSID])
     }
