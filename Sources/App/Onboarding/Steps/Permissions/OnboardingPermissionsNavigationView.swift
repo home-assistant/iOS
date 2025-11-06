@@ -88,9 +88,9 @@ struct OnboardingPermissionsNavigationView: View {
     }
 
     private var homeNetworkInput: some View {
-        HomeNetworkInputView(onNext: { networkSSID in
-            if let networkSSID {
-                viewModel.saveNetworkSSID(networkSSID)
+        HomeNetworkInputView(onNext: { context in
+            if context.networkName != nil || context.hardwareAddress != nil {
+                viewModel.saveHomeNetwork(context)
             }
         })
         .onChange(of: viewModel.storedSSIDSuccessfully) { newValue in

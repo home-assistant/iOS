@@ -514,6 +514,7 @@ Remote when you're ready.";
 "onboarding.network_input.disclaimer.title" = "Make sure to set up your home network correctly.";
 "onboarding.network_input.input_field.placeholder" = "Network name";
 "onboarding.network_input.input_field.title" = "Wi-Fi network connected";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
 "onboarding.network_input.no_network.alert.title" = "Network name required";
 "onboarding.network_input.no_network.skip.alert.body" = "You haven't set a home network. You can set it up later in the app settings, until that we will only use your remote connection (if it exists) to access Home Assistant.";

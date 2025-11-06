@@ -1935,6 +1935,12 @@ public enum L10n {
         /// Make sure to set up your home network correctly.
         public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.disclaimer.title") }
       }
+      public enum Hardware {
+        public enum InputField {
+          /// Hardware Address
+          public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.hardware.input_field.title") }
+        }
+      }
       public enum InputField {
         /// Network name
         public static var placeholder: String { return L10n.tr("Localizable", "onboarding.network_input.input_field.placeholder") }
