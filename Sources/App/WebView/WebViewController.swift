@@ -500,10 +500,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                     self?.goForward()
                 },
                 copy: { [weak self] in
-                    self?.copyCurrentURL()
+                    self?.copyCurrentSelectedContent()
                 },
                 paste: { [weak self] in
-                    self?.pasteAndNavigate()
+                    self?.pasteContent()
                 }
             )
         )
@@ -822,22 +822,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    @objc private func copyCurrentURL() {
+    @objc private func copyCurrentSelectedContent() {
         // Get selected text from the web view
         webView.evaluateJavaScript("window.getSelection().toString();") { [weak self] result, error in
             guard let self else { return }
-
-            if let error {
-                let alert = UIAlertController(
-                    title: "Copy Error",
-                    message: "Error: \(error.localizedDescription)",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                present(alert, animated: true)
-                return
-            }
-
+            Current.Log.error("Copy selected content result: \(String(describing: result)), error: \(String(describing: error))")
             if let selectedText = result as? String, !selectedText.isEmpty {
                 // Copy to clipboard
                 UIPasteboard.general.string = selectedText
@@ -845,7 +834,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
     }
 
-    @objc private func pasteAndNavigate() {
+    @objc private func pasteContent() {
         // Programmatically trigger the standard iOS paste action by calling the paste: selector
         // This mimics the user selecting "Paste" from the context menu and allows paste to work properly
         if webView.responds(to: #selector(paste(_:))) {
