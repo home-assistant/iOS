@@ -498,6 +498,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 },
                 goForward: { [weak self] in
                     self?.goForward()
+                },
+                copy: { [weak self] in
+                    self?.copyCurrentURL()
+                },
+                paste: { [weak self] in
+                    self?.pasteAndNavigate()
                 }
             )
         )
@@ -813,6 +819,46 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             if let url = urlComponents.url {
                 UIApplication.shared.open(url)
             }
+        }
+    }
+
+    @objc private func copyCurrentURL() {
+        // Get selected text from the web view
+        webView.evaluateJavaScript("window.getSelection().toString();") { [weak self] result, error in
+            guard let self else { return }
+
+            if let error {
+                let alert = UIAlertController(
+                    title: "Copy Error",
+                    message: "Error: \(error.localizedDescription)",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                present(alert, animated: true)
+                return
+            }
+
+            if let selectedText = result as? String, !selectedText.isEmpty {
+                // Copy to clipboard
+                UIPasteboard.general.string = selectedText
+            }
+        }
+    }
+
+    @objc private func pasteAndNavigate() {
+        // Simulate Command+V keypress by calling the paste: selector
+        // This mimics the user gesture and allows paste to work properly
+        if webView.responds(to: #selector(paste(_:))) {
+            webView.perform(#selector(paste(_:)), with: nil)
+        }
+    }
+
+    @objc override func paste(_ sender: Any?) {
+        // Forward to webView if it can handle it
+        if webView.responds(to: #selector(paste(_:))) {
+            webView.perform(#selector(paste(_:)), with: sender)
+        } else {
+            super.paste(sender)
         }
     }
 
