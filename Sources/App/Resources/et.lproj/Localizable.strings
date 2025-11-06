@@ -650,7 +650,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.local_push_description" = "Sisemiste SSID-de korral saad tõuketeavituste saamiseks luua otseühenduse Home Assistanti serveriga.";
 "settings.connection_section.location_send_type.setting.exact" = "Täpne";
 "settings.connection_section.location_send_type.setting.never" = "Mitte kunagi";
-"settings.connection_section.location_send_type.setting.zone_only" = "Ainult tsooni nimi";
+"settings.connection_section.location_send_type.setting.zone_only" = "Ainult tsoon";
 "settings.connection_section.location_send_type.title" = "Asukoht saadetud";
 "settings.connection_section.logged_in_as" = "Sisse logitud kui";
 "settings.connection_section.no_base_url.title" = "URL puudub";

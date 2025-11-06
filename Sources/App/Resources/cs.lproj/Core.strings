@@ -119,7 +119,7 @@ Dokončete nastavení podle [pokynů]({url}).";
 "component::input_boolean::entity_component::_::state::on" = "Zapnuto";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::false" = "Ne";
 "component::input_boolean::entity_component::_::state_attributes::editable::state::true" = "Ano";
-"component::input_boolean::title" = "Pomocníci - přepínače";
+"component::input_boolean::title" = "Vstupní booleovská hodnota";
 "component::input_button::entity_component::_::state_attributes::editable::state::false" = "Ne";
 "component::input_button::entity_component::_::state_attributes::editable::state::true" = "Ano";
 "component::input_button::title" = "Pomocníci - tlačítko";
