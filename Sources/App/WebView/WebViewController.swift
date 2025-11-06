@@ -846,8 +846,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     @objc private func pasteAndNavigate() {
-        // Simulate Command+V keypress by calling the paste: selector
-        // This mimics the user gesture and allows paste to work properly
+        // Programmatically trigger the standard iOS paste action by calling the paste: selector
+        // This mimics the user selecting "Paste" from the context menu and allows paste to work properly
         if webView.responds(to: #selector(paste(_:))) {
             webView.perform(#selector(paste(_:)), with: nil)
         }
