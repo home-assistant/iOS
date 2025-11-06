@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Luba veebisaidiülene jälgimine kui konfiguratsioon seda nõuab.";
 "NSFocusStatusUsageDescription" = "Teata oma fookuse olekust andurina.";
 "NSLocalNetworkUsageDescription" = "Leia Home Assistanti eksemplar ja suhtle sellega.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Parima asukohakogemuse saamiseks soovitame teha valiku „Luba alati”. Kui valid \"Ainult rakenduse kasutamise ajal\", keelatakse iBeaconid, geopiirded, taustal asukohavärskendused ja täpne aruandlus.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Samuti vajame luba asukohale juurde pääseda valikuga „Alati”, et rakendus saaks taustal toiminguid teha. \n\n ⚠️ Ilma selleta ei saa rakendus otsustada, millist ühendust (kohalik või kaugühendus) taustal kasutada ja kasutab alati kaugühendust.";
 "NSLocationAlwaysUsageDescription" = "Meil on alati vaja juurdepääsu asukohale, et kasutada selliseid funktsioone nagu iBeacons, geofüüsilised piirded, asukoha taustauuendused ja täpne aruandlus.";
 "NSLocationUsageDescription" = "Kui see on aktiveeritud, saadetakse  seadme asukoht jälgimisseadmena Home Assistant'i serverisse.";
-"NSLocationWhenInUseUsageDescription" = "Asukohale juurdepääsu lubamine ainult rakenduse kasutamise ajal keelab iBeaconid, geopiirded, taustal asukohavärskendused ja täpse aruandluse.";
+"NSLocationWhenInUseUsageDescription" = "See rakendus vajab Home Assistant installiga otseühenduse loomiseks asukohale juurdepääsu. \n \n 1️⃣ Asukohta kasutatakse ainult selleks, et kontrollida, kas oled ühendatud oma kohaliku võrguga. \n \n 2️⃣ Seda ei jagata kellegagi. \n \n 3️⃣ Kui seda ei luba, loob rakendus alati ühenduse interneti kaudu. Kui see pole konfigureeritud, kaitseb see andmeid ja keeldub ühendusest.";
 "NSMicrophoneUsageDescription" = "Salvesta heli Home Assistanti kasutajaliidese abil.";
 "NSMotionUsageDescription" = "Liikumist kasutatakse asukoha ajakohastamise parandamiseks koos praeguse liikumistüübiga ning samuti põhiliste sammuloendurite andmete esitamiseks.";
 "NSPhotoLibraryAddUsageDescription" = "Fotode veebivaatest salvestamiseks on vaja juurdepääsu fotokogule.";
