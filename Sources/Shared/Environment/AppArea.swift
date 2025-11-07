@@ -45,4 +45,3 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
         self.entities = entities ?? []
     }
 }
-
