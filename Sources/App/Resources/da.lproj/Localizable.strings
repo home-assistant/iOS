@@ -512,6 +512,7 @@ Fjernadgang, når du er klar.";
 "onboarding.manual_url_entry.title" = "Hvad er din Home Assistant-adresse?";
 "onboarding.network_input.disclaimer.body" = "Hvis du tilføjer offentlige WiFi-netværk eller bruger flere Ethernet/VPN-forbindelser, kan det utilsigtet afsløre oplysninger om eller adgang til din app eller server.";
 "onboarding.network_input.disclaimer.title" = "Sørg for at konfigurere dit hjemmenetværk korrekt.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Netværksnavn";
 "onboarding.network_input.input_field.title" = "WiFi-netværk tilsluttet";
 "onboarding.network_input.no_network.alert.body" = "Indtast et netværksnavn for at fortsætte.";

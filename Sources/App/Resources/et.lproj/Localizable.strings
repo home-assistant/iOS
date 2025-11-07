@@ -512,6 +512,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.manual_url_entry.title" = "Mis on Home Assistanti aadress?";
 "onboarding.network_input.disclaimer.body" = "Avalike WiFi-võrkude lisamine või mitme Etherneti/VPN-ühenduse kasutamine võib tahtmatult avaldada teavet rakenduse või serveri kohta või juurdepääsu sellele.";
 "onboarding.network_input.disclaimer.title" = "Veendu, et koduvõrk oleks õigesti seadistatud.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Võrgu nimi";
 "onboarding.network_input.input_field.title" = "Wi-Fi-võrk on ühendatud";
 "onboarding.network_input.no_network.alert.body" = "Jätkamiseks sisesta võrgu nimi.";

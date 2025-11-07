@@ -511,6 +511,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.manual_url_entry.title" = "Vad är din Home Assistant-adress?";
 "onboarding.network_input.disclaimer.body" = "Att lägga till offentliga Wi-Fi-nätverk eller använda flera Ethernet/VPN-anslutningar kan oavsiktligt avslöja information om eller åtkomst till din app eller server.";
 "onboarding.network_input.disclaimer.title" = "Se till att konfigurera ditt hemnätverk på rätt sätt.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Nätverksnamn";
 "onboarding.network_input.input_field.title" = "Wi-Fi-nätverk anslutet";
 "onboarding.network_input.no_network.alert.body" = "Ange ett nätverksnamn för att fortsätta.";

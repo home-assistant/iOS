@@ -512,6 +512,7 @@
 "onboarding.manual_url_entry.title" = "Ποια είναι η διεύθυνση του Home Assistant;";
 "onboarding.network_input.disclaimer.body" = "Η προσθήκη δημόσιων δικτύων Wi-Fi ή η χρήση πολλαπλών συνδέσεων ethernet/VPN μπορεί να εκθέσει ακούσια πληροφορίες σχετικά με την εφαρμογή ή τον server σας ή την πρόσβαση σε αυτά.";
 "onboarding.network_input.disclaimer.title" = "Βεβαιωθείτε ότι έχετε ρυθμίσει σωστά το δίκτυο του σπιτιού σας.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Ονομα δικτύου";
 "onboarding.network_input.input_field.title" = "Συνδεδεμένο σε δίκτυο Wi-Fi";
 "onboarding.network_input.no_network.alert.body" = "Παρακαλώ εισάγετε ένα όνομα δικτύου για να συνεχίσετε.";

@@ -512,6 +512,7 @@ Remote when you're ready.";
 "onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
 "onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
 "onboarding.network_input.disclaimer.title" = "Sørg for å sette opp hjemmenettverket ditt riktig.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Netverksnavn";
 "onboarding.network_input.input_field.title" = "Wi-Fi-nettverk tilkoblet";
 "onboarding.network_input.no_network.alert.body" = "Vennligst oppgi et nettverksnavn for å fortsette";

@@ -512,6 +512,7 @@ Vzdálené, až budete připraveni.";
 "onboarding.manual_url_entry.title" = "Jaká je adresa vašeho Home Assistanta?";
 "onboarding.network_input.disclaimer.body" = "Přidávání veřejných sítí Wi-Fi nebo používání více ethernetových/VPN připojení může neúmyslně zpřístupnit informace o vaší aplikaci či serveru nebo k nim mít přístup.";
 "onboarding.network_input.disclaimer.title" = "Ujistěte se, že máte správně nastavenou domácí síť.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Název sítě";
 "onboarding.network_input.input_field.title" = "Je připojena síť Wi-Fi";
 "onboarding.network_input.no_network.alert.body" = "Pro pokračování zadejte název sítě.";

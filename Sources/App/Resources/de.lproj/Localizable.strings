@@ -512,6 +512,7 @@ Mit Fernzugriff, wenn du bereit bist.";
 "onboarding.manual_url_entry.title" = "Wie lautet deine Home Assistant-Adresse?";
 "onboarding.network_input.disclaimer.body" = "Durch das Hinzufügen öffentlicher WLANs oder die Verwendung mehrerer Ethernet-/VPN-Verbindungen können unbeabsichtigt Informationen über deine App oder deinen Server preisgegeben oder der Zugriff darauf verweigert werden.";
 "onboarding.network_input.disclaimer.title" = "Stelle sicher, dass du dein Heimnetzwerk korrekt einrichtest.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Netzwerkname";
 "onboarding.network_input.input_field.title" = "WLAN verbunden";
 "onboarding.network_input.no_network.alert.body" = "Bitte gib einen Netzwerknamen ein, um fortzufahren.";
