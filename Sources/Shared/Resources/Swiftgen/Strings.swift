@@ -1371,6 +1371,10 @@ public enum L10n {
   }
 
   public enum Mac {
+    public enum Copy {
+      /// Copy
+      public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.copy.accessibility_label") }
+    }
     public enum Navigation {
       public enum GoBack {
         /// Navigate back
@@ -1380,6 +1384,10 @@ public enum L10n {
         /// Navigate forward
         public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.navigation.go_forward.accessibility_label") }
       }
+    }
+    public enum Paste {
+      /// Paste
+      public static var accessibilityLabel: String { return L10n.tr("Localizable", "mac.paste.accessibility_label") }
     }
   }
 
