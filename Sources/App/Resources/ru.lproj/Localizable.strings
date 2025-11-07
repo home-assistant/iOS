@@ -512,6 +512,7 @@
 "onboarding.manual_url_entry.title" = "Какой адрес вашего Home Assistant?";
 "onboarding.network_input.disclaimer.body" = "Добавление общедоступных Wi-Fi сетей или использование нескольких подключений Ethernet/VPN может непреднамеренно раскрыть информацию о вашем приложении или сервере или предоставить к ним доступ.";
 "onboarding.network_input.disclaimer.title" = "Убедитесь, что вы правильно настроили домашнюю сеть.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Название сети";
 "onboarding.network_input.input_field.title" = "Wi-Fi сеть подключена";
 "onboarding.network_input.no_network.alert.body" = "Пожалуйста, введите название сети для продолжения.";

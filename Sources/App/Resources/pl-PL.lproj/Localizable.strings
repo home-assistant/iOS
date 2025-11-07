@@ -510,6 +510,7 @@ Remote when you're ready.";
 "onboarding.manual_url_entry.title" = "What is your Home Assistant address?";
 "onboarding.network_input.disclaimer.body" = "Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.";
 "onboarding.network_input.disclaimer.title" = "Make sure to set up your home network correctly.";
+"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
 "onboarding.network_input.input_field.placeholder" = "Network name";
 "onboarding.network_input.input_field.title" = "Wi-Fi network connected";
 "onboarding.network_input.no_network.alert.body" = "Please enter a network name to continue.";
