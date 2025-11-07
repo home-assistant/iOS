@@ -826,7 +826,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         // Get selected text from the web view
         webView.evaluateJavaScript("window.getSelection().toString();") { [weak self] result, error in
             guard let self else { return }
-            Current.Log.error("Copy selected content result: \(String(describing: result)), error: \(String(describing: error))")
+            Current.Log
+                .error(
+                    "Copy selected content result: \(String(describing: result)), error: \(String(describing: error))"
+                )
             if let selectedText = result as? String, !selectedText.isEmpty {
                 // Copy to clipboard
                 UIPasteboard.general.string = selectedText
