@@ -466,6 +466,12 @@ public class AppEnvironment {
         }
     }
 
+    public func networkInformation(completion: @escaping (NEHotspotNetwork?) -> Void) {
+        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+            completion(hotspotNetwork)
+        }
+    }
+
     #if !os(watchOS)
     /// Provides a way to handle Bonjour connections. Such as for scanning for Home Assistant instances.
     public var bonjour: () -> BonjourProtocol = {
