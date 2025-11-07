@@ -51,6 +51,7 @@ public extension DatabaseQueue {
             AppEntityRegistryListForDisplayTable(),
             AppPanelTable(),
             CustomWidgetTable(),
+            AppAreaTable(),
         ]
     }
 

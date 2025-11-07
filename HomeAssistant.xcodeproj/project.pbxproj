@@ -745,6 +745,12 @@
 		42790C472C4809DD00E31B38 /* UIScreen+PerfectCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BE698E2C46D37800745ECA /* UIScreen+PerfectCornerRadius.swift */; };
 		4279407F2B8369EC001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
 		427940812B836A1A001D7E14 /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42805A142B0226050095414C /* AppIntentVocabulary.plist */; };
+		427A7CD92EBDFB1700D17841 /* AppArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CD82EBDFB1700D17841 /* AppArea.swift */; };
+		427A7CDA2EBDFB1700D17841 /* AppArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CD82EBDFB1700D17841 /* AppArea.swift */; };
+		427A7CDC2EBDFB1D00D17841 /* AppAreaTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CDB2EBDFB1D00D17841 /* AppAreaTable.swift */; };
+		427A7CDD2EBDFB1D00D17841 /* AppAreaTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CDB2EBDFB1D00D17841 /* AppAreaTable.swift */; };
+		427A7CDF2EBDFB4200D17841 /* AppArea+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CDE2EBDFB4200D17841 /* AppArea+Queries.swift */; };
+		427A7CE02EBDFB4200D17841 /* AppArea+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427A7CDE2EBDFB4200D17841 /* AppArea+Queries.swift */; };
 		427AE07E2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427AE07D2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift */; };
 		427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
 		427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */; };
@@ -2275,6 +2281,9 @@
 		42790C432C48077200E31B38 /* ImprovSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovSuccessView.swift; sourceTree = "<group>"; };
 		42790C452C4808FA00E31B38 /* AppleLikeBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLikeBottomSheet.swift; sourceTree = "<group>"; };
 		4279407E2B8369EA001D7E14 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bg; path = bg.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		427A7CD82EBDFB1700D17841 /* AppArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppArea.swift; sourceTree = "<group>"; };
+		427A7CDB2EBDFB1D00D17841 /* AppAreaTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAreaTable.swift; sourceTree = "<group>"; };
+		427A7CDE2EBDFB4200D17841 /* AppArea+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppArea+Queries.swift"; sourceTree = "<group>"; };
 		427AE07D2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessOnlyDisclaimerView.swift; sourceTree = "<group>"; };
 		427E92BB2D65E3FE0001566B /* WidgetInteractionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetInteractionType.swift; sourceTree = "<group>"; };
 		427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListView.swift; sourceTree = "<group>"; };
@@ -6334,6 +6343,9 @@
 				1121CD4B271295AD0071C2AA /* Style.swift */,
 				11B6B5902949178700B8B552 /* MatterWrapper.swift */,
 				4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */,
+				427A7CD82EBDFB1700D17841 /* AppArea.swift */,
+				427A7CDB2EBDFB1D00D17841 /* AppAreaTable.swift */,
+				427A7CDE2EBDFB4200D17841 /* AppArea+Queries.swift */,
 			);
 			path = Environment;
 			sourceTree = "<group>";
@@ -8811,6 +8823,7 @@
 				1117FB4D250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
 				42070EEC2BAC517A0031E96F /* AssistInAppIntentHandler.swift in Sources */,
 				11B38EF9275C54A300205C7B /* RenderTemplateIntentHandler.swift in Sources */,
+				427A7CDA2EBDFB1700D17841 /* AppArea.swift in Sources */,
 				11F855DB24DF6C7A0018013E /* IconDrawable.swift in Sources */,
 				11F2F25F25871D6000F61F7C /* NotificationAttachmentParserCamera.swift in Sources */,
 				11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */,
@@ -8897,6 +8910,7 @@
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
+				427A7CE02EBDFB4200D17841 /* AppArea+Queries.swift in Sources */,
 				42E3B8B92D8AC63300F5D084 /* Float+HA.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
 				11358AF024FCA8BE0074C4E2 /* ActiveStateManager.swift in Sources */,
@@ -8944,6 +8958,7 @@
 				4245DC052EBA7919005E0E04 /* AreasService.swift in Sources */,
 				11B6B593294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				11E1639B250B1B760076D612 /* OnboardingStateObservation.swift in Sources */,
+				427A7CDD2EBDFB1D00D17841 /* AppAreaTable.swift in Sources */,
 				115BC8292676F44E00452430 /* FocusSensor.swift in Sources */,
 				42D996E62D89863A001737A0 /* Bool+HA.swift in Sources */,
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
@@ -9067,9 +9082,11 @@
 				42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */,
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
+				427A7CDF2EBDFB4200D17841 /* AppArea+Queries.swift in Sources */,
 				4254C4CA2D103ABB00245021 /* ExternalLink.swift in Sources */,
 				42F161442D661D11003DDC75 /* ServersPickerPillList.swift in Sources */,
 				4297ADA82C89C74A00790812 /* GRDB+Initialization.swift in Sources */,
+				427A7CDC2EBDFB1D00D17841 /* AppAreaTable.swift in Sources */,
 				1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
 				420CFC792D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift in Sources */,
 				42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */,
@@ -9248,6 +9265,7 @@
 				11B38EE8275C54A200205C7B /* WidgetActionsIntentHandler.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11B38EEE275C54A200205C7B /* FocusStatusIntentHandler.swift in Sources */,
+				427A7CD92EBDFB1700D17841 /* AppArea.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				1121CD4C271295AD0071C2AA /* Style.swift in Sources */,
 				116570772702B0F6003906A7 /* DiskCache.swift in Sources */,
