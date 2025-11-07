@@ -46,8 +46,3 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
     }
 }
 
-private extension Data {
-    func asString() -> String? {
-        String(data: self, encoding: .utf8)
-    }
-}
