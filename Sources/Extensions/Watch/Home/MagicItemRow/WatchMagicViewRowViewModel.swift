@@ -71,7 +71,7 @@ final class WatchMagicViewRowViewModel: ObservableObject {
     }
 
     private func fetchNetworkInfo(completion: (() -> Void)? = nil) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+        Current.networkInformation { hotspotNetwork in
             WatchUserDefaults.shared.set(hotspotNetwork?.ssid, key: .watchSSID)
             completion?()
         }

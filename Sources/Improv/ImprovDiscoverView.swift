@@ -167,8 +167,8 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         selectedPeripheral = peripheral
 
         // This only works if location permission is permitted
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            if let ssid = hotspotNetwork?.ssid, self.ssid.isEmpty {
+        Current.connectivity.syncNetworkInformation {
+            if let ssid = Current.connectivity.currentWiFiSSID() {
                 self.ssid = ssid
             }
         }

@@ -108,7 +108,11 @@ public class ConnectivityWrapper {
     }
 
     public func syncNetworkInformation(completion: (() -> Void)? = nil) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
+        #if targetEnvironment(macCatalyst)
+        // macOS uses macBridge to retrieve network information
+        completion?()
+        #else
+        Current.networkInformation { hotspotNetwork in
             Current.Log
                 .verbose(
                     "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
@@ -124,5 +128,6 @@ public class ConnectivityWrapper {
             self.currentWiFiBSSID = { bssid }
             completion?()
         }
+        #endif
     }
 }
