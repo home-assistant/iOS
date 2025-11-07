@@ -112,7 +112,7 @@ public class ConnectivityWrapper {
         // macOS uses macBridge to retrieve network information
         completion?()
         #else
-        Current.networkInformation { hotspotNetwork in
+        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
             Current.Log
                 .verbose(
                     "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
