@@ -11,7 +11,7 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
     public let aliases: [String]
     public let picture: String?
     public let icon: String?
-    /// Array containing entity Ids that belog to area
+    /// Array containing entity Ids that belong to area
     public let entities: Set<String>
 
     public init(
