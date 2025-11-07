@@ -46,6 +46,8 @@ enum StatusBarButtonsConfigurator {
         let openInSafari: () -> Void
         let goBack: () -> Void
         let goForward: () -> Void
+        let copy: () -> Void
+        let paste: () -> Void
     }
 
     struct Configuration {
@@ -69,12 +71,16 @@ enum StatusBarButtonsConfigurator {
         statusBarView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        let buttonStack = createNavigationButtons(configuration: configuration)
-        statusBarView.addSubview(buttonStack)
+        let leftButtonStack = createLeftNavigationButtons(configuration: configuration)
+        statusBarView.addSubview(leftButtonStack)
+
+        let rightButtonStack = createRightButtons(configuration: configuration)
+        statusBarView.addSubview(rightButtonStack)
 
         setupConstraints(
             stackView: stackView,
-            buttonStack: buttonStack,
+            leftButtonStack: leftButtonStack,
+            rightButtonStack: rightButtonStack,
             statusBarView: statusBarView
         )
 
@@ -139,7 +145,7 @@ enum StatusBarButtonsConfigurator {
         return serverPickerContainer
     }
 
-    private static func createNavigationButtons(configuration: Configuration) -> UIStackView {
+    private static func createLeftNavigationButtons(configuration: Configuration) -> UIStackView {
         let openInSafariButton = WebViewControllerButtons.openInSafariButton
         openInSafariButton.addAction(UIAction { _ in
             configuration.actions.openInSafari()
@@ -160,7 +166,7 @@ enum StatusBarButtonsConfigurator {
 
         let reloadButton = UIButton(type: .custom)
         reloadButton.setImage(UIImage(systemSymbol: .arrowClockwise), for: .normal)
-        reloadButton.tintColor = backButton.tintColor // Match navigation arrows color
+        reloadButton.tintColor = backButton.tintColor
         reloadButton.addAction(UIAction { _ in
             configuration.actions.refresh()
         }, for: .touchUpInside)
@@ -170,6 +176,31 @@ enum StatusBarButtonsConfigurator {
             openInSafariContainer,
             navigationPillContainer,
             reloadContainer,
+        ])
+        buttonStack.axis = .horizontal
+        buttonStack.spacing = DesignSystem.Spaces.one
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
+        buttonStack.alignment = .center
+
+        return buttonStack
+    }
+
+    private static func createRightButtons(configuration: Configuration) -> UIStackView {
+        let copyButton = WebViewControllerButtons.copyButton
+        copyButton.addAction(UIAction { _ in
+            configuration.actions.copy()
+        }, for: .touchUpInside)
+        let copyContainer = wrapButtonInCircle(copyButton)
+
+        let pasteButton = WebViewControllerButtons.pasteButton
+        pasteButton.addAction(UIAction { _ in
+            configuration.actions.paste()
+        }, for: .touchUpInside)
+        let pasteContainer = wrapButtonInCircle(pasteButton)
+
+        let buttonStack = UIStackView(arrangedSubviews: [
+            copyContainer,
+            pasteContainer,
         ])
         buttonStack.axis = .horizontal
         buttonStack.spacing = DesignSystem.Spaces.one
@@ -307,31 +338,42 @@ enum StatusBarButtonsConfigurator {
 
     private static func setupConstraints(
         stackView: UIStackView,
-        buttonStack: UIStackView,
+        leftButtonStack: UIStackView,
+        rightButtonStack: UIStackView,
         statusBarView: UIView
     ) {
+        // Position server picker and reload button on the far right
         NSLayoutConstraint.activate([
             stackView.rightAnchor.constraint(equalTo: statusBarView.rightAnchor, constant: -DesignSystem.Spaces.half),
             stackView.topAnchor.constraint(equalTo: statusBarView.topAnchor, constant: DesignSystem.Spaces.half),
-            buttonStack.topAnchor.constraint(equalTo: statusBarView.topAnchor),
         ])
 
-        // Position buttons nicely in macOS bar
+        // Position copy/paste buttons to the left of server picker
+        NSLayoutConstraint.activate([
+            rightButtonStack.rightAnchor.constraint(equalTo: stackView.leftAnchor, constant: -DesignSystem.Spaces.one),
+            rightButtonStack.topAnchor.constraint(equalTo: statusBarView.topAnchor),
+        ])
+
+        // Position navigation buttons on the left side
         if shouldUseMacOS26Styling() {
             NSLayoutConstraint.activate([
-                buttonStack.leftAnchor.constraint(
+                leftButtonStack.leftAnchor.constraint(
                     equalTo: statusBarView.leftAnchor,
                     constant: Constants.Positioning.macOS26LeftOffset
                 ),
-                buttonStack.heightAnchor.constraint(equalToConstant: Constants.Positioning.macOS26Height),
+                leftButtonStack.topAnchor.constraint(equalTo: statusBarView.topAnchor),
+                leftButtonStack.heightAnchor.constraint(equalToConstant: Constants.Positioning.macOS26Height),
+                rightButtonStack.heightAnchor.constraint(equalToConstant: Constants.Positioning.macOS26Height),
             ])
         } else {
             NSLayoutConstraint.activate([
-                buttonStack.leftAnchor.constraint(
+                leftButtonStack.leftAnchor.constraint(
                     equalTo: statusBarView.leftAnchor,
                     constant: Constants.Positioning.macOSLegacyLeftOffset
                 ),
-                buttonStack.heightAnchor.constraint(equalToConstant: Constants.Positioning.macOSLegacyHeight),
+                leftButtonStack.topAnchor.constraint(equalTo: statusBarView.topAnchor),
+                leftButtonStack.heightAnchor.constraint(equalToConstant: Constants.Positioning.macOSLegacyHeight),
+                rightButtonStack.heightAnchor.constraint(equalToConstant: Constants.Positioning.macOSLegacyHeight),
             ])
         }
     }

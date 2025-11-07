@@ -42,4 +42,12 @@ enum WebViewControllerButtons {
     static var forwardButton: UIButton {
         navigationButton(symbol: .chevronRight, accessibilityLabel: L10n.Mac.Navigation.GoForward.accessibilityLabel)
     }
+
+    static var copyButton: UIButton {
+        navigationButton(symbol: .docOnDoc, accessibilityLabel: L10n.Mac.Copy.accessibilityLabel)
+    }
+
+    static var pasteButton: UIButton {
+        navigationButton(symbol: .docOnClipboard, accessibilityLabel: L10n.Mac.Paste.accessibilityLabel)
+    }
 }
