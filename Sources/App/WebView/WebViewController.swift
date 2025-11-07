@@ -498,6 +498,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 },
                 goForward: { [weak self] in
                     self?.goForward()
+                },
+                copy: { [weak self] in
+                    self?.copyCurrentSelectedContent()
+                },
+                paste: { [weak self] in
+                    self?.pasteContent()
                 }
             )
         )
@@ -813,6 +819,38 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             if let url = urlComponents.url {
                 UIApplication.shared.open(url)
             }
+        }
+    }
+
+    @objc private func copyCurrentSelectedContent() {
+        // Get selected text from the web view
+        webView.evaluateJavaScript("window.getSelection().toString();") { [weak self] result, error in
+            guard let self else { return }
+            Current.Log
+                .error(
+                    "Copy selected content result: \(String(describing: result)), error: \(String(describing: error))"
+                )
+            if let selectedText = result as? String, !selectedText.isEmpty {
+                // Copy to clipboard
+                UIPasteboard.general.string = selectedText
+            }
+        }
+    }
+
+    @objc private func pasteContent() {
+        // Programmatically trigger the standard iOS paste action by calling the paste: selector
+        // This mimics the user selecting "Paste" from the context menu and allows paste to work properly
+        if webView.responds(to: #selector(paste(_:))) {
+            webView.perform(#selector(paste(_:)), with: nil)
+        }
+    }
+
+    @objc override func paste(_ sender: Any?) {
+        // Forward to webView if it can handle it
+        if webView.responds(to: #selector(paste(_:))) {
+            webView.perform(#selector(paste(_:)), with: sender)
+        } else {
+            super.paste(sender)
         }
     }
 
