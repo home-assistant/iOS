@@ -352,8 +352,10 @@
 "location_change_notification.visit.body" = "Asukohta värskendati Visiti kaudu";
 "location_change_notification.watch_context.body" = "Asukohta värskendati kella konteksti sünkroonimise kaudu";
 "location_change_notification.x_callback_url.body" = "Asukohta värskendati X-Callback-URL-i kaudu";
+"mac.copy.accessibility_label" = "Kopeeri";
 "mac.navigation.go_back.accessibility_label" = "Liigu tagasi";
 "mac.navigation.go_forward.accessibility_label" = "Liigu edasi";
+"mac.paste.accessibility_label" = "Aseta";
 "magic_item.action" = "Toiming";
 "magic_item.action.assist.pipeline.title" = "Voog";
 "magic_item.action.assist.start_listening.title" = "Alusta kuulamist";
@@ -512,7 +514,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.manual_url_entry.title" = "Mis on Home Assistanti aadress?";
 "onboarding.network_input.disclaimer.body" = "Avalike WiFi-võrkude lisamine või mitme Etherneti/VPN-ühenduse kasutamine võib tahtmatult avaldada teavet rakenduse või serveri kohta või juurdepääsu sellele.";
 "onboarding.network_input.disclaimer.title" = "Veendu, et koduvõrk oleks õigesti seadistatud.";
-"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
+"onboarding.network_input.hardware.input_field.title" = "Riistvaraline aadress";
 "onboarding.network_input.input_field.placeholder" = "Võrgu nimi";
 "onboarding.network_input.input_field.title" = "Wi-Fi-võrk on ühendatud";
 "onboarding.network_input.no_network.alert.body" = "Jätkamiseks sisesta võrgu nimi.";
