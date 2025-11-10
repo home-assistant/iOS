@@ -112,9 +112,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, DesignSystem.Spaces.two)
                 }
-                .frame(height: hideOnboardingHeader ? 0 : nil)
-                .opacity(hideOnboardingHeader ? 0 : 1)
-                .animation(.easeInOut(duration: 0.3), value: hideOnboardingHeader)
+                .modifier(AnimatedHidingModifier(isHidden: hideOnboardingHeader))
 
                 VStack(spacing: DesignSystem.Spaces.two) {
                     Group {
@@ -130,9 +128,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                                 .multilineTextAlignment(.center)
                         }
                     }
-                    .frame(height: hideOnboardingHeader ? 0 : nil)
-                    .opacity(hideOnboardingHeader ? 0 : 1)
-                    .animation(.easeInOut(duration: 0.3), value: hideOnboardingHeader)
+                    .modifier(AnimatedHidingModifier(isHidden: hideOnboardingHeader))
 
                     if let content {
                         content()
