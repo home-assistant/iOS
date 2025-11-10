@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Det är möjligt att tillåta kors-spårning av webbplatser om dina inställningar tillåter det.";
 "NSFocusStatusUsageDescription" = "Rapportera din fokusstatus som en sensor.";
 "NSLocalNetworkUsageDescription" = "Hitta och kommunicera med din Home Assistant-installation.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Vi föreslår att du väljer \"Tillåt alltid\" för bästa platsupplevelse. Om du väljer \"endast när appen används\" inaktiveras iBeacons, geofences, platsuppdateringar i bakgrunden och korrekt rapportering.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Vi behöver också platsåtkomst \"Alltid\" så att appen kan utföra bakgrundsoperationer. \n\n ⚠️ Utan detta kan appen inte bestämma vilken anslutning (lokal eller fjärr) som ska användas i bakgrunden och kommer alltid att använda fjärr.";
 "NSLocationAlwaysUsageDescription" = "Vi behöver alltid till gång till din plats för funktioner som iBeacons, geofences, platsuppdateringar i bakgrunden och korrekt rapportering.";
 "NSLocationUsageDescription" = "När aktiverad skickas din enhets position till din Home Assistant-server som en enhetsspårare.";
-"NSLocationWhenInUseUsageDescription" = "Att endast tillåta platsåtkomst när appen används kommer att inaktivera iBeacons, geofences, bakgrunds platsuppdateringar och korrekt rapportering.";
+"NSLocationWhenInUseUsageDescription" = "Den här appen behöver platsåtkomst för att ansluta direkt till din Home Assistant-installation. \n \n 1️⃣ Din plats kommer endast att användas för att kontrollera om du är ansluten till ditt lokala nätverk. \n \n 2️⃣ Den kommer inte att delas med någon. \n \n 3️⃣ Om du inte tillåter detta kommer appen alltid att ansluta via internet i stället. Om den inte är konfigurerad kommer den att skydda dina data och neka anslutningen.";
 "NSMicrophoneUsageDescription" = "Spela in ljud genom att använda din Home Assistant frontend.";
 "NSMotionUsageDescription" = "Rörelse används för att förbättra platsuppdateringar med aktuell rörelsetyp, samt för att tillhandahålla grundläggande stegmätardata.";
 "NSPhotoLibraryAddUsageDescription" = "Åtkomst till bildbiblioteket krävs för att tillåta att foton sparas från webbvyn.";
