@@ -132,9 +132,9 @@ DEPENDENCIES:
   - Eureka (from `https://github.com/xmartlabs/Eureka`, branch `master`)
   - FirebaseMessaging
   - GRDB.swift (from `https://github.com/groue/GRDB.swift.git`, tag `v7.0.0`)
-  - HAKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
-  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
-  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, branch `main`)
+  - HAKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.5`)
+  - HAKit/Mocks (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.5`)
+  - HAKit/PromiseKit (from `https://github.com/home-assistant/HAKit.git`, tag `0.4.5`)
   - Improv-iOS (~> 0.0.6)
   - KeychainAccess
   - MBProgressHUD (~> 1.2.0)
@@ -205,8 +205,8 @@ EXTERNAL SOURCES:
     :git: https://github.com/groue/GRDB.swift.git
     :tag: v7.0.0
   HAKit:
-    :branch: main
     :git: https://github.com/home-assistant/HAKit.git
+    :tag: 0.4.5
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -240,8 +240,8 @@ CHECKOUT OPTIONS:
     :git: https://github.com/groue/GRDB.swift.git
     :tag: v7.0.0
   HAKit:
-    :commit: 00c211e1c7171a7aa1c1f5cb4f891286874bc10b
     :git: https://github.com/home-assistant/HAKit.git
+    :tag: 0.4.5
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -295,6 +295,6 @@ SPEC CHECKSUMS:
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 862825b2592c7c8e1ab25857f7b88b4b5efb6f83
+PODFILE CHECKSUM: ecb9bb2da577aba6b5772962c20be36ff4dda04a
 
 COCOAPODS: 1.15.2
