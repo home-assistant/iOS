@@ -23,9 +23,9 @@ extension EnvironmentValues {
 }
 
 public extension View {
-    /// Conditionally hides the title in BaseOnboardingView
+    /// Conditionally hides the header in BaseOnboardingView
     /// - Parameter hideHeader: When true, the header will be hidden
-    /// - Returns: A view with the title visibility modifier applied
+    /// - Returns: A view with the header visibility modifier applied
     func hideOnboardingHeader(_ hideHeader: Bool) -> some View {
         modifier(HiddenHeaderModifier(hideHeader: hideHeader))
     }

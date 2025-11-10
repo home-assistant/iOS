@@ -112,9 +112,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, DesignSystem.Spaces.two)
                 }
-                .frame(height: hideOnboardingHeader ? 0 : nil)
-                .opacity(hideOnboardingHeader ? 0 : 1)
-                .animation(.easeInOut(duration: 0.3), value: hideOnboardingHeader)
+                .modifier(OnboardingHeaderVisibility(isHidden: hideOnboardingHeader))
 
                 VStack(spacing: DesignSystem.Spaces.two) {
                     Group {
@@ -130,9 +128,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                                 .multilineTextAlignment(.center)
                         }
                     }
-                    .frame(height: hideOnboardingHeader ? 0 : nil)
-                    .opacity(hideOnboardingHeader ? 0 : 1)
-                    .animation(.easeInOut(duration: 0.3), value: hideOnboardingHeader)
+                    .modifier(OnboardingHeaderVisibility(isHidden: hideOnboardingHeader))
 
                     if let content {
                         content()
@@ -174,6 +170,19 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
         .frame(maxWidth: Sizes.maxWidthForLargerScreens)
         .padding([.horizontal, .top], DesignSystem.Spaces.two)
         .background(Color(uiColor: .systemBackground).opacity(0.95))
+    }
+}
+
+// MARK: - View Modifiers
+
+private struct OnboardingHeaderVisibility: ViewModifier {
+    let isHidden: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .frame(height: isHidden ? 0 : nil)
+            .opacity(isHidden ? 0 : 1)
+            .animation(.easeInOut(duration: 0.3), value: isHidden)
     }
 }
 
