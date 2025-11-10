@@ -2,7 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-struct DeviceNameView: View {
+struct DeviceNameView: View, KeyboardReadable {
     enum ActionType {
         case save
         case cancel
@@ -11,6 +11,8 @@ struct DeviceNameView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var deviceName: String = ""
+    @State private var isKeyboardVisible = false
+
     let errorMessage: String?
     let saveAction: (String) -> Void
     let cancelAction: () -> Void
@@ -21,41 +23,25 @@ struct DeviceNameView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: DesignSystem.Spaces.three) {
-                    Image(.Onboarding.pencil)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 150)
-                        .foregroundStyle(.haPrimary)
-                    Text(L10n.DeviceName.title)
-                        .font(DesignSystem.Font.largeTitle.bold())
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                    Text(L10n.DeviceName.subtitle)
-                        .font(DesignSystem.Font.body)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                    VStack(spacing: DesignSystem.Spaces.one) {
-                        HATextField(placeholder: L10n.DeviceName.Textfield.placeholder, text: $deviceName)
-                        if let errorMessage {
-                            Text(errorMessage)
-                                .font(DesignSystem.Font.footnote)
-                                .foregroundStyle(.red)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+            BaseOnboardingView(illustration: {
+                Image(.Onboarding.pencil)
+            }, title: L10n.DeviceName.title, primaryDescription: L10n.DeviceName.subtitle, content: {
+                VStack(spacing: DesignSystem.Spaces.one) {
+                    HATextField(placeholder: L10n.DeviceName.Textfield.placeholder, text: $deviceName)
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(DesignSystem.Font.footnote)
+                            .foregroundStyle(.red)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                .padding(DesignSystem.Spaces.two)
-                .onAppear {
-                    #if DEBUG
-                    deviceName = "Simulator \(UUID().uuidString.prefix(4))"
-                    #else
-                    deviceName = UIDevice.current.name
-                    #endif
-                }
+            }, primaryActionTitle: L10n.DeviceName.PrimaryButton.title) {
+                onDismissAction = .save
+                dismiss()
             }
+            .hideOnboardingHeader(isKeyboardVisible)
+            .navigationViewStyle(.stack)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton(size: .medium) {
@@ -64,19 +50,15 @@ struct DeviceNameView: View {
                     }
                 }
             }
+            .onAppear {
+                #if DEBUG
+                deviceName = "Simulator \(UUID().uuidString.prefix(4))"
+                #else
+                deviceName = UIDevice.current.name
+                #endif
+            }
         }
         .navigationViewStyle(.stack)
-        .safeAreaInset(edge: .bottom) {
-            Button {
-                onDismissAction = .save
-                dismiss()
-            } label: {
-                Text(L10n.DeviceName.PrimaryButton.title)
-            }
-            .buttonStyle(.primaryButton)
-            .padding(DesignSystem.Spaces.two)
-            .disabled(deviceName.count < 3)
-        }
         .interactiveDismissDisabled(true)
         .onDisappear {
             switch onDismissAction {
@@ -87,6 +69,9 @@ struct DeviceNameView: View {
             case .none:
                 break
             }
+        }
+        .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+            isKeyboardVisible = newIsKeyboardVisible
         }
     }
 

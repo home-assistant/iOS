@@ -12,8 +12,7 @@ import SwiftUI
 public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     // MARK: - Environment
 
-    @Environment(\.hideOnboardingTitle) private var hideOnboardingTitle
-    @Environment(\.hideOnboardingIcon) private var hideOnboardingIcon
+    @Environment(\.hideOnboardingHeader) private var hideOnboardingHeader
 
     // MARK: - Inputs
 
@@ -93,7 +92,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     public var body: some View {
         ScrollView {
             VStack(spacing: verticalSpacing) {
-                if !hideOnboardingIcon {
+                VStack(spacing: verticalSpacing) {
                     Group {
                         if let image = illustration() as? Image {
                             image
@@ -107,27 +106,33 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                         }
                     }
                     .padding(.top, DesignSystem.Spaces.two)
-                }
 
-                if !hideOnboardingTitle {
                     Text(title)
                         .font(DesignSystem.Font.largeTitle.bold())
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, DesignSystem.Spaces.two)
                 }
+                .frame(height: hideOnboardingHeader ? 0 : nil)
+                .opacity(hideOnboardingHeader ? 0 : 1)
+                .animation(.easeInOut(duration: 0.3), value: hideOnboardingHeader)
 
                 VStack(spacing: DesignSystem.Spaces.two) {
-                    Text(primaryDescription)
-                        .font(DesignSystem.Font.body)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-
-                    if let secondaryDescription {
-                        Text(secondaryDescription)
+                    Group {
+                        Text(primaryDescription)
                             .font(DesignSystem.Font.body)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
+
+                        if let secondaryDescription {
+                            Text(secondaryDescription)
+                                .font(DesignSystem.Font.body)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
                     }
+                    .frame(height: hideOnboardingHeader ? 0 : nil)
+                    .opacity(hideOnboardingHeader ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.3), value: hideOnboardingHeader)
 
                     if let content {
                         content()

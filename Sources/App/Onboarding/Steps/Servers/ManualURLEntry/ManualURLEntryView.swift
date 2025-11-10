@@ -51,8 +51,7 @@ struct ManualURLEntryView: View, KeyboardReadable {
                     showInvalidURLError = true
                 }
             }
-            .hideOnboardingTitle(isKeyboardVisible)
-            .hideOnboardingIcon(isKeyboardVisible)
+            .hideOnboardingHeader(isKeyboardVisible)
             .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -69,7 +68,7 @@ struct ManualURLEntryView: View, KeyboardReadable {
                     dismissButton: .default(Text(verbatim: L10n.okLabel))
                 )
             }
-            onReceive(keyboardPublisher) { newIsKeyboardVisible in
+            .onReceive(keyboardPublisher) { newIsKeyboardVisible in
                 isKeyboardVisible = newIsKeyboardVisible
             }
         }
