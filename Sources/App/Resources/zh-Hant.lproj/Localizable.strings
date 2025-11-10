@@ -352,8 +352,10 @@
 "location_change_notification.visit.body" = "已透過拜訪更新座標";
 "location_change_notification.watch_context.body" = "透過手錶環境同步更新座標";
 "location_change_notification.x_callback_url.body" = "已透過 X-Callback-URL 更新座標";
+"mac.copy.accessibility_label" = "複製";
 "mac.navigation.go_back.accessibility_label" = "導航向後";
 "mac.navigation.go_forward.accessibility_label" = "導航向前";
+"mac.paste.accessibility_label" = "貼上";
 "magic_item.action" = "動作";
 "magic_item.action.assist.pipeline.title" = "助理設定";
 "magic_item.action.assist.start_listening.title" = "開始聆聽";
@@ -512,7 +514,7 @@
 "onboarding.manual_url_entry.title" = "您的 Home Assistant 網址是什麼？";
 "onboarding.network_input.disclaimer.body" = "新增公共 Wi-Fi 網路或使用多個乙太網路/VPN 連線、可能會意外暴露您的應用程式或伺服器的相關資訊或存取權限。";
 "onboarding.network_input.disclaimer.title" = "請確認已正確設定您的家庭網路。";
-"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
+"onboarding.network_input.hardware.input_field.title" = "硬體位址";
 "onboarding.network_input.input_field.placeholder" = "網路名稱";
 "onboarding.network_input.input_field.title" = "Wi-Fi 網路已連線";
 "onboarding.network_input.no_network.alert.body" = "請輸入網路名稱以繼續。";

@@ -352,8 +352,10 @@
 "location_change_notification.visit.body" = "通过访问更新位置";
 "location_change_notification.watch_context.body" = "通过手表上下文同步更新位置";
 "location_change_notification.x_callback_url.body" = "通过 URL Scheme 更新位置";
+"mac.copy.accessibility_label" = "复制";
 "mac.navigation.go_back.accessibility_label" = "向后导航";
 "mac.navigation.go_forward.accessibility_label" = "向前导航";
+"mac.paste.accessibility_label" = "粘贴";
 "magic_item.action" = "动作";
 "magic_item.action.assist.pipeline.title" = "管道";
 "magic_item.action.assist.start_listening.title" = "开始聆听";
@@ -512,7 +514,7 @@
 "onboarding.manual_url_entry.title" = "您的 Home Assistant 地址是什么 ？";
 "onboarding.network_input.disclaimer.body" = "添加公共无线网络或使用多个以太网/VPN 连接可能会无意中泄露有关您的应用或服务器的信息或访问权限。";
 "onboarding.network_input.disclaimer.title" = "确保正确设置您的家庭网络。";
-"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
+"onboarding.network_input.hardware.input_field.title" = "硬件地址";
 "onboarding.network_input.input_field.placeholder" = "网络名称";
 "onboarding.network_input.input_field.title" = "已连接无线网络";
 "onboarding.network_input.no_network.alert.body" = "请输入网络名称以继续。";

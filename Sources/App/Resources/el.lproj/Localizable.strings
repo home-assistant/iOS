@@ -352,8 +352,10 @@
 "location_change_notification.visit.body" = "Η τοποθεσία ενημερώθηκε μέσω επίσκεψης";
 "location_change_notification.watch_context.body" = "Η τοποθεσία ενημερώθηκε μέσω συγχρονισμού περιβάλλοντος ρολογιού";
 "location_change_notification.x_callback_url.body" = "Η τοποθεσία ενημερώθηκε μέσω X-Callback-URL";
+"mac.copy.accessibility_label" = "Αντιγραφή";
 "mac.navigation.go_back.accessibility_label" = "Πλοήγηση προς τα πίσω";
 "mac.navigation.go_forward.accessibility_label" = "Πλοήγηση προς τα εμπρός";
+"mac.paste.accessibility_label" = "Επικόλληση";
 "magic_item.action" = "Ενέργεια";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Εκκίνηση ακρόασης";
@@ -512,7 +514,7 @@
 "onboarding.manual_url_entry.title" = "Ποια είναι η διεύθυνση του Home Assistant;";
 "onboarding.network_input.disclaimer.body" = "Η προσθήκη δημόσιων δικτύων Wi-Fi ή η χρήση πολλαπλών συνδέσεων ethernet/VPN μπορεί να εκθέσει ακούσια πληροφορίες σχετικά με την εφαρμογή ή τον server σας ή την πρόσβαση σε αυτά.";
 "onboarding.network_input.disclaimer.title" = "Βεβαιωθείτε ότι έχετε ρυθμίσει σωστά το δίκτυο του σπιτιού σας.";
-"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
+"onboarding.network_input.hardware.input_field.title" = "Διεύθυνση υλικού";
 "onboarding.network_input.input_field.placeholder" = "Ονομα δικτύου";
 "onboarding.network_input.input_field.title" = "Συνδεδεμένο σε δίκτυο Wi-Fi";
 "onboarding.network_input.no_network.alert.body" = "Παρακαλώ εισάγετε ένα όνομα δικτύου για να συνεχίσετε.";
