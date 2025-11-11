@@ -75,7 +75,11 @@ struct ConnectionSecurityLevelBlockView: View {
                         case .notDetermined:
                             Current.Log.info("Location permission not determined")
                         case .denied, .restricted:
-                            Current.urlOpener.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                            Current.urlOpener.open(
+                                URL(string: UIApplication.openSettingsURLString)!,
+                                options: [:],
+                                completionHandler: nil
+                            )
                         case .authorizedWhenInUse, .authorizedAlways:
                             // Handle permission change - reload requirements to update UI
                             viewModel.loadRequirements()

@@ -8,13 +8,13 @@ public protocol URLOpenerServiceProtocol {
         options: [UIApplication.OpenExternalURLOptionsKey: Any],
         completionHandler: ((Bool) -> Void)?
     ) -> Bool
-    
+
     func canOpenURL(_ url: URL) -> Bool
 }
 
 public final class URLOpenerServiceImpl: URLOpenerServiceProtocol {
     public init() {}
-    
+
     @discardableResult
     public func open(
         _ url: URL,
@@ -29,7 +29,7 @@ public final class URLOpenerServiceImpl: URLOpenerServiceProtocol {
         return false
         #endif
     }
-    
+
     public func canOpenURL(_ url: URL) -> Bool {
         #if os(iOS)
         return UIApplication.shared.canOpenURL(url)
