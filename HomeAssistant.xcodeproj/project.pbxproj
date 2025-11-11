@@ -197,7 +197,7 @@
 		117675EF252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */; };
 		117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */; };
 		1178AB00263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178AAFF263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift */; };
-		1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */; };
+		1178C4E524D5CEB200FDEC3E /* ConnectionURLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178C4E424D5CEB200FDEC3E /* ConnectionURLView.swift */; };
 		1179E42D24F9FAA100D4E307 /* SensorProviderDependencies.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
 		117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */; };
@@ -837,6 +837,7 @@
 		42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */; };
 		42A42A6A2DC37311000ABBAF /* PrivacyView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A42A692DC37311000ABBAF /* PrivacyView.test.swift */; };
 		42A42A6C2DC37F09000ABBAF /* AboutView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */; };
+		7D692B27EA49CA4E896E1977 /* ConnectionURLView.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D692B27EA49CA4E896E1976 /* ConnectionURLView.test.swift */; };
 		42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */; };
 		42A47A872C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */; };
 		42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47A892C452DB500C9B43D /* MockWebViewController.swift */; };
@@ -1839,7 +1840,7 @@
 		11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsValueSync.test.swift; sourceTree = "<group>"; };
 		117675EE252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateComplications.swift; sourceTree = "<group>"; };
 		1178AAFF263E2DF7007BA9D0 /* WKInterfaceLabel+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKInterfaceLabel+Additions.swift"; sourceTree = "<group>"; };
-		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
+		1178C4E424D5CEB200FDEC3E /* ConnectionURLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLView.swift; sourceTree = "<group>"; };
 		1179E42C24F9FAA100D4E307 /* SensorProviderDependencies.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProviderDependencies.test.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
@@ -2357,6 +2358,7 @@
 		42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Encodable.swift"; sourceTree = "<group>"; };
 		42A42A692DC37311000ABBAF /* PrivacyView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.test.swift; sourceTree = "<group>"; };
 		42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.test.swift; sourceTree = "<group>"; };
+		7D692B27EA49CA4E896E1976 /* ConnectionURLView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLView.test.swift; sourceTree = "<group>"; };
 		42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalMessageHandler.swift; sourceTree = "<group>"; };
 		42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewExternalMessageHandlerTests.swift; sourceTree = "<group>"; };
 		42A47A892C452DB500C9B43D /* MockWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebViewController.swift; sourceTree = "<group>"; };
@@ -3745,7 +3747,7 @@
 			isa = PBXGroup;
 			children = (
 				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
-				1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */,
+				1178C4E424D5CEB200FDEC3E /* ConnectionURLView.swift */,
 			);
 			path = Connection;
 			sourceTree = "<group>";
@@ -5384,6 +5386,7 @@
 				42B980DB2DC256A300BC5C08 /* SensorRow.test.swift */,
 				42A42A692DC37311000ABBAF /* PrivacyView.test.swift */,
 				42A42A6B2DC37F09000ABBAF /* AboutView.test.swift */,
+				7D692B27EA49CA4E896E1976 /* ConnectionURLView.test.swift */,
 				42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */,
 			);
 			path = Settings;
@@ -8560,7 +8563,7 @@
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				119DE945263349E50099F7D8 /* HAFormViewController.swift in Sources */,
 				420E2AE72C474718004921D8 /* WidgetBasicViewModel.swift in Sources */,
-				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
+				1178C4E524D5CEB200FDEC3E /* ConnectionURLView.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
@@ -8720,6 +8723,7 @@
 				42196ADE2DA5B58200BD501E /* OnboardingNavigationTests.swift in Sources */,
 				428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */,
 				42A42A6C2DC37F09000ABBAF /* AboutView.test.swift in Sources */,
+				7D692B27EA49CA4E896E1977 /* ConnectionURLView.test.swift in Sources */,
 				4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */,
 				42D3E4A12C5BCD1100444BE6 /* WatchContext.test.swift in Sources */,
 				428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */,
