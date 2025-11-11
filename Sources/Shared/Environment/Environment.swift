@@ -486,4 +486,7 @@ public class AppEnvironment {
     public var appSessionValues: AppSessionValuesProtocol = AppSessionValues.shared
 
     public var locationManager: LocationManagerProtocol = LocationManager()
+
+    /// Provides a way to open URLs and check if URLs can be opened.
+    public var urlOpener: URLOpenerServiceProtocol = URLOpenerServiceImpl()
 }

@@ -28,7 +28,7 @@ struct DownloadManagerView: View {
         }
         .onChange(of: viewModel.finished) { _, newValue in
             if newValue, Current.isCatalyst {
-                UIApplication.shared.open(AppConstants.DownloadsDirectory)
+                Current.urlOpener.open(AppConstants.DownloadsDirectory, options: [:], completionHandler: nil)
             }
         }
     }
@@ -83,7 +83,7 @@ struct DownloadManagerView: View {
             if let url = viewModel.lastURLCreated {
                 if Current.isCatalyst {
                     Button {
-                        UIApplication.shared.open(AppConstants.DownloadsDirectory)
+                        Current.urlOpener.open(AppConstants.DownloadsDirectory, options: [:], completionHandler: nil)
                     } label: {
                         Label(viewModel.fileName, systemSymbol: .folder)
                     }

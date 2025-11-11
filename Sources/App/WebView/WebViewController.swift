@@ -817,7 +817,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
 
             if let url = urlComponents.url {
-                UIApplication.shared.open(url)
+                Current.urlOpener.open(url, options: [:], completionHandler: nil)
             }
         }
     }
@@ -914,7 +914,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             buttonImage: nil,
             buttonTitle: L10n.openLabel,
             buttonTapHandler: { _ in
-                UIApplication.shared.open(alert.url, options: [:], completionHandler: nil)
+                Current.urlOpener.open(alert.url, options: [:], completionHandler: nil)
                 SwiftMessages.hide()
             }
         )

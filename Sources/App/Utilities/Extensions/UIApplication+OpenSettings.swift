@@ -42,7 +42,7 @@ extension UIApplication {
 
     func openSettings(destination: OpenSettingsDestination, completionHandler: ((Bool) -> Void)? = nil) {
         if let url = destination.url {
-            UIApplication.shared.open(url, options: [:], completionHandler: completionHandler)
+            Current.urlOpener.open(url, options: [:], completionHandler: completionHandler)
         } else {
             completionHandler?(false)
         }

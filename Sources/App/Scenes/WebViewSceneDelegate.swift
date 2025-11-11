@@ -46,7 +46,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
                let shortcutItem = connectionOptions.shortcutItem {
                 self.windowScene(scene, performActionFor: shortcutItem, completionHandler: { _ in })
             } else if let url = Current.servers.all.first?.info.connection.activeURL() {
-                UIApplication.shared.open(url)
+                Current.urlOpener.open(url, options: [:], completionHandler: nil)
                 // Close window to avoid empty window left behind
                 if let scene = window.windowScene {
                     UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil, errorHandler: nil)

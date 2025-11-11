@@ -38,7 +38,7 @@ struct DebugView: View {
                         logsURL = url
                         if Current.isCatalyst {
                             if let url = Current.Log.archiveURL() {
-                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                Current.urlOpener.open(url, options: [:], completionHandler: nil)
                             }
                         } else {
                             loadingLogs = true

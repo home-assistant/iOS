@@ -209,7 +209,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         case .denied, .restricted:
             // Open iOS settings for user to manually enable location
             if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(settingsUrl)
+                Current.urlOpener.open(settingsUrl, options: [:], completionHandler: nil)
             }
         case .authorizedWhenInUse, .authorizedAlways:
             // Permission already granted, apply the context-specific needs

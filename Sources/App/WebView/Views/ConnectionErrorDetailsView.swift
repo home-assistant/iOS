@@ -196,7 +196,7 @@ struct ConnectionErrorDetailsView: View {
             tint: .haPrimary
         ) {
             if Current.isCatalyst, let logsURL = Current.Log.archiveURL() {
-                UIApplication.shared.open(logsURL)
+                Current.urlOpener.open(logsURL, options: [:], completionHandler: nil)
             } else {
                 showExportLogsShareSheet = true
                 feedbackGenerator.notificationOccurred(.success)

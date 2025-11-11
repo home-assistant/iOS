@@ -195,7 +195,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 $0.accessoryIcon = .openInNewIcon
                 $0.onCellSelection { _, row in
                     guard let url = URL(string: "https://companion.home-assistant.io/docs/core/actions/") else { return }
-                    UIApplication.shared.open(url)
+                    Current.urlOpener.open(url, options: [:], completionHandler: nil)
                     row.deselect(animated: true)
                 }
             }

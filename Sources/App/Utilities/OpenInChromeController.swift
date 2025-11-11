@@ -54,7 +54,7 @@ open class OpenInChromeController {
     open func isChromeInstalled() -> Bool {
         if let simpleURL = URL(string: googleChromeHTTPScheme),
            let callbackURL = URL(string: googleChromeCallbackScheme) {
-            return UIApplication.shared.canOpenURL(simpleURL) || UIApplication.shared.canOpenURL(callbackURL)
+            return Current.urlOpener.canOpenURL(simpleURL) || Current.urlOpener.canOpenURL(callbackURL)
         }
         return false
     }
@@ -63,7 +63,7 @@ open class OpenInChromeController {
     open func openInChrome(_ url: URL, callbackURL: URL?, createNewTab: Bool = false) {
         if let chromeSimpleURL = URL(string: googleChromeHTTPScheme),
            let chromeCallbackURL = URL(string: googleChromeCallbackScheme) {
-            if UIApplication.shared.canOpenURL(chromeCallbackURL) {
+            if Current.urlOpener.canOpenURL(chromeCallbackURL) {
                 var appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
                 // CFBundleDisplayName is an optional key, so we will use CFBundleName if it does not exist
                 if appName == nil {
@@ -87,10 +87,10 @@ open class OpenInChromeController {
                         chromeURLString += "&create-new-tab"
                     }
                     if let chromeURL = URL(string: chromeURLString) {
-                        UIApplication.shared.open(chromeURL, options: [:], completionHandler: nil)
+                        Current.urlOpener.open(chromeURL, options: [:], completionHandler: nil)
                     }
                 }
-            } else if UIApplication.shared.canOpenURL(chromeSimpleURL) {
+            } else if Current.urlOpener.canOpenURL(chromeSimpleURL) {
                 let scheme = url.scheme?.lowercased()
                 var chromeScheme: String?
                 if scheme == "http" {
@@ -102,7 +102,7 @@ open class OpenInChromeController {
                     let absoluteURLString = url.absoluteString
                     let lowerBound = absoluteURLString.range(of: ":")!.lowerBound
                     let chromeURLString = chromeScheme + absoluteURLString.suffix(from: lowerBound)
-                    UIApplication.shared.open(URL(string: chromeURLString)!, options: [:], completionHandler: nil)
+                    Current.urlOpener.open(URL(string: chromeURLString)!, options: [:], completionHandler: nil)
                 }
             }
         }
