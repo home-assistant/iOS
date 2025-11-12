@@ -13,6 +13,7 @@ enum HAButtonStylesConstants {
 
 public struct HAButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
+    @State private var isHovering = false
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -22,14 +23,24 @@ public struct HAButtonStyle: ButtonStyle {
             .padding(.horizontal, HAButtonStylesConstants.horizontalPadding)
             .background(backgroundColorForState(
                 isEnabled: isEnabled,
-                isPressed: configuration.isPressed
+                isPressed: configuration.isPressed,
+                isHovering: isHovering
             ))
             .clipShape(Capsule())
             .opacity(isEnabled ? 1 : HAButtonStylesConstants.disabledOpacity)
-            .haButtonHoverEffect(isEnabled: isEnabled, isPressed: configuration.isPressed)
+            .scaleEffect(scaleForState(isPressed: configuration.isPressed, isHovering: isHovering))
+            .animation(.easeInOut(duration: HAButtonStylesConstants.animationDuration), value: configuration.isPressed)
+            .animation(.easeInOut(duration: HAButtonStylesConstants.animationDuration), value: isHovering)
+        #if !os(watchOS)
+            .onHover { hovering in
+                if isEnabled {
+                    isHovering = hovering
+                }
+            }
+        #endif
     }
 
-    private func backgroundColorForState(isEnabled: Bool, isPressed: Bool) -> Color {
+    private func backgroundColorForState(isEnabled: Bool, isPressed: Bool, isHovering: Bool) -> Color {
         if !isEnabled {
             return Color.gray
         }
@@ -38,7 +49,23 @@ public struct HAButtonStyle: ButtonStyle {
             return Color.haPrimary.opacity(HAButtonStylesConstants.highlightedOpacity)
         }
 
+        if isHovering {
+            return Color.haPrimary.opacity(HAButtonStylesConstants.hoverOpacity)
+        }
+
         return Color.haPrimary
+    }
+
+    private func scaleForState(isPressed: Bool, isHovering: Bool) -> CGFloat {
+        if isPressed {
+            return HAButtonStylesConstants.highlightedScale
+        }
+
+        if isHovering {
+            return HAButtonStylesConstants.hoverScale
+        }
+
+        return 1.0
     }
 }
 
