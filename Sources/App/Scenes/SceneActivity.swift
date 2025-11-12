@@ -5,6 +5,7 @@ enum SceneActivity: CaseIterable {
     case settings
     case about
     case carPlay
+    case assist
 
     init(activityIdentifier: String) {
         self = Self.allCases.first(where: { $0.activityIdentifier == activityIdentifier }) ?? .webView
@@ -18,12 +19,19 @@ enum SceneActivity: CaseIterable {
         .init(activityType: activityIdentifier)
     }
 
+    func activity(with userInfo: [AnyHashable: Any]) -> NSUserActivity {
+        let activity = NSUserActivity(activityType: activityIdentifier)
+        activity.userInfo = userInfo
+        return activity
+    }
+
     var activityIdentifier: String {
         switch self {
         case .settings: return "ha.settings"
         case .webView: return "ha.webview"
         case .about: return "ha.about"
         case .carPlay: return "ha.carPlay"
+        case .assist: return "ha.assist"
         }
     }
 
@@ -33,12 +41,16 @@ enum SceneActivity: CaseIterable {
         case .settings: return "Settings"
         case .about: return "About"
         case .carPlay: return "CarPlay"
+        case .assist: return "Assist"
         }
     }
 
     var configuration: UISceneConfiguration {
         switch self {
-        case .webView, .settings, .about: return .init(name: configurationName, sessionRole: .windowApplication)
+        case .webView, .settings, .about, .assist: return .init(
+                name: configurationName,
+                sessionRole: .windowApplication
+            )
         case .carPlay: return .init(name: configurationName, sessionRole: .carTemplateApplication)
         }
     }

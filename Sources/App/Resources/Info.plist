@@ -190,6 +190,14 @@
 					<key>UISceneDelegateClassName</key>
 					<string>$(PRODUCT_MODULE_NAME).AboutSceneDelegate</string>
 				</dict>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>Assist</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).AssistSceneDelegate</string>
+				</dict>
 			</array>
 		</dict>
 	</dict>
