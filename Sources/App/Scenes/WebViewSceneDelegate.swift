@@ -9,6 +9,8 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     var windowController: WebViewWindowController?
     var urlHandler: IncomingURLHandler?
 
+    private var updateDatabaseTask: Task<Void, Never>?
+
     // swiftlint:disable cyclomatic_complexity
     func scene(
         _ scene: UIScene,
@@ -120,7 +122,10 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        updateDatabase()
+        updateDatabaseTask?.cancel()
+        updateDatabaseTask = Task {
+            await updateDatabase()
+        }
         cleanWidgetsCache()
         updateLocation()
     }
@@ -168,13 +173,13 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     /// Sets up model manager and update database tables for cached panels and entities
-    private func updateDatabase() {
+    private func updateDatabase() async {
         Current.modelManager.cleanup().cauterize()
         Current.modelManager.subscribe(isAppInForeground: {
             UIApplication.shared.applicationState == .active
         })
 
-        Current.appDatabaseUpdater.update()
+        await Current.appDatabaseUpdater.update()
         Current.panelsUpdater.update()
     }
 
