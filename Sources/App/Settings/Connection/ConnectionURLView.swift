@@ -257,20 +257,14 @@ struct ConnectionURLView: View {
     /// Determines if the location permission prompt should be shown.
     ///
     /// The prompt is shown when location permissions are insufficient for SSID detection:
-    /// - On iOS 14+: Requires both "Always Allow" authorization AND full accuracy
-    /// - On iOS 13 and earlier: Only requires "Always Allow" authorization
+    /// - Requires both "Always Allow" authorization AND full accuracy
     ///
     /// SSID information requires "Always Allow" because the app needs to detect
     /// network changes in the background. Full accuracy is needed on iOS 14+ to
     /// access detailed network information including SSID names.
     private var shouldShowLocationPermission: Bool {
-        let manager = CLLocationManager()
-        if #available(iOS 14.0, *) {
-            return manager.authorizationStatus != .authorizedAlways ||
-                manager.accuracyAuthorization != .fullAccuracy
-        } else {
-            return manager.authorizationStatus != .authorizedAlways
-        }
+        Current.locationManager.currentPermissionState != .authorizedAlways ||
+            Current.locationManager.accuracyAuthorization != .fullAccuracy
     }
 
     /// Handles location permission requests based on current authorization state.
@@ -284,9 +278,8 @@ struct ConnectionURLView: View {
     /// 1. iOS only allows requesting permissions once programmatically
     /// 2. After the initial request, users must change permissions in Settings
     private func handleLocationPermission() {
-        let manager = CLLocationManager()
-        if manager.authorizationStatus == .notDetermined {
-            manager.requestAlwaysAuthorization()
+        if Current.locationManager.currentPermissionState == .notDetermined {
+            Current.locationManager.requestLocationPermission()
         } else {
             UIApplication.shared.openSettings(destination: .location)
         }
