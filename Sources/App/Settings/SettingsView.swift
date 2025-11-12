@@ -47,11 +47,13 @@ struct SettingsView: View {
             .navigationTitle(L10n.Settings.NavigationBar.title)
         } detail: {
             // Detail view
-            if let selectedItem {
-                selectedItem.destinationView
-            } else {
-                Text("Select a setting")
-                    .foregroundColor(.secondary)
+            NavigationStack {
+                if let selectedItem {
+                    selectedItem.destinationView
+                } else {
+                    Text("Select a setting")
+                        .foregroundColor(.secondary)
+                }
             }
         }
         .navigationSplitViewStyle(.balanced)
@@ -328,8 +330,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     var destinationView: some View {
         switch self {
         case .servers:
-            embed(SettingsViewController(contentSections: .servers))
-                .navigationTitle(title)
+            SettingsServersView()
         case .general:
             GeneralSettingsView()
                 .navigationTitle(title)
@@ -337,17 +338,14 @@ enum SettingsItem: String, Hashable, CaseIterable {
             GesturesSetupView()
                 .navigationTitle(title)
         case .location:
-            embed(SettingsDetailViewController().configured { $0.detailGroup = .location })
-                .navigationTitle(title)
+            SettingsLocationView()
         case .notifications:
-            embed(NotificationSettingsViewController())
-                .navigationTitle(title)
+            SettingsNotificationsView()
         case .sensors:
             SensorListView()
                 .navigationTitle(title)
         case .nfc:
-            embed(NFCListViewController())
-                .navigationTitle(title)
+            SettingsNFCView()
         case .widgets:
             WidgetBuilderView()
                 .navigationTitle(title)
@@ -358,11 +356,9 @@ enum SettingsItem: String, Hashable, CaseIterable {
             CarPlayConfigurationView()
                 .navigationTitle(title)
         case .complications:
-            embed(ComplicationListViewController())
-                .navigationTitle(title)
+            SettingsComplicationsView()
         case .actions:
-            embed(SettingsDetailViewController().configured { $0.detailGroup = .actions })
-                .navigationTitle(title)
+            SettingsActionsView()
         case .help:
             EmptyView()
         case .privacy:
@@ -417,12 +413,31 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
 // MARK: - Servers List View
 
+private class ServersObserver: ObservableObject, ServerObserver {
+    @Published var servers: [Server] = []
+    
+    init() {
+        servers = Current.servers.all
+        Current.servers.add(observer: self)
+    }
+    
+    deinit {
+        Current.servers.remove(observer: self)
+    }
+    
+    func serversDidChange(_ serverManager: ServerManager) {
+        DispatchQueue.main.async { [weak self] in
+            self?.servers = serverManager.all
+        }
+    }
+}
+
 struct ServersListView: View {
-    @State private var servers: [Server] = []
+    @StateObject private var observer = ServersObserver()
     @State private var showAddServer = false
     
     var body: some View {
-        ForEach(servers, id: \.identifier) { server in
+        ForEach(observer.servers, id: \.identifier) { server in
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server)
             }
@@ -436,13 +451,6 @@ struct ServersListView: View {
         .sheet(isPresented: $showAddServer) {
             OnboardingNavigationView(onboardingStyle: .secondary)
         }
-        .onAppear {
-            updateServers()
-        }
-    }
-    
-    private func updateServers() {
-        servers = Current.servers.all
     }
 }
 
@@ -487,11 +495,50 @@ struct MaterialDesignIconsImage: View {
     }
 }
 
-// MARK: - UIViewController Configuration Extension
+// MARK: - Wrapper Views for UIKit Controllers
 
-extension UIViewController {
-    func configured(_ configuration: (Self) -> Void) -> Self {
-        configuration(self)
-        return self
+struct SettingsServersView: View {
+    var body: some View {
+        embed(SettingsViewController(contentSections: .servers))
+            .navigationTitle(L10n.Settings.ConnectionSection.servers)
+    }
+}
+
+struct SettingsLocationView: View {
+    var body: some View {
+        let viewController = SettingsDetailViewController()
+        viewController.detailGroup = .location
+        return embed(viewController)
+            .navigationTitle(L10n.Settings.DetailsSection.LocationSettingsRow.title)
+    }
+}
+
+struct SettingsNotificationsView: View {
+    var body: some View {
+        embed(NotificationSettingsViewController())
+            .navigationTitle(L10n.Settings.DetailsSection.NotificationSettingsRow.title)
+    }
+}
+
+struct SettingsNFCView: View {
+    var body: some View {
+        embed(NFCListViewController())
+            .navigationTitle(L10n.Nfc.List.title)
+    }
+}
+
+struct SettingsComplicationsView: View {
+    var body: some View {
+        embed(ComplicationListViewController())
+            .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
+    }
+}
+
+struct SettingsActionsView: View {
+    var body: some View {
+        let viewController = SettingsDetailViewController()
+        viewController.detailGroup = .actions
+        return embed(viewController)
+            .navigationTitle(L10n.SettingsDetails.LegacyActions.title)
     }
 }
