@@ -2590,6 +2590,7 @@
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
 		42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenEntityAppIntent.swift; sourceTree = "<group>"; };
 		42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSceneDelegate.swift; sourceTree = "<group>"; };
+		42BF8DAF2EC4D69600DCB7E7 /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
 		42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPicker.swift; sourceTree = "<group>"; };
@@ -4971,6 +4972,7 @@
 		42A746A22E832FB8005E0332 /* .github */ = {
 			isa = PBXGroup;
 			children = (
+				42BF8DAF2EC4D69600DCB7E7 /* copilot-instructions.md */,
 				42A746972E832FB8005E0332 /* ISSUE_TEMPLATE */,
 				42A7469E2E832FB8005E0332 /* workflows */,
 				42A7469F2E832FB8005E0332 /* dependabot.yml */,

@@ -144,19 +144,35 @@ final class SceneManager {
                 return .value(delegate)
             }
 
-            // Guarantee it runs on main thread when coming from widgets
-            DispatchQueue.main.async {
-                if #available(iOS 17.0, *) {
-                    UIApplication.shared.activateSceneSession(for: .init(session: active.session, options: options))
-                } else {
-                    UIApplication.shared.requestSceneSessionActivation(
-                        active.session,
-                        userActivity: nil,
-                        options: options,
-                        errorHandler: nil
-                    )
+            // Only activate scene if the app is already in foreground or transitioning to foreground
+            // This prevents widgets, notifications, or background tasks from unexpectedly bringing the app to
+            // foreground
+            let shouldActivate = UIApplication.shared.applicationState == .active ||
+                active.activationState == .foregroundInactive
+
+            if shouldActivate {
+                Current.Log.verbose("Activating scene \(active.session.persistentIdentifier)")
+
+                // Guarantee it runs on main thread when coming from widgets
+                DispatchQueue.main.async {
+                    if #available(iOS 17.0, *) {
+                        UIApplication.shared.activateSceneSession(for: .init(session: active.session, options: options))
+                    } else {
+                        UIApplication.shared.requestSceneSessionActivation(
+                            active.session,
+                            userActivity: nil,
+                            options: options,
+                            errorHandler: nil
+                        )
+                    }
                 }
+            } else {
+                Current.Log
+                    .verbose(
+                        "Skipping scene activation for \(active.session.persistentIdentifier) - app is in background"
+                    )
             }
+
             return .value(delegate)
         }
 
