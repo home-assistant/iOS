@@ -847,6 +847,7 @@
 		42A818E72BBEAAE80083D045 /* MockAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A818E62BBEAAE80083D045 /* MockAssistService.swift */; };
 		42A935A22C7FEBA100FCF504 /* ControlScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A935A12C7FEBA100FCF504 /* ControlScript.swift */; };
 		42AA4C842C2DACAD00EA2E99 /* UIImage+Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */; };
+		42AAEE882EC4B9880049E1F3 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AAEE862EC4B7CC0049E1F3 /* URLOpener.swift */; };
 		42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */; };
 		42AC94A42CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
 		42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */; };
@@ -2534,6 +2535,7 @@
 		42A818E62BBEAAE80083D045 /* MockAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAssistService.swift; sourceTree = "<group>"; };
 		42A935A12C7FEBA100FCF504 /* ControlScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScript.swift; sourceTree = "<group>"; };
 		42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Circle.swift"; sourceTree = "<group>"; };
+		42AAEE862EC4B7CC0049E1F3 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		42ABB0B82C888AA10081461D /* CarPlayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfig.swift; sourceTree = "<group>"; };
 		42ABB0BA2C888BB10081461D /* CarPlayConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigurationViewModel.swift; sourceTree = "<group>"; };
 		42AC94A32CF872520050A62C /* TileCardStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCardStyleModifier.swift; sourceTree = "<group>"; };
@@ -6225,6 +6227,7 @@
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 				11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */,
+				42AAEE862EC4B7CC0049E1F3 /* URLOpener.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -8547,6 +8550,7 @@
 				42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */,
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
 				4238E8572EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift in Sources */,
+				42AAEE882EC4B9880049E1F3 /* URLOpener.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,

@@ -26,12 +26,12 @@ struct OpenEntityAppIntent: AppIntent {
             serverId: entity.serverId
         ) {
             DispatchQueue.main.async {
-                UIApplication.shared.open(url)
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         } else if let url =
             AppConstants.openEntityDeeplinkURL(entityId: entity.entityId, serverId: entity.serverId) {
             DispatchQueue.main.async {
-                UIApplication.shared.open(url)
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         }
         #endif
