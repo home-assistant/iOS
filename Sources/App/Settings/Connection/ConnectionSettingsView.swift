@@ -1,7 +1,7 @@
 import HAKit
-import MBProgressHUD
 import Shared
 import SwiftUI
+import Version
 
 struct ConnectionSettingsView: View {
     @StateObject private var viewModel: ConnectionSettingsViewModel
@@ -368,7 +368,7 @@ private struct WebSocketStatusView: View {
     }
 }
 
-private struct PrivacyPickerView<T: CaseIterable & Hashable & CustomStringConvertible>: View where T: RawRepresentable, T.RawValue == String {
+private struct PrivacyPickerView<T: CaseIterable & Hashable>: View where T: RawRepresentable, T.RawValue == String {
     let title: String
     let options: [T]
     @Binding var selection: T
@@ -414,7 +414,7 @@ private struct PrivacyPickerView<T: CaseIterable & Hashable & CustomStringConver
         } else if let sensorPrivacy = option as? ServerSensorPrivacy {
             return sensorPrivacy.localizedDescription
         }
-        return option.description
+        return String(describing: option)
     }
 }
 
@@ -432,18 +432,8 @@ private struct ActivityViewController: UIViewControllerRepresentable {
 
 private extension UIViewController {
     func embedInHostingController() -> some View {
-        UIViewControllerWrapper(viewController: self)
+        ViewControllerWrapper(self)
     }
-}
-
-private struct UIViewControllerWrapper: UIViewControllerRepresentable {
-    let viewController: UIViewController
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        viewController
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
 #Preview {
