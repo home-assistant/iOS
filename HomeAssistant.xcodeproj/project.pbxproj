@@ -908,6 +908,7 @@
 		42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF7F332DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
 		42BF7F342DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
+		42BF8DB12EC4E16900DCB7E7 /* AssistSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
@@ -2588,6 +2589,7 @@
 		42BF7F2C2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntityValueProvider.swift; sourceTree = "<group>"; };
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
 		42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenEntityAppIntent.swift; sourceTree = "<group>"; };
+		42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSceneDelegate.swift; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
 		42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPicker.swift; sourceTree = "<group>"; };
@@ -3971,6 +3973,7 @@
 		11EFCDD424F5FA7E00314D85 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */,
 				11EFCDD524F5FA8D00314D85 /* WebViewSceneDelegate.swift */,
 				11EFCDD724F5FCBE00314D85 /* SettingsSceneDelegate.swift */,
 				11EFCDD924F5FE0600314D85 /* SceneActivity.swift */,
@@ -8586,6 +8589,7 @@
 				425573EB2B588FFB00145217 /* CarPlayListItemProvider.swift in Sources */,
 				42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */,
 				42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */,
+				42BF8DB12EC4E16900DCB7E7 /* AssistSceneDelegate.swift in Sources */,
 				420160612E79ACAC00F68044 /* LocalAccessPermissionView.swift in Sources */,
 				42790C442C48077200E31B38 /* ImprovSuccessView.swift in Sources */,
 				429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */,
