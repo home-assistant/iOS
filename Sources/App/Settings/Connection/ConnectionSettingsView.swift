@@ -40,7 +40,7 @@ struct ConnectionSettingsView: View {
                             showShareSheet = true
                         }
                     } label: {
-                        Image(systemName: "square.and.arrow.up")
+                        Image(systemSymbol: .squareAndArrowUp)
                     }
                 }
             }
@@ -115,11 +115,12 @@ struct ConnectionSettingsView: View {
             )
             
             NavigationLink {
-                ConnectionURLViewController(
-                    server: viewModel.server,
-                    urlType: .internal
+                ViewControllerWrapper(
+                    ConnectionURLViewController(
+                        server: viewModel.server,
+                        urlType: .internal
+                    )
                 )
-                .embedInHostingController()
             } label: {
                 HStack {
                     Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
@@ -131,11 +132,12 @@ struct ConnectionSettingsView: View {
             }
             
             NavigationLink {
-                ConnectionURLViewController(
-                    server: viewModel.server,
-                    urlType: .external
+                ViewControllerWrapper(
+                    ConnectionURLViewController(
+                        server: viewModel.server,
+                        urlType: .external
+                    )
                 )
-                .embedInHostingController()
             } label: {
                 HStack {
                     Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
@@ -311,7 +313,7 @@ private struct WebSocketStatusView: View {
                 Text(statusMessage)
                     .foregroundColor(.secondary)
                 if case .disconnected = state {
-                    Image(systemName: "info.circle")
+                    Image(systemSymbol: .infoCircle)
                         .foregroundColor(.accentColor)
                 }
             }
@@ -392,7 +394,7 @@ private struct PrivacyPickerView<T: CaseIterable & Hashable>: View where T: RawR
                                 .foregroundColor(isDisabled ? .secondary : .primary)
                             Spacer()
                             if selection == option {
-                                Image(systemName: "checkmark")
+                                Image(systemSymbol: .checkmark)
                                     .foregroundColor(.accentColor)
                             }
                         }
@@ -429,13 +431,7 @@ private struct ActivityViewController: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
-// MARK: - UIViewController Embedding Extension
 
-private extension UIViewController {
-    func embedInHostingController() -> some View {
-        ViewControllerWrapper(self)
-    }
-}
 
 #Preview {
     NavigationView {

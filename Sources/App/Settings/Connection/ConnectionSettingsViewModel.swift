@@ -31,6 +31,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     let server: Server
     private var tokens: [HACancellable] = []
     private var localPushObserver: Any?
+    private var notificationCenterObserver: NSObjectProtocol?
     
     // MARK: - Computed Properties
     
@@ -59,6 +60,9 @@ final class ConnectionSettingsViewModel: ObservableObject {
         if let observer = localPushObserver {
             Current.notificationManager.localPushManager.removeObserver(observer)
         }
+        if let observer = notificationCenterObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
     // MARK: - Setup
@@ -72,7 +76,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
         // Observe websocket connection
         if let connection = Current.api(for: server)?.connection {
             // Observe websocket state
-            NotificationCenter.default.addObserver(
+            notificationCenterObserver = NotificationCenter.default.addObserver(
                 forName: HAConnectionState.didTransitionToStateNotification,
                 object: nil,
                 queue: .main
@@ -212,19 +216,15 @@ final class ConnectionSettingsViewModel: ObservableObject {
         
         let waitAtLeast = after(seconds: 3.0)
         
-        do {
-            _ = try await race(
-                when(resolved: Current.apis.map { $0.tokenManager.revokeToken() }).asVoid(),
-                after(seconds: 10.0)
-            ).async()
-            
-            try await waitAtLeast.async()
-            
-            Current.api(for: server)?.connection.disconnect()
-            Current.servers.remove(identifier: server.identifier)
-            Current.onboardingObservation.needed(.logout)
-        } catch {
-            throw error
-        }
+        _ = try await race(
+            when(resolved: Current.apis.map { $0.tokenManager.revokeToken() }).asVoid(),
+            after(seconds: 10.0)
+        ).async()
+        
+        try await waitAtLeast.async()
+        
+        Current.api(for: server)?.connection.disconnect()
+        Current.servers.remove(identifier: server.identifier)
+        Current.onboardingObservation.needed(.logout)
     }
 }
