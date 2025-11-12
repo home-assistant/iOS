@@ -6,14 +6,13 @@ import SwiftUI
 
 // Migrated to SwiftUI using Copilot agent https://github.com/home-assistant/iOS/pull/3956
 struct ConnectionURLView: View {
+    @Environment(\.dismiss) private var dismiss
     let urlType: ConnectionInfo.URLType
-    let onDismiss: () -> Void
 
     @StateObject private var viewModel: ConnectionURLViewModel
 
-    init(server: Server, urlType: ConnectionInfo.URLType, onDismiss: @escaping () -> Void) {
+    init(server: Server, urlType: ConnectionInfo.URLType) {
         self.urlType = urlType
-        self.onDismiss = onDismiss
         _viewModel = StateObject(wrappedValue: ConnectionURLViewModel(server: server, urlType: urlType))
     }
 
@@ -35,7 +34,9 @@ struct ConnectionURLView: View {
         .alert(L10n.Settings.ConnectionSection.ValidateError.title, isPresented: $viewModel.showError) {
             if viewModel.canCommitAnyway {
                 Button(L10n.Settings.ConnectionSection.ValidateError.useAnyway) {
-                    viewModel.save(onSuccess: onDismiss)
+                    viewModel.save(onSuccess: {
+                        dismiss()
+                    })
                 }
             }
             Button(L10n.Settings.ConnectionSection.ValidateError.editUrl, role: .cancel) {}
@@ -212,7 +213,9 @@ struct ConnectionURLView: View {
             ProgressView()
         } else {
             Button(L10n.saveLabel) {
-                viewModel.save(onSuccess: onDismiss)
+                viewModel.save(onSuccess: {
+                    dismiss()
+                })
             }
             .tint(.haPrimary)
             .modify { view in
@@ -294,8 +297,7 @@ struct ConnectionURLView_Previews: PreviewProvider {
             NavigationView {
                 ConnectionURLView(
                     server: ServerFixture.standard,
-                    urlType: .internal,
-                    onDismiss: {}
+                    urlType: .internal
                 )
             }
             .previewDisplayName("Internal URL")
@@ -303,8 +305,7 @@ struct ConnectionURLView_Previews: PreviewProvider {
             NavigationView {
                 ConnectionURLView(
                     server: ServerFixture.standard,
-                    urlType: .external,
-                    onDismiss: {}
+                    urlType: .external
                 )
             }
             .previewDisplayName("External URL")
