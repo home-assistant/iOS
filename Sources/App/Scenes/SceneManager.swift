@@ -117,6 +117,16 @@ final class SceneManager {
         }
     }
 
+    public func activateAnyScene(for activity: SceneActivity, with userInfo: [AnyHashable: Any]) {
+        UIApplication.shared.requestSceneSessionActivation(
+            existingScenes(for: activity).first?.session,
+            userActivity: activity.activity(with: userInfo),
+            options: nil
+        ) { error in
+            Current.Log.error(error)
+        }
+    }
+
     public func scene<DelegateType: UIWindowSceneDelegate>(
         for query: SceneQuery<DelegateType>
     ) -> Guarantee<DelegateType> {
