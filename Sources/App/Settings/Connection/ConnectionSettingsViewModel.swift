@@ -5,6 +5,7 @@ import PromiseKit
 import Shared
 import UIKit
 
+/// ViewModel for ConnectionSettingsView, managing server connection settings and state
 @MainActor
 final class ConnectionSettingsViewModel: ObservableObject {
     // MARK: - Published Properties

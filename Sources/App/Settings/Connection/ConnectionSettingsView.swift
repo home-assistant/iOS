@@ -3,6 +3,7 @@ import Shared
 import SwiftUI
 import Version
 
+/// SwiftUI view for managing server connection settings
 struct ConnectionSettingsView: View {
     @StateObject private var viewModel: ConnectionSettingsViewModel
     @Environment(\.dismiss) private var dismiss
