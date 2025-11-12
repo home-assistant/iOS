@@ -90,7 +90,7 @@ open class OpenInChromeController {
                         URLOpener.shared.open(chromeURL, options: [:], completionHandler: nil)
                     }
                 }
-            } else if UIApplication.shared.canOpenURL(chromeSimpleURL) {
+            } else if URLOpener.shared.canOpenURL(chromeSimpleURL) {
                 let scheme = url.scheme?.lowercased()
                 var chromeScheme: String?
                 if scheme == "http" {
