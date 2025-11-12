@@ -18,7 +18,7 @@ import UIKit
         let hostingController = UIHostingController(rootView: assistView)
 
         return .init(
-            title: L10n.Assist.title,
+            title: "Assist",
             rootViewController: hostingController
         )
     }
