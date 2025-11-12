@@ -6,19 +6,19 @@ import Testing
 
 struct BaseOnboardingViewTests {
     private static let illustration = { Image(.Onboarding.world) }
-    
+
     @available(iOS 18.0, *)
-    @MainActor 
+    @MainActor
     private func assertOnboardingSnapshot(
         _ view: some View,
         named name: String
     ) {
         assertLightDarkSnapshots(of: view, named: name)
     }
-    
+
     @MainActor @Test func simple() async throws {
         guard #available(iOS 18.0, *) else { return }
-        
+
         let view = BaseOnboardingView(
             illustration: Self.illustration,
             title: "Use this device's location for automations",
@@ -29,13 +29,13 @@ struct BaseOnboardingViewTests {
             secondaryActionTitle: "Do not share my location",
             secondaryAction: {}
         )
-        
+
         assertOnboardingSnapshot(view, named: "simple")
     }
 
     @MainActor @Test func withInjectedContent() async throws {
         guard #available(iOS 18.0, *) else { return }
-        
+
         let view = BaseOnboardingView(
             illustration: Self.illustration,
             title: "Use this device's location for automations",
@@ -61,13 +61,13 @@ struct BaseOnboardingViewTests {
             secondaryActionTitle: "Do not share my location",
             secondaryAction: {}
         )
-        
+
         assertOnboardingSnapshot(view, named: "with-injected-content")
     }
 
     @MainActor @Test func withoutSecondaryAction() async throws {
         guard #available(iOS 18.0, *) else { return }
-        
+
         let view = BaseOnboardingView(
             illustration: Self.illustration,
             title: "Welcome to Home Assistant",
@@ -75,13 +75,13 @@ struct BaseOnboardingViewTests {
             primaryActionTitle: "Get Started",
             primaryAction: {}
         )
-        
+
         assertOnboardingSnapshot(view, named: "no-secondary-action")
     }
 
     @MainActor @Test func withoutSecondaryDescription() async throws {
         guard #available(iOS 18.0, *) else { return }
-        
+
         let view = BaseOnboardingView(
             illustration: Self.illustration,
             title: "Setup Complete",
@@ -91,7 +91,7 @@ struct BaseOnboardingViewTests {
             secondaryActionTitle: "Go Back",
             secondaryAction: {}
         )
-        
+
         assertOnboardingSnapshot(view, named: "no-secondary-description")
     }
 }
