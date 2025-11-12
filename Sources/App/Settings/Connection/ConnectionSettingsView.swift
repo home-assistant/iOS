@@ -11,22 +11,22 @@ struct ConnectionSettingsView: View {
     @State private var showSecurityLevelPicker = false
     @State private var activityViewController: UIActivityViewController?
     @State private var isDeleteConfirmationPresented = false
-    
+
     let onDismiss: (() -> Void)?
-    
+
     init(server: Server, onDismiss: (() -> Void)? = nil) {
         self._viewModel = StateObject(wrappedValue: ConnectionSettingsViewModel(server: server))
         self.onDismiss = onDismiss
     }
-    
+
     var body: some View {
         List {
-            statusSection
-            detailsSection
-            privacySection
             if viewModel.hasMultipleServers {
                 activateSection
             }
+            detailsSection
+            privacySection
+            statusSection
             deleteSection
         }
         .navigationTitle(viewModel.serverName)
@@ -42,12 +42,20 @@ struct ConnectionSettingsView: View {
                     } label: {
                         Image(systemSymbol: .squareAndArrowUp)
                     }
+                    .tint(.haPrimary)
+                    .modify { view in
+                        if #available(iOS 26.0, *) {
+                            view.buttonStyle(.glassProminent)
+                        } else {
+                            view
+                        }
+                    }
                 }
             }
         }
         .sheet(isPresented: $showShareSheet) {
             if let activityVC = activityViewController {
-                ActivityViewController(activityViewController: activityVC)
+                embed(activityVC)
             }
         }
         .sheet(isPresented: $showSecurityLevelPicker) {
@@ -63,37 +71,37 @@ struct ConnectionSettingsView: View {
             onDismiss?()
         }
     }
-    
+
     // MARK: - Status Section
-    
+
     private var statusSection: some View {
         Section(header: Text(L10n.Settings.StatusSection.header)) {
             LabelRow(
                 title: L10n.Settings.ConnectionSection.connectingVia,
                 value: viewModel.connectionPath
             )
-            
+
             LabelRow(
                 title: L10n.Settings.StatusSection.VersionRow.title,
                 value: viewModel.version
             )
-            
+
             WebSocketStatusView(state: viewModel.websocketState)
-            
+
             LabelRow(
                 title: L10n.SettingsDetails.Notifications.LocalPush.title,
                 value: viewModel.localPushStatus
             )
-            
+
             LabelRow(
                 title: L10n.Settings.ConnectionSection.loggedInAs,
                 value: viewModel.loggedInUser
             )
         }
     }
-    
+
     // MARK: - Details Section
-    
+
     private var detailsSection: some View {
         Section(header: Text(L10n.Settings.ConnectionSection.details)) {
             TextFieldRow(
@@ -104,7 +112,7 @@ struct ConnectionSettingsView: View {
                     set: { viewModel.updateLocationName($0.isEmpty ? nil : $0) }
                 )
             )
-            
+
             TextFieldRow(
                 title: L10n.SettingsDetails.General.DeviceName.title,
                 placeholder: Current.device.deviceName(),
@@ -113,7 +121,7 @@ struct ConnectionSettingsView: View {
                     set: { viewModel.updateDeviceName($0.isEmpty ? nil : $0) }
                 )
             )
-            
+
             NavigationLink {
                 ConnectionURLViewController(
                     server: viewModel.server,
@@ -125,11 +133,11 @@ struct ConnectionSettingsView: View {
                     Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
                     Spacer()
                     Text(viewModel.internalURL)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.haPrimary)
                         .lineLimit(1)
                 }
             }
-            
+
             NavigationLink {
                 ConnectionURLViewController(
                     server: viewModel.server,
@@ -141,11 +149,11 @@ struct ConnectionSettingsView: View {
                     Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
                     Spacer()
                     Text(viewModel.externalURL)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.haPrimary)
                         .lineLimit(1)
                 }
             }
-            
+
             Button {
                 showSecurityLevelPicker = true
             } label: {
@@ -154,14 +162,14 @@ struct ConnectionSettingsView: View {
                         .foregroundColor(.primary)
                     Spacer()
                     Text(viewModel.securityLevel.description)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.haPrimary)
                 }
             }
         }
     }
-    
+
     // MARK: - Privacy Section
-    
+
     private var privacySection: some View {
         Section(header: Text(L10n.SettingsDetails.Privacy.title)) {
             NavigationLink {
@@ -186,7 +194,7 @@ struct ConnectionSettingsView: View {
                         .lineLimit(1)
                 }
             }
-            
+
             NavigationLink {
                 PrivacyPickerView(
                     title: L10n.Settings.ConnectionSection.SensorSendType.title,
@@ -209,9 +217,9 @@ struct ConnectionSettingsView: View {
             }
         }
     }
-    
+
     // MARK: - Activate Section
-    
+
     private var activateSection: some View {
         Section {
             Button {
@@ -222,9 +230,9 @@ struct ConnectionSettingsView: View {
             }
         }
     }
-    
+
     // MARK: - Delete Section
-    
+
     private var deleteSection: some View {
         Section {
             Button(role: .destructive) {
@@ -269,7 +277,7 @@ struct ConnectionSettingsView: View {
 private struct LabelRow: View {
     let title: String
     let value: String
-    
+
     var body: some View {
         HStack {
             Text(title)
@@ -284,7 +292,7 @@ private struct TextFieldRow: View {
     let title: String
     let placeholder: String
     @Binding var text: String
-    
+
     var body: some View {
         HStack {
             Text(title)
@@ -299,7 +307,7 @@ private struct TextFieldRow: View {
 private struct WebSocketStatusView: View {
     let state: HAConnectionState?
     @State private var showAlert = false
-    
+
     var body: some View {
         Button {
             showAlert = true
@@ -325,7 +333,7 @@ private struct WebSocketStatusView: View {
             Text(detailedMessage)
         }
     }
-    
+
     private var statusMessage: String {
         guard let state else { return "" }
         switch state {
@@ -339,7 +347,7 @@ private struct WebSocketStatusView: View {
             return L10n.Settings.ConnectionSection.Websocket.Status.connected
         }
     }
-    
+
     private var detailedMessage: String {
         guard let state else { return "" }
         switch state {
@@ -347,18 +355,18 @@ private struct WebSocketStatusView: View {
             switch reason {
             case let .waitingToReconnect(lastError: error, atLatest: atLatest, retryCount: count):
                 var components = [String]()
-                
+
                 if let error {
                     components.append(L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.error(
                         error.localizedDescription
                     ))
                 }
-                
+
                 components.append(L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.retryCount(count))
                 components.append(L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.nextRetry(
                     DateFormatter.localizedString(from: atLatest, dateStyle: .none, timeStyle: .medium)
                 ))
-                
+
                 return components.joined(separator: "\n\n")
             case .disconnected:
                 return L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.title
@@ -376,7 +384,7 @@ private struct PrivacyPickerView<T: CaseIterable & Hashable>: View where T: RawR
     let isDisabled: Bool
     let footerMessage: String?
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         List {
             Section {
@@ -408,7 +416,7 @@ private struct PrivacyPickerView<T: CaseIterable & Hashable>: View where T: RawR
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
     }
-    
+
     private func localizedDescription(for option: T) -> String {
         if let locationPrivacy = option as? ServerLocationPrivacy {
             return locationPrivacy.localizedDescription
@@ -416,29 +424,5 @@ private struct PrivacyPickerView<T: CaseIterable & Hashable>: View where T: RawR
             return sensorPrivacy.localizedDescription
         }
         return String(describing: option)
-    }
-}
-
-private struct ActivityViewController: UIViewControllerRepresentable {
-    let activityViewController: UIActivityViewController
-    
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        activityViewController
-    }
-    
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-
-// MARK: - UIViewController Embedding Extension
-
-private extension UIViewController {
-    func embedInHostingController() -> some View {
-        ViewControllerWrapper(self)
-    }
-}
-
-#Preview {
-    NavigationView {
-        ConnectionSettingsView(server: Current.servers.all.first!)
     }
 }

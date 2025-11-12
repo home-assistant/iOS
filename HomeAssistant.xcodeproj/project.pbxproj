@@ -909,6 +909,8 @@
 		42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF7F332DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
 		42BF7F342DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
+		42BF8DB42EC4E73700DCB7E7 /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB22EC4E73700DCB7E7 /* ConnectionSettingsView.swift */; };
+		42BF8DB52EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB32EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
@@ -2591,6 +2593,8 @@
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
 		42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenEntityAppIntent.swift; sourceTree = "<group>"; };
 		42BF8DAF2EC4D69600DCB7E7 /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
+		42BF8DB22EC4E73700DCB7E7 /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
+		42BF8DB32EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsViewModel.swift; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
 		42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePrecision.swift; sourceTree = "<group>"; };
 		42C0F7CB2D47B47F00BD5C76 /* IconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPicker.swift; sourceTree = "<group>"; };
@@ -3749,6 +3753,8 @@
 		11AD2E392528FDF800FBC437 /* Connection */ = {
 			isa = PBXGroup;
 			children = (
+				42BF8DB22EC4E73700DCB7E7 /* ConnectionSettingsView.swift */,
+				42BF8DB32EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift */,
 				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
 				1178C4E424D5CEB200FDEC3E /* ConnectionURLView.swift */,
 				42AAEE892EC4C57F0049E1F3 /* ConnectionURLViewModel.swift */,
@@ -8612,6 +8618,8 @@
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
 				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
+				42BF8DB42EC4E73700DCB7E7 /* ConnectionSettingsView.swift in Sources */,
+				42BF8DB52EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
 				4273C4882C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
