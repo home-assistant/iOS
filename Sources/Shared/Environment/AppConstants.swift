@@ -24,6 +24,8 @@ public enum AppConstants {
         public static var issues = URL(string: "https://companion.home-assistant.io/app/ios/issues")!
         public static var companionAppConnectionSecurityLevel =
             URL(string: "https://companion.home-assistant.io/docs/getting_started/connection-security-level")!
+        public static var companionLocalPush =
+            URL(string: "https://companion.home-assistant.io/app/ios/local-push")!
     }
 
     public enum QueryItems: String, CaseIterable {

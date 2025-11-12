@@ -2672,6 +2672,8 @@ public enum L10n {
   }
 
   public enum SettingsDetails {
+    /// Learn more
+    public static var learnMore: String { return L10n.tr("Localizable", "settings_details.learn_more") }
     public enum Actions {
       /// Actions are used in the Apple Watch app, App Icon Actions, the Today widget and CarPlay.
       public static var footer: String { return L10n.tr("Localizable", "settings_details.actions.footer") }
@@ -2876,6 +2878,14 @@ public enum L10n {
           /// Menu Bar
           public static var menuBar: String { return L10n.tr("Localizable", "settings_details.general.visibility.options.menu_bar") }
         }
+      }
+    }
+    public enum Http {
+      public enum Warning {
+        /// Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.
+        public static var message: String { return L10n.tr("Localizable", "settings_details.http.warning.message") }
+        /// Security Warning
+        public static var title: String { return L10n.tr("Localizable", "settings_details.http.warning.title") }
       }
     }
     public enum LegacyActions {

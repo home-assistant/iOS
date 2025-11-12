@@ -9,11 +9,9 @@ import SwiftUI
 /// - Optional list of selectable choices (radio-style)
 /// - Optional informational callout below choices
 /// - Bottom area with primary button and optional secondary button
-public struct BaseOnboardingView<Illustration: View, Content: View>: View {
-    // MARK: - Environment
-
-    @Environment(\.hideOnboardingTitle) private var hideOnboardingTitle
-    @Environment(\.hideOnboardingIcon) private var hideOnboardingIcon
+public struct BaseOnboardingView<Illustration: View, Content: View>: View, KeyboardReadable {
+    @State private var isKeyboardVisible = false
+    @Environment(\.disableOnboardingPrimaryAction) private var disablePrimaryAction
 
     // MARK: - Inputs
 
@@ -34,6 +32,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
     // Layout tuning
     private let verticalSpacing: CGFloat
     private let maxContentWidth: CGFloat = Sizes.maxWidthForLargerScreens
+    private let bottomAnchor = "bottom-anchor"
 
     // MARK: - Inits
 
@@ -92,8 +91,8 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
 
     public var body: some View {
         ScrollView {
-            VStack(spacing: verticalSpacing) {
-                if !hideOnboardingIcon {
+            ScrollViewReader { proxy in
+                VStack(spacing: verticalSpacing) {
                     Group {
                         if let image = illustration() as? Image {
                             image
@@ -107,44 +106,55 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                         }
                     }
                     .padding(.top, DesignSystem.Spaces.two)
-                }
 
-                if !hideOnboardingTitle {
                     Text(title)
                         .font(DesignSystem.Font.largeTitle.bold())
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, DesignSystem.Spaces.two)
-                }
 
-                VStack(spacing: DesignSystem.Spaces.two) {
-                    Text(primaryDescription)
-                        .font(DesignSystem.Font.body)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-
-                    if let secondaryDescription {
-                        Text(secondaryDescription)
+                    VStack(spacing: DesignSystem.Spaces.two) {
+                        Text(primaryDescription)
                             .font(DesignSystem.Font.body)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
-                    }
 
-                    if let content {
-                        content()
+                        if let secondaryDescription {
+                            Text(secondaryDescription)
+                                .font(DesignSystem.Font.body)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+
+                        if let content {
+                            content()
+                        }
+                    }
+                    .padding(.horizontal, DesignSystem.Spaces.two)
+
+                    Spacer(minLength: DesignSystem.Spaces.four)
+
+                    // Bottom anchor to scroll when keyboard appears
+                    Text("")
+                        .frame(height: 100)
+                        .id(bottomAnchor)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .frame(maxWidth: maxContentWidth)
+                .onChange(of: isKeyboardVisible) { newValue in
+                    if newValue {
+                        proxy.scrollTo(bottomAnchor)
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spaces.two)
-
-                Spacer(minLength: DesignSystem.Spaces.four)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .frame(maxWidth: maxContentWidth)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .safeAreaInset(edge: .bottom) {
             bottomActions
         }
         .background(Color(uiColor: .systemBackground))
+        .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+            isKeyboardVisible = newIsKeyboardVisible
+        }
     }
 
     // MARK: - Bottom actions
@@ -156,6 +166,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View {
                 Text(primaryActionTitle)
             }
             .buttonStyle(.primaryButton)
+            .disabled(disablePrimaryAction)
 
             if let secondaryActionTitle, let secondaryAction {
                 Button(action: secondaryAction) {

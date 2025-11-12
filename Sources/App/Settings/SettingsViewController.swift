@@ -68,7 +68,7 @@ class SettingsViewController: HAFormViewController {
                 rows.append(HomeAssistantAccountRow {
                     $0.value = .server(server)
                     $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                        ConnectionSettingsViewController(server: server)
+                        ConnectionSettingsView(server: server).embeddedInHostingController()
                     }, onDismiss: nil)
                 })
             }

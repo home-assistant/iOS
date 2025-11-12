@@ -7,12 +7,16 @@ import Testing
 
 final class MockLocationManager: LocationManagerProtocol {
     var mockPermissionState: LocationPermissionState = .notDetermined
+    var mockAccuracyAuthorization: CLAccuracyAuthorization = .fullAccuracy
     var mockLocationServicesEnabled: Bool = true
     var requestLocationPermissionCalled = false
-    var requestAlwaysLocationPermissionCalled = false
 
     var currentPermissionState: LocationPermissionState {
         mockPermissionState
+    }
+
+    var accuracyAuthorization: CLAccuracyAuthorization {
+        mockAccuracyAuthorization
     }
 
     var isLocationServicesEnabled: Bool {
@@ -21,10 +25,6 @@ final class MockLocationManager: LocationManagerProtocol {
 
     func requestLocationPermission() {
         requestLocationPermissionCalled = true
-    }
-
-    func requestAlwaysLocationPermission() {
-        requestAlwaysLocationPermissionCalled = true
     }
 
     // Helper method to simulate permission state changes
@@ -65,12 +65,16 @@ struct LocationManagerTests {
         let mockManager = MockLocationManager()
 
         #expect(!mockManager.requestLocationPermissionCalled)
-        #expect(!mockManager.requestAlwaysLocationPermissionCalled)
 
         mockManager.requestLocationPermission()
         #expect(mockManager.requestLocationPermissionCalled)
+    }
 
-        mockManager.requestAlwaysLocationPermission()
-        #expect(mockManager.requestAlwaysLocationPermissionCalled)
+    @Test("MockLocationManager returns correct accuracy authorization")
+    func mockLocationManagerAccuracyAuthorization() async throws {
+        let mockManager = MockLocationManager()
+        mockManager.mockAccuracyAuthorization = .reducedAccuracy
+
+        #expect(mockManager.accuracyAuthorization == .reducedAccuracy)
     }
 }

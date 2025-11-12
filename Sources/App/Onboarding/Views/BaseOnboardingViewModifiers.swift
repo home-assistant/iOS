@@ -20,6 +20,16 @@ public struct HiddenIconModifier: ViewModifier {
     }
 }
 
+/// A view modifier that conditionally disables the primary action button in BaseOnboardingView
+public struct DisabledPrimaryActionModifier: ViewModifier {
+    let isDisabled: Bool
+
+    public func body(content: Content) -> some View {
+        content
+            .environment(\.disableOnboardingPrimaryAction, isDisabled)
+    }
+}
+
 /// Environment key for hiding the onboarding title
 private struct HideOnboardingTitleKey: EnvironmentKey {
     static let defaultValue: Bool = false
@@ -27,6 +37,11 @@ private struct HideOnboardingTitleKey: EnvironmentKey {
 
 /// Environment key for hiding the onboarding icon/illustration
 private struct HideOnboardingIconKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
+/// Environment key for disabling the primary action button
+private struct DisableOnboardingPrimaryActionKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
@@ -39,6 +54,11 @@ extension EnvironmentValues {
     var hideOnboardingIcon: Bool {
         get { self[HideOnboardingIconKey.self] }
         set { self[HideOnboardingIconKey.self] = newValue }
+    }
+
+    var disableOnboardingPrimaryAction: Bool {
+        get { self[DisableOnboardingPrimaryActionKey.self] }
+        set { self[DisableOnboardingPrimaryActionKey.self] = newValue }
     }
 }
 
@@ -55,5 +75,12 @@ public extension View {
     /// - Returns: A view with the icon visibility modifier applied
     func hideOnboardingIcon(_ hideIcon: Bool) -> some View {
         modifier(HiddenIconModifier(hideIcon: hideIcon))
+    }
+
+    /// Conditionally disables the primary action button in BaseOnboardingView
+    /// - Parameter isDisabled: When true, the primary button will be disabled
+    /// - Returns: A view with the primary action disabled state modifier applied
+    func disableOnboardingPrimaryAction(_ isDisabled: Bool) -> some View {
+        modifier(DisabledPrimaryActionModifier(isDisabled: isDisabled))
     }
 }

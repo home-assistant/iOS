@@ -381,13 +381,26 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             ))
             return
         }
-        let assistView = UIHostingController(rootView: AssistView.build(
-            server: server,
-            preferredPipelineId: pipeline,
-            autoStartRecording: autoStartRecording
-        ))
 
-        webViewController?.presentOverlayController(controller: assistView, animated: animated)
+        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
+            // On macOS, open Assist in a new window/scene
+            Current.sceneManager.activateAnyScene(
+                for: .assist,
+                with: [
+                    "server": server.identifier.rawValue,
+                    "pipelineId": pipeline,
+                    "autoStartRecording": autoStartRecording,
+                ]
+            )
+        } else {
+            // On iOS/iPad, present modally as before
+            let assistView = UIHostingController(rootView: AssistView.build(
+                server: server,
+                preferredPipelineId: pipeline,
+                autoStartRecording: autoStartRecording
+            ))
+            webViewController?.presentOverlayController(controller: assistView, animated: animated)
+        }
     }
 
     func scanImprov() {
