@@ -1106,11 +1106,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
-            let settingsView = SettingsViewController()
-            settingsView.hidesBottomBarWhenPushed = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            navController.view.tag = WebViewControllerOverlayedViewTags.settingsView.rawValue
-            presentOverlayController(controller: navController, animated: true)
+            // Use SwiftUI SettingsView wrapped in hosting controller
+            let settingsView = SettingsView().embeddedInHostingController()
+            settingsView.view.tag = WebViewControllerOverlayedViewTags.settingsView.rawValue
+            presentOverlayController(controller: settingsView, animated: true)
         }
     }
 
