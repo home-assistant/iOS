@@ -824,7 +824,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     @objc private func copyCurrentSelectedContent() {
         // Get selected text from the web view
-        webView.evaluateJavaScript("window.getSelection().toString();") { [weak self] result, error in
+        webView.evaluateJavaScript("window.getSelection().toString();") { result, error in
             Current.Log
                 .error(
                     "Copy selected content result: \(String(describing: result)), error: \(String(describing: error))"
