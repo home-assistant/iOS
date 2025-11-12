@@ -8,7 +8,7 @@ struct SettingsView: View {
     @State private var showAbout = false
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
-    
+
     var body: some View {
         Group {
             #if targetEnvironment(macCatalyst)
@@ -27,9 +27,9 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     // MARK: - macOS Split View
-    
+
     private var macOSView: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             // Sidebar
@@ -58,9 +58,9 @@ struct SettingsView: View {
         }
         .navigationSplitViewStyle(.balanced)
     }
-    
+
     // MARK: - iOS List View
-    
+
     private var iOSView: some View {
         NavigationStack {
             List {
@@ -71,7 +71,7 @@ struct SettingsView: View {
                 ) {
                     ServersListView()
                 }
-                
+
                 // General section
                 Section {
                     ForEach(SettingsItem.generalItems, id: \.self) { item in
@@ -84,7 +84,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
+
                 // Integrations section
                 Section {
                     ForEach(SettingsItem.integrationItems, id: \.self) { item in
@@ -97,7 +97,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
+
                 // Apple Watch section (only on iPhone with paired watch)
                 if shouldShowWatchSection {
                     Section(header: Text("Apple Watch")) {
@@ -112,7 +112,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
+
                 // CarPlay section (only on iPhone)
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     Section {
@@ -127,7 +127,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
+
                 // Legacy section
                 Section {
                     ForEach(SettingsItem.legacyItems, id: \.self) { item in
@@ -140,7 +140,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
+
                 // Help section
                 Section {
                     ForEach(SettingsItem.helpItems, id: \.self) { item in
@@ -171,7 +171,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
+
                 // What's New
                 Section {
                     Button {
@@ -225,7 +225,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private var shouldShowWatchSection: Bool {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
         if Current.isDebug {
@@ -256,7 +256,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case privacy
     case debugging
     case whatsNew
-    
+
     var title: String {
         switch self {
         case .servers: return L10n.Settings.ConnectionSection.servers
@@ -277,7 +277,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .whatsNew: return L10n.Settings.WhatsNew.title
         }
     }
-    
+
     var icon: some View {
         Group {
             switch self {
@@ -316,7 +316,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             }
         }
     }
-    
+
     var accessoryIcon: some View {
         Group {
             if self == .help || self == .whatsNew {
@@ -325,7 +325,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             }
         }
     }
-    
+
     @ViewBuilder
     var destinationView: some View {
         switch self {
@@ -371,41 +371,41 @@ enum SettingsItem: String, Hashable, CaseIterable {
             EmptyView()
         }
     }
-    
+
     static var allVisibleCases: [SettingsItem] {
         allCases.filter { item in
             // Filter based on platform
             #if targetEnvironment(macCatalyst)
-            if item == .gestures || item == .watch || item == .carPlay || 
-               item == .complications || item == .nfc || item == .help || 
-               item == .whatsNew {
+            if item == .gestures || item == .watch || item == .carPlay ||
+                item == .complications || item == .nfc || item == .help ||
+                item == .whatsNew {
                 return false
             }
             #endif
             return true
         }
     }
-    
+
     static var generalItems: [SettingsItem] {
         [.general, .gestures, .location, .notifications]
     }
-    
+
     static var integrationItems: [SettingsItem] {
         [.sensors, .nfc, .widgets]
     }
-    
+
     static var watchItems: [SettingsItem] {
         [.watch, .complications]
     }
-    
+
     static var carPlayItems: [SettingsItem] {
         [.carPlay]
     }
-    
+
     static var legacyItems: [SettingsItem] {
         [.actions]
     }
-    
+
     static var helpItems: [SettingsItem] {
         [.help, .privacy, .debugging]
     }
@@ -415,16 +415,16 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
 private class ServersObserver: ObservableObject, ServerObserver {
     @Published var servers: [Server] = []
-    
+
     init() {
-        servers = Current.servers.all
+        self.servers = Current.servers.all
         Current.servers.add(observer: self)
     }
-    
+
     deinit {
         Current.servers.remove(observer: self)
     }
-    
+
     func serversDidChange(_ serverManager: ServerManager) {
         DispatchQueue.main.async { [weak self] in
             self?.servers = serverManager.all
@@ -435,14 +435,14 @@ private class ServersObserver: ObservableObject, ServerObserver {
 struct ServersListView: View {
     @StateObject private var observer = ServersObserver()
     @State private var showAddServer = false
-    
+
     var body: some View {
         ForEach(observer.servers, id: \.identifier) { server in
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server)
             }
         }
-        
+
         Button {
             showAddServer = true
         } label: {
@@ -458,7 +458,7 @@ struct ServersListView: View {
 
 struct HomeAssistantAccountRowView: View {
     let server: Server
-    
+
     var body: some View {
         HStack {
             // Account icon
@@ -469,7 +469,7 @@ struct HomeAssistantAccountRowView: View {
                     Text(server.info.name.prefix(1).uppercased())
                         .foregroundColor(.white)
                 )
-            
+
             VStack(alignment: .leading) {
                 Text(server.info.name)
                     .font(.headline)
@@ -488,7 +488,7 @@ struct HomeAssistantAccountRowView: View {
 struct MaterialDesignIconsImage: View {
     let icon: MaterialDesignIcons
     let size: CGFloat
-    
+
     var body: some View {
         Image(uiImage: icon.image(ofSize: CGSize(width: size, height: size), color: .label))
             .renderingMode(.template)

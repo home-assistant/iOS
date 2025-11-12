@@ -8,11 +8,9 @@ import UIKit
     override func basicConfig(in traitCollection: UITraitCollection) -> BasicSceneDelegate.BasicConfig {
         .init(
             title: L10n.Settings.NavigationBar.title,
-            rootViewController: {
-                // Use SwiftUI SettingsView for all platforms
-                // macOS will show split view, iOS will show list view
-                SettingsView().embeddedInHostingController()
-            }()
+            rootViewController: // Use SwiftUI SettingsView for all platforms
+            // macOS will show split view, iOS will show list view
+            SettingsView().embeddedInHostingController()
         )
     }
 
