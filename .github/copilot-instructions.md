@@ -4,7 +4,7 @@ This document provides guidance for GitHub Copilot when working on the Home Assi
 
 ## Project Overview
 
-Home Assistant for Apple Platforms is a native iOS, watchOS, and macOS application written in Swift that provides a companion app for Home Assistant home automation. The project uses:
+Home Assistant for Apple Platforms is a native iOS, watchOS, and macOS application, with it's main interaction through a WKWebView displaying Home Assistant web app UI, written in Swift that provides a companion app for Home Assistant home automation. The project uses:
 
 - **Language**: Swift 5.8+
 - **Minimum iOS version**: Check deployment target in project settings
