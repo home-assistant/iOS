@@ -123,11 +123,10 @@ struct ConnectionSettingsView: View {
             )
 
             NavigationLink {
-                ConnectionURLViewController(
+                embed(ConnectionURLViewController(
                     server: viewModel.server,
                     urlType: .internal
-                )
-                .embedInHostingController()
+                ))
             } label: {
                 HStack {
                     Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
@@ -139,11 +138,12 @@ struct ConnectionSettingsView: View {
             }
 
             NavigationLink {
-                ConnectionURLViewController(
-                    server: viewModel.server,
-                    urlType: .external
+                embed(
+                    ConnectionURLViewController(
+                        server: viewModel.server,
+                        urlType: .external
+                    )
                 )
-                .embedInHostingController()
             } label: {
                 HStack {
                     Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
