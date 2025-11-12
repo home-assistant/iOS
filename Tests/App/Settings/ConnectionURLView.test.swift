@@ -12,10 +12,10 @@ struct ConnectionURLViewTests {
             urlType: .internal,
             onDismiss: {}
         )
-        
+
         assertLightDarkSnapshots(of: view, drawHierarchyInKeyWindow: true)
     }
-    
+
     @MainActor
     @Test func externalURLView() async throws {
         let server = ServerManager.shared.server
@@ -24,7 +24,7 @@ struct ConnectionURLViewTests {
             urlType: .external,
             onDismiss: {}
         )
-        
+
         assertLightDarkSnapshots(of: view, drawHierarchyInKeyWindow: true)
     }
 }

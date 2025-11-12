@@ -8,7 +8,7 @@ struct ConnectionURLView: View {
     let server: Server
     let urlType: ConnectionInfo.URLType
     let onDismiss: () -> Void
-    
+
     @State private var url: String
     @State private var useCloud: Bool
     @State private var localPush: Bool
@@ -18,12 +18,12 @@ struct ConnectionURLView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var canCommitAnyway = false
-    
+
     init(server: Server, urlType: ConnectionInfo.URLType, onDismiss: @escaping () -> Void) {
         self.server = server
         self.urlType = urlType
         self.onDismiss = onDismiss
-        
+
         // Initialize state
         _url = State(initialValue: server.info.connection.address(for: urlType)?.absoluteString ?? "")
         _useCloud = State(initialValue: server.info.connection.useCloud)
@@ -31,7 +31,7 @@ struct ConnectionURLView: View {
         _ssids = State(initialValue: server.info.connection.internalSSIDs ?? [])
         _hardwareAddresses = State(initialValue: server.info.connection.internalHardwareAddresses ?? [])
     }
-    
+
     var body: some View {
         Form {
             if urlType.isAffectedByCloud, server.info.connection.canUseCloud {
@@ -39,7 +39,7 @@ struct ConnectionURLView: View {
                     Toggle(L10n.Settings.ConnectionSection.HomeAssistantCloud.title, isOn: $useCloud)
                 }
             }
-            
+
             Section {
                 if !useCloud || !urlType.isAffectedByCloud || !server.info.connection.canUseCloud {
                     TextField(placeholder, text: $url)
@@ -52,17 +52,17 @@ struct ConnectionURLView: View {
                         .foregroundColor(.secondary)
                         .font(.footnote)
                 }
-                
+
                 if urlType == .internal {
                     Text(L10n.Settings.ConnectionSection.InternalBaseUrl.SsidRequired.title)
                         .foregroundColor(.secondary)
                         .font(.footnote)
                 }
             }
-            
+
             if urlType.isAffectedBySSID {
                 locationPermissionSection
-                
+
                 Section {
                     ForEach(ssids.indices, id: \.self) { index in
                         HStack {
@@ -78,7 +78,7 @@ struct ConnectionURLView: View {
                     .onDelete { indexSet in
                         ssids.remove(atOffsets: indexSet)
                     }
-                    
+
                     Button(action: addSSID) {
                         Text(L10n.Settings.ConnectionSection.InternalUrlSsids.addNewSsid)
                     }
@@ -88,7 +88,7 @@ struct ConnectionURLView: View {
                     Text(L10n.Settings.ConnectionSection.InternalUrlSsids.footer)
                 }
             }
-            
+
             if urlType.isAffectedByHardwareAddress {
                 Section {
                     ForEach(hardwareAddresses.indices, id: \.self) { index in
@@ -105,7 +105,7 @@ struct ConnectionURLView: View {
                     .onDelete { indexSet in
                         hardwareAddresses.remove(atOffsets: indexSet)
                     }
-                    
+
                     Button(action: addHardwareAddress) {
                         Text(L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.addNewSsid)
                     }
@@ -115,11 +115,11 @@ struct ConnectionURLView: View {
                     Text(L10n.Settings.ConnectionSection.InternalUrlHardwareAddresses.footer)
                 }
             }
-            
+
             if urlType.hasLocalPush {
                 Section {
                     Toggle(L10n.SettingsDetails.Notifications.LocalPush.title, isOn: $localPush)
-                    
+
                     Button(action: {
                         openURLInBrowser(
                             URL(string: "https://companion.home-assistant.io/app/ios/local-push")!,
@@ -141,7 +141,7 @@ struct ConnectionURLView: View {
                     onDismiss()
                 }
             }
-            
+
             ToolbarItem(placement: .confirmationAction) {
                 if isChecking {
                     ProgressView()
@@ -162,9 +162,8 @@ struct ConnectionURLView: View {
         } message: {
             Text(errorMessage)
         }
-
     }
-    
+
     @ViewBuilder
     private var locationPermissionSection: some View {
         if shouldShowLocationPermission {
@@ -177,17 +176,17 @@ struct ConnectionURLView: View {
             }
         }
     }
-    
+
     private var shouldShowLocationPermission: Bool {
         let manager = CLLocationManager()
         if #available(iOS 14.0, *) {
             return manager.authorizationStatus != .authorizedAlways ||
-                   manager.accuracyAuthorization != .fullAccuracy
+                manager.accuracyAuthorization != .fullAccuracy
         } else {
             return manager.authorizationStatus != .authorizedAlways
         }
     }
-    
+
     private var placeholder: String {
         switch urlType {
         case .internal:
@@ -198,7 +197,7 @@ struct ConnectionURLView: View {
             return ""
         }
     }
-    
+
     private func addSSID() {
         let currentSSID = Current.connectivity.currentWiFiSSID()
         if let currentSSID, !ssids.contains(currentSSID) {
@@ -207,7 +206,7 @@ struct ConnectionURLView: View {
             ssids.append("")
         }
     }
-    
+
     private func addHardwareAddress() {
         let currentAddress = Current.connectivity.currentNetworkHardwareAddress()
         if let currentAddress, !hardwareAddresses.contains(currentAddress) {
@@ -216,7 +215,7 @@ struct ConnectionURLView: View {
             hardwareAddresses.append("")
         }
     }
-    
+
     private func handleLocationPermission() {
         let manager = CLLocationManager()
         if manager.authorizationStatus == .notDetermined {
@@ -225,39 +224,39 @@ struct ConnectionURLView: View {
             UIApplication.shared.openSettings(destination: .location)
         }
     }
-    
+
     private func save() {
         let givenURL = url.isEmpty ? nil : URL(string: url)
-        
+
         isChecking = true
-        
+
         firstly { () -> Promise<Void> in
             try check(url: givenURL, useCloud: useCloud)
-            
+
             if useCloud, let remoteURL = server.info.connection.address(for: .remoteUI) {
                 return Current.webhooks.sendTest(server: server, baseURL: remoteURL)
             }
-            
+
             if let givenURL, !useCloud {
                 return Current.webhooks.sendTest(server: server, baseURL: givenURL)
             }
-            
+
             return .value(())
         }.ensure {
-            self.isChecking = false
+            isChecking = false
         }.done {
             commit()
         }.catch { error in
             handleError(error)
         }
     }
-    
+
     private func check(url: URL?, useCloud: Bool) throws {
         // Validate hardware addresses
         if urlType.isAffectedByHardwareAddress {
             let pattern = "^[a-zA-Z0-9]{2}:[a-zA-Z0-9]{2}:[a-zA-Z0-9]{2}:[a-zA-Z0-9]{2}:[a-zA-Z0-9]{2}:[a-zA-Z0-9]{2}$"
             let regex = try? NSRegularExpression(pattern: pattern)
-            
+
             for address in hardwareAddresses where !address.isEmpty {
                 let range = NSRange(location: 0, length: address.utf16.count)
                 if regex?.firstMatch(in: address, range: range) == nil {
@@ -265,7 +264,7 @@ struct ConnectionURLView: View {
                 }
             }
         }
-        
+
         // Check if removing last URL
         if url == nil {
             let existingInfo = server.info.connection
@@ -276,10 +275,10 @@ struct ConnectionURLView: View {
             }
         }
     }
-    
+
     private func commit() {
         let givenURL = url.isEmpty ? nil : URL(string: url)
-        
+
         server.update { info in
             info.connection.set(address: givenURL, for: urlType)
             info.connection.useCloud = useCloud
@@ -289,35 +288,35 @@ struct ConnectionURLView: View {
                 .map { $0.lowercased() }
                 .filter { !$0.isEmpty }
         }
-        
+
         onDismiss()
     }
-    
+
     private func handleError(_ error: Error) {
         errorMessage = error.localizedDescription
-        
+
         if let saveError = error as? SaveError {
             canCommitAnyway = !saveError.isFinal
         } else {
             canCommitAnyway = true
         }
-        
+
         showError = true
     }
-    
+
     enum SaveError: LocalizedError {
         case lastURL
         case validation(String)
-        
+
         var errorDescription: String? {
             switch self {
             case .lastURL:
                 return L10n.Settings.ConnectionSection.Errors.cannotRemoveLastUrl
-            case .validation(let message):
+            case let .validation(message):
                 return message
             }
         }
-        
+
         var isFinal: Bool {
             switch self {
             case .lastURL, .validation:
@@ -339,7 +338,7 @@ struct ConnectionURLView_Previews: PreviewProvider {
                 )
             }
             .previewDisplayName("Internal URL")
-            
+
             NavigationView {
                 ConnectionURLView(
                     server: ServerManager.shared.server,

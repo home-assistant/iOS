@@ -163,7 +163,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                         }
                     }
                     let hostingController = UIHostingController(rootView: view)
-                    self.navigationController?.pushViewController(hostingController, animated: true)
+                    navigationController?.pushViewController(hostingController, animated: true)
                 }
             }
 
@@ -187,7 +187,7 @@ class ConnectionSettingsViewController: HAFormViewController, RowControllerType 
                         }
                     }
                     let hostingController = UIHostingController(rootView: view)
-                    self.navigationController?.pushViewController(hostingController, animated: true)
+                    navigationController?.pushViewController(hostingController, animated: true)
                 }
             }
 
