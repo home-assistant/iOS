@@ -14,6 +14,7 @@ struct AssistView: View {
     private var isIpad: Bool {
         UIDevice.current.userInterfaceIdiom == .pad
     }
+
     private let showCloseButton: Bool
 
     init(viewModel: AssistViewModel, showCloseButton: Bool = true) {
