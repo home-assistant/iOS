@@ -54,7 +54,7 @@ open class OpenInChromeController {
     open func isChromeInstalled() -> Bool {
         if let simpleURL = URL(string: googleChromeHTTPScheme),
            let callbackURL = URL(string: googleChromeCallbackScheme) {
-            return UIApplication.shared.canOpenURL(simpleURL) || UIApplication.shared.canOpenURL(callbackURL)
+            return URLOpener.shared.canOpenURL(simpleURL) || URLOpener.shared.canOpenURL(callbackURL)
         }
         return false
     }
@@ -63,7 +63,7 @@ open class OpenInChromeController {
     open func openInChrome(_ url: URL, callbackURL: URL?, createNewTab: Bool = false) {
         if let chromeSimpleURL = URL(string: googleChromeHTTPScheme),
            let chromeCallbackURL = URL(string: googleChromeCallbackScheme) {
-            if UIApplication.shared.canOpenURL(chromeCallbackURL) {
+            if URLOpener.shared.canOpenURL(chromeCallbackURL) {
                 var appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
                 // CFBundleDisplayName is an optional key, so we will use CFBundleName if it does not exist
                 if appName == nil {
