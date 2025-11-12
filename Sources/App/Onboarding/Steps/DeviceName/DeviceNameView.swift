@@ -21,22 +21,13 @@ struct DeviceNameView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: DesignSystem.Spaces.three) {
+            BaseOnboardingView(
+                illustration: {
                     Image(.Onboarding.pencil)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 150)
-                        .foregroundStyle(.haPrimary)
-                    Text(L10n.DeviceName.title)
-                        .font(DesignSystem.Font.largeTitle.bold())
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                    Text(L10n.DeviceName.subtitle)
-                        .font(DesignSystem.Font.body)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
+                },
+                title: L10n.DeviceName.title,
+                primaryDescription: L10n.DeviceName.subtitle,
+                content: {
                     VStack(spacing: DesignSystem.Spaces.one) {
                         HATextField(placeholder: L10n.DeviceName.Textfield.placeholder, text: $deviceName)
                         if let errorMessage {
@@ -46,15 +37,21 @@ struct DeviceNameView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
+                    .frame(maxWidth: DesignSystem.List.rowMaxWidth)
+                },
+                primaryActionTitle: L10n.DeviceName.PrimaryButton.title,
+                primaryAction: {
+                    onDismissAction = .save
+                    dismiss()
                 }
-                .padding(DesignSystem.Spaces.two)
-                .onAppear {
-                    #if DEBUG
-                    deviceName = "Simulator \(UUID().uuidString.prefix(4))"
-                    #else
-                    deviceName = UIDevice.current.name
-                    #endif
-                }
+            )
+            .disableOnboardingPrimaryAction(deviceName.count < 3)
+            .onAppear {
+                #if DEBUG
+                deviceName = "Simulator \(UUID().uuidString.prefix(4))"
+                #else
+                deviceName = UIDevice.current.name
+                #endif
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -66,17 +63,6 @@ struct DeviceNameView: View {
             }
         }
         .navigationViewStyle(.stack)
-        .safeAreaInset(edge: .bottom) {
-            Button {
-                onDismissAction = .save
-                dismiss()
-            } label: {
-                Text(L10n.DeviceName.PrimaryButton.title)
-            }
-            .buttonStyle(.primaryButton)
-            .padding(DesignSystem.Spaces.two)
-            .disabled(deviceName.count < 3)
-        }
         .interactiveDismissDisabled(true)
         .onDisappear {
             switch onDismissAction {
