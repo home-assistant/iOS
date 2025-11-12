@@ -28,7 +28,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         XCTAssertTrue(mockWebViewController.overlayedController is UINavigationController)
         XCTAssertTrue(
             (mockWebViewController.overlayedController as? UINavigationController)?.viewControllers
-                .first is SettingsViewController
+                .first is UIHostingController<SettingsView>
         )
     }
 
