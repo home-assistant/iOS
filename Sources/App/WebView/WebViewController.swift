@@ -817,7 +817,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
 
             if let url = urlComponents.url {
-                UIApplication.shared.open(url)
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         }
     }
@@ -825,7 +825,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     @objc private func copyCurrentSelectedContent() {
         // Get selected text from the web view
         webView.evaluateJavaScript("window.getSelection().toString();") { [weak self] result, error in
-            guard let self else { return }
             Current.Log
                 .error(
                     "Copy selected content result: \(String(describing: result)), error: \(String(describing: error))"
@@ -914,7 +913,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             buttonImage: nil,
             buttonTitle: L10n.openLabel,
             buttonTapHandler: { _ in
-                UIApplication.shared.open(alert.url, options: [:], completionHandler: nil)
+                URLOpener.shared.open(alert.url, options: [:], completionHandler: nil)
                 SwiftMessages.hide()
             }
         )

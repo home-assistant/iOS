@@ -98,9 +98,10 @@ class NotificationSoundsViewController: HAFormViewController, UIDocumentPickerDe
             }
                 <<< ButtonRow {
                     $0.title = L10n.SettingsDetails.Notifications.Sounds.importMacOpenFolder
-                    $0.onCellSelection { _, _ in
+                    $0.onCellSelection { [weak self] _, _ in
+                        guard let self else { return }
                         do {
-                            try UIApplication.shared.open(self.librarySoundsURL(), options: [:], completionHandler: nil)
+                            try URLOpener.shared.open(librarySoundsURL(), options: [:], completionHandler: nil)
                         } catch {
                             Current.Log.error("couldn't open folder: \(error)")
                         }
