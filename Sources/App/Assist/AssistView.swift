@@ -39,11 +39,11 @@ struct AssistView: View {
                     }
                 }
 
-#if targetEnvironment(macCatalyst)
+                #if targetEnvironment(macCatalyst)
                 ToolbarItem(placement: .topBarTrailing) {
                     macPicker
                 }
-#endif
+                #endif
             }
         }
         .navigationViewStyle(.stack)
