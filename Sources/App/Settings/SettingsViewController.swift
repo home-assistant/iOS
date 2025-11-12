@@ -24,6 +24,16 @@ class SettingsViewController: HAFormViewController {
 
     private var updateDatabaseTask: Task<Void, Never>?
 
+    deinit {
+        updateDatabaseTask?.cancel()
+        updateDatabaseTask = nil
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        updateDatabaseTask?.cancel()
+        updateDatabaseTask = nil
+    }
     init(contentSections: ContentSection = .all) {
         self.contentSections = contentSections
         super.init()
