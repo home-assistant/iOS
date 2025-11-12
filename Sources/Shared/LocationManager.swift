@@ -124,6 +124,19 @@ public protocol LocationManagerProtocol: AnyObject {
     /// The current location permission state for the application
     var currentPermissionState: LocationPermissionState { get }
 
+    /// The level of location accuracy the user has authorized for the application
+    ///
+    /// This property indicates whether the user has granted full or reduced accuracy
+    /// location access. When reduced accuracy is in effect, location data is less precise.
+    ///
+    /// Possible values:
+    /// - `.fullAccuracy`: The user has granted full location accuracy
+    /// - `.reducedAccuracy`: The user has enabled approximate location mode
+    ///
+    /// - Note: Users can control accuracy authorization in Settings, independent of
+    ///   whether they've granted location permission itself.
+    var accuracyAuthorization: CLAccuracyAuthorization { get }
+
     /// Whether location services are enabled on this device
     ///
     /// - Returns: `true` if location services are enabled system-wide, `false` otherwise
@@ -175,6 +188,18 @@ final class LocationManager: NSObject, LocationManagerProtocol {
     /// authorization status and converts it to our custom enum.
     var currentPermissionState: LocationPermissionState {
         LocationPermissionState(from: coreLocationManager.authorizationStatus)
+    }
+
+    /// The level of location accuracy authorized by the user
+    ///
+    /// Returns the current accuracy authorization level, which determines the precision
+    /// of location data provided to the app. This is independent of whether location
+    /// permission itself has been granted.
+    ///
+    /// - Returns: `.fullAccuracy` if the user has granted precise location access,
+    ///   or `.reducedAccuracy` if approximate location mode is enabled
+    var accuracyAuthorization: CLAccuracyAuthorization {
+        coreLocationManager.accuracyAuthorization
     }
 
     /// Whether location services are enabled system-wide
