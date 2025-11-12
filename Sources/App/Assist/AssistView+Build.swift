@@ -5,7 +5,8 @@ extension AssistView {
     static func build(
         server: Server,
         preferredPipelineId: String = "",
-        autoStartRecording: Bool = false
+        autoStartRecording: Bool = false,
+        showCloseButton: Bool = true
     ) -> AssistView {
         let viewModel = AssistViewModel(
             server: server,
@@ -15,6 +16,6 @@ extension AssistView {
             assistService: AssistService(server: server),
             autoStartRecording: autoStartRecording
         )
-        return .init(viewModel: viewModel)
+        return .init(viewModel: viewModel, showCloseButton: showCloseButton)
     }
 }

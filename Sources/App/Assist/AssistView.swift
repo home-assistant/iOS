@@ -14,9 +14,11 @@ struct AssistView: View {
     private var isIpad: Bool {
         UIDevice.current.userInterfaceIdiom == .pad
     }
+    private let showCloseButton: Bool
 
-    init(viewModel: AssistViewModel) {
+    init(viewModel: AssistViewModel, showCloseButton: Bool = true) {
         self._viewModel = .init(wrappedValue: viewModel)
+        self.showCloseButton = showCloseButton
     }
 
     var body: some View {
@@ -30,8 +32,10 @@ struct AssistView: View {
             .navigationTitle("Assist")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    closeButton
+                if showCloseButton {
+                    ToolbarItem(placement: .topBarLeading) {
+                        closeButton
+                    }
                 }
 
                 #if targetEnvironment(macCatalyst)

@@ -13,7 +13,8 @@ import UIKit
         let assistView = AssistView.build(
             server: server,
             preferredPipelineId: preferredPipelineId,
-            autoStartRecording: autoStartRecording
+            autoStartRecording: autoStartRecording,
+            showCloseButton: false
         )
         let hostingController = UIHostingController(rootView: assistView)
 
@@ -40,5 +41,28 @@ import UIKit
         }
 
         super.scene(scene, willConnectTo: session, options: connectionOptions)
+
+        #if targetEnvironment(macCatalyst)
+        // Center the window on screen
+        if let windowScene = scene as? UIWindowScene,
+           let screen = windowScene.screen {
+            let screenBounds = screen.bounds
+            let windowSize = CGSize(width: 600, height: 600)
+            let centeredFrame = CGRect(
+                x: (screenBounds.width - windowSize.width) / 2,
+                y: (screenBounds.height - windowSize.height) / 2,
+                width: windowSize.width,
+                height: windowSize.height
+            )
+
+            if #available(iOS 17.0, *) {
+                let geometryPreferences = UIWindowScene.MacGeometryPreferences(systemFrame: centeredFrame)
+                windowScene.requestGeometryUpdate(geometryPreferences)
+            } else {
+                // For iOS 16 and earlier, we can't set the initial frame directly
+                // The window will use default positioning
+            }
+        }
+        #endif
     }
 }
