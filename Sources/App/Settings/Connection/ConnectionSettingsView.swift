@@ -136,10 +136,7 @@ struct ConnectionSettingsView: View {
             NavigationLink {
                 ConnectionURLView(
                     server: viewModel.server,
-                    urlType: .internal,
-                    onDismiss: {
-                        /* no -op */
-                    }
+                    urlType: .internal
                 )
             } label: {
                 HStack {
@@ -154,10 +151,7 @@ struct ConnectionSettingsView: View {
             NavigationLink {
                 ConnectionURLView(
                     server: viewModel.server,
-                    urlType: .external,
-                    onDismiss: {
-                        /* no -op */
-                    }
+                    urlType: .external
                 )
             } label: {
                 HStack {
