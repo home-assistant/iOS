@@ -21,7 +21,7 @@ func resetStores() {
 
 func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
     guard ["http", "https"].contains(urlToOpen.scheme?.lowercased()) else {
-        UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
+        URLOpener.shared.open(urlToOpen, options: [:], completionHandler: nil)
         return
     }
 
@@ -42,7 +42,7 @@ func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
         let sfv = SFSafariViewController(url: urlToOpen)
         sender!.present(sfv, animated: true)
     default:
-        UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
+        URLOpener.shared.open(urlToOpen, options: [:], completionHandler: nil)
     }
 }
 
