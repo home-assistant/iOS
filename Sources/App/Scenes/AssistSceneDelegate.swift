@@ -9,7 +9,7 @@ import UIKit
     private var autoStartRecording: Bool = false
 
     override func basicConfig(in traitCollection: UITraitCollection) -> BasicSceneDelegate.BasicConfig {
-        let server = self.server ?? Current.servers.all.first!
+        let server = server ?? Current.servers.all.first!
         let assistView = AssistView.build(
             server: server,
             preferredPipelineId: preferredPipelineId,
@@ -35,8 +35,8 @@ import UIKit
                let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverIdentifier }) {
                 self.server = server
             }
-            self.preferredPipelineId = userInfo["pipelineId"] as? String ?? ""
-            self.autoStartRecording = userInfo["autoStartRecording"] as? Bool ?? false
+            preferredPipelineId = userInfo["pipelineId"] as? String ?? ""
+            autoStartRecording = userInfo["autoStartRecording"] as? Bool ?? false
         }
 
         super.scene(scene, willConnectTo: session, options: connectionOptions)
