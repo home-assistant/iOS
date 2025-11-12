@@ -29,7 +29,7 @@ struct OpenPageAppIntent: AppIntent {
                 serverId: server.identifier.rawValue
             ) {
             DispatchQueue.main.async {
-                UIApplication.shared.open(url)
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         }
         #endif
