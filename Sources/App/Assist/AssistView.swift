@@ -33,17 +33,17 @@ struct AssistView: View {
             .navigationTitle("Assist")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if showCloseButton {
-                    ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
+                    if showCloseButton {
                         closeButton
                     }
                 }
 
-                #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
                 ToolbarItem(placement: .topBarTrailing) {
                     macPicker
                 }
-                #endif
+#endif
             }
         }
         .navigationViewStyle(.stack)
@@ -171,21 +171,18 @@ struct AssistView: View {
     }
 
     private var inputTextView: some View {
-        HStack(spacing: Spaces.two) {
-            TextField("", text: $viewModel.inputText)
+        HStack(spacing: DesignSystem.Spaces.two) {
+            HATextField(placeholder: "", text: $viewModel.inputText)
                 .textFieldStyle(.plain)
                 .focused($isFirstResponder)
                 .frame(maxWidth: viewModel.isRecording ? 0 : .infinity)
-                .frame(height: 45)
-                .padding(.horizontal, viewModel.isRecording ? .zero : Spaces.two)
-                .overlay(content: {
-                    RoundedRectangle(cornerRadius: CornerRadiusSizes.one)
-                        .stroke(.gray)
-                })
                 .opacity(viewModel.isRecording ? 0 : 1)
                 .animation(.smooth, value: viewModel.isRecording)
                 .onSubmit {
                     viewModel.assistWithText()
+                    if Current.isCatalyst {
+                        isFirstResponder = true
+                    }
                 }
             if viewModel.inputText.isEmpty {
                 assistMicButton
@@ -194,9 +191,9 @@ struct AssistView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, Spaces.two)
+        .padding(.horizontal, DesignSystem.Spaces.two)
         .padding(.vertical)
-        .padding(.bottom, isIpad ? Spaces.two : Spaces.half)
+        .padding(.bottom, isIpad ? DesignSystem.Spaces.two : DesignSystem.Spaces.half)
         .background(viewModel.isRecording ? .clear : Color(uiColor: .systemBackground))
         .opacity(viewModel.isRecording ? 0 : 1)
     }

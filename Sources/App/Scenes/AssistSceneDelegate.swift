@@ -44,8 +44,8 @@ import UIKit
 
         #if targetEnvironment(macCatalyst)
         // Center the window on screen
-        if let windowScene = scene as? UIWindowScene,
-           let screen = windowScene.screen {
+        if let windowScene = scene as? UIWindowScene {
+            let screen = windowScene.screen
             let screenBounds = screen.bounds
             let windowSize = CGSize(width: 600, height: 600)
             let centeredFrame = CGRect(
@@ -55,11 +55,12 @@ import UIKit
                 height: windowSize.height
             )
 
-            if #available(iOS 17.0, *) {
-                let geometryPreferences = UIWindowScene.MacGeometryPreferences(systemFrame: centeredFrame)
-                windowScene.requestGeometryUpdate(geometryPreferences)
+            if #available(macCatalyst 16.0, *) {
+                windowScene.requestGeometryUpdate(.Mac(systemFrame: centeredFrame)) { error in
+                    Current.Log.info(["Failed to request geometry": error.localizedDescription])
+                }
             } else {
-                // For iOS 16 and earlier, we can't set the initial frame directly
+                // For earlier versions, we can't set the initial frame directly
                 // The window will use default positioning
             }
         }
