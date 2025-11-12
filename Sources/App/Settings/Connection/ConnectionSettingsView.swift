@@ -11,6 +11,8 @@ struct ConnectionSettingsView: View {
     @State private var showSecurityLevelPicker = false
     @State private var activityViewController: UIActivityViewController?
     @State private var isDeleteConfirmationPresented = false
+    @State private var deleteError: Error?
+    @State private var showDeleteError = false
 
     let onDismiss: (() -> Void)?
 
@@ -69,6 +71,15 @@ struct ConnectionSettingsView: View {
         }
         .onDisappear {
             onDismiss?()
+        }
+        .alert(
+            L10n.Settings.ConnectionSection.DeleteServer.title,
+            isPresented: $showDeleteError,
+            presenting: deleteError
+        ) { _ in
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: { error in
+            Text(error.localizedDescription)
         }
     }
 
@@ -265,6 +276,8 @@ struct ConnectionSettingsView: View {
                             dismiss()
                         } catch {
                             Current.Log.error("Failed to delete server: \(error)")
+                            deleteError = error
+                            showDeleteError = true
                         }
                     }
                 }
