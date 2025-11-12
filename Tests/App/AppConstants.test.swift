@@ -39,6 +39,10 @@ struct AppConstantsTests {
             AppConstants.WebURLs.companionAppConnectionSecurityLevel
                 .absoluteString == "https://companion.home-assistant.io/docs/getting_started/connection-security-level"
         )
+        assert(
+            AppConstants.WebURLs.companionLocalPush
+                .absoluteString == "https://companion.home-assistant.io/app/ios/local-push"
+        )
     }
 
     @Test func testQueryItemsRawValues() async throws {
