@@ -139,6 +139,39 @@ enum SettingsItem: String, Hashable, CaseIterable {
             return true
         }
     }
+    
+    static func visibleCases(for contentSections: SettingsView.ContentSection) -> [SettingsItem] {
+        allCases.filter { item in
+            // Filter based on platform
+            #if targetEnvironment(macCatalyst)
+            if item == .gestures || item == .watch || item == .carPlay ||
+                item == .complications || item == .nfc || item == .help ||
+                item == .whatsNew {
+                return false
+            }
+            #endif
+            
+            // Filter based on contentSections
+            switch item {
+            case .servers:
+                return contentSections.contains(.servers)
+            case .general, .gestures, .location, .notifications:
+                return contentSections.contains(.general)
+            case .sensors, .nfc, .widgets:
+                return contentSections.contains(.integrations)
+            case .watch, .complications:
+                return contentSections.contains(.watch)
+            case .carPlay:
+                return contentSections.contains(.carPlay)
+            case .actions:
+                return contentSections.contains(.legacy)
+            case .help, .privacy, .debugging:
+                return contentSections.contains(.help)
+            case .whatsNew:
+                return true // Always show whatsNew (matching old behavior)
+            }
+        }
+    }
 
     static var generalItems: [SettingsItem] {
         [.general, .gestures, .location, .notifications]

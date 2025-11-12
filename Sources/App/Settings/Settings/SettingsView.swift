@@ -3,12 +3,31 @@ import Shared
 import SwiftUI
 
 struct SettingsView: View {
+    struct ContentSection: OptionSet {
+        let rawValue: Int
+        
+        static let servers: ContentSection = ContentSection(rawValue: 1 << 0)
+        static let general: ContentSection = ContentSection(rawValue: 1 << 1)
+        static let integrations: ContentSection = ContentSection(rawValue: 1 << 2)
+        static let watch: ContentSection = ContentSection(rawValue: 1 << 3)
+        static let carPlay: ContentSection = ContentSection(rawValue: 1 << 4)
+        static let legacy: ContentSection = ContentSection(rawValue: 1 << 5)
+        static let help: ContentSection = ContentSection(rawValue: 1 << 6)
+        static let all: ContentSection = [.servers, .general, .integrations, .watch, .carPlay, .legacy, .help]
+    }
+    
+    let contentSections: ContentSection
+    
     @State private var selectedItem: SettingsItem? = .servers
     @State private var showAbout = false
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
 
     @State private var appDatabaseUpdaterTask: Task<Void, Never>?
+    
+    init(contentSections: ContentSection = .all) {
+        self.contentSections = contentSections
+    }
 
     var body: some View {
         Group {
@@ -31,7 +50,7 @@ struct SettingsView: View {
     private var macOSView: some View {
         NavigationView {
             List(selection: $selectedItem) {
-                ForEach(SettingsItem.allVisibleCases, id: \.self) { item in
+                ForEach(SettingsItem.visibleCases(for: contentSections), id: \.self) { item in
                     NavigationLink(destination: item.destinationView) {
                         Label {
                             Text(item.title)
@@ -60,41 +79,47 @@ struct SettingsView: View {
         NavigationView {
             List {
                 // Servers section
-                Section(
-                    header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                    footer: Text(L10n.Settings.ConnectionSection.serversFooter)
-                ) {
-                    ServersListView()
+                if contentSections.contains(.servers) {
+                    Section(
+                        header: Text(L10n.Settings.ConnectionSection.serversHeader),
+                        footer: Text(L10n.Settings.ConnectionSection.serversFooter)
+                    ) {
+                        ServersListView()
+                    }
                 }
 
                 // General section
-                Section {
-                    ForEach(SettingsItem.generalItems, id: \.self) { item in
-                        NavigationLink(destination: item.destinationView) {
-                            Label {
-                                Text(item.title)
-                            } icon: {
-                                item.icon
+                if contentSections.contains(.general) {
+                    Section {
+                        ForEach(SettingsItem.generalItems, id: \.self) { item in
+                            NavigationLink(destination: item.destinationView) {
+                                Label {
+                                    Text(item.title)
+                                } icon: {
+                                    item.icon
+                                }
                             }
                         }
                     }
                 }
 
                 // Integrations section
-                Section {
-                    ForEach(SettingsItem.integrationItems, id: \.self) { item in
-                        NavigationLink(destination: item.destinationView) {
-                            Label {
-                                Text(item.title)
-                            } icon: {
-                                item.icon
+                if contentSections.contains(.integrations) {
+                    Section {
+                        ForEach(SettingsItem.integrationItems, id: \.self) { item in
+                            NavigationLink(destination: item.destinationView) {
+                                Label {
+                                    Text(item.title)
+                                } icon: {
+                                    item.icon
+                                }
                             }
                         }
                     }
                 }
 
                 // Apple Watch section (only on iPhone with paired watch)
-                if shouldShowWatchSection {
+                if shouldShowWatchSection && contentSections.contains(.watch) {
                     Section(header: Text("Apple Watch")) {
                         ForEach(SettingsItem.watchItems, id: \.self) { item in
                             NavigationLink(destination: item.destinationView) {
@@ -109,7 +134,7 @@ struct SettingsView: View {
                 }
 
                 // CarPlay section (only on iPhone)
-                if UIDevice.current.userInterfaceIdiom == .phone {
+                if UIDevice.current.userInterfaceIdiom == .phone && contentSections.contains(.carPlay) {
                     Section {
                         ForEach(SettingsItem.carPlayItems, id: \.self) { item in
                             NavigationLink(destination: item.destinationView) {
@@ -124,21 +149,24 @@ struct SettingsView: View {
                 }
 
                 // Legacy section
-                Section {
-                    ForEach(SettingsItem.legacyItems, id: \.self) { item in
-                        NavigationLink(destination: item.destinationView) {
-                            Label {
-                                Text(item.title)
-                            } icon: {
-                                item.icon
+                if contentSections.contains(.legacy) {
+                    Section {
+                        ForEach(SettingsItem.legacyItems, id: \.self) { item in
+                            NavigationLink(destination: item.destinationView) {
+                                Label {
+                                    Text(item.title)
+                                } icon: {
+                                    item.icon
+                                }
                             }
                         }
                     }
                 }
 
                 // Help section
-                Section {
-                    ForEach(SettingsItem.helpItems, id: \.self) { item in
+                if contentSections.contains(.help) {
+                    Section {
+                        ForEach(SettingsItem.helpItems, id: \.self) { item in
                         if item == .help {
                             Button {
                                 if let url = URL(string: "https://companion.home-assistant.io") {
