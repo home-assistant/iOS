@@ -34,6 +34,7 @@ class SettingsViewController: HAFormViewController {
         updateDatabaseTask?.cancel()
         updateDatabaseTask = nil
     }
+
     init(contentSections: ContentSection = .all) {
         self.contentSections = contentSections
         super.init()
