@@ -5,7 +5,7 @@ import UIKit
 
 public protocol AppDatabaseUpdaterProtocol {
     func stop()
-    func update()
+    func update() async
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
@@ -27,7 +27,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         cancelOnGoingRequests()
     }
 
-    func update() {
+    func update() async {
         cancelOnGoingRequests()
 
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
@@ -38,8 +38,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
-        Current.servers.all.forEach { server in
-            guard server.info.connection.activeURL() != nil else { return }
+
+        for server in Current.servers.all {
+            guard server.info.connection.activeURL() != nil else { continue }
             // Cache entities
             let entitiesDatabaseToken = updateEntitiesDatabase(server: server)
             requestTokens.append(entitiesDatabaseToken)
@@ -49,7 +50,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             requestTokens.append(entitiesRegistryToken)
 
             // Cache areas with their entities
-            updateAreasDatabase(server: server)
+            await updateAreasDatabase(server: server)
         }
     }
 
@@ -95,23 +96,19 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         )
     }
 
-    private func updateAreasDatabase(server: Server) {
-        Task { [weak self] in
-            guard let self else { return }
+    private func updateAreasDatabase(server: Server) async {
+        let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
 
-            let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
-
-            guard let areas = Current.areasProvider().areas[server.identifier.rawValue] else {
-                Current.Log.verbose("No areas found for server \(server.info.name)")
-                return
-            }
-
-            await saveAreasToDatabase(
-                areas: areas,
-                areasAndEntities: areasAndEntities,
-                serverId: server.identifier.rawValue
-            )
+        guard let areas = Current.areasProvider().areas[server.identifier.rawValue] else {
+            Current.Log.verbose("No areas found for server \(server.info.name)")
+            return
         }
+
+        await saveAreasToDatabase(
+            areas: areas,
+            areasAndEntities: areasAndEntities,
+            serverId: server.identifier.rawValue
+        )
     }
 
     private func saveAreasToDatabase(
