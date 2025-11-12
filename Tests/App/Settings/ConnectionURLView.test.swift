@@ -6,7 +6,7 @@ import Testing
 struct ConnectionURLViewTests {
     @MainActor
     @Test func internalURLView() async throws {
-        let server = ServerManager.shared.server
+        let server = ServerFixture.standard
         let view = ConnectionURLView(
             server: server,
             urlType: .internal,
@@ -18,7 +18,7 @@ struct ConnectionURLViewTests {
 
     @MainActor
     @Test func externalURLView() async throws {
-        let server = ServerManager.shared.server
+        let server = ServerFixture.standard
         let view = ConnectionURLView(
             server: server,
             urlType: .external,
