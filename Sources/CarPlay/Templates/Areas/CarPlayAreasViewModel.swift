@@ -32,9 +32,17 @@ final class CarPlayAreasViewModel {
 
         currentTask?.cancel()
         currentTask = Task {
-            let areasAndEntities = await Current.areasProvider().fetchAreasAndItsEntities(for: server)
+            // Fetch areas from database instead of always fetching from API
+            let areas: [AppArea]
+            do {
+                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+            } catch {
+                Current.Log.error("Failed to fetch areas from database: \(error.localizedDescription)")
+                areas = []
+            }
+
             await MainActor.run {
-                self.updateAreas(allEntitiesPerArea: areasAndEntities, server: server)
+                self.updateAreas(areas: areas, server: server)
             }
         }
     }
@@ -44,34 +52,36 @@ final class CarPlayAreasViewModel {
         entitiesListTemplate?.entitiesStateChange(serverId: serverId, entities: entities)
     }
 
-    private func updateAreas(allEntitiesPerArea: [String: Set<String>], server: Server) {
-        let areas = Current.areasProvider().areas[server.identifier.rawValue]
-        let items = areas?.sorted(by: { a1, a2 in
+    @MainActor
+    private func updateAreas(areas: [AppArea], server: Server) {
+        let items = areas.sorted(by: { a1, a2 in
             a1.name < a2.name
         }).compactMap { area -> CPListItem? in
-            guard let entityIdsForAreaId = allEntitiesPerArea[area.areaId] else { return nil }
+            // Skip areas with no entities
+            guard !area.entities.isEmpty else { return nil }
+
             let icon = MaterialDesignIcons(
                 serversideValueNamed: area.icon ?? "mdi:circle"
             ).carPlayIcon()
             let item = CPListItem(text: area.name, detailText: nil, image: icon)
             item.accessoryType = .disclosureIndicator
             item.handler = { [weak self] _, completion in
-                self?.listItemHandler(area: area, entityIdsForAreaId: Array(entityIdsForAreaId), server: server)
+                self?.listItemHandler(area: area, server: server)
                 completion()
             }
             return item
-        } ?? []
+        }
 
         templateProvider?.paginatedList.updateItems(items: items)
     }
 
     // swiftlint:enable cyclomatic_complexity
 
-    private func listItemHandler(area: HAAreaResponse, entityIdsForAreaId: [String], server: Server) {
+    private func listItemHandler(area: AppArea, server: Server) {
         guard let entities else { return }
         entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: area.name,
-            filterType: .areaId(entityIds: entityIdsForAreaId),
+            filterType: .areaId(entityIds: Array(area.entities)),
             server: server,
             entitiesCachedStates: entities
         )
