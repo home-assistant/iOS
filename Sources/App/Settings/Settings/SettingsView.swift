@@ -5,26 +5,26 @@ import SwiftUI
 struct SettingsView: View {
     struct ContentSection: OptionSet {
         let rawValue: Int
-        
-        static let servers: ContentSection = ContentSection(rawValue: 1 << 0)
-        static let general: ContentSection = ContentSection(rawValue: 1 << 1)
-        static let integrations: ContentSection = ContentSection(rawValue: 1 << 2)
-        static let watch: ContentSection = ContentSection(rawValue: 1 << 3)
-        static let carPlay: ContentSection = ContentSection(rawValue: 1 << 4)
-        static let legacy: ContentSection = ContentSection(rawValue: 1 << 5)
-        static let help: ContentSection = ContentSection(rawValue: 1 << 6)
+
+        static let servers: ContentSection = .init(rawValue: 1 << 0)
+        static let general: ContentSection = .init(rawValue: 1 << 1)
+        static let integrations: ContentSection = .init(rawValue: 1 << 2)
+        static let watch: ContentSection = .init(rawValue: 1 << 3)
+        static let carPlay: ContentSection = .init(rawValue: 1 << 4)
+        static let legacy: ContentSection = .init(rawValue: 1 << 5)
+        static let help: ContentSection = .init(rawValue: 1 << 6)
         static let all: ContentSection = [.servers, .general, .integrations, .watch, .carPlay, .legacy, .help]
     }
-    
+
     let contentSections: ContentSection
-    
+
     @State private var selectedItem: SettingsItem? = .servers
     @State private var showAbout = false
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
 
     @State private var appDatabaseUpdaterTask: Task<Void, Never>?
-    
+
     init(contentSections: ContentSection = .all) {
         self.contentSections = contentSections
     }
@@ -48,9 +48,11 @@ struct SettingsView: View {
     // MARK: - macOS Split View
 
     private var macOSView: some View {
-        NavigationView {
+        let visibleItems = SettingsItem.visibleCases(for: contentSections)
+
+        return NavigationView {
             List(selection: $selectedItem) {
-                ForEach(SettingsItem.visibleCases(for: contentSections), id: \.self) { item in
+                ForEach(visibleItems, id: \.self) { item in
                     NavigationLink(destination: item.destinationView) {
                         Label {
                             Text(item.title)
@@ -119,7 +121,7 @@ struct SettingsView: View {
                 }
 
                 // Apple Watch section (only on iPhone with paired watch)
-                if shouldShowWatchSection && contentSections.contains(.watch) {
+                if shouldShowWatchSection, contentSections.contains(.watch) {
                     Section(header: Text("Apple Watch")) {
                         ForEach(SettingsItem.watchItems, id: \.self) { item in
                             NavigationLink(destination: item.destinationView) {
@@ -134,7 +136,7 @@ struct SettingsView: View {
                 }
 
                 // CarPlay section (only on iPhone)
-                if UIDevice.current.userInterfaceIdiom == .phone && contentSections.contains(.carPlay) {
+                if UIDevice.current.userInterfaceIdiom == .phone, contentSections.contains(.carPlay) {
                     Section {
                         ForEach(SettingsItem.carPlayItems, id: \.self) { item in
                             NavigationLink(destination: item.destinationView) {
@@ -167,49 +169,50 @@ struct SettingsView: View {
                 if contentSections.contains(.help) {
                     Section {
                         ForEach(SettingsItem.helpItems, id: \.self) { item in
-                        if item == .help {
-                            Button {
-                                if let url = URL(string: "https://companion.home-assistant.io") {
-                                    openURLInBrowser(url, viewControllerProvider.viewController)
+                            if item == .help {
+                                Button {
+                                    if let url = URL(string: "https://companion.home-assistant.io") {
+                                        openURLInBrowser(url, viewControllerProvider.viewController)
+                                    }
+                                } label: {
+                                    HStack {
+                                        Label {
+                                            Text(item.title)
+                                        } icon: {
+                                            item.icon
+                                        }
+                                        Spacer()
+                                        item.accessoryIcon
+                                    }
                                 }
-                            } label: {
-                                HStack {
+                            } else {
+                                NavigationLink(destination: item.destinationView) {
                                     Label {
                                         Text(item.title)
                                     } icon: {
                                         item.icon
                                     }
-                                    Spacer()
-                                    item.accessoryIcon
-                                }
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                Label {
-                                    Text(item.title)
-                                } icon: {
-                                    item.icon
                                 }
                             }
                         }
                     }
-                }
 
-                // What's New
-                Section {
-                    Button {
-                        if let url = URL(string: "https://www.home-assistant.io/latest-ios-release-notes/") {
-                            openURLInBrowser(url, viewControllerProvider.viewController)
-                        }
-                    } label: {
-                        HStack {
-                            Label {
-                                Text(SettingsItem.whatsNew.title)
-                            } icon: {
-                                SettingsItem.whatsNew.icon
+                    // What's New
+                    Section {
+                        Button {
+                            if let url = URL(string: "https://www.home-assistant.io/latest-ios-release-notes/") {
+                                openURLInBrowser(url, viewControllerProvider.viewController)
                             }
-                            Spacer()
-                            SettingsItem.whatsNew.accessoryIcon
+                        } label: {
+                            HStack {
+                                Label {
+                                    Text(SettingsItem.whatsNew.title)
+                                } icon: {
+                                    SettingsItem.whatsNew.icon
+                                }
+                                Spacer()
+                                SettingsItem.whatsNew.accessoryIcon
+                            }
                         }
                     }
                 }
@@ -219,7 +222,6 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     if !Current.isCatalyst {
-
                         Button(L10n.Settings.NavigationBar.AboutButton.title) {
                             showAbout = true
                         }
@@ -227,8 +229,18 @@ struct SettingsView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
-                        Button("Done") {
-                            dismiss()
+                        if #available(iOS 26.0, *) {
+                            Button(role: .confirm) {
+                                dismiss()
+                            }
+                            .tint(.haPrimary)
+                            .buttonStyle(.glassProminent)
+                        } else {
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemSymbol: .checkmark)
+                            }
                         }
                     }
                 }
@@ -236,9 +248,10 @@ struct SettingsView: View {
             .sheet(isPresented: $showAbout) {
                 NavigationView {
                     AboutView()
+                        .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
-                                Button("Done") {
+                                CloseButton {
                                     showAbout = false
                                 }
                             }
@@ -257,72 +270,5 @@ struct SettingsView: View {
             return true
         }
         return false
-    }
-}
-
-// MARK: - Material Design Icons Image
-
-struct MaterialDesignIconsImage: View {
-    let icon: MaterialDesignIcons
-    let size: CGFloat
-
-    var body: some View {
-        Image(uiImage: icon.image(ofSize: CGSize(width: size, height: size), color: .label))
-            .renderingMode(.template)
-    }
-}
-
-// MARK: - Wrapper Views for UIKit Controllers
-
-struct SettingsServersView: View {
-    var body: some View {
-        List {
-            Section(
-                header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                footer: Text(L10n.Settings.ConnectionSection.serversFooter)
-            ) {
-                ServersListView()
-            }
-        }
-        .navigationTitle(L10n.Settings.ConnectionSection.servers)
-    }
-}
-
-struct SettingsLocationView: View {
-    var body: some View {
-        let viewController = SettingsDetailViewController()
-        viewController.detailGroup = .location
-        return embed(viewController)
-            .navigationTitle(L10n.Settings.DetailsSection.LocationSettingsRow.title)
-    }
-}
-
-struct SettingsNotificationsView: View {
-    var body: some View {
-        embed(NotificationSettingsViewController())
-            .navigationTitle(L10n.Settings.DetailsSection.NotificationSettingsRow.title)
-    }
-}
-
-struct SettingsNFCView: View {
-    var body: some View {
-        embed(NFCListViewController())
-            .navigationTitle(L10n.Nfc.List.title)
-    }
-}
-
-struct SettingsComplicationsView: View {
-    var body: some View {
-        embed(ComplicationListViewController())
-            .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
-    }
-}
-
-struct SettingsActionsView: View {
-    var body: some View {
-        let viewController = SettingsDetailViewController()
-        viewController.detailGroup = .actions
-        return embed(viewController)
-            .navigationTitle(L10n.SettingsDetails.LegacyActions.title)
     }
 }

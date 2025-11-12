@@ -973,7 +973,6 @@
 		42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */; };
 		42DF7DE02EC53D85003F3C4A /* ServersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DDF2EC53D85003F3C4A /* ServersListView.swift */; };
 		42DF7DE22EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DE12EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift */; };
-		42DF7DE42EC53EC5003F3C4A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DE32EC53EC5003F3C4A /* SettingsViewController.swift */; };
 		42DF98652E93A11000837EA2 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98642E93A11000837EA2 /* HostingController.swift */; };
 		42DF98692E93A1E000837EA2 /* DynamicNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98682E93A1E000837EA2 /* DynamicNotificationController.swift */; };
 		42DF986B2E93A1F300837EA2 /* NotificationSubController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986A2E93A1F300837EA2 /* NotificationSubController.swift */; };
@@ -2643,7 +2642,6 @@
 		42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
 		42DF7DDF2EC53D85003F3C4A /* ServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListView.swift; sourceTree = "<group>"; };
 		42DF7DE12EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAccountRowView.swift; sourceTree = "<group>"; };
-		42DF7DE32EC53EC5003F3C4A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		42DF98642E93A11000837EA2 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
 		42DF98682E93A1E000837EA2 /* DynamicNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationController.swift; sourceTree = "<group>"; };
 		42DF986A2E93A1F300837EA2 /* NotificationSubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubController.swift; sourceTree = "<group>"; };
@@ -5581,7 +5579,6 @@
 			isa = PBXGroup;
 			children = (
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
-				42DF7DE32EC53EC5003F3C4A /* SettingsViewController.swift */,
 				42DF7DDA2EC5372E003F3C4A /* SettingsView.swift */,
 				42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */,
 				42DF7DDF2EC53D85003F3C4A /* ServersListView.swift */,
@@ -8614,7 +8611,6 @@
 				4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */,
 				428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
-				42DF7DE42EC53EC5003F3C4A /* SettingsViewController.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
 				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,

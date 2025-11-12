@@ -49,7 +49,6 @@ struct SensorDetailView: View {
                 }
             }
         }
-        .removeListsPaddingWithAppleLikeHeader()
     }
 
     private func makeInfoRow(firstText: String, secondText: String) -> some View {

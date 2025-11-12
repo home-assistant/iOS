@@ -23,9 +23,6 @@ struct ConnectionSettingsView: View {
 
     var body: some View {
         List {
-            if viewModel.hasMultipleServers {
-                activateSection
-            }
             detailsSection
             privacySection
             statusSection
@@ -34,6 +31,11 @@ struct ConnectionSettingsView: View {
         .navigationTitle(viewModel.serverName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if viewModel.hasMultipleServers {
+                    activateSection
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 if viewModel.canShareServer {
                     Button {
@@ -230,13 +232,10 @@ struct ConnectionSettingsView: View {
     // MARK: - Activate Section
 
     private var activateSection: some View {
-        Section {
-            Button {
-                viewModel.activateServer()
-            } label: {
-                Text(L10n.Settings.ConnectionSection.activateServer)
-                    .foregroundColor(.primary)
-            }
+        Button {
+            viewModel.activateServer()
+        } label: {
+            Text(L10n.Settings.ConnectionSection.activateServer)
         }
     }
 

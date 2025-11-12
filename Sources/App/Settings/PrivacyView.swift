@@ -45,7 +45,6 @@ struct PrivacyView: View {
                 }
             }
         }
-        .removeListsPaddingWithAppleLikeHeader()
     }
 }
 

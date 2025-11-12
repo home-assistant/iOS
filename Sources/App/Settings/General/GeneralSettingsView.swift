@@ -46,7 +46,6 @@ struct GeneralSettingsView: View {
                 fullScreen
             }
         }
-        .removeListsPaddingWithAppleLikeHeader()
         .id(redrawHelper)
     }
 

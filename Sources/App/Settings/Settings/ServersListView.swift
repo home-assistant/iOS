@@ -1,5 +1,5 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct ServersListView: View {
     @StateObject private var observer = ServersObserver()
@@ -15,9 +15,9 @@ struct ServersListView: View {
         Button {
             showAddServer = true
         } label: {
-            Text(L10n.Settings.ConnectionSection.addServer)
+            Label(L10n.Settings.ConnectionSection.addServer, systemSymbol: .plus)
         }
-        .sheet(isPresented: $showAddServer) {
+        .fullScreenCover(isPresented: $showAddServer) {
             OnboardingNavigationView(onboardingStyle: .secondary)
         }
     }

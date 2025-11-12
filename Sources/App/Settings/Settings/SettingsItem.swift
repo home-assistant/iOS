@@ -109,6 +109,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             WidgetBuilderView()
         case .watch:
             WatchConfigurationView()
+                .environment(\.colorScheme, .dark)
         case .carPlay:
             CarPlayConfigurationView()
         case .complications:
@@ -139,7 +140,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             return true
         }
     }
-    
+
     static func visibleCases(for contentSections: SettingsView.ContentSection) -> [SettingsItem] {
         allCases.filter { item in
             // Filter based on platform
@@ -150,7 +151,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
                 return false
             }
             #endif
-            
+
             // Filter based on contentSections
             switch item {
             case .servers:
@@ -195,5 +196,72 @@ enum SettingsItem: String, Hashable, CaseIterable {
 
     static var helpItems: [SettingsItem] {
         [.help, .privacy, .debugging]
+    }
+}
+
+// MARK: - Material Design Icons Image
+
+struct MaterialDesignIconsImage: View {
+    let icon: MaterialDesignIcons
+    let size: CGFloat
+
+    var body: some View {
+        Image(uiImage: icon.image(ofSize: CGSize(width: size, height: size), color: .label))
+            .renderingMode(.template)
+    }
+}
+
+// MARK: - Wrapper Views for UIKit Controllers
+
+struct SettingsServersView: View {
+    var body: some View {
+        List {
+            Section(
+                header: Text(L10n.Settings.ConnectionSection.serversHeader),
+                footer: Text(L10n.Settings.ConnectionSection.serversFooter)
+            ) {
+                ServersListView()
+            }
+        }
+        .navigationTitle(L10n.Settings.ConnectionSection.servers)
+    }
+}
+
+struct SettingsLocationView: View {
+    var body: some View {
+        let viewController = SettingsDetailViewController()
+        viewController.detailGroup = .location
+        return embed(viewController)
+            .navigationTitle(L10n.Settings.DetailsSection.LocationSettingsRow.title)
+    }
+}
+
+struct SettingsNotificationsView: View {
+    var body: some View {
+        embed(NotificationSettingsViewController())
+            .navigationTitle(L10n.Settings.DetailsSection.NotificationSettingsRow.title)
+    }
+}
+
+struct SettingsNFCView: View {
+    var body: some View {
+        embed(NFCListViewController())
+            .navigationTitle(L10n.Nfc.List.title)
+    }
+}
+
+struct SettingsComplicationsView: View {
+    var body: some View {
+        embed(ComplicationListViewController())
+            .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
+    }
+}
+
+struct SettingsActionsView: View {
+    var body: some View {
+        let viewController = SettingsDetailViewController()
+        viewController.detailGroup = .actions
+        return embed(viewController)
+            .navigationTitle(L10n.SettingsDetails.LegacyActions.title)
     }
 }

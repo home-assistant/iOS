@@ -37,7 +37,6 @@ struct SensorListView: View {
             motionFocusPermissionNeededView
             sensorsList
         }
-        .removeListsPaddingWithAppleLikeHeader()
         .onAppear {
             viewModel.updatePermissions()
             viewModel.refresh()
