@@ -115,12 +115,11 @@ struct ConnectionSettingsView: View {
             )
             
             NavigationLink {
-                ViewControllerWrapper(
-                    ConnectionURLViewController(
-                        server: viewModel.server,
-                        urlType: .internal
-                    )
+                ConnectionURLViewController(
+                    server: viewModel.server,
+                    urlType: .internal
                 )
+                .embedInHostingController()
             } label: {
                 HStack {
                     Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
@@ -132,12 +131,11 @@ struct ConnectionSettingsView: View {
             }
             
             NavigationLink {
-                ViewControllerWrapper(
-                    ConnectionURLViewController(
-                        server: viewModel.server,
-                        urlType: .external
-                    )
+                ConnectionURLViewController(
+                    server: viewModel.server,
+                    urlType: .external
                 )
+                .embedInHostingController()
             } label: {
                 HStack {
                     Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
@@ -431,7 +429,13 @@ private struct ActivityViewController: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
+// MARK: - UIViewController Embedding Extension
 
+private extension UIViewController {
+    func embedInHostingController() -> some View {
+        ViewControllerWrapper(self)
+    }
+}
 
 #Preview {
     NavigationView {
