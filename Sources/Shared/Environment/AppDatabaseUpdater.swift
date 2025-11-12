@@ -40,7 +40,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
 
         for server in Current.servers.all {
-            guard server.info.connection.activeURL() != nil else { return }
+            guard server.info.connection.activeURL() != nil else { continue }
             // Cache entities
             let entitiesDatabaseToken = updateEntitiesDatabase(server: server)
             requestTokens.append(entitiesDatabaseToken)
