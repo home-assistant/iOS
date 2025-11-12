@@ -11,7 +11,6 @@ import SwiftUI
 /// - Bottom area with primary button and optional secondary button
 public struct BaseOnboardingView<Illustration: View, Content: View>: View, KeyboardReadable {
     @State private var isKeyboardVisible = false
-    @State private var scrollViewProxy: ScrollViewProxy?
     @Environment(\.disableOnboardingPrimaryAction) private var disablePrimaryAction
 
     // MARK: - Inputs
@@ -141,8 +140,10 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .frame(maxWidth: maxContentWidth)
-                .onAppear {
-                    scrollViewProxy = proxy
+                .onChange(of: isKeyboardVisible) { newValue in
+                    if newValue {
+                        proxy.scrollTo(bottomAnchor)
+                    }
                 }
             }
         }
@@ -153,11 +154,6 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         .background(Color(uiColor: .systemBackground))
         .onReceive(keyboardPublisher) { newIsKeyboardVisible in
             isKeyboardVisible = newIsKeyboardVisible
-        }
-        .onChange(of: isKeyboardVisible) { newValue in
-            if newValue {
-                scrollViewProxy?.scrollTo(bottomAnchor)
-            }
         }
     }
 
