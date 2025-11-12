@@ -47,7 +47,7 @@ import UIKit
         if let windowScene = scene as? UIWindowScene {
             let screen = windowScene.screen
             let screenBounds = screen.bounds
-            let windowSize = CGSize(width: 600, height: 600)
+            let windowSize = CGSize(width: 400, height: 600)
             let centeredFrame = CGRect(
                 x: (screenBounds.width - windowSize.width) / 2,
                 y: (screenBounds.height - windowSize.height) / 2,
@@ -65,5 +65,15 @@ import UIKit
             }
         }
         #endif
+    }
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        // Clean up when scene is destroyed
+        Current.Log.info("Assist scene disconnected")
+        window = nil
+        self.scene = nil
+        server = nil
+        preferredPipelineId = ""
+        autoStartRecording = false
     }
 }

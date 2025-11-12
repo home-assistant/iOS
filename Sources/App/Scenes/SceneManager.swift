@@ -88,7 +88,12 @@ final class SceneManager {
 
     private func existingScenes(for activity: SceneActivity) -> [UIScene] {
         UIApplication.shared.connectedScenes.filter { scene in
-            scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
+            // Filter out scenes that are in the background or unattached state
+            // as they may be in the process of being destroyed
+            guard scene.activationState != .unattached else {
+                return false
+            }
+            return scene.session.configuration.name.flatMap(SceneActivity.init(configurationName:)) == activity
         }.sorted { a, b in
             switch (a.activationState, b.activationState) {
             case (.unattached, .unattached): return true
