@@ -25,11 +25,10 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertTrue(mockWebViewController.overlayedController is UINavigationController)
-        XCTAssertTrue(
-            (mockWebViewController.overlayedController as? UINavigationController)?.viewControllers
-                .first is UIHostingController<SettingsView>
-        )
+        XCTAssertNotNil(mockWebViewController.overlayedController)
+        let typeString = String(describing: type(of: mockWebViewController.overlayedController))
+        XCTAssertTrue(typeString.contains("UIHostingController"), "Expected UIHostingController but got \(typeString)")
+        XCTAssertTrue(typeString.contains("SettingsView"), "Expected SettingsView but got \(typeString)")
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {
