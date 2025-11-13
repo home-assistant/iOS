@@ -813,6 +813,9 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock 與選單列";
 "settings_details.general.visibility.options.menu_bar" = "選單列";
 "settings_details.general.visibility.title" = "顯示 App 於…";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "(舊版) iOS 動作";
 "settings_details.location.background_refresh.disabled" = "已關閉";
 "settings_details.location.background_refresh.enabled" = "已啟用";
