@@ -72,7 +72,7 @@ struct DebugView: View {
                 }
             }
 
-            if #available(iOS 17, *) {
+            if #available(iOS 17, *), !Current.isCatalyst {
                 Section {
                     NavigationLink {
                         ThreadCredentialsManagementView()
