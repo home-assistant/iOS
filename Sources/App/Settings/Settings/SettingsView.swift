@@ -280,6 +280,7 @@ struct SettingsView: View {
                 NavigationView {
                     aboutViewContent
                 }
+                .navigationViewStyle(.stack)
             }
         }
     }
