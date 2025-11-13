@@ -810,6 +810,9 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings_details.general.visibility.options.dock_and_menu_bar" = "扩展坞和菜单栏";
 "settings_details.general.visibility.options.menu_bar" = "菜单栏";
 "settings_details.general.visibility.title" = "显示应用...";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "（旧版）iOS 操作";
 "settings_details.location.background_refresh.disabled" = "已禁用";
 "settings_details.location.background_refresh.enabled" = "已启用";

@@ -813,6 +813,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock and Menu Bar";
 "settings_details.general.visibility.options.menu_bar" = "Menu Bar";
 "settings_details.general.visibility.title" = "Show App In…";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "(Cũ) Hành động iOS";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.location.background_refresh.enabled" = "Enabled";

@@ -813,6 +813,9 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock e barra de menu";
 "settings_details.general.visibility.options.menu_bar" = "Barra de menu";
 "settings_details.general.visibility.title" = "Mostrar aplicativo em…";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "Ações do iOS (legado)";
 "settings_details.location.background_refresh.disabled" = "Desativado";
 "settings_details.location.background_refresh.enabled" = "Habilitado";

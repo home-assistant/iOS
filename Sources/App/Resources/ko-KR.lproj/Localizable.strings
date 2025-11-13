@@ -813,6 +813,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock 및 메뉴바";
 "settings_details.general.visibility.options.menu_bar" = "메뉴바";
 "settings_details.general.visibility.title" = "다음에서 앱 표시하기";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "(레거시) iOS 작업";
 "settings_details.location.background_refresh.disabled" = "비활성화됨";
 "settings_details.location.background_refresh.enabled" = "활성화됨";
