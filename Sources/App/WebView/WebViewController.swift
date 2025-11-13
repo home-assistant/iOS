@@ -79,6 +79,23 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         underlyingPreferredStatusBarStyle
     }
 
+    #if targetEnvironment(macCatalyst)
+    override var keyCommands: [UIKeyCommand]? {
+        [
+            UIKeyCommand(
+                input: "c",
+                modifierFlags: [.shift, .command],
+                action: #selector(copyCurrentSelectedContent)
+            ),
+            UIKeyCommand(
+                input: "v",
+                modifierFlags: [.shift, .command],
+                action: #selector(pasteContent)
+            ),
+        ]
+    }
+    #endif
+
     init(server: Server, shouldLoadImmediately: Bool = false) {
         self.server = server
         self.leftEdgePanGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
@@ -841,15 +858,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         // This mimics the user selecting "Paste" from the context menu and allows paste to work properly
         if webView.responds(to: #selector(paste(_:))) {
             webView.perform(#selector(paste(_:)), with: nil)
-        }
-    }
-
-    @objc override func paste(_ sender: Any?) {
-        // Forward to webView if it can handle it
-        if webView.responds(to: #selector(paste(_:))) {
-            webView.perform(#selector(paste(_:)), with: sender)
-        } else {
-            super.paste(sender)
         }
     }
 
