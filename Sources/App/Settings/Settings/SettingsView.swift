@@ -315,24 +315,3 @@ struct SettingsView: View {
         return false
     }
 }
-
-// MARK: - Servers Observer
-
-private class ServersObserver: ObservableObject, ServerObserver {
-    @Published var servers: [Server] = []
-
-    init() {
-        self.servers = Current.servers.all
-        Current.servers.add(observer: self)
-    }
-
-    deinit {
-        Current.servers.remove(observer: self)
-    }
-
-    func serversDidChange(_ serverManager: ServerManager) {
-        DispatchQueue.main.async { [weak self] in
-            self?.servers = serverManager.all
-        }
-    }
-}
