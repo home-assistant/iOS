@@ -76,7 +76,7 @@ class SensorListViewModel: ObservableObject {
     }
 
     func openMotionSettings() {
-        UIApplication.shared.openSettings(destination: .motion)
+        URLOpener.shared.openSettings(destination: .motion, completionHandler: nil)
     }
 
     func requestFocusAuthorization(completion: @escaping () -> Void) {
@@ -93,7 +93,7 @@ class SensorListViewModel: ObservableObject {
     }
 
     func openFocusSettings() {
-        UIApplication.shared.openSettings(destination: .focus)
+        URLOpener.shared.openSettings(destination: .focus, completionHandler: nil)
     }
 
     func updateAllSensors(isEnabled: Bool) {

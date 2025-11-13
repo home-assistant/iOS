@@ -301,7 +301,7 @@ class NotificationSettingsViewController: HAFormViewController {
                         if lastPermissionSeen != .notDetermined {
                             // if we weren't prompting for permission with this request, open settings
                             // we can't avoid the request code-path since getting settings is async
-                            UIApplication.shared.openSettings(destination: .notification)
+                            URLOpener.shared.openSettings(destination: .notification, completionHandler: nil)
                         }
                     }
                 }

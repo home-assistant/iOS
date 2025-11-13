@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selectedItem: SettingsItem? = .servers
+    @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
@@ -31,17 +31,30 @@ struct SettingsView: View {
     private var macOSView: some View {
         NavigationView {
             List(selection: $selectedItem) {
-                ForEach(SettingsItem.allVisibleCases, id: \.self) { item in
-                    NavigationLink(destination: item.destinationView) {
-                        Label {
-                            Text(item.title)
-                        } icon: {
-                            item.icon
+                // Servers section
+                Section(header: Text(L10n.Settings.ConnectionSection.serversHeader)) {
+                    ServersListView()
+                }
+
+                // Other settings items
+                Section {
+                    ForEach(SettingsItem.allVisibleCases, id: \.self) { item in
+                        NavigationLink(destination: item.destinationView) {
+                            Label {
+                                Text(item.title)
+                            } icon: {
+                                item.icon
+                            }
                         }
                     }
                 }
             }
             .navigationTitle(L10n.Settings.NavigationBar.title)
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    EditButton()
+                }
+            }
             if let selectedItem {
                 selectedItem.destinationView
             } else {
@@ -66,6 +79,7 @@ struct SettingsView: View {
                 ) {
                     ServersListView()
                 }
+                .environment(\.defaultMinListRowHeight, 60)
 
                 // General section
                 Section {
@@ -185,33 +199,32 @@ struct SettingsView: View {
                         }
                     }
                 }
+
+                // About
+                Section {
+                    Button {
+                        showAbout = true
+                    } label: {
+                        Label {
+                            Text(L10n.Settings.NavigationBar.AboutButton.title)
+                        } icon: {
+                            Image(systemSymbol: .infoCircle)
+                        }
+                    }
+                }
             }
             .navigationTitle(L10n.Settings.NavigationBar.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    if !Current.isCatalyst {
-                        Button(L10n.Settings.NavigationBar.AboutButton.title) {
-                            showAbout = true
+                    if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
+                        CloseButton {
+                            dismiss()
                         }
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
-                        if #available(iOS 26.0, *) {
-                            Button(role: .confirm) {
-                                dismiss()
-                            }
-                            .tint(.haPrimary)
-                            .buttonStyle(.glassProminent)
-                        } else {
-                            Button {
-                                dismiss()
-                            } label: {
-                                Image(systemSymbol: .checkmark)
-                            }
-                        }
-                    }
+                    EditButton()
                 }
             }
             .sheet(isPresented: $showAbout) {

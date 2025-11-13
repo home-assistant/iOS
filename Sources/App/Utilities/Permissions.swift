@@ -223,7 +223,7 @@ public enum PermissionType {
 
     func request(_ completionHandler: @escaping (Bool, PermissionStatus) -> Void) {
         if status == .denied {
-            let destination: UIApplication.OpenSettingsDestination
+            let destination: OpenSettingsDestination
 
             switch self {
             case .location: destination = .location
@@ -232,7 +232,7 @@ public enum PermissionType {
             case .focus: destination = .focus
             }
 
-            UIApplication.shared.openSettings(destination: destination, completionHandler: nil)
+            URLOpener.shared.openSettings(destination: destination, completionHandler: nil)
             completionHandler(false, .denied)
             return
         }

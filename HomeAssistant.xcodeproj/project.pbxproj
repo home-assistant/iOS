@@ -328,7 +328,6 @@
 		11B38EF9275C54A300205C7B /* RenderTemplateIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplateIntentHandler.swift */; };
 		11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115BC82A267704E300452430 /* FocusStatusIntentHandler.swift */; };
 		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
-		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
 		11B63B0A2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
 		11B63B0B2979A07000D908ED /* AssistIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B63B092979A07000D908ED /* AssistIntentHandler.swift */; };
 		11B63B0F297A19DC00D908ED /* MatterSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11B63B0E297A19DC00D908ED /* MatterSupport.framework */; platformFilter = ios; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -860,6 +859,7 @@
 		42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */; };
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
 		42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */; };
+		42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
@@ -1929,7 +1929,6 @@
 		11B38EDE275BE29F00205C7B /* ConnectionInfo.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.test.swift; sourceTree = "<group>"; };
 		11B38EE1275C547A00205C7B /* IntentHandlerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandlerFactory.swift; sourceTree = "<group>"; };
 		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
-		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
 		11B63B092979A07000D908ED /* AssistIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistIntentHandler.swift; sourceTree = "<group>"; };
 		11B63B0E297A19DC00D908ED /* MatterSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MatterSupport.framework; path = System/Library/Frameworks/MatterSupport.framework; sourceTree = SDKROOT; };
 		11B6774C28303D35006E9B1A /* SecurityExceptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityExceptions.swift; sourceTree = "<group>"; };
@@ -2546,6 +2545,7 @@
 		42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSettingsUpdateReason.swift; sourceTree = "<group>"; };
 		42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerProtocol.swift; sourceTree = "<group>"; };
 		42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewEmptyStateView.swift; sourceTree = "<group>"; };
+		42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSettingsDestination.swift; sourceTree = "<group>"; };
 		42B19BD02D4A358B00B3262B /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -4094,7 +4094,6 @@
 				46CC96812D7136F400F784CA /* Array+SafeSubscripting.swift */,
 				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
-				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
 				39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */,
 				42AA4C832C2DACAD00EA2E99 /* UIImage+Circle.swift */,
 				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
@@ -6230,6 +6229,7 @@
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 				11761E2825EC1415007A9D17 /* WebSocketStatusRow.swift */,
 				42AAEE862EC4B7CC0049E1F3 /* URLOpener.swift */,
+				42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -8497,7 +8497,6 @@
 				420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */,
 				420E2AE92C474729004921D8 /* WidgetCircularView.swift in Sources */,
 				11B92AF2266F23DA00786588 /* NotificationManagerLocalPushInterfaceExtension.swift in Sources */,
-				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				42AF75992DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift in Sources */,
@@ -8660,6 +8659,7 @@
 				429997BF2DDB59E400CC6C12 /* WebViewRestorationType.swift in Sources */,
 				11A183B32511BCF300CA326A /* LifecycleManager.swift in Sources */,
 				1185DFAE271FF53800ED7D9A /* OnboardingAuthStepConfig.swift in Sources */,
+				42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */,
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,

@@ -568,7 +568,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 if locationManager.authorizationStatus == .notDetermined {
                     locationManager.requestAlwaysAuthorization()
                 } else {
-                    UIApplication.shared.openSettings(destination: .location)
+                    URLOpener.shared.openSettings(destination: .location, completionHandler: nil)
                 }
 
                 row.deselect(animated: true)
@@ -604,7 +604,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 cell.selectionStyle = .default
             }
             $0.onCellSelection { _, row in
-                UIApplication.shared.openSettings(destination: .location)
+                URLOpener.shared.openSettings(destination: .location, completionHandler: nil)
                 row.deselect(animated: true)
             }
         }
@@ -637,7 +637,7 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 cell.selectionStyle = .default
             }
             row.onCellSelection { _, row in
-                UIApplication.shared.openSettings(destination: .backgroundRefresh)
+                URLOpener.shared.openSettings(destination: .backgroundRefresh, completionHandler: nil)
                 row.deselect(animated: true)
             }
         }

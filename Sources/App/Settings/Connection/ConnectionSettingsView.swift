@@ -48,7 +48,7 @@ struct ConnectionSettingsView: View {
                     }
                     .tint(.haPrimary)
                     .modify { view in
-                        if #available(iOS 26.0, *) {
+                        if #available(iOS 26.0, *), !Current.isCatalyst {
                             view.buttonStyle(.glassProminent)
                         } else {
                             view
