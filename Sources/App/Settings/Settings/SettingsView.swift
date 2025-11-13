@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selectedItem: SettingsItem? = .servers
+    @State private var selectedItem: SettingsItem? = .general
     @State private var showAbout = false
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
@@ -133,6 +133,7 @@ struct SettingsView: View {
                     }
                 }
             }
+                .environment(\.defaultMinListRowHeight, 60)
 
             // Apple Watch section (only on iPhone with paired watch)
             if shouldShowWatchSection {
@@ -225,33 +226,32 @@ struct SettingsView: View {
                         SettingsItem.whatsNew.accessoryIcon
                     }
                 }
-            }
-        }
-        .navigationTitle(L10n.Settings.NavigationBar.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                if !Current.isCatalyst {
-                    Button(L10n.Settings.NavigationBar.AboutButton.title) {
+
+                // About
+                Section {
+                    Button {
                         showAbout = true
+                    } label: {
+                        Label {
+                            Text(L10n.Settings.NavigationBar.AboutButton.title)
+                        } icon: {
+                            Image(systemSymbol: .infoCircle)
+                        }
                     }
                 }
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
-                    if #available(iOS 26.0, *) {
-                        Button(role: .confirm) {
+            .navigationTitle(L10n.Settings.NavigationBar.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
+                        CloseButton {
                             dismiss()
-                        }
-                        .tint(.haPrimary)
-                        .buttonStyle(.glassProminent)
-                    } else {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemSymbol: .checkmark)
                         }
                     }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    EditButton()
                 }
             }
         }
