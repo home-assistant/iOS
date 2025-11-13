@@ -30,7 +30,7 @@ struct ServersListView: View {
 // MARK: - Servers List View
 
 private class ServersObserver: ObservableObject, ServerObserver {
-    private static let sortOrderIncrement = 1000
+    private let sortOrderIncrement = 1000
 
     @Published var servers: [Server] = []
 
@@ -55,7 +55,7 @@ private class ServersObserver: ObservableObject, ServerObserver {
 
         // Update sort order for all servers based on their new positions
         for (index, server) in updatedServers.enumerated() {
-            let newSortOrder = index * Self.sortOrderIncrement
+            let newSortOrder = index * sortOrderIncrement
             if server.info.sortOrder != newSortOrder {
                 server.update { info in
                     info.sortOrder = newSortOrder
