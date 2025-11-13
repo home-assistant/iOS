@@ -31,27 +31,8 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var macOSView: some View {
-        if #available(iOS 16.0, *) {
-            macOSViewModern
-        } else {
-            macOSViewLegacy
-        }
-    }
-
-    @available(iOS 16.0, *)
-    private var macOSViewModern: some View {
-        NavigationSplitView {
-            macOSSidebarContent
-        } detail: {
-            if let selectedItem {
-                selectedItem.destinationView
-            } else {
-                macOSPlaceholder
-            }
-        }
-    }
-
-    private var macOSViewLegacy: some View {
+        // Use navigation view since navigation stack has bugs on Mac Catalyst
+        // such as no back buttons for navigated views
         NavigationView {
             macOSSidebarContent
             if let selectedItem {
@@ -73,21 +54,11 @@ struct SettingsView: View {
             // Other settings items
             Section {
                 ForEach(SettingsItem.allVisibleCases, id: \.self) { item in
-                    if #available(iOS 16.0, *) {
-                        NavigationLink(value: item) {
-                            Label {
-                                Text(item.title)
-                            } icon: {
-                                item.icon
-                            }
-                        }
-                    } else {
-                        NavigationLink(destination: item.destinationView) {
-                            Label {
-                                Text(item.title)
-                            } icon: {
-                                item.icon
-                            }
+                    NavigationLink(destination: item.destinationView) {
+                        Label {
+                            Text(item.title)
+                        } icon: {
+                            item.icon
                         }
                     }
                 }
