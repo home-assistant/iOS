@@ -79,6 +79,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         underlyingPreferredStatusBarStyle
     }
 
+    #if targetEnvironment(macCatalyst)
     override var keyCommands: [UIKeyCommand]? {
         [
             UIKeyCommand(
@@ -93,6 +94,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             ),
         ]
     }
+    #endif
 
     init(server: Server, shouldLoadImmediately: Bool = false) {
         self.server = server
