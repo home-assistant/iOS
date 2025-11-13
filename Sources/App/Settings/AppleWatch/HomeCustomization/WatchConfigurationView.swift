@@ -11,48 +11,37 @@ struct WatchConfigurationView: View {
     @State private var showResetConfirmation = false
 
     var body: some View {
-        NavigationView {
-            content
-                .navigationTitle("Apple Watch")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            dismiss()
-                        }, label: {
-                            Text(verbatim: L10n.cancelLabel)
-                        })
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            viewModel.save { success in
-                                if success {
-                                    // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
-                                    // private var requestReview`
-                                    SKStoreReviewController.requestReview()
-                                    dismiss()
-                                }
+        content
+            .navigationTitle("Apple Watch")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        viewModel.save { success in
+                            if success {
+                                // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
+                                // private var requestReview`
+                                SKStoreReviewController.requestReview()
+                                dismiss()
                             }
-                        }, label: {
-                            Text(verbatim: L10n.Watch.Configuration.Save.title)
-                        })
-                    }
-                })
-        }
-        .interactiveDismissDisabled(true)
-        .preferredColorScheme(.dark)
-        .sheet(isPresented: $viewModel.showAddItem, content: {
-            MagicItemAddView(context: .watch) { itemToAdd in
-                guard let itemToAdd else { return }
-                viewModel.addItem(itemToAdd)
-            }
-            .preferredColorScheme(.dark)
-        })
-        .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
-            Button(action: {}, label: {
-                Text(verbatim: L10n.okLabel)
+                        }
+                    }, label: {
+                        Text(verbatim: L10n.Watch.Configuration.Save.title)
+                    })
+                }
             })
-        }
+            .sheet(isPresented: $viewModel.showAddItem, content: {
+                MagicItemAddView(context: .watch) { itemToAdd in
+                    guard let itemToAdd else { return }
+                    viewModel.addItem(itemToAdd)
+                }
+                .preferredColorScheme(.dark)
+            })
+            .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
+                Button(action: {}, label: {
+                    Text(verbatim: L10n.okLabel)
+                })
+            }
     }
 
     private var content: some View {
@@ -69,6 +58,7 @@ struct WatchConfigurationView: View {
             assistSection
             resetView
         }
+        .preferredColorScheme(.dark)
     }
 
     private var resetView: some View {
@@ -132,7 +122,7 @@ struct WatchConfigurationView: View {
         ZStack {
             watchItemsList
                 .offset(x: -10)
-            Image("watch-frame")
+            Image(.watchFrame)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 260)

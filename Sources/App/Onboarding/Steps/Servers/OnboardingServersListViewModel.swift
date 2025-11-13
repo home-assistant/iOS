@@ -78,8 +78,8 @@ final class OnboardingServersListViewModel: ObservableObject {
         discovery.stop()
     }
 
-    func selectInstance(_ instance: DiscoveredHomeAssistant, controller: UIViewController?) {
-        guard let controller else {
+    func selectInstance(_ instance: DiscoveredHomeAssistant) {
+        guard let controller = UIApplication.shared.topViewController() else {
             let message = "No controller provided for onboarding"
             Current.Log.error(message)
             assertionFailure(message)
@@ -184,5 +184,27 @@ extension OnboardingServersListViewModel: OnboardingStateObserver {
         if state == .complete, shouldDismissOnSuccess {
             shouldDismiss = true
         }
+    }
+}
+
+private extension UIApplication {
+    func topViewController(controller: UIViewController? = nil) -> UIViewController? {
+        let controller = controller ?? connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)?
+            .rootViewController
+
+        if let navigationController = controller as? UINavigationController {
+            return topViewController(controller: navigationController.visibleViewController)
+        }
+        if let tabController = controller as? UITabBarController,
+           let selected = tabController.selectedViewController {
+            return topViewController(controller: selected)
+        }
+        if let presented = controller?.presentedViewController {
+            return topViewController(controller: presented)
+        }
+        return controller
     }
 }

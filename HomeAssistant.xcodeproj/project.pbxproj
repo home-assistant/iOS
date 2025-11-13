@@ -901,9 +901,9 @@
 		42BF7F312DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */; };
 		42BF7F332DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
 		42BF7F342DF868C900875A0F /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */; };
+		42BF8DB12EC4E16900DCB7E7 /* AssistSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */; };
 		42BF8DB42EC4E73700DCB7E7 /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB22EC4E73700DCB7E7 /* ConnectionSettingsView.swift */; };
 		42BF8DB52EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB32EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift */; };
-		42BF8DB12EC4E16900DCB7E7 /* AssistSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */; };
 		42C08CF72BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */; };
 		42C0F7C92D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
 		42C0F7CA2D47936100BD5C76 /* StatePrecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C0F7C52D4791E800BD5C76 /* StatePrecision.swift */; };
@@ -969,6 +969,10 @@
 		42DEDA9B2C5B926400E9D29D /* AppVersionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */; };
 		42DF6B2D2CCF8A2200D7EC14 /* PermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */; };
 		42DF6B2F2CCF918D00D7EC14 /* BluetoothPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF6B2E2CCF918D00D7EC14 /* BluetoothPermissionView.swift */; };
+		42DF7DDB2EC5372E003F3C4A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DDA2EC5372E003F3C4A /* SettingsView.swift */; };
+		42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */; };
+		42DF7DE02EC53D85003F3C4A /* ServersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DDF2EC53D85003F3C4A /* ServersListView.swift */; };
+		42DF7DE22EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF7DE12EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift */; };
 		42DF98652E93A11000837EA2 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98642E93A11000837EA2 /* HostingController.swift */; };
 		42DF98692E93A1E000837EA2 /* DynamicNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98682E93A1E000837EA2 /* DynamicNotificationController.swift */; };
 		42DF986B2E93A1F300837EA2 /* NotificationSubController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986A2E93A1F300837EA2 /* NotificationSubController.swift */; };
@@ -1240,7 +1244,6 @@
 		B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
-		B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB69226BBDA900E541DD /* SettingsViewController.swift */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
 		B66C58AC215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -2576,8 +2579,8 @@
 		42BF7F2C2DF8669C00875A0F /* ControlOpenEntityValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntityValueProvider.swift; sourceTree = "<group>"; };
 		42BF7F2F2DF867E600875A0F /* HAAppEntityAppIntentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntityAppIntentEntity.swift; sourceTree = "<group>"; };
 		42BF7F322DF868C900875A0F /* OpenEntityAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenEntityAppIntent.swift; sourceTree = "<group>"; };
-		42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSceneDelegate.swift; sourceTree = "<group>"; };
 		42BF8DAF2EC4D69600DCB7E7 /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
+		42BF8DB02EC4E16900DCB7E7 /* AssistSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSceneDelegate.swift; sourceTree = "<group>"; };
 		42BF8DB22EC4E73700DCB7E7 /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
 		42BF8DB32EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsViewModel.swift; sourceTree = "<group>"; };
 		42C08CF62BA31F2700172EE5 /* CMSampleBuffer+AudioSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+AudioSamples.swift"; sourceTree = "<group>"; };
@@ -2635,6 +2638,10 @@
 		42DEDA992C5B926400E9D29D /* AppVersionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionSensor.swift; sourceTree = "<group>"; };
 		42DF6B2C2CCF8A2200D7EC14 /* PermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionRequestView.swift; sourceTree = "<group>"; };
 		42DF6B2E2CCF918D00D7EC14 /* BluetoothPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionView.swift; sourceTree = "<group>"; };
+		42DF7DDA2EC5372E003F3C4A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
+		42DF7DDF2EC53D85003F3C4A /* ServersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListView.swift; sourceTree = "<group>"; };
+		42DF7DE12EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAccountRowView.swift; sourceTree = "<group>"; };
 		42DF98642E93A11000837EA2 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
 		42DF98682E93A1E000837EA2 /* DynamicNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicNotificationController.swift; sourceTree = "<group>"; };
 		42DF986A2E93A1F300837EA2 /* NotificationSubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubController.swift; sourceTree = "<group>"; };
@@ -2977,7 +2984,6 @@
 		B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewController.swift; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
-		B661FB69226BBDA900E541DD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* HomeAssistant-Extensions-Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
@@ -5569,6 +5575,18 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		42DF7DDC2EC53D42003F3C4A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
+				42DF7DDA2EC5372E003F3C4A /* SettingsView.swift */,
+				42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */,
+				42DF7DDF2EC53D85003F3C4A /* ServersListView.swift */,
+				42DF7DE12EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		42E3B8BB2D8ACDC100F5D084 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -6137,11 +6155,10 @@
 				11AD2E392528FDF800FBC437 /* Connection */,
 				11AD2E542528FE1300FBC437 /* Notifications */,
 				421B1C142BD65238001ED18C /* Widgets */,
-				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
 				42B980DD2DC3599300BC5C08 /* PrivacyView.swift */,
 				421155222D354F3F00A71630 /* AppIcon.swift */,
 				B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */,
-				B661FB69226BBDA900E541DD /* SettingsViewController.swift */,
+				42DF7DDC2EC53D42003F3C4A /* Settings */,
 				B641BC1D1E2097EF002CCBC1 /* AboutView.swift */,
 				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
@@ -8398,6 +8415,7 @@
 				429481E92DA93F4300A8B468 /* WebViewJavascriptCommands.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListView.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
+				42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
@@ -8433,6 +8451,7 @@
 				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
+				42DF7DE02EC53D85003F3C4A /* ServersListView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
 				42C0F7CC2D47B47F00BD5C76 /* IconPicker.swift in Sources */,
 				421155232D354F3F00A71630 /* AppIcon.swift in Sources */,
@@ -8455,7 +8474,6 @@
 				4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */,
 				42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
-				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
@@ -8490,6 +8508,7 @@
 				119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */,
 				425390DA2E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift in Sources */,
 				425390DB2E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift in Sources */,
+				42DF7DDB2EC5372E003F3C4A /* SettingsView.swift in Sources */,
 				113199DC28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift in Sources */,
 				42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */,
 				11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */,
@@ -8537,6 +8556,7 @@
 				425573C72B5572AD00145217 /* CarPlayServerListTemplate+Build.swift in Sources */,
 				4238E8572EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift in Sources */,
 				42AAEE882EC4B9880049E1F3 /* URLOpener.swift in Sources */,
+				42DF7DE22EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,

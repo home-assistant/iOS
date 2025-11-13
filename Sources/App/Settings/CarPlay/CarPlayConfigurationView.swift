@@ -12,52 +12,42 @@ struct CarPlayConfigurationView: View {
     @State private var showResetConfirmation = false
 
     var body: some View {
-        NavigationView {
-            content
-                .navigationTitle("CarPlay")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            dismiss()
-                        }, label: {
-                            Text(verbatim: L10n.cancelLabel)
-                        })
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            viewModel.save { success in
-                                if success {
-                                    // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
-                                    // private var requestReview`
-                                    SKStoreReviewController.requestReview()
-                                    dismiss()
-                                }
+        content
+            .navigationTitle("CarPlay")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        viewModel.save { success in
+                            if success {
+                                // When iOS 15 support is dropped we can start using `@Environment(\.requestReview)
+                                // private var requestReview`
+                                SKStoreReviewController.requestReview()
+                                dismiss()
                             }
-                        }, label: {
-                            Text(verbatim: L10n.Watch.Configuration.Save.title)
-                        })
-                    }
-                })
-                .onAppear {
-                    // Prevent trigger when popping nav controller
-                    guard !isLoaded else { return }
-                    viewModel.loadConfig()
-                    isLoaded = true
-                }
-                .sheet(isPresented: $viewModel.showAddItem, content: {
-                    MagicItemAddView(context: .carPlay) { itemToAdd in
-                        guard let itemToAdd else { return }
-                        viewModel.addItem(itemToAdd)
-                    }
-                })
-                .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
-                    Button(action: {}, label: {
-                        Text(verbatim: L10n.okLabel)
+                        }
+                    }, label: {
+                        Text(verbatim: L10n.Watch.Configuration.Save.title)
                     })
                 }
-        }
-        .navigationViewStyle(.stack)
+            })
+            .onAppear {
+                // Prevent trigger when popping nav controller
+                guard !isLoaded else { return }
+                viewModel.loadConfig()
+                isLoaded = true
+            }
+            .sheet(isPresented: $viewModel.showAddItem, content: {
+                MagicItemAddView(context: .carPlay) { itemToAdd in
+                    guard let itemToAdd else { return }
+                    viewModel.addItem(itemToAdd)
+                }
+            })
+            .alert(viewModel.errorMessage ?? L10n.errorLabel, isPresented: $viewModel.showError) {
+                Button(action: {}, label: {
+                    Text(verbatim: L10n.okLabel)
+                })
+            }
     }
 
     private var content: some View {

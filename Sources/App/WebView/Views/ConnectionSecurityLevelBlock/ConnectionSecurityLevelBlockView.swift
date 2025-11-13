@@ -91,7 +91,7 @@ struct ConnectionSecurityLevelBlockView: View {
     }
 
     private var settingsView: some View {
-        embed(UINavigationController(rootViewController: SettingsViewController()))
+        SettingsView()
             .onDisappear {
                 Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
                     .done { webView in

@@ -12,7 +12,6 @@ struct OnboardingServersListView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
 
-    @EnvironmentObject var hostingProvider: ViewControllerProvider
     @StateObject private var viewModel: OnboardingServersListViewModel
 
     @State private var showDocumentation = false
@@ -77,10 +76,7 @@ struct OnboardingServersListView: View {
         .sheet(isPresented: $showManualInput) {
             ManualURLEntryView { connectURL in
                 viewModel.manualInputLoading = true
-                viewModel.selectInstance(
-                    .init(manualURL: connectURL),
-                    controller: hostingProvider.viewController
-                )
+                viewModel.selectInstance(.init(manualURL: connectURL))
             }
         }
         .fullScreenCover(isPresented: .init(get: {
@@ -134,8 +130,8 @@ struct OnboardingServersListView: View {
                 .foregroundStyle(.secondary)
             Button {
                 autoConnectInstance = nil
-                guard let viewController = hostingProvider.viewController, let instance else { return }
-                viewModel.selectInstance(instance, controller: viewController)
+                guard let instance else { return }
+                viewModel.selectInstance(instance)
             } label: {
                 Text(L10n.Onboarding.Servers.AutoConnect.button)
             }
@@ -222,10 +218,7 @@ struct OnboardingServersListView: View {
         if !screenLoaded {
             screenLoaded = true
             if let prefillURL {
-                viewModel.selectInstance(
-                    .init(manualURL: prefillURL),
-                    controller: hostingProvider.viewController
-                )
+                viewModel.selectInstance(.init(manualURL: prefillURL))
             } else {
                 viewModel.startDiscovery()
             }
@@ -265,7 +258,7 @@ struct OnboardingServersListView: View {
             hideCenterLoader()
         }
         Button {
-            viewModel.selectInstance(.init(manualURL: url), controller: hostingProvider.viewController)
+            viewModel.selectInstance(.init(manualURL: url))
             viewModel.invitationLoading = true
         } label: {
             ZStack {
@@ -326,7 +319,7 @@ struct OnboardingServersListView: View {
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
         Button(action: {
-            viewModel.selectInstance(instance, controller: hostingProvider.viewController)
+            viewModel.selectInstance(instance)
         }, label: {
             OnboardingScanningInstanceRow(
                 name: instance.bonjourName ?? instance.locationName,

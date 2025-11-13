@@ -154,10 +154,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
             Current.sceneManager.activateAnyScene(for: .settings)
         } else {
-            let settingsView = SettingsViewController()
-            settingsView.hidesBottomBarWhenPushed = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            webViewController?.presentOverlayController(controller: navController, animated: true)
+            // Use SwiftUI SettingsView wrapped in hosting controller
+            let settingsView = SettingsView().embeddedInHostingController()
+            webViewController?.presentOverlayController(controller: settingsView, animated: true)
         }
     }
 

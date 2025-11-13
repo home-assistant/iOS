@@ -44,7 +44,6 @@ struct WidgetBuilderView: View {
                 WidgetDocumentationLink()
             }
         }
-        .removeListsPaddingWithAppleLikeHeader()
         .onAppear {
             viewModel.loadWidgets()
         }

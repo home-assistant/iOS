@@ -20,14 +20,14 @@ struct AppleLikeListTopRowHeader: View {
     }
 
     var body: some View {
-        VStack(spacing: Spaces.two) {
+        VStack(spacing: DesignSystem.Spaces.two) {
             if let image {
                 Image(uiImage: image.image(ofSize: .init(width: 80, height: 80), color: .haPrimary))
                     .frame(maxWidth: .infinity, alignment: .center)
             } else if let headerImageAlternativeView {
                 headerImageAlternativeView
             }
-            VStack(spacing: Spaces.half) {
+            VStack(spacing: DesignSystem.Spaces.half) {
                 Text(title)
                     .font(.title3.bold())
                 if let subtitle {
@@ -39,7 +39,7 @@ struct AppleLikeListTopRowHeader: View {
                 }
             }
         }
-        .padding(.vertical, Spaces.half)
+        .padding(.vertical, DesignSystem.Spaces.half)
     }
 }
 
@@ -50,19 +50,5 @@ struct AppleLikeListTopRowHeader: View {
             title: "Settings",
             subtitle: "This is a text that represents the body"
         )
-    }
-    .removeListsPaddingWithAppleLikeHeader()
-}
-
-extension List {
-    /// Removes the top padding from a list with an Apple-like header unless iOS 17 is not available or it is a mac.
-    func removeListsPaddingWithAppleLikeHeader() -> some View {
-        modify { view in
-            if #available(iOS 17.0, *), !Current.isCatalyst {
-                view.contentMargins(.top, .zero)
-            } else {
-                view
-            }
-        }
     }
 }

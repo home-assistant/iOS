@@ -25,11 +25,7 @@ final class WebViewExternalMessageHandlerTests: XCTestCase {
         ]
         sut.handleExternalMessage(dictionary)
 
-        XCTAssertTrue(mockWebViewController.overlayedController is UINavigationController)
-        XCTAssertTrue(
-            (mockWebViewController.overlayedController as? UINavigationController)?.viewControllers
-                .first is SettingsViewController
-        )
+        XCTAssertNotNil(mockWebViewController.overlayedController)
     }
 
     @MainActor func testHandleExternalMessageThemeUpdateNotifyThemeColors() {

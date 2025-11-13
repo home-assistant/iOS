@@ -86,7 +86,7 @@ struct ServerSelectViewRow: View {
         Button(action: {
             action()
         }, label: {
-            HStack(spacing: Spaces.two) {
+            HStack(spacing: DesignSystem.Spaces.two) {
                 profilePicture
                 VStack {
                     Group {

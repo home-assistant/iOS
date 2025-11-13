@@ -63,7 +63,6 @@ struct GesturesSetupView: View {
                 }
             }
         }
-        .removeListsPaddingWithAppleLikeHeader()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(role: .destructive) {
