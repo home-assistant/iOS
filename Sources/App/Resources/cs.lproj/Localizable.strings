@@ -813,6 +813,9 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dok a panel nabídek";
 "settings_details.general.visibility.options.menu_bar" = "Panel nabídek";
 "settings_details.general.visibility.title" = "Zobrazit aplikaci v...";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "(Starší) Akce iOS";
 "settings_details.location.background_refresh.disabled" = "Zakázáno";
 "settings_details.location.background_refresh.enabled" = "Povoleno";

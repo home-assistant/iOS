@@ -813,6 +813,9 @@
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Γραμμή σύνδεσης και μενού";
 "settings_details.general.visibility.options.menu_bar" = "Γραμμή μενού";
 "settings_details.general.visibility.title" = "Εμφάνιση εφαρμογής σε...";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "(Παλαιού τύπου) Ενέργειες iOS";
 "settings_details.location.background_refresh.disabled" = "Απενεργοποιημένο";
 "settings_details.location.background_refresh.enabled" = "Ενεργοποιημένο";
