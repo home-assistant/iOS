@@ -655,6 +655,7 @@
 		42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
 		42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
 		42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
+		424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
 		424D2D102C89DACE00C610F1 /* HAAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */; };
@@ -2190,6 +2191,7 @@
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
 		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
 		42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizes.swift; sourceTree = "<group>"; };
+		424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowser.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
 		424D2D0F2C89DACE00C610F1 /* HAAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAppEntity.swift; sourceTree = "<group>"; };
@@ -5580,6 +5582,7 @@
 			isa = PBXGroup;
 			children = (
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
+				424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */,
 				42DF7DDA2EC5372E003F3C4A /* SettingsView.swift */,
 				42153DC72EC5F88E00F26474 /* ServersObserver.swift */,
 				42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */,
@@ -8588,6 +8591,7 @@
 				420A80992E9D14C800D30A6B /* OnboardingPermissionsNavigationViewModel.swift in Sources */,
 				4206FFB62DAD58520087626C /* WebViewGestureHandler.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
+				424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */,
 				11C05F2D254919210031D038 /* AccountInitialsImage.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				42B7BFF12E97D1540056BADC /* HomeNetworkInputViewModel.swift in Sources */,

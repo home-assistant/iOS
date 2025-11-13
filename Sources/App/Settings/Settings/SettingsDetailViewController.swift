@@ -58,248 +58,9 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
 
         switch detailGroup {
         case .location:
-            title = L10n.SettingsDetails.Location.title
-            form
-                +++ locationPermissionsSection()
-
-                +++ ButtonRow {
-                    $0.title = L10n.Settings.LocationHistory.title
-                    $0.presentationMode = .show(controllerProvider: .callback(builder: {
-                        LocationHistoryListViewHostingController(rootView: LocationHistoryListView())
-                    }), onDismiss: nil)
-                }
-
-                <<< ButtonRowWithLoading {
-                    $0.title = L10n.SettingsDetails.Location.updateLocation
-                    $0.onCellSelection { [weak self] _, row in
-                        row.value = true
-                        row.updateCell()
-
-                        firstly {
-                            HomeAssistantAPI.manuallyUpdate(
-                                applicationState: UIApplication.shared.applicationState,
-                                type: .userRequested
-                            )
-                        }.ensure {
-                            row.value = false
-                            row.updateCell()
-                        }.catch { error in
-                            let alert = UIAlertController(
-                                title: nil,
-                                message: error.localizedDescription,
-                                preferredStyle: .alert
-                            )
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
-                            self?.present(alert, animated: true, completion: nil)
-                        }
-                    }
-                }
-
-                +++ Section(
-                    header: L10n.SettingsDetails.Location.Updates.header,
-                    footer: L10n.SettingsDetails.Location.Updates.footer
-                )
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
-                    $0.value = Current.settingsStore.locationSources.zone
-                    $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
-                }.onChange({ row in
-                    Current.settingsStore.locationSources.zone = row.value ?? true
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Updates.Background.title
-                    $0.value = Current.settingsStore.locationSources.backgroundFetch
-                    $0.disabled = .location(conditions: [
-                        .permissionNotAlways,
-                        .backgroundRefreshNotAvailable,
-                    ])
-                    $0.hidden = .isCatalyst
-                }.onChange({ row in
-                    Current.settingsStore.locationSources.backgroundFetch = row.value ?? true
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
-                    $0.value = Current.settingsStore.locationSources.significantLocationChange
-                    $0.disabled = .location(conditions: [.permissionNotAlways])
-                }.onChange({ row in
-                    Current.settingsStore.locationSources.significantLocationChange = row.value ?? true
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
-                    $0.value = Current.settingsStore.locationSources.pushNotifications
-                    $0.disabled = .location(conditions: [.permissionNotAlways])
-                }.onChange({ row in
-                    Current.settingsStore.locationSources.pushNotifications = row.value ?? true
-                })
-
-            let zoneEntities = realm.objects(RLMZone.self)
-            for zone in zoneEntities {
-                form
-                    +++ Section(header: zone.Name, footer: "") {
-                        $0.tag = zone.identifier
-                    }
-                    <<< SwitchRow {
-                        $0.title = L10n.SettingsDetails.Location.Zones.EnterExitTracked.title
-                        $0.value = zone.TrackingEnabled
-                        $0.disabled = Condition(booleanLiteral: true)
-                    }
-                    <<< LocationRow {
-                        $0.title = L10n.SettingsDetails.Location.Zones.Location.title
-                        $0.value = zone.location
-                    }
-                    <<< LabelRow {
-                        $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
-                        $0.value = L10n.SettingsDetails.Location.Zones.Radius.label(Int(zone.Radius))
-                    }
-                    <<< LabelRow {
-                        $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
-                        $0.value = zone.BeaconUUID
-                        $0.hidden = Condition(booleanLiteral: zone.BeaconUUID == nil)
-                    }
-                    <<< LabelRow {
-                        $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
-                        if let major = zone.BeaconMajor.value {
-                            $0.value = String(describing: major)
-                        } else {
-                            $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
-                        }
-                        $0.hidden = Condition(booleanLiteral: zone.BeaconMajor.value == nil)
-                    }
-                    <<< LabelRow {
-                        $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
-                        if let minor = zone.BeaconMinor.value {
-                            $0.value = String(describing: minor)
-                        } else {
-                            $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
-                        }
-                        $0.hidden = Condition(booleanLiteral: zone.BeaconMinor.value == nil)
-                    }
-            }
-            if zoneEntities.count > 0 {
-                form +++ InfoLabelRow {
-                    $0.title = L10n.SettingsDetails.Location.Zones.footer
-                }
-            }
-
+            setupLocationSettings()
         case .actions:
-            title = L10n.SettingsDetails.LegacyActions.title
-            let actions = realm.objects(Action.self)
-                .sorted(byKeyPath: "Position")
-                .filter("Scene == nil")
-
-            let actionsFooter = Current.isCatalyst ?
-                L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
-
-            let learnAboutActionsButton = SettingsButtonRow {
-                $0.title = L10n.SettingsDetails.Actions.Learn.Button.title
-                $0.accessoryIcon = .openInNewIcon
-                $0.onCellSelection { _, row in
-                    guard let url = URL(string: "https://companion.home-assistant.io/docs/core/actions/") else { return }
-                    URLOpener.shared.open(url, options: [:], completionHandler: nil)
-                    row.deselect(animated: true)
-                }
-            }
-            form +++ learnAboutActionsButton
-            form +++ MultivaluedSection(
-                multivaluedOptions: [.Insert, .Delete, .Reorder],
-                header: "",
-                footer: actionsFooter
-            ) { section in
-                section.tag = "actions"
-                section.multivaluedRowToInsertAt = { [weak self] _ -> ButtonRowWithPresent<ActionConfigurator> in
-                    self?.getActionRow(nil) ?? .init()
-                }
-                section.addButtonProvider = { _ in
-                    ButtonRow {
-                        $0.title = L10n.addButtonLabel
-                        $0.cellStyle = .value1
-                        $0.tag = "add_action"
-                    }.cellUpdate { cell, _ in
-                        cell.textLabel?.textAlignment = .left
-                    }
-                }
-
-                for action in actions.filter("isServerControlled == false") {
-                    section <<< getActionRow(action)
-                }
-            }
-
-            form +++ RealmSection(
-                header: L10n.SettingsDetails.Actions.ActionsSynced.header,
-                footer: nil,
-                collection: AnyRealmCollection(actions.filter("isServerControlled == true")),
-                emptyRows: [
-                    LabelRow {
-                        $0.title = L10n.SettingsDetails.Actions.ActionsSynced.empty
-                        $0.disabled = true
-                    },
-                ], getter: { [weak self] in self?.getActionRow($0) },
-                didUpdate: { section, collection in
-                    if collection.isEmpty {
-                        section.footer = HeaderFooterView(
-                            title: L10n.SettingsDetails.Actions.ActionsSynced.footerNoActions
-                        )
-                    } else {
-                        section.footer = HeaderFooterView(
-                            title: L10n.SettingsDetails.Actions.ActionsSynced.footer
-                        )
-                    }
-                }
-            )
-
-            form +++ ButtonRow {
-                $0.title = L10n.SettingsDetails.Actions.ServerControlled.Update.title
-                $0.onCellSelection { _, _ in
-                    let result = Current.modelManager.fetch()
-                    result.pipe { result in
-                        switch result {
-                        case .fulfilled:
-                            break
-                        case let .rejected(error):
-                            Current.Log.error("Failed to manually update server Actions: \(error.localizedDescription)")
-                        }
-                    }
-                }
-            }
-
-            let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
-
-            let toggleAllSwitch = SwitchRow()
-            with(toggleAllSwitch) {
-                $0.title = L10n.SettingsDetails.Actions.Scenes.selectAll
-                $0.onChange { [weak self] row in
-                    guard let self,
-                          let value = row.value else { return }
-                    realm.reentrantWrite {
-                        for scene in scenes {
-                            scene.actionEnabled = value
-                        }
-                    }
-                }
-            }
-
-            var scenesUpdateObserver: NotificationToken?
-            toggleAllSwitch.cellUpdate { cell, _ in
-                scenesUpdateObserver = scenes.observe { _ in
-                    cell.switchControl.setOn(scenes.filter(\.actionEnabled).count == scenes.count, animated: true)
-                }
-            }
-            toggleAllSwitch.updateCell()
-
-            form +++ Section(L10n.SettingsDetails.Actions.Scenes.title)
-                <<< toggleAllSwitch
-            form +++ RealmSection<RLMScene>(
-                footer: L10n.SettingsDetails.Actions.Scenes.footer,
-                collection: AnyRealmCollection(scenes),
-                emptyRows: [
-                    LabelRow {
-                        $0.title = L10n.SettingsDetails.Actions.Scenes.empty
-                        $0.disabled = true
-                    },
-                ], getter: {
-                    Self.getSceneRows($0)
-                }
-            )
+            setupActionsSettings()
         default:
             Current.Log.warning("Something went wrong, no settings detail group named \(detailGroup)")
         }
@@ -388,22 +149,8 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
         }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
-    }
-
-    private func resizeImage(image: UIImage?, newSize: CGSize) -> UIImage? {
-        guard let image else { return nil }
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-        let resizedImage = renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-        }
-        return resizedImage
     }
 
     static func getSceneRows(_ rlmScene: RLMScene) -> [BaseRow] {
@@ -521,6 +268,256 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
             })
         }
     }
+
+    // MARK: - Actions Settings Setup
+
+    private func setupActionsSettings() {
+        title = L10n.SettingsDetails.LegacyActions.title
+
+        form +++ learnAboutActionsButton()
+        form +++ manualActionsSection()
+        form +++ serverControlledActionsSection()
+        form +++ serverActionsUpdateButton()
+    }
+
+    private func learnAboutActionsButton() -> SettingsButtonRow {
+        SettingsButtonRow {
+            $0.title = L10n.SettingsDetails.Actions.Learn.Button.title
+            $0.accessoryIcon = .openInNewIcon
+            $0.onCellSelection { _, row in
+                guard let url = URL(string: "https://companion.home-assistant.io/docs/core/actions/") else { return }
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
+                row.deselect(animated: true)
+            }
+        }
+    }
+
+    private func manualActionsSection() -> MultivaluedSection {
+        let actions = realm.objects(Action.self)
+            .sorted(byKeyPath: "Position")
+            .filter("Scene == nil")
+
+        let actionsFooter = Current.isCatalyst ?
+            L10n.SettingsDetails.Actions.footerMac : L10n.SettingsDetails.Actions.footer
+
+        let section = MultivaluedSection(
+            multivaluedOptions: [.Insert, .Delete, .Reorder],
+            header: "",
+            footer: actionsFooter
+        ) { section in
+            section.tag = "actions"
+            section.multivaluedRowToInsertAt = { [weak self] _ -> ButtonRowWithPresent<ActionConfigurator> in
+                self?.getActionRow(nil) ?? .init()
+            }
+            section.addButtonProvider = { _ in
+                ButtonRow {
+                    $0.title = L10n.addButtonLabel
+                    $0.cellStyle = .value1
+                    $0.tag = "add_action"
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                }
+            }
+
+            for action in actions.filter("isServerControlled == false") {
+                section <<< getActionRow(action)
+            }
+        }
+
+        return section
+    }
+
+    private func serverControlledActionsSection() -> RealmSection<Action> {
+        let actions = realm.objects(Action.self)
+            .sorted(byKeyPath: "Position")
+            .filter("Scene == nil")
+
+        return RealmSection(
+            header: L10n.SettingsDetails.Actions.ActionsSynced.header,
+            footer: nil,
+            collection: AnyRealmCollection(actions.filter("isServerControlled == true")),
+            emptyRows: [
+                LabelRow {
+                    $0.title = L10n.SettingsDetails.Actions.ActionsSynced.empty
+                    $0.disabled = true
+                },
+            ], getter: { [weak self] in self?.getActionRow($0) },
+            didUpdate: { section, collection in
+                if collection.isEmpty {
+                    section.footer = HeaderFooterView(
+                        title: L10n.SettingsDetails.Actions.ActionsSynced.footerNoActions
+                    )
+                } else {
+                    section.footer = HeaderFooterView(
+                        title: L10n.SettingsDetails.Actions.ActionsSynced.footer
+                    )
+                }
+            }
+        )
+    }
+
+    private func serverActionsUpdateButton() -> Section {
+        Section()
+            <<< ButtonRow {
+                $0.title = L10n.SettingsDetails.Actions.ServerControlled.Update.title
+                $0.onCellSelection { _, _ in
+                    let result = Current.modelManager.fetch()
+                    result.pipe { result in
+                        switch result {
+                        case .fulfilled:
+                            break
+                        case let .rejected(error):
+                            Current.Log.error("Failed to manually update server Actions: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+    }
+
+    // MARK: - Location Settings Setup
+
+    private func setupLocationSettings() {
+        title = L10n.SettingsDetails.Location.title
+        form
+            +++ locationPermissionsSection()
+            +++ locationHistorySection()
+            <<< locationUpdateButton()
+            +++ locationUpdatesSection()
+
+        addZoneSections()
+    }
+
+    private func locationHistorySection() -> Section {
+        Section()
+            <<< ButtonRow {
+                $0.title = L10n.Settings.LocationHistory.title
+                $0.presentationMode = .show(controllerProvider: .callback(builder: {
+                    LocationHistoryListViewHostingController(rootView: LocationHistoryListView())
+                }), onDismiss: nil)
+            }
+    }
+
+    private func locationUpdateButton() -> ButtonRowWithLoading {
+        ButtonRowWithLoading {
+            $0.title = L10n.SettingsDetails.Location.updateLocation
+            $0.onCellSelection { [weak self] _, row in
+                row.value = true
+                row.updateCell()
+
+                firstly {
+                    HomeAssistantAPI.manuallyUpdate(
+                        applicationState: UIApplication.shared.applicationState,
+                        type: .userRequested
+                    )
+                }.ensure {
+                    row.value = false
+                    row.updateCell()
+                }.catch { error in
+                    let alert = UIAlertController(
+                        title: nil,
+                        message: error.localizedDescription,
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
+                    self?.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+
+    private func locationUpdatesSection() -> Section {
+        Section(
+            header: L10n.SettingsDetails.Location.Updates.header,
+            footer: L10n.SettingsDetails.Location.Updates.footer
+        )
+            <<< SwitchRow {
+                $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
+                $0.value = Current.settingsStore.locationSources.zone
+                $0.disabled = .location(conditions: [.permissionNotAlways, .accuracyNotFull])
+            }.onChange({ row in
+                Current.settingsStore.locationSources.zone = row.value ?? true
+            })
+            <<< SwitchRow {
+                $0.title = L10n.SettingsDetails.Location.Updates.Background.title
+                $0.value = Current.settingsStore.locationSources.backgroundFetch
+                $0.disabled = .location(conditions: [
+                    .permissionNotAlways,
+                    .backgroundRefreshNotAvailable,
+                ])
+                $0.hidden = .isCatalyst
+            }.onChange({ row in
+                Current.settingsStore.locationSources.backgroundFetch = row.value ?? true
+            })
+            <<< SwitchRow {
+                $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
+                $0.value = Current.settingsStore.locationSources.significantLocationChange
+                $0.disabled = .location(conditions: [.permissionNotAlways])
+            }.onChange({ row in
+                Current.settingsStore.locationSources.significantLocationChange = row.value ?? true
+            })
+            <<< SwitchRow {
+                $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
+                $0.value = Current.settingsStore.locationSources.pushNotifications
+                $0.disabled = .location(conditions: [.permissionNotAlways])
+            }.onChange({ row in
+                Current.settingsStore.locationSources.pushNotifications = row.value ?? true
+            })
+    }
+
+    private func addZoneSections() {
+        let zoneEntities = realm.objects(RLMZone.self)
+
+        for zone in zoneEntities {
+            form
+                +++ Section(header: zone.Name, footer: "") {
+                    $0.tag = zone.identifier
+                }
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.EnterExitTracked.title
+                    $0.value = zone.TrackingEnabled
+                    $0.disabled = Condition(booleanLiteral: true)
+                }
+                <<< LocationRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.Location.title
+                    $0.value = zone.location
+                }
+                <<< LabelRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
+                    $0.value = L10n.SettingsDetails.Location.Zones.Radius.label(Int(zone.Radius))
+                }
+                <<< LabelRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
+                    $0.value = zone.BeaconUUID
+                    $0.hidden = Condition(booleanLiteral: zone.BeaconUUID == nil)
+                }
+                <<< LabelRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
+                    if let major = zone.BeaconMajor.value {
+                        $0.value = String(describing: major)
+                    } else {
+                        $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
+                    }
+                    $0.hidden = Condition(booleanLiteral: zone.BeaconMajor.value == nil)
+                }
+                <<< LabelRow {
+                    $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
+                    if let minor = zone.BeaconMinor.value {
+                        $0.value = String(describing: minor)
+                    } else {
+                        $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
+                    }
+                    $0.hidden = Condition(booleanLiteral: zone.BeaconMinor.value == nil)
+                }
+        }
+
+        if zoneEntities.count > 0 {
+            form +++ InfoLabelRow {
+                $0.title = L10n.SettingsDetails.Location.Zones.footer
+            }
+        }
+    }
+
+    // MARK: - Location Permission Rows
 
     private func locationPermissionsSection() -> Section {
         let section = Section()
@@ -640,56 +637,6 @@ class SettingsDetailViewController: HAFormViewController, TypedRowControllerType
                 URLOpener.shared.openSettings(destination: .backgroundRefresh, completionHandler: nil)
                 row.deselect(animated: true)
             }
-        }
-    }
-}
-
-enum OpenInBrowser: String, CaseIterable {
-    case Chrome
-    case Firefox
-    case FirefoxFocus
-    case FirefoxKlar
-    case Safari
-    case SafariInApp
-
-    var title: String {
-        switch self {
-        case .Chrome:
-            return L10n.SettingsDetails.General.OpenInBrowser.chrome
-        case .Firefox:
-            return L10n.SettingsDetails.General.OpenInBrowser.firefox
-        case .FirefoxFocus:
-            return L10n.SettingsDetails.General.OpenInBrowser.firefoxFocus
-        case .FirefoxKlar:
-            return L10n.SettingsDetails.General.OpenInBrowser.firefoxKlar
-        case .Safari:
-            return L10n.SettingsDetails.General.OpenInBrowser.default
-        case .SafariInApp:
-            return L10n.SettingsDetails.General.OpenInBrowser.safariInApp
-        }
-    }
-
-    var isInstalled: Bool {
-        switch self {
-        case .Chrome:
-            return OpenInChromeController.sharedInstance.isChromeInstalled()
-        case .Firefox:
-            return OpenInFirefoxControllerSwift().isFirefoxInstalled()
-        case .FirefoxFocus:
-            return OpenInFirefoxControllerSwift(type: .focus).isFirefoxInstalled()
-        case .FirefoxKlar:
-            return OpenInFirefoxControllerSwift(type: .klar).isFirefoxInstalled()
-        default:
-            return true
-        }
-    }
-
-    var supportsPrivateTabs: Bool {
-        switch self {
-        case .Firefox:
-            return true
-        default:
-            return false
         }
     }
 }
