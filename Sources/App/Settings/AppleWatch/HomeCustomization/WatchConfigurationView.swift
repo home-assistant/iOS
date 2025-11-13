@@ -46,19 +46,17 @@ struct WatchConfigurationView: View {
 
     private var content: some View {
         List {
-            Group {
-                watchPreview
-                    .listRowBackground(Color.clear)
-                    .onAppear {
-                        // Prevent trigger when popping nav controller
-                        guard !isLoaded else { return }
-                        viewModel.loadWatchConfig()
-                        isLoaded = true
-                    }
-                itemsSection
-                assistSection
-                resetView
-            }
+            watchPreview
+                .listRowBackground(Color.clear)
+                .onAppear {
+                    // Prevent trigger when popping nav controller
+                    guard !isLoaded else { return }
+                    viewModel.loadWatchConfig()
+                    isLoaded = true
+                }
+            itemsSection
+            assistSection
+            resetView
         }
         .preferredColorScheme(.dark)
     }
