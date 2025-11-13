@@ -284,8 +284,7 @@ struct ConnectionURLView: View {
         if Current.locationManager.currentPermissionState == .notDetermined {
             Current.locationManager.requestLocationPermission()
         } else {
-            // TODO: Replace this by URLOpener as soon as URLOpener PR gets merged
-            UIApplication.shared.openSettings(destination: .location)
+            URLOpener.shared.openSettings(destination: .location, completionHandler: nil)
         }
     }
 }
