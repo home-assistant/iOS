@@ -4,12 +4,16 @@ import SwiftUI
 struct ServersListView: View {
     @StateObject private var observer = ServersObserver()
     @State private var showAddServer = false
+    @Environment(\.editMode) private var editMode
 
     var body: some View {
         ForEach(observer.servers, id: \.identifier) { server in
             NavigationLink(destination: ConnectionSettingsView(server: server)) {
                 HomeAssistantAccountRowView(server: server)
             }
+        }
+        .onMove { source, destination in
+            observer.moveServers(from: source, to: destination)
         }
 
         Button {
@@ -41,5 +45,23 @@ private class ServersObserver: ObservableObject, ServerObserver {
         DispatchQueue.main.async { [weak self] in
             self?.servers = serverManager.all
         }
+    }
+
+    func moveServers(from source: IndexSet, to destination: Int) {
+        var updatedServers = servers
+        updatedServers.move(fromOffsets: source, toOffset: destination)
+
+        // Update sort order for all servers based on their new positions
+        for (index, server) in updatedServers.enumerated() {
+            let newSortOrder = index * 1000
+            if server.info.sortOrder != newSortOrder {
+                server.update { info in
+                    info.sortOrder = newSortOrder
+                }
+            }
+        }
+
+        // Update local array immediately for responsive UI
+        servers = updatedServers
     }
 }
