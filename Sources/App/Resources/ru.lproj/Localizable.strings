@@ -813,6 +813,9 @@ Home Assistant — это приложение с открытым исходн�
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Панель Dock и строка меню";
 "settings_details.general.visibility.options.menu_bar" = "Строка меню";
 "settings_details.general.visibility.title" = "Показать приложение в…";
+"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.title" = "Security Warning";
+"settings_details.learn_more" = "Learn more";
 "settings_details.legacy_actions.title" = "(Устаревшее) действия iOS";
 "settings_details.location.background_refresh.disabled" = "Отключено";
 "settings_details.location.background_refresh.enabled" = "Включено";
