@@ -7,7 +7,7 @@ final class ServersObserver: ObservableObject, ServerObserver {
     init() {
         self.servers = Current.servers.all
         Current.servers.add(observer: self)
-    }
+    }  
 
     deinit {
         Current.servers.remove(observer: self)
