@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var showAbout = false
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewControllerProvider: ViewControllerProvider
+    @StateObject private var serversObserver = ServersObserver()
 
     @State private var appDatabaseUpdaterTask: Task<Void, Never>?
 
@@ -28,220 +29,308 @@ struct SettingsView: View {
 
     // MARK: - macOS Split View
 
+    @ViewBuilder
     private var macOSView: some View {
-        NavigationView {
-            List(selection: $selectedItem) {
-                // Servers section
-                Section(header: Text(L10n.Settings.ConnectionSection.serversHeader)) {
-                    ServersListView()
-                }
+        if #available(iOS 16.0, *) {
+            macOSViewModern
+        } else {
+            macOSViewLegacy
+        }
+    }
 
-                // Other settings items
-                Section {
-                    ForEach(SettingsItem.allVisibleCases, id: \.self) { item in
-                        NavigationLink(destination: item.destinationView) {
-                            Label {
-                                Text(item.title)
-                            } icon: {
-                                item.icon
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle(L10n.Settings.NavigationBar.title)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    EditButton()
-                }
-            }
+    @available(iOS 16.0, *)
+    private var macOSViewModern: some View {
+        NavigationSplitView {
+            macOSSidebarContent
+        } detail: {
             if let selectedItem {
                 selectedItem.destinationView
             } else {
-                Image(.casita)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 100)
+                macOSPlaceholder
+            }
+        }
+    }
+
+    private var macOSViewLegacy: some View {
+        NavigationView {
+            macOSSidebarContent
+            if let selectedItem {
+                selectedItem.destinationView
+            } else {
+                macOSPlaceholder
             }
         }
         .navigationViewStyle(.columns)
     }
 
-    // MARK: - iOS List View
+    private var macOSSidebarContent: some View {
+        List(selection: $selectedItem) {
+            // Servers section
+            Section(header: Text(L10n.Settings.ConnectionSection.serversHeader)) {
+                ServersListView()
+            }
 
-    private var iOSView: some View {
-        NavigationView {
-            List {
-                // Servers section
-                Section(
-                    header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                    footer: Text(L10n.Settings.ConnectionSection.serversFooter)
-                ) {
-                    ServersListView()
-                }
-                .environment(\.defaultMinListRowHeight, 60)
-
-                // General section
-                Section {
-                    ForEach(SettingsItem.generalItems, id: \.self) { item in
-                        NavigationLink(destination: item.destinationView) {
+            // Other settings items
+            Section {
+                ForEach(SettingsItem.allVisibleCases, id: \.self) { item in
+                    if #available(iOS 16.0, *) {
+                        NavigationLink(value: item) {
                             Label {
                                 Text(item.title)
                             } icon: {
                                 item.icon
                             }
                         }
-                    }
-                }
-
-                // Integrations section
-                Section {
-                    ForEach(SettingsItem.integrationItems, id: \.self) { item in
+                    } else {
                         NavigationLink(destination: item.destinationView) {
                             Label {
                                 Text(item.title)
                             } icon: {
                                 item.icon
                             }
-                        }
-                    }
-                }
-
-                // Apple Watch section (only on iPhone with paired watch)
-                if shouldShowWatchSection {
-                    Section(header: Text("Apple Watch")) {
-                        ForEach(SettingsItem.watchItems, id: \.self) { item in
-                            NavigationLink(destination: item.destinationView) {
-                                Label {
-                                    Text(item.title)
-                                } icon: {
-                                    item.icon
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // CarPlay section (only on iPhone)
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    Section {
-                        ForEach(SettingsItem.carPlayItems, id: \.self) { item in
-                            NavigationLink(destination: item.destinationView) {
-                                Label {
-                                    Text(item.title)
-                                } icon: {
-                                    item.icon
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Legacy section
-                Section {
-                    ForEach(SettingsItem.legacyItems, id: \.self) { item in
-                        NavigationLink(destination: item.destinationView) {
-                            Label {
-                                Text(item.title)
-                            } icon: {
-                                item.icon
-                            }
-                        }
-                    }
-                }
-
-                // Help section
-                Section {
-                    ForEach(SettingsItem.helpItems, id: \.self) { item in
-                        if item == .help {
-                            Button {
-                                if let url = URL(string: "https://companion.home-assistant.io") {
-                                    openURLInBrowser(url, viewControllerProvider.viewController)
-                                }
-                            } label: {
-                                HStack {
-                                    Label {
-                                        Text(item.title)
-                                    } icon: {
-                                        item.icon
-                                    }
-                                    Spacer()
-                                    item.accessoryIcon
-                                }
-                            }
-                        } else {
-                            NavigationLink(destination: item.destinationView) {
-                                Label {
-                                    Text(item.title)
-                                } icon: {
-                                    item.icon
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // What's New
-                Section {
-                    Button {
-                        if let url = URL(string: "https://www.home-assistant.io/latest-ios-release-notes/") {
-                            openURLInBrowser(url, viewControllerProvider.viewController)
-                        }
-                    } label: {
-                        HStack {
-                            Label {
-                                Text(SettingsItem.whatsNew.title)
-                            } icon: {
-                                SettingsItem.whatsNew.icon
-                            }
-                            Spacer()
-                            SettingsItem.whatsNew.accessoryIcon
-                        }
-                    }
-                }
-
-                // About
-                Section {
-                    Button {
-                        showAbout = true
-                    } label: {
-                        Label {
-                            Text(L10n.Settings.NavigationBar.AboutButton.title)
-                        } icon: {
-                            Image(systemSymbol: .infoCircle)
                         }
                     }
                 }
             }
-            .navigationTitle(L10n.Settings.NavigationBar.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
-                        CloseButton {
-                            dismiss()
-                        }
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
+        }
+        .navigationTitle(L10n.Settings.NavigationBar.title)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                if serversObserver.servers.count > 1 {
                     EditButton()
                 }
             }
-            .sheet(isPresented: $showAbout) {
-                NavigationView {
-                    AboutView()
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                CloseButton {
-                                    showAbout = false
-                                }
+        }
+    }
+
+    private var macOSPlaceholder: some View {
+        Image(.casita)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(height: 100)
+    }
+
+    // MARK: - iOS List View
+
+    @ViewBuilder
+    private var iOSView: some View {
+        if #available(iOS 16.0, *) {
+            iOSViewModern
+        } else {
+            iOSViewLegacy
+        }
+    }
+
+    @available(iOS 16.0, *)
+    private var iOSViewModern: some View {
+        NavigationStack {
+            iOSListContent
+                .navigationDestination(for: SettingsItem.self) { item in
+                    item.destinationView
+                }
+        }
+    }
+
+    private var iOSViewLegacy: some View {
+        NavigationView {
+            iOSListContent
+        }
+    }
+
+    private var iOSListContent: some View {
+        List {
+            // Servers section
+            Section(
+                header: Text(L10n.Settings.ConnectionSection.serversHeader),
+                footer: Text(L10n.Settings.ConnectionSection.serversFooter)
+            ) {
+                ServersListView()
+            }
+            .environment(\.defaultMinListRowHeight, 60)
+
+            // General section
+            Section {
+                ForEach(SettingsItem.generalItems, id: \.self) { item in
+                    if #available(iOS 16.0, *) {
+                        NavigationLink(value: item) {
+                            settingsItemLabel(item)
+                        }
+                    } else {
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
+                        }
+                    }
+                }
+            }
+
+            // Integrations section
+            Section {
+                ForEach(SettingsItem.integrationItems, id: \.self) { item in
+                    if #available(iOS 16.0, *) {
+                        NavigationLink(value: item) {
+                            settingsItemLabel(item)
+                        }
+                    } else {
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
+                        }
+                    }
+                }
+            }
+
+            // Apple Watch section (only on iPhone with paired watch)
+            if shouldShowWatchSection {
+                Section(header: Text("Apple Watch")) {
+                    ForEach(SettingsItem.watchItems, id: \.self) { item in
+                        if #available(iOS 16.0, *) {
+                            NavigationLink(value: item) {
+                                settingsItemLabel(item)
+                            }
+                        } else {
+                            NavigationLink(destination: item.destinationView) {
+                                settingsItemLabel(item)
                             }
                         }
+                    }
                 }
-                .navigationViewStyle(.stack)
+            }
+
+            // CarPlay section (only on iPhone)
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                Section {
+                    ForEach(SettingsItem.carPlayItems, id: \.self) { item in
+                        if #available(iOS 16.0, *) {
+                            NavigationLink(value: item) {
+                                settingsItemLabel(item)
+                            }
+                        } else {
+                            NavigationLink(destination: item.destinationView) {
+                                settingsItemLabel(item)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Legacy section
+            Section {
+                ForEach(SettingsItem.legacyItems, id: \.self) { item in
+                    if #available(iOS 16.0, *) {
+                        NavigationLink(value: item) {
+                            settingsItemLabel(item)
+                        }
+                    } else {
+                        NavigationLink(destination: item.destinationView) {
+                            settingsItemLabel(item)
+                        }
+                    }
+                }
+            }
+
+            // Help section
+            Section {
+                ForEach(SettingsItem.helpItems, id: \.self) { item in
+                    if item == .help {
+                        Button {
+                            if let url = URL(string: "https://companion.home-assistant.io") {
+                                openURLInBrowser(url, viewControllerProvider.viewController)
+                            }
+                        } label: {
+                            HStack {
+                                settingsItemLabel(item)
+                                Spacer()
+                                item.accessoryIcon
+                            }
+                        }
+                    } else {
+                        if #available(iOS 16.0, *) {
+                            NavigationLink(value: item) {
+                                settingsItemLabel(item)
+                            }
+                        } else {
+                            NavigationLink(destination: item.destinationView) {
+                                settingsItemLabel(item)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // What's New
+            Section {
+                Button {
+                    if let url = URL(string: "https://www.home-assistant.io/latest-ios-release-notes/") {
+                        openURLInBrowser(url, viewControllerProvider.viewController)
+                    }
+                } label: {
+                    HStack {
+                        settingsItemLabel(.whatsNew)
+                        Spacer()
+                        SettingsItem.whatsNew.accessoryIcon
+                    }
+                }
+            }
+
+            // About
+            Section {
+                Button {
+                    showAbout = true
+                } label: {
+                    Label {
+                        Text(L10n.Settings.NavigationBar.AboutButton.title)
+                    } icon: {
+                        Image(systemSymbol: .infoCircle)
+                    }
+                }
             }
         }
+        .navigationTitle(L10n.Settings.NavigationBar.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if !Current.sceneManager.supportsMultipleScenes || !Current.isCatalyst {
+                    CloseButton {
+                        dismiss()
+                    }
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if serversObserver.servers.count > 1 {
+                    EditButton()
+                }
+            }
+        }
+        .sheet(isPresented: $showAbout) {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    aboutViewContent
+                }
+            } else {
+                NavigationView {
+                    aboutViewContent
+                }
+            }
+        }
+    }
+
+    private func settingsItemLabel(_ item: SettingsItem) -> some View {
+        Label {
+            Text(item.title)
+        } icon: {
+            item.icon
+        }
+    }
+
+    private var aboutViewContent: some View {
+        AboutView()
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    CloseButton {
+                        showAbout = false
+                    }
+                }
+            }
     }
 
     private var shouldShowWatchSection: Bool {
@@ -252,5 +341,26 @@ struct SettingsView: View {
             return true
         }
         return false
+    }
+}
+
+// MARK: - Servers Observer
+
+private class ServersObserver: ObservableObject, ServerObserver {
+    @Published var servers: [Server] = []
+
+    init() {
+        self.servers = Current.servers.all
+        Current.servers.add(observer: self)
+    }
+
+    deinit {
+        Current.servers.remove(observer: self)
+    }
+
+    func serversDidChange(_ serverManager: ServerManager) {
+        DispatchQueue.main.async { [weak self] in
+            self?.servers = serverManager.all
+        }
     }
 }
