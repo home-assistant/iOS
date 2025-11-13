@@ -25,7 +25,7 @@ final class ServersObserver: ObservableObject, ServerObserver {
 
         // Update sort order for all servers based on their new positions
         for (index, server) in updatedServers.enumerated() {
-            let newSortOrder = index * 1000
+            let newSortOrder = index
             if server.info.sortOrder != newSortOrder {
                 server.update { info in
                     info.sortOrder = newSortOrder
