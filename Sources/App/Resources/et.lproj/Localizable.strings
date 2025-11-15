@@ -813,9 +813,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Salv ja menüüriba";
 "settings_details.general.visibility.options.menu_bar" = "Menüüriba";
 "settings_details.general.visibility.title" = "Kuva rakendus…";
-"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
-"settings_details.http.warning.title" = "Security Warning";
-"settings_details.learn_more" = "Learn more";
+"settings_details.http.warning.message" = "Krüpteerimata ühendused paljastavad volitused ja isikuandmed võimalikule pealtkuulamisele. Kasuta alati HTTPS-i kaugjuurdepääsuks, et kaitsta oma privaatsust ja turvalisust.";
+"settings_details.http.warning.title" = "Turvahoiatus";
+"settings_details.learn_more" = "Lisateave";
 "settings_details.legacy_actions.title" = "(Pärand) iOS-i toimingud";
 "settings_details.location.background_refresh.disabled" = "Keelatud";
 "settings_details.location.background_refresh.enabled" = "Lubatud";
