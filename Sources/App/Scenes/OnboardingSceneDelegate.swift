@@ -20,7 +20,6 @@ import UIKit
     ) {
         super.scene(scene, willConnectTo: session, options: connectionOptions)
 
-        #if targetEnvironment(macCatalyst)
         // Configure window size for onboarding
         if let windowScene = scene as? UIWindowScene {
             let screen = windowScene.screen
@@ -39,7 +38,6 @@ import UIKit
                 }
             }
         }
-        #endif
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
