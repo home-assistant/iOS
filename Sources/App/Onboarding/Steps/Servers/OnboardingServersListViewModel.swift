@@ -78,20 +78,14 @@ final class OnboardingServersListViewModel: ObservableObject {
         discovery.stop()
     }
 
-    func selectInstance(_ instance: DiscoveredHomeAssistant) {
-        guard let controller = UIApplication.shared.topViewController() else {
-            let message = "No controller provided for onboarding"
-            Current.Log.error(message)
-            assertionFailure(message)
-            return
-        }
+    func selectInstance(_ instance: DiscoveredHomeAssistant, presentingController: UIViewController) {
         Current.Log.verbose("Selected instance \(instance)")
 
         currentlyInstanceLoading = instance
 
         let authentication = OnboardingAuth()
 
-        authentication.authenticate(to: instance, sender: controller).pipe { [weak self] result in
+        authentication.authenticate(to: instance, sender: presentingController).pipe { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case let .fulfilled(server):
@@ -188,27 +182,5 @@ extension OnboardingServersListViewModel: OnboardingStateObserver {
         if state == .complete, shouldDismissOnSuccess {
             shouldDismiss = true
         }
-    }
-}
-
-private extension UIApplication {
-    func topViewController(controller: UIViewController? = nil) -> UIViewController? {
-        let controller = controller ?? connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)?
-            .rootViewController
-
-        if let navigationController = controller as? UINavigationController {
-            return topViewController(controller: navigationController.visibleViewController)
-        }
-        if let tabController = controller as? UITabBarController,
-           let selected = tabController.selectedViewController {
-            return topViewController(controller: selected)
-        }
-        if let presented = controller?.presentedViewController {
-            return topViewController(controller: presented)
-        }
-        return controller
     }
 }
