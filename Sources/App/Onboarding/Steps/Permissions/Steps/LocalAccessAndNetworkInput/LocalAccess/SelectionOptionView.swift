@@ -89,13 +89,12 @@ private struct SelectionOptionRow: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(alignment: .top, spacing: DesignSystem.Spaces.two) {
+            HStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
                 // Radio button or checkbox
                 SelectionIndicator(
                     isSelected: isSelected,
                     isMultipleSelection: allowsMultipleSelection
                 )
-                .padding(.top, DesignSystem.Spaces.half)
 
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                     Text(option.title)
@@ -170,6 +169,18 @@ private struct SelectionIndicator: View {
         SelectionOption(
             value: "less_secure",
             title: "Less secure: Do not allow this app to know when you're home",
+            subtitle: nil,
+            isRecommended: false
+        ),
+        SelectionOption(
+            value: "long",
+            title: "Less secure: Do not allow this app to know when you're home Less secure: Do not allow this app to know when you're home Less secure: Do not allow this app to know when you're home",
+            subtitle: nil,
+            isRecommended: false
+        ),
+        SelectionOption(
+            value: "short",
+            title: "Less secure",
             subtitle: nil,
             isRecommended: false
         ),
