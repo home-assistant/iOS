@@ -915,7 +915,7 @@ public class HomeAssistantAPI {
                             api.SubmitLocation(updateType: .Manual, location: location, zone: nil)
                         }).asVoid()
                     }.recover { error -> Promise<Void> in
-                        if error is CLError {
+                        if error is CLError || error is OneShotError {
                             Current.Log.info("couldn't get location, sending remaining sensor data")
                             return updateWithoutLocation()
                         } else {
