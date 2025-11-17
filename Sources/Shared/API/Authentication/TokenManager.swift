@@ -7,10 +7,25 @@ public class TokenManager {
         case tokenUnavailable
         case expired
         case connectionFailed
+        case permanentlyInvalid
     }
 
     public let server: Server
     private var authenticationAPI: AuthenticationAPI
+    private let permanentAuthFailureLock = NSLock()
+    private var _hasPermanentAuthFailure = false
+    private var hasPermanentAuthFailure: Bool {
+        get {
+            permanentAuthFailureLock.lock()
+            defer { permanentAuthFailureLock.unlock() }
+            return _hasPermanentAuthFailure
+        }
+        set {
+            permanentAuthFailureLock.lock()
+            defer { permanentAuthFailureLock.unlock() }
+            _hasPermanentAuthFailure = newValue
+        }
+    }
 
     private class RefreshPromiseCache {
         // we can be asked to refresh from any queue - alamofire's utility queue, webview's main queue, so guard
@@ -73,6 +88,12 @@ public class TokenManager {
         firstly {
             self.currentToken
         }.recover { [self] error -> Promise<(String, Date)> in
+            // If we have a permanent auth failure, don't attempt to refresh
+            if hasPermanentAuthFailure {
+                Current.Log.error("Permanent auth failure detected, not attempting to refresh token")
+                throw TokenError.permanentlyInvalid
+            }
+
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired else {
                 Current.Log.verbose("Unable to recover from token error! \(error)")
                 throw error
@@ -140,8 +161,10 @@ public class TokenManager {
 
             let promise: Promise<TokenInfo> = firstly {
                 authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
-            }.get { [server] tokenInfo in
+            }.get { [server, self] tokenInfo in
                 Current.Log.info("storing refresh token")
+                // Reset the permanent failure flag on successful refresh
+                self.hasPermanentAuthFailure = false
                 server.info.token = tokenInfo
             }.ensure(on: refreshPromiseCache.queue) { [self] in
                 Current.Log.info("reset cached refreshToken promise")
@@ -154,6 +177,7 @@ public class TokenManager {
                     if let underlying = (error as? AFError)?.underlyingError as? AuthenticationAPI.AuthenticationError,
                        case .serverError(400 ... 403, _, _) = underlying {
                         /// Server rejected the refresh token. All is lost.
+                        self.hasPermanentAuthFailure = true
                         let event = ClientEvent(
                             text: "Refresh token is invalid, notifying user",
                             type: .networkRequest,
@@ -190,6 +214,8 @@ extension TokenManager.TokenError: LocalizedError {
             return L10n.TokenError.expired
         case .connectionFailed:
             return L10n.TokenError.connectionFailed
+        case .permanentlyInvalid:
+            return L10n.TokenError.tokenUnavailable
         }
     }
 }
