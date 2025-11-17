@@ -9,6 +9,7 @@ struct OnboardingServersListView: View {
         static let delayUntilAutoconnect: TimeInterval = 2
     }
 
+    @EnvironmentObject var viewControllerProvider: ViewControllerProvider
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -20,6 +21,16 @@ struct OnboardingServersListView: View {
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
     @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
+
+    private var presentingViewController: UIViewController {
+        if let providedController = viewControllerProvider.viewController, Current.isCatalyst {
+            return providedController
+        } else if let topController = UIApplication.shared.topViewController() {
+            return topController
+        } else {
+            fatalError("No controller provided for onboarding")
+        }
+    }
 
     let prefillURL: URL?
 
@@ -76,7 +87,7 @@ struct OnboardingServersListView: View {
         .sheet(isPresented: $showManualInput) {
             ManualURLEntryView { connectURL in
                 viewModel.manualInputLoading = true
-                viewModel.selectInstance(.init(manualURL: connectURL))
+                viewModel.selectInstance(.init(manualURL: connectURL), presentingController: presentingViewController)
             }
         }
         .fullScreenCover(isPresented: .init(get: {
@@ -131,7 +142,7 @@ struct OnboardingServersListView: View {
             Button {
                 autoConnectInstance = nil
                 guard let instance else { return }
-                viewModel.selectInstance(instance)
+                viewModel.selectInstance(instance, presentingController: presentingViewController)
             } label: {
                 Text(L10n.Onboarding.Servers.AutoConnect.button)
             }
@@ -223,7 +234,7 @@ struct OnboardingServersListView: View {
         if !screenLoaded {
             screenLoaded = true
             if let prefillURL {
-                viewModel.selectInstance(.init(manualURL: prefillURL))
+                viewModel.selectInstance(.init(manualURL: prefillURL), presentingController: presentingViewController)
             } else {
                 viewModel.startDiscovery()
             }
@@ -263,7 +274,7 @@ struct OnboardingServersListView: View {
             hideCenterLoader()
         }
         Button {
-            viewModel.selectInstance(.init(manualURL: url))
+            viewModel.selectInstance(.init(manualURL: url), presentingController: presentingViewController)
             viewModel.invitationLoading = true
         } label: {
             ZStack {
@@ -324,7 +335,7 @@ struct OnboardingServersListView: View {
 
     private func serverRow(instance: DiscoveredHomeAssistant) -> some View {
         Button(action: {
-            viewModel.selectInstance(instance)
+            viewModel.selectInstance(instance, presentingController: presentingViewController)
         }, label: {
             OnboardingScanningInstanceRow(
                 name: instance.bonjourName ?? instance.locationName,
@@ -376,5 +387,27 @@ struct OnboardingServersListView: View {
 #Preview {
     NavigationView {
         OnboardingServersListView(prefillURL: nil)
+    }
+}
+
+private extension UIApplication {
+    func topViewController(controller: UIViewController? = nil) -> UIViewController? {
+        let controller = controller ?? connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)?
+            .rootViewController
+
+        if let navigationController = controller as? UINavigationController {
+            return topViewController(controller: navigationController.visibleViewController)
+        }
+        if let tabController = controller as? UITabBarController,
+           let selected = tabController.selectedViewController {
+            return topViewController(controller: selected)
+        }
+        if let presented = controller?.presentedViewController {
+            return topViewController(controller: presented)
+        }
+        return controller
     }
 }

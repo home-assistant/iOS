@@ -5,12 +5,11 @@ import UIKit
 
 @objc class OnboardingSceneDelegate: BasicSceneDelegate {
     override func basicConfig(in traitCollection: UITraitCollection) -> BasicSceneDelegate.BasicConfig {
-        let onboardingView = OnboardingNavigationView(onboardingStyle: .secondary)
-        let hostingController = HostingControllerWithEnvironment(rootView: onboardingView)
+        let onboardingView = OnboardingNavigationView(onboardingStyle: .secondary).embeddedInHostingController()
 
         return .init(
-            title: "Add Server",
-            rootViewController: hostingController
+            title: L10n.Settings.ConnectionSection.addServer,
+            rootViewController: onboardingView
         )
     }
 
@@ -48,30 +47,6 @@ import UIKit
         Current.Log.info("Onboarding scene disconnected")
         window = nil
         self.scene = nil
-    }
-}
-
-// MARK: - Hosting Controller with Self-Injection
-
-private class HostingControllerWithEnvironment<Content: View>: UIHostingController<AnyView> {
-    init(rootView: Content) {
-        // Create a temporary view that will be replaced
-        super.init(rootView: AnyView(rootView))
-    }
-
-    @available(*, unavailable)
-    @MainActor dynamic required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Inject self as the presentation controller in the environment
-        let originalRootView = rootView
-        rootView = AnyView(
-            originalRootView.environment(\.presentationController, self)
-        )
     }
 }
 #endif
