@@ -146,7 +146,11 @@ final class OnboardingServersListViewModel: ObservableObject {
 extension OnboardingServersListViewModel: BonjourObserver {
     func bonjour(_ bonjour: Bonjour, didAdd instance: DiscoveredHomeAssistant) {
         DispatchQueue.main.async { [weak self] in
-            self?.discoveredInstances.append(instance)
+            guard let self else { return }
+            // Prevent duplicates by checking if instance already exists
+            if !discoveredInstances.contains(instance) {
+                discoveredInstances.append(instance)
+            }
         }
     }
 
