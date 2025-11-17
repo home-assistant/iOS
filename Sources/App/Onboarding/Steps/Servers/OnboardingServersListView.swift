@@ -176,12 +176,17 @@ struct OnboardingServersListView: View {
                     .progressViewStyle(.circular)
             } else {
                 Button(action: {
-                    showDocumentation = true
+                    if Current.isCatalyst {
+                        URLOpener.shared.open(
+                            AppConstants.WebURLs.homeAssistantGetStarted,
+                            options: [:],
+                            completionHandler: nil
+                        )
+                    } else {
+                        showDocumentation = true
+                    }
                 }, label: {
-                    Image(uiImage: MaterialDesignIcons.helpCircleOutlineIcon.image(
-                        ofSize: .init(width: 25, height: 25),
-                        color: .accent
-                    ))
+                    Image(systemSymbol: .questionmark)
                 })
                 .sheet(isPresented: $showDocumentation) {
                     SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)

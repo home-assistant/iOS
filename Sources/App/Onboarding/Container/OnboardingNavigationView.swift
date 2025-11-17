@@ -48,7 +48,7 @@ struct OnboardingNavigationView: View {
             .navigationViewStyle(.stack)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    if onboardingStyle.insertsCancelButton {
+                    if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
                         Button(action: {
                             closeOnboarding()
                         }) {

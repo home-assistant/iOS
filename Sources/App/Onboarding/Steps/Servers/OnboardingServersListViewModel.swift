@@ -78,13 +78,20 @@ final class OnboardingServersListViewModel: ObservableObject {
         discovery.stop()
     }
 
-    func selectInstance(_ instance: DiscoveredHomeAssistant) {
-        guard let controller = UIApplication.shared.topViewController() else {
+    func selectInstance(_ instance: DiscoveredHomeAssistant, presentingController: UIViewController? = nil) {
+        let controller: UIViewController
+
+        if let providedController = presentingController {
+            controller = providedController
+        } else if let topController = UIApplication.shared.topViewController() {
+            controller = topController
+        } else {
             let message = "No controller provided for onboarding"
             Current.Log.error(message)
             assertionFailure(message)
             return
         }
+
         Current.Log.verbose("Selected instance \(instance)")
 
         currentlyInstanceLoading = instance

@@ -685,6 +685,7 @@
 		425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425762742E71A8B800AE5083 /* ModalCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425762722E71A8B800AE5083 /* ModalCloseButton.swift */; };
 		425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */; };
+		4258645C2ECB858800C1B8C9 /* PresentationControllerReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4258645B2ECB858800C1B8C9 /* PresentationControllerReader.swift */; };
 		425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */; };
 		425FBA1E2C9C75A300CB5DBB /* DataWidgetsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */; };
 		425FF0562C8216B3000AA641 /* AssistAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF0552C8216B3000AA641 /* AssistAppIntent.swift */; };
@@ -2218,6 +2219,7 @@
 		425573EE2B589B0F00145217 /* NotificationIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifier.swift; sourceTree = "<group>"; };
 		425762722E71A8B800AE5083 /* ModalCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalCloseButton.swift; sourceTree = "<group>"; };
 		425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneDelegate.swift; sourceTree = "<group>"; };
+		4258645B2ECB858800C1B8C9 /* PresentationControllerReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationControllerReader.swift; sourceTree = "<group>"; };
 		425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistMicAnimationView.swift; sourceTree = "<group>"; };
 		425FF0552C8216B3000AA641 /* AssistAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistAppIntent.swift; sourceTree = "<group>"; };
 		426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImmediateMessages.swift; sourceTree = "<group>"; };
@@ -3986,6 +3988,7 @@
 				FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */,
 				42F1DA5A2B4BF7DF002729BC /* WindowSizeObserver.swift */,
 				42F1DA5C2B4BF85F002729BC /* WindowScenesManager.swift */,
+				425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -4817,6 +4820,7 @@
 				427FEE022D9BE7690047C00C /* OnboardingServersListView.swift */,
 				427FEE062D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift */,
 				427FEE082D9C04050047C00C /* OnboardingServersListViewModel.swift */,
+				4258645B2ECB858800C1B8C9 /* PresentationControllerReader.swift */,
 			);
 			path = Servers;
 			sourceTree = "<group>";
@@ -5590,7 +5594,6 @@
 				42DF7DDD2EC53D50003F3C4A /* SettingsItem.swift */,
 				42DF7DDF2EC53D85003F3C4A /* ServersListView.swift */,
 				42DF7DE12EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift */,
-				425864572ECB820700C1B8C9 /* OnboardingSceneDelegate.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -8553,6 +8556,7 @@
 				427FEE032D9BE7690047C00C /* OnboardingServersListView.swift in Sources */,
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
+				4258645C2ECB858800C1B8C9 /* PresentationControllerReader.swift in Sources */,
 				425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
