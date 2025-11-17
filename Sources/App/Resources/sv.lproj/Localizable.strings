@@ -812,9 +812,9 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Docka och menyrad";
 "settings_details.general.visibility.options.menu_bar" = "Menyrad";
 "settings_details.general.visibility.title" = "Visa app i...";
-"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
-"settings_details.http.warning.title" = "Security Warning";
-"settings_details.learn_more" = "Learn more";
+"settings_details.http.warning.message" = "Okrypterade anslutningar utsätter dina inloggningsuppgifter och personuppgifter för potentiell avlyssning. Använd alltid HTTPS för fjärråtkomst för att skydda din integritet och säkerhet.";
+"settings_details.http.warning.title" = "Säkerhetsvarning";
+"settings_details.learn_more" = "Läs mer";
 "settings_details.legacy_actions.title" = "(Utfasad) iOS-åtgärder";
 "settings_details.location.background_refresh.disabled" = "Avaktiverad";
 "settings_details.location.background_refresh.enabled" = "Aktiverad";

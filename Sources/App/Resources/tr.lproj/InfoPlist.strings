@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Yapılandırmanız gerektiriyorsa, isteğe bağlı olarak web siteleri arası izlemeyi etkinleştirin.";
 "NSFocusStatusUsageDescription" = "Odak durumunuzu bir sensör olarak bildirin.";
 "NSLocalNetworkUsageDescription" = "Home Assistant örneğinizi bulun ve onunla iletişim kurun.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "En iyi konum deneyimi için \"Her Zaman İzin Ver\"i seçmenizi öneririz. \"Yalnızca Uygulamayı Kullanırken\" seçeneğinin seçilmesi, iBeacon'ları, coğrafi sınırları, arka planda konum güncellemelerini ve doğru raporlamayı devre dışı bırakır.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Ayrıca, Uygulamanın arka plan işlemlerini gerçekleştirebilmesi için 'Her Zaman' konuma erişim iznine de ihtiyacımız var. \n\n ⚠️ Bu olmadan, Uygulama arka planda hangi bağlantıyı (yerel veya uzak) kullanacağına karar veremez ve her zaman uzak bağlantıyı kullanır.";
 "NSLocationAlwaysUsageDescription" = "iBeacon'lar, coğrafi sınırlar, arka planda konum güncellemeleri ve doğru raporlama gibi özellikler için her zaman konumunuza erişmemiz gerekir.";
 "NSLocationUsageDescription" = "Etkinleştirildiğinde, cihaz konumunuz Home Assistant sunucunuza bir cihaz izleyici olarak gönderilir.";
-"NSLocationWhenInUseUsageDescription" = "Yalnızca uygulama kullanımdayken konum erişimine izin vermek, iBeacon'ları, coğrafi sınırları, arka planda konum güncellemelerini ve doğru raporlamayı devre dışı bırakır.";
+"NSLocationWhenInUseUsageDescription" = "Bu uygulama, Ev Asistanı kurulumunuza doğrudan bağlanmak için konum erişimine ihtiyaç duyar. \n \n 1️⃣ Konumunuz yalnızca yerel ağınıza bağlı olup olmadığınızı kontrol etmek için kullanılacaktır. \n \n 2️⃣ Kimseyle paylaşılmayacaktır. \n \n 3️⃣ Buna izin vermezseniz, uygulama bunun yerine her zaman internet üzerinden bağlanacaktır. Yapılandırılmamışsa, verilerinizi koruyacak ve bağlantıyı reddedecektir.";
 "NSMicrophoneUsageDescription" = "Home Assistant ön uçunuzu kullanarak ses kaydedin.";
 "NSMotionUsageDescription" = "Hareket, mevcut hareket türüyle konum güncellemelerini iyileştirmek ve temel adımsayar verilerini sağlamak için kullanılır.";
 "NSPhotoLibraryAddUsageDescription" = "Web görünümünden fotoğraf kaydetmeye izin vermek için Fotoğraf Kitaplığı erişimi gereklidir.";

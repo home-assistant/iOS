@@ -813,9 +813,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock und Menüleiste";
 "settings_details.general.visibility.options.menu_bar" = "Menüleiste";
 "settings_details.general.visibility.title" = "App anzeigen in …";
-"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
-"settings_details.http.warning.title" = "Security Warning";
-"settings_details.learn_more" = "Learn more";
+"settings_details.http.warning.message" = "Unverschlüsselte Verbindungen setzen deine Zugangs- und persönlichen Daten dem Risiko des Abfangens aus. Verwende für den Fernzugriff stets HTTPS, um deine Privatsphäre und Sicherheit zu schützen.";
+"settings_details.http.warning.title" = "Sicherheitswarnung";
+"settings_details.learn_more" = "Weitere Informationen";
 "settings_details.legacy_actions.title" = "iOS-Aktionen (veraltet)";
 "settings_details.location.background_refresh.disabled" = "Deaktiviert";
 "settings_details.location.background_refresh.enabled" = "Aktiviert";
