@@ -82,8 +82,8 @@ final class CarPlayPaginatedListTemplate {
     private func getPageButtons(endIndex: Int, currentPage: Int, totalCount: Int) -> [CPBarButton] {
         var barButtons: [CPBarButton] = []
 
-        guard let forwardImage = UIImage(systemSymbol: .arrowForward),
-              let backwardImage = UIImage(systemSymbol: .arrowBackward) else { return [] }
+        let forwardImage = UIImage(systemSymbol: .arrowForward)
+        let backwardImage = UIImage(systemSymbol: .arrowBackward)
 
         if endIndex < totalCount {
             barButtons.append(CPBarButton(
