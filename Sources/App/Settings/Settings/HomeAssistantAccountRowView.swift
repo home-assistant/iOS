@@ -56,9 +56,7 @@ struct HomeAssistantAccountRowView: View {
 
         // Observe changes to server info
         serverObserver = server.observe { info in
-            Task { @MainActor in
-                serverName = info.name
-            }
+            serverName = info.name
         }
     }
 
