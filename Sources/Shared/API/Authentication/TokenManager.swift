@@ -164,7 +164,7 @@ public class TokenManager {
             }.get { [server, self] tokenInfo in
                 Current.Log.info("storing refresh token")
                 // Reset the permanent failure flag on successful refresh
-                self.hasPermanentAuthFailure = false
+                hasPermanentAuthFailure = false
                 server.info.token = tokenInfo
             }.ensure(on: refreshPromiseCache.queue) { [self] in
                 Current.Log.info("reset cached refreshToken promise")
