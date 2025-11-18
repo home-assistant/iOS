@@ -1,11 +1,14 @@
+import HAKit
 import Shared
 import SwiftUI
 
 struct HomeAssistantAccountRowView: View {
     let server: Server
 
+    @State private var serverName: String = ""
     @State private var userName: String = ""
     @State private var profilePictureURL: URL?
+    @State private var serverObserver: HACancellable?
 
     private var imageSize: CGFloat = 40
 
@@ -25,13 +28,13 @@ struct HomeAssistantAccountRowView: View {
                     .fill(.haPrimary)
                     .frame(width: imageSize, height: imageSize)
                     .overlay(
-                        Text(server.info.name.prefix(1).uppercased())
+                        Text(serverName.prefix(1).uppercased())
                             .foregroundColor(.white)
                     )
             }
 
             VStack(alignment: .leading) {
-                Text(server.info.name)
+                Text(serverName)
                     .font(.headline)
                 Text(userName)
                     .font(.caption)
@@ -39,7 +42,21 @@ struct HomeAssistantAccountRowView: View {
             }
         }
         .onAppear {
+            setupObserver()
             loadUserNameAndProfilePicture()
+        }
+        .onDisappear {
+            serverObserver?.cancel()
+        }
+    }
+
+    private func setupObserver() {
+        // Set initial value
+        serverName = server.info.name
+
+        // Observe changes to server info
+        serverObserver = server.observe { info in
+            serverName = info.name
         }
     }
 
