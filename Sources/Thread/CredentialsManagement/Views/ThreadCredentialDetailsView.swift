@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -54,9 +55,9 @@ struct ThreadCredentialDetailsView: View {
                 ProgressView()
                     .progressViewStyle(.circular)
             case .success:
-                Image(systemName: "checkmark.circle")
+                Image(systemSymbol: .checkmarkCircle)
             case .error:
-                Image(systemName: "xmark.circle")
+                Image(systemSymbol: .xmarkCircle)
             }
         }
         .buttonStyle(.plain)

@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import SwiftUI
 
 public struct CollapsibleView<CollapsedContent: View, ExpandedContent: View>: View {
@@ -22,7 +23,7 @@ public struct CollapsibleView<CollapsedContent: View, ExpandedContent: View>: Vi
             HStack {
                 collapsedContent()
                 Spacer()
-                Image(systemName: expanded ? "chevron.up" : "chevron.down")
+                Image(systemSymbol: expanded ? .chevronUp : .chevronDown)
                     .tint(.accentColor)
             }
             .frame(maxWidth: .infinity)

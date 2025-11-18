@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -44,7 +45,7 @@ struct ThreadCredentialsSharingView<Model>: View where Model: ThreadCredentialsS
     }
 
     private var successView: some View {
-        Image(systemName: "checkmark.circle.fill")
+        Image(systemSymbol: .checkmarkCircleFill)
             .resizable()
             .frame(width: 65, height: 65)
             .aspectRatio(contentMode: .fit)

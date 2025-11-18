@@ -95,7 +95,7 @@ struct WatchConfigurationView: View {
             Button {
                 viewModel.showAddItem = true
             } label: {
-                Label(L10n.Watch.Configuration.AddItem.title, systemImage: "plus")
+                Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
             }
         }
     }
@@ -186,7 +186,7 @@ struct WatchConfigurationView: View {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .white))
             Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemName: SFSymbol.line3Horizontal.rawValue)
+            Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }
     }

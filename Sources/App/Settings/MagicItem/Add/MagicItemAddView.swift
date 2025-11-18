@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -123,7 +124,7 @@ struct MagicItemAddView: View {
                     itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
                     dismiss()
                 }, label: {
-                    MagicItemRow(title: action.Text, imageSystemName: "plus.circle.fill")
+                    MagicItemRow(title: action.Text, imageSystemSymbol: .plusCircleFill)
                 })
                 .tint(Color(uiColor: .label))
             }
@@ -218,18 +219,18 @@ struct MagicItemRow: View {
 
     private let title: String
     private let subtitle: String?
-    private let imageSystemName: String?
+    private let imageSystemSymbol: SFSymbol?
     private let entityIcon: MaterialDesignIcons?
 
     init(
         title: String,
         subtitle: String? = nil,
-        imageSystemName: String? = nil,
+        imageSystemSymbol: SFSymbol? = nil,
         entityIcon: MaterialDesignIcons? = nil
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.imageSystemName = imageSystemName
+        self.imageSystemSymbol = imageSystemSymbol
         self.entityIcon = entityIcon
     }
 
@@ -254,8 +255,8 @@ struct MagicItemRow: View {
                         .foregroundStyle(Color.secondary)
                 }
             }
-            if let imageSystemName {
-                Image(systemName: imageSystemName)
+            if let imageSystemSymbol {
+                Image(systemSymbol: imageSystemSymbol)
                     .foregroundStyle(.white, .green)
                     .font(.title3)
             }

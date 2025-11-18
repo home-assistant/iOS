@@ -73,7 +73,7 @@ struct CarPlayConfigurationView: View {
             Button {
                 viewModel.showAddItem = true
             } label: {
-                Label(L10n.Watch.Configuration.AddItem.title, systemImage: "plus")
+                Label(L10n.Watch.Configuration.AddItem.title, systemSymbol: .plus)
             }
         }
     }
@@ -108,7 +108,7 @@ struct CarPlayConfigurationView: View {
             Image(uiImage: image(for: item, itemInfo: info, watchPreview: false, color: .accent))
             Text(item.name(info: info))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemName: "line.3.horizontal")
+            Image(systemSymbol: .line3Horizontal)
                 .foregroundStyle(.gray)
         }
     }
@@ -157,7 +157,7 @@ struct CarPlayConfigurationView: View {
                         HStack {
                             Text(tab.name)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            Image(systemName: SFSymbol.line3Horizontal.rawValue)
+                            Image(systemSymbol: .line3Horizontal)
                                 .foregroundStyle(.gray)
                         }
                     }
@@ -185,7 +185,7 @@ struct CarPlayConfigurationView: View {
                             HStack {
                                 Text(tab.name)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                Image(systemName: SFSymbol.plusCircleFill.rawValue)
+                                Image(systemSymbol: .plusCircleFill)
                                     .foregroundStyle(.white, .green)
                                     .font(.title3)
                             }
