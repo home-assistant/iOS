@@ -200,7 +200,7 @@ struct OnboardingServersListView: View {
                     Image(systemSymbol: .questionmark)
                 })
                 .sheet(isPresented: $showDocumentation) {
-                    SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
+                    SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
                 }
             }
         }

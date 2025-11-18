@@ -36,6 +36,7 @@ struct LocalAccessPermissionViewInNavigationView: View {
 
 struct LocalAccessPermissionView: View {
     @StateObject private var viewModel: LocalAccessPermissionViewModel
+    @State private var showLearnMore = false
     private let hasInitialSelection: Bool
 
     init(initialSelection: ConnectionSecurityLevel? = nil, action: @escaping (ConnectionSecurityLevel) -> Void) {
@@ -93,8 +94,15 @@ struct LocalAccessPermissionView: View {
             primaryActionTitle: hasInitialSelection ? L10n.saveLabel : L10n.Onboarding.LocalAccess.nextButton,
             primaryAction: {
                 action(viewModel.selection)
+            },
+            secondaryActionTitle: L10n.SettingsDetails.learnMore,
+            secondaryAction: {
+                showLearnMore = true
             }
         )
+        .sheet(isPresented: $showLearnMore) {
+            SafariWebView(url: AppConstants.WebURLs.companionAppConnectionSecurityLevel)
+        }
     }
 }
 

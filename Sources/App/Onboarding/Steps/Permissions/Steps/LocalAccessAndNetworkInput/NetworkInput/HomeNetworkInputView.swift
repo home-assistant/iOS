@@ -10,6 +10,7 @@ struct HomeNetworkInputView: View {
     @State private var networkName: String = ""
     @State private var hardwareAddress: String = ""
     @State private var showingEmptyNetworkAlert = false
+    @State private var showLearnMore = false
     @StateObject private var viewModel = HomeNetworkInputViewModel()
 
     let onNext: (SubmitContext) -> Void
@@ -25,12 +26,19 @@ struct HomeNetworkInputView: View {
                 networkInputContent
             },
             primaryActionTitle: L10n.Onboarding.NetworkInput.PrimaryButton.title,
-            primaryAction: handlePrimaryAction
+            primaryAction: handlePrimaryAction,
+            secondaryActionTitle: L10n.SettingsDetails.learnMore,
+            secondaryAction: {
+                showLearnMore = true
+            }
         )
         .alert(L10n.Onboarding.NetworkInput.NoNetwork.Alert.title, isPresented: $showingEmptyNetworkAlert) {
             Button(L10n.okLabel) {}
         } message: {
             Text(L10n.Onboarding.NetworkInput.NoNetwork.Alert.body)
+        }
+        .sheet(isPresented: $showLearnMore) {
+            SafariWebView(url: AppConstants.WebURLs.companionAppConnectionSecurityLevel)
         }
         .onAppear {
             loadCurrentNetworkInfo()
