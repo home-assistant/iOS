@@ -30,7 +30,7 @@ struct OnboardingWelcomeView: View {
             continueButtonBlock
         })
         .sheet(isPresented: $showLearnMore) {
-            SafariWebView(url: AppConstants.WebURLs.homeAssistantGetStarted)
+            SafariWebView(url: AppConstants.WebURLs.homeAssistantCompanionGetStarted)
         }
     }
 
