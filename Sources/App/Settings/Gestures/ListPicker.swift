@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import SwiftUI
 
 protocol ListPickerSelectable: Identifiable {
@@ -59,7 +60,7 @@ struct ListPickerContentView: View {
                                 Text(item.title)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 if selection.id == item.id {
-                                    Image(systemName: "checkmark")
+                                    Image(systemSymbol: .checkmark)
                                         .foregroundColor(.accentColor)
                                 }
                             }

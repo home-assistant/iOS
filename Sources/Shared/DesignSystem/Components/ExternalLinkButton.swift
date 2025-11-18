@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import SwiftUI
 
 public struct ExternalLinkButton: View {
@@ -86,13 +87,13 @@ public struct ActionLinkButton: View {
         .sheet(isPresented: .constant(true)) {
             VStack {
                 ExternalLinkButton(
-                    icon: Image(systemName: "xmark"),
+                    icon: Image(systemSymbol: .xmark),
                     title: "Go there",
                     url: URL(string: "https://google.com")!,
                     tint: .blue
                 )
                 ExternalLinkButton(
-                    icon: Image(systemName: "xmark"),
+                    icon: Image(systemSymbol: .xmark),
                     title: "Go there",
                     url: URL(string: "https://google.com")!,
                     tint: .blue

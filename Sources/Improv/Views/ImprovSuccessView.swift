@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -7,10 +8,10 @@ struct ImprovSuccessView: View {
         Spacer()
         VStack(spacing: DesignSystem.Spaces.two) {
             ZStack(alignment: .bottomTrailing) {
-                Image(systemName: "wifi.circle.fill")
+                Image(systemSymbol: .wifiCircleFill)
                     .font(.system(size: 100))
                     .foregroundStyle(.white, Color.haPrimary)
-                Image(systemName: "checkmark.circle.fill")
+                Image(systemSymbol: .checkmarkCircleFill)
                     .font(.system(size: 35))
                     .foregroundStyle(.white, .green)
                     .overlay(

@@ -10,7 +10,11 @@ struct SFSymbolEntity: AppEntity {
 
     var id: String
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(id)", image: .init(systemName: id))
+        if let symbol = SFSymbol(rawValue: id) {
+            return DisplayRepresentation(title: "\(id)", image: .init(systemSymbol: symbol))
+        } else {
+            return DisplayRepresentation(title: "\(id)", image: .init(systemName: id))
+        }
     }
 }
 

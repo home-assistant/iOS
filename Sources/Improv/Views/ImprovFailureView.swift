@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -7,7 +8,7 @@ struct ImprovFailureView: View {
     var body: some View {
         Spacer()
         VStack(spacing: Spaces.two) {
-            Image(systemName: "xmark.circle.fill")
+            Image(systemSymbol: .xmarkCircleFill)
                 .font(.system(size: 100))
                 .foregroundStyle(.white, .red)
             Text(message)
