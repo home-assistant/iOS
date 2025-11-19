@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "Du kan vælge at aktivere sporing på tværs af websitet, hvis din konfiguration kræver det.";
 "NSFocusStatusUsageDescription" = "Rapportér din fokusstatus som en sensor.";
 "NSLocalNetworkUsageDescription" = "Finde og kommunikere med din Home Assistant-installation.";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Vi anbefaler, at du vælger \"Tillad altid\" for at få den bedste lokalitet. Hvis du vælger \"Kun mens du bruger appen\", deaktiveres iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Vi skal også bruge tilladelse til at få adgang til lokalitet 'Altid', så appen kan udføre baggrundshandlinger. \n\n ⚠️ Uden den kan appen ikke vide, hvilken forbindelse (lokal eller fjern) der skal bruges i baggrunden, og vil altid bruge fjernadgang.";
 "NSLocationAlwaysUsageDescription" = "Vi har altid brug for adgang til din lokalitet for funktioner som iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
 "NSLocationUsageDescription" = "Når denne indstilling er aktiveret, sendes din enheds lokalitet til din Home Assistant som en sporingsenhed.";
-"NSLocationWhenInUseUsageDescription" = "Hvis du kun tillader lokalitetsadgang, mens appen er i brug, deaktiveres iBeacons, geofences, baggrundsopdatering af lokalitet og nøjagtig rapportering.";
+"NSLocationWhenInUseUsageDescription" = "Denne app skal have adgang til din lokalitet for at kunne oprette direkte forbindelse til din Home Assistant-installation. \n \n 1️⃣ Din lokalitet vil kun blive brugt til at kontrollere, om du har forbindelse til dit lokale netværk. \n \n 2️⃣ Det vil ikke blive delt med nogen. \n \n 3️⃣ Hvis du ikke tillader dette, vil appen altid oprette forbindelse over internettet i stedet. Hvis den ikke er konfigureret, vil den beskytte dine data og afvise forbindelsen.";
 "NSMicrophoneUsageDescription" = "Optag lyd ved hjælp af Home Assistant-brugerfladen";
 "NSMotionUsageDescription" = "Bevægelse bruges til at forbedre lokalitetssopdateringer med aktuel bevægelsestype samt levere grundlæggende skridttæller-data.";
 "NSPhotoLibraryAddUsageDescription" = "Adgang til fotobibliotek er nødvendig for at give mulighed for at gemme fotos fra webvisningen.";

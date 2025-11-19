@@ -516,7 +516,7 @@
 "onboarding.network_input.disclaimer.title" = "請確認已正確設定您的家庭網路。";
 "onboarding.network_input.hardware.input_field.title" = "硬體位址";
 "onboarding.network_input.input_field.placeholder" = "網路名稱";
-"onboarding.network_input.input_field.title" = "Wi-Fi 網路已連線";
+"onboarding.network_input.input_field.title" = "家庭 Wi-Fi 網路名稱";
 "onboarding.network_input.no_network.alert.body" = "請輸入網路名稱以繼續。";
 "onboarding.network_input.no_network.alert.title" = "必須輸入網路名稱";
 "onboarding.network_input.no_network.skip.alert.body" = "尚未設定家庭網路。可以稍後於應用程式設定中進行設定，在此之前將僅使用遠端連線（假如存在）以存取 Home Assistant。";
@@ -524,9 +524,9 @@
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "跳過";
 "onboarding.network_input.no_network.skip.alert.title" = "確認？";
 "onboarding.network_input.primary_button.title" = "下一個";
-"onboarding.network_input.primary_description" = "指示何時連接到家庭網路。例如，可用於使用內部連線網址、或在家時停用應用程式鎖定。";
+"onboarding.network_input.primary_description" = "為了獲得最佳體驗，Home Assistant 需要知道您何時連線至家庭網路。";
 "onboarding.network_input.secondary_button.title" = "跳過";
-"onboarding.network_input.title" = "定義您的家庭網路";
+"onboarding.network_input.title" = "您的家庭網路名稱？";
 "onboarding.permission.location.buttons.allow_and_share" = "允許並與 Home Assistant 共享";
 "onboarding.permission.location.buttons.allow_for_app" = "僅允許應用程式使用";
 "onboarding.permission.location.buttons.deny" = "拒絕";

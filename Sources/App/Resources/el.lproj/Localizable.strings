@@ -516,7 +516,7 @@
 "onboarding.network_input.disclaimer.title" = "Βεβαιωθείτε ότι έχετε ρυθμίσει σωστά το δίκτυο του σπιτιού σας.";
 "onboarding.network_input.hardware.input_field.title" = "Διεύθυνση υλικού";
 "onboarding.network_input.input_field.placeholder" = "Ονομα δικτύου";
-"onboarding.network_input.input_field.title" = "Συνδεδεμένο σε δίκτυο Wi-Fi";
+"onboarding.network_input.input_field.title" = "Name of the Wi-Fi network at home";
 "onboarding.network_input.no_network.alert.body" = "Παρακαλώ εισάγετε ένα όνομα δικτύου για να συνεχίσετε.";
 "onboarding.network_input.no_network.alert.title" = "Απαιτείται όνομα δικτύου";
 "onboarding.network_input.no_network.skip.alert.body" = "Δεν έχετε δημιουργήσει δίκτυο σπιτιού. Μπορείτε να το ρυθμίσετε αργότερα στις ρυθμίσεις της εφαρμογής, μέχρι τότε θα χρησιμοποιούμε μόνο την απομακρυσμένη σύνδεσή σας (αν υπάρχει) για να αποκτήσουμε πρόσβαση στο Home Assistant.";
@@ -524,9 +524,9 @@
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Παράλειψη";
 "onboarding.network_input.no_network.skip.alert.title" = "Είστε σίγουρος/η;";
 "onboarding.network_input.primary_button.title" = "Επόμενο";
-"onboarding.network_input.primary_description" = "Δείχνει πότε είστε συνδεδεμένοι στο δίκτυο του σπιτιού σας. Αυτό μπορεί να χρησιμοποιηθεί, για παράδειγμα, για να χρησιμοποιήσετε τη διεύθυνση URL εσωτερικής σύνδεσης ή να απενεργοποιήσετε το κλείδωμα της εφαρμογής όταν βρίσκεστε στο σπίτι.";
+"onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
 "onboarding.network_input.secondary_button.title" = "Παράλειψη";
-"onboarding.network_input.title" = "Ορίστε το δίκτυο του σπιτιού σας";
+"onboarding.network_input.title" = "What is your home network?";
 "onboarding.permission.location.buttons.allow_and_share" = "Αποδοχή και κοινή χρήση με το Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Να επιτρέπεται μόνο για χρήση εφαρμογής";
 "onboarding.permission.location.buttons.deny" = "Αρνηση";
