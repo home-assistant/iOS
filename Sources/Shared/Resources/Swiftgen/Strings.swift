@@ -1933,9 +1933,9 @@ public enum L10n {
       }
     }
     public enum NetworkInput {
-      /// Indicate when you're connected to your home network. This can be used to, for example, use the internal connection URL or disable the app lock when at home.
+      /// For the best experience, Home Assistant needs to know when you’re connected to your home network.
       public static var primaryDescription: String { return L10n.tr("Localizable", "onboarding.network_input.primary_description") }
-      /// Define your home network
+      /// What is your home network?
       public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.title") }
       public enum Disclaimer {
         /// Adding public Wi-Fi networks or using multiple ethernet/VPN connections may unintentionally expose information about or access to your app or server.
@@ -1952,7 +1952,7 @@ public enum L10n {
       public enum InputField {
         /// Network name
         public static var placeholder: String { return L10n.tr("Localizable", "onboarding.network_input.input_field.placeholder") }
-        /// Wi-Fi network connected
+        /// Name of the Wi-Fi network at home
         public static var title: String { return L10n.tr("Localizable", "onboarding.network_input.input_field.title") }
       }
       public enum NoNetwork {

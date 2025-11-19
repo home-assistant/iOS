@@ -516,7 +516,7 @@
 "onboarding.network_input.disclaimer.title" = "确保正确设置您的家庭网络。";
 "onboarding.network_input.hardware.input_field.title" = "硬件地址";
 "onboarding.network_input.input_field.placeholder" = "网络名称";
-"onboarding.network_input.input_field.title" = "已连接无线网络";
+"onboarding.network_input.input_field.title" = "家中无线网络的名称";
 "onboarding.network_input.no_network.alert.body" = "请输入网络名称以继续。";
 "onboarding.network_input.no_network.alert.title" = "需要网络名称";
 "onboarding.network_input.no_network.skip.alert.body" = "您尚未设置家庭网络。您可以稍后在应用设置中进行设置，在此之前，我们将仅使用您的远程连接（如果有）来访问 Home Assistant 。";
@@ -524,9 +524,9 @@
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "跳过";
 "onboarding.network_input.no_network.skip.alert.title" = "您确定吗 ？";
 "onboarding.network_input.primary_button.title" = "下一步";
-"onboarding.network_input.primary_description" = "指示您何时连接到家庭网络。例如，这可用于使用内部连接网址时或在家禁用应用锁时。";
+"onboarding.network_input.primary_description" = "为了获得最佳体验，Home Assistant 需要知道您何时连接到家庭网络。";
 "onboarding.network_input.secondary_button.title" = "跳过";
-"onboarding.network_input.title" = "定义您的家庭网络";
+"onboarding.network_input.title" = "你的家庭网络是 ？";
 "onboarding.permission.location.buttons.allow_and_share" = "允许并与 Home Assistant 共享";
 "onboarding.permission.location.buttons.allow_for_app" = "仅限应用使用";
 "onboarding.permission.location.buttons.deny" = "拒绝";

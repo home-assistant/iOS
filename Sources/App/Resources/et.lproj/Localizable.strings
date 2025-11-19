@@ -516,7 +516,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.network_input.disclaimer.title" = "Veendu, et koduvõrk oleks õigesti seadistatud.";
 "onboarding.network_input.hardware.input_field.title" = "Riistvaraline aadress";
 "onboarding.network_input.input_field.placeholder" = "Võrgu nimi";
-"onboarding.network_input.input_field.title" = "Wi-Fi-võrk on ühendatud";
+"onboarding.network_input.input_field.title" = "Koduse WiFi-võrgu nimi";
 "onboarding.network_input.no_network.alert.body" = "Jätkamiseks sisesta võrgu nimi.";
 "onboarding.network_input.no_network.alert.title" = "Nõutav on võrgu nimi";
 "onboarding.network_input.no_network.skip.alert.body" = "Koduvõrku pole määratud. Saad selle seadistada hiljem rakenduse seadetes, seni kasutame Home Assistantile juurdepääsuks ainult kaugühendust (kui see on olemas).";
@@ -524,9 +524,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Jäta vahele";
 "onboarding.network_input.no_network.skip.alert.title" = "Kas oled kindel?";
 "onboarding.network_input.primary_button.title" = "Järgmine";
-"onboarding.network_input.primary_description" = "Näitab, millal oled oma koduvõrguga ühendatud. Seda saab kasutada näiteks selleks, et kasutada sisemise ühenduse URL-i või keelata rakenduse lukustus kui oled kodus.";
+"onboarding.network_input.primary_description" = "Parima kogemuse saamiseks peab Home Assistant teadma millal oled koduvõrguga ühendatud.";
 "onboarding.network_input.secondary_button.title" = "Jäta vahele";
-"onboarding.network_input.title" = "Määra oma koduvõrk";
+"onboarding.network_input.title" = "Milline on Sinu koduvõrk?";
 "onboarding.permission.location.buttons.allow_and_share" = "Luba ja jaga Home Assistantiga";
 "onboarding.permission.location.buttons.allow_for_app" = "Luba ainult rakenduses kasutamiseks";
 "onboarding.permission.location.buttons.deny" = "Keeldu";

@@ -515,7 +515,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.network_input.disclaimer.title" = "Se till att konfigurera ditt hemnätverk på rätt sätt.";
 "onboarding.network_input.hardware.input_field.title" = "Hårdvaruadress";
 "onboarding.network_input.input_field.placeholder" = "Nätverksnamn";
-"onboarding.network_input.input_field.title" = "Wi-Fi-nätverk anslutet";
+"onboarding.network_input.input_field.title" = "Name of the Wi-Fi network at home";
 "onboarding.network_input.no_network.alert.body" = "Ange ett nätverksnamn för att fortsätta.";
 "onboarding.network_input.no_network.alert.title" = "Nätverksnamn krävs";
 "onboarding.network_input.no_network.skip.alert.body" = "Du har inte ställt in ett hemnätverk. Du kan ställa in det senare i appinställningarna, tills dess kommer vi bara att använda din fjärranslutning (om den finns) för att komma åt Home Assistant.";
@@ -523,9 +523,9 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Hoppa över";
 "onboarding.network_input.no_network.skip.alert.title" = "Är du säker?";
 "onboarding.network_input.primary_button.title" = "Nästa";
-"onboarding.network_input.primary_description" = "Indikerar när du är ansluten till ditt hemnätverk. Detta kan till exempel användas för att använda den interna anslutnings-URL:en eller inaktivera applåset när du är hemma.";
+"onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
 "onboarding.network_input.secondary_button.title" = "Hoppa över";
-"onboarding.network_input.title" = "Definiera ditt hemnätverk";
+"onboarding.network_input.title" = "What is your home network?";
 "onboarding.permission.location.buttons.allow_and_share" = "Tillåt samt dela med Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Tillåt endast i appanvändning";
 "onboarding.permission.location.buttons.deny" = "Neka";

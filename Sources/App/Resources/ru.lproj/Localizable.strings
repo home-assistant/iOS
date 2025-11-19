@@ -516,7 +516,7 @@
 "onboarding.network_input.disclaimer.title" = "Убедитесь, что вы правильно настроили домашнюю сеть.";
 "onboarding.network_input.hardware.input_field.title" = "Аппаратный адрес";
 "onboarding.network_input.input_field.placeholder" = "Название сети";
-"onboarding.network_input.input_field.title" = "Wi-Fi сеть подключена";
+"onboarding.network_input.input_field.title" = "Name of the Wi-Fi network at home";
 "onboarding.network_input.no_network.alert.body" = "Пожалуйста, введите название сети для продолжения.";
 "onboarding.network_input.no_network.alert.title" = "Требуется название сети";
 "onboarding.network_input.no_network.skip.alert.body" = "Вы не настроили домашнюю сеть. Вы можете настроить ее позже в настройках приложения, а до этого мы будем использовать только удаленное подключение (если оно существует) для доступа к Home Assistant.";
@@ -524,9 +524,9 @@
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Пропустить";
 "onboarding.network_input.no_network.skip.alert.title" = "Вы уверены?";
 "onboarding.network_input.primary_button.title" = "Далее";
-"onboarding.network_input.primary_description" = "Указывать, подключены ли вы к домашней сети. Это можно использовать, например, для использования внутреннего URL-адреса подключения или отключения блокировки приложений, когда вы дома.";
+"onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
 "onboarding.network_input.secondary_button.title" = "Пропустить";
-"onboarding.network_input.title" = "Определите домашнюю сеть";
+"onboarding.network_input.title" = "What is your home network?";
 "onboarding.permission.location.buttons.allow_and_share" = "Разрешить и поделиться с Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Разрешить использование только в приложении";
 "onboarding.permission.location.buttons.deny" = "Запретить";
