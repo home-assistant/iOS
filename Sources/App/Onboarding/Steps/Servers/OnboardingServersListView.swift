@@ -9,7 +9,6 @@ struct OnboardingServersListView: View {
         static let delayUntilAutoconnect: TimeInterval = 2
     }
 
-    @EnvironmentObject var viewControllerProvider: ViewControllerProvider
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject var hostingProvider: ViewControllerProvider
@@ -24,7 +23,7 @@ struct OnboardingServersListView: View {
     @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
 
     private var presentingViewController: UIViewController {
-        if let providedController = viewControllerProvider.viewController, Current.isCatalyst {
+        if let providedController = hostingProvider.viewController, Current.isCatalyst {
             return providedController
         } else if let hostingViewController = hostingProvider.viewController {
             switch onboardingStyle {
