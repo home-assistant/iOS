@@ -109,7 +109,7 @@
 "assist.watch.mic_button.title" = "Toque para";
 "assist.watch.not_reachable.title" = "O Assist requer conectividade com o iPhone. Seu iPhone está inacessível no momento.";
 "assist.watch.volume.title" = "Controle de volume";
-"assist_pipeline_picker.no_pipelines" = "No pipelines available";
+"assist_pipeline_picker.no_pipelines" = "Nenhum 'pipeline' disponível";
 "assist_pipeline_picker.placeholder" = "Escolha o pipeline";
 "cancel_label" = "Cancelar";
 "carPlay.action.intro.item.body" = "Toque para continuar em seu iPhone";
@@ -352,10 +352,10 @@
 "location_change_notification.visit.body" = "Localização atualizada via Visit";
 "location_change_notification.watch_context.body" = "Localização atualizada por meio da sincronização do contexto do relógio";
 "location_change_notification.x_callback_url.body" = "Localização atualizada via X-Callback-URL";
-"mac.copy.accessibility_label" = "Copy";
+"mac.copy.accessibility_label" = "Copiar";
 "mac.navigation.go_back.accessibility_label" = "Navegar de volta";
 "mac.navigation.go_forward.accessibility_label" = "Navegar para a frente";
-"mac.paste.accessibility_label" = "Paste";
+"mac.paste.accessibility_label" = "Colar";
 "magic_item.action" = "Ação";
 "magic_item.action.assist.pipeline.title" = "Pipeline";
 "magic_item.action.assist.start_listening.title" = "Começar a escutar";
@@ -524,7 +524,7 @@ Remoto quando você estiver pronto.";
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Pular";
 "onboarding.network_input.no_network.skip.alert.title" = "Tem certeza?";
 "onboarding.network_input.primary_button.title" = "Próximo";
-"onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
+"onboarding.network_input.primary_description" = "Para a melhor experiência, Home Assistant precisa saber quando está conectado a sua rede doméstica.";
 "onboarding.network_input.secondary_button.title" = "Pular";
 "onboarding.network_input.title" = "Qual sua rede doméstica?";
 "onboarding.permission.location.buttons.allow_and_share" = "Permitir e compartilhar com o Home Assistant";
@@ -619,10 +619,10 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.always_fallback_internal.title" = "Sempre retornar para URL interna";
 "settings.connection_section.cloud_overrides_external" = "Ao conectar via Cloud, a URL Externa não será usada. Você não precisa configurar uma, a menos que queira desabilitar a Cloud.";
 "settings.connection_section.connecting_via" = "Conectado por";
-"settings.connection_section.connection_access_security_level.less_secure.title" = "Less secure";
-"settings.connection_section.connection_access_security_level.most_secure.title" = "Most secure";
-"settings.connection_section.connection_access_security_level.title" = "Connection security level";
-"settings.connection_section.connection_access_security_level.undefined.title" = "Not configured";
+"settings.connection_section.connection_access_security_level.less_secure.title" = "Menos seguro";
+"settings.connection_section.connection_access_security_level.most_secure.title" = "Mais seguro";
+"settings.connection_section.connection_access_security_level.title" = "Nível de segurança da conexão";
+"settings.connection_section.connection_access_security_level.undefined.title" = "Não configurado";
 "settings.connection_section.delete_server.message" = "Tem certeza de que deseja excluir este servidor?";
 "settings.connection_section.delete_server.progress" = "Excluindo o servidor...";
 "settings.connection_section.delete_server.title" = "Excluir servidor";
@@ -646,10 +646,10 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MeuNomeDeRedeDivertido";
 "settings.connection_section.invite_to_server" = "Convidar alguém para este servidor";
-"settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
-"settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
-"settings.connection_section.local_access_security_level.title" = "Local access security";
-"settings.connection_section.local_access_security_level.undefined.title" = "Not configured";
+"settings.connection_section.local_access_security_level.less_secure.title" = "Menos seguro";
+"settings.connection_section.local_access_security_level.most_secure.title" = "Mais seguro";
+"settings.connection_section.local_access_security_level.title" = "Segurança de acesso local";
+"settings.connection_section.local_access_security_level.undefined.title" = "Não configurado";
 "settings.connection_section.local_push_description" = "Conecte-se diretamente ao servidor Home Assistant para notificações push quando estiver em SSIDs internos.";
 "settings.connection_section.location_send_type.setting.exact" = "Exato";
 "settings.connection_section.location_send_type.setting.never" = "Nunca";
@@ -813,9 +813,9 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock e barra de menu";
 "settings_details.general.visibility.options.menu_bar" = "Barra de menu";
 "settings_details.general.visibility.title" = "Mostrar aplicativo em…";
-"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
+"settings_details.http.warning.message" = "Conexões não criptografadas expõem suas credenciais e dados pessoais a possíveis interceptações. Sempre use HTTPS para acesso remoto para proteger sua privacidade e segurança.";
 "settings_details.http.warning.title" = "Aviso de segurança";
-"settings_details.learn_more" = "Learn more";
+"settings_details.learn_more" = "Saiba mais";
 "settings_details.legacy_actions.title" = "Ações do iOS (legado)";
 "settings_details.location.background_refresh.disabled" = "Desativado";
 "settings_details.location.background_refresh.enabled" = "Habilitado";
@@ -1244,8 +1244,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "web_view.no_url_available.body" = "🔐  Due to your security choices, there's no URL that we are allowed to use. \
 \
  ➡️  Please open the App settings and update your security choices or URLs.";
-"web_view.no_url_available.primary_button.title" = "Open App settings";
-"web_view.no_url_available.title" = "We can't connect to Home Assistant";
+"web_view.no_url_available.primary_button.title" = "Abrir configurações do App";
+"web_view.no_url_available.title" = "Não podemos conectar ao Home Assistant";
 "web_view.server_selection.title" = "Escolha o servidor";
 "web_view.unique_server_selection.title" = "Escolha um servidor";
 "widgets.action.name.assist" = "Assist";
