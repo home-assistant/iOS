@@ -82,8 +82,6 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Used to scan for Improv devices</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_hass-mobile-app._tcp</string>
@@ -99,8 +97,8 @@
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Locate and communicate with your Home Assistant instance.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting "Always Allow" for the best location experience.
-			Selecting "Only While Using the App" will disable iBeacons, geofences,
+	<string>We suggest selecting &quot;Always Allow&quot; for the best location experience.
+			Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences,
 			background location updates and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences,
@@ -129,6 +127,8 @@
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Used to dictate text to Assist.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Used to scan for Improv devices</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>AssistInAppIntent</string>
@@ -166,14 +166,6 @@
 			</array>
 			<key>UIWindowSceneSessionRoleApplication</key>
 			<array>
-				<dict>
-					<key>UISceneClassName</key>
-					<string>UIWindowScene</string>
-					<key>UISceneConfigurationName</key>
-					<string>Onboarding</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).OnboardingSceneDelegate</string>
-				</dict>
 				<dict>
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>

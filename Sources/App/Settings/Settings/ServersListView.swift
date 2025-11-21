@@ -17,18 +17,12 @@ struct ServersListView: View {
         }
 
         Button {
-            #if targetEnvironment(macCatalyst)
-            Current.sceneManager.activateAnyScene(for: .onboarding)
-            #else
             showAddServer = true
-            #endif
         } label: {
             Label(L10n.Settings.ConnectionSection.addServer, systemSymbol: .plus)
         }
-        #if !targetEnvironment(macCatalyst)
         .fullScreenCover(isPresented: $showAddServer) {
             OnboardingNavigationView(onboardingStyle: .secondary)
         }
-        #endif
     }
 }
