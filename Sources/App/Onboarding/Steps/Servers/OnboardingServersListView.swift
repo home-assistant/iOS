@@ -9,9 +9,9 @@ struct OnboardingServersListView: View {
         static let delayUntilAutoconnect: TimeInterval = 2
     }
 
-    @EnvironmentObject var viewControllerProvider: ViewControllerProvider
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @EnvironmentObject var hostingProvider: ViewControllerProvider
 
     @StateObject private var viewModel: OnboardingServersListViewModel
 
@@ -23,22 +23,29 @@ struct OnboardingServersListView: View {
     @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
 
     private var presentingViewController: UIViewController {
-        if let providedController = viewControllerProvider.viewController, Current.isCatalyst {
+        if let providedController = hostingProvider.viewController, Current.isCatalyst {
             return providedController
-        } else if let topController = UIApplication.shared.topViewController() {
-            return topController
+        } else if let hostingViewController = hostingProvider.viewController {
+            switch onboardingStyle {
+            case .initial, .required:
+                return hostingViewController
+            case .secondary:
+                return hostingViewController.presentedViewController ?? hostingViewController
+            }
         } else {
             fatalError("No controller provided for onboarding")
         }
     }
 
-    let prefillURL: URL?
+    private let prefillURL: URL?
+    private let onboardingStyle: OnboardingStyle
 
-    init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false) {
+    init(prefillURL: URL? = nil, shouldDismissOnSuccess: Bool = false, onboardingStyle: OnboardingStyle) {
         self.prefillURL = prefillURL
         self
             ._viewModel =
             .init(wrappedValue: OnboardingServersListViewModel(shouldDismissOnSuccess: shouldDismissOnSuccess))
+        self.onboardingStyle = onboardingStyle
     }
 
     var body: some View {
@@ -386,28 +393,6 @@ struct OnboardingServersListView: View {
 
 #Preview {
     NavigationView {
-        OnboardingServersListView(prefillURL: nil)
-    }
-}
-
-private extension UIApplication {
-    func topViewController(controller: UIViewController? = nil) -> UIViewController? {
-        let controller = controller ?? connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)?
-            .rootViewController
-
-        if let navigationController = controller as? UINavigationController {
-            return topViewController(controller: navigationController.visibleViewController)
-        }
-        if let tabController = controller as? UITabBarController,
-           let selected = tabController.selectedViewController {
-            return topViewController(controller: selected)
-        }
-        if let presented = controller?.presentedViewController {
-            return topViewController(controller: presented)
-        }
-        return controller
+        OnboardingServersListView(prefillURL: nil, onboardingStyle: .secondary)
     }
 }

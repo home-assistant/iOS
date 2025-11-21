@@ -40,7 +40,7 @@ struct OnboardingNavigationView: View {
                 case .initial:
                     OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                 case .secondary:
-                    OnboardingServersListView()
+                    OnboardingServersListView(onboardingStyle: onboardingStyle)
                 case .required:
                     OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
                 }
