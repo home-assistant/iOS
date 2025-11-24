@@ -322,7 +322,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     /// If user has not chosen 'Most secure' or 'Less secure' local access yet, this triggers a screen for decision
     private func checkForLocalSecurityLevelDecisionNeeded() {
-        if Current.location.permissionStatus == .notDetermined {
+        if Current.location.permissionStatus == .notDetermined, server.info.connection.hasNonHTTPSURLOption {
             Current.Log.verbose("User has not decided location permission yet")
             showOnboardingPermissions(steps: OnboardingPermissionsNavigationViewModel.StepID.updateLocationPermission)
         } else if server.info.connection.connectionAccessSecurityLevel == .undefined {
