@@ -378,7 +378,7 @@ private struct WebSocketStatusView: View {
                 ))
 
                 return components.joined(separator: "\n\n")
-            case .disconnected:
+            case .disconnected, .rejected:
                 return L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.title
             }
         default:

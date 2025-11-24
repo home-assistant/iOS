@@ -12,6 +12,7 @@ import UserNotifications
     enum PushProviderError: Error {
         case noSuchServer
         case noConfiguration
+        case rejectedByServer
     }
 
     private var localPushManagers = [LocalPushManager]()
@@ -135,6 +136,8 @@ import UserNotifications
                      .disconnected(reason: .disconnected),
                      .disconnected(reason: .waitingToReconnect(lastError: .none, atLatest: _, retryCount: _)):
                     break
+                case .disconnected(reason: .rejected):
+                    seal.reject(PushProvider.PushProviderError.rejectedByServer)
                 }
             }
 
