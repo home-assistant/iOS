@@ -1190,15 +1190,31 @@ extension WebViewController {
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         refreshControl.endRefreshing()
-        if let err = error as? URLError {
-            if err.code != .cancelled {
+
+        let nsError = error as NSError
+        let shouldShowError: Bool
+
+        // Handle URLError
+        if let urlError = error as? URLError {
+            shouldShowError = urlError.code != .cancelled
+            if shouldShowError {
                 Current.Log.error("Failure during content load: \(error)")
             }
-
-            if !error.isCancelled {
-                showEmptyState()
-                showSwiftMessage(error: error)
+        }
+        // Handle WebKitErrorDomain errors (e.g., Code 101 - invalid URL)
+        else if nsError.domain == "WebKitErrorDomain" {
+            shouldShowError = !nsError.isCancelled
+            Current.Log.error("WebKit error during content load: \(error)")
+        } else {
+            shouldShowError = !error.isCancelled
+            if shouldShowError {
+                Current.Log.error("Failure during content load: \(error)")
             }
+        }
+
+        if shouldShowError {
+            showEmptyState()
+            showSwiftMessage(error: error)
         }
     }
 
