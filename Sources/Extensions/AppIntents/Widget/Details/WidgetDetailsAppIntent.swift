@@ -59,7 +59,7 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var detailsTemplate: String
 
     @Parameter(
-        title: .init("widgets.details.parameters.run_script", defaultValue: "Run Script"),
+        title: .init("widgets.details.parameters.run_script", defaultValue: "Run Script (only in rectangular family)"),
         default: false
     )
     var runScript: Bool
