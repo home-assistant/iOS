@@ -124,7 +124,7 @@ struct WidgetDetailsEntry: TimelineEntry {
     var lowerText: String?
     var detailsText: String?
 
-    var runScript: Bool?
+    var runScript: Bool
     var script: IntentScriptEntity?
 }
 
