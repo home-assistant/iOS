@@ -11,7 +11,7 @@ struct WidgetDetails: Widget {
             intent: WidgetDetailsAppIntent.self,
             provider: WidgetDetailsAppIntentTimelineProvider()
         ) { timelineEntry in
-            if let runScript = timelineEntry.runScript, runScript, let intent = intent(for: timelineEntry) {
+            if timelineEntry.runScript, let intent = intent(for: timelineEntry) {
                 Button(intent: intent) {
                     WidgetDetailsView(entry: timelineEntry)
                         .widgetBackground(Color.clear)

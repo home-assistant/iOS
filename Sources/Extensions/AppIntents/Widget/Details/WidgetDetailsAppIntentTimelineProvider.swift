@@ -43,7 +43,7 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> WidgetDetailsEntry {
         .init(
             upperText: nil, lowerText: nil, detailsText: nil,
-            runAction: false, action: nil
+            runScript: false, script: nil
         )
     }
 
