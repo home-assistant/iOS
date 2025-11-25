@@ -124,9 +124,6 @@ struct WidgetDetailsEntry: TimelineEntry {
     var lowerText: String?
     var detailsText: String?
 
-    var runAction: Bool?
-    var action: Action?
-
     var runScript: Bool?
     var script: IntentScriptEntity?
 }
