@@ -516,7 +516,7 @@
 "onboarding.network_input.disclaimer.title" = "Ev ağınızı doğru kurduğunuzdan emin olun.";
 "onboarding.network_input.hardware.input_field.title" = "Donanım Adresi";
 "onboarding.network_input.input_field.placeholder" = "Ağ adı";
-"onboarding.network_input.input_field.title" = "Name of the Wi-Fi network at home";
+"onboarding.network_input.input_field.title" = "Evdeki Wi-Fi ağının adı";
 "onboarding.network_input.no_network.alert.body" = "Devam etmek için lütfen bir ağ adı girin.";
 "onboarding.network_input.no_network.alert.title" = "Ağ adı gerekli";
 "onboarding.network_input.no_network.skip.alert.body" = "Ev ağı ayarlamadınız. Bunu daha sonra uygulama ayarlarından yapabilirsiniz. O zamana kadar, Home Assistant'a erişmek için yalnızca uzak bağlantınızı (varsa) kullanacağız.";
@@ -524,9 +524,9 @@
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Atla";
 "onboarding.network_input.no_network.skip.alert.title" = "Emin misin?";
 "onboarding.network_input.primary_button.title" = "Sonraki";
-"onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
+"onboarding.network_input.primary_description" = "En iyi deneyim için Home Assistant'ın ev ağınıza ne zaman bağlandığınızı bilmesi gerekir.";
 "onboarding.network_input.secondary_button.title" = "Atla";
-"onboarding.network_input.title" = "What is your home network?";
+"onboarding.network_input.title" = "Ev ağınız nedir?";
 "onboarding.permission.location.buttons.allow_and_share" = "Home Assistant ile İzin Ver ve Paylaş";
 "onboarding.permission.location.buttons.allow_for_app" = "Yalnızca Uygulama kullanımına izin ver";
 "onboarding.permission.location.buttons.deny" = "Reddet";
