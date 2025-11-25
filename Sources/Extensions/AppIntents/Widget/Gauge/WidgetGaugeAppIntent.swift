@@ -89,14 +89,20 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     )
     var maxTemplate: String
 
-    @Parameter(title: .init("widgets.gauge.parameters.run_action", defaultValue: "Run Action"), default: false)
-    var runAction: Bool
+    @Parameter(
+        title: .init("widgets.gauge.parameters.run_script", defaultValue: "Run Script"),
+        default: false
+    )
+    var runScript: Bool
 
-    @Parameter(title: .init("widgets.gauge.parameters.action", defaultValue: "Action"), default: nil)
-    var action: IntentActionAppEntity?
+    @Parameter(
+        title: .init("widgets.gauge.parameters.script", defaultValue: "Script"),
+        default: nil
+    )
+    var script: IntentScriptEntity?
 
     static var parameterSummary: some ParameterSummary {
-        When(\WidgetGaugeAppIntent.$runAction, .equalTo, true) {
+        When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
             Switch(\.$gaugeType) {
                 Case(.normal) {
                     Summary {
@@ -109,8 +115,8 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                         \.$minTemplate
                         \.$maxTemplate
 
-                        \.$runAction
-                        \.$action
+                        \.$runScript
+                        \.$script
                     }
                 }
                 Case(.singleLabel) {
@@ -123,8 +129,8 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                         \.$valueLabelTemplate
                         \.$labelTemplate
 
-                        \.$runAction
-                        \.$action
+                        \.$runScript
+                        \.$script
                     }
                 }
                 DefaultCase {
@@ -136,8 +142,8 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
                         \.$valueLabelTemplate
 
-                        \.$runAction
-                        \.$action
+                        \.$runScript
+                        \.$script
                     }
                 }
             }
@@ -154,7 +160,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                         \.$minTemplate
                         \.$maxTemplate
 
-                        \.$runAction
+                        \.$runScript
                     }
                 }
                 Case(.singleLabel) {
@@ -167,7 +173,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
                         \.$valueLabelTemplate
                         \.$labelTemplate
 
-                        \.$runAction
+                        \.$runScript
                     }
                 }
                 DefaultCase {
@@ -179,7 +185,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
                         \.$valueLabelTemplate
 
-                        \.$runAction
+                        \.$runScript
                     }
                 }
             }
