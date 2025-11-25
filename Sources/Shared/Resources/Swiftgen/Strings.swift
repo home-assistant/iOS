@@ -4543,14 +4543,14 @@ public enum L10n {
       /// Details
       public static var title: String { return L10n.tr("Localizable", "widgets.details.title") }
       public enum Parameters {
-        /// Action
-        public static var action: String { return L10n.tr("Localizable", "widgets.details.parameters.action") }
         /// Details Text Template (only in rectangular family)
         public static var detailsTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.details_template") }
         /// Lower Text Template
         public static var lowerTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.lower_template") }
-        /// Run Action (only in rectangular family)
-        public static var runAction: String { return L10n.tr("Localizable", "widgets.details.parameters.run_action") }
+        /// Run Script (only in rectangular family)
+        public static var runScript: String { return L10n.tr("Localizable", "widgets.details.parameters.run_script") }
+        /// Script
+        public static var script: String { return L10n.tr("Localizable", "widgets.details.parameters.script") }
         /// Server
         public static var server: String { return L10n.tr("Localizable", "widgets.details.parameters.server") }
         /// Upper Text Template

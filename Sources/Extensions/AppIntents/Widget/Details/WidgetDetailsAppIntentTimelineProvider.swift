@@ -99,23 +99,13 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let lowerText = String(params[1])
         let detailsText = String(params[2])
 
-        let action = await withCheckedContinuation { continuation in
-            if let action = configuration.action {
-                action.asAction { action in
-                    continuation.resume(returning: action)
-                }
-            } else {
-                continuation.resume(returning: nil)
-            }
-        }
-
         return .init(
             upperText: upperText != "?" ? upperText : nil,
             lowerText: lowerText != "?" ? lowerText : nil,
             detailsText: detailsText != "?" ? detailsText : nil,
 
-            runAction: configuration.runAction,
-            action: action
+            runScript: configuration.runScript,
+            script: configuration.script
         )
     }
 }
@@ -134,8 +124,11 @@ struct WidgetDetailsEntry: TimelineEntry {
     var lowerText: String?
     var detailsText: String?
 
-    var runAction: Bool
+    var runAction: Bool?
     var action: Action?
+
+    var runScript: Bool?
+    var script: IntentScriptEntity?
 }
 
 enum WidgetDetailsDataError: Error {

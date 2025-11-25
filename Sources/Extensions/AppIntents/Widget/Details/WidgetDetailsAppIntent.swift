@@ -59,27 +59,27 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var detailsTemplate: String
 
     @Parameter(
-        title: .init("widgets.details.parameters.run_action", defaultValue: "Run Action (only in rectangular family)"),
+        title: .init("widgets.details.parameters.run_action", defaultValue: "Run Script"),
         default: false
     )
-    var runAction: Bool
+    var runScript: Bool
 
     @Parameter(
-        title: .init("widgets.details.parameters.action", defaultValue: "Action"),
+        title: .init("widgets.details.parameters.action", defaultValue: "Script"),
         default: nil
     )
-    var action: IntentActionAppEntity?
+    var script: IntentScriptEntity?
 
     static var parameterSummary: some ParameterSummary {
-        When(\WidgetDetailsAppIntent.$runAction, .equalTo, true) {
+        When(\WidgetDetailsAppIntent.$runScript, .equalTo, true) {
             Summary {
                 \.$server
                 \.$upperTemplate
                 \.$lowerTemplate
                 \.$detailsTemplate
 
-                \.$runAction
-                \.$action
+                \.$runScript
+                \.$script
             }
         } otherwise: {
             Summary {
@@ -88,7 +88,7 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
                 \.$lowerTemplate
                 \.$detailsTemplate
 
-                \.$runAction
+                \.$runScript
             }
         }
     }
