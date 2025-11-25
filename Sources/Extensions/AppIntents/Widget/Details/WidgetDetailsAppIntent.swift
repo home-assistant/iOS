@@ -59,13 +59,13 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     var detailsTemplate: String
 
     @Parameter(
-        title: .init("widgets.details.parameters.run_action", defaultValue: "Run Script"),
+        title: .init("widgets.details.parameters.run_script", defaultValue: "Run Script"),
         default: false
     )
     var runScript: Bool
 
     @Parameter(
-        title: .init("widgets.details.parameters.action", defaultValue: "Script"),
+        title: .init("widgets.details.parameters.script", defaultValue: "Script"),
         default: nil
     )
     var script: IntentScriptEntity?

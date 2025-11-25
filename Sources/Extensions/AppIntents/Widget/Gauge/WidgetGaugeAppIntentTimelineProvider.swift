@@ -45,7 +45,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             gaugeType: .normal,
             value: 0.5,
             valueLabel: "?", min: "?", max: "?",
-            runAction: false, action: nil
+            runScript: false, script: nil
         )
     }
 
@@ -108,16 +108,6 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
         let minText = String(params[3])
         let labelText = String(params[4])
 
-        let action = await withCheckedContinuation { continuation in
-            if let action = configuration.action {
-                action.asAction { action in
-                    continuation.resume(returning: action)
-                }
-            } else {
-                continuation.resume(returning: nil)
-            }
-        }
-
         return .init(
             gaugeType: configuration.gaugeType,
 
@@ -128,8 +118,8 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             min: minText != "?" ? minText : nil,
             max: maxText != "?" ? maxText : nil,
 
-            runAction: configuration.runAction,
-            action: action
+            runScript: configuration.runScript,
+            script: configuration.script
         )
     }
 }
@@ -153,8 +143,8 @@ struct WidgetGaugeEntry: TimelineEntry {
     var min: String?
     var max: String?
 
-    var runAction: Bool
-    var action: Action?
+    var runScript: Bool
+    var script: IntentScriptEntity?
 }
 
 enum WidgetGaugeDataError: Error {
