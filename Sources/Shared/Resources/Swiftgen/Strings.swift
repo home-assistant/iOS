@@ -4543,10 +4543,14 @@ public enum L10n {
       /// Details
       public static var title: String { return L10n.tr("Localizable", "widgets.details.title") }
       public enum Parameters {
+        /// Action
+        public static var action: String { return L10n.tr("Localizable", "widgets.details.parameters.action") }
         /// Details Text Template (only in rectangular family)
         public static var detailsTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.details_template") }
         /// Lower Text Template
         public static var lowerTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.lower_template") }
+        /// Run Action (only in rectangular family)
+        public static var runAction: String { return L10n.tr("Localizable", "widgets.details.parameters.run_action") }
         /// Run Script (only in rectangular family)
         public static var runScript: String { return L10n.tr("Localizable", "widgets.details.parameters.run_script") }
         /// Script
@@ -4569,12 +4573,16 @@ public enum L10n {
       /// Gauge
       public static var title: String { return L10n.tr("Localizable", "widgets.gauge.title") }
       public enum Parameters {
+        /// Action
+        public static var action: String { return L10n.tr("Localizable", "widgets.gauge.parameters.action") }
         /// Gauge Type
         public static var gaugeType: String { return L10n.tr("Localizable", "widgets.gauge.parameters.gauge_type") }
         /// Max Label Template
         public static var maxLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.max_label_template") }
         /// Min Label Template
         public static var minLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.min_label_template") }
+        /// Run Action
+        public static var runAction: String { return L10n.tr("Localizable", "widgets.gauge.parameters.run_action") }
         /// Run Script
         public static var runScript: String { return L10n.tr("Localizable", "widgets.gauge.parameters.run_script") }
         /// Script

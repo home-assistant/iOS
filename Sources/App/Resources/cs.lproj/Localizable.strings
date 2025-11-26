@@ -1305,6 +1305,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";
 "widgets.details.parameters.lower_template" = "Šablona dolního textu";
 "widgets.details.parameters.run_action" = "Spustit akci (jen v obdélníkové rodině)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Šablona horního textu";
 "widgets.details.title" = "Podrobnosti";
@@ -1318,6 +1320,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.gauge.parameters.max_label_template" = "Šablona štítku maximum";
 "widgets.gauge.parameters.min_label_template" = "Šablona štítku minimum";
 "widgets.gauge.parameters.run_action" = "Spustit akci";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Šablona štítku hodnoty";
 "widgets.gauge.parameters.value_template" = "Šablona hodnoty (0-1)";

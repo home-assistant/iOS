@@ -1305,6 +1305,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.details.parameters.details_template" = "Modelo de texto de detalhes (somente na família retangular)";
 "widgets.details.parameters.lower_template" = "Modelo de texto inferior";
 "widgets.details.parameters.run_action" = "Executar ação (somente na família retangular)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Servidor";
 "widgets.details.parameters.upper_template" = "Modelo de texto superior";
 "widgets.details.title" = "Detalhes";
@@ -1318,6 +1320,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.gauge.parameters.max_label_template" = "Modelo de rótulo máximo";
 "widgets.gauge.parameters.min_label_template" = "Modelo de rótulo mínimo";
 "widgets.gauge.parameters.run_action" = "Executar ação";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Servidor";
 "widgets.gauge.parameters.value_label_template" = "Modelo de rótulo de valor";
 "widgets.gauge.parameters.value_template" = "Modelo de valor (0-1)";

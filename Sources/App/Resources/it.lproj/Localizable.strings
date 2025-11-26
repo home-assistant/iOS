@@ -1305,6 +1305,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.details_template" = "Dettagli Template di testo (solo nella famiglia rettangolare)";
 "widgets.details.parameters.lower_template" = "Template testo inferiore";
 "widgets.details.parameters.run_action" = "Esegui azione (solo nella famiglia rettangolare)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Template del testo superiore";
 "widgets.details.title" = "Dettagli";
@@ -1318,6 +1320,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.max_label_template" = "Template etichetta Max";
 "widgets.gauge.parameters.min_label_template" = "Min Etichetta Template";
 "widgets.gauge.parameters.run_action" = "Esegui azione";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Valore Etichetta Template";
 "widgets.gauge.parameters.value_template" = "Valore template (0-1)";

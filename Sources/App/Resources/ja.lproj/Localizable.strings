@@ -1305,6 +1305,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.details_template" = "詳細テキスト テンプレート (長方形ファミリのみ)";
 "widgets.details.parameters.lower_template" = "下部テキストテンプレート";
 "widgets.details.parameters.run_action" = "アクションを実行 (長方形ファミリのみ)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "サーバー";
 "widgets.details.parameters.upper_template" = "上部テキストテンプレート";
 "widgets.details.title" = "詳細";
@@ -1318,6 +1320,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.max_label_template" = "最大ラベルテンプレート";
 "widgets.gauge.parameters.min_label_template" = "最小ラベルテンプレート";
 "widgets.gauge.parameters.run_action" = "アクションを実行";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "サーバー";
 "widgets.gauge.parameters.value_label_template" = "値ラベル テンプレート";
 "widgets.gauge.parameters.value_template" = "値テンプレート (0-1)";

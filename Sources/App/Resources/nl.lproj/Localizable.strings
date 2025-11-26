@@ -1305,6 +1305,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.details_template" = "Details tekstsjabloon (alleen in rechthoekige familie)";
 "widgets.details.parameters.lower_template" = "Onderste tekstsjabloon";
 "widgets.details.parameters.run_action" = "Actie uitvoeren (alleen in rechthoekige familie)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Bovenste tekstsjabloon";
 "widgets.details.title" = "Details";
@@ -1318,6 +1320,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.max_label_template" = "Max Label-sjabloon";
 "widgets.gauge.parameters.min_label_template" = "Min Label-sjabloon";
 "widgets.gauge.parameters.run_action" = "Actie uitvoeren";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Waardelabel sjabloon";
 "widgets.gauge.parameters.value_template" = "Waardesjabloon (0-1)";

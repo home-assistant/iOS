@@ -1304,6 +1304,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.details.parameters.details_template" = "Detaljer Textmall (endast i rektangulär familj)";
 "widgets.details.parameters.lower_template" = "Mall för nedre text";
 "widgets.details.parameters.run_action" = "Kör åtgärd (endast i rektangulär familj)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Mall för övre text";
 "widgets.details.title" = "Detaljer";
@@ -1317,6 +1319,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.gauge.parameters.max_label_template" = "Mall för största värdeetikett";
 "widgets.gauge.parameters.min_label_template" = "Mall för minsta värdeetikett";
 "widgets.gauge.parameters.run_action" = "Kör åtgärd";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Mall för värdeetikett";
 "widgets.gauge.parameters.value_template" = "Värdemall (0-1)";

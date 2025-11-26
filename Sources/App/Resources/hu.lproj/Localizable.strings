@@ -1305,6 +1305,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.details_template" = "Részletek szöveg sablon (csak a téglalap alakú családban)";
 "widgets.details.parameters.lower_template" = "Alsó szöveg sablon";
 "widgets.details.parameters.run_action" = "Művelet végrehajtása (csak a téglalap alakú családban)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Szerver";
 "widgets.details.parameters.upper_template" = "Felső szöveg sablon";
 "widgets.details.title" = "Részletek";
@@ -1318,6 +1320,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.max_label_template" = "Max. címke sablon";
 "widgets.gauge.parameters.min_label_template" = "Min. címke sablon";
 "widgets.gauge.parameters.run_action" = "Művelet futtatása";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Szerver";
 "widgets.gauge.parameters.value_label_template" = "Értékcímke sablon";
 "widgets.gauge.parameters.value_template" = "Értéksablon (0-1)";
