@@ -1305,6 +1305,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.details_template" = "세부정보 텍스트 템플릿(직사각형군에만 해당)";
 "widgets.details.parameters.lower_template" = "하단 텍스트 템플릿";
 "widgets.details.parameters.run_action" = "액션 실행(직사각형군만 해당)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "서버";
 "widgets.details.parameters.upper_template" = "상단 텍스트 템플릿";
 "widgets.details.title" = "세부 정보";
@@ -1318,6 +1320,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.max_label_template" = "최대 라벨 템플릿";
 "widgets.gauge.parameters.min_label_template" = "최소 라벨 템플릿";
 "widgets.gauge.parameters.run_action" = "동작 실행";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "서버";
 "widgets.gauge.parameters.value_label_template" = "값 레이블 템플릿";
 "widgets.gauge.parameters.value_template" = "값 템플릿(0-1)";

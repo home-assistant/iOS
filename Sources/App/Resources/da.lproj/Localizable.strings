@@ -1305,6 +1305,8 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.details.parameters.details_template" = "Detaljer tekstskabelon (kun i rektangulær familie)";
 "widgets.details.parameters.lower_template" = "Nedre tekstskabelon";
 "widgets.details.parameters.run_action" = "Udfør handling (kun i rektangulær familie)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Øvre tekstskabelon";
 "widgets.details.title" = "Detaljer";
@@ -1318,6 +1320,8 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.gauge.parameters.max_label_template" = "Skabelon til maks.etiket";
 "widgets.gauge.parameters.min_label_template" = "Skabelon til min-etiket";
 "widgets.gauge.parameters.run_action" = "Udfør handling";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Skabelon til værdi-etiket";
 "widgets.gauge.parameters.value_template" = "Værdi-skabelon (0-1)";

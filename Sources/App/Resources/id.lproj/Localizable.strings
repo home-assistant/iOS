@@ -1305,6 +1305,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.details_template" = "Templat Teks Detail (hanya dalam format persegi panjang)";
 "widgets.details.parameters.lower_template" = "Templat Teks Bawah";
 "widgets.details.parameters.run_action" = "Jalankan Aksi (hanya dalam format persegi panjang)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Templat Teks Atas";
 "widgets.details.title" = "Detail";
@@ -1318,6 +1320,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.max_label_template" = "Templat Label Maks";
 "widgets.gauge.parameters.min_label_template" = "Templat Label Min";
 "widgets.gauge.parameters.run_action" = "Jalankan Aksi";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Templat Label Nilai";
 "widgets.gauge.parameters.value_template" = "Templat Nilai (0-1)";

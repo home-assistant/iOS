@@ -1305,6 +1305,8 @@
 "widgets.details.parameters.details_template" = "Πρότυπο κειμένου λεπτομερειών (μόνο σε ορθογώνια)";
 "widgets.details.parameters.lower_template" = "Πρότυπο κάτω κειμένου";
 "widgets.details.parameters.run_action" = "Εκτέλεση ενέργειας (μόνο σε ορθογώνια)";
+"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Διακομιστής";
 "widgets.details.parameters.upper_template" = "Πρότυπο πάνω κειμένου";
 "widgets.details.title" = "Λεπτομέρειες";
@@ -1318,6 +1320,8 @@
 "widgets.gauge.parameters.max_label_template" = "Πρότυπο ετικέτας Μέγιστου";
 "widgets.gauge.parameters.min_label_template" = "Πρότυπο ετικέτας Ελάχιστου";
 "widgets.gauge.parameters.run_action" = "Εκτέλεση ενέργειας";
+"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Διακομιστής";
 "widgets.gauge.parameters.value_label_template" = "Πρότυπο ετικέτας τιμής";
 "widgets.gauge.parameters.value_template" = "Τιμή πρότυπου (0-1)";
