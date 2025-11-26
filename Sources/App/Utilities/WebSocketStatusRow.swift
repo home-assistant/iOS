@@ -65,7 +65,7 @@ public final class WebSocketStatusRow: Row<WebSocketStatusCell>, RowType {
                     ))
 
                     verboseString = components.joined(separator: "\n\n")
-                case .disconnected:
+                case .disconnected, .rejected:
                     verboseString = nonVerboseString
                 }
 

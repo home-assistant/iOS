@@ -2424,6 +2424,10 @@ public enum L10n {
             /// Disconnected
             public static var title: String { return L10n.tr("Localizable", "settings.connection_section.websocket.status.disconnected.title") }
           }
+          public enum Rejected {
+            /// Rejected
+            public static var title: String { return L10n.tr("Localizable", "settings.connection_section.websocket.status.rejected.title") }
+          }
         }
       }
     }
