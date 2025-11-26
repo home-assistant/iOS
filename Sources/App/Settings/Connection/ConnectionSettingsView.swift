@@ -380,6 +380,8 @@ private struct WebSocketStatusView: View {
                 return components.joined(separator: "\n\n")
             case .disconnected:
                 return L10n.Settings.ConnectionSection.Websocket.Status.Disconnected.title
+            case .rejected:
+                return L10n.Settings.ConnectionSection.Websocket.Status.Rejected.title
             }
         default:
             return statusMessage
