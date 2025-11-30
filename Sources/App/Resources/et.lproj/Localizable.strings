@@ -676,6 +676,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Järgmine korduskatse: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Korduskatsete arv: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Ühendus katkestatud";
+"settings.connection_section.websocket.status.rejected.title" = "Tagasilükatud";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Veendu, et oled teadlik, et neid toiminguid ei saa tagasi võtta.";
 "settings.debugging.header.subtitle" = "Parandame selle 🐞";
@@ -1305,8 +1306,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.details.parameters.details_template" = "Üksikasjade tekstimall (ainult ristkülikus)";
 "widgets.details.parameters.lower_template" = "Väiksema teksti mall";
 "widgets.details.parameters.run_action" = "Käivita toiming (ainult ristkülikukus)";
-"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
-"widgets.details.parameters.script" = "Script";
+"widgets.details.parameters.run_script" = "Käivita skript (ainult ristkülikukujulise perekonna puhul)";
+"widgets.details.parameters.script" = "Skript";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Suurema teksti mall";
 "widgets.details.title" = "Üksikasjad";
@@ -1320,8 +1321,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.gauge.parameters.max_label_template" = "Max sildi mall";
 "widgets.gauge.parameters.min_label_template" = "Min sildi mall";
 "widgets.gauge.parameters.run_action" = "Käivita toiming";
-"widgets.gauge.parameters.run_script" = "Run Script";
-"widgets.gauge.parameters.script" = "Script";
+"widgets.gauge.parameters.run_script" = "Käivita skript";
+"widgets.gauge.parameters.script" = "Skript";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Väärtussildi mall";
 "widgets.gauge.parameters.value_template" = "Väärtuse mall (0-1)";

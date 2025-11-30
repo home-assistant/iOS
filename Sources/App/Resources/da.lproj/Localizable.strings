@@ -676,6 +676,7 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Næste forsøg: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Antal forsøg: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Afbrudt";
+"settings.connection_section.websocket.status.rejected.title" = "Rejected";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Vær opmærksom på, at disse handlinger ikke kan fortrydes.";
 "settings.debugging.header.subtitle" = "Lad os fikse det 🐞";

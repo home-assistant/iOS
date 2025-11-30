@@ -516,7 +516,7 @@
 "onboarding.network_input.disclaimer.title" = "Убедитесь, что вы правильно настроили домашнюю сеть.";
 "onboarding.network_input.hardware.input_field.title" = "Аппаратный адрес";
 "onboarding.network_input.input_field.placeholder" = "Название сети";
-"onboarding.network_input.input_field.title" = "Name of the Wi-Fi network at home";
+"onboarding.network_input.input_field.title" = "Название домашней сети Wi-Fi";
 "onboarding.network_input.no_network.alert.body" = "Пожалуйста, введите название сети для продолжения.";
 "onboarding.network_input.no_network.alert.title" = "Требуется название сети";
 "onboarding.network_input.no_network.skip.alert.body" = "Вы не настроили домашнюю сеть. Вы можете настроить ее позже в настройках приложения, а до этого мы будем использовать только удаленное подключение (если оно существует) для доступа к Home Assistant.";
@@ -524,9 +524,9 @@
 "onboarding.network_input.no_network.skip.alert.secondary_button.title" = "Пропустить";
 "onboarding.network_input.no_network.skip.alert.title" = "Вы уверены?";
 "onboarding.network_input.primary_button.title" = "Далее";
-"onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
+"onboarding.network_input.primary_description" = "Для наилучшего взаимодействия Home Assistant необходимо знать, когда вы подключены к домашней сети.";
 "onboarding.network_input.secondary_button.title" = "Пропустить";
-"onboarding.network_input.title" = "What is your home network?";
+"onboarding.network_input.title" = "Какая у вас домашняя сеть?";
 "onboarding.permission.location.buttons.allow_and_share" = "Разрешить и поделиться с Home Assistant";
 "onboarding.permission.location.buttons.allow_for_app" = "Разрешить использование только в приложении";
 "onboarding.permission.location.buttons.deny" = "Запретить";
@@ -676,6 +676,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Следующая попытка: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Количество попыток: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Отсоединено";
+"settings.connection_section.websocket.status.rejected.title" = "Отклонено";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Убедитесь, что вы осознаете, что эти операции невозможно отменить.";
 "settings.debugging.header.subtitle" = "Давайте это исправим 🐞";
@@ -1305,8 +1306,8 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.details.parameters.details_template" = "Шаблон текста с деталями (только для прямоугольных моделей)";
 "widgets.details.parameters.lower_template" = "Нижний текстовый шаблон";
 "widgets.details.parameters.run_action" = "Запустить действие (только для прямоугольных моделей)";
-"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
-"widgets.details.parameters.script" = "Script";
+"widgets.details.parameters.run_script" = "Запустить скрипт (только для прямоугольных моделей)";
+"widgets.details.parameters.script" = "Скрипт";
 "widgets.details.parameters.server" = "Сервер";
 "widgets.details.parameters.upper_template" = "Верхний текстовый шаблон";
 "widgets.details.title" = "Подробности";
@@ -1320,8 +1321,8 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.gauge.parameters.max_label_template" = "Шаблон заголовка максимум";
 "widgets.gauge.parameters.min_label_template" = "Шаблон заголовка минимума";
 "widgets.gauge.parameters.run_action" = "Выполнить действие";
-"widgets.gauge.parameters.run_script" = "Run Script";
-"widgets.gauge.parameters.script" = "Script";
+"widgets.gauge.parameters.run_script" = "Запустить скрипт";
+"widgets.gauge.parameters.script" = "Скрипт";
 "widgets.gauge.parameters.server" = "Сервер";
 "widgets.gauge.parameters.value_label_template" = "Шаблон заголовка значения";
 "widgets.gauge.parameters.value_template" = "Шаблон значений (0-1)";

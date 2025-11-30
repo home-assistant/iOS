@@ -676,6 +676,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Újrapróbálkozás: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Újrapróbálkozások száma: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Leválasztva";
+"settings.connection_section.websocket.status.rejected.title" = "Rejected";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Ezek a műveletek nem visszavonhatóak!";
 "settings.debugging.header.subtitle" = "Javítsuk ki ezt a hibát! 🐞";

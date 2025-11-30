@@ -676,6 +676,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Sonrakini Dene: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Yeniden Deneme Sayısı: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Bağlantı kesildi";
+"settings.connection_section.websocket.status.rejected.title" = "Reddedildi";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Bu işlemlerin geri alınamayacağının farkında olduğunuzdan emin olun.";
 "settings.debugging.header.subtitle" = "Hadi bunu düzeltelim 🐞";
@@ -1305,8 +1306,8 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "widgets.details.parameters.details_template" = "Ayrıntılar Metin Şablonu (yalnızca dikdörtgen ailede)";
 "widgets.details.parameters.lower_template" = "Alt Metin Şablonu";
 "widgets.details.parameters.run_action" = "Eylemi Çalıştır (yalnızca dikdörtgen ailede)";
-"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
-"widgets.details.parameters.script" = "Script";
+"widgets.details.parameters.run_script" = "Senaryoyu çalıştır (sadece dikdörtgen ailede)";
+"widgets.details.parameters.script" = "Senaryo";
 "widgets.details.parameters.server" = "Sunucu";
 "widgets.details.parameters.upper_template" = "Üst Metin Şablonu";
 "widgets.details.title" = "Ayrıntılar";
@@ -1320,8 +1321,8 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "widgets.gauge.parameters.max_label_template" = "Maksimum Etiket Şablonu";
 "widgets.gauge.parameters.min_label_template" = "Minimum Etiket Şablonu";
 "widgets.gauge.parameters.run_action" = "Eylemi Çalıştır";
-"widgets.gauge.parameters.run_script" = "Run Script";
-"widgets.gauge.parameters.script" = "Script";
+"widgets.gauge.parameters.run_script" = "Senaryoyu çalıştır";
+"widgets.gauge.parameters.script" = "Senaryo";
 "widgets.gauge.parameters.server" = "Sunucu";
 "widgets.gauge.parameters.value_label_template" = "Değer Etiketi Şablonu";
 "widgets.gauge.parameters.value_template" = "Değer Şablonu (0-1)";

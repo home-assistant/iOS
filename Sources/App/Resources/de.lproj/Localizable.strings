@@ -676,6 +676,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Nächster Versuch: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Anzahl Neuversuche: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Getrennt";
+"settings.connection_section.websocket.status.rejected.title" = "Abgelehnt";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Sei dir bewusst, dass diese Vorgänge nicht rückgängig gemacht werden können.";
 "settings.debugging.header.subtitle" = "Lass uns das beheben 🐞";
@@ -1306,8 +1307,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.details.parameters.details_template" = "Template Detail-Text (nur in rechteckiger Familie)";
 "widgets.details.parameters.lower_template" = "Template oberer Text";
 "widgets.details.parameters.run_action" = "Aktion ausführen (nur in rechteckiger Familie)";
-"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
-"widgets.details.parameters.script" = "Script";
+"widgets.details.parameters.run_script" = "Skript ausführen (nur in der rechteckigen Familie)";
+"widgets.details.parameters.script" = "Skript";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Template unterer Text";
 "widgets.details.title" = "Details";
@@ -1321,8 +1322,8 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.gauge.parameters.max_label_template" = "Template Max-Label";
 "widgets.gauge.parameters.min_label_template" = "Template Min-Label";
 "widgets.gauge.parameters.run_action" = "Aktion ausführen";
-"widgets.gauge.parameters.run_script" = "Run Script";
-"widgets.gauge.parameters.script" = "Script";
+"widgets.gauge.parameters.run_script" = "Skript ausführen";
+"widgets.gauge.parameters.script" = "Skript";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Template Werte-Label";
 "widgets.gauge.parameters.value_template" = "Wert-Template (0-1)";

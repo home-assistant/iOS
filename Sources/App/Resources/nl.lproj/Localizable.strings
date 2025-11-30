@@ -676,6 +676,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Volgende poging: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Aantal nieuwe pogingen: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Verbinding verbroken";
+"settings.connection_section.websocket.status.rejected.title" = "Rejected";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Wees je ervan bewust dat deze handelingen niet ongedaan gemaakt kunnen worden.";
 "settings.debugging.header.subtitle" = "Laten we die 🐞 verhelpen";
@@ -860,7 +861,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.location.zones.beacon_minor.title" = "Kleine iBeacon";
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
 "settings_details.location.zones.enter_exit_tracked.title" = "Betreden/verlaten gevolgd";
-"settings_details.location.zones.footer" = "Om het bijhouden van locaties uit te schakelen, voeg he track_ios: false toe aan elke zone-instelling of onder customize.";
+"settings_details.location.zones.footer" = "Om het bijhouden van locaties uit te schakelen, voeg je track_ios: false toe aan elke zone-instelling of onder customize.";
 "settings_details.location.zones.location.title" = "Locatie";
 "settings_details.location.zones.radius.label" = "%li m";
 "settings_details.location.zones.radius.title" = "Radius";
