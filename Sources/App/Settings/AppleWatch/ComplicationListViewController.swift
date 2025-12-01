@@ -35,10 +35,6 @@ class ComplicationListViewController: HAFormViewController {
 
         title = L10n.SettingsDetails.Watch.title
 
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: L10n.addButtonLabel, style: .plain, target: self, action: #selector(add(_:))),
-        ]
-
         form +++ InfoLabelRow {
             $0.title = L10n.Watch.Configurator.List.description
             $0.displayType = .primary
@@ -153,6 +149,20 @@ class ComplicationListViewController: HAFormViewController {
                     }
                 }
             )
+        }
+
+        form +++ ButtonRow {
+            $0.title = L10n.addButtonLabel
+            $0.onCellSelection { [weak self] _, _ in
+                guard let self else { return }
+                let editListViewController = ComplicationFamilySelectViewController(
+                    allowMultiple: supportsMultipleComplications,
+                    currentFamilies: Set(Current.realm().objects(WatchComplication.self).map(\.Family))
+                )
+                editListViewController.onDismissCallback = { $0.dismiss(animated: true, completion: nil) }
+                let navigationController = UINavigationController(rootViewController: editListViewController)
+                present(navigationController, animated: true, completion: nil)
+            }
         }
     }
 }
