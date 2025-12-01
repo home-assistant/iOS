@@ -676,6 +676,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Próxima tentativa: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Contagem de novas tentativas: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Desconectado";
+"settings.connection_section.websocket.status.rejected.title" = "Rejected";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Esteja ciente de que essas operações não podem ser revertidas.";
 "settings.debugging.header.subtitle" = "Vamos consertar isso 🐞";

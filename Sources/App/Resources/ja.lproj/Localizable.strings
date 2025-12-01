@@ -676,6 +676,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.websocket.status.disconnected.next_retry" = "次の再試行: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "再試行回数: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "切断されました";
+"settings.connection_section.websocket.status.rejected.title" = "Rejected";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "これらの操作は元に戻せないことに注意してください。";
 "settings.debugging.header.subtitle" = "それを修正しましょう🐞";

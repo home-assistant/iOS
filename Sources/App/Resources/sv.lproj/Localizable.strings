@@ -675,6 +675,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Nästa försök: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Antal försök: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Frånkopplad";
+"settings.connection_section.websocket.status.rejected.title" = "Nekades";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Se till att du är medveten om att dessa åtgärder inte kan återställas.";
 "settings.debugging.header.subtitle" = "Låt oss fixa det 🐞";
@@ -1305,7 +1306,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.details.parameters.lower_template" = "Mall för nedre text";
 "widgets.details.parameters.run_action" = "Kör åtgärd (endast i rektangulär familj)";
 "widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
-"widgets.details.parameters.script" = "Script";
+"widgets.details.parameters.script" = "Skript";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Mall för övre text";
 "widgets.details.title" = "Detaljer";
@@ -1319,8 +1320,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.gauge.parameters.max_label_template" = "Mall för största värdeetikett";
 "widgets.gauge.parameters.min_label_template" = "Mall för minsta värdeetikett";
 "widgets.gauge.parameters.run_action" = "Kör åtgärd";
-"widgets.gauge.parameters.run_script" = "Run Script";
-"widgets.gauge.parameters.script" = "Script";
+"widgets.gauge.parameters.run_script" = "Kör skript";
+"widgets.gauge.parameters.script" = "Skript";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Mall för värdeetikett";
 "widgets.gauge.parameters.value_template" = "Värdemall (0-1)";

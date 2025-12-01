@@ -33,7 +33,7 @@
 "actions_configurator.visual_section.scene_hint_footer" = "Je možné změnit přizpůsobením atributů scény: %@";
 "actions_configurator.visual_section.server_defined" = "Vzhled této akce je řízen konfigurací serveru.";
 "addButtonLabel" = "Přidat";
-"alert.confirmation.delete_entities.message" = "To vyčistí vaše entity z databáze a znovu se načte pouze při příštím otevření aplikace od nuly.";
+"alert.confirmation.delete_entities.message" = "To vyčistí vaše entity z databáze a znovu je načte pouze při příštím otevření aplikace od nuly.";
 "alert.confirmation.generic.title" = "Jste si jisti?";
 "alerts.action_automation_editor.unavailable.body" = "Chcete-li automaticky vytvořit automatizaci pro akci, aktualizujte Home Assistanta alespoň na verzi 2024.2.";
 "alerts.action_automation_editor.unavailable.title" = "Aktualizovat Home Assistanta";
@@ -221,10 +221,10 @@
 "connection_security_level_block.body" = "Vzhledem k vámi zvolenému zabezpečení připojení (\"Nejbezpečnější\") neexistuje žádná URL adresa, kterou můžeme použít.";
 "connection_security_level_block.change_preference.title" = "Změnit preferenci připojení";
 "connection_security_level_block.open_settings.title" = "Otevřít nastavení";
-"connection_security_level_block.requirement.home_network_missing.title" = "Nastavit místní síť";
+"connection_security_level_block.requirement.home_network_missing.title" = "Nastavte místní síť";
 "connection_security_level_block.requirement.learn_more.title" = "Více informací";
-"connection_security_level_block.requirement.location_permission_missing.title" = "Udělit oprávnění k přístupu k poloze";
-"connection_security_level_block.requirement.not_on_home_network.title" = "Připojit se k domácí síti";
+"connection_security_level_block.requirement.location_permission_missing.title" = "Udělte oprávnění k přístupu k poloze";
+"connection_security_level_block.requirement.not_on_home_network.title" = "Připojte se k domácí síti";
 "connection_security_level_block.requirement.title" = "Chybějící požadavky";
 "connection_security_level_block.title" = "Jste odpojeni";
 "continue_label" = "Pokračovat";
@@ -371,7 +371,7 @@
 "magic_item.icon_color.title" = "Barva ikony";
 "magic_item.icon_name.title" = "Název ikony";
 "magic_item.item_type.action.list.title" = "Akce iOS";
-"magic_item.item_type.action.list.warning.title" = "V budoucnu přestaneme podporovat Akce iOS, zvažte použití skriptů nebo scén v Home Assistantovi.";
+"magic_item.item_type.action.list.warning.title" = "V budoucnu přestaneme podporovat Akce iOS. Zvažte použití skriptů nebo scén v Home Assistantovi.";
 "magic_item.item_type.app.list.title" = "Aplikace";
 "magic_item.item_type.entity.list.title" = "Entita";
 "magic_item.item_type.scene.list.title" = "Scény";
@@ -436,7 +436,7 @@
 "notifications_configurator.action.rows.authentication_required.title" = "Vyžadováno ověření";
 "notifications_configurator.action.rows.destructive.footer" = "Je-li povoleno, zobrazí se akční tlačítko se speciálním zvýrazněním, které označuje, že provádí destruktivní úlohu.";
 "notifications_configurator.action.rows.destructive.title" = "Destruktivní";
-"notifications_configurator.action.rows.foreground.footer" = "Pokud toto povolíte, spustí se aplikace, pokud je při klepnutí na oznámení na pozadí";
+"notifications_configurator.action.rows.foreground.footer" = "Je-li povoleno, spustí se aplikace, pokud je při klepnutí na oznámení na pozadí.";
 "notifications_configurator.action.rows.foreground.title" = "Spustit aplikaci";
 "notifications_configurator.action.rows.text_input_button_title.title" = "Název tlačítka";
 "notifications_configurator.action.rows.text_input_placeholder.title" = "Zástupný obsah";
@@ -457,7 +457,7 @@
 "notifications_configurator.category.rows.name.title" = "Název";
 "notifications_configurator.identifier" = "Identifikátor";
 "notifications_configurator.new_action.title" = "Nová akce";
-"notifications_configurator.settings.footer" = "Identifikátor musí obsahovat jen písmena a podtržítka a musí být velká. Musí být jedinečné pro aplikaci.";
+"notifications_configurator.settings.footer" = "Identifikátor musí obsahovat jen velká písmena a podtržítka. Musí být jedinečné pro aplikaci.";
 "notifications_configurator.settings.footer.id_set" = "Identifikátor nelze po vytvoření změnit. Chcete-li změnit identifikátor, musíte akci smazat a znovu vytvořit.";
 "notifications_configurator.settings.header" = "Nastavení";
 "off_label" = "Vypnuto";
@@ -483,10 +483,10 @@
 "onboarding.invitation.other_options" = "Další volby";
 "onboarding.invitation.title" = "Pozvánka do Home Asistenta";
 "onboarding.local_access.description" = "Pokud tato aplikace ví, kdy nejste doma, může zvolit bezpečnější způsob připojení k vašemu systému Home Assistant. To vyžaduje povolení lokalizačních služeb.";
-"onboarding.local_access.less_secure_option.title" = "Méně bezpečné: Nedovolí této aplikaci vědět, kdy jste doma";
+"onboarding.local_access.less_secure_option.title" = "Méně bezpečné: Nepovolit této aplikaci vědět, kdy jste doma";
 "onboarding.local_access.next_button" = "Další";
 "onboarding.local_access.privacy_disclaimer" = "Tato data nebudou nikdy sdílena s projektem Home Assistant ani s třetími stranami.";
-"onboarding.local_access.secure_option.title" = "Nejbezpečnější: Povolí této aplikaci vědět, kdy jste doma";
+"onboarding.local_access.secure_option.title" = "Nejbezpečnější: Povolit této aplikaci vědět, kdy jste doma";
 "onboarding.local_access.title" = "Pomůžeme vám zabezpečit vzdálené připojení";
 "onboarding.local_only_disclaimer.primary_button.title" = "Rozumím";
 "onboarding.local_only_disclaimer.primary_description" = "Váš Home Assistant je přístupný jen ve vaší domácí síti. Abyste mohli svou chytrou domácnost ovládat odkudkoli, můžete si vzdálený přístup nastavit později v Nastavení.";
@@ -572,7 +572,7 @@ Vzdálené, až budete připraveni.";
 "onboarding.servers.docs.read" = "Přečíst si dokumentaci";
 "onboarding.servers.search.loader.text" = "Zkontrolujte, zda je Home Assistant zapnutý a zda jste připojeni ke stejné síti. Pokud znáte adresu, můžete ji zadat ručně.";
 "onboarding.servers.search.message" = "Hledání serverů v okolí...";
-"onboarding.servers.title" = "Vyhledávání v domácí síti";
+"onboarding.servers.title" = "Prohledávání domácí sítě";
 "onboarding.welcome.body" = "Umožní vám přístup k vaší instalaci Home Assistant na cestách. Běží lokálně ve vaší domácnosti prostřednictvím zařízení, jako je Home Assistant Green nebo Raspberry Pi.";
 "onboarding.welcome.continue_button" = "Připojit k mému Home Assistantovi";
 "onboarding.welcome.description" = "Tato aplikace se připojí k Vašemu Home Assistantovi a umožní Vám propojení s Vašim telefonem.\
@@ -660,7 +660,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.remote_ui_url.title" = "Vzdálená URL uživatelského rozhraní";
 "settings.connection_section.sensor_send_type.setting.all" = "Vše";
 "settings.connection_section.sensor_send_type.setting.none" = "Nic";
-"settings.connection_section.sensor_send_type.title" = "Senzory odeslány";
+"settings.connection_section.sensor_send_type.title" = "Odeslané senzory";
 "settings.connection_section.servers" = "Servery";
 "settings.connection_section.servers_footer" = "Změnit pořadí pro definování výchozího serveru";
 "settings.connection_section.servers_header" = "Servery";
@@ -676,6 +676,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Další pokus: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Počet opakování: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Odpojeno";
+"settings.connection_section.websocket.status.rejected.title" = "Odmítnuto";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Ujistěte se, že jste si vědomi toho, že tyto operace nelze vrátit zpět.";
 "settings.debugging.header.subtitle" = "Pojďme to napravit 🐞";
@@ -907,7 +908,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.notifications.sounds.error.delete_error" = "Smazání souboru se nezdařilo: %@";
 "settings_details.notifications.sounds.footer" = "U oznámení lze použít vestavěné, systémové nebo vlastní zvuky.";
 "settings_details.notifications.sounds.import_custom" = "Importovat vlastní zvuk";
-"settings_details.notifications.sounds.import_file_sharing" = "Importovat zvuky pomocí iTunes File Sharing";
+"settings_details.notifications.sounds.import_file_sharing" = "Importovat zvuky z iTunes File Sharing";
 "settings_details.notifications.sounds.import_mac_instructions" = "Přidejte vlastní zvuky do složky Zvuky a použijte je v oznámeních. Použijte jejich název souboru jako hodnotu zvuku při volání služby.";
 "settings_details.notifications.sounds.import_mac_open_folder" = "Otevřít složku ve Finderu";
 "settings_details.notifications.sounds.import_system" = "Importovat systémové zvuky";
@@ -1035,7 +1036,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.configurator.delete.button" = "Smazat komplikaci";
 "watch.configurator.delete.message" = "Opravdu chcete smazat tuto komplikaci? Toto nelze vzít zpět.";
 "watch.configurator.delete.title" = "Smazat komplikaci?";
-"watch.configurator.list.description" = "Nakonfigurujte novou komplikaci pomocí tlačítka Přidat. Po uložení si ji můžete vybrat na Apple Watch nebo v aplikaci Watch.";
+"watch.configurator.list.description" = "Nastavte novou komplikaci pomocí tlačítka Přidat. Po uložení si ji můžete vybrat na Apple Watch nebo v aplikaci Watch.";
 "watch.configurator.list.manual_updates.footer" = "Automatické aktualizace probíhají 4x za hodinu. Ruční aktualizace lze také provádět pomocí oznámení.";
 "watch.configurator.list.manual_updates.manually_update" = "Aktualizovat komplikace";
 "watch.configurator.list.manual_updates.remaining" = "Zbývající";
@@ -1305,8 +1306,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";
 "widgets.details.parameters.lower_template" = "Šablona dolního textu";
 "widgets.details.parameters.run_action" = "Spustit akci (jen v obdélníkové rodině)";
-"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
-"widgets.details.parameters.script" = "Script";
+"widgets.details.parameters.run_script" = "Spustit skript (jen v obdélníkové rodině)";
+"widgets.details.parameters.script" = "Skript";
 "widgets.details.parameters.server" = "Server";
 "widgets.details.parameters.upper_template" = "Šablona horního textu";
 "widgets.details.title" = "Podrobnosti";
@@ -1320,8 +1321,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.gauge.parameters.max_label_template" = "Šablona štítku maximum";
 "widgets.gauge.parameters.min_label_template" = "Šablona štítku minimum";
 "widgets.gauge.parameters.run_action" = "Spustit akci";
-"widgets.gauge.parameters.run_script" = "Run Script";
-"widgets.gauge.parameters.script" = "Script";
+"widgets.gauge.parameters.run_script" = "Spustit skript";
+"widgets.gauge.parameters.script" = "Skript";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Šablona štítku hodnoty";
 "widgets.gauge.parameters.value_template" = "Šablona hodnoty (0-1)";

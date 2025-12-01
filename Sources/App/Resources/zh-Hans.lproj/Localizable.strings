@@ -673,6 +673,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.websocket.status.disconnected.next_retry" = "下次重试：%1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "重试次数：%1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "已断开";
+"settings.connection_section.websocket.status.rejected.title" = "已拒绝";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "请确保您知道这些操作无法恢复。";
 "settings.debugging.header.subtitle" = "让我们解决这个问题 🐞";
@@ -1303,8 +1304,8 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.details.parameters.details_template" = "详情文本模板（仅限矩形系列）";
 "widgets.details.parameters.lower_template" = "下部文本模板";
 "widgets.details.parameters.run_action" = "运行动作（仅限矩形系列）";
-"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
-"widgets.details.parameters.script" = "Script";
+"widgets.details.parameters.run_script" = "运行脚本（仅限矩形系列）";
+"widgets.details.parameters.script" = "脚本";
 "widgets.details.parameters.server" = "服务器";
 "widgets.details.parameters.upper_template" = "上部文本模板";
 "widgets.details.title" = "详情";
@@ -1318,8 +1319,8 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.gauge.parameters.max_label_template" = "最大标签模板";
 "widgets.gauge.parameters.min_label_template" = "最小标签模板";
 "widgets.gauge.parameters.run_action" = "运行动作";
-"widgets.gauge.parameters.run_script" = "Run Script";
-"widgets.gauge.parameters.script" = "Script";
+"widgets.gauge.parameters.run_script" = "运行脚本";
+"widgets.gauge.parameters.script" = "脚本";
 "widgets.gauge.parameters.server" = "服务器";
 "widgets.gauge.parameters.value_label_template" = "值标签模板";
 "widgets.gauge.parameters.value_template" = "值模板 (0-1)";
