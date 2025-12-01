@@ -14,7 +14,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: fwal/setup-swift@7ca6abe6b3b0e8b5421b88be48feee39cbf52c6a  # v2.4.0
+      - uses: fwal/setup-swift@364295d9c23900ce04d4e5cc708387921b4e50f9  # v3
         with:
           swift-version: "5.8"
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
