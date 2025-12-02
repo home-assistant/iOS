@@ -224,13 +224,10 @@ struct ConnectionSettingsView: View {
                         urlType: .internal
                     )
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
-                        Spacer()
-                        Text(viewModel.internalURL)
-                            .foregroundColor(.haPrimary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.InternalBaseUrl.title,
+                        value: viewModel.internalURL
+                    )
                 }
 
                 NavigationLink {
@@ -239,53 +236,45 @@ struct ConnectionSettingsView: View {
                         urlType: .external
                     )
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
-                        Spacer()
-                        Text(viewModel.externalURL)
-                            .foregroundColor(.haPrimary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.ExternalBaseUrl.title,
+                        value: viewModel.externalURL
+                    )
                 }
             } else {
                 Button {
                     showInternalURLSheet = true
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text(viewModel.internalURL)
-                            .foregroundColor(.haPrimary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.InternalBaseUrl.title,
+                        value: viewModel.internalURL
+                    )
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
 
                 Button {
                     showExternalURLSheet = true
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text(viewModel.externalURL)
-                            .foregroundColor(.haPrimary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.ExternalBaseUrl.title,
+                        value: viewModel.externalURL
+                    )
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
             }
 
             Button {
                 showSecurityLevelPicker = true
             } label: {
-                HStack {
-                    Text(L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title)
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Text(viewModel.securityLevel.description)
-                        .foregroundColor(.haPrimary)
-                }
+                NavigationRow(
+                    title: L10n.Settings.ConnectionSection.ConnectionAccessSecurityLevel.title,
+                    value: viewModel.securityLevel.description
+                )
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
         }
     }
 
@@ -308,13 +297,11 @@ struct ConnectionSettingsView: View {
                             : nil
                     )
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.LocationSendType.title)
-                        Spacer()
-                        Text(viewModel.locationPrivacy.localizedDescription)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.LocationSendType.title,
+                        value: viewModel.locationPrivacy.localizedDescription,
+                        valueColor: .secondary
+                    )
                 }
 
                 NavigationLink {
@@ -329,40 +316,36 @@ struct ConnectionSettingsView: View {
                         footerMessage: nil
                     )
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.SensorSendType.title)
-                        Spacer()
-                        Text(viewModel.sensorPrivacy.localizedDescription)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.SensorSendType.title,
+                        value: viewModel.sensorPrivacy.localizedDescription,
+                        valueColor: .secondary
+                    )
                 }
             } else {
                 Button {
                     showLocationPrivacySheet = true
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.LocationSendType.title)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text(viewModel.locationPrivacy.localizedDescription)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.LocationSendType.title,
+                        value: viewModel.locationPrivacy.localizedDescription,
+                        valueColor: .secondary
+                    )
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
 
                 Button {
                     showSensorPrivacySheet = true
                 } label: {
-                    HStack {
-                        Text(L10n.Settings.ConnectionSection.SensorSendType.title)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text(viewModel.sensorPrivacy.localizedDescription)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
+                    NavigationRow(
+                        title: L10n.Settings.ConnectionSection.SensorSendType.title,
+                        value: viewModel.sensorPrivacy.localizedDescription,
+                        valueColor: .secondary
+                    )
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -421,6 +404,28 @@ struct ConnectionSettingsView: View {
 }
 
 // MARK: - Supporting Views
+
+private struct NavigationRow: View {
+    let title: String
+    let value: String
+    let valueColor: Color
+
+    init(title: String, value: String, valueColor: Color = .haPrimary) {
+        self.title = title
+        self.value = value
+        self.valueColor = valueColor
+    }
+
+    var body: some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Text(value)
+                .foregroundColor(valueColor)
+                .lineLimit(1)
+        }
+    }
+}
 
 private struct LabelRow: View {
     let title: String
