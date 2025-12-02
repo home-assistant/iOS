@@ -72,6 +72,7 @@ struct ConnectionSettingsView: View {
                     server: viewModel.server,
                     urlType: .internal
                 )
+                .navigationViewStyle(.stack)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
@@ -87,6 +88,7 @@ struct ConnectionSettingsView: View {
                     server: viewModel.server,
                     urlType: .external
                 )
+                .navigationViewStyle(.stack)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
@@ -110,6 +112,7 @@ struct ConnectionSettingsView: View {
                         ? Version.updateLocationGPSOptional.coreRequiredString
                         : nil
                 )
+                .navigationViewStyle(.stack)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
@@ -131,6 +134,7 @@ struct ConnectionSettingsView: View {
                     isDisabled: false,
                     footerMessage: nil
                 )
+                .navigationViewStyle(.stack)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         CloseButton {
