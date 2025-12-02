@@ -13,6 +13,10 @@ struct ConnectionSettingsView: View {
     @State private var isDeleteConfirmationPresented = false
     @State private var deleteError: Error?
     @State private var showDeleteError = false
+    @State private var showInternalURLSheet = false
+    @State private var showExternalURLSheet = false
+    @State private var showLocationPrivacySheet = false
+    @State private var showSensorPrivacySheet = false
 
     let onDismiss: (() -> Void)?
 
@@ -60,6 +64,80 @@ struct ConnectionSettingsView: View {
         .sheet(isPresented: $showShareSheet) {
             if let activityVC = activityViewController {
                 embed(activityVC)
+            }
+        }
+        .sheet(isPresented: $showInternalURLSheet) {
+            NavigationView {
+                ConnectionURLView(
+                    server: viewModel.server,
+                    urlType: .internal
+                )
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton {
+                            showInternalURLSheet = false
+                        }
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showExternalURLSheet) {
+            NavigationView {
+                ConnectionURLView(
+                    server: viewModel.server,
+                    urlType: .external
+                )
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton {
+                            showExternalURLSheet = false
+                        }
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showLocationPrivacySheet) {
+            NavigationView {
+                PrivacyPickerView(
+                    title: L10n.Settings.ConnectionSection.LocationSendType.title,
+                    options: ServerLocationPrivacy.allCases,
+                    selection: Binding(
+                        get: { viewModel.locationPrivacy },
+                        set: { viewModel.updateLocationPrivacy($0) }
+                    ),
+                    isDisabled: viewModel.versionRequiresLocationGPSOptional,
+                    footerMessage: viewModel.versionRequiresLocationGPSOptional
+                        ? Version.updateLocationGPSOptional.coreRequiredString
+                        : nil
+                )
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton {
+                            showLocationPrivacySheet = false
+                        }
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showSensorPrivacySheet) {
+            NavigationView {
+                PrivacyPickerView(
+                    title: L10n.Settings.ConnectionSection.SensorSendType.title,
+                    options: ServerSensorPrivacy.allCases,
+                    selection: Binding(
+                        get: { viewModel.sensorPrivacy },
+                        set: { viewModel.updateSensorPrivacy($0) }
+                    ),
+                    isDisabled: false,
+                    footerMessage: nil
+                )
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton {
+                            showSensorPrivacySheet = false
+                        }
+                    }
+                }
             }
         }
         .sheet(isPresented: $showSecurityLevelPicker) {
@@ -135,33 +213,61 @@ struct ConnectionSettingsView: View {
                 )
             )
 
-            NavigationLink {
-                ConnectionURLView(
-                    server: viewModel.server,
-                    urlType: .internal
-                )
-            } label: {
-                HStack {
-                    Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
-                    Spacer()
-                    Text(viewModel.internalURL)
-                        .foregroundColor(.haPrimary)
-                        .lineLimit(1)
+            if #available(iOS 26.0, *) {
+                NavigationLink {
+                    ConnectionURLView(
+                        server: viewModel.server,
+                        urlType: .internal
+                    )
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
+                        Spacer()
+                        Text(viewModel.internalURL)
+                            .foregroundColor(.haPrimary)
+                            .lineLimit(1)
+                    }
                 }
-            }
 
-            NavigationLink {
-                ConnectionURLView(
-                    server: viewModel.server,
-                    urlType: .external
-                )
-            } label: {
-                HStack {
-                    Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
-                    Spacer()
-                    Text(viewModel.externalURL)
-                        .foregroundColor(.haPrimary)
-                        .lineLimit(1)
+                NavigationLink {
+                    ConnectionURLView(
+                        server: viewModel.server,
+                        urlType: .external
+                    )
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
+                        Spacer()
+                        Text(viewModel.externalURL)
+                            .foregroundColor(.haPrimary)
+                            .lineLimit(1)
+                    }
+                }
+            } else {
+                Button {
+                    showInternalURLSheet = true
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.InternalBaseUrl.title)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text(viewModel.internalURL)
+                            .foregroundColor(.haPrimary)
+                            .lineLimit(1)
+                    }
+                }
+
+                Button {
+                    showExternalURLSheet = true
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.ExternalBaseUrl.title)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text(viewModel.externalURL)
+                            .foregroundColor(.haPrimary)
+                            .lineLimit(1)
+                    }
                 }
             }
 
@@ -183,47 +289,75 @@ struct ConnectionSettingsView: View {
 
     private var privacySection: some View {
         Section(header: Text(L10n.SettingsDetails.Privacy.title)) {
-            NavigationLink {
-                PrivacyPickerView(
-                    title: L10n.Settings.ConnectionSection.LocationSendType.title,
-                    options: ServerLocationPrivacy.allCases,
-                    selection: Binding(
-                        get: { viewModel.locationPrivacy },
-                        set: { viewModel.updateLocationPrivacy($0) }
-                    ),
-                    isDisabled: viewModel.versionRequiresLocationGPSOptional,
-                    footerMessage: viewModel.versionRequiresLocationGPSOptional
-                        ? Version.updateLocationGPSOptional.coreRequiredString
-                        : nil
-                )
-            } label: {
-                HStack {
-                    Text(L10n.Settings.ConnectionSection.LocationSendType.title)
-                    Spacer()
-                    Text(viewModel.locationPrivacy.localizedDescription)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
+            if #available(iOS 26.0, *) {
+                NavigationLink {
+                    PrivacyPickerView(
+                        title: L10n.Settings.ConnectionSection.LocationSendType.title,
+                        options: ServerLocationPrivacy.allCases,
+                        selection: Binding(
+                            get: { viewModel.locationPrivacy },
+                            set: { viewModel.updateLocationPrivacy($0) }
+                        ),
+                        isDisabled: viewModel.versionRequiresLocationGPSOptional,
+                        footerMessage: viewModel.versionRequiresLocationGPSOptional
+                            ? Version.updateLocationGPSOptional.coreRequiredString
+                            : nil
+                    )
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.LocationSendType.title)
+                        Spacer()
+                        Text(viewModel.locationPrivacy.localizedDescription)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
                 }
-            }
 
-            NavigationLink {
-                PrivacyPickerView(
-                    title: L10n.Settings.ConnectionSection.SensorSendType.title,
-                    options: ServerSensorPrivacy.allCases,
-                    selection: Binding(
-                        get: { viewModel.sensorPrivacy },
-                        set: { viewModel.updateSensorPrivacy($0) }
-                    ),
-                    isDisabled: false,
-                    footerMessage: nil
-                )
-            } label: {
-                HStack {
-                    Text(L10n.Settings.ConnectionSection.SensorSendType.title)
-                    Spacer()
-                    Text(viewModel.sensorPrivacy.localizedDescription)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
+                NavigationLink {
+                    PrivacyPickerView(
+                        title: L10n.Settings.ConnectionSection.SensorSendType.title,
+                        options: ServerSensorPrivacy.allCases,
+                        selection: Binding(
+                            get: { viewModel.sensorPrivacy },
+                            set: { viewModel.updateSensorPrivacy($0) }
+                        ),
+                        isDisabled: false,
+                        footerMessage: nil
+                    )
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.SensorSendType.title)
+                        Spacer()
+                        Text(viewModel.sensorPrivacy.localizedDescription)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+            } else {
+                Button {
+                    showLocationPrivacySheet = true
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.LocationSendType.title)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text(viewModel.locationPrivacy.localizedDescription)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+
+                Button {
+                    showSensorPrivacySheet = true
+                } label: {
+                    HStack {
+                        Text(L10n.Settings.ConnectionSection.SensorSendType.title)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text(viewModel.sensorPrivacy.localizedDescription)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
                 }
             }
         }
