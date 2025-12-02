@@ -224,6 +224,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+        requestCarPlayConfigFromServer()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -669,6 +670,41 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private func getLatestConfig() {
         _ = Current.api(for: server)?.getConfig()
+    }
+
+    private func requestCarPlayConfigFromServer() {
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available for server, cannot fetch CarPlay config")
+            return
+        }
+        
+        Current.Log.info("🚗 Requesting CarPlay configuration from server...")
+        
+        firstly {
+            api.GetMobileAppConfig()
+        }.done { [weak self] config in
+            self?.handleCarPlayConfig(config.carPlay)
+        }.catch { error in
+            Current.Log.error("Failed to fetch CarPlay configuration: \(error)")
+        }
+    }
+    
+    private func handleCarPlayConfig(_ carPlayConfig: MobileAppConfig.CarPlayConfiguration) {
+        Current.Log.info("🚗 CarPlay Configuration received:")
+        Current.Log.info("  - Enabled: \(carPlayConfig.enabled)")
+        Current.Log.info("  - Quick Access Items: \(carPlayConfig.quickAccess.count)")
+        
+        for (index, item) in carPlayConfig.quickAccess.enumerated() {
+            Current.Log.info("  - Item \(index + 1):")
+            Current.Log.info("    • Entity ID: \(item.entityId)")
+            if let displayName = item.displayName {
+                Current.Log.info("    • Display Name: \(displayName)")
+            } else {
+                Current.Log.info("    • Display Name: (not set)")
+            }
+        }
+        
+        // TODO: Store this configuration and use it to configure CarPlay
     }
 
     private func showActionAutomationEditorNotAvailable() {
