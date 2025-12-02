@@ -677,9 +677,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             Current.Log.error("No API available for server, cannot fetch CarPlay config")
             return
         }
-        
+
         Current.Log.info("🚗 Requesting CarPlay configuration from server...")
-        
+
         firstly {
             api.GetMobileAppConfig()
         }.done { [weak self] config in
@@ -688,12 +688,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             Current.Log.error("Failed to fetch CarPlay configuration: \(error)")
         }
     }
-    
+
     private func handleCarPlayConfig(_ carPlayConfig: MobileAppConfig.CarPlayConfiguration) {
         Current.Log.info("🚗 CarPlay Configuration received:")
         Current.Log.info("  - Enabled: \(carPlayConfig.enabled)")
         Current.Log.info("  - Quick Access Items: \(carPlayConfig.quickAccess.count)")
-        
+
         for (index, item) in carPlayConfig.quickAccess.enumerated() {
             Current.Log.info("  - Item \(index + 1):")
             Current.Log.info("    • Entity ID: \(item.entityId)")
@@ -703,7 +703,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 Current.Log.info("    • Display Name: (not set)")
             }
         }
-        
+
         // TODO: Store this configuration and use it to configure CarPlay
     }
 

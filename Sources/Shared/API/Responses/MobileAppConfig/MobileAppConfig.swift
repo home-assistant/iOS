@@ -6,7 +6,11 @@ public struct MobileAppConfig: ImmutableMappable {
     public var actions: [MobileAppConfigAction]
     public var carPlay: CarPlayConfiguration
 
-    init(push: MobileAppConfigPush = .init(), actions: [MobileAppConfigAction] = [], carPlay: CarPlayConfiguration =  CarPlayConfiguration(enabled: true, quickAccess: [])) {
+    init(
+        push: MobileAppConfigPush = .init(),
+        actions: [MobileAppConfigAction] = [],
+        carPlay: CarPlayConfiguration = CarPlayConfiguration(enabled: true, quickAccess: [])
+    ) {
         self.push = push
         self.actions = actions
         self.carPlay = carPlay
