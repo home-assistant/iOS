@@ -37,6 +37,17 @@ final class WidgetBuilderViewModel: ObservableObject {
         }
     }
 
+    func deleteWidget(_ widget: CustomWidget) {
+        do {
+            _ = try Current.database().write { db in
+                try widget.delete(db)
+            }
+            loadWidgets()
+        } catch {
+            Current.Log.error("Failed to delete custom widget, error: \(error.localizedDescription)")
+        }
+    }
+
     func deleteAllWidgets() {
         do {
             _ = try Current.database().write { db in

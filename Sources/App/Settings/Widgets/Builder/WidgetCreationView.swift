@@ -128,9 +128,7 @@ struct WidgetCreationView: View {
     }
 
     private func deleteItem(_ item: MagicItem) {
-        if let index = viewModel.widget.items.firstIndex(where: { $0.serverUniqueId == item.serverUniqueId }) {
-            viewModel.deleteItem(at: IndexSet(integer: index))
-        }
+        viewModel.deleteItem(item)
     }
 
     private func makeListItem(item: MagicItem) -> some View {

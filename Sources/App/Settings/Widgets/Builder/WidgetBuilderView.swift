@@ -108,9 +108,7 @@ struct WidgetBuilderView: View {
     }
 
     private func deleteWidget(_ widget: CustomWidget) {
-        if let index = viewModel.widgets.firstIndex(where: { $0.id == widget.id }) {
-            viewModel.deleteItem(at: IndexSet(integer: index))
-        }
+        viewModel.deleteWidget(widget)
     }
 
     @ViewBuilder
