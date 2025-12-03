@@ -1055,13 +1055,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     public func openPanel(_ url: URL) {
         loadViewIfNeeded()
 
-        // TODO: Find out why navigating through the external bus does not open more-info dialog
-        guard url.queryItems?[AppConstants.QueryItems.openMoreInfoDialog.rawValue] == nil else {
-            load(request: URLRequest(url: url))
-            Current.Log.verbose("Opening more-info dialog for URL: \(url)")
-            return
-        }
-
         let urlPathIncludingQueryParams = {
             // If the URL has query parameters, we need to include them in the path to ensure proper navigation
             if let query = url.query, !query.isEmpty {
