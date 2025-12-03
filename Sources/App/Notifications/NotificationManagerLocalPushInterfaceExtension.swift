@@ -135,6 +135,12 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
     
+    /// Reloads manager configurations from system preferences after they have been saved.
+    /// This ensures the NetworkExtension framework picks up configuration changes,
+    /// particularly when enabling local push while already on the internal network.
+    ///
+    /// Note: This only configures managers that were successfully saved by updateManagers().
+    /// Managers for removed SSIDs or disabled servers are intentionally not recreated.
     private func reloadManagersAfterSave() {
         Current.Log.info("Reloading managers after configuration changes")
         
@@ -148,6 +154,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             
             var configureManagers = [ConfigureManager]()
             
+            // Only configure managers for currently enabled servers with configured SSIDs
             for (ssid, servers) in serversBySSID() {
                 if let manager = managers?.first(where: { $0.matchSSIDs == [ssid] }) {
                     configureManagers.append(ConfigureManager(ssid: ssid, manager: manager, servers: servers, isDirty: false))
