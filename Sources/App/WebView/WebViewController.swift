@@ -127,7 +127,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     convenience init?(restoring: WebViewRestorationType?, shouldLoadImmediately: Bool = false) {
         if let server = restoring?.server ?? Current.servers.all.first {
-            self.init(server: server, initialURL: restoring?.initialURL)
+            self.init(server: server, shouldLoadImmediately: shouldLoadImmediately, initialURL: restoring?.initialURL)
         } else {
             return nil
         }
