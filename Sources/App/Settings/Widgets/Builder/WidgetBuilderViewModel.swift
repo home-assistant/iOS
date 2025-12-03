@@ -26,7 +26,7 @@ final class WidgetBuilderViewModel: ObservableObject {
 
     func deleteItem(at offsets: IndexSet) {
         let widgetsToDelete = offsets.compactMap { index in
-            widgets.indices.contains(index) ? widgets[index] : nil
+            index < widgets.count ? widgets[index] : nil
         }
         for widget in widgetsToDelete {
             deleteWidgetFromDatabase(widget)
