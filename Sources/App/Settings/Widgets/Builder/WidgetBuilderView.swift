@@ -95,6 +95,8 @@ struct WidgetBuilderView: View {
                 } label: {
                     Text(widget.name)
                 }
+                Spacer()
+                #if targetEnvironment(macCatalyst)
                 Button {
                     viewModel.deleteWidget(widget)
                 } label: {
@@ -102,6 +104,7 @@ struct WidgetBuilderView: View {
                         .foregroundStyle(.red)
                 }
                 .buttonStyle(.borderless)
+                #endif
             }
         }
         .onDelete { indexSet in

@@ -140,6 +140,8 @@ struct WidgetCreationView: View {
             } label: {
                 itemRow(item: item, info: info)
             }
+            Spacer()
+            #if targetEnvironment(macCatalyst)
             Button {
                 viewModel.deleteItem(item)
             } label: {
@@ -147,6 +149,7 @@ struct WidgetCreationView: View {
                     .foregroundStyle(.red)
             }
             .buttonStyle(.borderless)
+            #endif
         }
     }
 
