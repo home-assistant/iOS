@@ -101,6 +101,15 @@ struct WidgetCreationView: View {
         Section {
             ForEach(viewModel.widget.items, id: \.serverUniqueId) { item in
                 makeListItem(item: item)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            if let index = viewModel.widget.items.firstIndex(where: { $0.serverUniqueId == item.serverUniqueId }) {
+                                viewModel.deleteItem(at: IndexSet(integer: index))
+                            }
+                        } label: {
+                            Label(L10n.delete, systemSymbol: .trash)
+                        }
+                    }
             }
             .onMove { indices, newOffset in
                 viewModel.moveItem(from: indices, to: newOffset)

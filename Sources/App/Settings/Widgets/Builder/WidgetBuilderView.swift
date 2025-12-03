@@ -94,6 +94,15 @@ struct WidgetBuilderView: View {
             } label: {
                 Text(widget.name)
             }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button(role: .destructive) {
+                    if let index = viewModel.widgets.firstIndex(where: { $0.id == widget.id }) {
+                        viewModel.deleteItem(at: IndexSet(integer: index))
+                    }
+                } label: {
+                    Label(L10n.delete, systemSymbol: .trash)
+                }
+            }
         }
         .onDelete { indexSet in
             viewModel.deleteItem(at: indexSet)
