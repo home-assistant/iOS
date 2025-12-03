@@ -96,8 +96,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
     #endif
 
-    init(server: Server, shouldLoadImmediately: Bool = false) {
+    init(server: Server, shouldLoadImmediately: Bool = false, initialURL: URL? = nil) {
         self.server = server
+        self.initialURL = initialURL
         self.leftEdgePanGestureRecognizer = with(UIScreenEdgePanGestureRecognizer()) {
             $0.edges = .left
         }
@@ -126,12 +127,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     convenience init?(restoring: WebViewRestorationType?, shouldLoadImmediately: Bool = false) {
         if let server = restoring?.server ?? Current.servers.all.first {
-            self.init(server: server)
+            self.init(server: server, initialURL: restoring?.initialURL)
         } else {
             return nil
         }
-
-        self.initialURL = restoring?.initialURL
     }
 
     @available(*, unavailable)

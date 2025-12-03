@@ -117,13 +117,36 @@ final class WebViewWindowController {
         restorationType: WebViewRestorationType?,
         shouldLoadImmediately: Bool = false
     ) -> WebViewController? {
-        if let server = restorationType?.server ?? Current.servers.all.first {
+        // Check for pending notification URL from cold start
+        let pendingNotification = Current.notificationManager.consumePendingNotificationURL()
+        let targetServer = pendingNotification?.server ?? restorationType?.server ?? Current.servers.all.first
+        
+        if let server = targetServer {
             if let cachedController = cachedWebViewControllers[server.identifier] {
+                // If we have a pending notification URL and a cached controller, open it now
+                if let pendingURL = pendingNotification?.url {
+                    Current.Log.info("Opening pending notification URL on cached controller: \(pendingURL)")
+                    cachedController.loadViewIfNeeded()
+                    if let url = server.info.connection.webviewURL(from: pendingURL) {
+                        cachedController.open(inline: url, avoidUnecessaryReload: false)
+                    }
+                }
                 return cachedController
             } else {
+                // Determine the initial URL - prefer pending notification URL over restoration URL
+                let initialURL: URL? = {
+                    if let pendingURL = pendingNotification?.url {
+                        Current.Log.info("Using pending notification URL as initialURL: \(pendingURL)")
+                        return server.info.connection.webviewURL(from: pendingURL)
+                    } else {
+                        return restorationType?.initialURL
+                    }
+                }()
+                
                 let newController = WebViewController(
-                    restoring: restorationType,
-                    shouldLoadImmediately: shouldLoadImmediately
+                    server: server,
+                    shouldLoadImmediately: shouldLoadImmediately,
+                    initialURL: initialURL
                 )
                 cachedWebViewControllers[server.identifier] = newController
                 return newController

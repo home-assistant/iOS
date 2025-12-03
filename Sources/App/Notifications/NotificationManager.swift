@@ -18,6 +18,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }()
 
     var commandManager = NotificationCommandManager()
+    
+    /// Stores pending notification URL when app is launched from killed state
+    private(set) var pendingNotificationURL: String?
+    private(set) var pendingNotificationServer: Server?
 
     override init() {
         super.init()
@@ -32,6 +36,16 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
         _ = localPushManager
+    }
+    
+    /// Consumes and clears the pending notification URL if one exists
+    func consumePendingNotificationURL() -> (url: String, server: Server)? {
+        guard let url = pendingNotificationURL, let server = pendingNotificationServer else {
+            return nil
+        }
+        pendingNotificationURL = nil
+        pendingNotificationServer = nil
+        return (url, server)
     }
 
     @objc private func didBecomeActive() {
@@ -247,8 +261,24 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if let url = urlString(from: response) {
             Current.Log.info("launching URL \(url)")
-            Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
+            
+            // Check if the app is launching from killed state by checking if the promise is pending
+            if Current.sceneManager.webViewWindowControllerPromise.isFulfilled {
+                // App is already running, handle URL immediately
+                Current.sceneManager.webViewWindowControllerPromise.done {
+                    $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
+                }
+            } else {
+                // App is launching from killed state, store URL to be used as initialURL
+                Current.Log.info("App launching from notification, storing pending URL: \(url)")
+                pendingNotificationURL = url
+                pendingNotificationServer = server
+                
+                // Still register the callback for when the promise is fulfilled
+                // This ensures the URL is opened even if it wasn't picked up during initialization
+                Current.sceneManager.webViewWindowControllerPromise.done {
+                    $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
+                }
             }
         }
 
