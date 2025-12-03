@@ -138,12 +138,11 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                 return
             }
             
-            let encoder = JSONEncoder()
             var configureManagers = [ConfigureManager]()
             
             for (ssid, servers) in serversBySSID() {
                 if let manager = managers?.first(where: { $0.matchSSIDs == [ssid] }) {
-                    configureManagers.append(ConfigureManager(ssid: ssid, manager: manager, servers: servers))
+                    configureManagers.append(ConfigureManager(ssid: ssid, manager: manager, servers: servers, isDirty: false))
                 }
             }
             
