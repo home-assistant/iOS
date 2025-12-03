@@ -70,6 +70,19 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
     )
     var script: IntentScriptEntity?
 
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.notify_when_run.title",
+            defaultValue: "Notify when run"
+        ),
+        description: LocalizedStringResource(
+            "app_intents.notify_when_run.description",
+            defaultValue: "Shows notification after executed"
+        ),
+        default: true
+    )
+    var showConfirmationNotification: Bool
+
     static var parameterSummary: some ParameterSummary {
         When(\WidgetDetailsAppIntent.$runScript, .equalTo, true) {
             Summary {
@@ -80,6 +93,7 @@ struct WidgetDetailsAppIntent: WidgetConfigurationIntent {
 
                 \.$runScript
                 \.$script
+                \.$showConfirmationNotification
             }
         } otherwise: {
             Summary {

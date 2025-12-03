@@ -43,7 +43,7 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> WidgetDetailsEntry {
         .init(
             upperText: nil, lowerText: nil, detailsText: nil,
-            runScript: false, script: nil
+            runScript: false, script: nil, showConfirmationNotification: true
         )
     }
 
@@ -105,7 +105,8 @@ struct WidgetDetailsAppIntentTimelineProvider: AppIntentTimelineProvider {
             detailsText: detailsText != "?" ? detailsText : nil,
 
             runScript: configuration.runScript,
-            script: configuration.script
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
         )
     }
 }
@@ -126,6 +127,7 @@ struct WidgetDetailsEntry: TimelineEntry {
 
     var runScript: Bool
     var script: IntentScriptEntity?
+    var showConfirmationNotification: Bool
 }
 
 enum WidgetDetailsDataError: Error {
