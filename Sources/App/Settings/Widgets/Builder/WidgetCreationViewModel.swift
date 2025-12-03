@@ -63,6 +63,8 @@ final class WidgetCreationViewModel: ObservableObject {
     func deleteItem(_ item: MagicItem) {
         if let index = widget.items.firstIndex(where: { $0.serverUniqueId == item.serverUniqueId }) {
             widget.items.remove(at: index)
+        } else {
+            Current.Log.warning("Attempted to delete widget item that doesn't exist: \(item.serverUniqueId)")
         }
     }
 
