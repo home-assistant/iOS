@@ -103,9 +103,7 @@ struct WidgetCreationView: View {
                 makeListItem(item: item)
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
-                            if let index = viewModel.widget.items.firstIndex(where: { $0.serverUniqueId == item.serverUniqueId }) {
-                                viewModel.deleteItem(at: IndexSet(integer: index))
-                            }
+                            deleteItem(item)
                         } label: {
                             Label(L10n.delete, systemSymbol: .trash)
                         }
@@ -126,6 +124,12 @@ struct WidgetCreationView: View {
             Text(verbatim: L10n.Watch.Configuration.Items.title)
         } footer: {
             Text(verbatim: L10n.Settings.Widgets.Create.Footer.title)
+        }
+    }
+
+    private func deleteItem(_ item: MagicItem) {
+        if let index = viewModel.widget.items.firstIndex(where: { $0.serverUniqueId == item.serverUniqueId }) {
+            viewModel.deleteItem(at: IndexSet(integer: index))
         }
     }
 
