@@ -169,6 +169,12 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         var ssid: String
         var manager: NEAppPushManager
         var servers: [Server]
+        
+        /// Indicates whether the manager's configuration has been modified and saved to preferences.
+        /// A "dirty" manager is one that had changes to its properties (isEnabled, matchSSIDs, 
+        /// providerConfiguration, etc.) and was saved via `saveToPreferences()`.
+        /// This flag is used to trigger a reload of managers after saving, ensuring the 
+        /// NetworkExtension framework picks up the configuration changes immediately.
         var isDirty: Bool = false
     }
 
@@ -203,6 +209,9 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         let manager = existingManager ?? NEAppPushManager()
         // just toggling isEnabled doesn't seem to kill off the extension reliably, so we remove when unwanted
 
+        // Track whether any configuration properties are modified.
+        // "Dirty" means the manager's configuration differs from what's currently saved
+        // and requires a call to saveToPreferences() to persist the changes.
         var isDirty = false
 
         func updateAndDirty<T: Equatable>(_ keyPath: ReferenceWritableKeyPath<NEAppPushManager, T>, _ value: T) {
