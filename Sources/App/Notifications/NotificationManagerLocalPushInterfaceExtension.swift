@@ -8,7 +8,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     /// Delay in seconds before reloading managers after configuration changes.
     /// This allows the system to persist changes before attempting to reload them.
     private static let managerReloadDelay: TimeInterval = 0.5
-    
+
     private var observers = [Observer]()
     private var syncStates: PerServerContainer<LocalPushStateSync>!
     private var managers = [Identifier<Server>: [NEAppPushManager]]()
@@ -83,7 +83,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
         NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
             guard let self else { return }
-            
+
             if let error {
                 Current.Log.error("failed to load local push managers: \(error)")
                 return
@@ -123,7 +123,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
 
             configure(managers: updatedManagers)
-            
+
             // If we made changes to managers, reload them after a brief delay to ensure
             // the system picks up the changes, especially when enabling local push
             // while already on the internal network
@@ -134,7 +134,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
         }
     }
-    
+
     /// Reloads manager configurations from system preferences after they have been saved.
     /// This ensures the NetworkExtension framework picks up configuration changes,
     /// particularly when enabling local push while already on the internal network.
@@ -143,24 +143,26 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     /// Managers for removed SSIDs or disabled servers are intentionally not recreated.
     private func reloadManagersAfterSave() {
         Current.Log.info("Reloading managers after configuration changes")
-        
+
         NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
             guard let self else { return }
-            
+
             if let error {
                 Current.Log.error("failed to reload local push managers: \(error)")
                 return
             }
-            
+
             var configureManagers = [ConfigureManager]()
-            
+
             // Only configure managers for currently enabled servers with configured SSIDs
             for (ssid, servers) in serversBySSID() {
                 if let manager = managers?.first(where: { $0.matchSSIDs == [ssid] }) {
-                    configureManagers.append(ConfigureManager(ssid: ssid, manager: manager, servers: servers, isDirty: false))
+                    configureManagers.append(
+                        ConfigureManager(ssid: ssid, manager: manager, servers: servers, isDirty: false)
+                    )
                 }
             }
-            
+
             configure(managers: configureManagers)
         }
     }
@@ -169,11 +171,11 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         var ssid: String
         var manager: NEAppPushManager
         var servers: [Server]
-        
+
         /// Indicates whether the manager's configuration has been modified and saved to preferences.
-        /// A "dirty" manager is one that had changes to its properties (isEnabled, matchSSIDs, 
+        /// A "dirty" manager is one that had changes to its properties (isEnabled, matchSSIDs,
         /// providerConfiguration, etc.) and was saved via `saveToPreferences()`.
-        /// This flag is used to trigger a reload of managers after saving, ensuring the 
+        /// This flag is used to trigger a reload of managers after saving, ensuring the
         /// NetworkExtension framework picks up the configuration changes immediately.
         var isDirty: Bool = false
     }
