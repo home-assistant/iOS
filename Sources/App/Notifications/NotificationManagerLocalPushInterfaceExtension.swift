@@ -5,6 +5,10 @@ import PromiseKit
 import Shared
 
 final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface {
+    /// Delay in seconds before reloading managers after configuration changes.
+    /// This allows the system to persist changes before attempting to reload them.
+    private static let managerReloadDelay: TimeInterval = 0.5
+    
     private var observers = [Observer]()
     private var syncStates: PerServerContainer<LocalPushStateSync>!
     private var managers = [Identifier<Server>: [NEAppPushManager]]()
@@ -122,7 +126,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             // the system picks up the changes, especially when enabling local push
             // while already on the internal network
             if hasDirtyManagers {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.managerReloadDelay) { [weak self] in
                     self?.reloadManagersAfterSave()
                 }
             }
@@ -132,9 +136,11 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private func reloadManagersAfterSave() {
         Current.Log.info("Reloading managers after configuration changes")
         
-        NEAppPushManager.loadAllFromPreferences { [self] managers, error in
-            guard error == nil else {
-                Current.Log.error("failed to reload local push managers: \(error!)")
+        NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
+            guard let self else { return }
+            
+            if let error {
+                Current.Log.error("failed to reload local push managers: \(error)")
                 return
             }
             
