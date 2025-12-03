@@ -87,12 +87,24 @@ struct WidgetBuilderView: View {
 
     private var widgetsList: some View {
         ForEach(viewModel.widgets, id: \.id) { widget in
-            NavigationLink {
-                WidgetCreationView(widget: widget) {
-                    viewModel.loadWidgets()
+            HStack {
+                NavigationLink {
+                    WidgetCreationView(widget: widget) {
+                        viewModel.loadWidgets()
+                    }
+                } label: {
+                    Text(widget.name)
                 }
-            } label: {
-                Text(widget.name)
+                Spacer()
+                #if targetEnvironment(macCatalyst)
+                Button {
+                    viewModel.deleteWidget(widget)
+                } label: {
+                    Image(systemSymbol: .trash)
+                        .foregroundStyle(.red)
+                }
+                .buttonStyle(.borderless)
+                #endif
             }
         }
         .onDelete { indexSet in

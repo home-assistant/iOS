@@ -132,12 +132,24 @@ struct WidgetCreationView: View {
 
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        NavigationLink {
-            MagicItemCustomizationView(mode: .edit, context: .widget, item: item) { updatedMagicItem in
-                viewModel.updateItem(updatedMagicItem)
+        HStack {
+            NavigationLink {
+                MagicItemCustomizationView(mode: .edit, context: .widget, item: item) { updatedMagicItem in
+                    viewModel.updateItem(updatedMagicItem)
+                }
+            } label: {
+                itemRow(item: item, info: info)
             }
-        } label: {
-            itemRow(item: item, info: info)
+            Spacer()
+            #if targetEnvironment(macCatalyst)
+            Button {
+                viewModel.deleteItem(item)
+            } label: {
+                Image(systemSymbol: .trash)
+                    .foregroundStyle(.red)
+            }
+            .buttonStyle(.borderless)
+            #endif
         }
     }
 

@@ -60,6 +60,12 @@ final class WidgetCreationViewModel: ObservableObject {
         widget.items.remove(atOffsets: offsets)
     }
 
+    func deleteItem(_ item: MagicItem) {
+        if let index = widget.items.firstIndex(where: { $0.serverUniqueId == item.serverUniqueId }) {
+            widget.items.remove(at: index)
+        }
+    }
+
     func moveItem(from source: IndexSet, to destination: Int) {
         widget.items.move(fromOffsets: source, toOffset: destination)
     }
