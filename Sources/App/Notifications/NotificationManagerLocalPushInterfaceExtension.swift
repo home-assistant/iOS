@@ -81,9 +81,11 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private func updateManagers() {
         Current.Log.info()
 
-        NEAppPushManager.loadAllFromPreferences { [self] managers, error in
-            guard error == nil else {
-                Current.Log.error("failed to load local push managers: \(error!)")
+        NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
+            guard let self else { return }
+            
+            if let error {
+                Current.Log.error("failed to load local push managers: \(error)")
                 return
             }
 
