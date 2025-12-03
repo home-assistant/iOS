@@ -25,19 +25,19 @@ final class WidgetBuilderViewModel: ObservableObject {
     }
 
     func deleteItem(at offsets: IndexSet) {
-        let widgetsToDelete = offsets.compactMap { index in
-            index < widgets.count ? widgets[index] : nil
-        }
-        for widget in widgetsToDelete {
-            deleteWidgetFromDatabase(widget)
+        for index in offsets {
+            do {
+                _ = try Current.database().write { db in
+                    try widgets[index].delete(db)
+                }
+                loadWidgets()
+            } catch {
+                Current.Log.error("Failed to delete custom widget, error: \(error.localizedDescription)")
+            }
         }
     }
 
     func deleteWidget(_ widget: CustomWidget) {
-        deleteWidgetFromDatabase(widget)
-    }
-
-    private func deleteWidgetFromDatabase(_ widget: CustomWidget) {
         do {
             _ = try Current.database().write { db in
                 try widget.delete(db)

@@ -101,13 +101,6 @@ struct WidgetCreationView: View {
         Section {
             ForEach(viewModel.widget.items, id: \.serverUniqueId) { item in
                 makeListItem(item: item)
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            deleteItem(item)
-                        } label: {
-                            Label(L10n.delete, systemSymbol: .trash)
-                        }
-                    }
             }
             .onMove { indices, newOffset in
                 viewModel.moveItem(from: indices, to: newOffset)
@@ -127,10 +120,6 @@ struct WidgetCreationView: View {
         }
     }
 
-    private func deleteItem(_ item: MagicItem) {
-        viewModel.deleteItem(item)
-    }
-
     private func makeListItem(item: MagicItem) -> some View {
         let itemInfo = viewModel.magicItemInfo(for: item) ?? .init(
             id: item.id,
@@ -143,12 +132,21 @@ struct WidgetCreationView: View {
 
     @ViewBuilder
     private func makeListItemRow(item: MagicItem, info: MagicItem.Info) -> some View {
-        NavigationLink {
-            MagicItemCustomizationView(mode: .edit, context: .widget, item: item) { updatedMagicItem in
-                viewModel.updateItem(updatedMagicItem)
+        HStack {
+            NavigationLink {
+                MagicItemCustomizationView(mode: .edit, context: .widget, item: item) { updatedMagicItem in
+                    viewModel.updateItem(updatedMagicItem)
+                }
+            } label: {
+                itemRow(item: item, info: info)
             }
-        } label: {
-            itemRow(item: item, info: info)
+            Button {
+                viewModel.deleteItem(item)
+            } label: {
+                Image(systemSymbol: .trash)
+                    .foregroundStyle(.red)
+            }
+            .buttonStyle(.borderless)
         }
     }
 

@@ -87,28 +87,26 @@ struct WidgetBuilderView: View {
 
     private var widgetsList: some View {
         ForEach(viewModel.widgets, id: \.id) { widget in
-            NavigationLink {
-                WidgetCreationView(widget: widget) {
-                    viewModel.loadWidgets()
-                }
-            } label: {
-                Text(widget.name)
-            }
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                Button(role: .destructive) {
-                    deleteWidget(widget)
+            HStack {
+                NavigationLink {
+                    WidgetCreationView(widget: widget) {
+                        viewModel.loadWidgets()
+                    }
                 } label: {
-                    Label(L10n.delete, systemSymbol: .trash)
+                    Text(widget.name)
                 }
+                Button {
+                    viewModel.deleteWidget(widget)
+                } label: {
+                    Image(systemSymbol: .trash)
+                        .foregroundStyle(.red)
+                }
+                .buttonStyle(.borderless)
             }
         }
         .onDelete { indexSet in
             viewModel.deleteItem(at: indexSet)
         }
-    }
-
-    private func deleteWidget(_ widget: CustomWidget) {
-        viewModel.deleteWidget(widget)
     }
 
     @ViewBuilder
