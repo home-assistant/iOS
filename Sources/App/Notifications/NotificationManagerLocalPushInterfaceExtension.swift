@@ -87,6 +87,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
             var updatedManagers = [ConfigureManager]()
             var usedManagers = Set<NEAppPushManager>()
+            var hasDirtyManagers = false
 
             // update or create managers for the servers we have
             for (ssid, servers) in serversBySSID() {
@@ -96,12 +97,16 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                 if let existing {
                     usedManagers.insert(existing)
                 }
-                updatedManagers.append(updateManager(
+                let updated = updateManager(
                     existingManager: existing,
                     ssid: ssid,
                     servers: servers,
                     encoder: encoder
-                ))
+                )
+                updatedManagers.append(updated)
+                if updated.isDirty {
+                    hasDirtyManagers = true
+                }
             }
 
             // remove any existing managers that didn't match
@@ -112,6 +117,37 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
 
             configure(managers: updatedManagers)
+            
+            // If we made changes to managers, reload them after a brief delay to ensure
+            // the system picks up the changes, especially when enabling local push
+            // while already on the internal network
+            if hasDirtyManagers {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                    self?.reloadManagersAfterSave()
+                }
+            }
+        }
+    }
+    
+    private func reloadManagersAfterSave() {
+        Current.Log.info("Reloading managers after configuration changes")
+        
+        NEAppPushManager.loadAllFromPreferences { [self] managers, error in
+            guard error == nil else {
+                Current.Log.error("failed to reload local push managers: \(error!)")
+                return
+            }
+            
+            let encoder = JSONEncoder()
+            var configureManagers = [ConfigureManager]()
+            
+            for (ssid, servers) in serversBySSID() {
+                if let manager = managers?.first(where: { $0.matchSSIDs == [ssid] }) {
+                    configureManagers.append(ConfigureManager(ssid: ssid, manager: manager, servers: servers))
+                }
+            }
+            
+            configure(managers: configureManagers)
         }
     }
 
@@ -119,6 +155,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         var ssid: String
         var manager: NEAppPushManager
         var servers: [Server]
+        var isDirty: Bool = false
     }
 
     private func configure(managers configureManagers: [ConfigureManager]) {
@@ -192,7 +229,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
             }
         }
 
-        return ConfigureManager(ssid: ssid, manager: manager, servers: servers)
+        return ConfigureManager(ssid: ssid, manager: manager, servers: servers, isDirty: isDirty)
     }
 
     private func serversBySSID() -> [String: [Server]] {
