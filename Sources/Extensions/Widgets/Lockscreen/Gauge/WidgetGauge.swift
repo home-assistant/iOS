@@ -32,6 +32,7 @@ struct WidgetGauge: Widget {
         if let script = entry.script {
             let intent = ScriptAppIntent()
             intent.script = script
+            intent.showConfirmationNotification = entry.showConfirmationNotification
             return intent
         } else { return nil }
     }

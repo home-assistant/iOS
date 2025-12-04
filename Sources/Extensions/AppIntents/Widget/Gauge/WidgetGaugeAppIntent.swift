@@ -101,6 +101,19 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
     )
     var script: IntentScriptEntity?
 
+    @Parameter(
+        title: LocalizedStringResource(
+            "app_intents.notify_when_run.title",
+            defaultValue: "Notify when run"
+        ),
+        description: LocalizedStringResource(
+            "app_intents.notify_when_run.description",
+            defaultValue: "Shows notification after executed"
+        ),
+        default: true
+    )
+    var showConfirmationNotification: Bool
+
     static var parameterSummary: some ParameterSummary {
         When(\WidgetGaugeAppIntent.$runScript, .equalTo, true) {
             Switch(\.$gaugeType) {
@@ -117,6 +130,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
                         \.$runScript
                         \.$script
+                        \.$showConfirmationNotification
                     }
                 }
                 Case(.singleLabel) {
@@ -131,6 +145,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
                         \.$runScript
                         \.$script
+                        \.$showConfirmationNotification
                     }
                 }
                 DefaultCase {
@@ -144,6 +159,7 @@ struct WidgetGaugeAppIntent: WidgetConfigurationIntent {
 
                         \.$runScript
                         \.$script
+                        \.$showConfirmationNotification
                     }
                 }
             }
