@@ -134,7 +134,7 @@ public enum AppConstants {
 
     public static func openEntityDeeplinkURL(entityId: String, serverId: String) -> URL? {
         AppConstants.navigateDeeplinkURL(
-            path: "lovelace",
+            path: "",
             serverId: serverId,
             queryParams: "\(AppConstants.QueryItems.openMoreInfoDialog.rawValue)=\(entityId)",
             avoidUnecessaryReload: true
