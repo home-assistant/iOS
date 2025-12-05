@@ -152,22 +152,24 @@ public extension IntentPanel {
         self.serverIdentifier = server.identifier.rawValue
     }
 
+    /// Extracts the path portion from the identifier, supporting both old and new formats
+    /// - New format: "serverID-path" returns "path"
+    /// - Old format: "path" returns "path"
+    var extractedPath: String {
+        guard let identifier else { return "" }
+        guard let serverIdentifier else { return identifier }
+
+        let prefix = serverIdentifier + "-"
+        if identifier.hasPrefix(prefix) {
+            return String(identifier.dropFirst(prefix.count))
+        } else {
+            return identifier
+        }
+    }
+
     var widgetURL: URL {
         let server = Current.servers.server(for: self) ?? Current.servers.all.first
-        // Extract the path from the identifier (format: "serverIdentifier-path")
-        let path: String
-        if let identifier, let serverIdentifier {
-            let prefix = serverIdentifier + "-"
-            if identifier.hasPrefix(prefix) {
-                // Remove the server identifier prefix and the separator to get the path
-                path = String(identifier.dropFirst(prefix.count))
-            } else {
-                // Fallback for old identifiers or if extraction fails
-                path = identifier
-            }
-        } else {
-            path = identifier ?? "lovelace"
-        }
+        let path = extractedPath.isEmpty ? "lovelace" : extractedPath
         return AppConstants.openPageDeeplinkURL(
             path: path,
             serverId: server?.identifier.rawValue ?? ""

@@ -23,20 +23,6 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
         return .init(pages: pages)
     }
 
-    // Helper function to extract path from identifier, supporting both old and new formats
-    // New format: "serverID-path", Old format: "path"
-    private func extractPath(from panel: IntentPanel) -> String {
-        guard let identifier = panel.identifier else { return "" }
-        guard let serverIdentifier = panel.serverIdentifier else { return identifier }
-
-        let prefix = serverIdentifier + "-"
-        if identifier.hasPrefix(prefix) {
-            return String(identifier.dropFirst(prefix.count))
-        } else {
-            return identifier
-        }
-    }
-
     private func panels(
         for context: Context,
         updating existing: [IntentPanel],
@@ -51,9 +37,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
                     intentsToDisplay.first { newPanel in
                         // Match by server and path, supporting both old and new identifier formats
                         let serversMatch = newPanel.server == existingValue.server
-                        let newPath = extractPath(from: newPanel)
-                        let existingPath = extractPath(from: existingValue)
-                        return serversMatch && newPath == existingPath
+                        return serversMatch && newPanel.extractedPath == existingValue.extractedPath
                     }
                 }
             }
