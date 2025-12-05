@@ -156,8 +156,7 @@ public extension IntentPanel {
     /// - New format: "serverID-path" returns "path"
     /// - Old format: "path" returns "path"
     var extractedPath: String {
-        guard let identifier else { return "" }
-        guard let serverIdentifier else { return identifier }
+        guard let identifier, let serverIdentifier else { return identifier ?? "" }
 
         let prefix = serverIdentifier + "-"
         if identifier.hasPrefix(prefix) {

@@ -36,8 +36,7 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
                 intentsToDisplay = existing.compactMap { existingValue in
                     intentsToDisplay.first { newPanel in
                         // Match by server and path, supporting both old and new identifier formats
-                        let serversMatch = newPanel.server == existingValue.server
-                        return serversMatch && newPanel.extractedPath == existingValue.extractedPath
+                        newPanel.server == existingValue.server && newPanel.extractedPath == existingValue.extractedPath
                     }
                 }
             }
