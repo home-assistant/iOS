@@ -49,4 +49,26 @@ struct AppConstantsTests {
         assert(AppConstants.QueryItems.openMoreInfoDialog.rawValue == "more-info-entity-id")
         assert(AppConstants.QueryItems.isComingFromAppIntent.rawValue == "isComingFromAppIntent")
     }
+
+    @Test func testOpenEntityDeeplinkURL() async throws {
+        let entityId = "light.living_room"
+        let serverId = "server123"
+        let result = AppConstants.openEntityDeeplinkURL(entityId: entityId, serverId: serverId)?.absoluteString
+
+        // Verify the URL contains empty path (navigate/?) and correct query params
+        assert(result?.contains("navigate/?") == true, "URL should contain navigate/? with empty path")
+        assert(
+            result?.contains("more-info-entity-id=\(entityId)") == true,
+            "URL should contain more-info-entity-id query parameter"
+        )
+        assert(result?.contains("server=\(serverId)") == true, "URL should contain server query parameter")
+        assert(
+            result?.contains("avoidUnecessaryReload=true") == true,
+            "URL should contain avoidUnecessaryReload=true"
+        )
+        assert(
+            result?.contains("isComingFromAppIntent=true") == true,
+            "URL should contain isComingFromAppIntent=true"
+        )
+    }
 }
