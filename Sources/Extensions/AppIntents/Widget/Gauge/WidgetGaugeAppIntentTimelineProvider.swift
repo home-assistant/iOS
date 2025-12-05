@@ -45,7 +45,7 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             gaugeType: .normal,
             value: 0.5,
             valueLabel: "?", min: "?", max: "?",
-            runScript: false, script: nil
+            runScript: false, script: nil, showConfirmationNotification: true
         )
     }
 
@@ -119,7 +119,8 @@ struct WidgetGaugeAppIntentTimelineProvider: AppIntentTimelineProvider {
             max: maxText != "?" ? maxText : nil,
 
             runScript: configuration.runScript,
-            script: configuration.script
+            script: configuration.script,
+            showConfirmationNotification: configuration.showConfirmationNotification
         )
     }
 }
@@ -145,6 +146,7 @@ struct WidgetGaugeEntry: TimelineEntry {
 
     var runScript: Bool
     var script: IntentScriptEntity?
+    var showConfirmationNotification: Bool
 }
 
 enum WidgetGaugeDataError: Error {
