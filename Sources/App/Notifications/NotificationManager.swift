@@ -18,6 +18,11 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }()
 
     var commandManager = NotificationCommandManager()
+    
+    /// Stores pending notification URL when app is launched from killed state
+    /// This is checked by IncomingURLHandler during initialization
+    private(set) var pendingNotificationURL: String?
+    private(set) var pendingNotificationServer: Server?
 
     override init() {
         super.init()
@@ -32,6 +37,16 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
         _ = localPushManager
+    }
+    
+    /// Consumes and clears the pending notification URL if one exists
+    func consumePendingNotificationURL() -> (url: String, server: Server)? {
+        guard let url = pendingNotificationURL, let server = pendingNotificationServer else {
+            return nil
+        }
+        pendingNotificationURL = nil
+        pendingNotificationServer = nil
+        return (url, server)
     }
 
     @objc private func didBecomeActive() {
@@ -247,6 +262,13 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         if let url = urlString(from: response) {
             Current.Log.info("launching URL \(url)")
+            
+            // Store URL immediately for cold start scenario
+            // IncomingURLHandler will check this during initialization
+            pendingNotificationURL = url
+            pendingNotificationServer = server
+            
+            // Also try to handle it via urlHandler for when app is already running
             Current.sceneManager.urlHandlerPromise.done {
                 $0.handleNotificationURL(urlString: url, server: server)
             }

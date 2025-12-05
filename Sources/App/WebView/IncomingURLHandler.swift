@@ -14,6 +14,15 @@ class IncomingURLHandler {
 
     init(windowController: WebViewWindowController) {
         self.windowController = windowController
+        
+        // Check if NotificationManager has a pending URL from cold start
+        // This happens when notification arrives before scene setup
+        if let pending = Current.notificationManager.consumePendingNotificationURL() {
+            Current.Log.info("IncomingURLHandler found pending URL from NotificationManager: \(pending.url)")
+            pendingNotificationURL = pending.url
+            pendingNotificationServer = pending.server
+        }
+        
         registerCallbackURLKitHandlers()
     }
     
