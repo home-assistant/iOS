@@ -21,6 +21,8 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     
     /// Stores pending notification URL when app is launched from killed state
     /// This is checked by IncomingURLHandler during initialization
+    /// Thread safety: These properties are accessed sequentially on the main thread
+    /// (notification handler stores, then scene setup consumes)
     private(set) var pendingNotificationURL: String?
     private(set) var pendingNotificationServer: Server?
 
