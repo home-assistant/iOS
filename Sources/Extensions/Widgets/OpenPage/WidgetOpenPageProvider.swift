@@ -34,9 +34,37 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
 
             if !existing.isEmpty {
                 intentsToDisplay = existing.compactMap { existingValue in
-                    intentsToDisplay.first {
-                        $0.identifier == existingValue.identifier &&
-                            $0.server == existingValue.server
+                    intentsToDisplay.first { newPanel in
+                        // Match by server and path, supporting both old and new identifier formats
+                        let serversMatch = newPanel.server == existingValue.server
+
+                        // Extract path from identifier to support both formats
+                        // New format: "serverID-path", Old format: "path"
+                        let newPath: String
+                        if let newId = newPanel.identifier, let serverId = newPanel.serverIdentifier {
+                            let prefix = serverId + "-"
+                            if newId.hasPrefix(prefix) {
+                                newPath = String(newId.dropFirst(prefix.count))
+                            } else {
+                                newPath = newId
+                            }
+                        } else {
+                            newPath = newPanel.identifier ?? ""
+                        }
+
+                        let existingPath: String
+                        if let existingId = existingValue.identifier, let serverId = existingValue.serverIdentifier {
+                            let prefix = serverId + "-"
+                            if existingId.hasPrefix(prefix) {
+                                existingPath = String(existingId.dropFirst(prefix.count))
+                            } else {
+                                existingPath = existingId
+                            }
+                        } else {
+                            existingPath = existingValue.identifier ?? ""
+                        }
+
+                        return serversMatch && newPath == existingPath
                     }
                 }
             }
