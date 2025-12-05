@@ -202,6 +202,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
+        webView.scrollView.delegate = self
 
         setupWebViewConstraints(statusBarView: statusBarView)
         setupPullToRefresh()
@@ -293,6 +294,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             webView.scrollView.addSubview(refreshControl)
             webView.scrollView.bounces = true
         }
+        
+        // Prevent horizontal scrolling/dragging when content is scaled
+        webView.scrollView.alwaysBounceHorizontal = false
     }
 
     private func setupEmptyState() {
@@ -1388,6 +1392,12 @@ extension WebViewController: UIScrollViewDelegate {
         // Prevent scrollView from scrolling past the top or bottom
         if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
             scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
+        }
+        
+        // Prevent horizontal scrolling when using zoom levels that don't fill the viewport width
+        // This fixes the issue where the interface becomes draggable left/right at zoom levels like 85%
+        if scrollView.contentOffset.x != 0 {
+            scrollView.contentOffset.x = 0
         }
     }
 }
