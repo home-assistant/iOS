@@ -130,20 +130,23 @@ public extension IntentPanel {
         image = nil
         #endif
 
+        // Create a unique identifier by combining server identifier and panel path
+        let uniqueIdentifier = "\(server.identifier.rawValue)-\(panel.path)"
+
         if #available(watchOS 7, *) {
             self.init(
-                identifier: panel.path,
+                identifier: uniqueIdentifier,
                 display: panel.title,
                 subtitle: nil,
                 image: image
             )
         } else if Current.servers.all.count > 1 {
             self.init(
-                identifier: panel.path,
+                identifier: uniqueIdentifier,
                 display: panel.title + " (\(server.info.name))"
             )
         } else {
-            self.init(identifier: panel.path, display: panel.title)
+            self.init(identifier: uniqueIdentifier, display: panel.title)
         }
         self.icon = icon
         self.serverIdentifier = server.identifier.rawValue
@@ -151,8 +154,15 @@ public extension IntentPanel {
 
     var widgetURL: URL {
         let server = Current.servers.server(for: self) ?? Current.servers.all.first
+        // Extract the path from the identifier (format: "serverIdentifier-path")
+        let path: String
+        if let identifier, identifier.contains("-") {
+            path = identifier.components(separatedBy: "-").dropFirst().joined(separator: "-")
+        } else {
+            path = identifier ?? "lovelace"
+        }
         return AppConstants.openPageDeeplinkURL(
-            path: identifier ?? "lovelace",
+            path: path,
             serverId: server?.identifier.rawValue ?? ""
         ) ?? AppConstants.deeplinkURL
     }
