@@ -21,12 +21,19 @@ class IncomingURLHandler {
     func handleNotificationURL(urlString: String, server: Server) {
         Current.Log.info("IncomingURLHandler handling notification URL: \(urlString)")
         
+        guard let windowController = windowController else {
+            Current.Log.warning("WindowController is nil, cannot handle notification URL")
+            return
+        }
+        
         // Store the URL in case we're in cold start and the webview hasn't been created yet
+        // The WebViewWindowController will consume this during initialization
         pendingNotificationURL = urlString
         pendingNotificationServer = server
         
-        // Try to open it immediately - this will work if the app is already running
-        // If we're in cold start, the WebViewWindowController will consume the pending URL
+        // Also try to open it immediately - this handles the case where app is already running
+        // In cold start, this call will still go through but the pending URL will be consumed
+        // during WebViewController creation, so the correct URL will be loaded
         windowController.open(from: .notification, server: server, urlString: urlString, isComingFromAppIntent: false)
     }
     
