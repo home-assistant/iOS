@@ -344,6 +344,8 @@ public extension Version {
     static let canSubscribeEntitiesChangesWithFilter: Version = .init(major: 2024, minor: 10)
     /// Allows app to ask frontend to navigate to a specific page
     static let canNavigateThroughFrontend: Version = .init(major: 2025, minor: 6, prerelease: "any0")
+    /// Allows app to ask frontend to navigate to a more info dialog
+    static let canNavigateMoreInfoDialogThroughFrontend: Version = .init(major: 2026, minor: 1, prerelease: "any0")
 
     var coreRequiredString: String {
         L10n.requiresVersion(String(format: "core-%d.%d", major, minor ?? -1))
