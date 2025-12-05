@@ -265,6 +265,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         for name: Notification.Name in [
             HomeAssistantAPI.didConnectNotification,
             UIApplication.didBecomeActiveNotification,
+            Current.connectivity.connectivityDidChangeNotification(),
         ] {
             NotificationCenter.default.addObserver(
                 self,
@@ -708,6 +709,8 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     @objc private func connectionInfoDidChange() {
         DispatchQueue.main.async { [self] in
             loadActiveURLIfNeeded()
+            // Explicitly reconnect HAConnection to ensure WebSocket reconnects after network change
+            Current.api(for: server)?.connection.connect()
         }
     }
 
