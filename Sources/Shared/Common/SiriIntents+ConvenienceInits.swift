@@ -156,9 +156,11 @@ public extension IntentPanel {
         let server = Current.servers.server(for: self) ?? Current.servers.all.first
         // Extract the path from the identifier (format: "serverIdentifier-path")
         let path: String
-        if let identifier, identifier.contains("-") {
-            path = identifier.components(separatedBy: "-").dropFirst().joined(separator: "-")
+        if let identifier, let serverIdentifier, identifier.hasPrefix("\(serverIdentifier)-") {
+            // Remove the server identifier prefix and the separator to get the path
+            path = String(identifier.dropFirst(serverIdentifier.count + 1))
         } else {
+            // Fallback for old identifiers or if extraction fails
             path = identifier ?? "lovelace"
         }
         return AppConstants.openPageDeeplinkURL(
