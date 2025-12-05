@@ -29,6 +29,7 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             restorationActivity: session.stateRestorationActivity
         )
         let urlHandler = IncomingURLHandler(windowController: windowController)
+        windowController.urlHandler = urlHandler
         self.window = window
         self.windowController = windowController
         self.urlHandler = urlHandler

@@ -7,10 +7,37 @@ import SwiftUI
 
 class IncomingURLHandler {
     private(set) weak var windowController: WebViewWindowController!
+    
+    /// Stores pending notification URL when app is launched from killed state
+    private var pendingNotificationURL: String?
+    private var pendingNotificationServer: Server?
 
     init(windowController: WebViewWindowController) {
         self.windowController = windowController
         registerCallbackURLKitHandlers()
+    }
+    
+    /// Handles notification URLs, storing them for cold start or opening immediately if already running
+    func handleNotificationURL(urlString: String, server: Server) {
+        Current.Log.info("IncomingURLHandler handling notification URL: \(urlString)")
+        
+        // Store the URL in case we're in cold start and the webview hasn't been created yet
+        pendingNotificationURL = urlString
+        pendingNotificationServer = server
+        
+        // Try to open it immediately - this will work if the app is already running
+        // If we're in cold start, the WebViewWindowController will consume the pending URL
+        windowController.open(from: .notification, server: server, urlString: urlString, isComingFromAppIntent: false)
+    }
+    
+    /// Consumes and clears the pending notification URL if one exists
+    func consumePendingNotificationURL() -> (url: String, server: Server)? {
+        guard let url = pendingNotificationURL, let server = pendingNotificationServer else {
+            return nil
+        }
+        pendingNotificationURL = nil
+        pendingNotificationServer = nil
+        return (url, server)
     }
 
     enum IncomingURLAction: String {

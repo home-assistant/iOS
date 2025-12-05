@@ -47,6 +47,14 @@ final class SceneManager {
             delegate.windowController!
         }
     }
+    
+    var urlHandlerPromise: Guarantee<IncomingURLHandler> {
+        firstly { () -> Guarantee<WebViewSceneDelegate> in
+            scene(for: .init(activity: .webView))
+        }.map { delegate in
+            delegate.urlHandler!
+        }
+    }
 
     init() {
         // swiftlint:disable prohibit_environment_assignment

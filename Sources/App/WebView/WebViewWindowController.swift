@@ -13,6 +13,7 @@ final class WebViewWindowController {
 
     let window: UIWindow
     var restorationActivity: NSUserActivity?
+    weak var urlHandler: IncomingURLHandler?
 
     var webViewControllerPromise: Guarantee<WebViewController>
 
@@ -118,7 +119,7 @@ final class WebViewWindowController {
         shouldLoadImmediately: Bool = false
     ) -> WebViewController? {
         // Check for pending notification URL from cold start
-        let pendingNotification = Current.notificationManager.consumePendingNotificationURL()
+        let pendingNotification = urlHandler?.consumePendingNotificationURL()
         let targetServer = pendingNotification?.server ?? restorationType?.server ?? Current.servers.all.first
         
         if let server = targetServer {
