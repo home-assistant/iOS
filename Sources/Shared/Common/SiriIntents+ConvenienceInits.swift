@@ -130,29 +130,47 @@ public extension IntentPanel {
         image = nil
         #endif
 
+        // Create a unique identifier by combining server identifier and panel path
+        let uniqueIdentifier = "\(server.identifier.rawValue)-\(panel.path)"
+
         if #available(watchOS 7, *) {
             self.init(
-                identifier: panel.path,
+                identifier: uniqueIdentifier,
                 display: panel.title,
                 subtitle: nil,
                 image: image
             )
         } else if Current.servers.all.count > 1 {
             self.init(
-                identifier: panel.path,
+                identifier: uniqueIdentifier,
                 display: panel.title + " (\(server.info.name))"
             )
         } else {
-            self.init(identifier: panel.path, display: panel.title)
+            self.init(identifier: uniqueIdentifier, display: panel.title)
         }
         self.icon = icon
         self.serverIdentifier = server.identifier.rawValue
     }
 
+    /// Extracts the path portion from the identifier, supporting both old and new formats
+    /// - New format: "serverID-path" returns "path"
+    /// - Old format: "path" returns "path"
+    var extractedPath: String {
+        guard let identifier, let serverIdentifier else { return identifier ?? "" }
+
+        let prefix = serverIdentifier + "-"
+        if identifier.hasPrefix(prefix) {
+            return String(identifier.dropFirst(prefix.count))
+        } else {
+            return identifier
+        }
+    }
+
     var widgetURL: URL {
         let server = Current.servers.server(for: self) ?? Current.servers.all.first
+        let path = extractedPath.isEmpty ? "lovelace" : extractedPath
         return AppConstants.openPageDeeplinkURL(
-            path: identifier ?? "lovelace",
+            path: path,
             serverId: server?.identifier.rawValue ?? ""
         ) ?? AppConstants.deeplinkURL
     }
