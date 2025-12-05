@@ -23,6 +23,20 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
         return .init(pages: pages)
     }
 
+    // Helper function to extract path from identifier, supporting both old and new formats
+    // New format: "serverID-path", Old format: "path"
+    private func extractPath(from panel: IntentPanel) -> String {
+        guard let identifier = panel.identifier else { return "" }
+        guard let serverIdentifier = panel.serverIdentifier else { return identifier }
+
+        let prefix = serverIdentifier + "-"
+        if identifier.hasPrefix(prefix) {
+            return String(identifier.dropFirst(prefix.count))
+        } else {
+            return identifier
+        }
+    }
+
     private func panels(
         for context: Context,
         updating existing: [IntentPanel],
@@ -37,33 +51,8 @@ struct WidgetOpenPageProvider: IntentTimelineProvider {
                     intentsToDisplay.first { newPanel in
                         // Match by server and path, supporting both old and new identifier formats
                         let serversMatch = newPanel.server == existingValue.server
-
-                        // Extract path from identifier to support both formats
-                        // New format: "serverID-path", Old format: "path"
-                        let newPath: String
-                        if let newId = newPanel.identifier, let serverId = newPanel.serverIdentifier {
-                            let prefix = serverId + "-"
-                            if newId.hasPrefix(prefix) {
-                                newPath = String(newId.dropFirst(prefix.count))
-                            } else {
-                                newPath = newId
-                            }
-                        } else {
-                            newPath = newPanel.identifier ?? ""
-                        }
-
-                        let existingPath: String
-                        if let existingId = existingValue.identifier, let serverId = existingValue.serverIdentifier {
-                            let prefix = serverId + "-"
-                            if existingId.hasPrefix(prefix) {
-                                existingPath = String(existingId.dropFirst(prefix.count))
-                            } else {
-                                existingPath = existingId
-                            }
-                        } else {
-                            existingPath = existingValue.identifier ?? ""
-                        }
-
+                        let newPath = extractPath(from: newPanel)
+                        let existingPath = extractPath(from: existingValue)
                         return serversMatch && newPath == existingPath
                     }
                 }
