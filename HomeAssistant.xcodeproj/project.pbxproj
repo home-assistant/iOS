@@ -1315,6 +1315,9 @@
 		B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
 		B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
 		B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
+		1B5F90EA3AC9A18D126A3CAE /* WatchComplicationGRDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EC602646F36D16CE0A32D6 /* WatchComplicationGRDB.swift */; };
+		7CD5773D4BB53266BD895906 /* WatchComplicationGRDB+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000617B5D2BA377507A7F618 /* WatchComplicationGRDB+Queries.swift */; };
+		7F4228AF4F53D59F9177969C /* WatchComplicationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85591FB5DFCF6F227168278A /* WatchComplicationTable.swift */; };
 		B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */; };
 		B6B74CBD228399AB00D58A68 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
@@ -2095,6 +2098,7 @@
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
 		420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAppEntityTable.swift; sourceTree = "<group>"; };
+		85591FB5DFCF6F227168278A /* WatchComplicationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationTable.swift; sourceTree = "<group>"; };
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistPipelinesTable.swift; sourceTree = "<group>"; };
@@ -3036,6 +3040,8 @@
 		B6B6B149215B137C003DE2DD /* ComplicationEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplicationEditViewController.swift; sourceTree = "<group>"; };
 		B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLKComplication+Strings.swift"; sourceTree = "<group>"; };
 		B6B6B14E215B6866003DE2DD /* WatchComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplication.swift; sourceTree = "<group>"; };
+		20EC602646F36D16CE0A32D6 /* WatchComplicationGRDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationGRDB.swift; sourceTree = "<group>"; };
+		000617B5D2BA377507A7F618 /* WatchComplicationGRDB+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchComplicationGRDB+Queries.swift"; sourceTree = "<group>"; };
 		B6C0911E2151F90300A326DC /* LocationHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationHistory.swift; sourceTree = "<group>"; };
 		B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLError+DebugDescription.swift"; sourceTree = "<group>"; };
 		B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.swift"; sourceTree = "<group>"; };
@@ -4286,6 +4292,8 @@
 				420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */,
 				420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */,
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
+				85591FB5DFCF6F227168278A /* WatchComplicationTable.swift */,
+				
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -6544,6 +6552,9 @@
 				11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */,
 				11EE9B5324C62EB300404AF8 /* RealmScene.swift */,
 				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
+				20EC602646F36D16CE0A32D6 /* WatchComplicationGRDB.swift */,
+				000617B5D2BA377507A7F618 /* WatchComplicationGRDB+Queries.swift */,
+				
 				B6DAC734215F069300727D2A /* NotificationCategory.swift */,
 				B6DAC736215F06B100727D2A /* NotificationAction.swift */,
 				B6B2E6A1216AC21400D39A26 /* Action.swift */,
@@ -8918,6 +8929,10 @@
 				110AA55D25B36630005061A0 /* ServerAlerter.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
+				1B5F90EA3AC9A18D126A3CAE /* WatchComplicationGRDB.swift in Sources */,
+				7CD5773D4BB53266BD895906 /* WatchComplicationGRDB+Queries.swift in Sources */,
+				7F4228AF4F53D59F9177969C /* WatchComplicationTable.swift in Sources */,
+				
 				42B94BEC2B96083C00DEE060 /* AssistModel.swift in Sources */,
 				119DE934263325C20099F7D8 /* IconDrawable+Settings.swift in Sources */,
 				114CBAE92839E49E00A9BAFF /* CustomServerTrustManager.swift in Sources */,
@@ -9260,6 +9275,9 @@
 				11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				11F3847B24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
+				1B5F90EA3AC9A18D126A3CAE /* WatchComplicationGRDB.swift in Sources */,
+				7CD5773D4BB53266BD895906 /* WatchComplicationGRDB+Queries.swift in Sources */,
+				7F4228AF4F53D59F9177969C /* WatchComplicationTable.swift in Sources */,
 				4245DC042EBA7919005E0E04 /* AreasService.swift in Sources */,
 				42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */,
 				42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */,
