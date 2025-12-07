@@ -104,5 +104,6 @@ public extension AppZone {
         try Current.database().write { db in
             try updatedZone.update(db)
         }
+        self = updatedZone
     }
 }

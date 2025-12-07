@@ -4,6 +4,8 @@ import GRDB
 import HAKit
 
 public struct AppZone: Codable, FetchableRecord, PersistableRecord {
+    public static let databaseTableName = GRDBDatabaseTable.appZone.rawValue
+    
     /// serverId/entityId (e.g., "server1/zone.home")
     public let id: String
     public let serverId: String
