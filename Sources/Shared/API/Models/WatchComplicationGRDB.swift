@@ -9,6 +9,8 @@ import ClockKit
 
 /// GRDB-based WatchComplication model
 public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord {
+    public static let databaseTableName = GRDBDatabaseTable.watchComplication.rawValue
+
     public var identifier: String
     public var serverIdentifier: String?
     public var rawFamily: String
