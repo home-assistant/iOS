@@ -65,12 +65,18 @@ public class GeocoderSensor: SensorProvider {
             var attributes = Self.attributes(for: placemarks)
 
             if let location = request.location {
-                let insideZones = Current.realm().objects(RLMZone.self)
-                    .filter(RLMZone.trackablePredicate)
-                    .sorted(byKeyPath: "Radius")
-                    .filter { $0.circularRegion.contains(location.coordinate) }
-                    .map { $0.FriendlyName ?? $0.Name }
-                    .filter { $0 != "" }
+                let insideZones: [String] = {
+                    do {
+                        return try AppZone.fetchAllTrackableZones()
+                            .sorted { $0.radius < $1.radius }
+                            .filter { $0.circularRegion.contains(location.coordinate) }
+                            .map { $0.friendlyName ?? $0.name }
+                            .filter { $0 != "" }
+                    } catch {
+                        Current.Log.error("Failed to fetch zones in GeocoderSensor: \(error)")
+                        return []
+                    }
+                }()
 
                 if let zone = insideZones.first,
                    Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue) {

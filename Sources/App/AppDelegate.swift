@@ -391,6 +391,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = Realm.live()
         Action.setupObserver()
         NotificationCategory.setupObserver()
+        
+        // Migrate zones from Realm to GRDB (one-time migration)
+        AppZoneMigration.migrateFromRealm()
     }
 
     private func setupMenus() {
