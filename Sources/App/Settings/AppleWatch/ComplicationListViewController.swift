@@ -2,21 +2,10 @@ import Communicator
 import Eureka
 import Foundation
 import PromiseKit
-import RealmSwift
 import Shared
 import Version
 
 class ComplicationListViewController: HAFormViewController {
-    @objc private func add(_ sender: UIBarButtonItem) {
-        let editListViewController = ComplicationFamilySelectViewController(
-            allowMultiple: supportsMultipleComplications,
-            currentFamilies: Set(Current.realm().objects(WatchComplication.self).map(\.Family))
-        )
-        editListViewController.onDismissCallback = { $0.dismiss(animated: true, completion: nil) }
-        let navigationController = UINavigationController(rootViewController: editListViewController)
-        present(navigationController, animated: true, completion: nil)
-    }
-
     private var supportsMultipleComplications: Bool {
         guard let string = Communicator.shared.mostRecentlyReceievedContext.content["watchVersion"] as? String else {
             return false
