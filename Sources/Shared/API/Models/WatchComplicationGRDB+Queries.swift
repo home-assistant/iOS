@@ -58,4 +58,29 @@ extension WatchComplicationGRDB {
                 .deleteAll(db)
         }
     }
+
+    /// Clean up orphaned complications - migrate serverIdentifier to first available server if no servers match
+    public static func cleanupOrphans() throws {
+        let serverIdentifiers = Current.servers.all.map(\.identifier.rawValue)
+        
+        guard let replacementServer = Current.servers.all.first else {
+            // No servers available, nothing to do
+            return
+        }
+
+        try Current.database().write { db in
+            // Find complications with serverIdentifiers that don't match any current servers
+            let orphanedComplications = try WatchComplicationGRDB
+                .filter(!serverIdentifiers.contains(Column(DatabaseTables.WatchComplication.serverIdentifier.rawValue)))
+                .fetchAll(db)
+
+            if !orphanedComplications.isEmpty {
+                Current.Log.info("Migrating \(orphanedComplications.count) orphaned watch complications to \(replacementServer.identifier)")
+                for var complication in orphanedComplications {
+                    complication.serverIdentifier = replacementServer.identifier.rawValue
+                    try complication.update(db)
+                }
+            }
+        }
+    }
 }

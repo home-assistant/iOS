@@ -31,10 +31,24 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
     }
 
     func testNoComplicationGivesNoRequest() {
-        XCTAssertNil(WebhookResponseUpdateComplications.request(for: .init()))
+        XCTAssertNil(WebhookResponseUpdateComplications.request(for: []))
     }
 
     func testComplicationsWithoutPreRendered() {
+        let complications = [
+            WatchComplicationGRDB(),
+            WatchComplicationGRDB(),
+            WatchComplicationGRDB(),
+        ]
+
+        XCTAssertNil(WebhookResponseUpdateComplications.request(for: complications))
+    }
+
+    func testLegacyRealmNoComplicationGivesNoRequest() {
+        XCTAssertNil(WebhookResponseUpdateComplications.request(for: .init()))
+    }
+
+    func testLegacyRealmComplicationsWithoutPreRendered() {
         let complications = Set([
             FakeWatchComplication(),
             FakeWatchComplication(),
@@ -44,7 +58,26 @@ class WebhookResponseUpdateComplicationsTests: XCTestCase {
         XCTAssertNil(WebhookResponseUpdateComplications.request(for: complications))
     }
 
-    func testComplicationsWithPreRendered() {
+    func testGRDBComplicationsWithPreRendered() {
+        var complication1 = WatchComplicationGRDB(identifier: "c1")
+        complication1.serverIdentifier = api.server.identifier.rawValue
+        complication1.Template = .ExtraLargeColumnsText
+        var data1: [String: Any] = [:]
+        data1["textAreas"] = ["fwc1k1": ["text": "{{ 'fwc1v1' }}", "color": "#ffffff"]]
+        complication1.Data = data1
+
+        var complication2 = WatchComplicationGRDB(identifier: "c2")
+        complication2.serverIdentifier = api.server.identifier.rawValue
+        complication2.Template = .CircularSmallRingText
+
+        let complications = [complication1, complication2]
+
+        let request = WebhookResponseUpdateComplications.request(for: complications)
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request?.type, "render_template")
+    }
+
+    func testLegacyRealmComplicationsWithPreRendered() {
         let complications = [
             with(FakeWatchComplication()) {
                 $0.identifier = "c1"
