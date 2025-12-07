@@ -45,6 +45,32 @@ public class LocationHistoryEntry: Object {
         self.accuracyAuthorization = accuracyAuthorization
     }
 
+    public convenience init(
+        updateType: LocationUpdateTrigger,
+        location: CLLocation?,
+        zone: AppZone?,
+        accuracyAuthorization: CLAccuracyAuthorization,
+        payload: String
+    ) {
+        self.init()
+
+        var loc = CLLocation()
+        if let location {
+            loc = location
+        } else if let zone {
+            loc = zone.location
+        }
+
+        self.Accuracy = loc.horizontalAccuracy
+        self.Latitude = loc.coordinate.latitude
+        self.Longitude = loc.coordinate.longitude
+        self.Trigger = updateType.rawValue
+        // Don't link to Realm zone for AppZone
+        self.Zone = nil
+        self.Payload = payload
+        self.accuracyAuthorization = accuracyAuthorization
+    }
+
     public var clLocation: CLLocation {
         CLLocation(
             coordinate: .init(latitude: Latitude, longitude: Longitude),

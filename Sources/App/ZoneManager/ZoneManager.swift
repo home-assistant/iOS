@@ -10,7 +10,6 @@ class ZoneManager {
     let collector: ZoneManagerCollector
     let processor: ZoneManagerProcessor
     let regionFilter: ZoneManagerRegionFilter
-    let zones: AnyRealmCollection<RLMZone>
 
     private var notificationTokens = [NotificationToken]()
 
@@ -24,11 +23,6 @@ class ZoneManager {
         self.collector = collector
         self.processor = processor
         self.regionFilter = regionFilter
-        self.zones = AnyRealmCollection(
-            Current.realm()
-                .objects(RLMZone.self)
-                .filter("TrackingEnabled == true")
-        )
 
         self.collector.delegate = self
         self.processor.delegate = self
@@ -36,7 +30,6 @@ class ZoneManager {
         log(state: .initialize)
 
         updateLocationManager(isInitial: true)
-        zones.realm?.refresh()
 
         NotificationCenter.default.addObserver(
             self,
@@ -44,6 +37,18 @@ class ZoneManager {
             name: SettingsStore.locationRelatedSettingDidChange,
             object: nil
         )
+        
+        // Observe zone updates from LegacyModelManager
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(zonesDidUpdate),
+            name: NSNotification.Name("ZonesDidUpdate"),
+            object: nil
+        )
+    }
+    
+    @objc private func zonesDidUpdate() {
+        updateLocationManager(isInitial: false)
     }
 
     deinit {
@@ -69,17 +74,12 @@ class ZoneManager {
             }
         }
 
-        if isInitial {
-            notificationTokens.append(zones.observe { [weak self] change in
-                switch change {
-                case let .initial(collection), .update(let collection, deletions: _, insertions: _, modifications: _):
-                    self?.sync(zones: AnyCollection(collection))
-                case let .error(error):
-                    Current.Log.error("couldn't sync zones: \(error)")
-                }
-            })
-        } else {
+        // Load zones from GRDB and sync
+        do {
+            let zones = try AppZone.fetchAllTrackableZones()
             sync(zones: AnyCollection(zones))
+        } catch {
+            Current.Log.error("Failed to fetch zones from GRDB: \(error)")
         }
     }
 
@@ -101,7 +101,12 @@ class ZoneManager {
             // a location change means we should consider changing our monitored regions
             // ^ not tap for this side effect because we don't want to do this on failure
             guard let self else { return }
-            sync(zones: AnyCollection(zones))
+            do {
+                let zones = try AppZone.fetchAllTrackableZones()
+                sync(zones: AnyCollection(zones))
+            } catch {
+                Current.Log.error("Failed to fetch zones for sync: \(error)")
+            }
         }.then {
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Updated location",
@@ -160,7 +165,7 @@ class ZoneManager {
         }
     }
 
-    private func sync(zones: AnyCollection<RLMZone>) {
+    private func sync(zones: AnyCollection<AppZone>) {
         let currentRegions = locationManager.monitoredRegions
         let desiredRegions = regionFilter.regions(
             from: zones,

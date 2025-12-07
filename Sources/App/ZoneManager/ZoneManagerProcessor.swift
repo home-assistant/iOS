@@ -149,29 +149,31 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         return .value(())
     }
 
-    private static func evaluateRegionEvent(region: CLRegion, state: CLRegionState, zone: RLMZone?) -> Promise<Void> {
+    private static func evaluateRegionEvent(region: CLRegion, state: CLRegionState, zone: AppZone?) -> Promise<Void> {
         guard state != .unknown else {
             return ignore(.unknownRegionState)
         }
 
-        guard let zone else {
+        guard var zone else {
             return ignore(.unknownRegion)
         }
 
-        guard zone.TrackingEnabled else {
+        guard zone.trackingEnabled else {
             // Do nothing in case we don't want to trigger an enter event
             return ignore(.zoneDisabled)
         }
 
-        if let current = Current.connectivity.currentWiFiSSID(), zone.SSIDFilter.contains(current) {
+        if let current = Current.connectivity.currentWiFiSSID(), zone.ssidFilter.contains(current) {
             // If current SSID is in the filter list stop processing region event.
             // This is to cut down on false exits.
             // https://github.com/home-assistant/iOS/issues/32
             return ignore(.ignoredSSID(current))
         }
 
-        zone.realm?.reentrantWrite {
-            zone.inRegion = state == .inside
+        do {
+            try zone.updateInRegion(state == .inside)
+        } catch {
+            Current.Log.error("Failed to update zone inRegion status: \(error)")
         }
 
         if region is CLBeaconRegion, state == .outside {

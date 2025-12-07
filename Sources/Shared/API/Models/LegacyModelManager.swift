@@ -386,6 +386,58 @@ public class LegacyModelManager: ServerObserver {
             UM.didUpdate(objects: updatedModels, server: server, realm: realm)
             UM.willDelete(objects: Array(deleteObjects), server: server, realm: realm)
             realm.delete(deleteObjects)
+            
+            // Also save zones to GRDB for migration
+            if UM.self == RLMZone.self, let zones = updatedModels as? [RLMZone] {
+                syncZonesToGRDB(zones: zones, deletedIDs: deletedIDs, server: server)
+            }
+        }
+    }
+
+    private func syncZonesToGRDB(zones: [RLMZone], deletedIDs: Set<String>, server: Server) {
+        do {
+            // Convert Realm zones to GRDB zones
+            let appZones = zones.map { realmZone in
+                AppZone(
+                    id: realmZone.identifier,
+                    serverId: realmZone.serverIdentifier,
+                    entityId: realmZone.entityId,
+                    friendlyName: realmZone.FriendlyName,
+                    latitude: realmZone.Latitude,
+                    longitude: realmZone.Longitude,
+                    radius: realmZone.Radius,
+                    trackingEnabled: realmZone.TrackingEnabled,
+                    enterNotification: realmZone.enterNotification,
+                    exitNotification: realmZone.exitNotification,
+                    inRegion: realmZone.inRegion,
+                    isPassive: realmZone.isPassive,
+                    beaconUUID: realmZone.BeaconUUID,
+                    beaconMajor: realmZone.BeaconMajor.value,
+                    beaconMinor: realmZone.BeaconMinor.value,
+                    ssidTrigger: Array(realmZone.SSIDTrigger),
+                    ssidFilter: Array(realmZone.SSIDFilter)
+                )
+            }
+            
+            // Save zones to GRDB
+            try AppZone.save(appZones)
+            
+            // Delete removed zones from GRDB
+            for deletedID in deletedIDs {
+                try AppZone.deleteZone(id: deletedID)
+            }
+            
+            // Notify ZoneManager about zone updates
+            NotificationCenter.default.post(name: NSNotification.Name("ZonesDidUpdate"), object: nil)
+        } catch {
+            Current.Log.error("Failed to sync zones to GRDB: \(error)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to sync zones to GRDB",
+                type: .database,
+                payload: [
+                    "error": error.localizedDescription,
+                ]
+            ))
         }
     }
 

@@ -29,12 +29,12 @@ public struct WebhookUpdateLocation: ImmutableMappable {
         }
     }
 
-    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
+    public init(trigger: LocationUpdateTrigger, usingNameOf zone: AppZone?) {
         self.init(trigger: trigger)
         self.locationName = zone?.deviceTrackerName ?? LocationNames.NotHome.rawValue
     }
 
-    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
+    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: AppZone?) {
         self.init(trigger: trigger)
 
         let useLocation: Bool

@@ -9,6 +9,7 @@ public enum GRDBDatabaseTable: String {
     case appPanel
     case customWidget
     case appArea
+    case appZone
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -83,5 +84,26 @@ public enum DatabaseTables {
         case picture
         case icon
         case entities
+    }
+
+    // Zones from Home Assistant
+    public enum AppZone: String {
+        case id
+        case serverId
+        case entityId
+        case friendlyName
+        case latitude
+        case longitude
+        case radius
+        case trackingEnabled
+        case enterNotification
+        case exitNotification
+        case inRegion
+        case isPassive
+        case beaconUUID
+        case beaconMajor
+        case beaconMinor
+        case ssidTrigger
+        case ssidFilter
     }
 }

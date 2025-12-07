@@ -53,12 +53,18 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             return
         }
 
-        let zone = Current.realm()
-            .objects(RLMZone.self)
-            .first(where: {
-                $0.identifier == region.identifier ||
-                    $0.identifier == region.identifier.components(separatedBy: "@").first
-            })
+        let zone: AppZone? = {
+            do {
+                let zones = try AppZone.fetchAllTrackableZones()
+                return zones.first(where: {
+                    $0.id == region.identifier ||
+                        $0.id == region.identifier.components(separatedBy: "@").first
+                })
+            } catch {
+                Current.Log.error("Failed to fetch zones in collector: \(error)")
+                return nil
+            }
+        }()
 
         let event = ZoneManagerEvent(
             eventType: .region(region, state),
