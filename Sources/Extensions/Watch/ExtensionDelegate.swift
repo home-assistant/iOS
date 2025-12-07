@@ -111,22 +111,21 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     // Triggered when a complication is tapped
     func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
-        let complication: WatchComplication?
+        let complication: WatchComplicationGRDB?
 
-        if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
-           identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: identifier
-            )
-        } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
-                  let clkFamily = date.complicationFamilyFromEncodedDate {
-            let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: family.rawValue
-            )
-        } else {
+        do {
+            if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
+               identifier != CLKDefaultComplicationIdentifier {
+                complication = try WatchComplicationGRDB.fetch(identifier: identifier)
+            } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
+                      let clkFamily = date.complicationFamilyFromEncodedDate {
+                let family = ComplicationGroupMember(family: clkFamily)
+                complication = try WatchComplicationGRDB.fetch(identifier: family.rawValue)
+            } else {
+                complication = nil
+            }
+        } catch {
+            Current.Log.error("Failed to fetch complication from GRDB: \(error)")
             complication = nil
         }
 
@@ -251,13 +250,21 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         if let complicationsDictionary = content["complications"] as? [[String: Any]] {
-            let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
+            let complications = complicationsDictionary.compactMap { try? WatchComplicationGRDB(JSON: $0) }
 
             Current.Log.verbose("Updating complications from context \(complications)")
 
-            realm.reentrantWrite {
-                realm.delete(realm.objects(WatchComplication.self))
-                realm.add(complications, update: .all)
+            do {
+                try Current.database().write { db in
+                    // Delete all existing complications
+                    try WatchComplicationGRDB.deleteAll(db)
+                    // Insert new complications
+                    for complication in complications {
+                        try complication.insert(db)
+                    }
+                }
+            } catch {
+                Current.Log.error("Failed to update complications in GRDB: \(error)")
             }
         }
 
