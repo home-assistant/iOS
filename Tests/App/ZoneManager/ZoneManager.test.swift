@@ -96,7 +96,41 @@ class ZoneManagerTests: XCTestCase {
     private func addedZones(_ toAdd: [RLMZone]) throws -> [RLMZone] {
         try realm.write {
             realm.add(toAdd)
-            return toAdd
+        }
+        // Also sync to GRDB for the new zone manager
+        syncZonesToGRDB(toAdd)
+        return toAdd
+    }
+    
+    private func syncZonesToGRDB(_ zones: [RLMZone]) {
+        let appZones = zones.map { realmZone in
+            AppZone(
+                id: realmZone.identifier,
+                serverId: realmZone.serverIdentifier,
+                entityId: realmZone.entityId,
+                friendlyName: realmZone.FriendlyName,
+                latitude: realmZone.Latitude,
+                longitude: realmZone.Longitude,
+                radius: realmZone.Radius,
+                trackingEnabled: realmZone.TrackingEnabled,
+                enterNotification: realmZone.enterNotification,
+                exitNotification: realmZone.exitNotification,
+                inRegion: realmZone.inRegion,
+                isPassive: realmZone.isPassive,
+                beaconUUID: realmZone.BeaconUUID,
+                beaconMajor: realmZone.BeaconMajor.value,
+                beaconMinor: realmZone.BeaconMinor.value,
+                ssidTrigger: Array(realmZone.SSIDTrigger),
+                ssidFilter: Array(realmZone.SSIDFilter)
+            )
+        }
+        
+        do {
+            try AppZone.save(appZones)
+            // Trigger zone update notification
+            NotificationCenter.default.post(name: NSNotification.Name("ZonesDidUpdate"), object: nil)
+        } catch {
+            XCTFail("Failed to sync zones to GRDB: \(error)")
         }
     }
 
@@ -142,6 +176,7 @@ class ZoneManagerTests: XCTestCase {
             zones[1].Latitude += 0.02
             addedRegions.append(contentsOf: zones[1].regionsForMonitoring)
         }
+        syncZonesToGRDB(zones)
 
         realm.refresh()
 
@@ -151,11 +186,15 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(collector.ignoringNextStates, Set(addedRegions))
 
         // remove a zone
+        let toRemoveId: String
         try realm.write {
             let toRemove = zones.popLast()!
+            toRemoveId = toRemove.identifier
             removedRegions.append(contentsOf: toRemove.regionsForMonitoring)
             realm.delete(toRemove)
         }
+        try AppZone.deleteZone(id: toRemoveId)
+        NotificationCenter.default.post(name: NSNotification.Name("ZonesDidUpdate"), object: nil)
 
         realm.refresh()
 
