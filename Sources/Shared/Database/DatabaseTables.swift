@@ -9,6 +9,7 @@ public enum GRDBDatabaseTable: String {
     case appPanel
     case customWidget
     case appArea
+    case watchComplication
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -83,5 +84,17 @@ public enum DatabaseTables {
         case picture
         case icon
         case entities
+    }
+
+    // Watch complications
+    public enum WatchComplication: String {
+        case identifier
+        case serverIdentifier
+        case rawFamily
+        case rawTemplate
+        case complicationData
+        case createdAt
+        case name
+        case isPublic
     }
 }
