@@ -386,7 +386,7 @@ public class LegacyModelManager: ServerObserver {
             UM.didUpdate(objects: updatedModels, server: server, realm: realm)
             UM.willDelete(objects: Array(deleteObjects), server: server, realm: realm)
             realm.delete(deleteObjects)
-            
+
             // Also save zones to GRDB for migration
             if UM.self == RLMZone.self, let zones = updatedModels as? [RLMZone] {
                 syncZonesToGRDB(zones: zones, deletedIDs: deletedIDs, server: server)
@@ -418,15 +418,15 @@ public class LegacyModelManager: ServerObserver {
                     ssidFilter: Array(realmZone.SSIDFilter)
                 )
             }
-            
+
             // Save zones to GRDB
             try AppZone.save(appZones)
-            
+
             // Delete removed zones from GRDB
             for deletedID in deletedIDs {
                 try AppZone.deleteZone(id: deletedID)
             }
-            
+
             // Notify ZoneManager about zone updates
             NotificationCenter.default.post(name: NSNotification.Name("ZonesDidUpdate"), object: nil)
         } catch {

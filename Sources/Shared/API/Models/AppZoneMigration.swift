@@ -7,24 +7,24 @@ public enum AppZoneMigration {
     /// This is a one-time migration that copies all existing zones from Realm to GRDB
     public static func migrateFromRealm() {
         let userDefaultsKey = "AppZoneMigration.hasCompleted"
-        
+
         guard !UserDefaults.standard.bool(forKey: userDefaultsKey) else {
             Current.Log.verbose("Zone migration from Realm to GRDB already completed")
             return
         }
-        
+
         Current.Log.info("Starting zone migration from Realm to GRDB")
-        
+
         do {
             let realm = Current.realm()
             let realmZones = Array(realm.objects(RLMZone.self))
-            
+
             guard !realmZones.isEmpty else {
                 Current.Log.info("No zones found in Realm to migrate")
                 UserDefaults.standard.set(true, forKey: userDefaultsKey)
                 return
             }
-            
+
             var migratedZones: [AppZone] = []
             for realmZone in realmZones {
                 let appZone = AppZone(
@@ -48,11 +48,11 @@ public enum AppZoneMigration {
                 )
                 migratedZones.append(appZone)
             }
-            
+
             try AppZone.save(migratedZones)
-            
+
             UserDefaults.standard.set(true, forKey: userDefaultsKey)
-            
+
             Current.Log.info("Successfully migrated \(migratedZones.count) zones from Realm to GRDB")
             Current.clientEventStore.addEvent(.init(
                 text: "Migrated \(migratedZones.count) zones from Realm to GRDB",

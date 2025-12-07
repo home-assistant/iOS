@@ -26,7 +26,7 @@ final class AppZoneTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.AppZone.beaconMinor.rawValue, .integer)
                     t.column(DatabaseTables.AppZone.ssidTrigger.rawValue, .jsonText).notNull()
                     t.column(DatabaseTables.AppZone.ssidFilter.rawValue, .jsonText).notNull()
-                    
+
                     // Ensure unique combination of serverId and entityId
                     t.uniqueKey([
                         DatabaseTables.AppZone.serverId.rawValue,

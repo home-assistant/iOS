@@ -37,7 +37,7 @@ class ZoneManager {
             name: SettingsStore.locationRelatedSettingDidChange,
             object: nil
         )
-        
+
         // Observe zone updates from LegacyModelManager
         NotificationCenter.default.addObserver(
             self,
@@ -46,7 +46,7 @@ class ZoneManager {
             object: nil
         )
     }
-    
+
     @objc private func zonesDidUpdate() {
         updateLocationManager(isInitial: false)
     }

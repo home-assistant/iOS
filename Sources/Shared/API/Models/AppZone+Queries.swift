@@ -12,7 +12,7 @@ public extension AppZone {
                 .fetchAll(db)
         }
     }
-    
+
     /// Fetch zones that are trackable (tracking enabled and not passive)
     static func fetchTrackableZones(for serverId: String) throws -> [AppZone] {
         try Current.database().read { db in
@@ -24,7 +24,7 @@ public extension AppZone {
                 .fetchAll(db)
         }
     }
-    
+
     /// Fetch all trackable zones across all servers
     static func fetchAllTrackableZones() throws -> [AppZone] {
         try Current.database().read { db in
@@ -35,7 +35,7 @@ public extension AppZone {
                 .fetchAll(db)
         }
     }
-    
+
     /// Fetch a specific zone by ID
     static func fetchZone(id: String) throws -> AppZone? {
         try Current.database().read { db in
@@ -44,13 +44,13 @@ public extension AppZone {
                 .fetchOne(db)
         }
     }
-    
+
     /// Fetch zone by entityId and serverId
     static func fetchZone(entityId: String, serverId: String) throws -> AppZone? {
         let id = AppZone.primaryKey(sourceIdentifier: entityId, serverIdentifier: serverId)
         return try fetchZone(id: id)
     }
-    
+
     /// Find zone that contains the given location for a specific server
     static func zone(of location: CLLocation, in server: Server) throws -> AppZone? {
         let zones = try fetchTrackableZones(for: server.identifier.rawValue)
@@ -62,14 +62,14 @@ public extension AppZone {
             }
             .first
     }
-    
+
     /// Save or update a zone
     static func save(_ zone: AppZone) throws {
         try Current.database().write { db in
             try zone.save(db)
         }
     }
-    
+
     /// Save or update multiple zones
     static func save(_ zones: [AppZone]) throws {
         try Current.database().write { db in
@@ -78,7 +78,7 @@ public extension AppZone {
             }
         }
     }
-    
+
     /// Delete zones for a specific server
     static func deleteZones(for serverId: String) throws {
         try Current.database().write { db in
@@ -87,7 +87,7 @@ public extension AppZone {
                 .deleteAll(db)
         }
     }
-    
+
     /// Delete a specific zone
     static func deleteZone(id: String) throws {
         try Current.database().write { db in
@@ -96,7 +96,7 @@ public extension AppZone {
                 .deleteAll(db)
         }
     }
-    
+
     /// Update inRegion status for a zone
     mutating func updateInRegion(_ inRegion: Bool) throws {
         var updatedZone = self

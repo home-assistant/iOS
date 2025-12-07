@@ -101,7 +101,7 @@ class ZoneManagerTests: XCTestCase {
         syncZonesToGRDB(toAdd)
         return toAdd
     }
-    
+
     private func syncZonesToGRDB(_ zones: [RLMZone]) {
         let appZones = zones.map { realmZone in
             AppZone(
@@ -124,7 +124,7 @@ class ZoneManagerTests: XCTestCase {
                 ssidFilter: Array(realmZone.SSIDFilter)
             )
         }
-        
+
         do {
             try AppZone.save(appZones)
             // Trigger zone update notification
