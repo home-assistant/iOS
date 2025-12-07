@@ -26,7 +26,7 @@ public extension HomeAssistantAPI {
 
         #if os(iOS)
         content[WatchContext.servers.rawValue] = Current.servers.restorableState()
-        
+
         // Get complications from GRDB
         do {
             let complications = try WatchComplicationGRDB.all()

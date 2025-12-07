@@ -97,7 +97,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             do {
                 try grdbConfig.save()
                 self.grdbConfig = grdbConfig
-                
+
                 Current.api(for: server)?
                     .updateComplications(passively: false).cauterize()
             } catch {

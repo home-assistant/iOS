@@ -39,7 +39,8 @@ public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord
                 return t
             }
             // Fallback to first template for the family, or modularSmall template if family has no templates
-            return Family.templates.first ?? ComplicationGroupMember.modularSmall.templates.first ?? .ModularSmallSimpleText
+            return Family.templates.first ?? ComplicationGroupMember.modularSmall.templates.first ??
+                .ModularSmallSimpleText
         }
         set {
             rawTemplate = newValue.rawValue
@@ -1001,6 +1002,7 @@ public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord
 }
 
 // MARK: - ObjectMapper Support for watch<->app syncing
+
 extension WatchComplicationGRDB: ImmutableMappable {
     public init(map: ObjectMapper.Map) throws {
         let createdAt: Date = try map.value("CreatedAt", using: DateTransform())
@@ -1011,14 +1013,14 @@ extension WatchComplicationGRDB: ImmutableMappable {
         let name: String? = try map.value("name")
         let isPublic: Bool = try map.value("IsPublic")
         let serverIdentifier: String? = try map.value("serverIdentifier")
-        
+
         let complicationData: Data?
         if !data.isEmpty {
             complicationData = try? JSONSerialization.data(withJSONObject: data)
         } else {
             complicationData = nil
         }
-        
+
         self.init(
             identifier: identifier,
             serverIdentifier: serverIdentifier,
@@ -1036,13 +1038,13 @@ extension WatchComplicationGRDB: Mappable {
     public func mapping(map: ObjectMapper.Map) {
         var template = Template
         var data = Data
-        var createdAt = self.createdAt
+        var createdAt = createdAt
         var family = Family
-        var identifier = self.identifier
-        var name = self.name
-        var isPublic = self.isPublic
-        var serverIdentifier = self.serverIdentifier
-        
+        var identifier = identifier
+        var name = name
+        var isPublic = isPublic
+        var serverIdentifier = serverIdentifier
+
         template >>> map["Template"]
         data >>> map["Data"]
         createdAt >>> (map["CreatedAt"], DateTransform())

@@ -14,11 +14,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         do {
             if complication.identifier != CLKDefaultComplicationIdentifier {
                 // existing complications that were configured pre-7 have no identifier set
-                // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
+                // so we can only access the value if it's a valid one. otherwise, fall back to old matching
+                // behavior.
                 model = try WatchComplicationGRDB.fetch(identifier: complication.identifier)
             } else {
                 // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
-                // with the family as the identifier, so we can rely on this code path for older OS and older complications
+                // with the family as the identifier, so we can rely on this code path for older OS and older
+                // complications
                 let matchedFamily = ComplicationGroupMember(family: complication.family)
                 model = try WatchComplicationGRDB.fetch(identifier: matchedFamily.rawValue)
             }

@@ -157,7 +157,7 @@ class ComplicationListViewController: HAFormViewController {
                     .sorted { $0.rawFamily < $1.rawFamily }
 
                 let section = Section(header: group.name, footer: group.description)
-                
+
                 for complication in familyItems {
                     section <<< ButtonRow {
                         $0.cellStyle = .value1
@@ -180,7 +180,10 @@ class ComplicationListViewController: HAFormViewController {
                 if !familyItems.isEmpty {
                     // Insert before the "Add" button row
                     let addButtonIndex = form.allRows.firstIndex { $0.tag == nil && $0.title == L10n.addButtonLabel }
-                    if let insertIndex = addButtonIndex, let sectionIndex = form.allSections.firstIndex(where: { $0.contains(where: { $0.indexPath?.row == insertIndex }) }) {
+                    if let insertIndex = addButtonIndex,
+                       let sectionIndex = form.allSections.firstIndex(where: {
+                           $0.contains(where: { $0.indexPath?.row == insertIndex })
+                       }) {
                         form.insert(section, at: sectionIndex)
                     } else {
                         form +++ section
