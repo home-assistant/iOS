@@ -24,6 +24,28 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
         true
     }
 
+    static func request(for complications: [WatchComplicationGRDB]) -> WebhookRequest? {
+        Current.Log.verbose("complications \(complications.map(\.identifier))")
+
+        let templates = complications.reduce(into: [String: [String: String]]()) { payload, complication in
+            let keyPrefix = "\(complication.identifier)|"
+
+            payload.merge(
+                complication.rawRendered()
+                    .mapKeys { keyPrefix + $0 }
+                    .mapValues { ["template": $0] },
+                uniquingKeysWith: { a, _ in a }
+            )
+        }
+
+        if templates.isEmpty {
+            return nil
+        } else {
+            return .init(type: "render_template", data: templates)
+        }
+    }
+
+    // Compatibility method for Realm-based complications (for migration period)
     static func request(for complications: Set<WatchComplication>) -> WebhookRequest? {
         Current.Log.verbose("complications \(complications.map(\.identifier))")
 
@@ -64,15 +86,22 @@ struct WebhookResponseUpdateComplications: WebhookResponseHandler {
                 accumulator[components[0], default: [:]][components[1]] = value.value
             }
         }.then { paired -> Promise<Void> in
-            let realm = Current.realm()
-            return realm.reentrantWrite {
-                for (identifier, rendered) in paired {
-                    if let complication = realm.object(ofType: watchComplicationClass, forPrimaryKey: identifier) {
-                        Current.Log.verbose("updating \(identifier) with \(rendered)")
-                        complication.updateRawRendered(from: rendered)
-                    } else {
-                        Current.Log.error("couldn't find complication for \(identifier)")
+            Promise { seal in
+                do {
+                    try Current.database().write { db in
+                        for (identifier, rendered) in paired {
+                            if var complication = try WatchComplicationGRDB.fetch(identifier: identifier) {
+                                Current.Log.verbose("updating \(identifier) with \(rendered)")
+                                complication.updateRawRendered(from: rendered)
+                                try complication.update(db)
+                            } else {
+                                Current.Log.error("couldn't find complication for \(identifier)")
+                            }
+                        }
                     }
+                    seal.fulfill(())
+                } catch {
+                    seal.reject(error)
                 }
             }
         }.done {

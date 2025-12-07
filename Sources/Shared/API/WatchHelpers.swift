@@ -26,7 +26,29 @@ public extension HomeAssistantAPI {
 
         #if os(iOS)
         content[WatchContext.servers.rawValue] = Current.servers.restorableState()
-        content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
+        
+        // Get complications from GRDB
+        do {
+            let complications = try WatchComplicationGRDB.all()
+            // Convert to JSON-compatible format
+            content[WatchContext.complications.rawValue] = complications.map { complication in
+                [
+                    "identifier": complication.identifier,
+                    "serverIdentifier": complication.serverIdentifier as Any,
+                    "rawFamily": complication.rawFamily,
+                    "rawTemplate": complication.rawTemplate,
+                    "Data": complication.Data,
+                    "CreatedAt": complication.createdAt,
+                    "name": complication.name as Any,
+                    "IsPublic": complication.isPublic,
+                    "Template": complication.Template.rawValue,
+                    "Family": complication.Family.rawValue,
+                ]
+            }
+        } catch {
+            Current.Log.error("Failed to fetch complications from GRDB: \(error)")
+            content[WatchContext.complications.rawValue] = []
+        }
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
@@ -82,10 +104,13 @@ public extension HomeAssistantAPI {
         }
         #endif
 
-        let complications = Set(
-            Current.realm().objects(WatchComplication.self)
-                .filter("serverIdentifier = %@", server.identifier.rawValue)
-        )
+        let complications: [WatchComplicationGRDB]
+        do {
+            complications = try WatchComplicationGRDB.forServer(identifier: server.identifier.rawValue)
+        } catch {
+            Current.Log.error("Failed to fetch complications from GRDB: \(error)")
+            return Promise(error: error)
+        }
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")

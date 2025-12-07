@@ -7,26 +7,25 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // https://github.com/LoopKit/Loop/issues/816
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
 
-    private func complicationModel(for complication: CLKComplication) -> WatchComplication? {
+    private func complicationModel(for complication: CLKComplication) -> WatchComplicationGRDB? {
         // Helper function to get a complication using the correct ID depending on watchOS version
 
-        let model: WatchComplication?
+        let model: WatchComplicationGRDB?
 
-        if complication.identifier != CLKDefaultComplicationIdentifier {
-            // existing complications that were configured pre-7 have no identifier set
-            // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
-            model = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: complication.identifier
-            )
-        } else {
-            // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
-            // with the family as the identifier, so we can rely on this code path for older OS and older complications
-            let matchedFamily = ComplicationGroupMember(family: complication.family)
-            model = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: matchedFamily.rawValue
-            )
+        do {
+            if complication.identifier != CLKDefaultComplicationIdentifier {
+                // existing complications that were configured pre-7 have no identifier set
+                // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
+                model = try WatchComplicationGRDB.fetch(identifier: complication.identifier)
+            } else {
+                // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
+                // with the family as the identifier, so we can rely on this code path for older OS and older complications
+                let matchedFamily = ComplicationGroupMember(family: complication.family)
+                model = try WatchComplicationGRDB.fetch(identifier: matchedFamily.rawValue)
+            }
+        } catch {
+            Current.Log.error("Failed to fetch complication from GRDB: \(error)")
+            model = nil
         }
 
         return model
@@ -61,7 +60,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     ) {
         let model = complicationModel(for: complication)
 
-        if model?.IsPublic == false {
+        if model?.isPublic == false {
             handler(.hideOnLockScreen)
         } else {
             handler(.showOnLockScreen)
@@ -94,8 +93,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // MARK: - Complication Descriptors
 
     func getComplicationDescriptors(handler: @escaping ([CLKComplicationDescriptor]) -> Void) {
-        let configured = Current.realm().objects(WatchComplication.self)
-            .map(\.complicationDescriptor)
+        let configured: [CLKComplicationDescriptor]
+        do {
+            configured = try WatchComplicationGRDB.all().map(\.complicationDescriptor)
+        } catch {
+            Current.Log.error("Failed to fetch complications from GRDB: \(error)")
+            configured = []
+        }
 
         let placeholders = ComplicationGroupMember.allCases
             .map(\.placeholderComplicationDescriptor)

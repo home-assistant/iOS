@@ -63,7 +63,7 @@ class ComplicationFamilySelectViewController: HAFormViewController, RowControlle
                     }
 
                     $0.presentationMode = .show(controllerProvider: .callback { [allowMultiple] in
-                        let complication = WatchComplication()
+                        var complication = WatchComplicationGRDB()
                         complication.Family = family
 
                         if !allowMultiple {
@@ -76,7 +76,7 @@ class ComplicationFamilySelectViewController: HAFormViewController, RowControlle
                     }, onDismiss: { [weak self] vc in
                         guard let self, let vc = vc as? ComplicationEditViewController else { return }
 
-                        if vc.config.realm == nil {
+                        if vc.isNewComplication {
                             // not saved
                             navigationController?.popViewController(animated: true)
                         } else {

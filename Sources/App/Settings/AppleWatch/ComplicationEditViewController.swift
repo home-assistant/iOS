@@ -11,12 +11,43 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
     public var onDismissCallback: ((UIViewController) -> Void)?
 
     let config: WatchComplication
+    private var grdbConfig: WatchComplicationGRDB?
     private var displayTemplate: ComplicationTemplate
     private var server: Server {
         if let value = (form.rowBy(tag: "server") as? ServerSelectRow)?.value, let server = value.server {
             return server
         } else {
             return Current.servers.all.first!
+        }
+    }
+
+    // Computed properties to abstract Realm vs GRDB
+    private var complicationName: String? {
+        grdbConfig?.name ?? config.name
+    }
+
+    private var complicationServerIdentifier: String? {
+        grdbConfig?.serverIdentifier ?? config.serverIdentifier
+    }
+
+    private var complicationIsPublic: Bool {
+        grdbConfig?.isPublic ?? config.IsPublic
+    }
+
+    private var complicationData: [String: Any] {
+        grdbConfig?.Data ?? config.Data
+    }
+
+    private var complicationFamily: ComplicationGroupMember {
+        grdbConfig?.Family ?? config.Family
+    }
+
+    var isNewComplication: Bool {
+        if let grdbConfig {
+            // Try to fetch from database
+            return (try? WatchComplicationGRDB.fetch(identifier: grdbConfig.identifier)) == nil
+        } else {
+            return config.realm == nil
         }
     }
 
@@ -29,39 +60,110 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
         self.isModalInPresentation = true
     }
 
+    init(config: WatchComplicationGRDB) {
+        // Create a temporary Realm object for compatibility
+        self.config = WatchComplication()
+        self.grdbConfig = config
+        self.displayTemplate = config.Template
+
+        super.init()
+
+        self.isModalInPresentation = true
+    }
+
     @objc private func cancel() {
         onDismissCallback?(self)
     }
 
     @objc private func save() {
-        let realm = Current.realm()
-        realm.reentrantWrite {
+        if var grdbConfig {
+            // Save to GRDB
             if let name = (form.rowBy(tag: "name") as? TextRow)?.value, name.isEmpty == false {
-                config.name = name
+                grdbConfig.name = name
             } else {
-                config.name = nil
+                grdbConfig.name = nil
             }
             if let IsPublic = (form.rowBy(tag: "IsPublic") as? SwitchRow)?.value {
-                config.IsPublic = IsPublic
+                grdbConfig.isPublic = IsPublic
             } else {
-                config.IsPublic = true
+                grdbConfig.isPublic = true
             }
-            config.serverIdentifier = server.identifier.rawValue
-            config.Template = displayTemplate
-            config.Data = getValuesGroupedBySection()
+            grdbConfig.serverIdentifier = server.identifier.rawValue
+            grdbConfig.Template = displayTemplate
+            grdbConfig.Data = getValuesGroupedBySection()
 
-            Current.Log.verbose("COMPLICATION \(config) \(config.Data)")
+            Current.Log.verbose("COMPLICATION \(grdbConfig) \(grdbConfig.Data)")
 
-            realm.add(config, update: .all)
-        }.then(on: nil) { [server] in
-            Current.api(for: server)?
-                .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-        }.cauterize()
+            do {
+                try grdbConfig.save()
+                self.grdbConfig = grdbConfig
+                
+                Current.api(for: server)?
+                    .updateComplications(passively: false).cauterize()
+            } catch {
+                Current.Log.error("Failed to save complication to GRDB: \(error)")
+            }
+        } else {
+            // Legacy Realm save
+            let realm = Current.realm()
+            realm.reentrantWrite {
+                if let name = (form.rowBy(tag: "name") as? TextRow)?.value, name.isEmpty == false {
+                    config.name = name
+                } else {
+                    config.name = nil
+                }
+                if let IsPublic = (form.rowBy(tag: "IsPublic") as? SwitchRow)?.value {
+                    config.IsPublic = IsPublic
+                } else {
+                    config.IsPublic = true
+                }
+                config.serverIdentifier = server.identifier.rawValue
+                config.Template = displayTemplate
+                config.Data = getValuesGroupedBySection()
+
+                Current.Log.verbose("COMPLICATION \(config) \(config.Data)")
+
+                realm.add(config, update: .all)
+            }.then(on: nil) { [server] in
+                Current.api(for: server)?
+                    .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+            }.cauterize()
+        }
 
         onDismissCallback?(self)
     }
 
     @objc private func deleteComplication(_ sender: UIView) {
+        if let grdbConfig {
+            // Delete from GRDB
+            let alert = UIAlertController(
+                title: L10n.Watch.Configurator.Delete.title,
+                message: L10n.Watch.Configurator.Delete.message,
+                preferredStyle: .actionSheet
+            )
+            with(alert.popoverPresentationController) {
+                $0?.sourceView = sender
+                $0?.sourceRect = sender.bounds
+            }
+            alert.addAction(UIAlertAction(
+                title: L10n.Watch.Configurator.Delete.button, style: .destructive, handler: { [server] _ in
+                    do {
+                        try grdbConfig.delete()
+                        Current.api(for: server)?
+                            .updateComplications(passively: false).cauterize()
+                    } catch {
+                        Current.Log.error("Failed to delete complication from GRDB: \(error)")
+                    }
+
+                    self.onDismissCallback?(self)
+                }
+            ))
+            alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
+            return
+        }
+
+        // Legacy Realm delete
         precondition(config.realm != nil)
 
         let alert = UIAlertController(
@@ -116,7 +218,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             infoBarButtonItem,
         ]
 
-        title = config.Family.name
+        title = complicationFamily.name
 
         let textSections = ComplicationTextAreas.allCases.map({ addComplicationTextAreaFormSection(location: $0) })
 
@@ -128,12 +230,12 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
 
             <<< TextRow("name") {
                 $0.title = L10n.Watch.Configurator.Rows.DisplayName.title
-                $0.placeholder = config.Family.name
-                $0.value = config.name
+                $0.placeholder = complicationFamily.name
+                $0.value = complicationName
             }
 
             <<< ServerSelectRow("server") {
-                if let server = Current.servers.server(forServerIdentifier: config.serverIdentifier) {
+                if let server = Current.servers.server(forServerIdentifier: complicationServerIdentifier) {
                     $0.value = .server(server)
                 } else {
                     $0.value = Current.servers.all.first.flatMap { .server($0) }
@@ -150,7 +252,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             <<< PushRow<ComplicationTemplate> {
                 $0.tag = "template"
                 $0.title = L10n.Watch.Configurator.Rows.Template.title
-                $0.options = config.Family.templates
+                $0.options = complicationFamily.templates
                 $0.value = displayTemplate
                 $0.selectorTitle = L10n.Watch.Configurator.Rows.Template.selectorTitle
             }.onPresent { _, to in
@@ -182,7 +284,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
 
             <<< SwitchRow("IsPublic") {
                 $0.title = L10n.Watch.Configurator.Rows.IsPublic.title
-                $0.value = config.IsPublic
+                $0.value = complicationIsPublic
             }
 
         form.append(contentsOf: textSections)
@@ -209,7 +311,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                     }
                 }
                 $0.value = $0.options?.first
-                if let info = config.Data["column2alignment"] as? [String: Any],
+                if let info = complicationData["column2alignment"] as? [String: Any],
                    let value = info[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -225,7 +327,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                     $0.title = L10n.Watch.Configurator.Rows.Gauge.title
                     $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
                     $0.add(rule: RuleRequired())
-                    if let gaugeDict = config.Data["gauge"] as? [String: Any],
+                    if let gaugeDict = complicationData["gauge"] as? [String: Any],
                        let value = gaugeDict[$0.tag!] as? String {
                         $0.value = value
                     }
@@ -243,7 +345,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor.green
-                if let gaugeDict = config.Data["gauge"] as? [String: Any],
+                if let gaugeDict = complicationData["gauge"] as? [String: Any],
                    let value = gaugeDict[$0.tag!] as? String {
                     $0.value = UIColor(hex: value)
                 }
@@ -264,7 +366,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                     }
                 }
                 $0.value = $0.options?.first
-                if let gaugeDict = config.Data["gauge"] as? [String: Any],
+                if let gaugeDict = complicationData["gauge"] as? [String: Any],
                    let value = gaugeDict[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -283,7 +385,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                     }
                 }
                 $0.value = $0.options?.first
-                if let gaugeDict = config.Data["gauge"] as? [String: Any],
+                if let gaugeDict = complicationData["gauge"] as? [String: Any],
                    let value = gaugeDict[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -299,7 +401,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                     $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
                     $0.placeholder = "{{ range(1, 100) | random / 100.0 }}"
                     $0.add(rule: RuleRequired())
-                    if let dict = config.Data["ring"] as? [String: Any],
+                    if let dict = complicationData["ring"] as? [String: Any],
                        let value = dict[$0.tag!] as? String {
                         $0.value = value
                     }
@@ -326,7 +428,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 }
 
                 $0.value = $0.options?.first
-                if let dict = config.Data["ring"] as? [String: Any],
+                if let dict = complicationData["ring"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = value
                 }
@@ -337,7 +439,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor.green
-                if let dict = config.Data["ring"] as? [String: Any],
+                if let dict = complicationData["ring"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = UIColor(hex: value)
                 }
@@ -363,7 +465,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 }
                 $0.selectorTitle = L10n.Watch.Configurator.Rows.Icon.Choose.title
                 $0.tag = "icon"
-                if let dict = config.Data["icon"] as? [String: Any],
+                if let dict = complicationData["icon"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = MaterialDesignIcons(named: value)
                 }
@@ -402,7 +504,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor.green
-                if let dict = config.Data["icon"] as? [String: Any],
+                if let dict = complicationData["icon"] as? [String: Any],
                    let value = dict[$0.tag!] as? String {
                     $0.value = UIColor(hex: value)
                 }
@@ -421,10 +523,10 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 }
             }
 
-            +++ Section { [config] section in
+            +++ Section { [weak self] section in
                 section.tag = "delete"
 
-                if config.realm == nil {
+                if self?.isNewComplication == true {
                     // don't need to show a delete button for an unpersisted complication
                     section.hidden = true
                 }
@@ -485,7 +587,7 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
         let key = "textarea_" + location.slug
         var dataDict = [String: Any]()
 
-        if let textAreasDict = config.Data["textAreas"] as? [String: [String: Any]],
+        if let textAreasDict = complicationData["textAreas"] as? [String: [String: Any]],
            let slugDict = textAreasDict[location.slug] {
             dataDict = slugDict
         }

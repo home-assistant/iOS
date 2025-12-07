@@ -114,21 +114,63 @@ class ComplicationListViewController: HAFormViewController {
                 }
             }
 
-        let allComplications = Current.realm()
-            .objects(WatchComplication.self)
+        // Load complications from GRDB
+        loadComplicationsFromGRDB()
 
-        for group in ComplicationGroup.allCases.sorted() {
-            let familyItems = allComplications
-                .filter("rawFamily in %@", group.members.map(\.rawValue))
-                .sorted(byKeyPath: "rawFamily")
+        form +++ ButtonRow {
+            $0.title = L10n.addButtonLabel
+            $0.onCellSelection { [weak self] _, _ in
+                guard let self else { return }
+                do {
+                    let currentFamilies = try Set(WatchComplicationGRDB.all().map(\.Family))
+                    let editListViewController = ComplicationFamilySelectViewController(
+                        allowMultiple: supportsMultipleComplications,
+                        currentFamilies: currentFamilies
+                    )
+                    editListViewController.onDismissCallback = { [weak self] _ in
+                        $0.dismiss(animated: true) {
+                            // Reload complications after adding
+                            self?.reloadComplications()
+                        }
+                    }
+                    let navigationController = UINavigationController(rootViewController: editListViewController)
+                    present(navigationController, animated: true, completion: nil)
+                } catch {
+                    Current.Log.error("Failed to fetch complications: \(error)")
+                }
+            }
+        }
+    }
 
-            form +++ RealmSection(
-                header: group.name,
-                footer: group.description,
-                collection: AnyRealmCollection(familyItems),
-                emptyRows: [],
-                getter: { (complication: WatchComplication) -> ButtonRow in
-                    ButtonRow {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadComplications()
+    }
+
+    private func reloadComplications() {
+        // Remove existing complication sections
+        let sectionsToRemove = form.allSections.filter { section in
+            ComplicationGroup.allCases.contains { $0.name == section.header?.title }
+        }
+        sectionsToRemove.forEach { form.remove(at: $0.index!) }
+
+        // Reload from GRDB
+        loadComplicationsFromGRDB()
+    }
+
+    private func loadComplicationsFromGRDB() {
+        do {
+            let allComplications = try WatchComplicationGRDB.all()
+
+            for group in ComplicationGroup.allCases.sorted() {
+                let familyItems = allComplications
+                    .filter { group.members.map(\.rawValue).contains($0.rawFamily) }
+                    .sorted { $0.rawFamily < $1.rawFamily }
+
+                let section = Section(header: group.name, footer: group.description)
+                
+                for complication in familyItems {
+                    section <<< ButtonRow {
                         $0.cellStyle = .value1
                         $0.title = complication.Family.shortName
                         $0.value = complication.displayName
@@ -137,32 +179,27 @@ class ComplicationListViewController: HAFormViewController {
                         }
                         $0.presentationMode = .show(controllerProvider: .callback {
                             ComplicationEditViewController(config: complication)
-                        }, onDismiss: { vc in
+                        }, onDismiss: { [weak self] vc in
                             _ = vc.navigationController?.popViewController(animated: true)
+                            // Reload after edit
+                            self?.reloadComplications()
                         })
                     }
-                }, didUpdate: { section, collection in
-                    let shouldBeHidden = collection.isEmpty
-                    if shouldBeHidden != section.isHidden {
-                        section.hidden = .init(booleanLiteral: shouldBeHidden)
-                        section.evaluateHidden()
+                }
+
+                // Only add section if it has items
+                if !familyItems.isEmpty {
+                    // Insert before the "Add" button row
+                    let addButtonIndex = form.allRows.firstIndex { $0.tag == nil && $0.title == L10n.addButtonLabel }
+                    if let insertIndex = addButtonIndex, let sectionIndex = form.allSections.firstIndex(where: { $0.contains(where: { $0.indexPath?.row == insertIndex }) }) {
+                        form.insert(section, at: sectionIndex)
+                    } else {
+                        form +++ section
                     }
                 }
-            )
-        }
-
-        form +++ ButtonRow {
-            $0.title = L10n.addButtonLabel
-            $0.onCellSelection { [weak self] _, _ in
-                guard let self else { return }
-                let editListViewController = ComplicationFamilySelectViewController(
-                    allowMultiple: supportsMultipleComplications,
-                    currentFamilies: Set(Current.realm().objects(WatchComplication.self).map(\.Family))
-                )
-                editListViewController.onDismissCallback = { $0.dismiss(animated: true, completion: nil) }
-                let navigationController = UINavigationController(rootViewController: editListViewController)
-                present(navigationController, animated: true, completion: nil)
             }
+        } catch {
+            Current.Log.error("Failed to load complications from GRDB: \(error)")
         }
     }
 }
