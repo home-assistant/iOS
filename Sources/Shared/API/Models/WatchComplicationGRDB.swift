@@ -38,7 +38,8 @@ public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord
             if let t = ComplicationTemplate(rawValue: rawTemplate) {
                 return t
             }
-            return Family.templates.first!
+            // Fallback to first template for the family, or modularSmall template if family has no templates
+            return Family.templates.first ?? ComplicationGroupMember.modularSmall.templates.first ?? .ModularSmallSimpleText
         }
         set {
             rawTemplate = newValue.rawValue

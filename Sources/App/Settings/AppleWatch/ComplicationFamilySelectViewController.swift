@@ -63,14 +63,14 @@ class ComplicationFamilySelectViewController: HAFormViewController, RowControlle
                     }
 
                     $0.presentationMode = .show(controllerProvider: .callback { [allowMultiple] in
-                        var complication = WatchComplicationGRDB()
-                        complication.Family = family
-
-                        if !allowMultiple {
-                            // if the user hasn't upgraded to watchOS 7 yet, we want to preserve our migration behavior
-                            // so any watchOS 6-created complications have a predicable globally-unique identifier
-                            complication.identifier = family.rawValue
-                        }
+                        let identifier = allowMultiple ? UUID().uuidString : family.rawValue
+                        // Initialize with proper family and template to avoid inconsistent state
+                        let template = family.templates.first ?? .ModularSmallSimpleText
+                        var complication = WatchComplicationGRDB(
+                            identifier: identifier,
+                            rawFamily: family.rawValue,
+                            rawTemplate: template.rawValue
+                        )
 
                         return ComplicationEditViewController(config: complication)
                     }, onDismiss: { [weak self] vc in

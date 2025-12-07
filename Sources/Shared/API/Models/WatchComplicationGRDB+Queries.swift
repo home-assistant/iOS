@@ -70,11 +70,14 @@ extension WatchComplicationGRDB {
 
         try Current.database().write { db in
             // Find complications with serverIdentifiers that don't match any current servers
-            // This includes complications with nil serverIdentifier or identifiers not in the current server list
-            let serverIdColumn = Column(DatabaseTables.WatchComplication.serverIdentifier.rawValue)
-            let orphanedComplications = try WatchComplicationGRDB
-                .filter(serverIdColumn == nil || !serverIdentifiers.contains(serverIdColumn))
-                .fetchAll(db)
+            // Fetch all complications and filter in Swift for clarity
+            let allComplications = try WatchComplicationGRDB.fetchAll(db)
+            let orphanedComplications = allComplications.filter { complication in
+                guard let serverId = complication.serverIdentifier else {
+                    return true // nil serverIdentifier is orphaned
+                }
+                return !serverIdentifiers.contains(serverId)
+            }
 
             if !orphanedComplications.isEmpty {
                 Current.Log.info("Migrating \(orphanedComplications.count) orphaned watch complications to \(replacementServer.identifier)")
