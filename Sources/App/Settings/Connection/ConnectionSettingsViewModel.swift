@@ -207,7 +207,7 @@ final class ConnectionSettingsViewModel: ObservableObject {
     func activateServer() {
         if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
             if let url = server.info.connection.activeURL() {
-                UIApplication.shared.open(url)
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
         } else {
             Current.sceneManager.webViewWindowControllerPromise.done {
