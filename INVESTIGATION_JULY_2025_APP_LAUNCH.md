@@ -8,203 +8,184 @@ Users reported that the Home Assistant iOS app on iPad was:
 1. Launching itself randomly
 2. Preventing users from leaving the app - the app would quickly regain control and return to foreground
 
-## Root Cause Analysis
+## Investigation Period
+Analysis of commits from **May 26, 2025 to July 26, 2025** (2 months prior to report date)
 
-### Timeline of Changes
+## Context and Timeline
 
-#### 1. **June 10, 2024 - The Breaking Change (Commit d5fe2eee)**
-**PR:** #2808 - "Remove some deprecated code pointed in #2655"
+### Historical Background
+This issue first appeared in **June 2024** after commit d5fe2eee removed iOS 12 compatibility code, which inadvertently made scene activation unconditional. Partial fixes were applied in July 2024 (c878339e) and January 2025 (1d2130ee), but the issue persisted or recurred.
 
-**What changed:**
-- Removed iOS 12 compatibility code from `SceneManager.swift`
-- Inadvertently modified the scene activation logic in the `scene(for:)` method
+### Situation in May-July 2025
+During the investigation period (May 26 - July 26, 2025), the codebase contained:
 
-**The Problem:**
+**Partial Fix Status as of July 2025:**
 ```swift
-// Before June 10 - with compatibility code
-public func scene<DelegateType: UIWindowSceneDelegate>(
-    for query: SceneQuery<DelegateType>
-) -> Guarantee<DelegateType> {
-    if let active = existingScenes(for: query.activity).first,
-       let delegate = active.delegate as? DelegateType {
-        UIApplication.shared.requestSceneSessionActivation(
-            active.session,
-            userActivity: nil,
-            options: nil,  // ❌ No options, not requesting scene
-            errorHandler: nil
-        )
-        return .value(delegate)
-    }
-    // ...
-}
-```
-
-This code would **unconditionally activate** any existing scene, regardless of:
-- Whether the app was in the background
-- Whether the scene was already active
-- What triggered the activation (widget, notification, background task)
-
-### Why This Caused Problems on iPad
-
-1. **Widgets and Background Tasks:** When widgets refreshed or background tasks ran, they would call `scene(for:)` to get access to view controllers
-2. **Unconditional Activation:** The method would always call `requestSceneSessionActivation`, bringing the app to foreground
-3. **User Experience Impact:** 
-   - App would launch itself when widgets updated
-   - Users couldn't switch to other apps because background tasks would reactivate the Home Assistant app
-   - Particularly problematic on iPad where users expect seamless multitasking
-
-### The Fix Evolution
-
-#### Phase 1: July 25, 2024 (Commit c878339e)
-**PR:** #2868 - "Fix issue where notification URL closes app right away"
-
-**What was fixed:**
-- Added `UIScene.ActivationRequestOptions` with `requestingScene` property
-- Used iOS 17+ API `activateSceneSession` when available
-
-```swift
+// From earlier fixes (pre-July 2025)
 let options = UIScene.ActivationRequestOptions()
 options.requestingScene = active
 
+// Check if scene already active (added January 2025)
+guard active.activationState != .foregroundActive else {
+    return .value(delegate)
+}
+
+// Activation still happened unconditionally for non-active scenes
 if #available(iOS 17.0, *) {
     UIApplication.shared.activateSceneSession(for: .init(session: active.session, options: options))
 } else {
     UIApplication.shared.requestSceneSessionActivation(
         active.session,
         userActivity: nil,
-        options: options,  // ✓ Now includes the requesting scene
+        options: options,
         errorHandler: nil
     )
 }
 ```
 
-**Result:** Partial fix - helped with some scenarios but didn't fully solve the problem
+### The Remaining Problem (July 2025)
 
-#### Phase 2: January 15, 2025 (Commit 1d2130ee)
-**PR:** #3333 - "Only activate scene when not active already"
+Even with the partial fixes, the code was **still activating scenes unconditionally** when they weren't already active, regardless of:
+- **App state** (foreground vs background)
+- **What triggered the call** (widget refresh, notification, background task)
 
-**What was added:**
-- Guard clause to prevent activation if scene is already active
+This meant:
+- ✅ The app wouldn't reactivate if already in foreground (fixed in January 2025)
+- ❌ But widgets, notifications, and background tasks could still bring the app to foreground
+- ❌ Users on iPad couldn't multitask effectively because the app would hijack focus
+
+## The Complete Fix (Applied November 2025)
+
+**PR #3964 - "Prevent iPad App to reopen by itself" (Commit 349b0b28, November 12, 2025)**
+
+The complete fix added crucial application state checking:
 
 ```swift
-// Only activate scene if not activated already
-guard active.activationState != .foregroundActive else {
-    Current.Log.verbose("Did not activate scene \(active.session.persistentIdentifier), it was already active")
-    return .value(delegate)
-}
-```
+// Current code (as of November 2025)
+public func scene<DelegateType: UIWindowSceneDelegate>(
+    for query: SceneQuery<DelegateType>
+) -> Guarantee<DelegateType> {
+    if let active = existingScenes(for: query.activity).first,
+       let delegate = active.delegate as? DelegateType {
+        
+        let options = UIScene.ActivationRequestOptions()
+        options.requestingScene = active
 
-**Result:** Better, but still had issues with background activation
-
-#### Phase 3: November 12, 2025 (Commit 349b0b28)
-**PR:** #3964 - "Prevent iPad App to reopen by itself"
-
-**The Complete Fix:**
-```swift
-// Only activate scene if not activated already
-guard active.activationState != .foregroundActive else {
-    Current.Log.verbose("Did not activate scene \(active.session.persistentIdentifier), it was already active")
-    return .value(delegate)
-}
-
-// Only activate scene if the app is already in foreground or transitioning to foreground
-// This prevents widgets, notifications, or background tasks from unexpectedly bringing the app to foreground
-let shouldActivate = UIApplication.shared.applicationState == .active ||
-    active.activationState == .foregroundInactive
-
-if shouldActivate {
-    Current.Log.verbose("Activating scene \(active.session.persistentIdentifier)")
-    
-    // Guarantee it runs on main thread when coming from widgets
-    DispatchQueue.main.async {
-        if #available(iOS 17.0, *) {
-            UIApplication.shared.activateSceneSession(for: .init(session: active.session, options: options))
-        } else {
-            UIApplication.shared.requestSceneSessionActivation(
-                active.session,
-                userActivity: nil,
-                options: options,
-                errorHandler: nil
-            )
+        // Check 1: Don't activate if already active (from January 2025)
+        guard active.activationState != .foregroundActive else {
+            Current.Log.verbose("Did not activate scene - it was already active")
+            return .value(delegate)
         }
+
+        // Check 2: Only activate if app is foreground or transitioning (NEW - November 2025)
+        let shouldActivate = UIApplication.shared.applicationState == .active ||
+            active.activationState == .foregroundInactive
+
+        if shouldActivate {
+            Current.Log.verbose("Activating scene")
+            
+            // Guarantee it runs on main thread
+            DispatchQueue.main.async {
+                if #available(iOS 17.0, *) {
+                    UIApplication.shared.activateSceneSession(
+                        for: .init(session: active.session, options: options)
+                    )
+                } else {
+                    UIApplication.shared.requestSceneSessionActivation(
+                        active.session,
+                        userActivity: nil,
+                        options: options,
+                        errorHandler: nil
+                    )
+                }
+            }
+        } else {
+            // NEW - November 2025: Skip activation when app is in background
+            Current.Log.verbose("Skipping scene activation - app is in background")
+        }
+
+        return .value(delegate)
     }
-} else {
-    Current.Log.verbose("Skipping scene activation for \(active.session.persistentIdentifier) - app is in background")
+    // ... rest of method
 }
 ```
 
-**Key improvements:**
-1. ✅ Check if scene is already in foreground active state
-2. ✅ Only activate if app state is `.active` (foreground) or scene is `.foregroundInactive` (transitioning)
-3. ✅ Skip activation entirely when app is in background
-4. ✅ Dispatch to main thread to ensure thread safety
-5. ✅ Added comprehensive logging for debugging
+### Key Improvements in November 2025 Fix
 
-## Current Status
+1. **Application State Check** (`UIApplication.shared.applicationState == .active`)
+   - Only activates when app is already in foreground
+   - Prevents background tasks/widgets from launching the app
 
-The current codebase (as of December 2025) has the complete fix applied. The issue has been resolved through the three-phase fix described above.
+2. **Scene Transition State Check** (`active.activationState == .foregroundInactive`)
+   - Allows activation during legitimate transitions
+   - Maintains smooth user experience when user is actively using the app
 
-## Prevention
+3. **Explicit Logging**
+   - Added "Skipping scene activation - app is in background" message
+   - Helps debugging and confirms the fix is working
+
+4. **Main Thread Dispatch**
+   - Ensures thread safety for UI operations
+   - Prevents race conditions from widget extensions
+
+## Why This Was Particularly Problematic on iPad
+
+1. **Multitasking Usage**: iPad users frequently use Split View and Slide Over
+2. **Widgets**: Home Screen and Lock Screen widgets refresh frequently
+3. **Background Updates**: iPadOS allows more background activity
+4. **User Expectations**: iPad users expect desktop-like multitasking without apps stealing focus
+
+## Current Status (December 2025)
+
+✅ **Issue Resolved** - The complete fix has been in production since November 12, 2025
+
+The fix is located in `Sources/App/Scenes/SceneManager.swift`, lines 145-179.
+
+## Prevention Guidelines
 
 To prevent similar issues in the future:
 
-1. **Always check application state** before calling scene activation APIs
-2. **Check scene activation state** before attempting to activate
-3. **Be cautious when removing "compatibility" code** - ensure the replacement behavior matches the original intent
-4. **Consider the context** of where methods are called from (foreground UI vs background tasks vs widgets)
-5. **Add logging** to track unexpected activations during development
+### 1. Always Check Application State
+```swift
+// Before activating scenes or windows
+guard UIApplication.shared.applicationState == .active else {
+    // Don't activate from background
+    return
+}
+```
+
+### 2. Check Scene State
+```swift
+// Before scene operations
+guard scene.activationState != .foregroundActive else {
+    // Already active, nothing to do
+    return
+}
+```
+
+### 3. Consider the Context
+- Is this code called from widgets? → Don't activate
+- Is this code called from background tasks? → Don't activate
+- Is this code called from user interaction? → Safe to activate
+
+### 4. Add Comprehensive Logging
+```swift
+Current.Log.verbose("Scene activation decision: state=\(UIApplication.shared.applicationState), scene=\(scene.activationState)")
+```
+
+### 5. Test on iPad Specifically
+- Test with Split View active
+- Test with widgets updating in background
+- Test with notifications arriving while using other apps
+- Verify the app doesn't steal focus unexpectedly
+
+## Related PRs and Issues
+
+- **#2808** (June 2024) - Introduced the original issue by removing iOS 12 compatibility
+- **#2868** (July 2024) - Initial partial fix
+- **#3333** (January 2025) - Improved fix (still incomplete)
+- **#3964** (November 2025) - Complete fix ✅
 
 ## Files Affected
 
-- `Sources/App/Scenes/SceneManager.swift` - Primary file with the scene management logic
-
-## Testing and Verification
-
-### Manual Testing Checklist
-
-To verify the fix works correctly:
-
-1. **Widget Background Updates:**
-   - [ ] Add Home Assistant widgets to home screen
-   - [ ] Put app in background and switch to another app
-   - [ ] Wait for widget to refresh
-   - [ ] Verify: App should NOT launch itself
-
-2. **Notification Handling:**
-   - [ ] Send a notification with URL action
-   - [ ] With app in background, tap the notification
-   - [ ] Verify: App should open to the URL and stay open
-
-3. **Background Tasks:**
-   - [ ] Enable background fetch
-   - [ ] Put app in background
-   - [ ] Wait for background refresh
-   - [ ] Verify: App should NOT launch itself
-
-4. **iPad Multitasking:**
-   - [ ] Open Split View with Home Assistant and another app
-   - [ ] Interact with widgets or trigger background updates
-   - [ ] Verify: Focus should not switch unexpectedly to Home Assistant
-
-5. **Scene Already Active:**
-   - [ ] Open app normally
-   - [ ] Trigger an action that calls `scene(for:)` (e.g., widget tap while app is open)
-   - [ ] Verify: No flickering or double activation
-
-### Why Unit Tests Are Challenging
-
-Unit testing `SceneManager` is difficult because:
-- `UIApplication.shared` is a singleton that cannot be easily mocked
-- `UIScene` lifecycle is managed by the system
-- Scene activation is an asynchronous operation with system involvement
-- Application state transitions are controlled by iOS
-
-**Recommendation:** Focus on integration tests and manual QA testing for scene-related functionality.
-
-## Related Issues
-
-- #3305 - User reports of app launching itself
-- #2655 - Original issue that led to the deprecated code removal
-- #2868 - Fix issue where notification URL closes app right away (July 25, 2024)
-- #3333 - Only activate scene when not active already (January 15, 2025)
-- #3964 - Prevent iPad App to reopen by itself (November 12, 2025)
+- `Sources/App/Scenes/SceneManager.swift` - Scene management and activation logic
