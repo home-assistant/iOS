@@ -6,7 +6,7 @@ on:
       - 'Sources/PushServer/**'
   push:
     branches:
-      - master
+      - main
     paths:
       - 'Sources/PushServer/**'
 

@@ -8,7 +8,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
@@ -57,8 +57,8 @@ jobs:
         id: scan
         continue-on-error: false
         run: |
-          git fetch origin master:refs/remotes/origin/master
-          DISABLE_LINES=$(git diff origin/master -- '*.swift' | grep -E '^\+.*// swiftlint:disable' || true)
+          git fetch origin main:refs/remotes/origin/main
+          DISABLE_LINES=$(git diff origin/main -- '*.swift' | grep -E '^\+.*// swiftlint:disable' || true)
           echo "disable_lines<<EOF" >> $GITHUB_OUTPUT
           echo "$DISABLE_LINES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT

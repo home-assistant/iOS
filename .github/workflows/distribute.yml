@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - main
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
