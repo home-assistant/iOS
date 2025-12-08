@@ -1,3 +1,4 @@
+import Shared
 import UIKit
 
 /// A protocol for opening URLs, allowing for easy mocking and testing.
@@ -48,6 +49,7 @@ final class URLOpener: URLOpening {
         options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:],
         completionHandler completion: ((Bool) -> Void)? = nil
     ) {
+        Current.Log.verbose("Opening URL: \(url.absoluteString)")
         UIApplication.shared.open(url, options: options, completionHandler: completion)
     }
 
@@ -64,6 +66,7 @@ final class URLOpener: URLOpening {
         if let url = destination.url {
             open(url, options: [:], completionHandler: completionHandler)
         } else {
+            Current.Log.error("Unable to open settings: destination \(destination)")
             completionHandler?(false)
         }
     }
