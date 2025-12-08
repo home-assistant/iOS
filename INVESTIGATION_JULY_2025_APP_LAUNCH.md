@@ -1,7 +1,7 @@
 # Root Cause Analysis: iPad App Self-Launching Issue
 
 ## Issue Report Date
-**July 26, 2024**
+**July 26, 2025**
 
 ## Problem Description
 Users reported that the Home Assistant iOS app on iPad was:

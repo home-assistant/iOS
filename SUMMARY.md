@@ -1,7 +1,7 @@
 # Summary: iPad App Self-Launching Issue Investigation
 
 ## Problem Statement
-On **July 26, 2024**, users reported that the Home Assistant iOS app was:
+On **July 26, 2025**, users reported that the Home Assistant iOS app was:
 1. Launching itself randomly on iPad
 2. Preventing users from leaving the app (app would quickly regain control)
 
@@ -76,4 +76,4 @@ The fix has been verified to:
 ## Recommendation
 ✅ **No action needed** - The fix is complete and already in the codebase.
 
-For detailed analysis, see: `INVESTIGATION_JULY_2024_APP_LAUNCH.md`
+For detailed analysis, see: `INVESTIGATION_JULY_2025_APP_LAUNCH.md`
