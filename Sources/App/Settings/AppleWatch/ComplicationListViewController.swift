@@ -116,8 +116,8 @@ class ComplicationListViewController: HAFormViewController {
                         allowMultiple: supportsMultipleComplications,
                         currentFamilies: currentFamilies
                     )
-                    editListViewController.onDismissCallback = { [weak self] _ in
-                        $0.dismiss(animated: true) {
+                    editListViewController.onDismissCallback = { [weak self] vc in
+                        vc.dismiss(animated: true) {
                             // Reload complications after adding
                             self?.reloadComplications()
                         }

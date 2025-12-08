@@ -116,12 +116,12 @@ public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord
         case isPublic
     }
 
-    enum RenderedValueType: Hashable {
+    public enum RenderedValueType: Hashable {
         case textArea(String)
         case gauge
         case ring
 
-        init?(stringValue: String) {
+        public init?(stringValue: String) {
             let values = stringValue.components(separatedBy: ",")
 
             guard values.count >= 1 else {
@@ -140,7 +140,7 @@ public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord
             }
         }
 
-        var stringValue: String {
+        public var stringValue: String {
             switch self {
             case let .textArea(value): return "textArea,\(value)"
             case .gauge: return "gauge"
@@ -244,9 +244,9 @@ public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord
                     Current.Log.warning("TextArea \(key) doesn't have a text color!")
                     continue
                 }
-                providers[key] = with(CLKSimpleTextProvider(text: text)) {
-                    $0.tintColor = UIColor(color)
-                }
+                let provider = CLKSimpleTextProvider(text: text)
+                provider.tintColor = UIColor(color)
+                providers[key] = provider
             }
         }
 
@@ -933,10 +933,10 @@ public struct WatchComplicationGRDB: Codable, FetchableRecord, PersistableRecord
             return template
         case .GraphicBezelCircularText:
             let template = CLKComplicationTemplateGraphicBezelCircularText()
+            let circularTemplate = CLKComplicationTemplateGraphicCircularImage()
             if let iconProvider = fullColorImageProvider {
-                template.circularTemplate = with(CLKComplicationTemplateGraphicCircularImage()) {
-                    $0.imageProvider = iconProvider
-                }
+                circularTemplate.imageProvider = iconProvider
+                template.circularTemplate = circularTemplate
             } else {
                 return nil
             }
@@ -1034,24 +1034,4 @@ extension WatchComplicationGRDB: ImmutableMappable {
     }
 }
 
-extension WatchComplicationGRDB: Mappable {
-    public func mapping(map: ObjectMapper.Map) {
-        var template = Template
-        var data = Data
-        var createdAt = createdAt
-        var family = Family
-        var identifier = identifier
-        var name = name
-        var isPublic = isPublic
-        var serverIdentifier = serverIdentifier
 
-        template >>> map["Template"]
-        data >>> map["Data"]
-        createdAt >>> (map["CreatedAt"], DateTransform())
-        family >>> map["Family"]
-        identifier >>> map["identifier"]
-        name >>> map["name"]
-        isPublic >>> map["IsPublic"]
-        serverIdentifier >>> map["serverIdentifier"]
-    }
-}

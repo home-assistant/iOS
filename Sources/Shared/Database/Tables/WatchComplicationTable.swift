@@ -39,9 +39,10 @@ final class WatchComplicationTable: DatabaseTableProtocol {
 
         try database.write { db in
             // Convert Realm complications to GRDB complications
-            let grdbComplications = realmComplications.map { WatchComplicationGRDB(from: $0) }
-            // Batch insert for better performance
-            try grdbComplications.forEach { try $0.insert(db) }
+            for realmComplication in realmComplications {
+                let grdbComplication = WatchComplicationGRDB(from: realmComplication)
+                try grdbComplication.insert(db)
+            }
         }
 
         Current.Log.info("Successfully migrated \(realmComplications.count) watch complications to GRDB")
