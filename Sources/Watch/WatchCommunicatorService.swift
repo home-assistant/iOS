@@ -54,7 +54,15 @@ final class WatchCommunicatorService {
         InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
             Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
 
-            guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
+            guard let self else { return }
+            
+            // Handle custom syncComplication message (paginated approach)
+            if message.identifier == "syncComplication" {
+                self.syncSingleComplication(message: message)
+                return
+            }
+            
+            guard let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
                 Current.Log
                     .error(
                         "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
@@ -151,6 +159,89 @@ final class WatchCommunicatorService {
     private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
         message.reply(.init(identifier: responseIdentifier))
+    }
+
+    /// Syncs a single complication to the watch by index (paginated approach with reply)
+    /// This avoids payload size limits by sending complications one at a time.
+    ///
+    /// Protocol:
+    /// 1. Watch sends "syncComplication" InteractiveImmediateMessage with {"index": N}
+    /// 2. Phone replies with complication data containing:
+    ///    - "complicationData": Data (JSON of the complication)
+    ///    - "hasMore": Bool (true if index+1 < total)
+    ///    - "index": Int (the index sent by watch)
+    ///    - "total": Int (total number of complications)
+    /// 3. Watch saves the complication and requests next if hasMore is true
+    ///
+    /// - Parameter message: The InteractiveImmediateMessage containing {"index": Int}
+    private func syncSingleComplication(message: InteractiveImmediateMessage) {
+        guard let index = message.content["index"] as? Int else {
+            Current.Log.error("syncComplication message missing 'index' parameter")
+            message.reply(.init(
+                identifier: "syncComplicationResponse",
+                content: [
+                    "error": "Missing index parameter",
+                    "hasMore": false,
+                    "index": -1,
+                    "total": 0
+                ]
+            ))
+            return
+        }
+        
+        Current.Log.info("Watch requested complication at index \(index)")
+        
+        let realm = Current.realm()
+        let complications = realm.objects(WatchComplication.self)
+        let total = complications.count
+        
+        // Validate index
+        guard index >= 0, index < total else {
+            Current.Log.error("Invalid complication index \(index) (total: \(total))")
+            message.reply(.init(
+                identifier: "syncComplicationResponse",
+                content: [
+                    "error": "Invalid index \(index), total is \(total)",
+                    "hasMore": false,
+                    "index": -1,
+                    "total": total
+                ]
+            ))
+            return
+        }
+        
+        let complication = complications[index]
+        
+        // Serialize this single complication
+        guard let complicationJSONString = complication.toJSONString(),
+              let complicationData = complicationJSONString.data(using: .utf8) else {
+            Current.Log.error("Failed to serialize complication at index \(index)")
+            message.reply(.init(
+                identifier: "syncComplicationResponse",
+                content: [
+                    "error": "Failed to serialize complication",
+                    "hasMore": false,
+                    "index": index,
+                    "total": total
+                ]
+            ))
+            return
+        }
+        
+        let hasMore = (index + 1) < total
+        
+        Current.Log.info("Sending complication \(index + 1) of \(total) to watch (hasMore: \(hasMore))")
+        
+        // Reply with complication data
+        message.reply(.init(
+            identifier: "syncComplicationResponse",
+            content: [
+                "complicationData": complicationData,
+                "hasMore": hasMore,
+                "index": index,
+                "total": total
+            ]
+        ))
     }
 
     private func magicItemPressed(message: InteractiveImmediateMessage) {

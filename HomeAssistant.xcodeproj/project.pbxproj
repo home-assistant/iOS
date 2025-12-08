@@ -924,6 +924,7 @@
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
+		42CD571C2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md in Resources */ = {isa = PBXBuildFile; fileRef = 42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -2607,6 +2608,7 @@
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
 		42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectView.swift; sourceTree = "<group>"; };
 		42CB330E2DAE530400491DCE /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
+		42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = COMPLICATION_SYNC_PROTOCOL.md; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
@@ -5438,6 +5440,7 @@
 				428830EA2C6E3A8D0012373D /* WatchHomeView.swift */,
 				428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */,
 				429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */,
+				42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -7635,6 +7638,7 @@
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
 				B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */,
 				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
+				42CD571C2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md in Resources */,
 				421BBC702E93A64B00745EC8 /* Interface.storyboard in Resources */,
 				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 			);
