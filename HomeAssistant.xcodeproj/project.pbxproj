@@ -928,6 +928,11 @@
 		42CD571E2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */; };
 		42CD57202EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */; };
 		42CD57212EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */; };
+		42CD57272EE73E2C0032D7C5 /* MIGRATION_NOTES.md in Resources */ = {isa = PBXBuildFile; fileRef = 42CD57262EE73E2C0032D7C5 /* MIGRATION_NOTES.md */; };
+		42CD57282EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */; };
+		42CD57292EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */; };
+		42CD572A2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */; };
+		42CD572B2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -2614,6 +2619,9 @@
 		42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = COMPLICATION_SYNC_PROTOCOL.md; sourceTree = "<group>"; };
 		42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationSyncMessages.swift; sourceTree = "<group>"; };
 		42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationSyncMessages.swift; sourceTree = "<group>"; };
+		42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWatchComplicationTable.swift; sourceTree = "<group>"; };
+		42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWatchComplication.swift; sourceTree = "<group>"; };
+		42CD57262EE73E2C0032D7C5 /* MIGRATION_NOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MIGRATION_NOTES.md; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
@@ -5447,6 +5455,9 @@
 				429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */,
 				42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */,
 				42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */,
+				42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */,
+				42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */,
+				42CD57262EE73E2C0032D7C5 /* MIGRATION_NOTES.md */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -7647,6 +7658,7 @@
 				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
 				42CD571C2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md in Resources */,
 				421BBC702E93A64B00745EC8 /* Interface.storyboard in Resources */,
+				42CD57272EE73E2C0032D7C5 /* MIGRATION_NOTES.md in Resources */,
 				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8842,6 +8854,7 @@
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
 				11B38EF0275C54A300205C7B /* FireEventIntentHandler.swift in Sources */,
+				42CD57292EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */,
 				1120C5852749C6350046C38B /* ServerProviding.swift in Sources */,
 				429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
@@ -8939,6 +8952,7 @@
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
+				42CD572B2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */,
 				427A7CE02EBDFB4200D17841 /* AppArea+Queries.swift in Sources */,
 				42E3B8B92D8AC63300F5D084 /* Float+HA.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
@@ -9192,6 +9206,7 @@
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
+				42CD57282EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */,
 				424151FC2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
 				11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */,
@@ -9311,6 +9326,7 @@
 				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
 				427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */,
+				42CD572A2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,

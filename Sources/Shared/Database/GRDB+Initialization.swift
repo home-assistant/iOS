@@ -52,6 +52,7 @@ public extension DatabaseQueue {
             AppPanelTable(),
             CustomWidgetTable(),
             AppAreaTable(),
+            AppWatchComplicationTable(),
         ]
     }
 
