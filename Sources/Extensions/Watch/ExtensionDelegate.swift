@@ -111,27 +111,39 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     // Triggered when a complication is tapped
     func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
-        let complication: WatchComplication?
+        let complication: AppWatchComplication?
 
         if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
            identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: identifier
-            )
+            // Fetch from GRDB instead of Realm
+            do {
+                complication = try Current.database().read { db in
+                    try AppWatchComplication.fetch(identifier: identifier, from: db)
+                }
+            } catch {
+                Current.Log.error("Failed to fetch complication from GRDB: \(error.localizedDescription)")
+                complication = nil
+            }
         } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
                   let clkFamily = date.complicationFamilyFromEncodedDate {
             let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: family.rawValue
-            )
+            // Fetch from GRDB using family rawValue as identifier
+            do {
+                complication = try Current.database().read { db in
+                    try AppWatchComplication.fetch(identifier: family.rawValue, from: db)
+                }
+            } catch {
+                Current.Log.error("Failed to fetch complication by family from GRDB: \(error.localizedDescription)")
+                complication = nil
+            }
         } else {
             complication = nil
         }
 
         if let complication {
-            Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
+            // Parse family from rawFamily string
+            let familyString = complication.rawFamily.isEmpty ? "unknown" : complication.rawFamily
+            Current.Log.info("launched for \(complication.identifier) of family \(familyString)")
         } else if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
                   identifier == AssistDefaultComplication.defaultComplicationId {
             NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
