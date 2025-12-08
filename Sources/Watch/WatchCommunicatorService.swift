@@ -55,13 +55,19 @@ final class WatchCommunicatorService {
             Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
 
             guard let self else { return }
-            
+
             // Handle custom syncComplication message (paginated approach)
-            if message.identifier == "syncComplication" {
-                self.syncSingleComplication(message: message)
+            if message.identifier == WatchComplicationSyncMessages.Identifier.syncComplication {
+                syncSingleComplication(message: message)
                 return
             }
-            
+
+            // Handle legacy syncComplications message (for backward compatibility)
+            if message.identifier == WatchComplicationSyncMessages.Identifier.syncComplications {
+                syncComplications(message: message)
+                return
+            }
+
             guard let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
                 Current.Log
                     .error(
@@ -175,72 +181,113 @@ final class WatchCommunicatorService {
     ///
     /// - Parameter message: The InteractiveImmediateMessage containing {"index": Int}
     private func syncSingleComplication(message: InteractiveImmediateMessage) {
-        guard let index = message.content["index"] as? Int else {
+        guard let index = message.content[WatchComplicationSyncMessages.ContentKey.index] as? Int else {
             Current.Log.error("syncComplication message missing 'index' parameter")
             message.reply(.init(
-                identifier: "syncComplicationResponse",
+                identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
                 content: [
-                    "error": "Missing index parameter",
-                    "hasMore": false,
-                    "index": -1,
-                    "total": 0
+                    WatchComplicationSyncMessages.ContentKey.error: "Missing index parameter",
+                    WatchComplicationSyncMessages.ContentKey.hasMore: false,
+                    WatchComplicationSyncMessages.ContentKey.index: -1,
+                    WatchComplicationSyncMessages.ContentKey.total: 0,
                 ]
             ))
             return
         }
-        
+
         Current.Log.info("Watch requested complication at index \(index)")
-        
+
         let realm = Current.realm()
         let complications = realm.objects(WatchComplication.self)
         let total = complications.count
-        
+
         // Validate index
         guard index >= 0, index < total else {
             Current.Log.error("Invalid complication index \(index) (total: \(total))")
             message.reply(.init(
-                identifier: "syncComplicationResponse",
+                identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
                 content: [
-                    "error": "Invalid index \(index), total is \(total)",
-                    "hasMore": false,
-                    "index": -1,
-                    "total": total
+                    WatchComplicationSyncMessages.ContentKey.error: "Invalid index \(index), total is \(total)",
+                    WatchComplicationSyncMessages.ContentKey.hasMore: false,
+                    WatchComplicationSyncMessages.ContentKey.index: -1,
+                    WatchComplicationSyncMessages.ContentKey.total: total,
                 ]
             ))
             return
         }
-        
+
         let complication = complications[index]
-        
+
         // Serialize this single complication
         guard let complicationJSONString = complication.toJSONString(),
               let complicationData = complicationJSONString.data(using: .utf8) else {
             Current.Log.error("Failed to serialize complication at index \(index)")
             message.reply(.init(
-                identifier: "syncComplicationResponse",
+                identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
                 content: [
-                    "error": "Failed to serialize complication",
-                    "hasMore": false,
-                    "index": index,
-                    "total": total
+                    WatchComplicationSyncMessages.ContentKey.error: "Failed to serialize complication",
+                    WatchComplicationSyncMessages.ContentKey.hasMore: false,
+                    WatchComplicationSyncMessages.ContentKey.index: index,
+                    WatchComplicationSyncMessages.ContentKey.total: total,
                 ]
             ))
             return
         }
-        
+
         let hasMore = (index + 1) < total
-        
+
         Current.Log.info("Sending complication \(index + 1) of \(total) to watch (hasMore: \(hasMore))")
-        
+
         // Reply with complication data
         message.reply(.init(
-            identifier: "syncComplicationResponse",
+            identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
             content: [
-                "complicationData": complicationData,
-                "hasMore": hasMore,
-                "index": index,
-                "total": total
+                WatchComplicationSyncMessages.ContentKey.complicationData: complicationData,
+                WatchComplicationSyncMessages.ContentKey.hasMore: hasMore,
+                WatchComplicationSyncMessages.ContentKey.index: index,
+                WatchComplicationSyncMessages.ContentKey.total: total,
             ]
+        ))
+    }
+
+    /// Legacy method for syncing all complications at once via Context
+    /// Kept for backward compatibility but may fail with large payloads
+    private func syncComplications(message: InteractiveImmediateMessage) {
+        Current.Log.info("Watch requested complications sync - fetching complications from phone database")
+
+        let realm = Current.realm()
+        let complications = realm.objects(WatchComplication.self)
+
+        Current.Log.info("Found \(complications.count) complications in phone database")
+
+        // Convert complications to JSON data, then send as Data type
+        // WatchConnectivity supports Data, but not arbitrary nested dictionaries with complex types
+        let complicationsArray = complications.compactMap { complication -> [String: Any]? in
+            complication.toJSON()
+        }
+
+        // Serialize the complications array to Data (JSON)
+        guard let complicationsData = try? JSONSerialization.data(withJSONObject: complicationsArray, options: []) else {
+            Current.Log.error("Failed to serialize complications to JSON data")
+            message.reply(.init(
+                identifier: "syncComplicationsResponse",
+                content: ["success": false, "error": "Failed to serialize complications"]
+            ))
+            return
+        }
+
+        Current.Log
+            .verbose("Serialized \(complications.count) complications to \(complicationsData.count) bytes of JSON data")
+
+        var contextContent: [String: Any] = [:]
+        // Include complications as Data (will be deserialized on watch side)
+        contextContent["complicationsData"] = complicationsData
+        Current.Log.info("Successfully sent \(complications.count) complications to watch via Context")
+
+        // Reply to acknowledge success
+        message.reply(.init(
+            identifier: "syncComplicationsResponse",
+            content: ["success": true, "count": complications.count]
         ))
     }
 

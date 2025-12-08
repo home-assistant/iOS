@@ -925,6 +925,9 @@
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CD571C2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md in Resources */ = {isa = PBXBuildFile; fileRef = 42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */; };
+		42CD571E2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */; };
+		42CD57202EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */; };
+		42CD57212EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -2609,6 +2612,8 @@
 		42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectView.swift; sourceTree = "<group>"; };
 		42CB330E2DAE530400491DCE /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
 		42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = COMPLICATION_SYNC_PROTOCOL.md; sourceTree = "<group>"; };
+		42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationSyncMessages.swift; sourceTree = "<group>"; };
+		42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationSyncMessages.swift; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
@@ -5441,6 +5446,7 @@
 				428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */,
 				429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */,
 				42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */,
+				42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -6400,6 +6406,7 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */,
 				4245DC022EBA42C3005E0E04 /* AreasService.swift */,
 				420CFC612D3F9C15009A94F3 /* Database */,
 				4278CB822D01F09400CFAAC9 /* AppGesture.swift */,
@@ -8993,6 +9000,7 @@
 				1121CD4D271295AD0071C2AA /* Style.swift in Sources */,
 				116570782702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
+				42CD57212EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */,
 				11F855DD24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
 				420CFC802D3F9D89009A94F3 /* DatabaseTables.swift in Sources */,
@@ -9088,6 +9096,7 @@
 				42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */,
 				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
 				42DF986D2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift in Sources */,
+				42CD571E2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift in Sources */,
 				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
 				42DF98692E93A1E000837EA2 /* DynamicNotificationController.swift in Sources */,
 				42DF98652E93A11000837EA2 /* HostingController.swift in Sources */,
@@ -9352,6 +9361,7 @@
 				420CFC6C2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */,
 				114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
 				118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
+				42CD57202EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */,
 				42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,

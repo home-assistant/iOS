@@ -52,7 +52,7 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         isLoading = true
-        
+
         // Request watch config via interactive message
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfig.rawValue,
@@ -60,117 +60,9 @@ final class WatchHomeViewModel: ObservableObject {
                 self?.handleMessageResponse(message)
             }
         ))
-        
-        // Request complications context sync from phone
-        // This initiates a paginated sync where complications are sent one at a time
-        // The phone will respond with each complication and a flag indicating if more are pending
-        Current.Log.info("Requesting complications sync from phone (paginated approach)")
-        requestNextComplication(index: 0)
-    }
-    
-    /// Requests a single complication from the phone by index
-    /// - Parameter index: The index of the complication to request (0-based)
-    ///
-    /// This implements a paginated sync protocol:
-    /// 1. Watch sends interactive request with index
-    /// 2. Phone responds with complication at that index + "hasMore" flag in reply
-    /// 3. If hasMore is true, watch requests next index
-    /// 4. Continues until hasMore is false or error occurs
-    private func requestNextComplication(index: Int) {
-        Current.Log.info("Requesting complication at index \(index)")
-        
-        Communicator.shared.send(.init(
-            identifier: "syncComplication",
-            content: ["index": index],
-            reply: { [weak self] replyMessage in
-                self?.handleComplicationResponse(replyMessage, requestedIndex: index)
-            }
-        ), errorHandler: { error in
-            Current.Log.error("Failed to send syncComplication request for index \(index): \(error)")
-        })
-    }
-    
-    /// Handles the response for a single complication request
-    /// - Parameters:
-    ///   - message: The reply message from the phone
-    ///   - requestedIndex: The index that was requested
-    private func handleComplicationResponse(_ message: ImmediateMessage, requestedIndex: Int) {
-        // Check for error
-        if let error = message.content["error"] as? String {
-            Current.Log.error("Received error for complication at index \(requestedIndex): \(error)")
-            return
-        }
-        
-        guard let complicationData = message.content["complicationData"] as? Data,
-              let hasMore = message.content["hasMore"] as? Bool,
-              let index = message.content["index"] as? Int,
-              let total = message.content["total"] as? Int else {
-            Current.Log.error("Invalid syncComplication response format")
-            return
-        }
-        
-        Current.Log.info("Received complication \(index + 1) of \(total) (hasMore: \(hasMore))")
-        
-        // Save the complication
-        saveComplicationToDatabase(complicationData, index: index, total: total)
-        
-        // Request next complication if more are pending
-        if hasMore {
-            Current.Log.verbose("More complications pending, requesting index \(index + 1)")
-            requestNextComplication(index: index + 1)
-        } else {
-            Current.Log.info("Complication sync complete! Received \(total) complications")
-            // Trigger complication reload
-            reloadComplications()
-        }
-    }
-    
-    /// Saves a single complication to the watch database
-    /// - Parameters:
-    ///   - complicationData: JSON data of the complication
-    ///   - index: The index of this complication
-    ///   - total: Total number of complications being synced
-    private func saveComplicationToDatabase(_ complicationData: Data, index: Int, total: Int) {
-        do {
-            guard let json = try JSONSerialization.jsonObject(with: complicationData, options: []) as? [String: Any] else {
-                Current.Log.error("Failed to deserialize complication JSON at index \(index)")
-                return
-            }
-            
-            guard let complication = try? WatchComplication(JSON: json) else {
-                Current.Log.error("Failed to create WatchComplication from JSON at index \(index)")
-                return
-            }
-            
-            Current.Log.verbose("Deserialized complication: \(complication.identifier)")
-            
-            // Save to Realm database
-            let realm = Current.realm()
-            realm.reentrantWrite {
-                // On first complication, clear existing ones
-                if index == 0 {
-                    Current.Log.info("Clearing existing complications from watch database")
-                    realm.delete(realm.objects(WatchComplication.self))
-                }
-                realm.add(complication, update: .all)
-            }
-            
-            Current.Log.info("Saved complication \(index + 1) of \(total) to watch database")
-        } catch {
-            Current.Log.error("Failed to save complication at index \(index): \(error.localizedDescription)")
-        }
-    }
-    
-    /// Triggers a reload of all complications on the watch
-    private func reloadComplications() {
-        CLKComplicationServer.sharedInstance().reloadComplicationDescriptors()
-        
-        if let activeComplications = CLKComplicationServer.sharedInstance().activeComplications {
-            Current.Log.info("Reloading \(activeComplications.count) active complications")
-            for complication in activeComplications {
-                CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
-            }
-        }
+
+        // Request complications sync from phone
+        requestComplicationsSync()
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
@@ -346,6 +238,123 @@ final class WatchHomeViewModel: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = ""
             self?.showError = false
+        }
+    }
+}
+
+// MARK: - Complication Sync
+
+extension WatchHomeViewModel {
+    /// Initiates the complication sync process from the phone
+    /// This starts a paginated sync where complications are sent one at a time
+    func requestComplicationsSync() {
+        Current.Log.info("Requesting complications sync from phone (paginated approach)")
+        requestNextComplication(index: 0)
+    }
+
+    /// Requests a single complication from the phone by index
+    /// - Parameter index: The index of the complication to request (0-based)
+    ///
+    /// This implements a paginated sync protocol:
+    /// 1. Watch sends interactive request with index
+    /// 2. Phone responds with complication at that index + "hasMore" flag in reply
+    /// 3. If hasMore is true, watch requests next index
+    /// 4. Continues until hasMore is false or error occurs
+    private func requestNextComplication(index: Int) {
+        Current.Log.info("Requesting complication at index \(index)")
+
+        Communicator.shared.send(.init(
+            identifier: WatchComplicationSyncMessages.Identifier.syncComplication,
+            content: [WatchComplicationSyncMessages.ContentKey.index: index],
+            reply: { [weak self] replyMessage in
+                self?.handleComplicationResponse(replyMessage, requestedIndex: index)
+            }
+        ), errorHandler: { error in
+            Current.Log.error("Failed to send syncComplication request for index \(index): \(error)")
+        })
+    }
+
+    /// Handles the response for a single complication request
+    /// - Parameters:
+    ///   - message: The reply message from the phone
+    ///   - requestedIndex: The index that was requested
+    private func handleComplicationResponse(_ message: ImmediateMessage, requestedIndex: Int) {
+        // Check for error
+        if let error = message.content[WatchComplicationSyncMessages.ContentKey.error] as? String {
+            Current.Log.error("Received error for complication at index \(requestedIndex): \(error)")
+            return
+        }
+
+        guard let complicationData = message
+            .content[WatchComplicationSyncMessages.ContentKey.complicationData] as? Data,
+            let hasMore = message.content[WatchComplicationSyncMessages.ContentKey.hasMore] as? Bool,
+            let index = message.content[WatchComplicationSyncMessages.ContentKey.index] as? Int,
+            let total = message.content[WatchComplicationSyncMessages.ContentKey.total] as? Int else {
+            Current.Log.error("Invalid syncComplication response format")
+            return
+        }
+
+        Current.Log.info("Received complication \(index + 1) of \(total) (hasMore: \(hasMore))")
+
+        // Save the complication
+        saveComplicationToDatabase(complicationData, index: index, total: total)
+
+        // Request next complication if more are pending
+        if hasMore {
+            Current.Log.verbose("More complications pending, requesting index \(index + 1)")
+            requestNextComplication(index: index + 1)
+        } else {
+            Current.Log.info("Complication sync complete! Received \(total) complications")
+            // Trigger complication reload
+            reloadComplications()
+        }
+    }
+
+    /// Saves a single complication to the watch database
+    /// - Parameters:
+    ///   - complicationData: JSON data of the complication
+    ///   - index: The index of this complication
+    ///   - total: Total number of complications being synced
+    private func saveComplicationToDatabase(_ complicationData: Data, index: Int, total: Int) {
+        do {
+            guard let json = try JSONSerialization.jsonObject(with: complicationData, options: []) as? [String: Any] else {
+                Current.Log.error("Failed to deserialize complication JSON at index \(index)")
+                return
+            }
+
+            guard let complication = try? WatchComplication(JSON: json) else {
+                Current.Log.error("Failed to create WatchComplication from JSON at index \(index)")
+                return
+            }
+
+            Current.Log.verbose("Deserialized complication: \(complication.identifier)")
+
+            // Save to Realm database
+            let realm = Current.realm()
+            realm.reentrantWrite {
+                // On first complication, clear existing ones
+                if index == 0 {
+                    Current.Log.info("Clearing existing complications from watch database")
+                    realm.delete(realm.objects(WatchComplication.self))
+                }
+                realm.add(complication, update: .all)
+            }
+
+            Current.Log.info("Saved complication \(index + 1) of \(total) to watch database")
+        } catch {
+            Current.Log.error("Failed to save complication at index \(index): \(error.localizedDescription)")
+        }
+    }
+
+    /// Triggers a reload of all complications on the watch
+    private func reloadComplications() {
+        CLKComplicationServer.sharedInstance().reloadComplicationDescriptors()
+
+        if let activeComplications = CLKComplicationServer.sharedInstance().activeComplications {
+            Current.Log.info("Reloading \(activeComplications.count) active complications")
+            for complication in activeComplications {
+                CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
+            }
         }
     }
 }
