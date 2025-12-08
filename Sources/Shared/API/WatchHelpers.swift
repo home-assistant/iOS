@@ -26,7 +26,6 @@ public extension HomeAssistantAPI {
 
         #if os(iOS)
         content[WatchContext.servers.rawValue] = Current.servers.restorableState()
-        content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"

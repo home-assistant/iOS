@@ -244,8 +244,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     private func updateContext(_ content: Content) {
-        let realm = Current.realm()
-
         // Enhanced logging to diagnose sync issues
         Current.Log.info("Received context update with keys: \(content.keys)")
 
@@ -255,59 +253,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         } else {
             Current.Log.verbose("No servers data in context")
         }
-
-        // Check for new serialized format (complicationsData as Data)
-        if let complicationsData = content["complicationsData"] as? Data {
-            Current.Log.info("Received complicationsData (\(complicationsData.count) bytes), deserializing...")
-
-            do {
-                // Deserialize JSON data to array of dictionaries
-                guard let complicationsDictionary = try JSONSerialization.jsonObject(
-                    with: complicationsData,
-                    options: []
-                ) as? [[String: Any]] else {
-                    Current.Log.error("Failed to deserialize complications data to array of dictionaries")
-                    return
-                }
-
-                let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
-
-                Current.Log
-                    .info(
-                        "Deserialized \(complications.count) complications from data: \(complications.map(\.identifier))"
-                    )
-
-                realm.reentrantWrite {
-                    realm.delete(realm.objects(WatchComplication.self))
-                    realm.add(complications, update: .all)
-                }
-
-                Current.Log.info("Successfully saved \(complications.count) complications to watch database")
-            } catch {
-                Current.Log.error("Failed to deserialize complications: \(error.localizedDescription)")
-            }
-        }
-        // Fallback: check for old format (complications as [[String: Any]])
-        else if let complicationsDictionary = content["complications"] as? [[String: Any]] {
-            let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
-
-            Current.Log
-                .info(
-                    "Updating \(complications.count) complications from context (legacy format): \(complications.map(\.identifier))"
-                )
-
-            realm.reentrantWrite {
-                realm.delete(realm.objects(WatchComplication.self))
-                realm.add(complications, update: .all)
-            }
-
-            Current.Log.info("Successfully saved \(complications.count) complications to watch database")
-        } else {
-            Current.Log.warning("No complications data in context - context may not be syncing from phone")
-            let existingCount = realm.objects(WatchComplication.self).count
-            Current.Log.info("Watch database currently has \(existingCount) complications")
-        }
-
         updateComplications()
     }
 
