@@ -30,7 +30,7 @@ public func scene<DelegateType: UIWindowSceneDelegate>(
         UIApplication.shared.requestSceneSessionActivation(
             active.session,
             userActivity: nil,
-            options: nil,  // ❌ No options, no requesting scene
+            options: nil,  // ❌ No options, not requesting scene
             errorHandler: nil
         )
         return .value(delegate)
@@ -72,7 +72,7 @@ if #available(iOS 17.0, *) {
     UIApplication.shared.requestSceneSessionActivation(
         active.session,
         userActivity: nil,
-        options: options,  // ✓ Now includes requesting scene
+        options: options,  // ✓ Now includes the requesting scene
         errorHandler: nil
     )
 }
