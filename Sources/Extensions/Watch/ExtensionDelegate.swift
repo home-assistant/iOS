@@ -259,12 +259,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // Enhanced logging to diagnose sync issues
         Current.Log.info("Received context update with keys: \(content.keys)")
 
-        if let servers = content["servers"] as? Data {
-            Current.servers.restoreState(servers)
-            Current.Log.info("Updated servers from context")
-        } else {
-            Current.Log.verbose("No servers data in context")
-        }
+        // Note: Servers are now synced via send/reply pattern
+        // See WatchHomeViewModel.requestServers() and WatchCommunicatorService.syncServers()
+
         updateComplications()
     }
 

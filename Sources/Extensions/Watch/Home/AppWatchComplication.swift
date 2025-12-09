@@ -152,3 +152,160 @@ public extension AppWatchComplication {
         try AppWatchComplication.deleteAll(database)
     }
 }
+
+// MARK: - watchOS Complication Support
+
+#if os(watchOS)
+import ClockKit
+import UIKit
+
+public extension AppWatchComplication {
+    /// Display name for the complication
+    var displayName: String {
+        name ?? template.style
+    }
+
+    /// Whether the complication should be shown on lock screen
+    /// Default to true since we don't store this yet
+    var isPublic: Bool {
+        // TODO: Add isPublic field to database schema if needed
+        true
+    }
+
+    /// The Family enum from rawFamily string
+    var family: ComplicationGroupMember {
+        ComplicationGroupMember(rawValue: rawFamily) ?? .modularSmall
+    }
+
+    /// The Template enum from rawTemplate string
+    var template: ComplicationTemplate {
+        ComplicationTemplate(rawValue: rawTemplate) ?? family.templates.first!
+    }
+
+    // MARK: - Rendered Values Support
+
+    /// Enum representing different types of renderable values in a complication
+    enum RenderedValueType: Hashable {
+        case textArea(String)
+        case gauge
+        case ring
+
+        init?(stringValue: String) {
+            let values = stringValue.components(separatedBy: ",")
+
+            guard values.count >= 1 else {
+                return nil
+            }
+
+            switch values[0] {
+            case "textArea" where values.count >= 2:
+                self = .textArea(values[1])
+            case "gauge":
+                self = .gauge
+            case "ring":
+                self = .ring
+            default:
+                return nil
+            }
+        }
+
+        var stringValue: String {
+            switch self {
+            case let .textArea(value): return "textArea,\(value)"
+            case .gauge: return "gauge"
+            case .ring: return "ring"
+            }
+        }
+    }
+
+    /// Returns the rendered values dictionary from server template rendering
+    func renderedValues() -> [RenderedValueType: Any] {
+        (complicationData["rendered"] as? [String: Any] ?? [:])
+            .compactMapKeys(RenderedValueType.init(stringValue:))
+    }
+
+    /// Updates the rendered values with response from server
+    /// - Parameter response: Dictionary of rendered template values from webhook
+    mutating func updateRenderedValues(from response: [String: Any]) {
+        complicationData["rendered"] = response
+    }
+
+    /// Returns the raw unrendered template strings that need server-side rendering
+    /// Used by webhook system to request template rendering from Home Assistant
+    func rawRendered() -> [String: String] {
+        var renders = [RenderedValueType: String]()
+
+        if let textAreas = complicationData["textAreas"] as? [String: [String: Any]], textAreas.isEmpty == false {
+            let toAdd = textAreas.compactMapValues { $0["text"] as? String }
+                .filter { $1.containsJinjaTemplate } // Note: Requires String extension from Shared module
+                .mapKeys { RenderedValueType.textArea($0) }
+            renders.merge(toAdd, uniquingKeysWith: { a, _ in a })
+        }
+
+        if let gaugeDict = complicationData["gauge"] as? [String: String],
+           let gauge = gaugeDict["gauge"], gauge.containsJinjaTemplate {
+            renders[.gauge] = gauge
+        }
+
+        if let ringDict = complicationData["ring"] as? [String: String],
+           let ringValue = ringDict["ring_value"], ringValue.containsJinjaTemplate {
+            renders[.ring] = ringValue
+        }
+
+        return renders.mapKeys { $0.stringValue }
+    }
+
+    /// Complication descriptor for ClockKit
+    var complicationDescriptor: CLKComplicationDescriptor {
+        CLKComplicationDescriptor(
+            identifier: identifier,
+            displayName: displayName,
+            supportedFamilies: [family.family]
+        )
+    }
+
+    /// Generate CLKComplicationTemplate for display
+    /// This delegates to the WatchComplication implementation temporarily
+    /// TODO: Port template generation logic directly to AppWatchComplication
+    func clkComplicationTemplate(family complicationFamily: CLKComplicationFamily) -> CLKComplicationTemplate? {
+        // For now, convert to WatchComplication to use existing template logic
+        // This is a temporary solution until we fully port the template generation
+        guard let watchComplication = try? WatchComplication(JSON: [
+            "identifier": identifier,
+            "serverIdentifier": serverIdentifier as Any,
+            "Family": rawFamily,
+            "Template": rawTemplate,
+            "Data": complicationData,
+            "CreatedAt": createdAt.timeIntervalSince1970,
+            "name": name as Any,
+            "IsPublic": true,
+        ]) else {
+            return nil
+        }
+
+        return watchComplication.CLKComplicationTemplate(family: complicationFamily)
+    }
+}
+
+// MARK: - Dictionary Helpers
+
+fileprivate extension Dictionary {
+    func mapKeys<T: Hashable>(_ transform: (Key) -> T) -> [T: Value] {
+        var result = [T: Value]()
+        for (key, value) in self {
+            result[transform(key)] = value
+        }
+        return result
+    }
+
+    func compactMapKeys<T: Hashable>(_ transform: (Key) -> T?) -> [T: Value] {
+        var result = [T: Value]()
+        for (key, value) in self {
+            if let newKey = transform(key) {
+                result[newKey] = value
+            }
+        }
+        return result
+    }
+}
+#endif

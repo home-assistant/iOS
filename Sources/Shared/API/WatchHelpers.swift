@@ -25,7 +25,8 @@ public extension HomeAssistantAPI {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
         #if os(iOS)
-        content[WatchContext.servers.rawValue] = Current.servers.restorableState()
+        // Note: Servers are now synced via send/reply pattern, not context
+        // See WatchHomeViewModel.requestServers() and WatchCommunicatorService.syncServers()
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
@@ -79,15 +80,15 @@ public extension HomeAssistantAPI {
             Current.Log.verbose("skipping complication updates; no paired watch")
             return .value(())
         }
-        
+
         // On iOS, use Realm (iPhone stores complications in Realm)
         let complications = Set(
             Current.realm().objects(WatchComplication.self)
                 .filter("serverIdentifier = %@", server.identifier.rawValue)
         )
-        
+
         #elseif os(watchOS)
-        
+
         // On watchOS, use GRDB instead of Realm
         let complications: Set<WatchComplication>
         do {
@@ -97,7 +98,7 @@ public extension HomeAssistantAPI {
                         complication.serverIdentifier == server.identifier.rawValue
                     }
             }
-            
+
             // Convert AppWatchComplication to WatchComplication
             complications = Set(grdbComplications.compactMap { appComplication in
                 try? WatchComplication(JSON: [
@@ -107,14 +108,14 @@ public extension HomeAssistantAPI {
                     "Template": appComplication.rawTemplate,
                     "Data": appComplication.complicationData, // Already a [String: Any]
                     "CreatedAt": appComplication.createdAt.timeIntervalSince1970,
-                    "name": appComplication.name as Any
+                    "name": appComplication.name as Any,
                 ])
             })
         } catch {
             Current.Log.error("Failed to fetch complications from GRDB: \(error.localizedDescription)")
             complications = Set()
         }
-        
+
         #endif
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {

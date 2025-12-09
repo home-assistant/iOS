@@ -81,6 +81,10 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
             case .watchConfig:
                 watchConfig(message: message)
+            case .syncServers:
+                syncServers(message: message)
+            case .renderTemplates:
+                renderTemplates(message: message)
             case .actionRowPressed:
                 actionRowPressed(message: message)
             case .pushAction:
@@ -165,6 +169,145 @@ final class WatchCommunicatorService {
     private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
         message.reply(.init(identifier: responseIdentifier))
+    }
+
+    /// Syncs server configuration to the watch via send/reply pattern
+    ///
+    /// This method handles requests from the watch for server configuration data.
+    /// It serializes the current server state and sends it back via a reply message.
+    ///
+    /// Protocol:
+    /// 1. Watch sends "syncServers" InteractiveImmediateMessage
+    /// 2. Phone replies with "syncServersResponse" containing server data
+    /// 3. Watch restores servers from the data (same as ExtensionDelegate.updateContext does)
+    ///
+    /// - Parameter message: The InteractiveImmediateMessage requesting servers
+    private func syncServers(message: InteractiveImmediateMessage) {
+        Current.Log.info("Watch requested servers sync")
+
+        let serversData = Current.servers.restorableState()
+
+        Current.Log.info("Sending \(serversData.count) bytes of server data to watch")
+
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.syncServersResponse.rawValue,
+            content: ["servers": serversData]
+        ))
+    }
+
+    /// Renders Jinja2 templates on behalf of the watch
+    ///
+    /// This method handles template rendering requests from watch complications.
+    /// The iPhone is better positioned to render templates because:
+    /// - Better network connectivity to Home Assistant
+    /// - More processing power
+    /// - Can handle longer timeouts without blocking the UI
+    ///
+    /// Protocol:
+    /// 1. Watch sends "renderTemplates" message with templates dictionary and server ID
+    /// 2. iPhone renders templates via Home Assistant API
+    /// 3. iPhone replies with rendered values or error
+    ///
+    /// - Parameter message: The InteractiveImmediateMessage containing:
+    ///   - "templates": [String: String] - Dictionary of template keys to template strings
+    ///   - "serverIdentifier": String - Server identifier to use for rendering
+    private func renderTemplates(message: InteractiveImmediateMessage) {
+        guard let templatesDict = message.content["templates"] as? [String: String],
+              let serverIdentifier = message.content["serverIdentifier"] as? String else {
+            Current.Log.error("Invalid renderTemplates request - missing templates or serverIdentifier")
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                content: ["error": "Missing required parameters"]
+            ))
+            return
+        }
+
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverIdentifier }),
+              let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available for server \(serverIdentifier)")
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                content: ["error": "No API available for server"]
+            ))
+            return
+        }
+
+        Current.Log.info("Rendering \(templatesDict.count) templates for server \(serverIdentifier)")
+
+        // Create a combined template string with keys as markers
+        // Format: "key1:::{{template1}}|||key2:::{{template2}}|||..."
+        let combinedTemplate = templatesDict
+            .map { key, template in "\(key):::\(template)" }
+            .joined(separator: "|||")
+
+        // Send render request to Home Assistant
+        connection.send(.init(
+            type: .rest(.post, "template"),
+            data: ["template": combinedTemplate],
+            shouldRetry: true
+        )) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case let .success(data):
+                // Parse the response
+                var renderedResults: [String: Any] = [:]
+
+                switch data {
+                case let .primitive(response):
+                    if let renderedString = response as? String {
+                        // Split the response back into individual results
+                        let parts = renderedString.components(separatedBy: "|||")
+
+                        for part in parts {
+                            let keyValue = part.components(separatedBy: ":::")
+                            if keyValue.count == 2 {
+                                let key = keyValue[0]
+                                let value = keyValue[1]
+                                renderedResults[key] = value
+                            }
+                        }
+
+                        if renderedResults.count == templatesDict.count {
+                            Current.Log.info("Successfully rendered \(renderedResults.count) templates")
+                            message.reply(.init(
+                                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                                content: ["rendered": renderedResults]
+                            ))
+                        } else {
+                            Current.Log
+                                .error(
+                                    "Rendered count mismatch: expected \(templatesDict.count), got \(renderedResults.count)"
+                                )
+                            message.reply(.init(
+                                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                                content: ["error": "Rendered count mismatch"]
+                            ))
+                        }
+                    } else {
+                        Current.Log.error("Template rendering returned non-string response")
+                        message.reply(.init(
+                            identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                            content: ["error": "Invalid response format"]
+                        ))
+                    }
+
+                default:
+                    Current.Log.error("Template rendering returned unexpected data type")
+                    message.reply(.init(
+                        identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                        content: ["error": "Unexpected response data type"]
+                    ))
+                }
+
+            case let .failure(error):
+                Current.Log.error("Failed to render templates: \(error)")
+                message.reply(.init(
+                    identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                    content: ["error": error.localizedDescription]
+                ))
+            }
+        }
     }
 
     /// Syncs a single complication to the watch by index (paginated approach with reply)

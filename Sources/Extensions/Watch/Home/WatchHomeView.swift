@@ -189,6 +189,7 @@ struct WatchHomeView: View {
         VStack(spacing: .zero) {
             appVersion
             complicationCount
+            serversCount
             ssidLabel
         }
         .listRowBackground(Color.clear)
@@ -204,9 +205,17 @@ struct WatchHomeView: View {
         .listRowBackground(Color.clear)
         .foregroundStyle(.secondary)
     }
-    
+
     private var complicationCount: some View {
         Text(verbatim: "Complications: \(viewModel.complicationCount)")
+            .font(DesignSystem.Font.caption3)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .listRowBackground(Color.clear)
+            .foregroundStyle(.secondary)
+    }
+
+    private var serversCount: some View {
+        Text(verbatim: "Servers: \(viewModel.serversCount)")
             .font(DesignSystem.Font.caption3)
             .frame(maxWidth: .infinity, alignment: .center)
             .listRowBackground(Color.clear)

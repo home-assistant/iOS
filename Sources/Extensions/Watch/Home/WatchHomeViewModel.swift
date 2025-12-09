@@ -1,12 +1,11 @@
 import ClockKit
-import WidgetKit
-import ClockKit
 import Communicator
 import Foundation
 import GRDB
 import NetworkExtension
 import PromiseKit
 import Shared
+import WidgetKit
 
 enum WatchHomeType {
     case undefined
@@ -29,11 +28,12 @@ final class WatchHomeViewModel: ObservableObject {
     // If the watchConfig items are the same but it's customization properties
     // are different, the list won't refresh. This is a workaround to force a refresh
     @Published var refreshListID: UUID = .init()
-    
+
     @Published var complicationCount: Int = 0
-    
+    @Published var serversCount: Int = 0
+
     private var complicationCountObservation: AnyDatabaseCancellable?
-    
+
     init() {
         setupComplicationObservation()
     }
@@ -44,7 +44,7 @@ final class WatchHomeViewModel: ObservableObject {
         WatchUserDefaults.shared.set(networkInformation?.ssid, key: .watchSSID)
         currentSSID = networkInformation?.ssid ?? ""
     }
-    
+
     @MainActor
     func fetchComplicationCount() {
         do {
@@ -58,14 +58,14 @@ final class WatchHomeViewModel: ObservableObject {
             complicationCount = 0
         }
     }
-    
+
     /// Sets up database observation for AppWatchComplication changes
     /// Automatically updates complicationCount when complications are added/removed
     private func setupComplicationObservation() {
         let observation = ValueObservation.tracking { db in
             try AppWatchComplication.fetchCount(db)
         }
-        
+
         complicationCountObservation = observation.start(
             in: Current.database(),
             scheduling: .immediate,
@@ -86,6 +86,13 @@ final class WatchHomeViewModel: ObservableObject {
         // First display whatever is in cache
         loadCache()
         // Complication count is now automatically observed via setupComplicationObservation()
+
+        // Set initial servers count from current state
+        serversCount = Current.servers.all.count
+
+        // Request servers from phone
+        requestServers()
+
         // Now fetch new data in the background (shows loading indicator only for this fetch)
         isLoading = true
         requestConfig()
@@ -111,6 +118,59 @@ final class WatchHomeViewModel: ObservableObject {
 
         // Request complications sync from phone
         requestComplicationsSync()
+    }
+
+    /// Requests server configuration from the iPhone
+    ///
+    /// This method implements the send/reply pattern for syncing servers from iPhone to Watch.
+    /// It replaces the legacy context-based sync to avoid payload size limits.
+    ///
+    /// Flow:
+    /// 1. Watch sends "syncServers" message to iPhone
+    /// 2. iPhone replies with server data
+    /// 3. Watch restores servers from data (same as ExtensionDelegate.updateContext)
+    @MainActor
+    func requestServers() {
+        guard Communicator.shared.currentReachability != .notReachable else {
+            Current.Log.warning("Cannot sync servers - iPhone not reachable")
+            return
+        }
+
+        Current.Log.info("Requesting servers from iPhone")
+
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.syncServers.rawValue,
+            reply: { [weak self] message in
+                self?.handleServersResponse(message)
+            }
+        ), errorHandler: { error in
+            Current.Log.error("Failed to request servers from iPhone: \(error)")
+        })
+    }
+
+    /// Handles the server sync response from the iPhone
+    /// - Parameter message: Reply message containing server data
+    @MainActor
+    private func handleServersResponse(_ message: ImmediateMessage) {
+        guard message.identifier == InteractiveImmediateResponses.syncServersResponse.rawValue else {
+            Current.Log.error("Received unexpected response identifier for servers: \(message.identifier)")
+            return
+        }
+
+        guard let serversData = message.content["servers"] as? Data else {
+            Current.Log.error("No servers data in syncServers response")
+            return
+        }
+
+        Current.Log.info("Received \(serversData.count) bytes of server data from iPhone")
+
+        // Restore servers - same logic as ExtensionDelegate.updateContext
+        Current.servers.restoreState(serversData)
+
+        // Update servers count
+        serversCount = Current.servers.all.count
+
+        Current.Log.info("Successfully restored \(serversCount) servers on watch")
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
@@ -367,7 +427,7 @@ extension WatchHomeViewModel {
         do {
             // Convert JSON data to AppWatchComplication
             let complication = try AppWatchComplication.from(jsonData: complicationData)
-            
+
             Current.Log.verbose("Deserialized complication: \(complication.identifier)")
 
             // Save to GRDB database
@@ -377,7 +437,7 @@ extension WatchHomeViewModel {
                     Current.Log.info("Clearing existing complications from watch GRDB database")
                     try AppWatchComplication.deleteAll(from: db)
                 }
-                
+
                 // Insert or replace the complication
                 try complication.insert(db, onConflict: .replace)
             }
@@ -402,7 +462,7 @@ extension WatchHomeViewModel {
                 CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
             }
         }
-        
+
         // Complication count will be automatically updated via database observation
     }
 }
