@@ -328,7 +328,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #if DEBUG
         let timeoutSeconds: TimeInterval = 32.0
         #else
-        let timeoutSeconds: TimeInterval = 2.0
+        let timeoutSeconds: TimeInterval = 10.0
         #endif
 
         var hasCompleted = false
