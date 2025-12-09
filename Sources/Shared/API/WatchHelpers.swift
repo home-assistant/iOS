@@ -79,12 +79,43 @@ public extension HomeAssistantAPI {
             Current.Log.verbose("skipping complication updates; no paired watch")
             return .value(())
         }
-        #endif
-
+        
+        // On iOS, use Realm (iPhone stores complications in Realm)
         let complications = Set(
             Current.realm().objects(WatchComplication.self)
                 .filter("serverIdentifier = %@", server.identifier.rawValue)
         )
+        
+        #elseif os(watchOS)
+        
+        // On watchOS, use GRDB instead of Realm
+        let complications: Set<WatchComplication>
+        do {
+            let grdbComplications = try Current.database().read { db in
+                try AppWatchComplication.fetchAll(from: db)
+                    .filter { complication in
+                        complication.serverIdentifier == server.identifier.rawValue
+                    }
+            }
+            
+            // Convert AppWatchComplication to WatchComplication
+            complications = Set(grdbComplications.compactMap { appComplication in
+                try? WatchComplication(JSON: [
+                    "identifier": appComplication.identifier,
+                    "serverIdentifier": appComplication.serverIdentifier as Any,
+                    "Family": appComplication.rawFamily,
+                    "Template": appComplication.rawTemplate,
+                    "Data": appComplication.complicationData, // Already a [String: Any]
+                    "CreatedAt": appComplication.createdAt.timeIntervalSince1970,
+                    "name": appComplication.name as Any
+                ])
+            })
+        } catch {
+            Current.Log.error("Failed to fetch complications from GRDB: \(error.localizedDescription)")
+            complications = Set()
+        }
+        
+        #endif
 
         guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
             Current.Log.verbose("no complications need templates rendered")

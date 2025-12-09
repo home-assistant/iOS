@@ -1,4 +1,6 @@
 import ClockKit
+import WidgetKit
+import ClockKit
 import Communicator
 import Foundation
 import GRDB
@@ -27,13 +29,11 @@ final class WatchHomeViewModel: ObservableObject {
     // If the watchConfig items are the same but it's customization properties
     // are different, the list won't refresh. This is a workaround to force a refresh
     @Published var refreshListID: UUID = .init()
-
+    
     @Published var complicationCount: Int = 0
-    @Published var isSyncingComplications: Bool = false
-    @Published var complicationSyncProgress: Double = 0.0 // 0.0 to 1.0
-
+    
     private var complicationCountObservation: AnyDatabaseCancellable?
-
+    
     init() {
         setupComplicationObservation()
     }
@@ -44,7 +44,7 @@ final class WatchHomeViewModel: ObservableObject {
         WatchUserDefaults.shared.set(networkInformation?.ssid, key: .watchSSID)
         currentSSID = networkInformation?.ssid ?? ""
     }
-
+    
     @MainActor
     func fetchComplicationCount() {
         do {
@@ -58,14 +58,14 @@ final class WatchHomeViewModel: ObservableObject {
             complicationCount = 0
         }
     }
-
+    
     /// Sets up database observation for AppWatchComplication changes
     /// Automatically updates complicationCount when complications are added/removed
     private func setupComplicationObservation() {
         let observation = ValueObservation.tracking { db in
             try AppWatchComplication.fetchCount(db)
         }
-
+        
         complicationCountObservation = observation.start(
             in: Current.database(),
             scheduling: .immediate,
@@ -297,10 +297,6 @@ extension WatchHomeViewModel {
     /// This starts a paginated sync where complications are sent one at a time
     func requestComplicationsSync() {
         Current.Log.info("Requesting complications sync from phone (paginated approach)")
-        Task { @MainActor in
-            isSyncingComplications = true
-            complicationSyncProgress = 0.0
-        }
         requestNextComplication(index: 0)
     }
 
@@ -321,11 +317,8 @@ extension WatchHomeViewModel {
             reply: { [weak self] replyMessage in
                 self?.handleComplicationResponse(replyMessage, requestedIndex: index)
             }
-        ), errorHandler: { [weak self] error in
+        ), errorHandler: { error in
             Current.Log.error("Failed to send syncComplication request for index \(index): \(error)")
-            Task { @MainActor in
-                self?.isSyncingComplications = false
-            }
         })
     }
 
@@ -337,9 +330,6 @@ extension WatchHomeViewModel {
         // Check for error
         if let error = message.content[WatchComplicationSyncMessages.ContentKey.error] as? String {
             Current.Log.error("Received error for complication at index \(requestedIndex): \(error)")
-            Task { @MainActor in
-                isSyncingComplications = false
-            }
             return
         }
 
@@ -349,20 +339,10 @@ extension WatchHomeViewModel {
             let index = message.content[WatchComplicationSyncMessages.ContentKey.index] as? Int,
             let total = message.content[WatchComplicationSyncMessages.ContentKey.total] as? Int else {
             Current.Log.error("Invalid syncComplication response format")
-            Task { @MainActor in
-                isSyncingComplications = false
-            }
             return
         }
 
         Current.Log.info("Received complication \(index + 1) of \(total) (hasMore: \(hasMore))")
-
-        // Update progress
-        Task { @MainActor in
-            if total > 0 {
-                complicationSyncProgress = Double(index + 1) / Double(total)
-            }
-        }
 
         // Save the complication
         saveComplicationToDatabase(complicationData, index: index, total: total)
@@ -375,11 +355,6 @@ extension WatchHomeViewModel {
             Current.Log.info("Complication sync complete! Received \(total) complications")
             // Trigger complication reload
             reloadComplications()
-            // Mark sync as complete
-            Task { @MainActor in
-                isSyncingComplications = false
-                complicationSyncProgress = 1.0
-            }
         }
     }
 
@@ -392,7 +367,7 @@ extension WatchHomeViewModel {
         do {
             // Convert JSON data to AppWatchComplication
             let complication = try AppWatchComplication.from(jsonData: complicationData)
-
+            
             Current.Log.verbose("Deserialized complication: \(complication.identifier)")
 
             // Save to GRDB database
@@ -402,7 +377,7 @@ extension WatchHomeViewModel {
                     Current.Log.info("Clearing existing complications from watch GRDB database")
                     try AppWatchComplication.deleteAll(from: db)
                 }
-
+                
                 // Insert or replace the complication
                 try complication.insert(db, onConflict: .replace)
             }
@@ -415,6 +390,10 @@ extension WatchHomeViewModel {
 
     /// Triggers a reload of all complications on the watch
     private func reloadComplications() {
+        if #available(watchOS 9.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+
         CLKComplicationServer.sharedInstance().reloadComplicationDescriptors()
 
         if let activeComplications = CLKComplicationServer.sharedInstance().activeComplications {
@@ -423,7 +402,7 @@ extension WatchHomeViewModel {
                 CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
             }
         }
-
+        
         // Complication count will be automatically updated via database observation
     }
 }

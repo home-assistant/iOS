@@ -1,5 +1,4 @@
 import ClockKit
-import RealmSwift
 import Shared
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
@@ -7,29 +6,50 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // https://github.com/LoopKit/Loop/issues/816
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
 
-    private func complicationModel(for complication: CLKComplication) -> WatchComplication? {
+    private func complicationModel(for complication: CLKComplication) -> AppWatchComplication? {
         // Helper function to get a complication using the correct ID depending on watchOS version
 
-        let model: WatchComplication?
+        let model: AppWatchComplication?
 
-        if complication.identifier != CLKDefaultComplicationIdentifier {
-            // existing complications that were configured pre-7 have no identifier set
-            // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
-            model = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: complication.identifier
-            )
-        } else {
-            // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
-            // with the family as the identifier, so we can rely on this code path for older OS and older complications
-            let matchedFamily = ComplicationGroupMember(family: complication.family)
-            model = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: matchedFamily.rawValue
-            )
+        do {
+            if complication.identifier != CLKDefaultComplicationIdentifier {
+                // existing complications that were configured pre-7 have no identifier set
+                // so we can only access the value if it's a valid one. otherwise, fall back to old matching behavior.
+                
+                // Fetch from GRDB
+                model = try Current.database().read { db in
+                    try AppWatchComplication.fetch(identifier: complication.identifier, from: db)
+                }
+            } else {
+                // we migrate pre-existing complications, and when still using watchOS 6 create new ones,
+                // with the family as the identifier, so we can rely on this code path for older OS and older complications
+                let matchedFamily = ComplicationGroupMember(family: complication.family)
+                
+                // Fetch from GRDB using family rawValue
+                model = try Current.database().read { db in
+                    try AppWatchComplication.fetch(identifier: matchedFamily.rawValue, from: db)
+                }
+            }
+        } catch {
+            Current.Log.error("Failed to fetch complication from GRDB: \(error.localizedDescription)")
+            model = nil
         }
 
         return model
+    }
+    
+    /// Converts AppWatchComplication to WatchComplication for accessing business logic methods
+    private func toWatchComplication(_ appComplication: AppWatchComplication) -> WatchComplication? {
+        try? WatchComplication(JSON: [
+            "identifier": appComplication.identifier,
+            "serverIdentifier": appComplication.serverIdentifier as Any,
+            "Family": appComplication.rawFamily,
+            "Template": appComplication.rawTemplate,
+            "Data": appComplication.complicationData,
+            "CreatedAt": appComplication.createdAt.timeIntervalSince1970,
+            "name": appComplication.name as Any,
+            "IsPublic": true // Default value, can be added to AppWatchComplication if needed
+        ])
     }
 
     private func template(for complication: CLKComplication) -> CLKComplicationTemplate {
@@ -37,7 +57,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         let template: CLKComplicationTemplate
 
-        if let generated = complicationModel(for: complication)?.CLKComplicationTemplate(family: complication.family) {
+        if let appModel = complicationModel(for: complication),
+           let watchModel = toWatchComplication(appModel),
+           let generated = watchModel.CLKComplicationTemplate(family: complication.family) {
             template = generated
         } else if complication.identifier == AssistDefaultComplication.defaultComplicationId {
             template = AssistDefaultComplication.createAssistTemplate(for: complication.family)
@@ -59,11 +81,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         for complication: CLKComplication,
         withHandler handler: @escaping (CLKComplicationPrivacyBehavior) -> Void
     ) {
-        let model = complicationModel(for: complication)
-
-        if model?.IsPublic == false {
-            handler(.hideOnLockScreen)
+        if let appModel = complicationModel(for: complication),
+           let watchModel = toWatchComplication(appModel) {
+            if watchModel.IsPublic == false {
+                handler(.hideOnLockScreen)
+            } else {
+                handler(.showOnLockScreen)
+            }
         } else {
+            // Default to showing on lock screen if no model found
             handler(.showOnLockScreen)
         }
     }
@@ -94,8 +120,25 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // MARK: - Complication Descriptors
 
     func getComplicationDescriptors(handler: @escaping ([CLKComplicationDescriptor]) -> Void) {
-        let configured = Current.realm().objects(WatchComplication.self)
-            .map(\.complicationDescriptor)
+        // Fetch complications from GRDB
+        let configured: [CLKComplicationDescriptor]
+        do {
+            let appComplications = try Current.database().read { db in
+                try AppWatchComplication.fetchAll(from: db)
+            }
+            
+            // Convert to WatchComplication and map to descriptors
+            configured = appComplications.compactMap { appComplication in
+                guard let watchComplication = toWatchComplication(appComplication) else {
+                    Current.Log.error("Failed to convert AppWatchComplication to WatchComplication")
+                    return nil
+                }
+                return watchComplication.complicationDescriptor
+            }
+        } catch {
+            Current.Log.error("Failed to fetch complications from GRDB: \(error.localizedDescription)")
+            configured = []
+        }
 
         let placeholders = ComplicationGroupMember.allCases
             .map(\.placeholderComplicationDescriptor)
