@@ -174,10 +174,10 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         withHandler handler: @escaping (CLKComplicationPrivacyBehavior) -> Void
     ) {
         if let model = complicationModel(for: complication) {
-            if model.isPublic == false {
-                handler(.hideOnLockScreen)
-            } else {
+            if model.isPublic {
                 handler(.showOnLockScreen)
+            } else {
+                handler(.hideOnLockScreen)
             }
         } else {
             // Default to showing on lock screen if no model found
