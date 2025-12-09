@@ -95,5 +95,6 @@ public enum DatabaseTables {
         case complicationData
         case createdAt
         case name
+        case isPublic
     }
 }

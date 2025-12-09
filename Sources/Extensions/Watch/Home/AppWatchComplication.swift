@@ -11,6 +11,7 @@ public struct AppWatchComplication: Codable {
     public var complicationData: [String: Any]
     public var createdAt: Date
     public var name: String?
+    public var isPublic: Bool
 
     enum CodingKeys: String, CodingKey {
         case identifier
@@ -20,6 +21,7 @@ public struct AppWatchComplication: Codable {
         case complicationData
         case createdAt
         case name
+        case isPublic
     }
 
     public init(
@@ -29,7 +31,8 @@ public struct AppWatchComplication: Codable {
         rawTemplate: String,
         complicationData: [String: Any],
         createdAt: Date,
-        name: String?
+        name: String?,
+        isPublic: Bool = true
     ) {
         self.identifier = identifier
         self.serverIdentifier = serverIdentifier
@@ -38,6 +41,7 @@ public struct AppWatchComplication: Codable {
         self.complicationData = complicationData
         self.createdAt = createdAt
         self.name = name
+        self.isPublic = isPublic
     }
 
     // MARK: - Codable
@@ -50,6 +54,7 @@ public struct AppWatchComplication: Codable {
         self.rawTemplate = try container.decode(String.self, forKey: .rawTemplate)
         self.createdAt = try container.decode(Date.self, forKey: .createdAt)
         self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.isPublic = try container.decodeIfPresent(Bool.self, forKey: .isPublic) ?? true
 
         // Decode JSON string to dictionary
         let jsonString = try container.decode(String.self, forKey: .complicationData)
@@ -69,6 +74,7 @@ public struct AppWatchComplication: Codable {
         try container.encode(rawTemplate, forKey: .rawTemplate)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encodeIfPresent(name, forKey: .name)
+        try container.encode(isPublic, forKey: .isPublic)
 
         // Encode dictionary to JSON string for database storage
         let data = try JSONSerialization.data(withJSONObject: complicationData, options: [])
@@ -112,6 +118,7 @@ public extension AppWatchComplication {
         let rawTemplate = json["Template"] as? String ?? ""
         let name = json["name"] as? String
         let complicationData = json["Data"] as? [String: Any] ?? [:]
+        let isPublic = json["IsPublic"] as? Bool ?? true
 
         // Parse CreatedAt date
         let createdAt: Date
@@ -131,7 +138,8 @@ public extension AppWatchComplication {
             rawTemplate: rawTemplate,
             complicationData: complicationData,
             createdAt: createdAt,
-            name: name
+            name: name,
+            isPublic: isPublic
         )
     }
 
@@ -163,13 +171,6 @@ public extension AppWatchComplication {
     /// Display name for the complication
     var displayName: String {
         name ?? template.style
-    }
-
-    /// Whether the complication should be shown on lock screen
-    /// Default to true since we don't store this yet
-    var isPublic: Bool {
-        // TODO: Add isPublic field to database schema if needed
-        true
     }
 
     /// The Family enum from rawFamily string
@@ -278,7 +279,7 @@ public extension AppWatchComplication {
             "Data": complicationData,
             "CreatedAt": createdAt.timeIntervalSince1970,
             "name": name as Any,
-            "IsPublic": true,
+            "IsPublic": isPublic,
         ]) else {
             return nil
         }
