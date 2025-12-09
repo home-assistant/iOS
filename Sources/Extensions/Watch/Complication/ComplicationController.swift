@@ -215,9 +215,12 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     /// - Important: The system may adjust or ignore this date based on resources
     /// - SeeAlso: `getCurrentTimelineEntry(for:withHandler:)` which is called when update triggers
     func getNextRequestedUpdateDate(handler: @escaping (Date?) -> Void) {
+        #if DEBUG
+        let nextUpdate = Date(timeIntervalSinceNow: 60)
+        #else
         // Request update in 15 minutes - aligns with watchOS budget of ~4 updates per hour
         let nextUpdate = Date(timeIntervalSinceNow: 15 * 60)
-
+        #endif
         Current.Log.verbose("Scheduling next complication update for \(nextUpdate)")
 
         handler(nextUpdate)
