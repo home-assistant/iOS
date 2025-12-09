@@ -462,7 +462,5 @@ extension WatchHomeViewModel {
                 CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
             }
         }
-
-        // Complication count will be automatically updated via database observation
     }
 }

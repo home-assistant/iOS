@@ -34,8 +34,7 @@ import Shared
 /// - Important: Always provide fallback templates to prevent blank complications.
 ///
 /// ## Related Types
-/// - `AppWatchComplication`: GRDB data model for complications
-/// - `WatchComplication`: Realm model with template generation logic (used internally)
+/// - `AppWatchComplication`: GRDB data model for complications with template generation
 /// - `ComplicationGroupMember`: Family groupings for complications
 /// - `AssistDefaultComplication`: Special complication for launching Assist
 class ComplicationController: NSObject, CLKComplicationDataSource {
@@ -218,9 +217,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getNextRequestedUpdateDate(handler: @escaping (Date?) -> Void) {
         // Request update in 15 minutes - aligns with watchOS budget of ~4 updates per hour
         let nextUpdate = Date(timeIntervalSinceNow: 15 * 60)
-        
+
         Current.Log.verbose("Scheduling next complication update for \(nextUpdate)")
-        
+
         handler(nextUpdate)
     }
 

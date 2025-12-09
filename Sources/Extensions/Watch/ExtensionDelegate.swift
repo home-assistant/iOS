@@ -4,6 +4,7 @@ import PromiseKit
 import Shared
 import UserNotifications
 import WatchKit
+import WidgetKit
 import XCGLogger
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
@@ -72,14 +73,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             case let backgroundTask as WKApplicationRefreshBackgroundTask:
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKApplicationRefreshBackgroundTask received")
-
-                firstly {
-                    when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
-                }.ensureThen {
-                    Current.backgroundRefreshScheduler.schedule()
-                }.ensure {
-                    backgroundTask.setTaskCompletedWithSnapshot(false)
-                }.cauterize()
+                // No need to update complication here anymore since they render templates by themselves now
+                backgroundTask.setTaskCompletedWithSnapshot(false)
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
                 snapshotTask.setTaskCompleted(
@@ -268,18 +263,18 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     private var isUpdatingComplications = false
 
     private func updateComplications() {
-        // avoid double-updating due to e.g. complication info update request
-        guard !isUpdatingComplications else { return }
+        if #available(watchOS 9.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
 
-        isUpdatingComplications = true
+        CLKComplicationServer.sharedInstance().reloadComplicationDescriptors()
 
-        firstly {
-            when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
-        }.ensure { [self] in
-            isUpdatingComplications = false
-        }.ensure { [self] in
-            endWatchConnectivityBackgroundTaskIfNecessary()
-        }.cauterize()
+        if let activeComplications = CLKComplicationServer.sharedInstance().activeComplications {
+            Current.Log.info("Reloading \(activeComplications.count) active complications")
+            for complication in activeComplications {
+                CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
+            }
+        }
     }
 
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
