@@ -186,6 +186,44 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         }
     }
 
+    /// Schedules the next requested update date for complications
+    ///
+    /// This ClockKit delegate method tells the system when it should request fresh complication data.
+    /// By returning the soonest reasonable date, we maximize update frequency within watchOS constraints.
+    ///
+    /// ## Update Frequency Strategy
+    /// We request updates as frequently as possible to keep Home Assistant data fresh:
+    /// - **Current implementation**: Every 15 minutes (matches watchOS budget)
+    /// - **watchOS budget**: System limits background updates to ~4 per hour maximum
+    /// - **Actual frequency**: watchOS decides based on battery, usage, and our requests
+    ///
+    /// ## Why 15 Minutes?
+    /// - Aligns with watchOS budget of 4 updates/hour (60 minutes ÷ 4 = 15 minutes)
+    /// - Avoids wasting requests that would be ignored by the system
+    /// - Balances freshness with battery efficiency
+    /// - For complications with templates, this ensures rendered values stay reasonably current
+    /// - System may extend the interval if battery is low or watch face isn't active
+    ///
+    /// ## Real-Time Updates
+    /// This method handles scheduled updates. For immediate updates when data changes, use:
+    /// ```swift
+    /// CLKComplicationServer.sharedInstance().reloadActiveComplications()
+    /// ```
+    ///
+    /// - Parameter handler: Completion handler to call with the next update date
+    ///
+    /// - Note: Returning `nil` tells the system "no more updates needed"
+    /// - Important: The system may adjust or ignore this date based on resources
+    /// - SeeAlso: `getCurrentTimelineEntry(for:withHandler:)` which is called when update triggers
+    func getNextRequestedUpdateDate(handler: @escaping (Date?) -> Void) {
+        // Request update in 15 minutes - aligns with watchOS budget of ~4 updates per hour
+        let nextUpdate = Date(timeIntervalSinceNow: 15 * 60)
+        
+        Current.Log.verbose("Scheduling next complication update for \(nextUpdate)")
+        
+        handler(nextUpdate)
+    }
+
     // MARK: - Timeline Population
 
     /// Provides the current timeline entry for a complication
