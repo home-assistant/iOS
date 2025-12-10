@@ -67,7 +67,13 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
 
         for (server, values) in entities {
             // Fetch all areas for this server once and create a lookup map
-            let areas = (try? AppArea.fetchAreas(for: server.identifier.rawValue)) ?? []
+            let areas: [AppArea]
+            do {
+                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+            } catch {
+                Current.Log.error("Failed to fetch areas for entity query: \(error.localizedDescription)")
+                areas = []
+            }
             var entityToAreaMap: [String: String] = [:]
             for area in areas {
                 for entityId in area.entities {
