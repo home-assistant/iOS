@@ -29,6 +29,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
     @Published var controlsVisible: Bool = true
+    @Published var isMuted: Bool = false
 
     var hideControlsWorkItem: DispatchWorkItem?
 
@@ -47,6 +48,17 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         }
         hideControlsWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: workItem)
+    }
+
+    func toggleMute() {
+        guard let webRTCClient else { return }
+        if isMuted {
+            webRTCClient.unmuteAudio()
+            isMuted = false
+        } else {
+            webRTCClient.muteAudio()
+            isMuted = true
+        }
     }
 
     // MARK: - WebRTC

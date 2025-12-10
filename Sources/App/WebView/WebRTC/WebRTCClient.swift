@@ -34,6 +34,7 @@ final class WebRTCClient: NSObject {
     ]
     private var videoCapturer: RTCVideoCapturer?
     private var remoteVideoTrack: RTCVideoTrack?
+    private var remoteAudioTrack: RTCAudioTrack?
     private var remoteDataChannel: RTCDataChannel?
 
     @available(*, unavailable)
@@ -70,10 +71,7 @@ final class WebRTCClient: NSObject {
         self.peerConnection = peerConnection
         super.init()
         createMediaTracks()
-
-        // This is currently disable since the library does not offer a way to disable just the microphone usage.
-        // TODO: Find a workaround so audio can be receveid without using microphone in parallel
-        RTCAudioSession.sharedInstance().useManualAudio = true
+        configureAudioSession()
 
         self.peerConnection.delegate = self
     }
@@ -128,12 +126,44 @@ final class WebRTCClient: NSObject {
         remoteVideoTrack?.add(renderer)
     }
 
+    func muteAudio() {
+        remoteAudioTrack?.isEnabled = false
+    }
+
+    func unmuteAudio() {
+        remoteAudioTrack?.isEnabled = true
+    }
+
+    func isAudioMuted() -> Bool {
+        guard let remoteAudioTrack else { return true }
+        return !remoteAudioTrack.isEnabled
+    }
+
+    private func configureAudioSession() {
+        let audioSession = RTCAudioSession.sharedInstance()
+        audioSession.lockForConfiguration()
+        do {
+            // Configure for playback only (receive audio without microphone)
+            try audioSession.setCategory(AVAudioSession.Category.playback.rawValue)
+            try audioSession.setMode(AVAudioSession.Mode.spokenAudio.rawValue)
+            try audioSession.setActive(true)
+        } catch {
+            Current.Log.error("Failed to configure audio session: \(error.localizedDescription)")
+        }
+        audioSession.unlockForConfiguration()
+    }
+
     private func createMediaTracks() {
         let streamId = "stream"
         let videoTrack = createVideoTrack()
         peerConnection.add(videoTrack, streamIds: [streamId])
         remoteVideoTrack = peerConnection.transceivers.first { $0.mediaType == .video }?.receiver
             .track as? RTCVideoTrack
+
+        let audioTrack = createAudioTrack()
+        peerConnection.add(audioTrack, streamIds: [streamId])
+        remoteAudioTrack = peerConnection.transceivers.first { $0.mediaType == .audio }?.receiver
+            .track as? RTCAudioTrack
     }
 
     private func createVideoTrack() -> RTCVideoTrack {
@@ -147,6 +177,13 @@ final class WebRTCClient: NSObject {
 
         let videoTrack = WebRTCClient.factory.videoTrack(with: videoSource, trackId: "video0")
         return videoTrack
+    }
+
+    private func createAudioTrack() -> RTCAudioTrack {
+        let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
+        let audioSource = WebRTCClient.factory.audioSource(with: audioConstrains)
+        let audioTrack = WebRTCClient.factory.audioTrack(with: audioSource, trackId: "audio0")
+        return audioTrack
     }
 }
 
