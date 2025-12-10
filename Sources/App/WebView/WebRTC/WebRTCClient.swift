@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import Shared
 import WebRTC
@@ -180,8 +181,8 @@ final class WebRTCClient: NSObject {
     }
 
     private func createAudioTrack() -> RTCAudioTrack {
-        let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
-        let audioSource = WebRTCClient.factory.audioSource(with: audioConstrains)
+        let audioConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
+        let audioSource = WebRTCClient.factory.audioSource(with: audioConstraints)
         let audioTrack = WebRTCClient.factory.audioTrack(with: audioSource, trackId: "audio0")
         return audioTrack
     }
