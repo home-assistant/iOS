@@ -12,6 +12,8 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     weak var interfaceController: CPInterfaceController?
     var area: String?
 
+    private static let detailTextSeparator = " • "
+
     /// Whether the entity has a dynamic icon that changes based on state
     private var entityHasDynamicIcon: Bool {
         guard let entityDomain = Domain(entityId: entity.entityId) else { return false }
@@ -61,7 +63,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         if !entityHasIrrelevantState {
             var detailsText = ""
             if let area {
-                detailsText = area + " • "
+                detailsText = area + Self.detailTextSeparator
             }
             detailsText += entity.localizedState.leadingCapitalized
             if let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] {
