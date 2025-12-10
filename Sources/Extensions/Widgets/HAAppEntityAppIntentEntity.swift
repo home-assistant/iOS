@@ -50,7 +50,12 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         .init(sections: getEntities().map { (key: Server, value: [HAAppEntityAppIntentEntity]) in
             .init(
                 .init(stringLiteral: key.info.name),
-                items: value.filter({ $0.displayString.lowercased().contains(string.lowercased()) })
+                items: value.filter({ entity in
+                    let searchString = string.lowercased()
+                    return entity.displayString.lowercased().contains(searchString) ||
+                        entity.entityId.lowercased().contains(searchString) ||
+                        (entity.area?.lowercased().contains(searchString) ?? false)
+                })
             )
         })
     }
