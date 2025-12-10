@@ -18,11 +18,7 @@ struct HAAppEntityAppIntentEntity: AppEntity {
     var iconName: String
     var area: String?
     var displayRepresentation: DisplayRepresentation {
-        if let area {
-            DisplayRepresentation(title: "\(displayString)", subtitle: "\(area)")
-        } else {
-            DisplayRepresentation(title: "\(displayString)", subtitle: "\(entityId)")
-        }
+        DisplayRepresentation(title: "\(displayString)", subtitle: "\(area ?? entityId)")
     }
 
     init(
@@ -70,10 +66,11 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: []).getEntities(matching: string)
 
         for (server, values) in entities {
+            // Fetch all areas for this server once to avoid multiple database queries
+            let areas = (try? AppArea.fetchAreas(for: server.identifier.rawValue)) ?? []
+
             allEntities.append((server, values.map({ entity in
-                let area = try? AppArea
-                    .fetchAreas(containingEntity: entity.entityId, serverId: entity.serverId)
-                    .first?.name
+                let area = areas.first(where: { $0.entities.contains(entity.entityId) })?.name
                 return HAAppEntityAppIntentEntity(
                     id: entity.id,
                     entityId: entity.entityId,
