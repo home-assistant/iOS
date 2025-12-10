@@ -22,6 +22,15 @@ public struct ModalCloseButton: View {
             Image(systemSymbol: .xmark)
                 .resizable()
                 .frame(width: 16, height: 16)
+                .modify { view in
+                    if #available(iOS 26.0, *) {
+                        view
+                            .padding(DesignSystem.Spaces.oneAndHalf)
+                            .glassEffect(.clear.interactive(), in: .circle)
+                    } else {
+                        view
+                    }
+                }
         })
         .buttonStyle(.plain)
         .foregroundStyle(tint)
