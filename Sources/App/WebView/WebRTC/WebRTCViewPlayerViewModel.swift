@@ -29,7 +29,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     @Published var failureReason: String?
     @Published var showLoader: Bool = true
     @Published var controlsVisible: Bool = true
-    @Published var isMuted: Bool = false
+    @Published var isMuted: Bool = true
 
     var hideControlsWorkItem: DispatchWorkItem?
 
