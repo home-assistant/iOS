@@ -16,8 +16,9 @@ struct HAAppEntityAppIntentEntity: AppEntity {
     var serverName: String
     var displayString: String
     var iconName: String
+    var area: String?
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)", subtitle: "\(entityId)")
+        DisplayRepresentation(title: "\(displayString)", subtitle: "\(area ?? entityId)")
     }
 
     init(
@@ -26,7 +27,8 @@ struct HAAppEntityAppIntentEntity: AppEntity {
         serverId: String,
         serverName: String,
         displayString: String,
-        iconName: String
+        iconName: String,
+        area: String? = nil
     ) {
         self.id = id
         self.entityId = entityId
@@ -34,6 +36,7 @@ struct HAAppEntityAppIntentEntity: AppEntity {
         self.serverName = serverName
         self.displayString = displayString
         self.iconName = iconName
+        self.area = area
     }
 }
 
@@ -63,14 +66,31 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: []).getEntities(matching: string)
 
         for (server, values) in entities {
+            // Fetch all areas for this server once and create a lookup map
+            let areas: [AppArea]
+            do {
+                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+            } catch {
+                Current.Log.error("Failed to fetch areas for entity query: \(error.localizedDescription)")
+                areas = []
+            }
+            var entityToAreaMap: [String: String] = [:]
+            for area in areas {
+                for entityId in area.entities {
+                    entityToAreaMap[entityId] = area.name
+                }
+            }
+
             allEntities.append((server, values.map({ entity in
-                HAAppEntityAppIntentEntity(
+                let area = entityToAreaMap[entity.entityId]
+                return HAAppEntityAppIntentEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     displayString: entity.name,
-                    iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
+                    iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue,
+                    area: area
                 )
             })))
         }
