@@ -10,6 +10,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     let magicItemInfo: MagicItem.Info?
     var template: CPListItem
     weak var interfaceController: CPInterfaceController?
+    var area: String?
 
     /// Whether the entity has a dynamic icon that changes based on state
     private var entityHasDynamicIcon: Bool {
@@ -27,13 +28,15 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         serverId: String,
         entity: HAEntity,
         magicItem: MagicItem? = nil,
-        magicItemInfo: MagicItem.Info? = nil
+        magicItemInfo: MagicItem.Info? = nil,
+        area: String? = nil
     ) {
         self.template = CPListItem(text: nil, detailText: nil)
         self.entity = entity
         self.serverId = serverId
         self.magicItem = magicItem
         self.magicItemInfo = magicItemInfo
+        self.area = area
         update(serverId: serverId, entity: entity)
     }
 
@@ -56,7 +59,11 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         }
         template.setText(displayText)
         if !entityHasIrrelevantState {
-            var detailsText = entity.localizedState.leadingCapitalized
+            var detailsText = ""
+            if let area {
+                detailsText = area + " • "
+            }
+            detailsText += entity.localizedState.leadingCapitalized
             if let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] {
                 detailsText += " \(unitOfMeasurement)"
             }
