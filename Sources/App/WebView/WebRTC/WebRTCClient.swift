@@ -117,7 +117,9 @@ final class WebRTCClient: NSObject {
 
     func set(remoteSdp: RTCSessionDescription, completion: @escaping (Error?) -> Void) {
         peerConnection.setRemoteDescription(remoteSdp) { [weak self] error in
-            if error == nil {
+            if let error {
+                Current.Log.error("Failed to set remote description: \(error.localizedDescription)")
+            } else {
                 self?.setRemoteAudioTrack()
             }
             completion(error)
@@ -183,12 +185,16 @@ final class WebRTCClient: NSObject {
     }
 
     private func setRemoteAudioTrack() {
-        guard let audioTransceiver = peerConnection.transceivers.first(where: { $0.mediaType == .audio }),
-              let audioTrack = audioTransceiver.receiver.track as? RTCAudioTrack else {
-            Current.Log.warning("No remote audio track found")
+        guard let audioTransceiver = peerConnection.transceivers.first(where: { $0.mediaType == .audio }) else {
+            Current.Log.warning("No audio transceiver found")
+            return
+        }
+        guard let audioTrack = audioTransceiver.receiver.track as? RTCAudioTrack else {
+            Current.Log.warning("Remote track is not an RTCAudioTrack")
             return
         }
         remoteAudioTrack = audioTrack
+        Current.Log.info("Remote audio track set successfully")
     }
 }
 
