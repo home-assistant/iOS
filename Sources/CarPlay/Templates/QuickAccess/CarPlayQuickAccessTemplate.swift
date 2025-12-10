@@ -93,6 +93,24 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {
         entityProviders = []
+
+        // Build entity-to-area mapping for all servers
+        var entityToAreaMap: [String: String] = [:]
+        for server in Current.servers.all {
+            let areas: [AppArea]
+            do {
+                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+            } catch {
+                Current.Log.error("Failed to fetch areas for CarPlay quick access: \(error.localizedDescription)")
+                areas = []
+            }
+            for area in areas {
+                for entityId in area.entities {
+                    entityToAreaMap[entityId] = area.name
+                }
+            }
+        }
+
         let items: [CPListItem?] = items.compactMap { magicItem in
             let info = magicItemProvider.getInfo(for: magicItem) ?? .init(
                 id: magicItem.id,
@@ -107,11 +125,13 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                     Current.Log.error("Failed to create placeholder entity for magic item id: \(magicItem.id)")
                     return .init(text: "", detailText: "")
                 }
+                let area = entityToAreaMap[placeholderItem.entityId]
                 let entityProvider = CarPlayEntityListItem(
                     serverId: magicItem.serverId,
                     entity: placeholderItem,
                     magicItem: magicItem,
-                    magicItemInfo: info
+                    magicItemInfo: info,
+                    area: area
                 )
                 let listItem = entityProvider.template
                 listItem.handler = { [weak self] _, _ in
