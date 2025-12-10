@@ -66,11 +66,17 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: []).getEntities(matching: string)
 
         for (server, values) in entities {
-            // Fetch all areas for this server once to avoid multiple database queries
+            // Fetch all areas for this server once and create a lookup map
             let areas = (try? AppArea.fetchAreas(for: server.identifier.rawValue)) ?? []
+            var entityToAreaMap: [String: String] = [:]
+            for area in areas {
+                for entityId in area.entities {
+                    entityToAreaMap[entityId] = area.name
+                }
+            }
 
             allEntities.append((server, values.map({ entity in
-                let area = areas.first(where: { $0.entities.contains(entity.entityId) })?.name
+                let area = entityToAreaMap[entity.entityId]
                 return HAAppEntityAppIntentEntity(
                     id: entity.id,
                     entityId: entity.entityId,
