@@ -116,7 +116,12 @@ final class WebRTCClient: NSObject {
     }
 
     func set(remoteSdp: RTCSessionDescription, completion: @escaping (Error?) -> Void) {
-        peerConnection.setRemoteDescription(remoteSdp, completionHandler: completion)
+        peerConnection.setRemoteDescription(remoteSdp) { [weak self] error in
+            if error == nil {
+                self?.setRemoteAudioTrack()
+            }
+            completion(error)
+        }
     }
 
     func set(remoteCandidate: RTCIceCandidate, completion: @escaping (Error?) -> Void) {
@@ -160,11 +165,6 @@ final class WebRTCClient: NSObject {
         peerConnection.add(videoTrack, streamIds: [streamId])
         remoteVideoTrack = peerConnection.transceivers.first { $0.mediaType == .video }?.receiver
             .track as? RTCVideoTrack
-
-        let audioTrack = createAudioTrack()
-        peerConnection.add(audioTrack, streamIds: [streamId])
-        remoteAudioTrack = peerConnection.transceivers.first { $0.mediaType == .audio }?.receiver
-            .track as? RTCAudioTrack
     }
 
     private func createVideoTrack() -> RTCVideoTrack {
@@ -180,11 +180,9 @@ final class WebRTCClient: NSObject {
         return videoTrack
     }
 
-    private func createAudioTrack() -> RTCAudioTrack {
-        let audioConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
-        let audioSource = WebRTCClient.factory.audioSource(with: audioConstraints)
-        let audioTrack = WebRTCClient.factory.audioTrack(with: audioSource, trackId: "audio0")
-        return audioTrack
+    private func setRemoteAudioTrack() {
+        remoteAudioTrack = peerConnection.transceivers.first { $0.mediaType == .audio }?.receiver
+            .track as? RTCAudioTrack
     }
 }
 
