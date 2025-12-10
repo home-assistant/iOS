@@ -1,19 +1,18 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
 struct WebRTCVideoPlayerViewControls: View {
     let close: () -> Void
+    let isMuted: Bool
+    let toggleMute: () -> Void
 
-    // TODO: Include more player controls
     var body: some View {
         ZStack {
             VStack {
                 HStack {
                     Spacer()
-                    ModalCloseButton(tint: .white) {
-                        close()
-                    }
-                    .padding(16)
+                    topButtons
                 }
                 Spacer()
                 Text(L10n.WebRTCPlayer.Experimental.disclaimer)
@@ -33,10 +32,37 @@ struct WebRTCVideoPlayerViewControls: View {
             .opacity(0.5)
         )
     }
+
+    @ViewBuilder
+    private var topButtons: some View {
+        Button(action: toggleMute) {
+            Image(systemSymbol: isMuted ? .speakerSlashFill : .speakerWave3)
+                .resizable()
+                .frame(width: 16, height: 16)
+                .foregroundStyle(.white)
+                .padding(DesignSystem.Spaces.oneAndHalf)
+                .modify { view in
+                    if #available(iOS 26.0, *) {
+                        view.glassEffect(.clear.interactive(), in: .circle)
+                    } else {
+                        view
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
+                }
+        }
+        .buttonStyle(.plain)
+        ModalCloseButton(tint: .white) {
+            close()
+        }
+        .padding(16)
+    }
 }
 
 #Preview {
     WebRTCVideoPlayerViewControls(
-        close: {}
+        close: {},
+        isMuted: false,
+        toggleMute: {}
     )
 }

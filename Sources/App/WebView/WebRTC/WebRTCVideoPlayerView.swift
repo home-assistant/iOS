@@ -161,9 +161,11 @@ struct WebRTCVideoPlayerView: View {
     }
 
     private var controls: some View {
-        WebRTCVideoPlayerViewControls {
-            dismiss()
-        }
+        WebRTCVideoPlayerViewControls(
+            close: { dismiss() },
+            isMuted: viewModel.isMuted,
+            toggleMute: { viewModel.toggleMute() }
+        )
         .transition(.opacity)
         .animation(.easeInOut, value: viewModel.controlsVisible)
         .opacity(viewModel.controlsVisible || !isVideoPlaying ? 1.0 : 0.0)
