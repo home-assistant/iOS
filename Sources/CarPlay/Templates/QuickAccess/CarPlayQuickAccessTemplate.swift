@@ -1,5 +1,4 @@
 import CarPlay
-import CarPlay
 import Foundation
 import HAKit
 import PromiseKit
@@ -180,8 +179,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         currentItemState: String = ""
     ) {
         // Check if this is a lock entity - locks always require confirmation
-        let isLockEntity = magicItem.type == .entity && Domain(rawValue: magicItem.id.split(separator: ".").first.map(String.init) ?? "") == .lock
-        
+        let isLockEntity = magicItem
+            .type == .entity && Domain(rawValue: magicItem.id.split(separator: ".").first.map(String.init) ?? "") ==
+            .lock
+
         if isLockEntity {
             // For lock entities, show lock-specific confirmation
             showLockConfirmation(magicItem: magicItem, info: info, currentState: currentItemState) { [weak self] in

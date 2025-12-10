@@ -5,7 +5,7 @@ import PromiseKit
 import Shared
 
 @available(iOS 16.0, *)
-final class CarPlayLockConfirmation {
+enum CarPlayLockConfirmation {
     /// Displays a lock/unlock confirmation dialog appropriate for the entity's current state
     /// - Parameters:
     ///   - entityName: The friendly name of the lock entity
@@ -27,7 +27,7 @@ final class CarPlayLockConfirmation {
             )
             return
         }
-        
+
         let title: String
         switch state {
         case .locked, .locking:
@@ -48,7 +48,7 @@ final class CarPlayLockConfirmation {
 
         interfaceController?.presentTemplate(alert, animated: true, completion: nil)
     }
-    
+
     /// Execute a lock entity using entity.onPress approach
     /// This ensures consistent lock/unlock behavior across all CarPlay templates
     /// - Parameters:
@@ -87,7 +87,7 @@ final class CarPlayLockConfirmation {
             completion(false)
         }
     }
-    
+
     /// Shows a generic lock confirmation when state cannot be determined
     private static func showGenericConfirmation(
         entityName: String,
@@ -95,7 +95,7 @@ final class CarPlayLockConfirmation {
         completion: @escaping () -> Void
     ) {
         let title = L10n.CarPlay.Lock.Confirmation.title(entityName)
-        
+
         let alert = CPAlertTemplate(titleVariants: [title], actions: [
             .init(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { _ in
                 interfaceController?.dismissTemplate(animated: true, completion: nil)
