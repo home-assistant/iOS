@@ -93,7 +93,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
 
     private func listItems(items: [MagicItem]) -> [CPListItem] {
         entityProviders = []
-        
+
         // Build entity-to-area mapping for all servers
         var entityToAreaMap: [String: String] = [:]
         for server in Current.servers.all {
@@ -110,7 +110,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 }
             }
         }
-        
+
         let items: [CPListItem?] = items.compactMap { magicItem in
             let info = magicItemProvider.getInfo(for: magicItem) ?? .init(
                 id: magicItem.id,
