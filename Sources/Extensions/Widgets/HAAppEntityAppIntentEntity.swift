@@ -16,8 +16,13 @@ struct HAAppEntityAppIntentEntity: AppEntity {
     var serverName: String
     var displayString: String
     var iconName: String
+    var area: String?
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)", subtitle: "\(entityId)")
+        if let area {
+            DisplayRepresentation(title: "\(displayString)", subtitle: "\(area)")
+        } else {
+            DisplayRepresentation(title: "\(displayString)", subtitle: "\(entityId)")
+        }
     }
 
     init(
@@ -26,7 +31,8 @@ struct HAAppEntityAppIntentEntity: AppEntity {
         serverId: String,
         serverName: String,
         displayString: String,
-        iconName: String
+        iconName: String,
+        area: String? = nil
     ) {
         self.id = id
         self.entityId = entityId
@@ -34,6 +40,7 @@ struct HAAppEntityAppIntentEntity: AppEntity {
         self.serverName = serverName
         self.displayString = displayString
         self.iconName = iconName
+        self.area = area
     }
 }
 
@@ -64,13 +71,17 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
 
         for (server, values) in entities {
             allEntities.append((server, values.map({ entity in
-                HAAppEntityAppIntentEntity(
+                let area = try? AppArea
+                    .fetchAreas(containingEntity: entity.entityId, serverId: entity.serverId)
+                    .first?.name
+                return HAAppEntityAppIntentEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     displayString: entity.name,
-                    iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
+                    iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue,
+                    area: area
                 )
             })))
         }
