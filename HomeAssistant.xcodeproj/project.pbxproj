@@ -1034,6 +1034,8 @@
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42F68DAB2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md in Resources */ = {isa = PBXBuildFile; fileRef = 42F68DAA2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md */; };
+		42F68DAF2EE9BEE900639F48 /* ComplicationTemplateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F68DA62EE9BBC200639F48 /* ComplicationTemplateRenderer.swift */; };
 		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */; };
@@ -2704,6 +2706,8 @@
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
+		42F68DA62EE9BBC200639F48 /* ComplicationTemplateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationTemplateRenderer.swift; sourceTree = "<group>"; };
+		42F68DAA2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ARCHITECTURE_DIAGRAMS.md; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
@@ -4479,6 +4483,8 @@
 			children = (
 				423F451F2C19D88100766A99 /* Assist */,
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
+				42F68DA62EE9BBC200639F48 /* ComplicationTemplateRenderer.swift */,
+				42F68DAA2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md */,
 			);
 			path = Complication;
 			sourceTree = "<group>";
@@ -4609,6 +4615,7 @@
 		426266432C11B0070081A818 /* Watch */ = {
 			isa = PBXGroup;
 			children = (
+				42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */,
 				4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */,
 				426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */,
 				4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */,
@@ -6414,7 +6421,6 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */,
 				4245DC022EBA42C3005E0E04 /* AreasService.swift */,
 				420CFC612D3F9C15009A94F3 /* Database */,
 				4278CB822D01F09400CFAAC9 /* AppGesture.swift */,
@@ -7651,6 +7657,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
+				42F68DAB2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md in Resources */,
 				B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */,
 				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
 				42CD571C2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md in Resources */,
@@ -9100,6 +9107,7 @@
 				426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */,
 				4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */,
 				429764F62E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift in Sources */,
+				42F68DAF2EE9BEE900639F48 /* ComplicationTemplateRenderer.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,

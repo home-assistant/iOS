@@ -54,11 +54,11 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
 
             realm.add(config, update: .all)
         }.cauterize()
-            //.then(on: nil) { [server] in
+        // .then(on: nil) { [server] in
 //            Current.api(for: server)?
 //                .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            // TODO: Send send complication to watch so it can save on database
-        //}.cauterize()
+        // TODO: Send send complication to watch so it can save on database
+        // }.cauterize()
 
         onDismissCallback?(self)
     }
@@ -81,11 +81,11 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 realm.reentrantWrite {
                     realm.delete(config)
                 }.cauterize()
-                //.then(on: nil) {
+                // .then(on: nil) {
 //                    Current.api(for: server)?
 //                        .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-                    // TODO: Send send complication to watch so it can remove from database
-                //}.cauterize()
+                // TODO: Send send complication to watch so it can remove from database
+                // }.cauterize()
 
                 self.onDismissCallback?(self)
             }

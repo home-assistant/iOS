@@ -42,6 +42,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // https://github.com/LoopKit/Loop/issues/816
     // https://crunchybagel.com/detecting-which-complication-was-tapped/
 
+    private var renderers: [ComplicationTemplateRenderer] = []
+
     // MARK: - Private Helper Methods
 
     /// Fetches the complication model from GRDB database
@@ -287,110 +289,35 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
     /// Renders templates in real-time and provides the complication entry
     ///
-    /// This method:
-    /// 1. Extracts templates from the complication that need rendering
-    /// 2. Sends them to iPhone for rendering via send/reply message
-    /// 3. Updates the database with rendered values
-    /// 4. Generates and returns the updated template
-    ///
-    /// If rendering fails, it falls back to cached values.
+    /// This method delegates to the `ComplicationTemplateRenderer` from the environment which handles:
+    /// 1. Network synchronization
+    /// 2. API communication with Home Assistant
+    /// 3. Template parsing and database updates
+    /// 4. Error handling and fallbacks
     ///
     /// - Parameters:
     ///   - complication: The complication to render
     ///   - model: The complication model from database
     ///   - date: The date for the timeline entry
     ///   - handler: Completion handler to call with the entry
+    ///
+    /// - SeeAlso: `ComplicationTemplateRenderer` for implementation details
     private func renderTemplatesAndProvideEntry(
         for complication: CLKComplication,
         model: AppWatchComplication,
         date: Date,
         handler: @escaping (CLKComplicationTimelineEntry?) -> Void
     ) {
-        guard let serverIdentifier = model.serverIdentifier else {
-            Current.Log.warning("No server identifier for complication, using cached values")
-            handler(.init(date: date, complicationTemplate: template(for: complication)))
-            return
+        let renderer = ComplicationTemplateRenderer()
+        renderers.append(renderer)
+        renderer.renderAndProvideEntry(
+            for: complication,
+            model: model,
+            date: date
+        ) { [weak self] entry in
+            handler(entry)
+            self?.renderers.removeAll { $0 === renderer }
         }
-
-        // Check if iPhone is reachable
-        guard Communicator.shared.currentReachability != .notReachable else {
-            Current.Log.warning("iPhone not reachable, using cached template values")
-            handler(.init(date: date, complicationTemplate: template(for: complication)))
-            return
-        }
-
-        let rawTemplates = model.rawRendered()
-
-        #if DEBUG
-        let timeoutSeconds: TimeInterval = 32.0
-        #else
-        let timeoutSeconds: TimeInterval = 10.0
-        #endif
-
-        var hasCompleted = false
-
-        // Set a timeout fallback
-        DispatchQueue.main.asyncAfter(deadline: .now() + timeoutSeconds) { [weak self] in
-            guard let self else { return }
-            if !hasCompleted {
-                hasCompleted = true
-                Current.Log.warning("Template rendering timed out after \(timeoutSeconds)s, using cached values")
-                handler(.init(date: date, complicationTemplate: template(for: complication)))
-            }
-        }
-
-        Current.Log.info("Requesting template rendering from iPhone for complication \(complication.identifier)")
-
-        // Send render request to iPhone via Communicator
-        Communicator.shared.send(.init(
-            identifier: InteractiveImmediateMessages.renderTemplates.rawValue,
-            content: [
-                "templates": rawTemplates,
-                "serverIdentifier": serverIdentifier,
-            ],
-            reply: { [weak self] replyMessage in
-                guard let self else { return }
-                guard !hasCompleted else { return }
-                hasCompleted = true
-
-                // Check for error
-                if let error = replyMessage.content["error"] as? String {
-                    Current.Log.error("Template rendering failed: \(error), using cached values")
-                    handler(.init(date: date, complicationTemplate: template(for: complication)))
-                    return
-                }
-
-                // Extract rendered values
-                guard let renderedValues = replyMessage.content["rendered"] as? [String: Any] else {
-                    Current.Log.error("No rendered values in response, using cached values")
-                    handler(.init(date: date, complicationTemplate: template(for: complication)))
-                    return
-                }
-
-                Current.Log.info("Successfully received \(renderedValues.count) rendered templates from iPhone")
-
-                // Update the database with rendered values
-                do {
-                    try Current.database().write { db in
-                        var updatedModel = model
-                        updatedModel.updateRenderedValues(from: renderedValues)
-                        try updatedModel.update(db)
-                    }
-
-                    // Generate template with fresh rendered values
-                    handler(.init(date: date, complicationTemplate: template(for: complication)))
-                } catch {
-                    Current.Log.error("Failed to update complication with rendered values: \(error)")
-                    // Still try to provide the template with cached values
-                    handler(.init(date: date, complicationTemplate: template(for: complication)))
-                }
-            }
-        ), errorHandler: { error in
-            guard !hasCompleted else { return }
-            hasCompleted = true
-            Current.Log.error("Failed to send render request to iPhone: \(error), using cached values")
-            handler(.init(date: date, complicationTemplate: self.template(for: complication)))
-        })
     }
 
     // MARK: - Placeholder Templates
