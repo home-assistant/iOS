@@ -71,8 +71,24 @@ final class CarPlayEntitiesListViewModel {
     }
 
     func update() {
+        // Fetch all areas for this server once and create a lookup map
+        let areas: [AppArea]
+        do {
+            areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+        } catch {
+            Current.Log.error("Failed to fetch areas for CarPlay entities: \(error.localizedDescription)")
+            areas = []
+        }
+        var entityToAreaMap: [String: String] = [:]
+        for area in areas {
+            for entityId in area.entities {
+                entityToAreaMap[entityId] = area.name
+            }
+        }
+
         entityProviders = sortedEntities.map { entity in
-            CarPlayEntityListItem(serverId: server.identifier.rawValue, entity: entity)
+            let area = entityToAreaMap[entity.entityId]
+            return CarPlayEntityListItem(serverId: server.identifier.rawValue, entity: entity, area: area)
         }
 
         templateProvider?.updateItems(entityProviders: entityProviders)
