@@ -53,10 +53,12 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
             Current.Log.verbose("COMPLICATION \(config) \(config.Data)")
 
             realm.add(config, update: .all)
-        }.then(on: nil) { [server] in
-            Current.api(for: server)?
-                .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
         }.cauterize()
+            //.then(on: nil) { [server] in
+//            Current.api(for: server)?
+//                .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+            // TODO: Send send complication to watch so it can save on database
+        //}.cauterize()
 
         onDismissCallback?(self)
     }
@@ -78,10 +80,12 @@ class ComplicationEditViewController: HAFormViewController, TypedRowControllerTy
                 let realm = Current.realm()
                 realm.reentrantWrite {
                     realm.delete(config)
-                }.then(on: nil) {
-                    Current.api(for: server)?
-                        .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
                 }.cauterize()
+                //.then(on: nil) {
+//                    Current.api(for: server)?
+//                        .updateComplications(passively: false) ?? .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
+                    // TODO: Send send complication to watch so it can remove from database
+                //}.cauterize()
 
                 self.onDismissCallback?(self)
             }
