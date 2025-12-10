@@ -148,6 +148,9 @@ final class WebRTCClient: NSObject {
     private func configureAudioSession() {
         let audioSession = RTCAudioSession.sharedInstance()
         audioSession.lockForConfiguration()
+        defer {
+            audioSession.unlockForConfiguration()
+        }
         do {
             // Configure for playback only (receive audio without microphone)
             try audioSession.setCategory(AVAudioSession.Category.playback.rawValue)
@@ -156,7 +159,6 @@ final class WebRTCClient: NSObject {
         } catch {
             Current.Log.error("Failed to configure audio session: \(error.localizedDescription)")
         }
-        audioSession.unlockForConfiguration()
     }
 
     private func createMediaTracks() {
@@ -181,8 +183,12 @@ final class WebRTCClient: NSObject {
     }
 
     private func setRemoteAudioTrack() {
-        remoteAudioTrack = peerConnection.transceivers.first { $0.mediaType == .audio }?.receiver
-            .track as? RTCAudioTrack
+        guard let audioTransceiver = peerConnection.transceivers.first(where: { $0.mediaType == .audio }),
+              let audioTrack = audioTransceiver.receiver.track as? RTCAudioTrack else {
+            Current.Log.warning("No remote audio track found")
+            return
+        }
+        remoteAudioTrack = audioTrack
     }
 }
 

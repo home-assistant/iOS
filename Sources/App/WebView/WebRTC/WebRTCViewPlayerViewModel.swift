@@ -52,12 +52,13 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
     func toggleMute() {
         guard let webRTCClient else { return }
-        if webRTCClient.isAudioMuted() {
+        let currentlyMuted = webRTCClient.isAudioMuted()
+        if currentlyMuted {
             webRTCClient.unmuteAudio()
         } else {
             webRTCClient.muteAudio()
         }
-        isMuted = webRTCClient.isAudioMuted()
+        isMuted = !currentlyMuted
     }
 
     // MARK: - WebRTC
