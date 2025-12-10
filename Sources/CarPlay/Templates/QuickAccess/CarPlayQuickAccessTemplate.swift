@@ -1,4 +1,5 @@
 import CarPlay
+import CarPlay
 import Foundation
 import HAKit
 import PromiseKit
@@ -178,7 +179,15 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         item: CPListItem,
         currentItemState: String = ""
     ) {
-        if info.customization?.requiresConfirmation ?? false {
+        // Check if this is a lock entity - locks always require confirmation
+        let isLockEntity = magicItem.type == .entity && Domain(rawValue: magicItem.id.split(separator: ".").first.map(String.init) ?? "") == .lock
+        
+        if isLockEntity {
+            // For lock entities, show lock-specific confirmation
+            showLockConfirmation(magicItem: magicItem, info: info, currentState: currentItemState) { [weak self] in
+                self?.executeLockEntity(magicItem, item: item, currentState: currentItemState)
+            }
+        } else if info.customization?.requiresConfirmation ?? false {
             showConfirmationForRunningMagicItem(item: magicItem, info: info) { [weak self] in
                 self?.executeMagicItem(magicItem, item: item, currentItemState: currentItemState)
             }
@@ -196,6 +205,32 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
             return
         }
         magicItem.execute(on: server, source: .CarPlay) { [weak self] success in
+            self?.displayItemResultIcon(on: item, success: success)
+        }
+    }
+
+    /// Execute a lock entity using the shared CarPlayLockConfirmation.execute method
+    private func executeLockEntity(_ magicItem: MagicItem, item: CPListItem, currentState: String) {
+        guard let server = Current.servers.all.first(where: { server in
+            server.identifier.rawValue == magicItem.serverId
+        }) else {
+            Current.Log.error("Failed to get server for lock magic item id: \(magicItem.id)")
+            displayItemResultIcon(on: item, success: false)
+            return
+        }
+
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available to execute lock entity")
+            displayItemResultIcon(on: item, success: false)
+            return
+        }
+
+        // Use shared execution method for consistency across all CarPlay templates
+        CarPlayLockConfirmation.execute(
+            entityId: magicItem.id,
+            currentState: currentState,
+            api: api
+        ) { [weak self] success in
             self?.displayItemResultIcon(on: item, success: success)
         }
     }
@@ -218,6 +253,20 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         ])
 
         interfaceController?.presentTemplate(alert, animated: true, completion: nil)
+    }
+
+    private func showLockConfirmation(
+        magicItem: MagicItem,
+        info: MagicItem.Info,
+        currentState: String,
+        completion: @escaping () -> Void
+    ) {
+        CarPlayLockConfirmation.show(
+            entityName: info.name,
+            currentState: currentState,
+            interfaceController: interfaceController,
+            completion: completion
+        )
     }
 
     // Present a checkmark or cross depending on success or failure

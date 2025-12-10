@@ -833,6 +833,7 @@
 		42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */; };
 		42A1860A2E1D310D004B729A /* HATextField.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A186092E1D310D004B729A /* HATextField.test.swift */; };
 		42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2AB7F2C80751E00C5608D /* ControlAssist.swift */; };
+		42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A32F372EEA393700B323F1 /* CarPlayLockConfirmation.swift */; };
 		42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
 		42A3B63C2BD91891007BC0F3 /* Color+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */; };
 		42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */; };
@@ -2356,6 +2357,7 @@
 		42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarButtonsConfigurator.swift; sourceTree = "<group>"; };
 		42A186092E1D310D004B729A /* HATextField.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.test.swift; sourceTree = "<group>"; };
 		42A2AB7F2C80751E00C5608D /* ControlAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAssist.swift; sourceTree = "<group>"; };
+		42A32F372EEA393700B323F1 /* CarPlayLockConfirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayLockConfirmation.swift; sourceTree = "<group>"; };
 		42A3B63A2BD91854007BC0F3 /* Color+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Codable.swift"; sourceTree = "<group>"; };
 		42A3B63D2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+Encodable.swift"; sourceTree = "<group>"; };
 		42A42A692DC37311000ABBAF /* PrivacyView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.test.swift; sourceTree = "<group>"; };
@@ -4341,6 +4343,7 @@
 				420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */,
 				420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */,
 				425573EC2B58904000145217 /* CarPlayEntityListItem.swift */,
+				42A32F372EEA393700B323F1 /* CarPlayLockConfirmation.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -8407,6 +8410,7 @@
 				42FCCFFE2B9B1C310057783F /* ThreadCredentialsSharing+build.swift in Sources */,
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
 				423B5E0D2D677BB90000CB95 /* WidgetContentMargin.swift in Sources */,
+				42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */,
 				42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				4240DF472E1D148F00FB0DE6 /* DeviceNameView.swift in Sources */,
 				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
