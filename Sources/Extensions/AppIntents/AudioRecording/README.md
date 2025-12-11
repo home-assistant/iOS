@@ -7,16 +7,20 @@ This is a sample implementation of Apple's `AudioRecordingIntent` protocol for t
 `AudioRecordingAppIntent` demonstrates how to:
 - Implement the `AudioRecordingIntent` protocol (iOS 17.0+)
 - Record audio using AVFoundation
+- Display a Live Activity during recording (required by AudioRecordingIntent)
 - Log audio input and metadata
 - Handle microphone permissions
 - Configure audio session parameters
+- Use audio settings consistent with existing Home Assistant AudioRecorder
 
 ## Features
 
+- **Live Activity**: Displays recording progress with elapsed time (required by Apple)
 - **Configurable Duration**: Set recording duration (1-60 seconds)
 - **Metadata Logging**: Optional detailed logging of recording metadata
 - **Error Handling**: Comprehensive error handling with descriptive messages
 - **Permission Management**: Handles microphone access requests
+- **Consistent Settings**: Uses 16kHz mono audio matching existing Assist AudioRecorder
 
 ## Usage
 
@@ -45,10 +49,10 @@ When `logMetadata` is enabled, the intent logs:
 ### Audio Settings
 
 - **Format**: Linear PCM (WAV)
-- **Sample Rate**: 44.1 kHz
-- **Channels**: Stereo (2)
+- **Sample Rate**: 16 kHz (matching Home Assistant Assist AudioRecorder)
+- **Channels**: Mono (1)
 - **Bit Depth**: 16-bit
-- **Quality**: High
+- **Quality**: Low (optimized for speech)
 
 ### Temporary Storage
 
@@ -66,10 +70,12 @@ The intent handles three main error cases:
 
 ## Requirements
 
-- iOS 17.0+
+- iOS 17.0+ (for AudioRecordingIntent)
+- iOS 16.1+ (for Live Activities via ActivityKit)
 - macOS 14.0+
 - watchOS 10.0+
 - Microphone permissions
+- ActivityKit framework
 
 ## Integration
 

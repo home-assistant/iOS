@@ -11,11 +11,12 @@ This directory contains a sample implementation of Apple's `AudioRecordingIntent
 A complete, production-ready implementation featuring:
 
 - **Protocol Conformance**: Conforms to Apple's `AudioRecordingIntent` protocol (iOS 17.0+)
+- **Live Activity**: Displays recording progress during recording (required by AudioRecordingIntent)
 - **Configurable Parameters**:
   - `duration`: Recording length in seconds (1-60 range, default: 10)
   - `logMetadata`: Toggle detailed logging (default: true)
 - **Permission Handling**: Requests and validates microphone access
-- **Audio Recording**: Uses AVFoundation's AVAudioRecorder with high-quality settings
+- **Audio Recording**: Uses AVAudioRecorder with settings matching existing Home Assistant AudioRecorder
 - **Comprehensive Logging**: Logs all operations using `Current.Log` system
 - **Error Handling**: Three distinct error types with descriptive messages
 - **Metadata Capture**: Tracks duration, sample rate, channels, and file size
@@ -31,11 +32,19 @@ A complete, production-ready implementation featuring:
 ### Audio Configuration
 ```
 Format: Linear PCM (WAV)
-Sample Rate: 44.1 kHz
-Channels: Stereo (2)
+Sample Rate: 16 kHz (matches Home Assistant Assist)
+Channels: Mono (1)
 Bit Depth: 16-bit
-Quality: High
+Quality: Low (optimized for speech)
 ```
+
+### Live Activity
+The intent displays a Live Activity during recording showing:
+- Recording status (active/stopped)
+- Elapsed time
+- Total duration
+
+This is required by Apple's AudioRecordingIntent protocol documentation.
 
 ### Logging Output
 When `logMetadata` is enabled, the intent logs:
@@ -123,9 +132,12 @@ AudioRecording/
 
 ## Requirements
 
-- iOS 17.0+ / macOS 14.0+ / watchOS 10.0+
+- iOS 17.0+ (AudioRecordingIntent)
+- iOS 16.1+ (Live Activities)
+- macOS 14.0+ / watchOS 10.0+
 - AVFoundation framework
 - AppIntents framework
+- ActivityKit framework
 - Microphone hardware
 - Microphone permissions in Info.plist
 

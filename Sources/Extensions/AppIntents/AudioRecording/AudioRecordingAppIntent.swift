@@ -1,3 +1,4 @@
+import ActivityKit
 import AppIntents
 import AVFoundation
 import Foundation
@@ -70,8 +71,8 @@ struct AudioRecordingAppIntent: AudioRecordingIntent {
         }
         Current.Log.info("AudioRecordingAppIntent: Microphone access granted")
 
-        // Perform audio recording
-        let response = try await recordAudio(duration: duration)
+        // Perform audio recording with Live Activity
+        let response = try await recordAudioWithLiveActivity(duration: duration)
 
         // Log metadata if requested
         if logMetadata {
@@ -82,7 +83,52 @@ struct AudioRecordingAppIntent: AudioRecordingIntent {
         return .result(value: response)
     }
 
-    private func recordAudio(duration: Int) async throws -> AudioRecordingAppIntentResponse {
+    private func recordAudioWithLiveActivity(duration: Int) async throws -> AudioRecordingAppIntentResponse {
+        // Start Live Activity to show recording progress
+        let activity = try? Activity.request(
+            attributes: AudioRecordingAttributes(),
+            content: .init(
+                state: AudioRecordingAttributes.ContentState(
+                    isRecording: true,
+                    elapsedTime: 0,
+                    totalDuration: duration
+                ),
+                staleDate: nil
+            ),
+            pushType: nil
+        )
+        
+        Current.Log.info("AudioRecordingAppIntent: Live Activity started")
+
+        do {
+            let response = try await recordAudio(duration: duration, activity: activity)
+            
+            // End Live Activity
+            await activity?.end(
+                content: .init(
+                    state: AudioRecordingAttributes.ContentState(
+                        isRecording: false,
+                        elapsedTime: duration,
+                        totalDuration: duration
+                    ),
+                    staleDate: nil
+                ),
+                dismissalPolicy: .immediate
+            )
+            Current.Log.info("AudioRecordingAppIntent: Live Activity ended")
+            
+            return response
+        } catch {
+            // End Live Activity on error
+            await activity?.end(dismissalPolicy: .immediate)
+            throw error
+        }
+    }
+
+    private func recordAudio(
+        duration: Int,
+        activity: Activity<AudioRecordingAttributes>?
+    ) async throws -> AudioRecordingAppIntentResponse {
         let audioSession = AVAudioSession.sharedInstance()
 
         do {
@@ -95,15 +141,15 @@ struct AudioRecordingAppIntent: AudioRecordingIntent {
             let fileURL = createTemporaryAudioFileURL()
             Current.Log.info("AudioRecordingAppIntent: Recording to file: \(fileURL.path)")
 
-            // Configure recording settings
+            // Configure recording settings similar to existing AudioRecorder
             let settings: [String: Any] = [
                 AVFormatIDKey: Int(kAudioFormatLinearPCM),
-                AVSampleRateKey: 44100.0,
-                AVNumberOfChannelsKey: 2,
+                AVSampleRateKey: 16000.0,
+                AVNumberOfChannelsKey: 1,
                 AVLinearPCMBitDepthKey: 16,
                 AVLinearPCMIsBigEndianKey: false,
                 AVLinearPCMIsFloatKey: false,
-                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
+                AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue,
             ]
 
             // Create and start recorder
@@ -114,8 +160,22 @@ struct AudioRecordingAppIntent: AudioRecordingIntent {
             Current.Log.info("AudioRecordingAppIntent: Starting recording...")
             recorder.record()
 
-            // Record for specified duration
-            try await Task.sleep(nanoseconds: UInt64(duration) * 1_000_000_000)
+            // Update Live Activity during recording
+            let startTime = Date()
+            for elapsed in 1...duration {
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                
+                await activity?.update(
+                    content: .init(
+                        state: AudioRecordingAttributes.ContentState(
+                            isRecording: true,
+                            elapsedTime: elapsed,
+                            totalDuration: duration
+                        ),
+                        staleDate: nil
+                    )
+                )
+            }
 
             // Stop recording
             recorder.stop()
@@ -155,6 +215,17 @@ struct AudioRecordingAppIntent: AudioRecordingIntent {
         Current.Log.info("  - Sample Rate: \(response.sampleRate) Hz")
         Current.Log.info("  - Channels: \(response.channels)")
         Current.Log.info("  - File Size: \(response.fileSize) bytes (\(Double(response.fileSize) / 1024.0) KB)")
+    }
+}
+
+// MARK: - Live Activity Support
+
+@available(iOS 16.1, *)
+struct AudioRecordingAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable {
+        var isRecording: Bool
+        var elapsedTime: Int
+        var totalDuration: Int
     }
 }
 

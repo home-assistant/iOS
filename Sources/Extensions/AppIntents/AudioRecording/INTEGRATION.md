@@ -32,7 +32,7 @@ The `AudioRecordingAppIntent.swift` file needs to be manually added to the Xcode
 
 ### Required Permissions
 
-The AudioRecordingIntent requires microphone permissions. Ensure the following is in your `Info.plist`:
+The AudioRecordingIntent requires microphone permissions and Live Activity support. Ensure the following is in your `Info.plist`:
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
@@ -40,6 +40,13 @@ The AudioRecordingIntent requires microphone permissions. Ensure the following i
 ```
 
 Also ensure the app has the appropriate Audio entitlements in the Capabilities tab of your target settings.
+
+### Required Frameworks
+
+The implementation requires:
+- **AVFoundation**: For audio recording
+- **AppIntents**: For the intent implementation
+- **ActivityKit**: For Live Activity during recording (iOS 16.1+)
 
 ### Testing the Intent
 
