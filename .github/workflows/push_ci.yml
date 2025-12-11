@@ -19,5 +19,10 @@ jobs:
           swift-version: "5.8"
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
       - name: Run Tests
-        run: swift test
+        run: swift test --enable-code-coverage
         working-directory: Sources/PushServer
+
+      - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7  # v5.5.1
+        name: "Upload Code Coverage"
+        with:
+          working-directory: Sources/PushServer

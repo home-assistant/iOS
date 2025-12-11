@@ -9,6 +9,10 @@ coverage:
         paths:
           - Sources/App
         informational: true
+      pushserver:
+        paths:
+          - Sources/PushServer
+        informational: true
     patch:
       default:
         informational: true
