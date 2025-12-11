@@ -106,29 +106,36 @@ final class CarPlayEntitiesListViewModel {
     }
 
     func handleEntityTap(entity: HAEntity, completion: @escaping () -> Void) {
-        firstly { [weak self] () -> Promise<Void> in
-            guard let self else { return .init(error: CPEntityError.unknown) }
+        guard let api = Current.api(for: server) else {
+            Current.Log.error("No API available to handle CarPlay entity tap")
+            completion()
+            return
+        }
 
-            guard let api = Current.api(for: server) else {
-                Current.Log.error("No API available to handle CarPlay entity tap")
-                return .init(error: HomeAssistantAPI.APIError.noAPIAvailable)
-            }
-
-            if let domain = Domain(rawValue: entity.domain), domain == .lock {
-                templateProvider?.displayLockConfirmation(entity: entity, completion: {
-                    entity.onPress(for: api).catch { error in
-                        Current.Log.error("Received error from callService during onPress call: \(error)")
+        if let domain = Domain(rawValue: entity.domain), domain == .lock {
+            // Show confirmation and use shared execution method
+            templateProvider?.displayLockConfirmation(entity: entity, completion: {
+                CarPlayLockConfirmation.execute(
+                    entityId: entity.entityId,
+                    currentState: entity.state,
+                    api: api
+                ) { success in
+                    if !success {
+                        Current.Log.error("Failed to execute lock action for entity: \(entity.entityId)")
                     }
-                })
-                return .value
-            } else {
-                return entity.onPress(for: api)
+                }
+            })
+            completion()
+        } else {
+            // For non-lock entities, use entity.onPress directly
+            firstly {
+                entity.onPress(for: api)
+            }.done {
+                completion()
+            }.catch { error in
+                Current.Log.error("Received error from callService during onPress call: \(error)")
+                completion()
             }
-        }.done {
-            completion()
-        }.catch { error in
-            Current.Log.error("Received error from callService during onPress call: \(error)")
-            completion()
         }
     }
 }
