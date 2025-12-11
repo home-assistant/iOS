@@ -180,8 +180,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     ) {
         // Check if this is a lock entity - locks always require confirmation
         let isLockEntity = magicItem
-            .type == .entity && Domain(rawValue: magicItem.id.split(separator: ".").first.map(String.init) ?? "") ==
-            .lock
+            .type == .entity && Domain(entityId: magicItem.id) == .lock
 
         if isLockEntity {
             // For lock entities, show lock-specific confirmation
