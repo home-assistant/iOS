@@ -15,7 +15,7 @@ public extension HAEntity {
     }
 
     func getIcon() -> UIImage? {
-        let image = selectIcon()
+        guard let image = selectIcon() else { return nil }
         var tint: UIColor?
 
         if let state = Domain.State(rawValue: state) {
@@ -34,16 +34,16 @@ public extension HAEntity {
     /// Returns the appropriate icon for the entity based on its state, without applying color
     /// This is useful when you want to apply a custom color to a state-based icon
     func getIconWithoutColor() -> MaterialDesignIcons {
-        return selectIcon()
+        selectIcon() ?? .bookmarkIcon
     }
 
-    private func selectIcon() -> MaterialDesignIcons {
+    private func selectIcon() -> MaterialDesignIcons? {
         var image = MaterialDesignIcons.bookmarkIcon
 
         if let icon = attributes.icon?.normalizingIconString {
             image = MaterialDesignIcons(named: icon)
         } else {
-            guard let domain = Domain(rawValue: domain) else { return image }
+            guard let domain = Domain(rawValue: domain) else { return nil }
             switch domain {
             case .button:
                 image = getButtonIcon()
