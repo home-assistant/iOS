@@ -69,7 +69,7 @@ public enum L10n {
 
   public enum WebRTCPlayer {
     public enum Experimental {
-      /// Note: Native WebRTC video player is currently an experimental feature. Please use the web player interface for advanced options and reliable playback.
+      /// Note: Native WebRTC video player is currently an experimental feature, audio may not work and microphone permission and usage may be requested even though not in use. Please use the web player interface for advanced options and reliable playback.
       public static var disclaimer: String { return L10n.tr("Localizable", "WebRTC_player.experimental.disclaimer") }
     }
   }
