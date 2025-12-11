@@ -712,6 +712,10 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     private func showNoActiveURLError() {
+        // Load about:blank in webview to prevent any current connections
+        load(request: URLRequest(url: URL(string: "about:blank")!))
+        Current.Log.info("Loading about:blank in webview due to no activeURL")
+
         // Alert the user that there's no URL that the App can use
         let controller = ConnectionSecurityLevelBlockView(server: server).embeddedInHostingController()
         controller.modalPresentationStyle = .fullScreen
@@ -724,7 +728,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             WebViewControllerOverlayedViewTags.settingsView.rawValue,
             WebViewControllerOverlayedViewTags.onboardingPermissions.rawValue,
         ].contains(presentedViewController?.view.tag ?? -1) else {
-            Current.Log.info("No active URL scree was not presented because of high priority view already visible")
+            Current.Log.info("'No active URL' screen was not presented because of high priority view already visible")
             return
         }
 
