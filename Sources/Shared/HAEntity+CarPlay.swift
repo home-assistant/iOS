@@ -67,6 +67,50 @@ public extension HAEntity {
         return image.carPlayIcon(color: tint)
     }
 
+    /// Returns the appropriate icon for the entity based on its state, without applying color
+    /// This is useful when you want to apply a custom color to a state-based icon
+    func getIconWithoutColor() -> MaterialDesignIcons {
+        var image = MaterialDesignIcons.bookmarkIcon
+
+        if let icon = attributes.icon?.normalizingIconString {
+            image = MaterialDesignIcons(named: icon)
+        } else {
+            guard let domain = Domain(rawValue: domain) else { return image }
+            switch domain {
+            case .button:
+                image = getButtonIcon()
+            case .cover:
+                image = getCoverIcon()
+            case .inputBoolean:
+                image = getInputBooleanIcon()
+            case .inputButton:
+                image = .gestureTapButtonIcon
+            case .light:
+                image = .lightbulbIcon
+            case .lock:
+                image = getLockIcon()
+            case .scene:
+                image = .paletteOutlineIcon
+            case .script:
+                image = .scriptTextOutlineIcon
+            case .switch:
+                image = getSwitchIcon()
+            case .sensor:
+                image = .eyeIcon
+            case .binarySensor:
+                image = .eyeIcon
+            case .zone:
+                image = .mapIcon
+            case .person:
+                image = .accountIcon
+            case .camera:
+                image = .cameraIcon
+            }
+        }
+
+        return image
+    }
+
     private func getInputBooleanIcon() -> MaterialDesignIcons {
         if !entityId.hasSuffix(".ha_ios_placeholder"), let compareState = Domain.State(rawValue: state) {
             if compareState == .on {
