@@ -676,7 +676,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Próxima tentativa: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Contagem de novas tentativas: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Desconectado";
-"settings.connection_section.websocket.status.rejected.title" = "Rejected";
+"settings.connection_section.websocket.status.rejected.title" = "Rejeitado";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Esteja ciente de que essas operações não podem ser revertidas.";
 "settings.debugging.header.subtitle" = "Vamos consertar isso 🐞";
@@ -1306,7 +1306,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.details.parameters.details_template" = "Modelo de texto de detalhes (somente na família retangular)";
 "widgets.details.parameters.lower_template" = "Modelo de texto inferior";
 "widgets.details.parameters.run_action" = "Executar ação (somente na família retangular)";
-"widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
+"widgets.details.parameters.run_script" = "Executar script (somente na família retangular)";
 "widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Servidor";
 "widgets.details.parameters.upper_template" = "Modelo de texto superior";
@@ -1321,7 +1321,7 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.gauge.parameters.max_label_template" = "Modelo de rótulo máximo";
 "widgets.gauge.parameters.min_label_template" = "Modelo de rótulo mínimo";
 "widgets.gauge.parameters.run_action" = "Executar ação";
-"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.run_script" = "Executar script";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Servidor";
 "widgets.gauge.parameters.value_label_template" = "Modelo de rótulo de valor";
