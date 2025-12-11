@@ -31,7 +31,18 @@ jobs:
         run: bundle install --jobs 4 --retry 3
 
       - name: Install Pods
-        run: bundle exec pod install --repo-update
+        run: |
+          max_attempts=5
+          attempt=1
+          until bundle exec pod install --repo-update; do
+            if [ $attempt -eq $max_attempts ]; then
+              echo "Pod install failed after $max_attempts attempts"
+              exit 1
+            fi
+            echo "Pod install failed (attempt $attempt/$max_attempts). Retrying in 10 seconds..."
+            sleep 10
+            attempt=$((attempt + 1))
+          done
 
       - name: Build ${{ matrix.kind }}
         run: |
