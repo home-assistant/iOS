@@ -34,7 +34,7 @@ public extension HAEntity {
     /// Returns the appropriate icon for the entity based on its state, without applying color
     /// This is useful when you want to apply a custom color to a state-based icon
     func getIconWithoutColor() -> MaterialDesignIcons {
-        selectIcon()
+        return selectIcon()
     }
 
     private func selectIcon() -> MaterialDesignIcons {
