@@ -135,11 +135,14 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
                 )
                 let listItem = entityProvider.template
                 listItem.handler = { [weak self] _, _ in
+                    // Get the current state at tap time, not when the handler was created
+                    let currentState = self?.entitiesPerServer[magicItem.serverId]?.all
+                        .first(where: { $0.entityId == magicItem.id })?.state ?? ""
                     self?.itemTap(
                         magicItem: magicItem,
                         info: info,
                         item: listItem,
-                        currentItemState: placeholderItem.state
+                        currentItemState: currentState
                     )
                 }
                 entityProviders.append(entityProvider)
