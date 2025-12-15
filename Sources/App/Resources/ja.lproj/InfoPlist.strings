@@ -3,10 +3,10 @@
 "NSCrossWebsiteTrackingUsageDescription" = "必要に応じて、クロス Web サイト トラッキングを有効にします。";
 "NSFocusStatusUsageDescription" = "フォーカスの状態をセンサーとして報告します。";
 "NSLocalNetworkUsageDescription" = "Home Assistantのインスタンスを見つけて通信します。";
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "最高のロケーション エクスペリエンスを得るには、[常に許可] を選択することをお勧めします。 「アプリの使用中のみ」を選択すると、iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、および正確なレポートが無効になります。";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 アプリがバックグラウンド操作を実行できるようにするには、位置情報への「常時」アクセス権限も必要です。 \n\n ⚠️ これがないと、アプリはバックグラウンドでどの接続 (ローカルまたはリモート) を使用するかを決定できず、常にリモートを使用します。";
 "NSLocationAlwaysUsageDescription" = "iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、正確なレポートなどの機能のために、常に位置情報にアクセスする必要があります。";
 "NSLocationUsageDescription" = "有効にすると、デバイスの位置情報がデバイス トラッカーとしてHome Assistantに送信されます。";
-"NSLocationWhenInUseUsageDescription" = "アプリの使用中にのみ位置情報へのアクセスを許可すると、iBeacons、ジオフェンス、バックグラウンドでの位置情報の更新、正確なレポートが無効になります。";
+"NSLocationWhenInUseUsageDescription" = "このアプリは、Home Assistant インストールに直接接続するために位置情報へのアクセスが必要です。 \n \n 1️⃣ あなたの位置情報は、ローカルネットワークに接続しているかどうかを確認するためにのみ使用されます。 \n \n 2️⃣ 誰とも共有されません。 \n \n 3️⃣ 許可しない場合、アプリは常にインターネット経由で接続します。設定されていない場合、アプリはデータを保護するために接続を拒否します。";
 "NSMicrophoneUsageDescription" = "HomeAssistantフロントエンドを使用してオーディオを録音します。";
 "NSMotionUsageDescription" = "モーションは、現在のモーション タイプで位置情報の更新を改善し、基本的な歩数計データを提供するために使用されます。";
 "NSPhotoLibraryAddUsageDescription" = "Web ビューから写真を保存できるようにするには、フォト ライブラリへのアクセスが必要です。";
