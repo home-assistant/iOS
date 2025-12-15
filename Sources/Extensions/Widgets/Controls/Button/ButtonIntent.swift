@@ -18,7 +18,7 @@ struct ButtonIntent: AppIntent {
         // Button domains use the "press" service
         let domain = Domain(entityId: entity.entityId) ?? .button
 
-        let _ = await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             connection.send(.callService(
                 domain: .init(stringLiteral: domain.rawValue),
                 service: .init(stringLiteral: "press"),

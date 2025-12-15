@@ -55,8 +55,8 @@ struct ControlButtonValueProvider: AppIntentControlValueProvider {
 @available(iOS 18.0, *)
 struct ControlButtonConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
-        "widgets.controls.button.description",
-        defaultValue: "Press button"
+        "widgets.controls.button.title",
+        defaultValue: "Button"
     )
 
     @Parameter(
