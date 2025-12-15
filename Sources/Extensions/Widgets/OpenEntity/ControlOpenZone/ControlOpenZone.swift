@@ -12,7 +12,7 @@ struct ControlOpenZone: ControlWidget {
             provider: ControlOpenZoneValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenZoneAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

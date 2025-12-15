@@ -12,7 +12,7 @@ struct ControlOpenScript: ControlWidget {
             provider: ControlOpenScriptValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenScriptAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

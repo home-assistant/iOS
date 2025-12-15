@@ -12,7 +12,7 @@ struct ControlOpenCamera: ControlWidget {
             provider: ControlOpenCameraValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenCameraAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

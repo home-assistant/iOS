@@ -12,7 +12,7 @@ struct ControlOpenInputBoolean: ControlWidget {
             provider: ControlOpenInputBooleanValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenInputBooleanAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

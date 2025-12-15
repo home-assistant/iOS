@@ -12,7 +12,7 @@ struct ControlOpenPerson: ControlWidget {
             provider: ControlOpenPersonValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenPersonAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

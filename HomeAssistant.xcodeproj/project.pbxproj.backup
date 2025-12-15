@@ -25,10 +25,12 @@
 /* Begin PBXBuildFile section */
 		0076A1ED32BB520179138465 /* ControlOpenInputBooleanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F7863E5771D1621864D670 /* ControlOpenInputBooleanValueProvider.swift */; };
 		045FC22E7BBC07FBFF6D9D12 /* ControlOpenScriptValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAFC94838B50139F03E8B1C /* ControlOpenScriptValueProvider.swift */; };
+		05DEDF77CE25A97507E175D2 /* OpenCameraAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2417DF1AF003E053CA5EC6BA /* OpenCameraAppIntent.swift */; };
 		07B254BADB23F6A60E82D615 /* Pods_iOS_Extensions_Matter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */; };
 		09D0F10781927666B90CCA23 /* ControlOpenScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8630F655F198882B53DAE5D5 /* ControlOpenScene.swift */; };
 		0AA581433A3D6D27B133DC47 /* ControlOpenSceneValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E9A765D1D3D178E8F27540 /* ControlOpenSceneValueProvider.swift */; };
 		0E3C4429BD2CE8AE51990506 /* ControlOpenSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDE4A6EC1F0154B3775A27 /* ControlOpenSwitch.swift */; };
+		0FB4E94650D07F52CBE8367A /* OpenPersonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0B7529A28A5FEE9B90DAFD /* OpenPersonAppIntent.swift */; };
 		1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */; };
@@ -476,12 +478,16 @@
 		11FA53F2251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
 		11FA53F3251071D2008D9506 /* NSItemProvider+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */; };
 		12D447D93F82395EF40487B5 /* Pods-iOS-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */; };
+		149D4037E6F98342C9110221 /* OpenBinarySensorAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD079BAB5CC18AA61C99271 /* OpenBinarySensorAppIntent.swift */; };
 		165955E006864CFE23355451 /* Pods_Tests_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */; };
 		177E4B39B7BA296CCB68A27D /* Pods-iOS-Extensions-Widgets-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */; };
+		17C2B43F3A49700B516F0925 /* OpenZoneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A78A321F344D42D898C86 /* OpenZoneAppIntent.swift */; };
 		1A0BF50187A921289B3BA4AE /* Pods-Tests-App-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B67C3F1DA02199833DA64AF8 /* Pods-Tests-App-metadata.plist */; };
 		20226C5AB77E1229852ADDC8 /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
 		2395E5E0A43DB55FC7172F4F /* ControlOpenSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A13002818D8551E040E22C9 /* ControlOpenSensor.swift */; };
+		2554FDB8B5770B93E0258740 /* OpenPersonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0B7529A28A5FEE9B90DAFD /* OpenPersonAppIntent.swift */; };
+		273DA88BC183E8F49AA290C8 /* OpenLockAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FB5C71A8E02B02789A317C /* OpenLockAppIntent.swift */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
 		32F813C6B604602CE286B857 /* ControlOpenZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8EA0DEBFDC67B8F0C0D9FE /* ControlOpenZone.swift */; };
 		345AD1CCF1A9E68AEB79133B /* ControlOpenInputButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2038FA572DD5C8392E44FE43 /* ControlOpenInputButton.swift */; };
@@ -494,6 +500,8 @@
 		399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399792702B7F909900231B54 /* MobileAppConfig.swift */; };
 		39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */; };
+		3C820D53184889F90572D1B7 /* OpenInputBooleanAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3568013841F566330A228B /* OpenInputBooleanAppIntent.swift */; };
+		3D3B0BD50E3F843C6EA61A1F /* OpenInputButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B8490CF078C4554EAD1989 /* OpenInputButtonAppIntent.swift */; };
 		3D6C7748CE8FF6A74860E511 /* Pods_iOS_SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202360CC8C2C1193658F9359 /* Pods_iOS_SharedTesting.framework */; };
 		3E02C0E22CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */; };
 		3E02C0E32CA7FCBF00102131 /* IntentSensorsAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */; };
@@ -522,6 +530,7 @@
 		4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
 		4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C22C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift */; };
 		4080D5C62C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4080D5C12C319B0A00099C88 /* WidgetDetailsAppIntent.swift */; };
+		41009D3305708C4B53B2A056 /* OpenLightAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB99044B26136FF99A881D76 /* OpenLightAppIntent.swift */; };
 		42014B182E9683040019031C /* SelectionOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42014B172E9683040019031C /* SelectionOptionView.swift */; };
 		42014B1A2E96836E0019031C /* SelectionOptionView-Usage.md in Resources */ = {isa = PBXBuildFile; fileRef = 42014B192E96836E0019031C /* SelectionOptionView-Usage.md */; };
 		4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */; };
@@ -1066,6 +1075,7 @@
 		42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */; };
 		42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
 		42FDA9372DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
+		442FE38118DD756402D1447F /* OpenCameraAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2417DF1AF003E053CA5EC6BA /* OpenCameraAppIntent.swift */; };
 		4591C1407E51C6AFCC5F96B8 /* ControlOpenInputBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0EA9B4D96C71DD27138F36 /* ControlOpenInputBoolean.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
@@ -1089,20 +1099,31 @@
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		507028D06181A130D47E9FEA /* ControlOpenBinarySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211C47701277032D7E9EF4EA /* ControlOpenBinarySensor.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
+		55EB64AB75F14BDACB189481 /* OpenInputButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B8490CF078C4554EAD1989 /* OpenInputButtonAppIntent.swift */; };
+		5A6DF8D65F1E3D70624A91F0 /* OpenZoneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A78A321F344D42D898C86 /* OpenZoneAppIntent.swift */; };
 		5ACB86996E4FF43D0F1AE9A6 /* ControlOpenButtonValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A0F9F464632A47F503BDE /* ControlOpenButtonValueProvider.swift */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		5FFBC80F835393915C4748CF /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A370326321B07E5ACE0BCB65 /* Pods_iOS_Extensions_PushProvider.framework */; };
+		634C88FC25EB093F3921A6C1 /* OpenCoverEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3ED9D576D72E3AFA92574D /* OpenCoverEntityAppIntent.swift */; };
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
+		6BA036B3648BD010665EEA88 /* OpenSensorAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA9DF9695A08D4B67786B93 /* OpenSensorAppIntent.swift */; };
+		6FF0F6C6AE5743A1406F66F1 /* OpenSceneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F520D74041FE544CD0749AC /* OpenSceneAppIntent.swift */; };
 		76E0DADD9527FCBD9CAF9D49 /* ControlOpenSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B527F79103772F488D8194A /* ControlOpenSwitchValueProvider.swift */; };
 		78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
 		7909C39AB57B4ED38DE91681 /* ControlOpenLightValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF16ACC42866D655C7A43F4 /* ControlOpenLightValueProvider.swift */; };
+		8110E8AD2364ED6E01BCD59D /* OpenCoverEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3ED9D576D72E3AFA92574D /* OpenCoverEntityAppIntent.swift */; };
 		81A0C1BBDEFF4F8C5FC314BE /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F356D0219C7F8A24234511B /* Pods_iOS_Extensions_NotificationContent.framework */; };
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
+		880DC8C2333259F0E1CBB132 /* OpenSceneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F520D74041FE544CD0749AC /* OpenSceneAppIntent.swift */; };
 		8D9035CEE288D95C7029948A /* ControlOpenBinarySensorValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C16F2F499624CC5883694D3 /* ControlOpenBinarySensorValueProvider.swift */; };
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
+		9B0D3204A7ED96CCFE279BB3 /* OpenLockAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FB5C71A8E02B02789A317C /* OpenLockAppIntent.swift */; };
+		9E0F009240F2691565216BE7 /* OpenSensorAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA9DF9695A08D4B67786B93 /* OpenSensorAppIntent.swift */; };
 		A4C74AB7645062A0A2F211A5 /* ControlOpenPersonValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1788F9A94C339061AE33D0 /* ControlOpenPersonValueProvider.swift */; };
 		A5400D008E8AD7207EFB7EA3 /* ControlOpenButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F8095A11115B2489BF76F5 /* ControlOpenButton.swift */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
+		AD429B89223CBA7F241E6238 /* OpenSwitchAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D267578055A53D119FB45112 /* OpenSwitchAppIntent.swift */; };
+		AFCCC59FF6D1E9246F4E0343 /* OpenButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A4624E2F2496BA9CA13252 /* OpenButtonAppIntent.swift */; };
 		B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022212226DAC9D00E8DBFE /* ScaledFont.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
@@ -1354,11 +1375,14 @@
 		B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */; };
 		B6E2D4D52270706300446DFA /* ha-loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4D42270706200446DFA /* ha-loading.json */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
+		B7A4A6785527F51CA3DBF812 /* OpenLightAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB99044B26136FF99A881D76 /* OpenLightAppIntent.swift */; };
 		B9820AF29664869FD0B25CDF /* Pods_iOS_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD90A8F251D0671EFAC931ED /* Pods_iOS_App.framework */; };
 		BBDFEE889A481DC966D7E10D /* ControlOpenInputButtonValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD00398AADA5876F6F6A9FC7 /* ControlOpenInputButtonValueProvider.swift */; };
 		C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */; };
+		C21A9F77A89C788417047FD2 /* OpenBinarySensorAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD079BAB5CC18AA61C99271 /* OpenBinarySensorAppIntent.swift */; };
 		C54E354DAC55B3F5312ADE14 /* ControlOpenScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4402463D7A4F1A077FFCD59 /* ControlOpenScript.swift */; };
 		C6478E5ADCB3EB7EC959EB53 /* Pods_iOS_Extensions_Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29FC93E25AB875716E2F35D4 /* Pods_iOS_Extensions_Intents.framework */; };
+		C9B6196F59866AA33B3FFCEC /* OpenScriptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6659E396DA5749B7AAA0104D /* OpenScriptAppIntent.swift */; };
 		CA6886D02384DA18A91F37DD /* Pods-iOS-Extensions-Intents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */; };
 		CB1983AFBFED0A03533DBE85 /* Pods_iOS_Extensions_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C851CA22DDEEA359D12221C3 /* Pods_iOS_Extensions_Share.framework */; };
 		CCDB3924F537080279A7578D /* ControlOpenCoverEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A64400633245D3E846117D /* ControlOpenCoverEntityValueProvider.swift */; };
@@ -1399,11 +1423,14 @@
 		D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
 		D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
 		D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
+		D95161C30EF3A2689642514B /* OpenInputBooleanAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3568013841F566330A228B /* OpenInputBooleanAppIntent.swift */; };
 		D99E15DB5E63E91D317D75EE /* ControlOpenCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE77F2248C9013D1CE0C097 /* ControlOpenCoverEntity.swift */; };
 		DAE4B6F51987A60F329E73BD /* ControlOpenLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C7AD0CD47ABDD8D80A88EB /* ControlOpenLight.swift */; };
+		E2215BA1C0920BABB4174EFB /* OpenButtonAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A4624E2F2496BA9CA13252 /* OpenButtonAppIntent.swift */; };
 		E51C9F0739F72F17568E8EC8 /* ControlOpenZoneValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A410B933FA202AF667193C7 /* ControlOpenZoneValueProvider.swift */; };
 		EAB5C26BA0B391D53612A2CE /* ControlOpenLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F34B2A1E00D25A15FD3CFF /* ControlOpenLock.swift */; };
 		EB5B150E6C34850720D06233 /* ControlOpenCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB22F2E55E9D1A308251D3C7 /* ControlOpenCamera.swift */; };
+		EEB9848D0661B583DC784FC2 /* OpenSwitchAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D267578055A53D119FB45112 /* OpenSwitchAppIntent.swift */; };
 		FB24D75C850B3268BAD81662 /* ControlOpenSensorValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0439EEE8F1D1D5C39FAB60B /* ControlOpenSensorValueProvider.swift */; };
 		FB7044C7C34B35E469EB9720 /* ControlOpenLockValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479FE36FFD5D3359F2EED773 /* ControlOpenLockValueProvider.swift */; };
 		FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */; };
@@ -1411,6 +1438,7 @@
 		FD3BC66C29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */; };
 		FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */; };
 		FD5FEB304713F1E6BFE498DC /* Pods_iOS_Extensions_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE950A9D74B3E7FF5665CB38 /* Pods_iOS_Extensions_NotificationService.framework */; };
+		FDB36C3C5846F7471E6691CA /* OpenScriptAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6659E396DA5749B7AAA0104D /* OpenScriptAppIntent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2080,6 +2108,8 @@
 		207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Share-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Share-metadata.plist"; sourceTree = "<group>"; };
 		211C47701277032D7E9EF4EA /* ControlOpenBinarySensor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenBinarySensor.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenBinarySensor/ControlOpenBinarySensor.swift; sourceTree = "<group>"; };
 		213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		22FB5C71A8E02B02789A317C /* OpenLockAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenLockAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenLock/OpenLockAppIntent.swift; sourceTree = "<group>"; };
+		2417DF1AF003E053CA5EC6BA /* OpenCameraAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenCameraAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenCamera/OpenCameraAppIntent.swift; sourceTree = "<group>"; };
 		25F8095A11115B2489BF76F5 /* ControlOpenButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenButton.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenButton/ControlOpenButton.swift; sourceTree = "<group>"; };
 		287FA864ED0E47B2BB71E1C8 /* Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.beta.xcconfig"; sourceTree = "<group>"; };
 		29FC93E25AB875716E2F35D4 /* Pods_iOS_Extensions_Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Intents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2100,6 +2130,7 @@
 		3E4087EC2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewProtocol.swift; sourceTree = "<group>"; };
 		3E4087EF2CEC7F210085DF29 /* WidgetBasicSensorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSensorView.swift; sourceTree = "<group>"; };
 		3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Shared_iOS_Tests_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F520D74041FE544CD0749AC /* OpenSceneAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenSceneAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenScene/OpenSceneAppIntent.swift; sourceTree = "<group>"; };
 		4008F0252C2D0A1A00E24001 /* WidgetCircularView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCircularView.swift; sourceTree = "<group>"; };
 		403AE9082C2E220200D48147 /* WidgetGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGauge.swift; sourceTree = "<group>"; };
 		403AE90B2C2E28B200D48147 /* WidgetGaugeAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetGaugeAppIntent.swift; path = Sources/Extensions/AppIntents/Widget/Gauge/WidgetGaugeAppIntent.swift; sourceTree = SOURCE_ROOT; };
@@ -2772,6 +2803,7 @@
 		479C2CCB032E2A0ECDE45B87 /* Pods-Tests-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.debug.xcconfig"; sourceTree = "<group>"; };
 		479FE36FFD5D3359F2EED773 /* ControlOpenLockValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenLockValueProvider.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenLock/ControlOpenLockValueProvider.swift; sourceTree = "<group>"; };
 		491E98FE25D543560077BBE3 /* LogbookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookEntry.swift; sourceTree = "<group>"; };
+		4C3ED9D576D72E3AFA92574D /* OpenCoverEntityAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenCoverEntityAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenCoverEntity/OpenCoverEntityAppIntent.swift; sourceTree = "<group>"; };
 		553A33E097387AA44265DB13 /* Pods-iOS-App-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-App-metadata.plist"; path = "Pods/Pods-iOS-App-metadata.plist"; sourceTree = "<group>"; };
 		574F428FD5AD613411644AE4 /* Pods-iOS-Extensions-PushProvider.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.release.xcconfig"; sourceTree = "<group>"; };
 		57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2779,6 +2811,7 @@
 		5A13002818D8551E040E22C9 /* ControlOpenSensor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenSensor.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenSensor/ControlOpenSensor.swift; sourceTree = "<group>"; };
 		5B1788F9A94C339061AE33D0 /* ControlOpenPersonValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenPersonValueProvider.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenPerson/ControlOpenPersonValueProvider.swift; sourceTree = "<group>"; };
 		65F34B2A1E00D25A15FD3CFF /* ControlOpenLock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenLock.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenLock/ControlOpenLock.swift; sourceTree = "<group>"; };
+		6659E396DA5749B7AAA0104D /* OpenScriptAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenScriptAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenScript/OpenScriptAppIntent.swift; sourceTree = "<group>"; };
 		6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Widgets-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Widgets-metadata.plist"; sourceTree = "<group>"; };
 		675CE4281FE5F1920B13D553 /* Pods-iOS-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.debug.xcconfig"; sourceTree = "<group>"; };
 		6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-watchOS-Shared-watchOS-metadata.plist"; path = "Pods/Pods-watchOS-Shared-watchOS-metadata.plist"; sourceTree = "<group>"; };
@@ -2786,9 +2819,11 @@
 		6F1D92E4B7A5CD1007EB0782 /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7150FCF154251F240E33FF76 /* Pods-iOS-Extensions-NotificationContent.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.beta.xcconfig"; sourceTree = "<group>"; };
 		755DF7AFFAA21F6CE428E998 /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.release.xcconfig"; sourceTree = "<group>"; };
+		78B8490CF078C4554EAD1989 /* OpenInputButtonAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenInputButtonAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenInputButton/OpenInputButtonAppIntent.swift; sourceTree = "<group>"; };
 		7A410B933FA202AF667193C7 /* ControlOpenZoneValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenZoneValueProvider.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenZone/ControlOpenZoneValueProvider.swift; sourceTree = "<group>"; };
 		7A6E8DF7DED57BAD4EF47D11 /* Pods_iOS_Extensions_Today.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Today.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AFDE4A6EC1F0154B3775A27 /* ControlOpenSwitch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenSwitch.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenSwitch/ControlOpenSwitch.swift; sourceTree = "<group>"; };
+		7C8A78A321F344D42D898C86 /* OpenZoneAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenZoneAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenZone/OpenZoneAppIntent.swift; sourceTree = "<group>"; };
 		7D94AB7BD65F15C8FEE0912E /* Pods-iOS-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.release.xcconfig"; sourceTree = "<group>"; };
 		80854D28D2FCD1482E92ED31 /* Pods-Tests-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.beta.xcconfig"; sourceTree = "<group>"; };
 		8630F655F198882B53DAE5D5 /* ControlOpenScene.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenScene.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenScene/ControlOpenScene.swift; sourceTree = "<group>"; };
@@ -2799,6 +2834,7 @@
 		9249824D575933DFA1530BB2 /* Pods-watchOS-WatchExtension-Watch-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-watchOS-WatchExtension-Watch-metadata.plist"; path = "Pods/Pods-watchOS-WatchExtension-Watch-metadata.plist"; sourceTree = "<group>"; };
 		943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Matter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F089744D425CAB2755F843 /* Pods-iOS-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		9BD079BAB5CC18AA61C99271 /* OpenBinarySensorAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenBinarySensorAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenBinarySensor/OpenBinarySensorAppIntent.swift; sourceTree = "<group>"; };
 		9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = HomeAssistant.debug.xcconfig; sourceTree = "<group>"; };
 		9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.release.xcconfig; sourceTree = "<group>"; };
 		9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.beta.xcconfig; sourceTree = "<group>"; };
@@ -3140,6 +3176,7 @@
 		C8896D3548ECEBD337889277 /* Pods-iOS-Extensions-Matter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Matter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Matter/Pods-iOS-Extensions-Matter.debug.xcconfig"; sourceTree = "<group>"; };
 		CA1DE9B127B0A27EFB659904 /* Pods-iOS-Extensions-Intents.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.beta.xcconfig"; sourceTree = "<group>"; };
 		CB22F2E55E9D1A308251D3C7 /* ControlOpenCamera.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenCamera.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenCamera/ControlOpenCamera.swift; sourceTree = "<group>"; };
+		CC0B7529A28A5FEE9B90DAFD /* OpenPersonAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenPersonAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenPerson/OpenPersonAppIntent.swift; sourceTree = "<group>"; };
 		CDB131E7598C0AC03BB5B998 /* Pods-watchOS-Shared-watchOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-Shared-watchOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-Shared-watchOS/Pods-watchOS-Shared-watchOS.beta.xcconfig"; sourceTree = "<group>"; };
 		CE950A9D74B3E7FF5665CB38 /* Pods_iOS_Extensions_NotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_NotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00302BD20D4BEDB004C2CA9 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
@@ -3172,6 +3209,8 @@
 		D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTrigger.swift; sourceTree = "<group>"; };
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
+		D1A4624E2F2496BA9CA13252 /* OpenButtonAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenButtonAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenButton/OpenButtonAppIntent.swift; sourceTree = "<group>"; };
+		D267578055A53D119FB45112 /* OpenSwitchAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenSwitchAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenSwitch/OpenSwitchAppIntent.swift; sourceTree = "<group>"; };
 		D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Widgets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D404CC38F07CE4476FCF69B4 /* Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared.release.xcconfig"; sourceTree = "<group>"; };
 		D48D81C2501E6B37CB08B744 /* ControlOpenPerson.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenPerson.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenPerson/ControlOpenPerson.swift; sourceTree = "<group>"; };
@@ -3185,6 +3224,8 @@
 		E41A4AAEF642A72ACDB6C006 /* Pods-iOS-Extensions-Intents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Intents-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Intents-metadata.plist"; sourceTree = "<group>"; };
 		E805474FB6E532B5C40E83B4 /* Pods-iOS-Extensions-NotificationContent.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.debug.xcconfig"; sourceTree = "<group>"; };
 		E81F5CF42E9F5D95BD0E6019 /* Pods-iOS-SharedTesting.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-SharedTesting.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-SharedTesting/Pods-iOS-SharedTesting.beta.xcconfig"; sourceTree = "<group>"; };
+		EB99044B26136FF99A881D76 /* OpenLightAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenLightAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenLight/OpenLightAppIntent.swift; sourceTree = "<group>"; };
+		EC3568013841F566330A228B /* OpenInputBooleanAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenInputBooleanAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenInputBoolean/OpenInputBooleanAppIntent.swift; sourceTree = "<group>"; };
 		EEAFC94838B50139F03E8B1C /* ControlOpenScriptValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenScriptValueProvider.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenScript/ControlOpenScriptValueProvider.swift; sourceTree = "<group>"; };
 		F0439EEE8F1D1D5C39FAB60B /* ControlOpenSensorValueProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ControlOpenSensorValueProvider.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenSensor/ControlOpenSensorValueProvider.swift; sourceTree = "<group>"; };
 		F0954F3919DBD03AC16B0391 /* Pods-iOS-Extensions-PushProvider.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.beta.xcconfig"; sourceTree = "<group>"; };
@@ -3196,6 +3237,7 @@
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 		FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListTemplate.swift; sourceTree = "<group>"; };
 		FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListTemplate.swift; sourceTree = "<group>"; };
+		FDA9DF9695A08D4B67786B93 /* OpenSensorAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenSensorAppIntent.swift; path = Sources/Extensions/Widgets/OpenEntity/ControlOpenSensor/OpenSensorAppIntent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3388,6 +3430,7 @@
 			isa = PBXGroup;
 			children = (
 				BB0EA9B4D96C71DD27138F36 /* ControlOpenInputBoolean.swift */,
+				EC3568013841F566330A228B /* OpenInputBooleanAppIntent.swift */,
 				A7F7863E5771D1621864D670 /* ControlOpenInputBooleanValueProvider.swift */,
 			);
 			name = ControlOpenInputBoolean;
@@ -3397,6 +3440,7 @@
 			isa = PBXGroup;
 			children = (
 				B4402463D7A4F1A077FFCD59 /* ControlOpenScript.swift */,
+				6659E396DA5749B7AAA0104D /* OpenScriptAppIntent.swift */,
 				EEAFC94838B50139F03E8B1C /* ControlOpenScriptValueProvider.swift */,
 			);
 			name = ControlOpenScript;
@@ -3406,6 +3450,7 @@
 			isa = PBXGroup;
 			children = (
 				D48D81C2501E6B37CB08B744 /* ControlOpenPerson.swift */,
+				CC0B7529A28A5FEE9B90DAFD /* OpenPersonAppIntent.swift */,
 				5B1788F9A94C339061AE33D0 /* ControlOpenPersonValueProvider.swift */,
 			);
 			name = ControlOpenPerson;
@@ -4144,6 +4189,7 @@
 			isa = PBXGroup;
 			children = (
 				211C47701277032D7E9EF4EA /* ControlOpenBinarySensor.swift */,
+				9BD079BAB5CC18AA61C99271 /* OpenBinarySensorAppIntent.swift */,
 				2C16F2F499624CC5883694D3 /* ControlOpenBinarySensorValueProvider.swift */,
 			);
 			name = ControlOpenBinarySensor;
@@ -4153,6 +4199,7 @@
 			isa = PBXGroup;
 			children = (
 				7AFDE4A6EC1F0154B3775A27 /* ControlOpenSwitch.swift */,
+				D267578055A53D119FB45112 /* OpenSwitchAppIntent.swift */,
 				2B527F79103772F488D8194A /* ControlOpenSwitchValueProvider.swift */,
 			);
 			name = ControlOpenSwitch;
@@ -4162,6 +4209,7 @@
 			isa = PBXGroup;
 			children = (
 				25F8095A11115B2489BF76F5 /* ControlOpenButton.swift */,
+				D1A4624E2F2496BA9CA13252 /* OpenButtonAppIntent.swift */,
 				C77A0F9F464632A47F503BDE /* ControlOpenButtonValueProvider.swift */,
 			);
 			name = ControlOpenButton;
@@ -5914,6 +5962,7 @@
 			isa = PBXGroup;
 			children = (
 				F3C7AD0CD47ABDD8D80A88EB /* ControlOpenLight.swift */,
+				EB99044B26136FF99A881D76 /* OpenLightAppIntent.swift */,
 				3CF16ACC42866D655C7A43F4 /* ControlOpenLightValueProvider.swift */,
 			);
 			name = ControlOpenLight;
@@ -5923,6 +5972,7 @@
 			isa = PBXGroup;
 			children = (
 				CB22F2E55E9D1A308251D3C7 /* ControlOpenCamera.swift */,
+				2417DF1AF003E053CA5EC6BA /* OpenCameraAppIntent.swift */,
 				B1F071E741483FC9BF600F9B /* ControlOpenCameraValueProvider.swift */,
 			);
 			name = ControlOpenCamera;
@@ -5932,6 +5982,7 @@
 			isa = PBXGroup;
 			children = (
 				65F34B2A1E00D25A15FD3CFF /* ControlOpenLock.swift */,
+				22FB5C71A8E02B02789A317C /* OpenLockAppIntent.swift */,
 				479FE36FFD5D3359F2EED773 /* ControlOpenLockValueProvider.swift */,
 			);
 			name = ControlOpenLock;
@@ -5941,6 +5992,7 @@
 			isa = PBXGroup;
 			children = (
 				1EE77F2248C9013D1CE0C097 /* ControlOpenCoverEntity.swift */,
+				4C3ED9D576D72E3AFA92574D /* OpenCoverEntityAppIntent.swift */,
 				91A64400633245D3E846117D /* ControlOpenCoverEntityValueProvider.swift */,
 			);
 			name = ControlOpenCoverEntity;
@@ -5950,6 +6002,7 @@
 			isa = PBXGroup;
 			children = (
 				5A13002818D8551E040E22C9 /* ControlOpenSensor.swift */,
+				FDA9DF9695A08D4B67786B93 /* OpenSensorAppIntent.swift */,
 				F0439EEE8F1D1D5C39FAB60B /* ControlOpenSensorValueProvider.swift */,
 			);
 			name = ControlOpenSensor;
@@ -5972,6 +6025,7 @@
 			isa = PBXGroup;
 			children = (
 				8630F655F198882B53DAE5D5 /* ControlOpenScene.swift */,
+				3F520D74041FE544CD0749AC /* OpenSceneAppIntent.swift */,
 				03E9A765D1D3D178E8F27540 /* ControlOpenSceneValueProvider.swift */,
 			);
 			name = ControlOpenScene;
@@ -6521,6 +6575,7 @@
 			isa = PBXGroup;
 			children = (
 				2038FA572DD5C8392E44FE43 /* ControlOpenInputButton.swift */,
+				78B8490CF078C4554EAD1989 /* OpenInputButtonAppIntent.swift */,
 				BD00398AADA5876F6F6A9FC7 /* ControlOpenInputButtonValueProvider.swift */,
 			);
 			name = ControlOpenInputButton;
@@ -6530,6 +6585,7 @@
 			isa = PBXGroup;
 			children = (
 				1A8EA0DEBFDC67B8F0C0D9FE /* ControlOpenZone.swift */,
+				7C8A78A321F344D42D898C86 /* OpenZoneAppIntent.swift */,
 				7A410B933FA202AF667193C7 /* ControlOpenZoneValueProvider.swift */,
 			);
 			name = ControlOpenZone;
@@ -8528,32 +8584,46 @@
 				420461692C8F29440062E89F /* ControlLight.swift in Sources */,
 				423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
 				EB5B150E6C34850720D06233 /* ControlOpenCamera.swift in Sources */,
+				442FE38118DD756402D1447F /* OpenCameraAppIntent.swift in Sources */,
 				47D91BD67EE170E456B9DE19 /* ControlOpenCameraValueProvider.swift in Sources */,
 				EAB5C26BA0B391D53612A2CE /* ControlOpenLock.swift in Sources */,
+				273DA88BC183E8F49AA290C8 /* OpenLockAppIntent.swift in Sources */,
 				FB7044C7C34B35E469EB9720 /* ControlOpenLockValueProvider.swift in Sources */,
 				D99E15DB5E63E91D317D75EE /* ControlOpenCoverEntity.swift in Sources */,
+				634C88FC25EB093F3921A6C1 /* OpenCoverEntityAppIntent.swift in Sources */,
 				CCDB3924F537080279A7578D /* ControlOpenCoverEntityValueProvider.swift in Sources */,
 				507028D06181A130D47E9FEA /* ControlOpenBinarySensor.swift in Sources */,
+				C21A9F77A89C788417047FD2 /* OpenBinarySensorAppIntent.swift in Sources */,
 				8D9035CEE288D95C7029948A /* ControlOpenBinarySensorValueProvider.swift in Sources */,
 				A5400D008E8AD7207EFB7EA3 /* ControlOpenButton.swift in Sources */,
+				AFCCC59FF6D1E9246F4E0343 /* OpenButtonAppIntent.swift in Sources */,
 				5ACB86996E4FF43D0F1AE9A6 /* ControlOpenButtonValueProvider.swift in Sources */,
 				4591C1407E51C6AFCC5F96B8 /* ControlOpenInputBoolean.swift in Sources */,
+				3C820D53184889F90572D1B7 /* OpenInputBooleanAppIntent.swift in Sources */,
 				0076A1ED32BB520179138465 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
 				345AD1CCF1A9E68AEB79133B /* ControlOpenInputButton.swift in Sources */,
+				3D3B0BD50E3F843C6EA61A1F /* OpenInputButtonAppIntent.swift in Sources */,
 				BBDFEE889A481DC966D7E10D /* ControlOpenInputButtonValueProvider.swift in Sources */,
 				DAE4B6F51987A60F329E73BD /* ControlOpenLight.swift in Sources */,
+				41009D3305708C4B53B2A056 /* OpenLightAppIntent.swift in Sources */,
 				7909C39AB57B4ED38DE91681 /* ControlOpenLightValueProvider.swift in Sources */,
 				3F12AAC97CAE6DDA79EB2E81 /* ControlOpenPerson.swift in Sources */,
+				2554FDB8B5770B93E0258740 /* OpenPersonAppIntent.swift in Sources */,
 				A4C74AB7645062A0A2F211A5 /* ControlOpenPersonValueProvider.swift in Sources */,
 				09D0F10781927666B90CCA23 /* ControlOpenScene.swift in Sources */,
+				880DC8C2333259F0E1CBB132 /* OpenSceneAppIntent.swift in Sources */,
 				0AA581433A3D6D27B133DC47 /* ControlOpenSceneValueProvider.swift in Sources */,
 				C54E354DAC55B3F5312ADE14 /* ControlOpenScript.swift in Sources */,
+				FDB36C3C5846F7471E6691CA /* OpenScriptAppIntent.swift in Sources */,
 				045FC22E7BBC07FBFF6D9D12 /* ControlOpenScriptValueProvider.swift in Sources */,
 				2395E5E0A43DB55FC7172F4F /* ControlOpenSensor.swift in Sources */,
+				9E0F009240F2691565216BE7 /* OpenSensorAppIntent.swift in Sources */,
 				FB24D75C850B3268BAD81662 /* ControlOpenSensorValueProvider.swift in Sources */,
 				0E3C4429BD2CE8AE51990506 /* ControlOpenSwitch.swift in Sources */,
+				EEB9848D0661B583DC784FC2 /* OpenSwitchAppIntent.swift in Sources */,
 				76E0DADD9527FCBD9CAF9D49 /* ControlOpenSwitchValueProvider.swift in Sources */,
 				32F813C6B604602CE286B857 /* ControlOpenZone.swift in Sources */,
+				5A6DF8D65F1E3D70624A91F0 /* OpenZoneAppIntent.swift in Sources */,
 				E51C9F0739F72F17568E8EC8 /* ControlOpenZoneValueProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8932,6 +9002,20 @@
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,
 				4206FFBA2DAD58DB0087626C /* ConnectionInfo+WebView.swift in Sources */,
 				42C0FD0A2DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift in Sources */,
+				05DEDF77CE25A97507E175D2 /* OpenCameraAppIntent.swift in Sources */,
+				9B0D3204A7ED96CCFE279BB3 /* OpenLockAppIntent.swift in Sources */,
+				8110E8AD2364ED6E01BCD59D /* OpenCoverEntityAppIntent.swift in Sources */,
+				149D4037E6F98342C9110221 /* OpenBinarySensorAppIntent.swift in Sources */,
+				E2215BA1C0920BABB4174EFB /* OpenButtonAppIntent.swift in Sources */,
+				D95161C30EF3A2689642514B /* OpenInputBooleanAppIntent.swift in Sources */,
+				55EB64AB75F14BDACB189481 /* OpenInputButtonAppIntent.swift in Sources */,
+				B7A4A6785527F51CA3DBF812 /* OpenLightAppIntent.swift in Sources */,
+				0FB4E94650D07F52CBE8367A /* OpenPersonAppIntent.swift in Sources */,
+				6FF0F6C6AE5743A1406F66F1 /* OpenSceneAppIntent.swift in Sources */,
+				C9B6196F59866AA33B3FFCEC /* OpenScriptAppIntent.swift in Sources */,
+				6BA036B3648BD010665EEA88 /* OpenSensorAppIntent.swift in Sources */,
+				AD429B89223CBA7F241E6238 /* OpenSwitchAppIntent.swift in Sources */,
+				17C2B43F3A49700B516F0925 /* OpenZoneAppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

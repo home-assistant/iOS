@@ -12,7 +12,7 @@ struct ControlOpenLight: ControlWidget {
             provider: ControlOpenLightValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenLightAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

@@ -12,7 +12,7 @@ struct ControlOpenCoverEntity: ControlWidget {
             provider: ControlOpenCoverEntityValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenCoverEntityAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

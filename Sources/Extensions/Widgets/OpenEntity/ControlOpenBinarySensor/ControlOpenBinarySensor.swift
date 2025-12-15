@@ -12,7 +12,7 @@ struct ControlOpenBinarySensor: ControlWidget {
             provider: ControlOpenBinarySensorValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenBinarySensorAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

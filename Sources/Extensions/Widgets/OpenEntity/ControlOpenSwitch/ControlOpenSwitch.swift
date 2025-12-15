@@ -12,7 +12,7 @@ struct ControlOpenSwitch: ControlWidget {
             provider: ControlOpenSwitchValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenSwitchAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

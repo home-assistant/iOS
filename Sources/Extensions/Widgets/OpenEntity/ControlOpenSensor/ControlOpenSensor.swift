@@ -12,7 +12,7 @@ struct ControlOpenSensor: ControlWidget {
             provider: ControlOpenSensorValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenSensorAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {

@@ -12,7 +12,7 @@ struct ControlOpenLock: ControlWidget {
             provider: ControlOpenLockValueProvider()
         ) { template in
             ControlWidgetButton(action: {
-                let intent = OpenLockAppIntent()
+                let intent = OpenEntityAppIntent()
                 intent.entity = template.entity
                 return intent
             }()) {
