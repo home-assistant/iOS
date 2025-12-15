@@ -20,4 +20,15 @@ public enum WidgetsKind: String, CaseIterable {
     case controlOpenCamera
     case controlOpenLock
     case controlOpenCoverEntity
+    case controlOpenButton
+    case controlOpenInputBoolean
+    case controlOpenInputButton
+    case controlOpenLight
+    case controlOpenScene
+    case controlOpenScript
+    case controlOpenSwitch
+    case controlOpenSensor
+    case controlOpenBinarySensor
+    case controlOpenZone
+    case controlOpenPerson
 }
