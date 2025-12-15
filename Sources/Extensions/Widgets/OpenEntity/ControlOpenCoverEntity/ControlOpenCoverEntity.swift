@@ -1,0 +1,26 @@
+import AppIntents
+import Foundation
+import Shared
+import SwiftUI
+import WidgetKit
+
+@available(iOS 18, *)
+struct ControlOpenCoverEntity: ControlWidget {
+    var body: some ControlWidgetConfiguration {
+        AppIntentControlConfiguration(
+            kind: WidgetsKind.controlOpenCoverEntity.rawValue,
+            provider: ControlOpenCoverEntityValueProvider()
+        ) { template in
+            ControlWidgetButton(action: {
+                let intent = OpenCoverEntityAppIntent()
+                intent.entity = template.entity
+                return intent
+            }()) {
+                // ControlWidget can only display SF Symbol
+                Label(template.entity.displayString, systemImage: template.icon.id)
+            }
+        }
+        .displayName(.init(stringLiteral: L10n.Widgets.Controls.OpenCoverEntity.Configuration.title))
+        .description(.init(stringLiteral: L10n.Widgets.Controls.OpenCoverEntity.description))
+    }
+}

@@ -1273,8 +1273,17 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";
+"widgets.controls.open_camera.configuration.parameter.entity" = "Camera";
+"widgets.controls.open_camera.configuration.title" = "Open Camera";
+"widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
+"widgets.controls.open_cover.configuration.parameter.entity" = "Cover";
+"widgets.controls.open_cover.configuration.title" = "Open Cover";
+"widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";
 "widgets.controls.open_entity.configuration.parameter.entity" = "Entity";
 "widgets.controls.open_entity.configuration.title" = "Open Entity";
+"widgets.controls.open_lock.configuration.parameter.entity" = "Lock";
+"widgets.controls.open_lock.configuration.title" = "Open Lock";
+"widgets.controls.open_lock.description" = "Opens the selected lock entity inside the app";
 "widgets.controls.open_page.configuration.parameter.choose_page" = "Choose page";
 "widgets.controls.open_page.configuration.parameter.page" = "Page";
 "widgets.controls.open_page.configuration.title" = "Open Page";

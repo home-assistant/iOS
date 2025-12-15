@@ -4440,6 +4440,30 @@ public enum L10n {
         /// Light
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.light.title") }
       }
+      public enum OpenCamera {
+        /// Opens the selected camera entity inside the app
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_camera.description") }
+        public enum Configuration {
+          /// Open Camera
+          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_camera.configuration.title") }
+          public enum Parameter {
+            /// Camera
+            public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_camera.configuration.parameter.entity") }
+          }
+        }
+      }
+      public enum OpenCoverEntity {
+        /// Opens the selected cover entity inside the app
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_cover.description") }
+        public enum Configuration {
+          /// Open Cover
+          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_cover.configuration.title") }
+          public enum Parameter {
+            /// Cover
+            public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_cover.configuration.parameter.entity") }
+          }
+        }
+      }
       public enum OpenEntity {
         public enum Configuration {
           /// Open Entity
@@ -4447,6 +4471,18 @@ public enum L10n {
           public enum Parameter {
             /// Entity
             public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_entity.configuration.parameter.entity") }
+          }
+        }
+      }
+      public enum OpenLock {
+        /// Opens the selected lock entity inside the app
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_lock.description") }
+        public enum Configuration {
+          /// Open Lock
+          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_lock.configuration.title") }
+          public enum Parameter {
+            /// Lock
+            public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_lock.configuration.parameter.entity") }
           }
         }
       }
