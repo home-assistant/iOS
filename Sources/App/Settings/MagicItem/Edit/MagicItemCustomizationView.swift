@@ -56,11 +56,13 @@ struct MagicItemCustomizationView: View {
             }
         }
         .toolbar {
-            Button {
-                save()
-                dismiss()
-            } label: {
-                Text(mode == .add ? L10n.MagicItem.add : L10n.MagicItem.edit)
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    save()
+                    dismiss()
+                } label: {
+                    Text(mode == .add ? L10n.MagicItem.add : L10n.MagicItem.edit)
+                }
             }
         }
         .onAppear {
