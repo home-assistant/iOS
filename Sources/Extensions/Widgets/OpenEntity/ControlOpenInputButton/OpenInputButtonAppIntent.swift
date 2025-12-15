@@ -7,14 +7,14 @@ import SwiftUI
 @available(iOS 17, *)
 struct OpenInputButtonAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
-        "widgets.controls.open_inputButton.configuration.title",
+        "widgets.controls.open_input_button.configuration.title",
         defaultValue: "Open InputButton"
     )
 
     static var openAppWhenRun: Bool = true
 
     @Parameter(
-        title: .init("widgets.controls.open_inputButton.configuration.parameter.entity", defaultValue: "InputButton")
+        title: .init("widgets.controls.open_input_button.configuration.parameter.entity", defaultValue: "InputButton")
     )
     var entity: HAAppEntityAppIntentEntity?
 

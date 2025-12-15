@@ -49,12 +49,12 @@ struct ControlOpenInputBooleanValueProvider: AppIntentControlValueProvider {
 @available(iOS 18.0, *)
 struct ControlOpenInputBooleanConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
-        "widgets.controls.open_inputBoolean.configuration.title",
+        "widgets.controls.open_input_boolean.configuration.title",
         defaultValue: "Open InputBoolean"
     )
 
     @Parameter(
-        title: .init("widgets.controls.open_inputBoolean.configuration.parameter.entity", defaultValue: "InputBoolean"),
+        title: .init("widgets.controls.open_input_boolean.configuration.parameter.entity", defaultValue: "InputBoolean"),
         optionsProvider: InputBooleanEntityOptionsProvider()
     )
     var entity: HAAppEntityAppIntentEntity?

@@ -7,14 +7,14 @@ import SwiftUI
 @available(iOS 17, *)
 struct OpenBinarySensorAppIntent: AppIntent {
     static var title: LocalizedStringResource = .init(
-        "widgets.controls.open_binarySensor.configuration.title",
+        "widgets.controls.open_binary_sensor.configuration.title",
         defaultValue: "Open BinarySensor"
     )
 
     static var openAppWhenRun: Bool = true
 
     @Parameter(
-        title: .init("widgets.controls.open_binarySensor.configuration.parameter.entity", defaultValue: "BinarySensor")
+        title: .init("widgets.controls.open_binary_sensor.configuration.parameter.entity", defaultValue: "BinarySensor")
     )
     var entity: HAAppEntityAppIntentEntity?
 

@@ -49,12 +49,12 @@ struct ControlOpenInputButtonValueProvider: AppIntentControlValueProvider {
 @available(iOS 18.0, *)
 struct ControlOpenInputButtonConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
-        "widgets.controls.open_inputButton.configuration.title",
+        "widgets.controls.open_input_button.configuration.title",
         defaultValue: "Open InputButton"
     )
 
     @Parameter(
-        title: .init("widgets.controls.open_inputButton.configuration.parameter.entity", defaultValue: "InputButton"),
+        title: .init("widgets.controls.open_input_button.configuration.parameter.entity", defaultValue: "InputButton"),
         optionsProvider: InputButtonEntityOptionsProvider()
     )
     var entity: HAAppEntityAppIntentEntity?

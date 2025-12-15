@@ -49,12 +49,12 @@ struct ControlOpenBinarySensorValueProvider: AppIntentControlValueProvider {
 @available(iOS 18.0, *)
 struct ControlOpenBinarySensorConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
-        "widgets.controls.open_binarySensor.configuration.title",
+        "widgets.controls.open_binary_sensor.configuration.title",
         defaultValue: "Open BinarySensor"
     )
 
     @Parameter(
-        title: .init("widgets.controls.open_binarySensor.configuration.parameter.entity", defaultValue: "BinarySensor"),
+        title: .init("widgets.controls.open_binary_sensor.configuration.parameter.entity", defaultValue: "BinarySensor"),
         optionsProvider: BinarySensorEntityOptionsProvider()
     )
     var entity: HAAppEntityAppIntentEntity?
