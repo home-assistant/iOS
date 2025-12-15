@@ -29,13 +29,8 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlOpenInputBoolean.rawValue, "controlOpenInputBoolean")
         XCTAssertEqual(WidgetsKind.controlOpenInputButton.rawValue, "controlOpenInputButton")
         XCTAssertEqual(WidgetsKind.controlOpenLight.rawValue, "controlOpenLight")
-        XCTAssertEqual(WidgetsKind.controlOpenScene.rawValue, "controlOpenScene")
-        XCTAssertEqual(WidgetsKind.controlOpenScript.rawValue, "controlOpenScript")
         XCTAssertEqual(WidgetsKind.controlOpenSwitch.rawValue, "controlOpenSwitch")
         XCTAssertEqual(WidgetsKind.controlOpenSensor.rawValue, "controlOpenSensor")
-        XCTAssertEqual(WidgetsKind.controlOpenBinarySensor.rawValue, "controlOpenBinarySensor")
-        XCTAssertEqual(WidgetsKind.controlOpenZone.rawValue, "controlOpenZone")
-        XCTAssertEqual(WidgetsKind.controlOpenPerson.rawValue, "controlOpenPerson")
-        XCTAssertEqual(WidgetsKind.allCases.count, 30)
+        XCTAssertEqual(WidgetsKind.allCases.count, 25)
     }
 }

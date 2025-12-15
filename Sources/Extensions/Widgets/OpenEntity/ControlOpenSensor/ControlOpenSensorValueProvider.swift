@@ -68,7 +68,7 @@ struct ControlOpenSensorConfiguration: ControlConfigurationIntent {
 @available(iOS 18.0, *)
 struct SensorEntityOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
-        let entities = ControlEntityProvider(domains: [.sensor]).getEntities()
+        let entities = ControlEntityProvider(domains: [.sensor, .binarySensor]).getEntities()
 
         return .init(sections: entities.map { (key: Server, value: [ControlEntity]) in
             .init(
