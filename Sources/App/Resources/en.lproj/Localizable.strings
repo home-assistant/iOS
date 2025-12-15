@@ -1273,9 +1273,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";
-"widgets.controls.open_button.configuration.parameter.entity" = "Button";
-"widgets.controls.open_button.configuration.title" = "Open Button";
-"widgets.controls.open_button.description" = "Opens the selected button entity inside the app";
+"widgets.controls.button.description" = "Press button";
+"widgets.controls.button.placeholder_title" = "Choose button";
+"widgets.controls.button.title" = "Button";
 "widgets.controls.open_camera.configuration.parameter.entity" = "Camera";
 "widgets.controls.open_camera.configuration.title" = "Open Camera";
 "widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
@@ -1287,9 +1287,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Input Boolean";
 "widgets.controls.open_input_boolean.configuration.title" = "Open Input Boolean";
 "widgets.controls.open_input_boolean.description" = "Opens the selected input boolean entity inside the app";
-"widgets.controls.open_input_button.configuration.parameter.entity" = "Input Button";
-"widgets.controls.open_input_button.configuration.title" = "Open Input Button";
-"widgets.controls.open_input_button.description" = "Opens the selected input button entity inside the app";
 "widgets.controls.open_light.configuration.parameter.entity" = "Light";
 "widgets.controls.open_light.configuration.title" = "Open Light";
 "widgets.controls.open_light.description" = "Opens the selected light entity inside the app";

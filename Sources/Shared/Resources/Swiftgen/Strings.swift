@@ -4432,6 +4432,14 @@ public enum L10n {
         /// Cover
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
       }
+      public enum Button {
+        /// Press button
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.button.description") }
+        /// Choose button
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.button.placeholder_title") }
+        /// Button
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.button.title") }
+      }
       public enum Light {
         /// Turn on/off your light
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.light.description") }
@@ -4439,18 +4447,6 @@ public enum L10n {
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.light.placeholder_title") }
         /// Light
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.light.title") }
-      }
-      public enum OpenButton {
-        /// Opens the selected button entity inside the app
-        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_button.description") }
-        public enum Configuration {
-          /// Open Button
-          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_button.configuration.title") }
-          public enum Parameter {
-            /// Button
-            public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_button.configuration.parameter.entity") }
-          }
-        }
       }
       public enum OpenCamera {
         /// Opens the selected camera entity inside the app
@@ -4495,18 +4491,6 @@ public enum L10n {
           public enum Parameter {
             /// Input Boolean
             public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_input_boolean.configuration.parameter.entity") }
-          }
-        }
-      }
-      public enum OpenInputButton {
-        /// Opens the selected input button entity inside the app
-        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_input_button.description") }
-        public enum Configuration {
-          /// Open Input Button
-          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_input_button.configuration.title") }
-          public enum Parameter {
-            /// Input Button
-            public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_input_button.configuration.parameter.entity") }
           }
         }
       }
