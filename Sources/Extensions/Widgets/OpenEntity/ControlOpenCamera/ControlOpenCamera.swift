@@ -22,5 +22,6 @@ struct ControlOpenCamera: ControlWidget {
         }
         .displayName(.init(stringLiteral: L10n.Widgets.Controls.OpenCamera.Configuration.title))
         .description(.init(stringLiteral: L10n.Widgets.Controls.OpenCamera.description))
+        .promptsForUserConfiguration()
     }
 }
