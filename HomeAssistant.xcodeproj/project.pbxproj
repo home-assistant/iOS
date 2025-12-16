@@ -951,6 +951,7 @@
 		42D3E4BE2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F53E22C4E61C1003C8415 /* LocalNotificationDispatcher.swift */; };
 		42D3E4BF2C5D321300444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
 		42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425573EE2B589B0F00145217 /* NotificationIdentifier.swift */; };
+		42D4574B2EF1835D007934BC /* StringExtensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D4574A2EF1835D007934BC /* StringExtensions.test.swift */; };
 		42D57FC22E0589DE0061FF3B /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */; };
 		42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */; };
 		42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */; };
@@ -2622,6 +2623,7 @@
 		42D3E4AA2C5D290C00444BE6 /* WidgetScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScripts.swift; sourceTree = "<group>"; };
 		42D3E4B32C5D2BB900444BE6 /* WidgetScriptsAppIntentTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntentTimelineProvider.swift; sourceTree = "<group>"; };
 		42D3E4B62C5D2C2700444BE6 /* WidgetScriptsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetScriptsAppIntent.swift; sourceTree = "<group>"; };
+		42D4574A2EF1835D007934BC /* StringExtensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.test.swift; sourceTree = "<group>"; };
 		42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCClient.swift; sourceTree = "<group>"; };
 		42D5ACCB2C636F1F00D9C4E2 /* WatchConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationView.swift; sourceTree = "<group>"; };
 		42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigurationViewModel.swift; sourceTree = "<group>"; };
@@ -5273,6 +5275,7 @@
 		42ACC2A62E9F9B1E0045A3FD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				42D4574A2EF1835D007934BC /* StringExtensions.test.swift */,
 				42ACC2A32E9F9AEA0045A3FD /* URLExtensions.test.swift */,
 			);
 			path = Extensions;
@@ -8365,6 +8368,7 @@
 			files = (
 				46C62BA72D8A387D002C0001 /* SnapshotTestingHelper.swift in Sources */,
 				46C62BA62D8A3841002C0001 /* SnapshottablePreviewConfigurations+SnapshotTesting.swift in Sources */,
+				42D4574B2EF1835D007934BC /* StringExtensions.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
