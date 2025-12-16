@@ -138,7 +138,7 @@ public class ConnectivitySensor: SensorProvider {
             },
             with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
                 if let bssid = Current.connectivity.currentWiFiBSSID() {
-                    sensor.State = bssid
+                    sensor.State = bssid.formattedBSSID
                     sensor.Icon = "mdi:wifi-star"
                 } else {
                     sensor.State = "Not Connected"

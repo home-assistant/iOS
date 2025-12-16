@@ -98,8 +98,8 @@
 "component::improv_ble::config::abort::no_devices_found" = "Ağda cihaz bulunamadı";
 "component::improv_ble::config::abort::provision_successful" = "Cihaz Wi-Fi ağına başarıyla bağlandı.";
 "component::improv_ble::config::abort::provision_successful_url" = "Cihaz Wi-Fi ağına başarıyla bağlandı. \
-\
- Kurulumu tamamlamak için lütfen {url} ziyaret edin.";
+ \
+ Lütfen [kurulum talimatlarını]( ) izleyerek kurulumu tamamlayın.{url}).";
 "component::improv_ble::config::abort::unknown" = "Beklenmeyen hata";
 "component::improv_ble::config::error::unable_to_connect" = "Cihaz Wi-Fi ağına bağlanamadı. SSID ve şifrenin doğru olup olmadığını kontrol edin ve tekrar deneyin.";
 "component::improv_ble::config::flow_title" = "{name}";
@@ -274,8 +274,8 @@
 "component::whirlpool::entity::sensor::whirlpool_tank::state::active" = "Etkin";
 "component::wled::entity::select::live_override::state:::0" = "Kapalı";
 "component::wled::entity::select::live_override::state:::1" = "Açık";
-"component::wolflink::entity::sensor::state::state::aus" = "Devre dışı";
-"component::wolflink::entity::sensor::state::state::ein" = "Etkin";
+"component::wolflink::entity::sensor::state::state::aus" = "Kapalı";
+"component::wolflink::entity::sensor::state::state::ein" = "Açık";
 "component::wolflink::entity::sensor::state::state::standby" = "Bekleme modu";
 "component::xiaomi_miio::entity::select::led_brightness::state::off" = "Kapalı";
 "component::yamaha::services::enable_output::fields::enabled::name" = "Etkin";

@@ -5,7 +5,7 @@ import PromiseKit
 
 public class MatterWrapper {
     public var isAvailable: Bool = {
-        #if canImport(MatterSupport)
+        #if canImport(MatterSupport) && !targetEnvironment(macCatalyst)
         if #available(iOS 16.1, *) {
             return true
         } else {
