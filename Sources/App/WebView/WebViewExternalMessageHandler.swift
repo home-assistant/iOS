@@ -140,10 +140,10 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .improvConfigureDevice:
                 let deviceName = incomingMessage.Payload?["name"] as? String
                 presentImprov(deviceName: deviceName)
-            case .elementFocus:
+            case .focusElement:
                 guard let elementId = incomingMessage.Payload?["element_id"] as? String else {
                     Current.Log
-                        .error("Received element_focus via bus but element_id was not string! \(incomingMessage)")
+                        .error("Received focus_element via bus but element_id was not string! \(incomingMessage)")
                     return
                 }
                 handleElementFocus(elementId: elementId)

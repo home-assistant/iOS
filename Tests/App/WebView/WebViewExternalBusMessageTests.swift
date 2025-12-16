@@ -25,7 +25,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
         XCTAssertEqual(WebViewExternalBusMessage.scanForImprov.rawValue, "improv/scan")
         XCTAssertEqual(WebViewExternalBusMessage.improvConfigureDevice.rawValue, "improv/configure_device")
-        XCTAssertEqual(WebViewExternalBusMessage.elementFocus.rawValue, "element_focus")
+        XCTAssertEqual(WebViewExternalBusMessage.focusElement.rawValue, "focus_element")
 
         XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 17)
     }
