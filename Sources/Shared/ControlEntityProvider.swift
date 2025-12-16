@@ -70,8 +70,38 @@ public final class ControlEntityProvider {
                     }
                 }
                 if let string {
+                    // Fetch all areas for this server once and create a lookup map
+                    let areas: [AppArea]
+                    do {
+                        areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+                    } catch {
+                        Current.Log.error("Failed to fetch areas for entity filtering: \(error.localizedDescription)")
+                        areas = []
+                    }
+                    var entityToAreaMap: [String: String] = [:]
+                    for area in areas {
+                        for entityId in area.entities {
+                            entityToAreaMap[entityId] = area.name
+                        }
+                    }
+
                     entities = entities.filter({ entity in
-                        entity.name.lowercased().contains(string.lowercased())
+                        let matchName = entity.name.range(
+                            of: string,
+                            options: [.caseInsensitive, .diacriticInsensitive]
+                        ) != nil
+                        let matchEntityId = entity.entityId.range(
+                            of: string,
+                            options: [.caseInsensitive, .diacriticInsensitive]
+                        ) != nil
+                        let matchAreaName = {
+                            if let area = entityToAreaMap[entity.entityId] {
+                                return area.range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+                            } else {
+                                return false
+                            }
+                        }()
+                        return matchName || matchEntityId || matchAreaName
                     })
                 }
                 entitiesPerServer.append((server, entities))
