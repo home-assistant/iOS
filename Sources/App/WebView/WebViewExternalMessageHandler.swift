@@ -29,6 +29,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         self.improvManager = improvManager
     }
 
+    // swiftlint:disable cyclomatic_complexity
     @MainActor
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
@@ -140,6 +141,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .improvConfigureDevice:
                 let deviceName = incomingMessage.Payload?["name"] as? String
                 presentImprov(deviceName: deviceName)
+            case .focusElement:
+                guard let elementId = incomingMessage.Payload?["element_id"] as? String else {
+                    Current.Log
+                        .error("Received focus_element via bus but element_id was not string! \(incomingMessage)")
+                    return
+                }
+                handleElementFocus(elementId: elementId)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -149,6 +157,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             sendExternalBus(message: outgoing)
         }.cauterize()
     }
+
+    // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
@@ -179,6 +189,51 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             UISelectionFeedbackGenerator().selectionChanged()
         default:
             Current.Log.verbose("Unknown haptic type \(hapticType)")
+        }
+    }
+
+    func handleElementFocus(elementId: String) {
+        Current.Log.verbose("Handle element focus for element ID: \(elementId)")
+
+        // JavaScript to find and focus element in both regular DOM and Shadow DOM
+        let script = """
+        (function() {
+            // Helper function to search through shadow DOM recursively
+            function findElementInShadowDOM(elementId, root = document) {
+                // Try to find by ID in current root
+                let element = root.getElementById(elementId);
+                if (element) return element;
+
+                // Search through all elements with shadow roots
+                const allElements = root.querySelectorAll('*');
+                for (let el of allElements) {
+                    if (el.shadowRoot) {
+                        element = findElementInShadowDOM(elementId, el.shadowRoot);
+                        if (element) return element;
+                    }
+                }
+                return null;
+            }
+
+            // Search for the element
+            var element = findElementInShadowDOM('\(elementId)');
+
+            if (element) {
+                element.click();
+                element.focus();
+                return 'Element found and focused: ' + elementId;
+            } else {
+                return 'Element not found: ' + elementId;
+            }
+        })();
+        """
+
+        webViewController?.evaluateJavaScript(script) { result, error in
+            if let error {
+                Current.Log.error("Error focusing element \(elementId): \(error)")
+            } else if let result {
+                Current.Log.info("Focus element result: \(result)")
+            }
         }
     }
 

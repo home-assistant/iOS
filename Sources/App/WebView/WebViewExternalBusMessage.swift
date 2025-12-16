@@ -22,6 +22,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case assistShow = "assist/show"
     case scanForImprov = "improv/scan"
     case improvConfigureDevice = "improv/configure_device"
+    case focusElement = "focus_element"
 
     static var configResult: [String: Any] {
         [

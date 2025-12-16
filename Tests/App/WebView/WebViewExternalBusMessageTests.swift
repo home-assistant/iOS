@@ -25,8 +25,9 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         )
         XCTAssertEqual(WebViewExternalBusMessage.scanForImprov.rawValue, "improv/scan")
         XCTAssertEqual(WebViewExternalBusMessage.improvConfigureDevice.rawValue, "improv/configure_device")
+        XCTAssertEqual(WebViewExternalBusMessage.focusElement.rawValue, "focus_element")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 16)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 17)
     }
 
     func testExternalBusOutgoingMessageKeys() {
