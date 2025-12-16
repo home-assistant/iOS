@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -517,6 +517,27 @@
 		42014B1A2E96836E0019031C /* SelectionOptionView-Usage.md in Resources */ = {isa = PBXBuildFile; fileRef = 42014B192E96836E0019031C /* SelectionOptionView-Usage.md */; };
 		4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */; };
 		420160612E79ACAC00F68044 /* LocalAccessPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */; };
+		4203961B2EF16A4700C9DF74 /* ButtonIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396162EF16A4700C9DF74 /* ButtonIntent.swift */; };
+		4203961C2EF16A4700C9DF74 /* ControlButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396172EF16A4700C9DF74 /* ControlButton.swift */; };
+		4203961D2EF16A4700C9DF74 /* ControlButtonValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396182EF16A4700C9DF74 /* ControlButtonValueProvider.swift */; };
+		4203961E2EF16A4700C9DF74 /* IntentButtonEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396192EF16A4700C9DF74 /* IntentButtonEntity.swift */; };
+		420396392EF16A4700C9DF74 /* ControlOpenCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */; };
+		4203963A2EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396202EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift */; };
+		4203963B2EF16A4700C9DF74 /* ControlOpenCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */; };
+		4203963C2EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */; };
+		4203963D2EF16A4700C9DF74 /* ControlOpenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */; };
+		4203963E2EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396262EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift */; };
+		4203963F2EF16A4700C9DF74 /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396272EF16A4700C9DF74 /* OpenEntityAppIntent.swift */; };
+		420396402EF16A4700C9DF74 /* ControlOpenInputBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */; };
+		420396412EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */; };
+		420396422EF16A4700C9DF74 /* ControlOpenLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */; };
+		420396432EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */; };
+		420396442EF16A4700C9DF74 /* ControlOpenLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */; };
+		420396452EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */; };
+		420396462EF16A4700C9DF74 /* ControlOpenSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */; };
+		420396472EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */; };
+		420396482EF16A4700C9DF74 /* ControlOpenSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */; };
+		420396492EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */; };
 		420461692C8F29440062E89F /* ControlLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420461682C8F29440062E89F /* ControlLight.swift */; };
 		4206DE5A2E25055E00142E85 /* WebsiteDataStoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */; };
 		4206DE5C2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4206DE5B2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift */; };
@@ -2072,6 +2093,27 @@
 		42014B192E96836E0019031C /* SelectionOptionView-Usage.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "SelectionOptionView-Usage.md"; sourceTree = "<group>"; };
 		4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingView.swift; sourceTree = "<group>"; };
 		420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionView.swift; sourceTree = "<group>"; };
+		420396162EF16A4700C9DF74 /* ButtonIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonIntent.swift; sourceTree = "<group>"; };
+		420396172EF16A4700C9DF74 /* ControlButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButton.swift; sourceTree = "<group>"; };
+		420396182EF16A4700C9DF74 /* ControlButtonValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonValueProvider.swift; sourceTree = "<group>"; };
+		420396192EF16A4700C9DF74 /* IntentButtonEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentButtonEntity.swift; sourceTree = "<group>"; };
+		4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCamera.swift; sourceTree = "<group>"; };
+		420396202EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCameraValueProvider.swift; sourceTree = "<group>"; };
+		420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCoverEntity.swift; sourceTree = "<group>"; };
+		420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCoverEntityValueProvider.swift; sourceTree = "<group>"; };
+		420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntity.swift; sourceTree = "<group>"; };
+		420396262EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenEntityValueProvider.swift; sourceTree = "<group>"; };
+		420396272EF16A4700C9DF74 /* OpenEntityAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenEntityAppIntent.swift; sourceTree = "<group>"; };
+		420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenInputBoolean.swift; sourceTree = "<group>"; };
+		4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenInputBooleanValueProvider.swift; sourceTree = "<group>"; };
+		4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLight.swift; sourceTree = "<group>"; };
+		4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLightValueProvider.swift; sourceTree = "<group>"; };
+		4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLock.swift; sourceTree = "<group>"; };
+		420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenLockValueProvider.swift; sourceTree = "<group>"; };
+		420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSensor.swift; sourceTree = "<group>"; };
+		420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSensorValueProvider.swift; sourceTree = "<group>"; };
+		420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSwitch.swift; sourceTree = "<group>"; };
+		420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenSwitchValueProvider.swift; sourceTree = "<group>"; };
 		420461682C8F29440062E89F /* ControlLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlLight.swift; sourceTree = "<group>"; };
 		4206DE582E25045400142E85 /* WebsiteDataStoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataStoreHandler.swift; sourceTree = "<group>"; };
 		4206DE5B2E251A5800142E85 /* MockWebViewExternalMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebViewExternalMessageHandler.swift; sourceTree = "<group>"; };
@@ -3132,37 +3174,6 @@
 		FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListTemplate.swift; sourceTree = "<group>"; };
 		FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListTemplate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		420395E32EF1620100C9DF74 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				ControlOpenCamera/ControlOpenCamera.swift,
-				ControlOpenCamera/ControlOpenCameraValueProvider.swift,
-				ControlOpenCoverEntity/ControlOpenCoverEntity.swift,
-				ControlOpenCoverEntity/ControlOpenCoverEntityValueProvider.swift,
-				ControlOpenEntity/ControlOpenEntity.swift,
-				ControlOpenEntity/ControlOpenEntityValueProvider.swift,
-				ControlOpenEntity/OpenEntityAppIntent.swift,
-				ControlOpenInputBoolean/ControlOpenInputBoolean.swift,
-				ControlOpenInputBoolean/ControlOpenInputBooleanValueProvider.swift,
-				ControlOpenLight/ControlOpenLight.swift,
-				ControlOpenLight/ControlOpenLightValueProvider.swift,
-				ControlOpenLock/ControlOpenLock.swift,
-				ControlOpenLock/ControlOpenLockValueProvider.swift,
-				ControlOpenSensor/ControlOpenSensor.swift,
-				ControlOpenSensor/ControlOpenSensorValueProvider.swift,
-				ControlOpenSwitch/ControlOpenSwitch.swift,
-				ControlOpenSwitch/ControlOpenSwitchValueProvider.swift,
-			);
-			target = B657A8E51CA646EB00121384 /* App */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		420395A22EF15D8C00C9DF74 /* Button */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Button; sourceTree = "<group>"; };
-		420395C02EF15DAA00C9DF74 /* OpenEntity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (420395E32EF1620100C9DF74 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OpenEntity; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1155DD03250F4100003405C0 /* Frameworks */ = {
@@ -4253,6 +4264,105 @@
 			path = Details;
 			sourceTree = "<group>";
 		};
+		4203961A2EF16A4700C9DF74 /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				420396162EF16A4700C9DF74 /* ButtonIntent.swift */,
+				420396172EF16A4700C9DF74 /* ControlButton.swift */,
+				420396182EF16A4700C9DF74 /* ControlButtonValueProvider.swift */,
+				420396192EF16A4700C9DF74 /* IntentButtonEntity.swift */,
+			);
+			path = Button;
+			sourceTree = "<group>";
+		};
+		420396212EF16A4700C9DF74 /* ControlOpenCamera */ = {
+			isa = PBXGroup;
+			children = (
+				4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */,
+				420396202EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift */,
+			);
+			path = ControlOpenCamera;
+			sourceTree = "<group>";
+		};
+		420396242EF16A4700C9DF74 /* ControlOpenCoverEntity */ = {
+			isa = PBXGroup;
+			children = (
+				420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */,
+				420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */,
+			);
+			path = ControlOpenCoverEntity;
+			sourceTree = "<group>";
+		};
+		420396282EF16A4700C9DF74 /* ControlOpenEntity */ = {
+			isa = PBXGroup;
+			children = (
+				420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */,
+				420396262EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift */,
+				420396272EF16A4700C9DF74 /* OpenEntityAppIntent.swift */,
+			);
+			path = ControlOpenEntity;
+			sourceTree = "<group>";
+		};
+		4203962B2EF16A4700C9DF74 /* ControlOpenInputBoolean */ = {
+			isa = PBXGroup;
+			children = (
+				420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */,
+				4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */,
+			);
+			path = ControlOpenInputBoolean;
+			sourceTree = "<group>";
+		};
+		4203962E2EF16A4700C9DF74 /* ControlOpenLight */ = {
+			isa = PBXGroup;
+			children = (
+				4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */,
+				4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */,
+			);
+			path = ControlOpenLight;
+			sourceTree = "<group>";
+		};
+		420396312EF16A4700C9DF74 /* ControlOpenLock */ = {
+			isa = PBXGroup;
+			children = (
+				4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */,
+				420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */,
+			);
+			path = ControlOpenLock;
+			sourceTree = "<group>";
+		};
+		420396342EF16A4700C9DF74 /* ControlOpenSensor */ = {
+			isa = PBXGroup;
+			children = (
+				420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */,
+				420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */,
+			);
+			path = ControlOpenSensor;
+			sourceTree = "<group>";
+		};
+		420396372EF16A4700C9DF74 /* ControlOpenSwitch */ = {
+			isa = PBXGroup;
+			children = (
+				420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */,
+				420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */,
+			);
+			path = ControlOpenSwitch;
+			sourceTree = "<group>";
+		};
+		420396382EF16A4700C9DF74 /* OpenEntity */ = {
+			isa = PBXGroup;
+			children = (
+				420396212EF16A4700C9DF74 /* ControlOpenCamera */,
+				420396242EF16A4700C9DF74 /* ControlOpenCoverEntity */,
+				420396282EF16A4700C9DF74 /* ControlOpenEntity */,
+				4203962B2EF16A4700C9DF74 /* ControlOpenInputBoolean */,
+				4203962E2EF16A4700C9DF74 /* ControlOpenLight */,
+				420396312EF16A4700C9DF74 /* ControlOpenLock */,
+				420396342EF16A4700C9DF74 /* ControlOpenSensor */,
+				420396372EF16A4700C9DF74 /* ControlOpenSwitch */,
+			);
+			path = OpenEntity;
+			sourceTree = "<group>";
+		};
 		420461672C8F29290062E89F /* Light */ = {
 			isa = PBXGroup;
 			children = (
@@ -4429,8 +4539,8 @@
 		422368882D40F965005911E4 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
-				420395C02EF15DAA00C9DF74 /* OpenEntity */,
-				420395A22EF15D8C00C9DF74 /* Button */,
+				420396382EF16A4700C9DF74 /* OpenEntity */,
+				4203961A2EF16A4700C9DF74 /* Button */,
 				42C101252CD3DAAA0012BA78 /* Cover */,
 				426CBB682C9C5426003CA3AC /* Switch */,
 				420461672C8F29290062E89F /* Light */,
@@ -6769,10 +6879,6 @@
 			dependencies = (
 				1171507E24DFCE0D0065E874 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				420395A22EF15D8C00C9DF74 /* Button */,
-				420395C02EF15DAA00C9DF74 /* OpenEntity */,
-			);
 			name = "Extensions-Widgets";
 			productName = WidgetsExtension;
 			productReference = 1171506924DFCDE60065E874 /* HomeAssistant-Extensions-Widgets.appex */;
@@ -7325,7 +7431,7 @@
 			packageReferences = (
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
-				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
+				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -7850,13 +7956,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8061,13 +8163,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8190,13 +8288,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8211,13 +8305,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8291,6 +8381,10 @@
 				4296C3772B91F26A0051B63C /* IntentActionAppEntity.swift in Sources */,
 				42AC94A42CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
 				42F158462CA15C99009C7201 /* ControlSwitch.swift in Sources */,
+				4203961B2EF16A4700C9DF74 /* ButtonIntent.swift in Sources */,
+				4203961C2EF16A4700C9DF74 /* ControlButton.swift in Sources */,
+				4203961D2EF16A4700C9DF74 /* ControlButtonValueProvider.swift in Sources */,
+				4203961E2EF16A4700C9DF74 /* IntentButtonEntity.swift in Sources */,
 				4289DDAF2C85D5C4003591C2 /* ControlScene.swift in Sources */,
 				4273C4872C8857B00065A5B4 /* ControlOpenPage.swift in Sources */,
 				42A2AB802C80751E00C5608D /* ControlAssist.swift in Sources */,
@@ -8299,6 +8393,23 @@
 				403AE9102C2E28B200D48147 /* WidgetGaugeAppIntent.swift in Sources */,
 				42C1012E2CD3DBF00012BA78 /* ControlCover.swift in Sources */,
 				1165705627018C4E003906A7 /* WidgetEmptyView.swift in Sources */,
+				420396392EF16A4700C9DF74 /* ControlOpenCamera.swift in Sources */,
+				4203963A2EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift in Sources */,
+				4203963B2EF16A4700C9DF74 /* ControlOpenCoverEntity.swift in Sources */,
+				4203963C2EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
+				4203963D2EF16A4700C9DF74 /* ControlOpenEntity.swift in Sources */,
+				4203963E2EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift in Sources */,
+				4203963F2EF16A4700C9DF74 /* OpenEntityAppIntent.swift in Sources */,
+				420396402EF16A4700C9DF74 /* ControlOpenInputBoolean.swift in Sources */,
+				420396412EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
+				420396422EF16A4700C9DF74 /* ControlOpenLight.swift in Sources */,
+				420396432EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift in Sources */,
+				420396442EF16A4700C9DF74 /* ControlOpenLock.swift in Sources */,
+				420396452EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift in Sources */,
+				420396462EF16A4700C9DF74 /* ControlOpenSensor.swift in Sources */,
+				420396472EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift in Sources */,
+				420396482EF16A4700C9DF74 /* ControlOpenSwitch.swift in Sources */,
+				420396492EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift in Sources */,
 				3E02C0E82CA7FCF400102131 /* WidgetSensors.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
 				4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */,
@@ -11272,7 +11383,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */ = {
+		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
 		};
@@ -11328,7 +11439,7 @@
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */;
+			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */;
 			productName = SharedPush;
 		};
 		427692E22B98B82500F24321 /* SharedPush */ = {
