@@ -514,7 +514,7 @@ Op afstand wanneer je er klaar voor bent.";
 "onboarding.manual_url_entry.title" = "Wat is je Home Assistant adres?";
 "onboarding.network_input.disclaimer.body" = "Het toevoegen van openbare Wi-Fi-netwerken of het gebruik van meerdere ethernet-/VPN-verbindingen kan onbedoeld informatie over of toegang tot je app of server vrijgeven.";
 "onboarding.network_input.disclaimer.title" = "Zorg ervoor dat je je thuisnetwerk correct instelt.";
-"onboarding.network_input.hardware.input_field.title" = "Hardware Address";
+"onboarding.network_input.hardware.input_field.title" = "Hardware-adres";
 "onboarding.network_input.input_field.placeholder" = "Netwerknaam";
 "onboarding.network_input.input_field.title" = "Naam van het Wi-Fi-netwerk thuis";
 "onboarding.network_input.no_network.alert.body" = "Voer een netwerknaam in om verder te gaan.";
@@ -676,7 +676,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.websocket.status.disconnected.next_retry" = "Volgende poging: %1$@";
 "settings.connection_section.websocket.status.disconnected.retry_count" = "Aantal nieuwe pogingen: %1$li";
 "settings.connection_section.websocket.status.disconnected.title" = "Verbinding verbroken";
-"settings.connection_section.websocket.status.rejected.title" = "Rejected";
+"settings.connection_section.websocket.status.rejected.title" = "Afgewezen";
 "settings.connection_section.websocket.title" = "WebSocket";
 "settings.debugging.critical_section.footer" = "Wees je ervan bewust dat deze handelingen niet ongedaan gemaakt kunnen worden.";
 "settings.debugging.header.subtitle" = "Laten we die 🐞 verhelpen";
@@ -814,8 +814,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.visibility.options.dock_and_menu_bar" = "Dock en menubalk";
 "settings_details.general.visibility.options.menu_bar" = "Menubalk";
 "settings_details.general.visibility.title" = "Toon app in...";
-"settings_details.http.warning.message" = "Unencrypted connections expose your credentials and personal data to potential interception. Always use HTTPS for remote access to protect your privacy and security.";
-"settings_details.http.warning.title" = "Security Warning";
+"settings_details.http.warning.message" = "Niet-versleutelde verbindingen stellen je inloggegevens en persoonlijke informatie bloot aan mogelijke onderschepping. Gebruik altijd HTTPS voor toegang op afstand om je privacy en veiligheid te beschermen.";
+"settings_details.http.warning.title" = "Beveiligingswaarschuwing";
 "settings_details.learn_more" = "Meer informatie";
 "settings_details.legacy_actions.title" = "(Legacy) iOS-acties";
 "settings_details.location.background_refresh.disabled" = "Uitgeschakeld";
@@ -1321,7 +1321,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.max_label_template" = "Max Label-sjabloon";
 "widgets.gauge.parameters.min_label_template" = "Min Label-sjabloon";
 "widgets.gauge.parameters.run_action" = "Actie uitvoeren";
-"widgets.gauge.parameters.run_script" = "Run Script";
+"widgets.gauge.parameters.run_script" = "Script uitvoeren";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
 "widgets.gauge.parameters.value_label_template" = "Waardelabel sjabloon";
