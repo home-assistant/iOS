@@ -36,6 +36,7 @@ public extension String {
         }
         return components.map { component -> String in
             // Pad each component to 2 characters with leading zeros
+            // Components should be 1 or 2 characters for valid MAC addresses
             component.count == 1 ? "0" + component : String(component)
         }.joined(separator: ":")
     }
