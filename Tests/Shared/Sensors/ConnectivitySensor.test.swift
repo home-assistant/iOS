@@ -132,7 +132,7 @@ class ConnectivitySensorTests: XCTestCase {
     func testWifiNoCellular() throws {
         let s = try setUp(
             ssid: "Bob's Burgers Guest Wi-Fi",
-            bssid: "ff:ee:dd:cc:bb:aa",
+            bssid: "ff:ee:dd:cc:bb:a",
             networkType: .wifi,
             cellularNetworkType: nil
         )
@@ -144,7 +144,7 @@ class ConnectivitySensorTests: XCTestCase {
 
         XCTAssertEqual(s.bssid?.UniqueID, "connectivity_bssid")
         XCTAssertEqual(s.bssid?.Name, "BSSID")
-        XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:aa")
+        XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:0a")
         XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
 
         XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
@@ -153,6 +153,20 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.connection?.Icon, "mdi:wifi")
 
         XCTAssertEqual(s.sims.count, 0)
+    }
+
+    func testBSSIDFormattingWithSingleDigitHex() throws {
+        let s = try setUp(
+            ssid: "Test Network",
+            bssid: "18:e8:29:a7:e9:b",
+            networkType: .wifi,
+            cellularNetworkType: nil
+        )
+
+        XCTAssertEqual(s.bssid?.UniqueID, "connectivity_bssid")
+        XCTAssertEqual(s.bssid?.Name, "BSSID")
+        XCTAssertEqual(s.bssid?.State as? String, "18:e8:29:a7:e9:0b")
+        XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
     }
 
     func testWifiAndOneCellularWithUnknownInfo() throws {

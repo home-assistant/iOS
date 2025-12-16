@@ -25,6 +25,21 @@ public extension String {
         }
         return first.uppercased() + dropFirst()
     }
+
+    /// Formats a BSSID MAC address with proper zero-padding for each octet.
+    /// Converts "18:e8:29:a7:e9:b" to "18:e8:29:a7:e9:0b"
+    var formattedBSSID: String {
+        let components = split(separator: ":")
+        guard components.count == 6 else {
+            // Not a valid MAC address format, return as-is
+            return self
+        }
+        return components.map { component -> String in
+            // Pad each component to 2 characters with leading zeros
+            // Components should be 1 or 2 characters for valid MAC addresses
+            component.count == 1 ? "0" + component : String(component)
+        }.joined(separator: ":")
+    }
 }
 
 public extension String? {
