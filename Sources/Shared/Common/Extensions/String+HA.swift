@@ -35,9 +35,8 @@ public extension String {
             return self
         }
         return components.map { component -> String in
-            let hex = String(component)
             // Pad each component to 2 characters with leading zeros
-            return hex.count == 1 ? "0" + hex : hex
+            component.count == 1 ? "0" + component : String(component)
         }.joined(separator: ":")
     }
 }
