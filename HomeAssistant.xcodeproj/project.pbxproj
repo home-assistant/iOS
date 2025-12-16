@@ -3133,9 +3133,35 @@
 		FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListTemplate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		420395E32EF1620100C9DF74 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ControlOpenCamera/ControlOpenCamera.swift,
+				ControlOpenCamera/ControlOpenCameraValueProvider.swift,
+				ControlOpenCoverEntity/ControlOpenCoverEntity.swift,
+				ControlOpenCoverEntity/ControlOpenCoverEntityValueProvider.swift,
+				ControlOpenEntity/ControlOpenEntity.swift,
+				ControlOpenEntity/ControlOpenEntityValueProvider.swift,
+				ControlOpenEntity/OpenEntityAppIntent.swift,
+				ControlOpenInputBoolean/ControlOpenInputBoolean.swift,
+				ControlOpenInputBoolean/ControlOpenInputBooleanValueProvider.swift,
+				ControlOpenLight/ControlOpenLight.swift,
+				ControlOpenLight/ControlOpenLightValueProvider.swift,
+				ControlOpenLock/ControlOpenLock.swift,
+				ControlOpenLock/ControlOpenLockValueProvider.swift,
+				ControlOpenSensor/ControlOpenSensor.swift,
+				ControlOpenSensor/ControlOpenSensorValueProvider.swift,
+				ControlOpenSwitch/ControlOpenSwitch.swift,
+				ControlOpenSwitch/ControlOpenSwitchValueProvider.swift,
+			);
+			target = B657A8E51CA646EB00121384 /* App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		420395A22EF15D8C00C9DF74 /* Button */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Button; sourceTree = "<group>"; };
-		420395C02EF15DAA00C9DF74 /* OpenEntity */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = OpenEntity; sourceTree = "<group>"; };
+		420395C02EF15DAA00C9DF74 /* OpenEntity */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (420395E32EF1620100C9DF74 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OpenEntity; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
