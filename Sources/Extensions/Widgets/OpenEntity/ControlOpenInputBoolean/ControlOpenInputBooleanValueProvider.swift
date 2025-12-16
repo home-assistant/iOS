@@ -54,7 +54,10 @@ struct ControlOpenInputBooleanConfiguration: ControlConfigurationIntent {
     )
 
     @Parameter(
-        title: .init("widgets.controls.open_input_boolean.configuration.parameter.entity", defaultValue: "InputBoolean"),
+        title: .init(
+            "widgets.controls.open_input_boolean.configuration.parameter.entity",
+            defaultValue: "InputBoolean"
+        ),
         optionsProvider: InputBooleanEntityOptionsProvider()
     )
     var entity: HAAppEntityAppIntentEntity?
