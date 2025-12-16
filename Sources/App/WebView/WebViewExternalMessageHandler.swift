@@ -157,6 +157,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             sendExternalBus(message: outgoing)
         }.cauterize()
     }
+
     // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
