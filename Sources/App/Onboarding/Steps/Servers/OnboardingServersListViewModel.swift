@@ -159,6 +159,14 @@ extension OnboardingServersListViewModel: BonjourObserver {
             self?.discoveredInstances.removeAll { $0.bonjourName == name }
         }
     }
+
+    func bonjour(_ bonjour: Bonjour, didEncounterError error: Error) {
+        DispatchQueue.main.async { [weak self] in
+            Current.Log.error("Bonjour discovery error: \(error.localizedDescription)")
+            self?.error = error
+            self?.showError = true
+        }
+    }
 }
 
 extension OnboardingServersListViewModel: SensorObserver {

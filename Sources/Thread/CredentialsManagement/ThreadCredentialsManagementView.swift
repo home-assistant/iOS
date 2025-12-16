@@ -22,6 +22,11 @@ struct ThreadCredentialsManagementView: View {
                 await viewModel.loadCredentials()
             }
         }
+        .alert("", isPresented: $viewModel.showError) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage)
+        }
     }
 
     private var listView: some View {

@@ -11,6 +11,7 @@ protocol AudioPlayerProtocol {
 protocol AudioPlayerDelegate: AnyObject {
     func audioPlayerDidFinishPlaying(_ player: AudioPlayer)
     func volumeIsZero()
+    func audioPlayerDidFailWithError(_ error: Error)
 }
 
 final class AudioPlayer: NSObject, AudioPlayerProtocol {
@@ -32,6 +33,8 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
             }
         } catch {
             Current.Log.error("Failed to setup audio session for audio player: \(error.localizedDescription)")
+            delegate?.audioPlayerDidFailWithError(error)
+            return
         }
 
         let playerItem = AVPlayerItem(url: url)

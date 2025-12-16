@@ -5,6 +5,8 @@ import WidgetKit
 final class WidgetBuilderViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var widgets: [CustomWidget] = []
+    @Published var showError = false
+    @Published var errorMessage = ""
 
     func reloadWidgets() {
         isLoading = true
@@ -21,6 +23,7 @@ final class WidgetBuilderViewModel: ObservableObject {
             widgets = try CustomWidget.widgets()?.sorted(by: { $0.name < $1.name }) ?? []
         } catch {
             Current.Log.error("Failed to load widgets: \(error)")
+            showError(message: "Failed to load widgets: \(error.localizedDescription)")
         }
     }
 
@@ -33,6 +36,7 @@ final class WidgetBuilderViewModel: ObservableObject {
                 loadWidgets()
             } catch {
                 Current.Log.error("Failed to delete custom widget, error: \(error.localizedDescription)")
+                showError(message: "Failed to delete widget: \(error.localizedDescription)")
             }
         }
     }
@@ -45,6 +49,7 @@ final class WidgetBuilderViewModel: ObservableObject {
             loadWidgets()
         } catch {
             Current.Log.error("Failed to delete custom widget, error: \(error.localizedDescription)")
+            showError(message: "Failed to delete widget: \(error.localizedDescription)")
         }
     }
 
@@ -55,7 +60,15 @@ final class WidgetBuilderViewModel: ObservableObject {
             }
         } catch {
             Current.Log.error("Failed to delete all widgets: \(error)")
+            showError(message: "Failed to delete all widgets: \(error.localizedDescription)")
         }
         loadWidgets()
+    }
+
+    private func showError(message: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.errorMessage = message
+            self?.showError = true
+        }
     }
 }

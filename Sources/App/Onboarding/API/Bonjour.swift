@@ -3,6 +3,7 @@ import Foundation
 public protocol BonjourObserver: AnyObject {
     func bonjour(_ bonjour: Bonjour, didAdd instance: DiscoveredHomeAssistant)
     func bonjour(_ bonjour: Bonjour, didRemoveInstanceWithName name: String)
+    func bonjour(_ bonjour: Bonjour, didEncounterError error: Error)
 }
 
 public protocol BonjourProtocol {
@@ -76,6 +77,7 @@ public class Bonjour: NSObject, NetServiceBrowserDelegate, NetServiceDelegate, B
             observer?.bonjour(self, didAdd: discovered)
         } catch {
             Current.Log.error(error)
+            observer?.bonjour(self, didEncounterError: error)
         }
     }
 

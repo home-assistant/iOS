@@ -17,6 +17,8 @@ struct HAThreadNetworkConfig {
 final class ThreadCredentialsManagementViewModel: ObservableObject {
     @Published var configs: [HAThreadNetworkConfig] = []
     @Published var isLoading = false
+    @Published var showError = false
+    @Published var errorMessage = ""
 
     private let threadClientService = Current.matter.threadClientService
 
@@ -33,6 +35,7 @@ final class ThreadCredentialsManagementViewModel: ObservableObject {
             ))
         } catch {
             Current.Log.error("Failed to 'retrieveAllCredentials' from thread Apple Keychain with error: \(error)")
+            showError(message: "Failed to retrieve Thread credentials: \(error.localizedDescription)")
         }
     }
 
@@ -56,12 +59,14 @@ final class ThreadCredentialsManagementViewModel: ObservableObject {
     func deleteCredential(_ credential: ThreadCredential?) {
         guard let credential else {
             Current.Log.error("No credential provided to be deleted")
+            showError(message: "Cannot delete credential: No credential selected")
             return
         }
 
         threadClientService.deleteCredential(macExtendedAddress: credential.macExtendedAddress) { [weak self] error in
             if let error {
                 Current.Log.error("Failed to delete credential with error: \(error)")
+                self?.showError(message: "Failed to delete Thread credential: \(error.localizedDescription)")
             }
             Task.detached {
                 await self?.loadCredentials()
@@ -97,6 +102,13 @@ final class ThreadCredentialsManagementViewModel: ObservableObject {
                     completion(successCount == Current.servers.all.count)
                 }
             }
+        }
+    }
+
+    private func showError(message: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.errorMessage = message
+            self?.showError = true
         }
     }
 }

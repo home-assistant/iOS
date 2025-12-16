@@ -47,6 +47,11 @@ struct WidgetBuilderView: View {
         .onAppear {
             viewModel.loadWidgets()
         }
+        .alert("", isPresented: $viewModel.showError) {
+            Button(L10n.okLabel, role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage)
+        }
     }
 
     private var header: some View {

@@ -151,9 +151,11 @@ final class AssistViewModel: NSObject, ObservableObject {
                 pipelines = cachedPipelineConfig.pipelines
             } else {
                 Current.Log.error("Error loading cached pipelines: No cache found.")
+                showError(message: L10n.Assist.Error.pipelinesResponse)
             }
         } catch {
             Current.Log.error("Error loading cached pipelines: \(error)")
+            showError(message: "Failed to load voice assistant pipelines: \(error.localizedDescription)")
         }
     }
 
@@ -289,5 +291,9 @@ extension AssistViewModel: AudioPlayerDelegate {
 
     func volumeIsZero() {
         startRecordingAgainIfNeeded()
+    }
+
+    func audioPlayerDidFailWithError(_ error: Error) {
+        showError(message: "Audio playback failed: \(error.localizedDescription)")
     }
 }
