@@ -29,7 +29,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         self.improvManager = improvManager
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
+    // swiftlint:disable cyclomatic_complexity
     @MainActor
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let webViewController else {
@@ -157,6 +157,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             sendExternalBus(message: outgoing)
         }.cauterize()
     }
+    // swiftlint:enable cyclomatic_complexity
 
     func showSettingsViewController() {
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
