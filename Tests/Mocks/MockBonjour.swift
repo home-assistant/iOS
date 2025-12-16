@@ -14,4 +14,8 @@ final class MockBonjour: BonjourProtocol {
     func stop() {
         stopCalled = true
     }
+
+    func simulateError(_ error: Error) {
+        observer?.bonjour(Bonjour(), didEncounterError: error)
+    }
 }

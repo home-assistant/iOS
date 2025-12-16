@@ -17,3 +17,9 @@ final class MockAudioPlayer: AudioPlayerProtocol {
         pauseCalled = true
     }
 }
+
+extension MockAudioPlayer {
+    func simulateError(_ error: Error) {
+        delegate?.audioPlayerDidFailWithError(error)
+    }
+}
