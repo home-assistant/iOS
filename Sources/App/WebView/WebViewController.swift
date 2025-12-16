@@ -45,6 +45,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     private var loadActiveURLIfNeededInProgress = false
+    
+    /// The floating action button
+    private var floatingActionButton: UIButton?
 
     /// Handler for messages sent from the webview to the app
     var webViewExternalMessageHandler: WebViewExternalMessageHandlerProtocol = WebViewExternalMessageHandler(
@@ -224,6 +227,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+        setupFloatingActionButton()
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -623,6 +627,101 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         }
 
         statusBarButtonsStack = stackView
+    }
+    
+    // MARK: - Floating Action Button
+    
+    private func setupFloatingActionButton() {
+        // Create the floating button
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Configure appearance
+        button.backgroundColor = .systemBlue
+        button.tintColor = .white
+        button.layer.cornerRadius = 28 // Half of width/height for circular shape
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowRadius = 4
+        
+        // Add an SF Symbol icon (you can change this to any system icon)
+        let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .medium)
+        button.setImage(UIImage(systemName: "play.fill", withConfiguration: config), for: .normal)
+        
+        // Add tap action
+        button.addTarget(self, action: #selector(floatingButtonTapped), for: .touchUpInside)
+        
+        // Add to view
+        view.addSubview(button)
+        
+        // Position in bottom right corner with padding
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: 56),
+            button.heightAnchor.constraint(equalToConstant: 56),
+            button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+        ])
+        
+        floatingActionButton = button
+    }
+    
+    @objc private func floatingButtonTapped() {
+        // Execute JavaScript to click the specific input element
+        // This handles both regular DOM and Shadow DOM elements
+        let script = """
+        (function() {
+            // Helper function to search through shadow DOM recursively
+            function findElementInShadowDOM(selector, root = document) {
+                // Try to find in current root
+                let element = root.querySelector(selector);
+                if (element) return element;
+                
+                // Search through all elements with shadow roots
+                const allElements = root.querySelectorAll('*');
+                for (let el of allElements) {
+                    if (el.shadowRoot) {
+                        element = findElementInShadowDOM(selector, el.shadowRoot);
+                        if (element) return element;
+                    }
+                }
+                return null;
+            }
+            
+            // Search for the input element in both regular DOM and Shadow DOM
+            var element = findElementInShadowDOM('input.mdc-text-field__input[aria-labelledby="label"][type="text"][autocomplete="off"]');
+            
+            if (element) {
+                element.click();
+                element.focus();
+                return 'Element clicked and focused successfully in shadow DOM';
+            } else {
+                // Fallback: try a more generic selector
+                element = findElementInShadowDOM('input.mdc-text-field__input[type="text"]');
+                if (element) {
+                    element.click();
+                    element.focus();
+                    return 'Element found with generic selector and focused';
+                }
+                return 'Element not found in DOM or Shadow DOM';
+            }
+        })();
+        """
+        
+        webView.evaluateJavaScript(script) { result, error in
+            if let error = error {
+                Current.Log.error("Error executing JavaScript: \(error)")
+            } else if let result = result {
+                Current.Log.info("JavaScript result: \(result)")
+            }
+        }
+    }
+    
+    /// Update the target element selector for the floating button
+    /// - Parameter selector: A CSS selector to match the element
+    public func setFloatingButtonTargetSelector(_ selector: String) {
+        // This method allows you to change the selector at runtime if needed
+        // For now, the selector is hardcoded in floatingButtonTapped()
     }
 
     private func openServer(_ server: Server) {
