@@ -103,7 +103,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 action: #selector(pasteContent)
             ),
         ]
-        
+
         // Add find command for iOS 16+
         if #available(iOS 16.0, *) {
             commands.append(UIKeyCommand(
@@ -117,7 +117,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 action: #selector(showFindInteraction)
             ))
         }
-        
+
         return commands
     }
     #endif
@@ -246,7 +246,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
         }
-        
+
         // Enable find interaction for iOS 16+
         if #available(iOS 16.0, *) {
             webView.isFindInteractionEnabled = true

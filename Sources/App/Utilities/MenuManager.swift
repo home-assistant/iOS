@@ -338,7 +338,7 @@ class MenuManager {
                 modifierFlags: [.command]
             ),
         ]
-        
+
         // Add find menu item for iOS 16+
         if #available(iOS 16.0, *) {
             commands.append(UIKeyCommand(
@@ -349,7 +349,7 @@ class MenuManager {
                 modifierFlags: [.command]
             ))
         }
-        
+
         return UIMenu(
             title: "",
             image: nil,
