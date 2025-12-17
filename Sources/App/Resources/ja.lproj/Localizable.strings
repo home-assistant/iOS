@@ -391,7 +391,6 @@
 "menu.help.help" = "%@ ヘルプ";
 "menu.status_item.quit" = "終了する";
 "menu.status_item.toggle" = "トグル %1$@";
-"menu.view.find" = "検索";
 "menu.view.reload_page" = "ページをリロード";
 "navBar.close" = "閉じる";
 "network.error.no_active_url.body" = "コンパニオンアプリの設定を開き、サーバーの設定を確認してください。内部URLは、ローカルネットワークが定義されている場合にのみ使用されます（SSID）。VPNを使用している場合は、外部URLを内部URLと同じに設定してみてください。";

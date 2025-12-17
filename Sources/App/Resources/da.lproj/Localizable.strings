@@ -391,7 +391,6 @@
 "menu.help.help" = "%@-hjælp";
 "menu.status_item.quit" = "Afslut";
 "menu.status_item.toggle" = "Skift %1$@";
-"menu.view.find" = "Find";
 "menu.view.reload_page" = "Genindlæs side";
 "navBar.close" = "Luk";
 "network.error.no_active_url.body" = "Åbn indstillingerne for appen, og tjek dine serverindstillinger. Den interne URL vil kun blive brugt, hvis det lokale netværk er defineret (SSID). Hvis du bruger VPN, kan du prøve at indstille din eksterne URL som den samme som den interne URL.";

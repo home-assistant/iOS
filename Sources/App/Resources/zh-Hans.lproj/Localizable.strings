@@ -391,7 +391,6 @@
 "menu.help.help" = "%@帮助";
 "menu.status_item.quit" = "退出";
 "menu.status_item.toggle" = "切换%1$@";
-"menu.view.find" = "查找";
 "menu.view.reload_page" = "重新加载页面";
 "navBar.close" = "关闭";
 "network.error.no_active_url.body" = "打开配套应用的设置并检查您的服务器设置，仅当定义了本地网络（SSID）时才会使用内部网址，如果您使用 VPN ，请尝试将您的外部网址设置为与内部网址相同。";

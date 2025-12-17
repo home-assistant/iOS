@@ -391,7 +391,6 @@
 "menu.help.help" = "%@ Hilfe";
 "menu.status_item.quit" = "Beenden";
 "menu.status_item.toggle" = "Schalte %1$@ um";
-"menu.view.find" = "Suchen";
 "menu.view.reload_page" = "Seite neu laden";
 "navBar.close" = "Schließen";
 "network.error.no_active_url.body" = "Öffne die Einstellungen der Companion-App und überprüfe deine Servereinstellungen. Die interne URL wird nur verwendet, wenn ein lokales Netzwerk definiert ist (SSID). Wenn du ein VPN verwendest, versuche, deine externe URL auf den gleichen Wert wie die interne URL einzustellen.";

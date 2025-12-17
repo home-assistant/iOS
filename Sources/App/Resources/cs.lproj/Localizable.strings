@@ -391,7 +391,6 @@
 "menu.help.help" = "Nápověda aplikace %@";
 "menu.status_item.quit" = "Ukončit";
 "menu.status_item.toggle" = "Přepnout %1$@";
-"menu.view.find" = "Najít";
 "menu.view.reload_page" = "Znovu načíst stránku";
 "navBar.close" = "Zavřít";
 "network.error.no_active_url.body" = "Otevřete nastavení doprovodné aplikace a zkontrolujte nastavení serveru; interní URL se použije jen v případě, že je definována místní síť (SSID). Pokud používáte VPN, zkuste nastavit externí URL stejnou jako interní URL.";

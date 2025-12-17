@@ -391,7 +391,6 @@
 "menu.help.help" = "%@ 說明";
 "menu.status_item.quit" = "退出";
 "menu.status_item.toggle" = "切換 %1$@";
-"menu.view.find" = "尋找";
 "menu.view.reload_page" = "重新載入頁面";
 "navBar.close" = "關閉";
 "network.error.no_active_url.body" = "開啟 companion App 設定並確認伺服器設定。內部網址僅用於定義區域網路（SSID）時使用。假如使用 VPN 進行設定，則外部網址將與內部網址相同。";

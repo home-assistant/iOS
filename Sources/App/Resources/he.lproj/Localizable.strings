@@ -391,7 +391,6 @@
 "menu.help.help" = "%@ עזרה";
 "menu.status_item.quit" = "הפסק";
 "menu.status_item.toggle" = "החלף את %1$@";
-"menu.view.find" = "מצא";
 "menu.view.reload_page" = "טען מחדש את הדף";
 "navBar.close" = "Close";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";

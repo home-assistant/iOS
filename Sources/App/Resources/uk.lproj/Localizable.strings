@@ -391,7 +391,6 @@
 "menu.help.help" = "%@ Довідка";
 "menu.status_item.quit" = "Quit";
 "menu.status_item.toggle" = "Toggle %1$@";
-"menu.view.find" = "Знайти";
 "menu.view.reload_page" = "Перезавантажити сторінку";
 "navBar.close" = "Close";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";

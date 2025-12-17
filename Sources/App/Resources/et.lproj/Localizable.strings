@@ -391,7 +391,6 @@
 "menu.help.help" = "%@ Abi";
 "menu.status_item.quit" = "Välju";
 "menu.status_item.toggle" = "Muuda %1$@ olekut";
-"menu.view.find" = "Otsi";
 "menu.view.reload_page" = "Taaslae vaade";
 "navBar.close" = "Sulge";
 "network.error.no_active_url.body" = "Ava kaasrakenduse sätted ja kontrolli oma serveri sätteid, sisemist URL-i kasutatakse ainult siis kui kohalik võrk on määratletud (SSID). VPN-i kasutamisel proovi määrata oma väline URL sisemise URL-iga samaks.";
