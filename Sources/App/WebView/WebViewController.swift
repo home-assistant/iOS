@@ -81,7 +81,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     #if targetEnvironment(macCatalyst)
     override var keyCommands: [UIKeyCommand]? {
-        [
+        var commands = [
             UIKeyCommand(
                 input: "c",
                 modifierFlags: [.shift, .command],
@@ -93,6 +93,17 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 action: #selector(pasteContent)
             ),
         ]
+        
+        // Add find command for iOS 16+
+        if #available(iOS 16.0, *) {
+            commands.append(UIKeyCommand(
+                input: "f",
+                modifierFlags: .command,
+                action: #selector(showFindInteraction)
+            ))
+        }
+        
+        return commands
     }
     #endif
 
@@ -219,6 +230,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
+        }
+        
+        // Enable find interaction for iOS 16+
+        if #available(iOS 16.0, *) {
+            webView.isFindInteractionEnabled = true
         }
 
         postOnboardingNotificationPermission()
@@ -862,6 +878,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         // This mimics the user selecting "Paste" from the context menu and allows paste to work properly
         if webView.responds(to: #selector(paste(_:))) {
             webView.perform(#selector(paste(_:)), with: nil)
+        }
+    }
+
+    @available(iOS 16.0, *)
+    @objc private func showFindInteraction() {
+        // Present the find interaction UI
+        if let findInteraction = webView.findInteraction {
+            findInteraction.presentFindNavigator(showingReplace: false)
         }
     }
 

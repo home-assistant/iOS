@@ -329,20 +329,33 @@ class MenuManager {
     }
 
     private func webViewActionsMenu() -> UIMenu {
-        UIMenu(
+        var commands: [UIMenuElement] = [
+            UIKeyCommand(
+                title: L10n.Menu.View.reloadPage,
+                image: nil,
+                action: #selector(refresh),
+                input: "R",
+                modifierFlags: [.command]
+            ),
+        ]
+        
+        // Add find menu item for iOS 16+
+        if #available(iOS 16.0, *) {
+            commands.append(UIKeyCommand(
+                title: "Find",
+                image: nil,
+                action: #selector(showFindInteraction),
+                input: "f",
+                modifierFlags: [.command]
+            ))
+        }
+        
+        return UIMenu(
             title: "",
             image: nil,
             identifier: .haWebViewActions,
             options: .displayInline,
-            children: [
-                UIKeyCommand(
-                    title: L10n.Menu.View.reloadPage,
-                    image: nil,
-                    action: #selector(refresh),
-                    input: "R",
-                    modifierFlags: [.command]
-                ),
-            ]
+            children: commands
         )
     }
 
@@ -423,4 +436,6 @@ class MenuManager {
     // selectors that use responder chain
     @objc private func refresh() {}
     @objc private func updateSensors() {}
+    @available(iOS 16.0, *)
+    @objc private func showFindInteraction() {}
 }
