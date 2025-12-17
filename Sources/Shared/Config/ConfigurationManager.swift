@@ -11,7 +11,7 @@ public final class ConfigurationManager {
     // MARK: - Export
 
     /// Export a configuration to a shareable file
-    public func exportConfiguration<T: ConfigurationExportable>(_ config: T) throws -> URL {
+    public func exportConfiguration(_ config: some ConfigurationExportable) throws -> URL {
         try config.exportToFile()
     }
 

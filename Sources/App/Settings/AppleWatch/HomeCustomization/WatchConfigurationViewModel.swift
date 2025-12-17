@@ -146,7 +146,7 @@ final class WatchConfigurationViewModel: ObservableObject {
     func importConfiguration(from url: URL, completion: @escaping (Bool) -> Void) {
         ConfigurationManager.shared.importConfiguration(from: url) { [weak self] result in
             guard let self else { return }
-            
+
             switch result {
             case .success:
                 loadDatabase()

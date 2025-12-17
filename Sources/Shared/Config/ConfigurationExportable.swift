@@ -6,7 +6,7 @@ import GRDB
 /// Version of the configuration export format
 public enum ConfigurationExportVersion: Int, Codable {
     case v1 = 1
-    
+
     public static var current: ConfigurationExportVersion { .v1 }
 }
 
@@ -15,7 +15,7 @@ public enum ConfigurationType: String, Codable {
     case carPlay = "carplay"
     case watch = "watch"
     case widgets = "widgets"
-    
+
     public var displayName: String {
         switch self {
         case .carPlay:
@@ -26,11 +26,11 @@ public enum ConfigurationType: String, Codable {
             return "Widgets"
         }
     }
-    
+
     public var fileExtension: String {
         "homeassistant"
     }
-    
+
     public func fileName(version: ConfigurationExportVersion = .current) -> String {
         "HomeAssistant-\(displayName)-v\(version.rawValue).\(fileExtension)"
     }
@@ -42,7 +42,7 @@ public struct ConfigurationExport: Codable {
     public let type: ConfigurationType
     public let exportDate: Date
     public let data: Data
-    
+
     public init(version: ConfigurationExportVersion, type: ConfigurationType, data: Data) {
         self.version = version
         self.type = type
@@ -55,10 +55,10 @@ public struct ConfigurationExport: Codable {
 public protocol ConfigurationExportable: Codable, FetchableRecord, PersistableRecord {
     /// The type of configuration
     static var configurationType: ConfigurationType { get }
-    
+
     /// Export the configuration to a file URL
     func exportToFile() throws -> URL
-    
+
     /// Import configuration from file URL
     static func importFromFile(url: URL) throws -> Self
 }
@@ -67,46 +67,46 @@ public extension ConfigurationExportable {
     func exportToFile() throws -> URL {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        
+
         // Encode the actual configuration
         let configData = try encoder.encode(self)
-        
+
         // Create export container
         let exportContainer = ConfigurationExport(
             version: .current,
             type: Self.configurationType,
             data: configData
         )
-        
+
         // Encode the container
         let containerData = try encoder.encode(exportContainer)
-        
+
         // Write to temporary file
         let tempDirectory = FileManager.default.temporaryDirectory
         let fileName = Self.configurationType.fileName()
         let fileURL = tempDirectory.appendingPathComponent(fileName)
-        
+
         try containerData.write(to: fileURL)
         Current.Log.info("Configuration exported to \(fileURL.path)")
-        
+
         return fileURL
     }
-    
+
     static func importFromFile(url: URL) throws -> Self {
         guard url.startAccessingSecurityScopedResource() else {
             throw ConfigurationImportError.securityScopedResourceAccessFailed
         }
-        
+
         defer {
             url.stopAccessingSecurityScopedResource()
         }
-        
+
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
-        
+
         // Decode the container
         let container = try decoder.decode(ConfigurationExport.self, from: data)
-        
+
         // Validate type
         guard container.type == Self.configurationType else {
             throw ConfigurationImportError.incorrectConfigurationType(
@@ -114,17 +114,17 @@ public extension ConfigurationExportable {
                 found: container.type
             )
         }
-        
+
         // Validate version
         guard container.version == .current else {
             throw ConfigurationImportError.unsupportedVersion(container.version)
         }
-        
+
         // Decode the actual configuration
         let configuration = try decoder.decode(Self.self, from: container.data)
-        
+
         Current.Log.info("Configuration imported from \(url.path)")
-        
+
         return configuration
     }
 }
@@ -135,7 +135,7 @@ public enum ConfigurationImportError: LocalizedError {
     case incorrectConfigurationType(expected: ConfigurationType, found: ConfigurationType)
     case unsupportedVersion(ConfigurationExportVersion)
     case invalidFileFormat
-    
+
     public var errorDescription: String? {
         switch self {
         case .securityScopedResourceAccessFailed:

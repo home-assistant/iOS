@@ -77,27 +77,27 @@ class IncomingURLHandler {
                     Current.Log.error("No server found for open camera URL: \(url)")
                     return false
                 }
-                    Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                        .done { webViewController in
-                            let view = WebRTCVideoPlayerView(
-                                server: server,
-                                cameraEntityId: entityId
-                            ).embeddedInHostingController()
-                            view.modalPresentationStyle = .overFullScreen
-                            webViewController.present(view, animated: true)
-                        }
-                case .importConfig:
-                    // homeassistant://import-config?url=file://...
-                    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                          let queryParameters = components.queryItems,
-                          let fileURLString = queryParameters.first(where: { $0.name == "url" })?.value,
-                          let fileURL = URL(string: fileURLString) else {
-                        Current.Log.error("Invalid import config URL: \(url)")
-                        return false
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { webViewController in
+                        let view = WebRTCVideoPlayerView(
+                            server: server,
+                            cameraEntityId: entityId
+                        ).embeddedInHostingController()
+                        view.modalPresentationStyle = .overFullScreen
+                        webViewController.present(view, animated: true)
                     }
-                    
-                    handleConfigurationImport(from: fileURL)
-                case .navigate: // homeassistant://navigate/lovelace/dashboard
+            case .importConfig:
+                // homeassistant://import-config?url=file://...
+                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                      let queryParameters = components.queryItems,
+                      let fileURLString = queryParameters.first(where: { $0.name == "url" })?.value,
+                      let fileURL = URL(string: fileURLString) else {
+                    Current.Log.error("Invalid import config URL: \(url)")
+                    return false
+                }
+
+                handleConfigurationImport(from: fileURL)
+            case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
                 }
@@ -720,19 +720,19 @@ extension IncomingURLHandler {
                 let data = try Data(contentsOf: fileURL)
                 let decoder = JSONDecoder()
                 let container = try decoder.decode(ConfigurationExport.self, from: data)
-                
+
                 // Show confirmation alert
                 let alert = UIAlertController(
                     title: L10n.Config.Import.Confirmation.title(container.type.displayName),
                     message: L10n.Config.Import.Confirmation.message(container.type.displayName),
                     preferredStyle: .alert
                 )
-                
+
                 alert.addAction(UIAlertAction(title: L10n.noLabel, style: .cancel))
                 alert.addAction(UIAlertAction(title: L10n.yesLabel, style: .destructive) { [weak self] _ in
                     self?.performConfigurationImport(from: fileURL, type: container.type)
                 })
-                
+
                 windowController.window?.rootViewController?.present(alert, animated: true)
             } catch {
                 Current.Log.error("Failed to read configuration file: \(error.localizedDescription)")
@@ -748,15 +748,15 @@ extension IncomingURLHandler {
         Task { @MainActor in
             ConfigurationManager.shared.importConfiguration(from: fileURL) { [weak self] result in
                 guard let self else { return }
-                
+
                 switch result {
-                case .success(let importedType):
+                case let .success(importedType):
                     Current.Log.info("\(importedType.displayName) configuration imported successfully")
                     showAlert(
                         title: L10n.Config.Import.Success.title,
                         message: L10n.Config.Import.Success.message(importedType.displayName)
                     )
-                case .failure(let error):
+                case let .failure(error):
                     Current.Log.error("Failed to import configuration: \(error.localizedDescription)")
                     showAlert(
                         title: L10n.errorLabel,
