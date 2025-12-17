@@ -6,6 +6,7 @@ public protocol MagicItemProviderProtocol {
     func loadInformation(completion: @escaping ([String: [HAAppEntity]]) -> Void)
     func loadInformation() async -> [String: [HAAppEntity]]
     func getInfo(for item: MagicItem) -> MagicItem.Info?
+    func migrateItemsIfNeeded(items: [MagicItem]) -> [MagicItem]
 }
 
 final class MagicItemProvider: MagicItemProviderProtocol {
