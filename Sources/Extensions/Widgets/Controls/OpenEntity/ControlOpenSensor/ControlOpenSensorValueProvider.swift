@@ -8,6 +8,7 @@ import WidgetKit
 struct ControlOpenSensorItem {
     let entity: HAAppEntityAppIntentEntity
     let icon: SFSymbolEntity
+    let displayText: String?
 }
 
 @available(iOS 18, *)
@@ -34,7 +35,8 @@ struct ControlOpenSensorValueProvider: AppIntentControlValueProvider {
                 displayString: "",
                 iconName: ""
             ),
-            icon: configuration.icon ?? placeholder().icon
+            icon: configuration.icon ?? placeholder().icon,
+            displayText: configuration.displayText
         )
     }
 
@@ -63,6 +65,10 @@ struct ControlOpenSensorConfiguration: ControlConfigurationIntent {
         title: .init("app_intents.scenes.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }
 
 @available(iOS 18.0, *)
