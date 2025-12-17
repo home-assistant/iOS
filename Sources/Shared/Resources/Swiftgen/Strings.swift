@@ -557,6 +557,42 @@ public enum L10n {
         }
       }
     }
+    public enum Export {
+      public enum Button {
+        /// Share Configuration
+        public static var title: String { return L10n.tr("Localizable", "carPlay.export.button.title") }
+      }
+      public enum Error {
+        /// Failed to export configuration: %@
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "carPlay.export.error.message", String(describing: p1))
+        }
+      }
+    }
+    public enum Import {
+      public enum Button {
+        /// Import Configuration
+        public static var title: String { return L10n.tr("Localizable", "carPlay.import.button.title") }
+      }
+      public enum Confirmation {
+        /// This will replace your current CarPlay configuration. This action cannot be undone.
+        public static var message: String { return L10n.tr("Localizable", "carPlay.import.confirmation.message") }
+        /// Import CarPlay Configuration?
+        public static var title: String { return L10n.tr("Localizable", "carPlay.import.confirmation.title") }
+      }
+      public enum Error {
+        /// Invalid configuration file
+        public static var invalidFile: String { return L10n.tr("Localizable", "carPlay.import.error.invalid_file") }
+        /// Failed to import configuration: %@
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "carPlay.import.error.message", String(describing: p1))
+        }
+      }
+      public enum Success {
+        /// Configuration imported successfully
+        public static var message: String { return L10n.tr("Localizable", "carPlay.import.success.message") }
+      }
+    }
     public enum Labels {
       /// Already added
       public static var alreadyAddedServer: String { return L10n.tr("Localizable", "carPlay.labels.already_added_server") }

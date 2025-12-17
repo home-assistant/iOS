@@ -146,4 +146,67 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     func moveItem(from source: IndexSet, to destination: Int) {
         config.quickAccessItems.move(fromOffsets: source, toOffset: destination)
     }
+
+    // MARK: - Export/Import
+
+    func exportConfiguration() -> URL? {
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            let data = try encoder.encode(config)
+
+            let tempDirectory = FileManager.default.temporaryDirectory
+            let fileName = "CarPlay.homeassistant"
+            let fileURL = tempDirectory.appendingPathComponent(fileName)
+
+            try data.write(to: fileURL)
+            Current.Log.info("CarPlay configuration exported to \(fileURL.path)")
+
+            return fileURL
+        } catch {
+            Current.Log.error("Failed to export CarPlay configuration: \(error.localizedDescription)")
+            showError(message: L10n.CarPlay.Export.Error.message(error.localizedDescription))
+            return nil
+        }
+    }
+
+    @MainActor
+    func importConfiguration(from url: URL, completion: @escaping (Bool) -> Void) {
+        do {
+            guard url.startAccessingSecurityScopedResource() else {
+                showError(message: L10n.CarPlay.Import.Error.invalidFile)
+                completion(false)
+                return
+            }
+
+            defer {
+                url.stopAccessingSecurityScopedResource()
+            }
+
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            var importedConfig = try decoder.decode(CarPlayConfig.self, from: data)
+
+            // Migrate items to match current server IDs
+            importedConfig.quickAccessItems = magicItemProvider.migrateItemsIfNeeded(items: importedConfig.quickAccessItems)
+
+            // Update configuration
+            setConfig(importedConfig)
+
+            // Save to database
+            save { success in
+                if success {
+                    Current.Log.info("CarPlay configuration imported successfully")
+                    completion(true)
+                } else {
+                    Current.Log.error("Failed to save imported configuration")
+                    completion(false)
+                }
+            }
+        } catch {
+            Current.Log.error("Failed to import CarPlay configuration: \(error.localizedDescription)")
+            showError(message: L10n.CarPlay.Import.Error.message(error.localizedDescription))
+            completion(false)
+        }
+    }
 }

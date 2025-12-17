@@ -119,6 +119,14 @@
 "carPlay.debug.delete_db.alert.title" = "Are you sure you want to delete CarPlay configuration? This can't be reverted";
 "carPlay.debug.delete_db.button.title" = "Delete CarPlay configuration";
 "carPlay.debug.delete_db.reset.title" = "Reset configuration";
+"carPlay.export.button.title" = "Share Configuration";
+"carPlay.export.error.message" = "Failed to export configuration: %@";
+"carPlay.import.button.title" = "Import Configuration";
+"carPlay.import.confirmation.title" = "Import CarPlay Configuration?";
+"carPlay.import.confirmation.message" = "This will replace your current CarPlay configuration. This action cannot be undone.";
+"carPlay.import.error.message" = "Failed to import configuration: %@";
+"carPlay.import.error.invalid_file" = "Invalid configuration file";
+"carPlay.import.success.message" = "Configuration imported successfully";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";
