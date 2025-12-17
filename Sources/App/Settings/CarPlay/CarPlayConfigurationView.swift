@@ -61,7 +61,7 @@ struct CarPlayConfigurationView: View {
             }
             .fileImporter(
                 isPresented: $showImportPicker,
-                allowedContentTypes: [.init(filenameExtension: "homeassistant") ?? .data],
+                allowedContentTypes: [.init(filenameExtension: "homeassistant") ?? .json],
                 allowsMultipleSelection: false
             ) { result in
                 switch result {

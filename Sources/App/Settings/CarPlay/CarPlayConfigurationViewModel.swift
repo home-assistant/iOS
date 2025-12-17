@@ -200,6 +200,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
                     completion(true)
                 } else {
                     Current.Log.error("Failed to save imported configuration")
+                    showError(message: L10n.CarPlay.Import.Error.message("Failed to save configuration"))
                     completion(false)
                 }
             }
