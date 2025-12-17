@@ -725,6 +725,23 @@
 		426490772C0F2403002155CC /* WatchAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490762C0F2403002155CC /* WatchAudioRecorder.swift */; };
 		4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4291068B2BA9D79500D452F9 /* AudioPlayer.swift */; };
 		426740A92B17391000C1DD73 /* Data+Hexadecimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426740A72B17390A00C1DD73 /* Data+Hexadecimal.swift */; };
+		426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396352EF16A4700C9DF74 /* ControlOpenSwitch.swift */; };
+		426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396232EF16A4700C9DF74 /* ControlOpenCoverEntityValueProvider.swift */; };
+		426AB2362EF2A7D400FD5D46 /* ControlOpenInputBooleanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962A2EF16A4700C9DF74 /* ControlOpenInputBooleanValueProvider.swift */; };
+		426AB2372EF2A7D400FD5D46 /* ControlOpenCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203961F2EF16A4700C9DF74 /* ControlOpenCamera.swift */; };
+		426AB2382EF2A7D400FD5D46 /* ControlOpenLockValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396302EF16A4700C9DF74 /* ControlOpenLockValueProvider.swift */; };
+		426AB2392EF2A7D400FD5D46 /* ControlOpenLightValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962D2EF16A4700C9DF74 /* ControlOpenLightValueProvider.swift */; };
+		426AB23A2EF2A7D400FD5D46 /* ControlOpenSensorValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396332EF16A4700C9DF74 /* ControlOpenSensorValueProvider.swift */; };
+		426AB23B2EF2A7D400FD5D46 /* ControlOpenSwitchValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396362EF16A4700C9DF74 /* ControlOpenSwitchValueProvider.swift */; };
+		426AB23C2EF2A7D400FD5D46 /* ControlOpenCoverEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396222EF16A4700C9DF74 /* ControlOpenCoverEntity.swift */; };
+		426AB23D2EF2A7D400FD5D46 /* ControlOpenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396252EF16A4700C9DF74 /* ControlOpenEntity.swift */; };
+		426AB23E2EF2A7D400FD5D46 /* ControlOpenCameraValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396202EF16A4700C9DF74 /* ControlOpenCameraValueProvider.swift */; };
+		426AB23F2EF2A7D400FD5D46 /* ControlOpenInputBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396292EF16A4700C9DF74 /* ControlOpenInputBoolean.swift */; };
+		426AB2402EF2A7D400FD5D46 /* ControlOpenSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396322EF16A4700C9DF74 /* ControlOpenSensor.swift */; };
+		426AB2412EF2A7D400FD5D46 /* ControlOpenLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962F2EF16A4700C9DF74 /* ControlOpenLock.swift */; };
+		426AB2422EF2A7D400FD5D46 /* OpenEntityAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396272EF16A4700C9DF74 /* OpenEntityAppIntent.swift */; };
+		426AB2432EF2A7D400FD5D46 /* ControlOpenLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4203962C2EF16A4700C9DF74 /* ControlOpenLight.swift */; };
+		426AB2442EF2A7D400FD5D46 /* ControlOpenEntityValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396262EF16A4700C9DF74 /* ControlOpenEntityValueProvider.swift */; };
 		426B73E52DCCE2C7003F778E /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C42D393F0E0062D905 /* EntityPicker.swift */; };
 		426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */; };
@@ -7959,9 +7976,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8166,9 +8187,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8291,9 +8316,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8308,9 +8337,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8551,6 +8584,23 @@
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
+				426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */,
+				426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
+				426AB2362EF2A7D400FD5D46 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
+				426AB2372EF2A7D400FD5D46 /* ControlOpenCamera.swift in Sources */,
+				426AB2382EF2A7D400FD5D46 /* ControlOpenLockValueProvider.swift in Sources */,
+				426AB2392EF2A7D400FD5D46 /* ControlOpenLightValueProvider.swift in Sources */,
+				426AB23A2EF2A7D400FD5D46 /* ControlOpenSensorValueProvider.swift in Sources */,
+				426AB23B2EF2A7D400FD5D46 /* ControlOpenSwitchValueProvider.swift in Sources */,
+				426AB23C2EF2A7D400FD5D46 /* ControlOpenCoverEntity.swift in Sources */,
+				426AB23D2EF2A7D400FD5D46 /* ControlOpenEntity.swift in Sources */,
+				426AB23E2EF2A7D400FD5D46 /* ControlOpenCameraValueProvider.swift in Sources */,
+				426AB23F2EF2A7D400FD5D46 /* ControlOpenInputBoolean.swift in Sources */,
+				426AB2402EF2A7D400FD5D46 /* ControlOpenSensor.swift in Sources */,
+				426AB2412EF2A7D400FD5D46 /* ControlOpenLock.swift in Sources */,
+				426AB2422EF2A7D400FD5D46 /* OpenEntityAppIntent.swift in Sources */,
+				426AB2432EF2A7D400FD5D46 /* ControlOpenLight.swift in Sources */,
+				426AB2442EF2A7D400FD5D46 /* ControlOpenEntityValueProvider.swift in Sources */,
 				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
