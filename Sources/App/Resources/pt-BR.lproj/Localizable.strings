@@ -391,6 +391,7 @@
 "menu.help.help" = "%@ Ajuda";
 "menu.status_item.quit" = "Sair";
 "menu.status_item.toggle" = "Alternar %1$@";
+"menu.view.find" = "Localizar";
 "menu.view.reload_page" = "Recarregar página";
 "navBar.close" = "Fechar";
 "network.error.no_active_url.body" = "Abra as configurações do aplicativo complementar e verifique as configurações do seu servidor. A URL interna só será usada se a rede local estiver definida (SSID). Se você estiver usando VPN, tente definir sua URL externa como a mesma que a URL interna.";

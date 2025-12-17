@@ -391,6 +391,7 @@
 "menu.help.help" = "%@ Help";
 "menu.status_item.quit" = "Afsluiten";
 "menu.status_item.toggle" = "Toggle %1$@";
+"menu.view.find" = "Zoeken";
 "menu.view.reload_page" = "Herlaad pagina";
 "navBar.close" = "Sluiten";
 "network.error.no_active_url.body" = "Open de instellingen van de companion-app en controleer de serverinstellingen. De interne URL wordt alleen gebruikt als het lokale netwerk is gedefinieerd (SSID). Als je een VPN gebruikt, probeer dan de externe URL in te stellen op dezelfde waarde als de interne URL.";

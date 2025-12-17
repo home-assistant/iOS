@@ -391,6 +391,7 @@
 "menu.help.help" = "%@ Hjelp";
 "menu.status_item.quit" = "Avslutte";
 "menu.status_item.toggle" = "Veksle %1$@";
+"menu.view.find" = "Søk";
 "menu.view.reload_page" = "Last siden på nytt";
 "navBar.close" = "Lukk";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
