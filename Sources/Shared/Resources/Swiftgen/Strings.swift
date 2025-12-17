@@ -1542,6 +1542,8 @@ public enum L10n {
       }
     }
     public enum View {
+      /// Find
+      public static var find: String { return L10n.tr("Localizable", "menu.view.find") }
       /// Reload Page
       public static var reloadPage: String { return L10n.tr("Localizable", "menu.view.reload_page") }
     }

@@ -342,7 +342,7 @@ class MenuManager {
         // Add find menu item for iOS 16+
         if #available(iOS 16.0, *) {
             commands.append(UIKeyCommand(
-                title: "Find",
+                title: L10n.Menu.View.find,
                 image: nil,
                 action: #selector(showFindInteraction),
                 input: "f",
