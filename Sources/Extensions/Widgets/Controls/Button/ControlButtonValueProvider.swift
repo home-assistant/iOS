@@ -18,7 +18,11 @@ struct ControlButtonValueProvider: AppIntentControlValueProvider {
         item(entity: configuration.entity, iconName: configuration.icon, displayText: configuration.displayText)
     }
 
-    private func item(entity: IntentButtonEntity?, iconName: SFSymbolEntity?, displayText: String?) -> ControlEntityItem {
+    private func item(
+        entity: IntentButtonEntity?,
+        iconName: SFSymbolEntity?,
+        displayText: String?
+    ) -> ControlEntityItem {
         let placeholder = placeholder()
         if let entity {
             return .init(

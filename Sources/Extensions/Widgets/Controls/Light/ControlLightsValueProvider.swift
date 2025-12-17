@@ -28,18 +28,38 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
         }
         let isOn = state == ControlEntityProvider.States.on.rawValue
         let icon = isOn ? configuration.icon : configuration.offStateIcon
-        return item(light: configuration.light, value: isOn, iconName: icon, displayText: configuration.displayText)
+        return item(
+            light: configuration.light,
+            value: isOn,
+            iconName: icon,
+            displayText: configuration.displayText
+        )
     }
 
     func placeholder(for configuration: ControlLightsConfiguration) -> ControlEntityItem {
-        item(light: configuration.light, value: nil, iconName: configuration.icon, displayText: configuration.displayText)
+        item(
+            light: configuration.light,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
     func previewValue(configuration: ControlLightsConfiguration) -> ControlEntityItem {
-        item(light: configuration.light, value: nil, iconName: configuration.icon, displayText: configuration.displayText)
+        item(
+            light: configuration.light,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
-    private func item(light: IntentLightEntity?, value: Bool?, iconName: SFSymbolEntity?, displayText: String?) -> ControlEntityItem {
+    private func item(
+        light: IntentLightEntity?,
+        value: Bool?,
+        iconName: SFSymbolEntity?,
+        displayText: String?
+    ) -> ControlEntityItem {
         let placeholder = placeholder(value: value)
         if let light {
             return .init(

@@ -25,14 +25,29 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
     }
 
     func placeholder(for configuration: ControlCoverConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.openIcon, displayText: configuration.displayText)
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.openIcon,
+            displayText: configuration.displayText
+        )
     }
 
     func previewValue(configuration: ControlCoverConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.openIcon, displayText: configuration.displayText)
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.openIcon,
+            displayText: configuration.displayText
+        )
     }
 
-    private func item(entity: IntentCoverEntity?, value: Bool?, iconName: SFSymbolEntity?, displayText: String?) -> ControlEntityItem {
+    private func item(
+        entity: IntentCoverEntity?,
+        value: Bool?,
+        iconName: SFSymbolEntity?,
+        displayText: String?
+    ) -> ControlEntityItem {
         let placeholder = placeholder(value: value)
         if let entity {
             return .init(

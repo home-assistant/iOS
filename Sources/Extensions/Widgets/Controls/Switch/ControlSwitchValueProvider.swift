@@ -19,18 +19,38 @@ struct ControlSwitchValueProvider: AppIntentControlValueProvider {
 
         let isOn = state == ControlEntityProvider.States.on.rawValue
 
-        return item(entity: configuration.entity, value: isOn, iconName: configuration.icon, displayText: configuration.displayText)
+        return item(
+            entity: configuration.entity,
+            value: isOn,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
     func placeholder(for configuration: ControlSwitchConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.icon, displayText: configuration.displayText)
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
     func previewValue(configuration: ControlSwitchConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.icon, displayText: configuration.displayText)
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
-    private func item(entity: IntentSwitchEntity?, value: Bool?, iconName: SFSymbolEntity?, displayText: String?) -> ControlEntityItem {
+    private func item(
+        entity: IntentSwitchEntity?,
+        value: Bool?,
+        iconName: SFSymbolEntity?,
+        displayText: String?
+    ) -> ControlEntityItem {
         let placeholder = placeholder(value: value)
         if let entity {
             return .init(
