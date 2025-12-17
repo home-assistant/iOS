@@ -55,12 +55,63 @@ struct CarPlayConfigExportImportTests {
         )
     }
 
-    @Test func testCarPlayConfigFileExtension() throws {
-        let fileName = "CarPlay.homeassistant"
-        let tempDirectory = FileManager.default.temporaryDirectory
-        let fileURL = tempDirectory.appendingPathComponent(fileName)
+    @Test func testConfigurationExportFormat() throws {
+        // Create a test configuration
+        let config = CarPlayConfig(
+            id: "carplay-config",
+            tabs: [.quickAccess, .areas],
+            quickAccessItems: [
+                .init(
+                    id: "script.test",
+                    serverId: "test-server",
+                    type: .script
+                ),
+            ]
+        )
 
-        #expect(fileURL.pathExtension == "homeassistant", "File extension should be homeassistant")
-        #expect(fileURL.lastPathComponent == fileName, "File name should match")
+        // Encode configuration
+        let configEncoder = JSONEncoder()
+        let configData = try configEncoder.encode(config)
+
+        // Create export container
+        let exportContainer = ConfigurationExport(
+            version: .v1,
+            type: .carPlay,
+            data: configData
+        )
+
+        // Encode container
+        let containerEncoder = JSONEncoder()
+        containerEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let containerData = try containerEncoder.encode(exportContainer)
+
+        #expect(containerData.count > 0, "Container data should not be empty")
+
+        // Decode and verify
+        let decoder = JSONDecoder()
+        let decodedContainer = try decoder.decode(ConfigurationExport.self, from: containerData)
+
+        #expect(decodedContainer.version == .v1, "Version should be v1")
+        #expect(decodedContainer.type == .carPlay, "Type should be carPlay")
+        #expect(decodedContainer.data.count > 0, "Config data should not be empty")
+
+        // Decode the inner configuration
+        let decodedConfig = try decoder.decode(CarPlayConfig.self, from: decodedContainer.data)
+        #expect(decodedConfig.id == config.id, "Config ID should match")
+        #expect(decodedConfig.tabs == config.tabs, "Tabs should match")
+    }
+
+    @Test func testConfigurationTypeFileName() throws {
+        let carPlayFileName = ConfigurationType.carPlay.fileName()
+        #expect(carPlayFileName == "HomeAssistant-CarPlay-v1.homeassistant", "CarPlay filename should be versioned")
+
+        let watchFileName = ConfigurationType.watch.fileName()
+        #expect(watchFileName == "HomeAssistant-Apple Watch-v1.homeassistant", "Watch filename should be versioned")
+
+        let widgetsFileName = ConfigurationType.widgets.fileName()
+        #expect(
+            widgetsFileName == "HomeAssistant-Widgets-v1.homeassistant",
+            "Widgets filename should be versioned"
+        )
     }
 }
