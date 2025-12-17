@@ -8,6 +8,7 @@ import WidgetKit
 struct ControlOpenPageItem {
     let page: PageAppEntity
     let icon: SFSymbolEntity
+    let displayText: String?
 }
 
 @available(iOS 18, *)
@@ -27,7 +28,8 @@ struct ControlOpenPageValueProvider: AppIntentControlValueProvider {
     private func item(configuration: ControlOpenPageConfiguration) -> ControlOpenPageItem {
         .init(
             page: configuration.page ?? placeholder().page,
-            icon: configuration.icon ?? placeholder().icon
+            icon: configuration.icon ?? placeholder().icon,
+            displayText: configuration.displayText
         )
     }
 
@@ -44,7 +46,8 @@ struct ControlOpenPageValueProvider: AppIntentControlValueProvider {
                 ),
                 serverId: UUID().uuidString
             ),
-            icon: .init(id: SFSymbol.rectangleAndPaperclip.rawValue)
+            icon: .init(id: SFSymbol.rectangleAndPaperclip.rawValue),
+            displayText: nil
         )
     }
 }
@@ -65,4 +68,8 @@ struct ControlOpenPageConfiguration: ControlConfigurationIntent {
         title: .init("app_intents.scenes.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }

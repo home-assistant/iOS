@@ -24,7 +24,7 @@ struct ControlScene: ControlWidget {
                 return intent
             }()) {
                 // ControlWidget can only display SF Symbol
-                Label(template.intentSceneEntity.displayString, systemImage: template.icon.id)
+                Label(template.displayText ?? template.intentSceneEntity.displayString, systemImage: template.icon.id)
             }
             .tint(.haPrimary)
         }
