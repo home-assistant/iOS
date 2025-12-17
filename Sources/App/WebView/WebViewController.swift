@@ -92,6 +92,16 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 modifierFlags: [.shift, .command],
                 action: #selector(pasteContent)
             ),
+            UIKeyCommand(
+                input: "c",
+                modifierFlags: .command,
+                action: #selector(copyCurrentSelectedContent)
+            ),
+            UIKeyCommand(
+                input: "v",
+                modifierFlags: .command,
+                action: #selector(pasteContent)
+            ),
         ]
         
         // Add find command for iOS 16+
@@ -99,6 +109,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
             commands.append(UIKeyCommand(
                 input: "f",
                 modifierFlags: .command,
+                action: #selector(showFindInteraction)
+            ))
+            commands.append(UIKeyCommand(
+                input: "f",
+                modifierFlags: [.shift, .command],
                 action: #selector(showFindInteraction)
             ))
         }
