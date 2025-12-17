@@ -127,6 +127,10 @@
 "carPlay.import.error.message" = "Failed to import configuration: %@";
 "carPlay.import.error.invalid_file" = "Invalid configuration file";
 "carPlay.import.success.message" = "Configuration imported successfully";
+"config.import.confirmation.title" = "Import %@ Configuration?";
+"config.import.confirmation.message" = "This will replace your current %@ configuration. This action cannot be undone.";
+"config.import.success.title" = "Success";
+"config.import.success.message" = "%@ configuration imported successfully";
 "carPlay.labels.already_added_server" = "Already added";
 "carPlay.labels.empty_domain_list" = "No domains available";
 "carPlay.labels.no_servers_available" = "No servers available. Add a server in the app.";

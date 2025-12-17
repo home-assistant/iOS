@@ -752,6 +752,29 @@ public enum L10n {
     }
   }
 
+  public enum Config {
+    public enum Import {
+      public enum Confirmation {
+        /// This will replace your current %@ configuration. This action cannot be undone.
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "config.import.confirmation.message", String(describing: p1))
+        }
+        /// Import %@ Configuration?
+        public static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "config.import.confirmation.title", String(describing: p1))
+        }
+      }
+      public enum Success {
+        /// %@ configuration imported successfully
+        public static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "config.import.success.message", String(describing: p1))
+        }
+        /// Success
+        public static var title: String { return L10n.tr("Localizable", "config.import.success.title") }
+      }
+    }
+  }
+
   public enum ClError {
     public enum Description {
       /// Deferred mode is not supported for the requested accuracy.

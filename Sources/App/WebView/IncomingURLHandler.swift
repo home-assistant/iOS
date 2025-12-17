@@ -723,8 +723,8 @@ extension IncomingURLHandler {
                 
                 // Show confirmation alert
                 let alert = UIAlertController(
-                    title: "Import \(container.type.displayName) Configuration?",
-                    message: "This will replace your current \(container.type.displayName) configuration. This action cannot be undone.",
+                    title: L10n.Config.Import.Confirmation.title(container.type.displayName),
+                    message: L10n.Config.Import.Confirmation.message(container.type.displayName),
                     preferredStyle: .alert
                 )
                 
@@ -753,8 +753,8 @@ extension IncomingURLHandler {
                 case .success(let importedType):
                     Current.Log.info("\(importedType.displayName) configuration imported successfully")
                     showAlert(
-                        title: "Success",
-                        message: "\(importedType.displayName) configuration imported successfully"
+                        title: L10n.Config.Import.Success.title,
+                        message: L10n.Config.Import.Success.message(importedType.displayName)
                     )
                 case .failure(let error):
                     Current.Log.error("Failed to import configuration: \(error.localizedDescription)")

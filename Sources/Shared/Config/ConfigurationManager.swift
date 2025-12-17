@@ -33,7 +33,7 @@ public final class ConfigurationManager {
             case .watch:
                 try importWatchConfiguration(from: url, completion: completion)
             case .widgets:
-                try importWidgetsConfiguration(from: url, completion: completion)
+                try importWidgetConfiguration(from: url, completion: completion)
             }
         } catch {
             Current.Log.error("Failed to import configuration: \(error.localizedDescription)")
@@ -82,7 +82,7 @@ public final class ConfigurationManager {
     }
 
     @MainActor
-    private func importWidgetsConfiguration(
+    private func importWidgetConfiguration(
         from url: URL,
         completion: @escaping (Result<ConfigurationType, Error>) -> Void
     ) throws {

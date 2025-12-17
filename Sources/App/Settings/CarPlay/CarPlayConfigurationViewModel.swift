@@ -175,5 +175,4 @@ final class CarPlayConfigurationViewModel: ObservableObject {
             }
         }
     }
-    }
 }
