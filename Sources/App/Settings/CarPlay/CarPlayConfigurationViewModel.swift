@@ -151,18 +151,7 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     func exportConfiguration() -> URL? {
         do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            let data = try encoder.encode(config)
-
-            let tempDirectory = FileManager.default.temporaryDirectory
-            let fileName = "CarPlay.homeassistant"
-            let fileURL = tempDirectory.appendingPathComponent(fileName)
-
-            try data.write(to: fileURL)
-            Current.Log.info("CarPlay configuration exported to \(fileURL.path)")
-
-            return fileURL
+            return try ConfigurationManager.shared.exportConfiguration(config)
         } catch {
             Current.Log.error("Failed to export CarPlay configuration: \(error.localizedDescription)")
             showError(message: L10n.CarPlay.Export.Error.message(error.localizedDescription))
@@ -172,42 +161,19 @@ final class CarPlayConfigurationViewModel: ObservableObject {
 
     @MainActor
     func importConfiguration(from url: URL, completion: @escaping (Bool) -> Void) {
-        do {
-            guard url.startAccessingSecurityScopedResource() else {
-                showError(message: L10n.CarPlay.Import.Error.invalidFile)
+        ConfigurationManager.shared.importConfiguration(from: url) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success:
+                loadDatabase()
+                completion(true)
+            case let .failure(error):
+                Current.Log.error("Failed to import CarPlay configuration: \(error.localizedDescription)")
+                showError(message: L10n.CarPlay.Import.Error.message(error.localizedDescription))
                 completion(false)
-                return
             }
-
-            defer {
-                url.stopAccessingSecurityScopedResource()
-            }
-
-            let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            var importedConfig = try decoder.decode(CarPlayConfig.self, from: data)
-
-            // Migrate items to match current server IDs
-            importedConfig.quickAccessItems = magicItemProvider.migrateItemsIfNeeded(items: importedConfig.quickAccessItems)
-
-            // Update configuration
-            setConfig(importedConfig)
-
-            // Save to database
-            save { success in
-                if success {
-                    Current.Log.info("CarPlay configuration imported successfully")
-                    completion(true)
-                } else {
-                    Current.Log.error("Failed to save imported configuration")
-                    showError(message: L10n.CarPlay.Import.Error.message("Failed to save configuration"))
-                    completion(false)
-                }
-            }
-        } catch {
-            Current.Log.error("Failed to import CarPlay configuration: \(error.localizedDescription)")
-            showError(message: L10n.CarPlay.Import.Error.message(error.localizedDescription))
-            completion(false)
         }
+    }
     }
 }

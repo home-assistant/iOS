@@ -129,4 +129,33 @@ final class WatchConfigurationViewModel: ObservableObject {
             self?.showError = true
         }
     }
+
+    // MARK: - Export/Import
+
+    func exportConfiguration() -> URL? {
+        do {
+            return try ConfigurationManager.shared.exportConfiguration(watchConfig)
+        } catch {
+            Current.Log.error("Failed to export Watch configuration: \(error.localizedDescription)")
+            showError(message: "Failed to export configuration: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    @MainActor
+    func importConfiguration(from url: URL, completion: @escaping (Bool) -> Void) {
+        ConfigurationManager.shared.importConfiguration(from: url) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success:
+                loadDatabase()
+                completion(true)
+            case let .failure(error):
+                Current.Log.error("Failed to import Watch configuration: \(error.localizedDescription)")
+                showError(message: "Failed to import configuration: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
+    }
 }

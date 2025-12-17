@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equatable {
+public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equatable, ConfigurationExportable {
     public static var carPlayConfigId = "carplay-config"
     public var id = CarPlayConfig.carPlayConfigId
     public var tabs: [CarPlayTab] = [.quickAccess, .areas, .domains, .settings]
@@ -21,6 +21,10 @@ public struct CarPlayConfig: Codable, FetchableRecord, PersistableRecord, Equata
             try CarPlayConfig.fetchOne(db)
         })
     }
+
+    // MARK: - ConfigurationExportable
+
+    public static var configurationType: ConfigurationType { .carPlay }
 }
 
 public enum CarPlayTab: String, Codable, CaseIterable, DatabaseValueConvertible, Equatable {

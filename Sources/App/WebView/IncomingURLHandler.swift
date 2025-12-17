@@ -24,6 +24,7 @@ class IncomingURLHandler {
         case invite
         case createCustomWidget = "createcustomwidget"
         case camera
+        case importConfig = "import-config"
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -76,16 +77,27 @@ class IncomingURLHandler {
                     Current.Log.error("No server found for open camera URL: \(url)")
                     return false
                 }
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                    .done { webViewController in
-                        let view = WebRTCVideoPlayerView(
-                            server: server,
-                            cameraEntityId: entityId
-                        ).embeddedInHostingController()
-                        view.modalPresentationStyle = .overFullScreen
-                        webViewController.present(view, animated: true)
+                    Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                        .done { webViewController in
+                            let view = WebRTCVideoPlayerView(
+                                server: server,
+                                cameraEntityId: entityId
+                            ).embeddedInHostingController()
+                            view.modalPresentationStyle = .overFullScreen
+                            webViewController.present(view, animated: true)
+                        }
+                case .importConfig:
+                    // homeassistant://import-config?url=file://...
+                    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                          let queryParameters = components.queryItems,
+                          let fileURLString = queryParameters.first(where: { $0.name == "url" })?.value,
+                          let fileURL = URL(string: fileURLString) else {
+                        Current.Log.error("Invalid import config URL: \(url)")
+                        return false
                     }
-            case .navigate: // homeassistant://navigate/lovelace/dashboard
+                    
+                    handleConfigurationImport(from: fileURL)
+                case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
                 }
@@ -699,5 +711,59 @@ extension IncomingURLHandler {
         )
 
         api.HandleAction(actionID: actionID, source: source).cauterize()
+    }
+
+    private func handleConfigurationImport(from fileURL: URL) {
+        Task { @MainActor in
+            do {
+                // Detect configuration type
+                let data = try Data(contentsOf: fileURL)
+                let decoder = JSONDecoder()
+                let container = try decoder.decode(ConfigurationExport.self, from: data)
+                
+                // Show confirmation alert
+                let alert = UIAlertController(
+                    title: "Import \(container.type.displayName) Configuration?",
+                    message: "This will replace your current \(container.type.displayName) configuration. This action cannot be undone.",
+                    preferredStyle: .alert
+                )
+                
+                alert.addAction(UIAlertAction(title: L10n.noLabel, style: .cancel))
+                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: .destructive) { [weak self] _ in
+                    self?.performConfigurationImport(from: fileURL, type: container.type)
+                })
+                
+                windowController.window?.rootViewController?.present(alert, animated: true)
+            } catch {
+                Current.Log.error("Failed to read configuration file: \(error.localizedDescription)")
+                showAlert(
+                    title: L10n.errorLabel,
+                    message: "Failed to read configuration file: \(error.localizedDescription)"
+                )
+            }
+        }
+    }
+
+    private func performConfigurationImport(from fileURL: URL, type: ConfigurationType) {
+        Task { @MainActor in
+            ConfigurationManager.shared.importConfiguration(from: fileURL) { [weak self] result in
+                guard let self else { return }
+                
+                switch result {
+                case .success(let importedType):
+                    Current.Log.info("\(importedType.displayName) configuration imported successfully")
+                    showAlert(
+                        title: "Success",
+                        message: "\(importedType.displayName) configuration imported successfully"
+                    )
+                case .failure(let error):
+                    Current.Log.error("Failed to import configuration: \(error.localizedDescription)")
+                    showAlert(
+                        title: L10n.errorLabel,
+                        message: error.localizedDescription
+                    )
+                }
+            }
+        }
     }
 }
