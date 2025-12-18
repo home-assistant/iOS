@@ -901,6 +901,7 @@
 		42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */; };
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
 		42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */; };
+		34B9A05869D44D74971D84AB /* WebViewLoadingStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0D104FC41044E1891B6DE6 /* WebViewLoadingStateView.swift */; };
 		42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
@@ -2607,6 +2608,7 @@
 		42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewSettingsUpdateReason.swift; sourceTree = "<group>"; };
 		42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerProtocol.swift; sourceTree = "<group>"; };
 		42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewEmptyStateView.swift; sourceTree = "<group>"; };
+		8F0D104FC41044E1891B6DE6 /* WebViewLoadingStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewLoadingStateView.swift; sourceTree = "<group>"; };
 		42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSettingsDestination.swift; sourceTree = "<group>"; };
 		42B19BD02D4A358B00B3262B /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
@@ -5553,6 +5555,7 @@
 				42F73F582E264A7A00B704A9 /* StatusBarViews */,
 				429BEA192D102F3A00F070F9 /* ConnectionErrorDetailsView.swift */,
 				42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */,
+				8F0D104FC41044E1891B6DE6 /* WebViewLoadingStateView.swift */,
 				42E5542C2E128AE4008A160D /* ServerPickerView.swift */,
 			);
 			path = Views;
@@ -8817,6 +8820,7 @@
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
 				42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */,
+				34B9A05869D44D74971D84AB /* WebViewLoadingStateView.swift in Sources */,
 				42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */,
 				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
