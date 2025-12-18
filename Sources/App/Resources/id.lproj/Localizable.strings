@@ -391,6 +391,7 @@
 "menu.help.help" = "Bantuan %@";
 "menu.status_item.quit" = "Keluar";
 "menu.status_item.toggle" = "Aktifkan/Nonaktifkan %1$@";
+"menu.view.find" = "Find";
 "menu.view.reload_page" = "Muat Ulang Halaman";
 "navBar.close" = "Tutup";
 "network.error.no_active_url.body" = "Buka pengaturan aplikasi pendamping dan periksa pengaturan server Anda, URL internal hanya akan digunakan jika jaringan lokal ditentukan (menggunakan pengenal SSID Wi-Fi),. Jika Anda menggunakan VPN, coba atur URL eksternal agar sama dengan URL internal.";

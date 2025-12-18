@@ -391,6 +391,7 @@
 "menu.help.help" = "%@ Aiuto";
 "menu.status_item.quit" = "Esci dall'app";
 "menu.status_item.toggle" = "Attiva/disattiva %1$@";
+"menu.view.find" = "Find";
 "menu.view.reload_page" = "Ricarica la pagina";
 "navBar.close" = "Chiudi";
 "network.error.no_active_url.body" = "Apri le impostazioni dell'app complementare e controlla le impostazioni del server: l'URL interno verrà utilizzato solo se è definita una rete locale (SSID); se stai utilizzando una VPN, prova a impostare l'URL esterno come quello interno.";

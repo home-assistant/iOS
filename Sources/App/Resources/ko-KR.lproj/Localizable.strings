@@ -391,6 +391,7 @@
 "menu.help.help" = "%@ 도움말";
 "menu.status_item.quit" = "종료";
 "menu.status_item.toggle" = "%1$@ 토글";
+"menu.view.find" = "Find";
 "menu.view.reload_page" = "페이지 새로고침";
 "navBar.close" = "닫기";
 "network.error.no_active_url.body" = "컴패니언 앱 설정을 열고 서버 설정을 확인하세요. 내부 URL은 로컬 네트워크가 정의된 경우에만 사용되며(SSID), VPN을 사용하는 경우 외부 URL을 내부 URL과 동일하게 설정해 보세요.";
