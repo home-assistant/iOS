@@ -71,7 +71,7 @@ struct IntentFanAppEntityQuery: EntityQuery, EntityStringQuery {
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     displayString: entity.name,
-                    iconName: entity.icon ?? SFSymbol.fanFill.rawValue
+                    iconName: entity.icon ?? SFSymbol.fan.rawValue
                 )
             })))
         }
