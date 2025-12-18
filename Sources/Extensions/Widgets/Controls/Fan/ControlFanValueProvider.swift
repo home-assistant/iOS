@@ -67,7 +67,7 @@ struct ControlFanValueProvider: AppIntentControlValueProvider {
 struct ControlFanConfiguration: ControlConfigurationIntent {
     static var title: LocalizedStringResource = .init(
         "widgets.controls.fan.description",
-        defaultValue: "Turn on/off Fan"
+        defaultValue: "Turn on/off your fan"
     )
 
     @Parameter(
