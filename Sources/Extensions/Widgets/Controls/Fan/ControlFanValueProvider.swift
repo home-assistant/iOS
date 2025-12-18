@@ -18,25 +18,45 @@ struct ControlFanValueProvider: AppIntentControlValueProvider {
         }
         let isOn = state == ControlEntityProvider.States.on.rawValue
         let icon = isOn ? configuration.icon : configuration.offStateIcon
-        return item(fan: configuration.fan, value: isOn, iconName: icon)
+        return item(
+            fan: configuration.fan,
+            value: isOn,
+            iconName: icon,
+            displayText: configuration.displayText
+        )
     }
 
     func placeholder(for configuration: ControlFanConfiguration) -> ControlEntityItem {
-        item(fan: configuration.fan, value: nil, iconName: configuration.icon)
+        item(
+            fan: configuration.fan,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
     func previewValue(configuration: ControlFanConfiguration) -> ControlEntityItem {
-        item(fan: configuration.fan, value: nil, iconName: configuration.icon)
+        item(
+            fan: configuration.fan,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
-    private func item(fan: IntentFanEntity?, value: Bool?, iconName: SFSymbolEntity?) -> ControlEntityItem {
+    private func item(
+        fan: IntentFanEntity?,
+        value: Bool?,
+        iconName: SFSymbolEntity?,
+        displayText: String?
+    ) -> ControlEntityItem {
         let placeholder = placeholder(value: value)
         if let fan {
             return .init(
                 id: fan.id,
                 entityId: fan.entityId,
                 serverId: fan.serverId,
-                name: fan.displayString,
+                name: displayText ?? fan.displayString,
                 icon: iconName ?? .init(id: placeholder.iconName),
                 value: value ?? false
             )
@@ -45,7 +65,7 @@ struct ControlFanValueProvider: AppIntentControlValueProvider {
                 id: placeholder.id,
                 entityId: placeholder.entityId,
                 serverId: placeholder.serverId,
-                name: placeholder.displayString,
+                name: displayText ?? placeholder.displayString,
                 icon: .init(id: placeholder.iconName),
                 value: false
             )
@@ -84,4 +104,8 @@ struct ControlFanConfiguration: ControlConfigurationIntent {
         default: SFSymbolEntity(id: SFSymbol.fan.rawValue)
     )
     var offStateIcon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }
