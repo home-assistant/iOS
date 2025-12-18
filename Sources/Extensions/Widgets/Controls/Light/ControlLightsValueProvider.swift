@@ -28,25 +28,45 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
         }
         let isOn = state == ControlEntityProvider.States.on.rawValue
         let icon = isOn ? configuration.icon : configuration.offStateIcon
-        return item(light: configuration.light, value: isOn, iconName: icon)
+        return item(
+            light: configuration.light,
+            value: isOn,
+            iconName: icon,
+            displayText: configuration.displayText
+        )
     }
 
     func placeholder(for configuration: ControlLightsConfiguration) -> ControlEntityItem {
-        item(light: configuration.light, value: nil, iconName: configuration.icon)
+        item(
+            light: configuration.light,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
     func previewValue(configuration: ControlLightsConfiguration) -> ControlEntityItem {
-        item(light: configuration.light, value: nil, iconName: configuration.icon)
+        item(
+            light: configuration.light,
+            value: nil,
+            iconName: configuration.icon,
+            displayText: configuration.displayText
+        )
     }
 
-    private func item(light: IntentLightEntity?, value: Bool?, iconName: SFSymbolEntity?) -> ControlEntityItem {
+    private func item(
+        light: IntentLightEntity?,
+        value: Bool?,
+        iconName: SFSymbolEntity?,
+        displayText: String?
+    ) -> ControlEntityItem {
         let placeholder = placeholder(value: value)
         if let light {
             return .init(
                 id: light.id,
                 entityId: light.entityId,
                 serverId: light.serverId,
-                name: light.displayString,
+                name: displayText ?? light.displayString,
                 icon: iconName ?? .init(id: placeholder.iconName),
                 value: value ?? false
             )
@@ -55,7 +75,7 @@ struct ControlLightsValueProvider: AppIntentControlValueProvider {
                 id: placeholder.id,
                 entityId: placeholder.entityId,
                 serverId: placeholder.serverId,
-                name: placeholder.displayString,
+                name: displayText ?? placeholder.displayString,
                 icon: .init(id: placeholder.iconName),
                 value: false
             )
@@ -91,4 +111,8 @@ struct ControlLightsConfiguration: ControlConfigurationIntent {
         default: SFSymbolEntity(id: SFSymbol.lightbulb.rawValue)
     )
     var offStateIcon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }

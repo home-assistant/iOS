@@ -8,6 +8,7 @@ import WidgetKit
 struct ControlOpenLockItem {
     let entity: HAAppEntityAppIntentEntity
     let icon: SFSymbolEntity
+    let displayText: String?
 }
 
 @available(iOS 18, *)
@@ -34,14 +35,16 @@ struct ControlOpenLockValueProvider: AppIntentControlValueProvider {
                 displayString: "",
                 iconName: ""
             ),
-            icon: configuration.icon ?? placeholder().icon
+            icon: configuration.icon ?? placeholder().icon,
+            displayText: configuration.displayText
         )
     }
 
     private func placeholder() -> ControlOpenLockItem {
         .init(
             entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
-            icon: .init(id: SFSymbol.lock.rawValue)
+            icon: .init(id: SFSymbol.lock.rawValue),
+            displayText: nil
         )
     }
 }
@@ -63,6 +66,10 @@ struct ControlOpenLockConfiguration: ControlConfigurationIntent {
         title: .init("app_intents.scenes.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }
 
 @available(iOS 18.0, *)

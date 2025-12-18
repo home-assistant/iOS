@@ -6,20 +6,21 @@ import WidgetKit
 @available(iOS 18, *)
 struct ControlAssistItem {
     let pipeline: AssistPipelineEntity
+    let displayText: String?
 }
 
 @available(iOS 18, *)
 struct ControlAssistValueProvider: AppIntentControlValueProvider {
     func currentValue(configuration: ControlAssistConfiguration) async throws -> ControlAssistItem {
-        .init(pipeline: configuration.pipeline ?? placeholder())
+        .init(pipeline: configuration.pipeline ?? placeholder(), displayText: configuration.displayText)
     }
 
     func placeholder(for configuration: ControlAssistConfiguration) -> ControlAssistItem {
-        .init(pipeline: configuration.pipeline ?? placeholder())
+        .init(pipeline: configuration.pipeline ?? placeholder(), displayText: configuration.displayText)
     }
 
     func previewValue(configuration: ControlAssistConfiguration) -> ControlAssistItem {
-        .init(pipeline: configuration.pipeline ?? placeholder())
+        .init(pipeline: configuration.pipeline ?? placeholder(), displayText: configuration.displayText)
     }
 
     private func placeholder() -> AssistPipelineEntity {
@@ -35,6 +36,10 @@ struct ControlAssistConfiguration: ControlConfigurationIntent {
         title: .init("app_intents.assist.pipeline.title", defaultValue: "Pipeline")
     )
     var pipeline: AssistPipelineEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }
 
 @available(iOS 16.4, *)

@@ -8,6 +8,7 @@ import WidgetKit
 struct ControlOpenSwitchItem {
     let entity: HAAppEntityAppIntentEntity
     let icon: SFSymbolEntity
+    let displayText: String?
 }
 
 @available(iOS 18, *)
@@ -34,14 +35,16 @@ struct ControlOpenSwitchValueProvider: AppIntentControlValueProvider {
                 displayString: "",
                 iconName: ""
             ),
-            icon: configuration.icon ?? placeholder().icon
+            icon: configuration.icon ?? placeholder().icon,
+            displayText: configuration.displayText
         )
     }
 
     private func placeholder() -> ControlOpenSwitchItem {
         .init(
             entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
-            icon: .init(id: SFSymbol.lightswitchOn.rawValue)
+            icon: .init(id: SFSymbol.lightswitchOn.rawValue),
+            displayText: nil
         )
     }
 }
@@ -63,6 +66,10 @@ struct ControlOpenSwitchConfiguration: ControlConfigurationIntent {
         title: .init("app_intents.scenes.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }
 
 @available(iOS 18.0, *)

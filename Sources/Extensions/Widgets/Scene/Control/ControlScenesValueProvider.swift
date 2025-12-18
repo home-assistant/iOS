@@ -8,6 +8,7 @@ struct ControlSceneItem {
     let intentSceneEntity: IntentSceneEntity
     let icon: SFSymbolEntity
     let showConfirmationNotification: Bool
+    let displayText: String?
 }
 
 @available(iOSApplicationExtension 18, *)
@@ -16,7 +17,8 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
         .init(
             intentSceneEntity: configuration.scene ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
-            showConfirmationNotification: configuration.showConfirmationDialog
+            showConfirmationNotification: configuration.showConfirmationDialog,
+            displayText: configuration.displayText
         )
     }
 
@@ -24,7 +26,8 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
         .init(
             intentSceneEntity: configuration.scene ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
-            showConfirmationNotification: configuration.showConfirmationDialog
+            showConfirmationNotification: configuration.showConfirmationDialog,
+            displayText: configuration.displayText
         )
     }
 
@@ -32,7 +35,8 @@ struct ControlScenesValueProvider: AppIntentControlValueProvider {
         .init(
             intentSceneEntity: configuration.scene ?? placeholder(),
             icon: configuration.icon ?? placeholderIcon(),
-            showConfirmationNotification: configuration.showConfirmationDialog
+            showConfirmationNotification: configuration.showConfirmationDialog,
+            displayText: configuration.displayText
         )
     }
 
@@ -77,4 +81,8 @@ struct ControlSceneConfiguration: ControlConfigurationIntent {
         default: true
     )
     var showConfirmationDialog: Bool
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }
