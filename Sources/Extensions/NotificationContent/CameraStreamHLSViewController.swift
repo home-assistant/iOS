@@ -55,6 +55,8 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
 
     deinit {
         observationTokens.forEach { $0.invalidate() }
+        playerViewController.player?.pause()
+        playerViewController.player = nil
     }
 
     override func viewDidLoad() {

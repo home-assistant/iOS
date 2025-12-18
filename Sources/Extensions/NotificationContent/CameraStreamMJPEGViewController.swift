@@ -56,6 +56,10 @@ class CameraStreamMJPEGViewController: UIViewController, CameraStreamHandler {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        streamer.cancel()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

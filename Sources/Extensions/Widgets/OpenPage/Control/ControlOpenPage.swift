@@ -17,7 +17,7 @@ struct ControlOpenPage: ControlWidget {
                 return intent
             }()) {
                 // ControlWidget can only display SF Symbol
-                Label(template.page.panel.title, systemImage: template.icon.id)
+                Label(template.displayText ?? template.page.panel.title, systemImage: template.icon.id)
             }
         }
         .displayName(.init(stringLiteral: L10n.Widgets.OpenPage.title))

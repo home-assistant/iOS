@@ -8,6 +8,7 @@ import WidgetKit
 struct ControlOpenEntityItem {
     let entity: HAAppEntityAppIntentEntity
     let icon: SFSymbolEntity
+    let displayText: String?
 }
 
 @available(iOS 18, *)
@@ -34,14 +35,16 @@ struct ControlOpenEntityValueProvider: AppIntentControlValueProvider {
                 displayString: "",
                 iconName: ""
             ),
-            icon: configuration.icon ?? placeholder().icon
+            icon: configuration.icon ?? placeholder().icon,
+            displayText: configuration.displayText
         )
     }
 
     private func placeholder() -> ControlOpenEntityItem {
         .init(
             entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
-            icon: .init(id: SFSymbol.rectangleAndPaperclip.rawValue)
+            icon: .init(id: SFSymbol.rectangleAndPaperclip.rawValue),
+            displayText: nil
         )
     }
 }
@@ -62,4 +65,8 @@ struct ControlOpenEntityConfiguration: ControlConfigurationIntent {
         title: .init("app_intents.scenes.icon.title", defaultValue: "Icon")
     )
     var icon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }

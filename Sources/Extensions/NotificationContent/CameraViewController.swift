@@ -42,6 +42,10 @@ class CameraViewController: UIViewController, NotificationCategory {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        activeViewController?.pause()
+    }
+
     var activeViewController: (UIViewController & CameraStreamHandler)? {
         willSet {
             activeViewController?.willMove(toParent: nil)

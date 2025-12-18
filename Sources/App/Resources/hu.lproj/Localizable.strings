@@ -391,6 +391,7 @@
 "menu.help.help" = "%@ Súgó";
 "menu.status_item.quit" = "Kilépés";
 "menu.status_item.toggle" = "%1$@ kapcsolása";
+"menu.view.find" = "Find";
 "menu.view.reload_page" = "Oldal újratöltése";
 "navBar.close" = "Bezárás";
 "network.error.no_active_url.body" = "Nyissa meg a mobilalkalmazás beállításait és ellenőrizze a kiszolgáló beállításait! A belső URL csak akkor lesz használva, ha a helyi hálózat meg van határozva (SSID). Amennyiben VPN-t használ, állítsa a külső URL-t ugyanarra, mint a belső URL-t.";

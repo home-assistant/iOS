@@ -391,6 +391,7 @@
 "menu.help.help" = "Pomoc %@";
 "menu.status_item.quit" = "Zakończ";
 "menu.status_item.toggle" = "Przełącz%1$@";
+"menu.view.find" = "Find";
 "menu.view.reload_page" = "Odśwież stronę";
 "navBar.close" = "Zamknij";
 "network.error.no_active_url.body" = "Open companion app settings and check your server settings, internal URL will only be used if local network is defined (SSID), if you are using VPN try setting your external URL as the same as internal URL.";
