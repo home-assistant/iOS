@@ -11,10 +11,25 @@ public class LastUpdateSensor: SensorProvider {
         let icon: String
 
         if Current.isCatalyst {
-            if Current.device.systemModel().lowercased().contains("book") {
+            // Determine if this is a laptop (MacBook) or desktop (iMac, Mac mini, Mac Studio, Mac Pro)
+            let model = Current.device.systemModel().lowercased()
+            if model.contains("book") {
+                // Old style: MacBookPro, MacBookAir
                 icon = "mdi:laptop"
             } else {
-                icon = "mdi:monitor"
+                // Known MacBook model identifiers (new style Mac##,##)
+                // This list should be updated as new MacBook models are released
+                let knownLaptopModels: Set<String> = [
+                    // MacBook Air models
+                    "mac14,2", "mac14,15", // M2
+                    "mac15,3", "mac15,12", "mac15,13", // M3
+                    "mac16,12", "mac16,13", // M4
+                    // MacBook Pro models
+                    "mac14,5", "mac14,6", "mac14,7", "mac14,9", "mac14,10", // M2
+                    "mac15,3", "mac15,6", "mac15,7", "mac15,8", "mac15,9", "mac15,10", "mac15,11", // M3
+                    "mac16,1", "mac16,2", "mac16,5", "mac16,6", "mac16,7", "mac16,8", "mac16,9", "mac16,10", "mac16,11" // M4
+                ]
+                icon = knownLaptopModels.contains(model) ? "mdi:laptop" : "mdi:monitor"
             }
         } else {
             icon = "mdi:cellphone-wireless"
