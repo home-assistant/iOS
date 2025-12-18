@@ -38,11 +38,11 @@ struct IntentFanEntity: AppEntity {
 @available(iOS 18.0, *)
 struct IntentFanAppEntityQuery: EntityQuery, EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [IntentFanEntity] {
-        getFanEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
+        await getFanEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentFanEntity> {
-        let fansPerServer = getFanEntities()
+        let fansPerServer = await getFanEntities()
 
         return .init(sections: fansPerServer.map { (key: Server, value: [IntentFanEntity]) in
             .init(
@@ -53,14 +53,14 @@ struct IntentFanAppEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentFanEntity> {
-        let fansPerServer = getFanEntities()
+        let fansPerServer = await getFanEntities()
 
         return .init(sections: fansPerServer.map { (key: Server, value: [IntentFanEntity]) in
             .init(.init(stringLiteral: key.info.name), items: value)
         })
     }
 
-    private func getFanEntities(matching string: String? = nil) -> [(Server, [IntentFanEntity])] {
+    private func getFanEntities(matching string: String? = nil) async -> [(Server, [IntentFanEntity])] {
         var fanEntities: [(Server, [IntentFanEntity])] = []
         let entities = ControlEntityProvider(domains: [.fan]).getEntities(matching: string)
 
