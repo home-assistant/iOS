@@ -65,7 +65,10 @@ struct ControlFanValueProvider: AppIntentControlValueProvider {
 
 @available(iOS 18.0, *)
 struct ControlFanConfiguration: ControlConfigurationIntent {
-    static var title: LocalizedStringResource = .init("widgets.controls.fan.description", defaultValue: "Turn on/off Fan")
+    static var title: LocalizedStringResource = .init(
+        "widgets.controls.fan.description",
+        defaultValue: "Turn on/off Fan"
+    )
 
     @Parameter(
         title: .init("app_intents.fan.title", defaultValue: "Fan")
