@@ -318,6 +318,18 @@ public enum L10n {
       /// Cover
       public static var title: String { return L10n.tr("Localizable", "app_intents.cover.title") }
     }
+    public enum Fan {
+      /// Fan
+      public static var title: String { return L10n.tr("Localizable", "app_intents.fan.title") }
+      public enum OffStateIcon {
+        /// Icon for off state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.off_state_icon.title") }
+      }
+      public enum OnStateIcon {
+        /// Icon for on state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
+      }
+    }
     public enum HapticConfirmation {
       /// Haptic confirmation
       public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
@@ -343,18 +355,6 @@ public enum L10n {
         /// Control switch
         public static var title: String { return L10n.tr("Localizable", "app_intents.intent.switch.title") }
       }
-    }
-    public enum Fan {
-      public enum OffStateIcon {
-        /// Icon for off state
-        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.off_state_icon.title") }
-      }
-      public enum OnStateIcon {
-        /// Icon for on state
-        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
-      }
-      /// Fan
-      public static var title: String { return L10n.tr("Localizable", "app_intents.fan.title") }
     }
     public enum Lights {
       public enum Light {
