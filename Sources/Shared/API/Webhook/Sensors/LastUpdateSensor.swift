@@ -11,11 +11,8 @@ public class LastUpdateSensor: SensorProvider {
         let icon: String
 
         if Current.isCatalyst {
-            if Current.device.systemModel().lowercased().contains("book") {
-                icon = "mdi:laptop"
-            } else {
-                icon = "mdi:monitor"
-            }
+            // Use laptop icon for all Macs
+            icon = "mdi:laptop"
         } else {
             icon = "mdi:cellphone-wireless"
         }
