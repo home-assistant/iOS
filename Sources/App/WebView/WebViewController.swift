@@ -32,6 +32,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
+    
+    private var loadingStateView: UIView?
+    private let loadingStateTransitionDuration: TimeInterval = 0.2
 
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
@@ -232,6 +235,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupWebViewConstraints(statusBarView: statusBarView)
         setupPullToRefresh()
         setupEmptyState()
+        setupLoadingState()
 
         NotificationCenter.default.addObserver(
             self,
@@ -350,6 +354,24 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         emptyState.alpha = 0
         emptyStateView = emptyState
     }
+    
+    private func setupLoadingState() {
+        let loadingState = UIHostingController(rootView: WebViewLoadingStateView())
+        
+        view.addSubview(loadingState.view)
+        
+        loadingState.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            loadingState.view.leftAnchor.constraint(equalTo: view.leftAnchor),
+            loadingState.view.rightAnchor.constraint(equalTo: view.rightAnchor),
+            loadingState.view.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingState.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+        
+        loadingState.view.alpha = 0
+        loadingStateView = loadingState.view
+    }
 
     /// If user has not chosen 'Most secure' or 'Less secure' local access yet, this triggers a screen for decision
     private func checkForLocalSecurityLevelDecisionNeeded() {
@@ -427,6 +449,18 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     @objc func hideEmptyState() {
         UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
             self.emptyStateView?.alpha = 0
+        }, completion: nil)
+    }
+    
+    func showLoadingState() {
+        UIView.animate(withDuration: loadingStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
+            self.loadingStateView?.alpha = 1
+        }, completion: nil)
+    }
+    
+    func hideLoadingState() {
+        UIView.animate(withDuration: loadingStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
+            self.loadingStateView?.alpha = 0
         }, completion: nil)
     }
 
@@ -1192,6 +1226,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
 extension WebViewController {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        showLoadingState()
         updateFrontendConnectionState(state: FrontEndConnectionState.disconnected.rawValue)
         webViewExternalMessageHandler.stopImprovScanIfNeeded()
     }
@@ -1218,6 +1253,7 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        hideLoadingState()
         refreshControl.endRefreshing()
         if let err = error as? URLError {
             if err.code != .cancelled {
@@ -1232,6 +1268,7 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        hideLoadingState()
         refreshControl.endRefreshing()
 
         let nsError = error as NSError
@@ -1262,6 +1299,7 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        hideLoadingState()
         refreshControl.endRefreshing()
 
         // in case the view appears again, don't reload
