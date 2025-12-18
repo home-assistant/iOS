@@ -18,11 +18,14 @@ public class LastUpdateSensor: SensorProvider {
                 icon = "mdi:laptop"
             } else {
                 // Known MacBook model identifiers (new style Mac##,##)
-                // This list should be updated as new MacBook models are released
+                // NOTE: This list must be updated when Apple releases new MacBook models.
+                // Apple's model numbering doesn't follow a predictable pattern that would allow
+                // programmatic detection, so an explicit allowlist is the most reliable approach.
+                // See: https://everymac.com/systems/by_capability/mac-specs-by-machine-model-machine-id.html
                 let knownLaptopModels: Set<String> = [
                     // MacBook Air models
                     "mac14,2", "mac14,15", // M2
-                    "mac15,3", "mac15,12", "mac15,13", // M3
+                    "mac15,12", "mac15,13", // M3
                     "mac16,12", "mac16,13", // M4
                     // MacBook Pro models
                     "mac14,5", "mac14,6", "mac14,7", "mac14,9", "mac14,10", // M2
