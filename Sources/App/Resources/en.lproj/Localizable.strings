@@ -1371,3 +1371,5 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+"loading_state.waiting_text" = "The connection is taking a bit longer than usual. \n Please wait...";
+"loading_state.settings_button.title" = "Settings";

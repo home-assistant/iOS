@@ -1285,6 +1285,16 @@ public enum L10n {
     public static var serverRequiredForValue: String { return L10n.tr("Localizable", "intents.server_required_for_value") }
   }
 
+  public enum LoadingState {
+    /// The connection is taking a bit longer than usual. 
+    ///  Please wait...
+    public static var waitingText: String { return L10n.tr("Localizable", "loading_state.waiting_text") }
+    public enum SettingsButton {
+      /// Settings
+      public static var title: String { return L10n.tr("Localizable", "loading_state.settings_button.title") }
+    }
+  }
+
   public enum LocationChangeNotification {
     /// Location change
     public static var title: String { return L10n.tr("Localizable", "location_change_notification.title") }

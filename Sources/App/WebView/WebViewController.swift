@@ -33,8 +33,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
     
-    private var loadingStateView: UIView?
-    private let loadingStateTransitionDuration: TimeInterval = 0.2
+    private var loadingStateHostingController: UIHostingController<WebViewLoadingStateView>?
+    private let loadingStateTransitionDuration: TimeInterval = 0.3
+    private var loadingStateMinimumDisplayTask: Task<Void, Never>?
 
     private var initialURL: URL?
     private var statusBarButtonsStack: UIStackView?
@@ -235,7 +236,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         setupWebViewConstraints(statusBarView: statusBarView)
         setupPullToRefresh()
         setupEmptyState()
-        setupLoadingState()
 
         NotificationCenter.default.addObserver(
             self,
@@ -355,12 +355,28 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         emptyStateView = emptyState
     }
     
-    private func setupLoadingState() {
-        let loadingState = UIHostingController(rootView: WebViewLoadingStateView())
+    func showLoadingState(isComingFromPullToRefresh: Bool = false) {
+        // Cancel any existing loading state
+        loadingStateMinimumDisplayTask?.cancel()
+        loadingStateHostingController?.view.removeFromSuperview()
+        loadingStateHostingController = nil
+        
+        // Hide the standard pull-to-refresh indicator if showing custom loader
+        if isComingFromPullToRefresh {
+            refreshControl.endRefreshing()
+        }
+        
+        // Create a new loading state view
+        let loadingState = UIHostingController(rootView: WebViewLoadingStateView(
+            onOpenSettings: { [weak self] in
+                self?.showSettingsViewController()
+            }
+        ))
         
         view.addSubview(loadingState.view)
         
         loadingState.view.translatesAutoresizingMaskIntoConstraints = false
+        loadingState.view.backgroundColor = .clear
         
         NSLayoutConstraint.activate([
             loadingState.view.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -370,7 +386,54 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         ])
         
         loadingState.view.alpha = 0
-        loadingStateView = loadingState.view
+        loadingStateHostingController = loadingState
+        
+        // Animate in
+        UIView.transition(
+            with: view,
+            duration: loadingStateTransitionDuration,
+            options: [.transitionCrossDissolve, .allowUserInteraction],
+            animations: {
+                loadingState.view.alpha = 1
+            },
+            completion: nil
+        )
+        
+        // Ensure minimum display duration
+        loadingStateMinimumDisplayTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+            guard !Task.isCancelled else { return }
+            self?.loadingStateMinimumDisplayTask = nil
+        }
+    }
+    
+    func hideLoadingState() {
+        guard let loadingState = loadingStateHostingController else {
+            return
+        }
+        
+        // Wait for minimum display duration before hiding
+        Task { [weak self] in
+            // Wait for the minimum display task to complete
+            await self?.loadingStateMinimumDisplayTask?.value
+            
+            guard let self else { return }
+            
+            await MainActor.run {
+                UIView.transition(
+                    with: self.view,
+                    duration: self.loadingStateTransitionDuration,
+                    options: [.transitionCrossDissolve, .allowUserInteraction],
+                    animations: {
+                        loadingState.view.alpha = 0
+                    },
+                    completion: { _ in
+                        loadingState.view.removeFromSuperview()
+                        self.loadingStateHostingController = nil
+                    }
+                )
+            }
+        }
     }
 
     /// If user has not chosen 'Most secure' or 'Less secure' local access yet, this triggers a screen for decision
@@ -449,18 +512,6 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     @objc func hideEmptyState() {
         UIView.animate(withDuration: emptyStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
             self.emptyStateView?.alpha = 0
-        }, completion: nil)
-    }
-    
-    func showLoadingState() {
-        UIView.animate(withDuration: loadingStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
-            self.loadingStateView?.alpha = 1
-        }, completion: nil)
-    }
-    
-    func hideLoadingState() {
-        UIView.animate(withDuration: loadingStateTransitionDuration, delay: 0, options: .curveEaseInOut, animations: {
-            self.loadingStateView?.alpha = 0
         }, completion: nil)
     }
 
@@ -886,6 +937,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
+        showLoadingState(isComingFromPullToRefresh: true)
         refresh()
         updateSensors()
     }
