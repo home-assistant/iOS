@@ -43,7 +43,7 @@ struct ControlOpenSensorValueProvider: AppIntentControlValueProvider {
     private func placeholder() -> ControlOpenSensorItem {
         .init(
             entity: .init(id: "", entityId: "", serverId: "", serverName: "", displayString: "", iconName: ""),
-            icon: .init(id: SFSymbol.eye.rawValue)
+            icon: .init(id: SFSymbol.eye.rawValue), displayText: ""
         )
     }
 }
