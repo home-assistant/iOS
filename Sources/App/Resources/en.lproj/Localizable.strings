@@ -66,8 +66,12 @@
 "app_intents.haptic_confirmation.title" = "Haptic confirmation";
 "app_intents.icon.title" = "Icon";
 "app_intents.intent.cover.title" = "Control cover";
+"app_intents.intent.fan.title" = "Control fan";
 "app_intents.intent.light.title" = "Control light";
 "app_intents.intent.switch.title" = "Control switch";
+"app_intents.fan.off_state_icon.title" = "Icon for off state";
+"app_intents.fan.on_state_icon.title" = "Icon for on state";
+"app_intents.fan.title" = "Fan";
 "app_intents.lights.light.target" = "Target state";
 "app_intents.lights.light.title" = "Light";
 "app_intents.lights.off_state_icon.title" = "Icon for off state";
@@ -1274,6 +1278,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.cover.description" = "Toggle cover";
 "widgets.controls.cover.placeholder_title" = "Choose cover";
 "widgets.controls.cover.title" = "Cover";
+"widgets.controls.fan.description" = "Turn on/off your fan";
+"widgets.controls.fan.placeholder_title" = "Choose Fan";
+"widgets.controls.fan.title" = "Fan";
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Light";

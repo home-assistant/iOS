@@ -5,6 +5,7 @@ import UIKit
 public enum Domain: String, CaseIterable {
     case button
     case cover
+    case fan
     case inputBoolean = "input_boolean"
     case inputButton = "input_button"
     case light
@@ -48,6 +49,8 @@ public enum Domain: String, CaseIterable {
         switch self {
         case .cover:
             states = [.open, .closed, .opening, .closing]
+        case .fan:
+            states = [.on, .off]
         case .light:
             states = [.on, .off]
         case .lock:
@@ -70,6 +73,8 @@ public enum Domain: String, CaseIterable {
             image = MaterialDesignIcons.gestureTapButtonIcon
         case .cover:
             image = imageForCover(deviceClass: deviceClass ?? .unknown, state: state ?? .unknown)
+        case .fan:
+            image = .fanIcon
         case .inputBoolean:
             image = .toggleSwitchOutlineIcon
         case .inputButton:
@@ -172,6 +177,7 @@ public extension Domain {
         [
             .button,
             .cover,
+            .fan,
             .inputBoolean,
             .inputButton,
             .light,

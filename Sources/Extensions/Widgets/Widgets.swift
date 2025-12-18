@@ -57,6 +57,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlLight()
         ControlSwitch()
         ControlCover()
+        ControlFan()
         ControlScript()
         ControlScene()
         ControlButton()
