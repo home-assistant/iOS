@@ -391,6 +391,7 @@
 "menu.help.help" = "%@ Yardım";
 "menu.status_item.quit" = "Çık";
 "menu.status_item.toggle" = "Geçiş %1$@";
+"menu.view.find" = "Find";
 "menu.view.reload_page" = "Sayfayı Yeniden Yükle";
 "navBar.close" = "Kapat";
 "network.error.no_active_url.body" = "Tamamlayıcı uygulama ayarlarını açın ve sunucu ayarlarınızı kontrol edin, dahili URL yalnızca yerel ağ tanımlanmışsa (SSID) kullanılacaktır, VPN kullanıyorsanız harici URL'nizi dahili URL ile aynı olarak ayarlamayı deneyin.";
