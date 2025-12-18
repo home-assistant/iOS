@@ -1279,7 +1279,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.cover.placeholder_title" = "Choose cover";
 "widgets.controls.cover.title" = "Cover";
 "widgets.controls.fan.description" = "Turn on/off your fan";
-"widgets.controls.fan.placeholder_title" = "Choose Fan";
+"widgets.controls.fan.placeholder_title" = "Choose fan";
 "widgets.controls.fan.title" = "Fan";
 "widgets.controls.light.description" = "Turn on/off your light";
 "widgets.controls.light.placeholder_title" = "Choose Light";
