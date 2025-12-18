@@ -331,6 +331,10 @@ public enum L10n {
         /// Control cover
         public static var title: String { return L10n.tr("Localizable", "app_intents.intent.cover.title") }
       }
+      public enum Fan {
+        /// Control fan
+        public static var title: String { return L10n.tr("Localizable", "app_intents.intent.fan.title") }
+      }
       public enum Light {
         /// Control light
         public static var title: String { return L10n.tr("Localizable", "app_intents.intent.light.title") }
@@ -339,6 +343,18 @@ public enum L10n {
         /// Control switch
         public static var title: String { return L10n.tr("Localizable", "app_intents.intent.switch.title") }
       }
+    }
+    public enum Fan {
+      public enum OffStateIcon {
+        /// Icon for off state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.off_state_icon.title") }
+      }
+      public enum OnStateIcon {
+        /// Icon for on state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
+      }
+      /// Fan
+      public static var title: String { return L10n.tr("Localizable", "app_intents.fan.title") }
     }
     public enum Lights {
       public enum Light {
@@ -4441,6 +4457,14 @@ public enum L10n {
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.cover.placeholder_title") }
         /// Cover
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
+      }
+      public enum Fan {
+        /// Turn on/off your fan
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.fan.description") }
+        /// Choose Fan
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.fan.placeholder_title") }
+        /// Fan
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.fan.title") }
       }
       public enum Light {
         /// Turn on/off your light
