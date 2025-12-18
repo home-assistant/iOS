@@ -11,4 +11,5 @@ protocol NotificationManagerLocalPushInterface {
     func status(for server: Server) -> NotificationManagerLocalPushStatus
     func addObserver(for server: Server, handler: @escaping (NotificationManagerLocalPushStatus) -> Void)
         -> HACancellable
+    func reconnectAll()
 }

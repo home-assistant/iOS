@@ -75,6 +75,11 @@ class LifecycleManager {
 
     @objc private func willEnterForeground() {
         isActive = true
+
+        // Trigger local push reconnection for servers with local push enabled
+        // This helps recover from connection issues when the app was backgrounded
+        Current.Log.info("App entering foreground, triggering local push reconnection")
+        Current.notificationManager.localPushManager.reconnectAll()
     }
 
     @objc private func didEnterBackground() {

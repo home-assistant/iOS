@@ -106,6 +106,17 @@ public class LocalPushManager {
         NotificationCenter.default.removeObserver(self)
     }
 
+    /// Forces a reconnection to the local push subscription.
+    /// This cancels the existing subscription and creates a new one,
+    /// even if the webhookID hasn't changed. Useful for recovering from
+    /// connection issues when the app enters foreground.
+    public func forceReconnect() {
+        Current.Log.info("forcing reconnection for server \(server.identifier.rawValue)")
+        subscription?.cancel()
+        subscription = nil
+        updateSubscription(force: true)
+    }
+
     var add: (UNNotificationRequest) -> Promise<Void> = { request in
         Promise<Void> { seal in
             UNUserNotificationCenter.current().add(request, withCompletionHandler: seal.resolve)
@@ -124,10 +135,10 @@ public class LocalPushManager {
 
     private var subscription: SubscriptionInstance?
 
-    private func updateSubscription() {
+    private func updateSubscription(force: Bool = false) {
         let webhookID = server.info.connection.webhookID
 
-        guard webhookID != subscription?.webhookID else {
+        guard force || webhookID != subscription?.webhookID else {
             // webhookID hasn't changed, so we don't need to reset
             return
         }

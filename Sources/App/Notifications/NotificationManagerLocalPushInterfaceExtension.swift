@@ -64,6 +64,13 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
+    func reconnectAll() {
+        Current.Log.info("Triggering reconnection for all local push managers")
+        // For iOS, we reload managers which will ensure they're properly configured
+        // and trigger the PushProvider extension to reconnect if needed
+        reloadManagersAfterSave()
+    }
+
     override init() {
         super.init()
         self.syncStates = PerServerContainer<LocalPushStateSync>(constructor: { server in

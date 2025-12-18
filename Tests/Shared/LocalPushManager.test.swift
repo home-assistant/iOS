@@ -150,6 +150,36 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertTrue(sub.cancellable.wasCancelled)
     }
 
+    func testForceReconnect() throws {
+        setUpManager(webhookID: "webhook1")
+
+        let sub1 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub1.initiated(.success(.empty))
+        XCTAssertEqual(manager.state, .available(received: 0))
+
+        // Force reconnect without changing webhookID
+        apiConnection.pendingSubscriptions.removeAll()
+        manager.forceReconnect()
+
+        // Should have cancelled the old subscription
+        XCTAssertTrue(sub1.cancellable.wasCancelled)
+
+        // Should have created a new subscription
+        let sub2 = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        XCTAssertFalse(sub2.cancellable.wasCancelled)
+        XCTAssertEqual(sub2.request.type, "mobile_app/push_notification_channel")
+        XCTAssertEqual(sub2.request.data["webhook_id"] as? String, "webhook1")
+
+        // New subscription should work
+        sub2.initiated(.success(.empty))
+        XCTAssertEqual(manager.state, .available(received: 0))
+
+        sub2.handler(sub2.cancellable, .dictionary([
+            "message": "test_message",
+        ]))
+        XCTAssertEqual(manager.state, .available(received: 1))
+    }
+
     func testEventSuccessfullyAddedWithoutConfirmId() throws {
         setUpManager(webhookID: "webhook1")
 

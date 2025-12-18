@@ -40,6 +40,14 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
         }
     }
 
+    func reconnectAll() {
+        Current.Log.info("Reconnecting all local push managers for enabled servers")
+        for server in Current.servers.all where server.info.connection.isLocalPushEnabled {
+            Current.Log.info("Reconnecting local push for server: \(server.identifier.rawValue)")
+            localPushManagers[server].forceReconnect()
+        }
+    }
+
     private struct Observer: Equatable {
         let identifier: UUID
         let server: Server
