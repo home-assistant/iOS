@@ -23,7 +23,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  unused-l10n-strings:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run unused L10n strings analysis
+        run: |
+          cd CleanUpStrings
+          python3 find_unused_l10n_strings.py ..
+      - name: Comment unused L10n strings on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: unused-l10n-strings
+          path: CleanUpStrings/truly_unused_l10n_strings.txt
+          message: |
+            ### 🗑️ Unused L10n Strings Detected
+            The following L10n strings appear to be unused and may be safe to remove. Please review:
+            
+            ```
+            {{ contents }}
+            ```
   lint:
+    needs: [unused-l10n-strings]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
