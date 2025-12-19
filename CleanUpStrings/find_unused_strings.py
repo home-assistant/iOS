@@ -313,14 +313,15 @@ class L10nStringAnalyzer:
         )
     
     def generate_reports(self, result: AnalysisResult) -> None:
-        """Generate only the truly unused strings list."""
-        print("\n📝 Generating truly unused strings list...")
+        """Generate only the truly unused Localizable.strings keys list."""
+        print("\n📝 Generating truly unused Localizable.strings keys list...")
         output_dir = Path(__file__).parent.resolve()
-        unused_list_path = output_dir / "truly_unused_l10n_strings.txt"
+        unused_list_path = output_dir / "unused_strings.txt"
         with open(unused_list_path, 'w', encoding='utf-8') as f:
             for prop in sorted(result.truly_unused):
-                f.write(f"{prop}\n")
-        print(f"✅ Created unused strings list: {unused_list_path}")
+                key = self.l10n_property_to_key(prop)
+                f.write(f"{key}\n")
+        print(f"✅ Created unused strings key list: {unused_list_path}")
     
     def _get_current_date(self) -> str:
         """Get current date in readable format."""
@@ -372,10 +373,8 @@ def main():
         print(f"   ✅ Used: {result.used_properties} strings")
         print(f"   ❌ False positives: {len(result.false_positives)} strings")
         print(f"   🗑️  Truly unused: {len(result.truly_unused)} strings")
-        print("\n📁 Reports generated:")
-        print("   • l10n_analysis_summary.md - Complete analysis report")
-        print("   • truly_unused_l10n_strings.txt - Safe to remove")
-        print("   • l10n_false_positives.txt - Do not remove")
+        print("\n📁 Report generated:")
+        print("   • unused_strings.txt - Safe to remove")
         
     except FileNotFoundError as e:
         print(f"❌ Error: {e}")
