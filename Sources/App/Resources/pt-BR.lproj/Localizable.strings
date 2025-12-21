@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "Com voz";
 "app_intents.controls.assist.title" = "Assist no aplicativo";
 "app_intents.cover.title" = "Cortina";
+"app_intents.fan.off_state_icon.title" = "Icon for off state";
+"app_intents.fan.on_state_icon.title" = "Icon for on state";
+"app_intents.fan.title" = "Fan";
 "app_intents.haptic_confirmation.title" = "Confirmação tátil";
 "app_intents.icon.title" = "Ícone";
 "app_intents.intent.cover.title" = "Controle da cortina";
+"app_intents.intent.fan.title" = "Control fan";
 "app_intents.intent.light.title" = "Luz de controle";
 "app_intents.intent.switch.title" = "Interruptor de controle";
 "app_intents.lights.light.target" = "Estado alvo";
@@ -1274,6 +1278,9 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.controls.cover.description" = "Alternar cortina";
 "widgets.controls.cover.placeholder_title" = "Escolha a cortina";
 "widgets.controls.cover.title" = "Cortina";
+"widgets.controls.fan.description" = "Turn on/off your fan";
+"widgets.controls.fan.placeholder_title" = "Choose fan";
+"widgets.controls.fan.title" = "Fan";
 "widgets.controls.light.description" = "Ligue / desligue sua luz";
 "widgets.controls.light.placeholder_title" = "Escolha a Luz";
 "widgets.controls.light.title" = "Luz";

@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "使用語音";
 "app_intents.controls.assist.title" = "App 中的助理";
 "app_intents.cover.title" = "門簾";
+"app_intents.fan.off_state_icon.title" = "關閉狀態的圖示";
+"app_intents.fan.on_state_icon.title" = "開啟狀態的圖示";
+"app_intents.fan.title" = "風扇";
 "app_intents.haptic_confirmation.title" = "觸覺回饋確認";
 "app_intents.icon.title" = "圖示";
 "app_intents.intent.cover.title" = "控制門簾";
+"app_intents.intent.fan.title" = "控制風扇";
 "app_intents.intent.light.title" = "設定燈光";
 "app_intents.intent.switch.title" = "控制開關";
 "app_intents.lights.light.target" = "目標狀態";
@@ -391,7 +395,7 @@
 "menu.help.help" = "%@ 說明";
 "menu.status_item.quit" = "退出";
 "menu.status_item.toggle" = "切換 %1$@";
-"menu.view.find" = "Find";
+"menu.view.find" = "尋找";
 "menu.view.reload_page" = "重新載入頁面";
 "navBar.close" = "關閉";
 "network.error.no_active_url.body" = "開啟 companion App 設定並確認伺服器設定。內部網址僅用於定義區域網路（SSID）時使用。假如使用 VPN 進行設定，則外部網址將與內部網址相同。";
@@ -1274,6 +1278,9 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "widgets.controls.cover.description" = "切換門簾";
 "widgets.controls.cover.placeholder_title" = "選擇門簾";
 "widgets.controls.cover.title" = "門簾";
+"widgets.controls.fan.description" = "開啟/關閉風扇";
+"widgets.controls.fan.placeholder_title" = "選擇風扇";
+"widgets.controls.fan.title" = "風扇";
 "widgets.controls.light.description" = "開啟/關閉燈光";
 "widgets.controls.light.placeholder_title" = "選擇燈光";
 "widgets.controls.light.title" = "燈光";
