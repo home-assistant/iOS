@@ -534,6 +534,13 @@ public enum L10n {
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
   }
 
+  public enum CameraList {
+    /// Search cameras
+    public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
+    /// Cameras
+    public static var title: String { return L10n.tr("Localizable", "camera_list.title") }
+  }
+
   public enum CarPlay {
     public enum Action {
       public enum Intro {
@@ -4461,7 +4468,7 @@ public enum L10n {
       public enum Fan {
         /// Turn on/off your fan
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.fan.description") }
-        /// Choose Fan
+        /// Choose fan
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.fan.placeholder_title") }
         /// Fan
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.fan.title") }

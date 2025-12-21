@@ -15,11 +15,11 @@ struct OpenCameraListAppIntent: AppIntent {
     @Parameter(
         title: .init("widgets.controls.open_camera_list.parameter.server", defaultValue: "Server")
     )
-    var serverId: String?
+    var server: IntentServerAppEntity?
 
     func perform() async throws -> some IntentResult {
         #if !WIDGET_EXTENSION
-        if let url = AppConstants.openCameraListDeeplinkURL(serverId: serverId) {
+        if let url = AppConstants.openCameraListDeeplinkURL(serverId: server?.id) {
             DispatchQueue.main.async {
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }
