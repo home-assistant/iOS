@@ -14,6 +14,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.custom.rawValue, "custom")
 
         // Controls
+        XCTAssertEqual(WidgetsKind.controlAutomation.rawValue, "controlAutomation")
         XCTAssertEqual(WidgetsKind.controlScript.rawValue, "controlScript")
         XCTAssertEqual(WidgetsKind.controlScene.rawValue, "controlScene")
         XCTAssertEqual(WidgetsKind.controlAssist.rawValue, "controlAssist")
@@ -31,6 +32,6 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlOpenSwitch.rawValue, "controlOpenSwitch")
         XCTAssertEqual(WidgetsKind.controlOpenSensor.rawValue, "controlOpenSensor")
         XCTAssertEqual(WidgetsKind.controlFan.rawValue, "controlFan")
-        XCTAssertEqual(WidgetsKind.allCases.count, 25)
+        XCTAssertEqual(WidgetsKind.allCases.count, 26)
     }
 }
