@@ -12,23 +12,14 @@ struct CameraListView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                if !viewModel.cameras.isEmpty {
-                    ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+            Group {
+                if viewModel.filteredCameras.isEmpty && !viewModel.cameras.isEmpty {
+                    emptySearchResultView
+                } else if viewModel.cameras.isEmpty {
+                    noCamerasView
+                } else {
+                    cameraListView
                 }
-                
-                ForEach(viewModel.filteredCameras, id: \.id) { camera in
-                    Button(action: {
-                        openCamera(camera)
-                    }, label: {
-                        CameraListRow(camera: camera)
-                    })
-                    .tint(.accentColor)
-                }
-            }
-            .searchable(text: $viewModel.searchTerm, prompt: "Search cameras")
-            .onAppear {
-                viewModel.fetchCameras()
             }
             .navigationTitle("Cameras")
             .navigationBarTitleDisplayMode(.inline)
@@ -41,6 +32,57 @@ struct CameraListView: View {
             }
         }
         .navigationViewStyle(.stack)
+    }
+
+    private var cameraListView: some View {
+        List {
+            ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+            
+            ForEach(viewModel.filteredCameras, id: \.id) { camera in
+                Button(action: {
+                    openCamera(camera)
+                }, label: {
+                    CameraListRow(camera: camera)
+                })
+                .tint(.accentColor)
+            }
+        }
+        .searchable(text: $viewModel.searchTerm, prompt: "Search cameras")
+        .onAppear {
+            viewModel.fetchCameras()
+        }
+    }
+
+    private var noCamerasView: some View {
+        VStack(spacing: DesignSystem.Spaces.two) {
+            Image(systemSymbol: .videoSlash)
+                .font(.largeTitle)
+                .foregroundStyle(.secondary)
+            Text("No Cameras")
+                .font(.headline)
+            Text("No camera entities found in your Home Assistant setup")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+        .onAppear {
+            viewModel.fetchCameras()
+        }
+    }
+
+    private var emptySearchResultView: some View {
+        VStack(spacing: DesignSystem.Spaces.two) {
+            Image(systemSymbol: .magnifyingglass)
+                .font(.largeTitle)
+                .foregroundStyle(.secondary)
+            Text("No Results")
+                .font(.headline)
+            Text("No cameras match your search")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
     }
     
     private func openCamera(_ camera: HAAppEntity) {
