@@ -60,7 +60,15 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> WidgetSensorsEntry {
         let count = WidgetFamilySizes.size(for: context.family)
         let sensors = stride(from: 0, to: count, by: 1).map { index in
-            WidgetSensorsEntry.SensorData(id: String(index), key: "?", value: "?")
+            WidgetSensorsEntry.SensorData(
+                id: String(index),
+                key: "?",
+                value: "?",
+                unitOfMeasurement: nil,
+                icon: nil,
+                deviceClass: nil,
+                domainState: nil
+            )
         }
 
         return WidgetSensorsEntry(
@@ -90,13 +98,15 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         let state: ControlEntityProvider.State = await ControlEntityProvider(domains: Domain.allCases).state(
             server: server,
             entityId: sensor.entityId
-        ) ?? ControlEntityProvider.State(value: "", unitOfMeasurement: nil, domainState: nil)
+        ) ?? ControlEntityProvider.State(value: "", unitOfMeasurement: nil, domainState: nil, deviceClass: nil)
         return WidgetSensorsEntry.SensorData(
             id: sensor.id,
             key: sensor.displayString,
             value: state.value,
             unitOfMeasurement: state.unitOfMeasurement,
-            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon().name
+            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon(deviceClass: state.deviceClass).name,
+            deviceClass: state.deviceClass,
+            domainState: state.domainState
         )
     }
 
@@ -127,6 +137,8 @@ struct WidgetSensorsEntry: TimelineEntry {
         var value: String
         var unitOfMeasurement: String?
         var icon: String?
+        var deviceClass: String?
+        var domainState: Domain.State?
     }
 }
 

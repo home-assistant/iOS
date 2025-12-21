@@ -70,7 +70,10 @@ struct WidgetCustom: Widget {
             }
 
             let icon: MaterialDesignIcons = {
-                if let info {
+                // When showing states and we have device class info, use dynamic icon based on domain, device class, and state
+                if showStates, let domain = magicItem.domain, let state = state {
+                    return domain.icon(deviceClass: state.deviceClass, state: state.domainState)
+                } else if let info {
                     return magicItem.icon(info: info)
                 } else {
                     return .gridIcon

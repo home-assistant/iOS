@@ -16,11 +16,13 @@ public final class ControlEntityProvider {
         public let value: String
         public let unitOfMeasurement: String?
         public let domainState: Domain.State?
+        public let deviceClass: String?
 
-        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?) {
+        public init(value: String, unitOfMeasurement: String?, domainState: Domain.State?, deviceClass: String? = nil) {
             self.value = value
             self.unitOfMeasurement = unitOfMeasurement
             self.domainState = domainState
+            self.deviceClass = deviceClass
         }
     }
 
@@ -157,11 +159,13 @@ public final class ControlEntityProvider {
             stateValue: stateValue
         )
         let unitOfMeasurement = (state?["attributes"] as? [String: Any])?["unit_of_measurement"] as? String
+        let deviceClass = (state?["attributes"] as? [String: Any])?["device_class"] as? String
         stateValue = stateValue.capitalizedFirst
         return .init(
             value: stateValue,
             unitOfMeasurement: unitOfMeasurement,
-            domainState: .init(rawValue: stateValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
+            domainState: .init(rawValue: stateValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()),
+            deviceClass: deviceClass
         )
     }
 }

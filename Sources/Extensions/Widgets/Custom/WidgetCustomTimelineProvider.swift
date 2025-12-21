@@ -14,6 +14,7 @@ struct WidgetCustomEntry: TimelineEntry {
     struct ItemState: Codable {
         let value: String
         let domainState: Domain.State?
+        let deviceClass: String?
     }
 }
 
@@ -157,7 +158,8 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                 states[item] =
                     .init(
                         value: "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")",
-                        domainState: state.domainState
+                        domainState: state.domainState,
+                        deviceClass: state.deviceClass
                     )
             } else {
                 Current.Log
