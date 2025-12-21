@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   clean-unused-strings:
-    runs-on: ubuntu-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
         with:
@@ -59,11 +59,6 @@ jobs:
         if: steps.detect.outputs.has_unused == 'true'
         run: |
           bundle install
-          # Use bash as /bin/sh for CocoaPods scripts (Realm pod requires bash features)
-          ORIGINAL_SH=$(readlink -f /bin/sh)
-          sudo ln -sf /bin/bash /bin/sh
-          # Ensure original shell is restored even if pod install fails
-          trap "sudo ln -sf \"$ORIGINAL_SH\" /bin/sh" EXIT
           bundle exec pod install --repo-update
 
       - name: Remove unused strings
