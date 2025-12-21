@@ -5,6 +5,7 @@ import SwiftUI
 struct CameraListView: View {
     @StateObject private var viewModel: CameraListViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedCamera: (camera: HAAppEntity, server: Server)?
     
     init(serverId: String? = nil) {
         self._viewModel = .init(wrappedValue: CameraListViewModel(serverId: serverId))
@@ -32,6 +33,15 @@ struct CameraListView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .fullScreenCover(item: Binding(
+            get: { selectedCamera.map { CameraPresentation(camera: $0.camera, server: $0.server) } },
+            set: { selectedCamera = $0.map { ($0.camera, $0.server) } }
+        )) { presentation in
+            WebRTCVideoPlayerView(
+                server: presentation.server,
+                cameraEntityId: presentation.camera.entityId
+            )
+        }
     }
 
     private var cameraListView: some View {
@@ -93,23 +103,16 @@ struct CameraListView: View {
             return
         }
         
-        let view = WebRTCVideoPlayerView(
-            server: server,
-            cameraEntityId: camera.entityId
-        ).embeddedInHostingController()
-        view.modalPresentationStyle = .overFullScreen
-        
-        // Present the camera view in full screen
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-            .done { webViewController in
-                // Get the topmost presented view controller
-                var topController = webViewController
-                while let presented = topController.presentedViewController {
-                    topController = presented
-                }
-                topController.present(view, animated: true)
-            }
+        selectedCamera = (camera, server)
     }
+}
+
+// Helper struct to make camera presentation Identifiable
+private struct CameraPresentation: Identifiable {
+    let camera: HAAppEntity
+    let server: Server
+    
+    var id: String { camera.id }
 }
 
 struct CameraListRow: View {
