@@ -48,6 +48,21 @@ public extension HATypedRequest {
         ))
     }
 
+    static func trigger(
+        entityId: String
+    ) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": Domain.automation.rawValue,
+                "service": Service.trigger.rawValue,
+                "target": [
+                    "entity_id": entityId,
+                ],
+            ]
+        ))
+    }
+
     static func pressButton(
         domain: Domain,
         entityId: String
