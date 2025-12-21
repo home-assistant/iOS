@@ -52,7 +52,7 @@ final class CameraListViewModel: ObservableObject {
     var filteredCameras: [HAAppEntity] {
         cameras.filter { camera in
             let matchesServer = selectedServerId == nil || camera.serverId == selectedServerId
-            let matchesSearch = searchTerm.count <= 2 ||
+            let matchesSearch = searchTerm.count < 2 ||
                 camera.name.lowercased().contains(searchTerm.lowercased()) ||
                 camera.entityId.lowercased().contains(searchTerm.lowercased())
             return matchesServer && matchesSearch
