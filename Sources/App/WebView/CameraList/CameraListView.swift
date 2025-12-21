@@ -120,19 +120,24 @@ struct CameraListRow: View {
     let areaName: String?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-            Text(camera.name)
-                .font(.body)
-                .foregroundStyle(Color.primary)
-            HStack(spacing: DesignSystem.Spaces.half) {
-                if let areaName {
-                    Text(areaName)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text(camera.entityId)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+        HStack(spacing: DesignSystem.Spaces.two) {
+            Image(systemSymbol: .videoFill)
+                .font(.title2)
+                .foregroundStyle(.haPrimary)
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
+                Text(camera.name)
+                    .font(.body)
+                    .foregroundStyle(Color.primary)
+                HStack(spacing: DesignSystem.Spaces.half) {
+                    if let areaName {
+                        Text(areaName)
+                            .font(.footnote)
+                            .foregroundStyle(Color.secondary)
+                    } else {
+                        Text(camera.entityId)
+                            .font(.footnote)
+                            .foregroundStyle(Color.secondary)
+                    }
                 }
             }
         }
