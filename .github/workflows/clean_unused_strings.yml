@@ -62,9 +62,9 @@ jobs:
           # Use bash as /bin/sh for CocoaPods scripts (Realm pod requires bash features)
           ORIGINAL_SH=$(readlink -f /bin/sh)
           sudo ln -sf /bin/bash /bin/sh
+          # Ensure original shell is restored even if pod install fails
+          trap "sudo ln -sf '$ORIGINAL_SH' /bin/sh" EXIT
           bundle exec pod install --repo-update
-          # Restore original /bin/sh
-          sudo ln -sf "$ORIGINAL_SH" /bin/sh
 
       - name: Remove unused strings
         if: steps.detect.outputs.has_unused == 'true'
