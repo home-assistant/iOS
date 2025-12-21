@@ -1114,10 +1114,12 @@
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
+		5A9E08FEBFC450082F8396B5 /* OpenCameraListAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880F541AFF995593E5B4DF97 /* OpenCameraListAppIntent.swift */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		5FFBC80F835393915C4748CF /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A370326321B07E5ACE0BCB65 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		633D993B2BD08D15192EB69C /* CameraListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AEEEBDFFDF9E9B8B804E3E /* CameraListView.swift */; };
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
+		669433C2D2EC9230FEA65DD0 /* OpenCameraListAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880F541AFF995593E5B4DF97 /* OpenCameraListAppIntent.swift */; };
 		6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
 		78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
 		81A0C1BBDEFF4F8C5FC314BE /* Pods_iOS_Extensions_NotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F356D0219C7F8A24234511B /* Pods_iOS_Extensions_NotificationContent.framework */; };
@@ -2808,6 +2810,7 @@
 		7A6E8DF7DED57BAD4EF47D11 /* Pods_iOS_Extensions_Today.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Today.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D94AB7BD65F15C8FEE0912E /* Pods-iOS-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.release.xcconfig"; sourceTree = "<group>"; };
 		80854D28D2FCD1482E92ED31 /* Pods-Tests-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.beta.xcconfig"; sourceTree = "<group>"; };
+		880F541AFF995593E5B4DF97 /* OpenCameraListAppIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OpenCameraListAppIntent.swift; sourceTree = "<group>"; };
 		8965FD50AC78F092CEB5F076 /* Pods-iOS-Extensions-Widgets.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.beta.xcconfig"; sourceTree = "<group>"; };
 		89E1823CF2D12BD3161FCC86 /* Pods-iOS-SharedTesting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-SharedTesting.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-SharedTesting/Pods-iOS-SharedTesting.debug.xcconfig"; sourceTree = "<group>"; };
 		8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlFanValueProvider.swift; sourceTree = "<group>"; };
@@ -3392,6 +3395,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		024A3C2F1AD4451337973CE1 /* CameraList */ = {
+			isa = PBXGroup;
+			children = (
+				880F541AFF995593E5B4DF97 /* OpenCameraListAppIntent.swift */,
+			);
+			name = CameraList;
+			path = Sources/Extensions/Widgets/CameraList;
+			sourceTree = "<group>";
+		};
 		1100D5222497578800B1073C /* TestNotifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -3637,6 +3649,7 @@
 				42D3E4A92C5D28F800444BE6 /* Script */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
 				42C101232CD3D7700012BA78 /* ControlRefreshDelay.swift */,
+				024A3C2F1AD4451337973CE1 /* CameraList */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -8523,6 +8536,7 @@
 				6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */,
 				1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */,
 				423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
+				669433C2D2EC9230FEA65DD0 /* OpenCameraListAppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8917,6 +8931,7 @@
 				42C0FD0A2DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift in Sources */,
 				633D993B2BD08D15192EB69C /* CameraListView.swift in Sources */,
 				01DA83F0F7B76EC23A0075DE /* CameraListViewModel.swift in Sources */,
+				5A9E08FEBFC450082F8396B5 /* OpenCameraListAppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

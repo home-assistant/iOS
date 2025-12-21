@@ -1378,3 +1378,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+/* Camera List */
+"camera_list.title" = "Cameras";
+"camera_list.search_placeholder" = "Search cameras";
