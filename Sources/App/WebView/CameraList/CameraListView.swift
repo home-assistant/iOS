@@ -36,13 +36,15 @@ struct CameraListView: View {
 
     private var cameraListView: some View {
         List {
-            ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+            if viewModel.shouldShowServerPicker {
+                ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
+            }
             
             ForEach(viewModel.filteredCameras, id: \.id) { camera in
                 Button(action: {
                     openCamera(camera)
                 }, label: {
-                    CameraListRow(camera: camera)
+                    CameraListRow(camera: camera, areaName: viewModel.areaName(for: camera))
                 })
                 .tint(.accentColor)
             }
@@ -97,30 +99,41 @@ struct CameraListView: View {
         ).embeddedInHostingController()
         view.modalPresentationStyle = .overFullScreen
         
-        // Dismiss the list view first, then present the camera view
-        dismiss()
-        
-        // Present the camera view from the root view controller
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                .done { webViewController in
-                    webViewController.present(view, animated: true)
+        // Present the camera view in full screen
+        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+            .done { webViewController in
+                // Get the topmost presented view controller
+                var topController = webViewController
+                while let presented = topController.presentedViewController {
+                    topController = presented
                 }
-        }
+                topController.present(view, animated: true)
+            }
     }
 }
 
 struct CameraListRow: View {
     let camera: HAAppEntity
+    let areaName: String?
     
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
             Text(camera.name)
                 .font(.body)
                 .foregroundStyle(Color.primary)
-            Text(camera.entityId)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            HStack(spacing: DesignSystem.Spaces.half) {
+                if let areaName {
+                    Text(areaName)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Text("•")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                Text(camera.entityId)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, DesignSystem.Spaces.half)

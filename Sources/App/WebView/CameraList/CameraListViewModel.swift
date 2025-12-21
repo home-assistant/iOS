@@ -8,6 +8,12 @@ final class CameraListViewModel: ObservableObject {
 
     private let initialServerId: String?
     private let controlEntityProvider = ControlEntityProvider(domains: [.camera])
+    private var entityToAreaMap: [String: String] = [:]
+
+    var shouldShowServerPicker: Bool {
+        // Only show server picker if not initialized with a specific serverId
+        initialServerId == nil
+    }
 
     init(serverId: String? = nil) {
         self.initialServerId = serverId
@@ -20,6 +26,26 @@ final class CameraListViewModel: ObservableObject {
         
         if selectedServerId == nil {
             selectedServerId = Current.servers.all.first?.identifier.rawValue
+        }
+        
+        // Build area mapping for all servers
+        buildAreaMapping()
+    }
+
+    private func buildAreaMapping() {
+        entityToAreaMap.removeAll()
+        
+        for server in Current.servers.all {
+            do {
+                let areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
+                for area in areas {
+                    for entityId in area.entities {
+                        entityToAreaMap[entityId] = area.name
+                    }
+                }
+            } catch {
+                Current.Log.error("Failed to fetch areas for server \(server.info.name): \(error.localizedDescription)")
+            }
         }
     }
 
@@ -35,5 +61,9 @@ final class CameraListViewModel: ObservableObject {
 
     func server(for camera: HAAppEntity) -> Server? {
         Current.servers.all.first(where: { $0.identifier.rawValue == camera.serverId })
+    }
+
+    func areaName(for camera: HAAppEntity) -> String? {
+        entityToAreaMap[camera.entityId]
     }
 }
