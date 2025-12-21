@@ -60,10 +60,11 @@ jobs:
         run: |
           bundle install
           # Use bash as /bin/sh for CocoaPods scripts (Realm pod requires bash features)
+          ORIGINAL_SH=$(readlink -f /bin/sh)
           sudo ln -sf /bin/bash /bin/sh
           bundle exec pod install --repo-update
           # Restore original /bin/sh
-          sudo ln -sf /bin/dash /bin/sh
+          sudo ln -sf "$ORIGINAL_SH" /bin/sh
 
       - name: Remove unused strings
         if: steps.detect.outputs.has_unused == 'true'
