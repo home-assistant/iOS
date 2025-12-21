@@ -4461,7 +4461,7 @@ public enum L10n {
       public enum Fan {
         /// Turn on/off your fan
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.fan.description") }
-        /// Choose Fan
+        /// Choose fan
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.fan.placeholder_title") }
         /// Fan
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.fan.title") }

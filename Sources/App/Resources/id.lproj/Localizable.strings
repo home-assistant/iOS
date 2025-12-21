@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "Dengan suara";
 "app_intents.controls.assist.title" = "Assist dalam aplikasi";
 "app_intents.cover.title" = "Penutup";
+"app_intents.fan.off_state_icon.title" = "Icon for off state";
+"app_intents.fan.on_state_icon.title" = "Icon for on state";
+"app_intents.fan.title" = "Fan";
 "app_intents.haptic_confirmation.title" = "Konfirmasi haptik";
 "app_intents.icon.title" = "Ikon";
 "app_intents.intent.cover.title" = "Kontrol penutup";
+"app_intents.intent.fan.title" = "Control fan";
 "app_intents.intent.light.title" = "Kendalikan Lampu";
 "app_intents.intent.switch.title" = "Kendalikan Sakelar";
 "app_intents.lights.light.target" = "Status target";
@@ -1273,6 +1277,9 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.controls.cover.description" = "Alihkan penutup";
 "widgets.controls.cover.placeholder_title" = "Pilih Penutup";
 "widgets.controls.cover.title" = "Penutup";
+"widgets.controls.fan.description" = "Turn on/off your fan";
+"widgets.controls.fan.placeholder_title" = "Choose fan";
+"widgets.controls.fan.title" = "Fan";
 "widgets.controls.light.description" = "Nyalakan/matikan lampu Anda";
 "widgets.controls.light.placeholder_title" = "Pilih Lampu";
 "widgets.controls.light.title" = "Lampu";
