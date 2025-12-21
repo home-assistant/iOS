@@ -22,7 +22,7 @@ struct CameraListView: View {
                     cameraListView
                 }
             }
-            .navigationTitle("Cameras")
+            .navigationTitle(L10n.CameraList.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -59,7 +59,7 @@ struct CameraListView: View {
                 .tint(.accentColor)
             }
         }
-        .searchable(text: $viewModel.searchTerm, prompt: "Search cameras")
+        .searchable(text: $viewModel.searchTerm, prompt: L10n.CameraList.searchPlaceholder)
         .onAppear {
             viewModel.fetchCameras()
         }
@@ -70,9 +70,9 @@ struct CameraListView: View {
             Image(systemSymbol: .videoSlash)
                 .font(.largeTitle)
                 .foregroundStyle(.secondary)
-            Text("No Cameras")
+            Text(L10n.CameraList.Empty.title)
                 .font(.headline)
-            Text("No camera entities found in your Home Assistant setup")
+            Text(L10n.CameraList.Empty.message)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -88,9 +88,9 @@ struct CameraListView: View {
             Image(systemSymbol: .magnifyingglass)
                 .font(.largeTitle)
                 .foregroundStyle(.secondary)
-            Text("No Results")
+            Text(L10n.CameraList.NoResults.title)
                 .font(.headline)
-            Text("No cameras match your search")
+            Text(L10n.CameraList.NoResults.message)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
