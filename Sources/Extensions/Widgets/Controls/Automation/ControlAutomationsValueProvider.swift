@@ -48,7 +48,7 @@ struct ControlAutomationsValueProvider: AppIntentControlValueProvider {
             serverId: "",
             serverName: "",
             displayString: L10n.Widgets.Controls.Automations.placeholderTitle,
-            iconName: ""
+            iconName: SFSymbol.flowchart.rawValue
         )
     }
 

@@ -70,7 +70,7 @@ struct IntentAutomationAppEntityQuery: EntityQuery, EntityStringQuery {
                     serverId: entity.serverId,
                     serverName: server.info.name,
                     displayString: entity.name,
-                    iconName: entity.icon ?? SFSymbol.gearshapeFill.rawValue
+                    iconName: entity.icon ?? SFSymbol.flowchart.rawValue
                 )
             })))
         }
