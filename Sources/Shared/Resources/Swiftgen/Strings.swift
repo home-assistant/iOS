@@ -535,6 +535,10 @@ public enum L10n {
   }
 
   public enum CameraList {
+    /// Search cameras
+    public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
+    /// Cameras
+    public static var title: String { return L10n.tr("Localizable", "camera_list.title") }
     public enum Empty {
       /// No camera entities found in your Home Assistant setup
       public static var message: String { return L10n.tr("Localizable", "camera_list.empty.message") }
@@ -547,10 +551,6 @@ public enum L10n {
       /// No Results
       public static var title: String { return L10n.tr("Localizable", "camera_list.no_results.title") }
     }
-    /// Search cameras
-    public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
-    /// Cameras
-    public static var title: String { return L10n.tr("Localizable", "camera_list.title") }
   }
 
   public enum CarPlay {
