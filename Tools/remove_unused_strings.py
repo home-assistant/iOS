@@ -43,7 +43,8 @@ def remove_key_from_strings_file(strings_file: Path, key_to_remove: str) -> bool
         
         # Pattern to match the key-value pair
         # Example: "key.name" = "value";
-        pattern = rf'^"{re.escape(key_to_remove)}" = [^;]+;$'
+        # The value is a quoted string that may contain escaped quotes
+        pattern = rf'^"{re.escape(key_to_remove)}" = "(?:[^"\\]|\\.)*";$'
         
         lines = content.split('\n')
         new_lines = []

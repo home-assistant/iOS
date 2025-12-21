@@ -13,7 +13,13 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set, Tuple, NamedTuple
+
+
+class EnumContext(NamedTuple):
+    """Represents an enum in the stack with its name and indentation level."""
+    name: str
+    indent: int
 
 
 class L10nString:
@@ -55,16 +61,16 @@ def parse_strings_swift(strings_swift_path: Path) -> List[L10nString]:
             # Calculate indentation level
             indent = len(line) - len(line.lstrip())
             # Pop enums from stack if we're at the same or lower indentation
-            while enum_stack and enum_stack[-1][1] >= indent:
+            while enum_stack and enum_stack[-1].indent >= indent:
                 enum_stack.pop()
-            enum_stack.append((enum_name, indent))
+            enum_stack.append(EnumContext(enum_name, indent))
             continue
         
         # Detect closing braces that end enum blocks
         if re.match(r'\s*}', line):
             # Pop the last enum if there's significant dedent
             indent = len(line) - len(line.lstrip())
-            while enum_stack and enum_stack[-1][1] >= indent:
+            while enum_stack and enum_stack[-1].indent >= indent:
                 enum_stack.pop()
             continue
         
@@ -79,7 +85,7 @@ def parse_strings_swift(strings_swift_path: Path) -> List[L10nString]:
             localizable_key = static_var_match.group(2)
             
             # Build the full property path
-            path_parts = [e[0] for e in enum_stack] + [property_name]
+            path_parts = [e.name for e in enum_stack] + [property_name]
             # SwiftGen creates nested enums but access is L10n.EnumName.property
             # So we just join with dots, no need to convert first to lowercase
             swift_property = '.'.join(path_parts)
@@ -98,7 +104,7 @@ def parse_strings_swift(strings_swift_path: Path) -> List[L10nString]:
             localizable_key = static_func_match.group(2)
             
             # Build the full property path
-            path_parts = [e[0] for e in enum_stack] + [func_name]
+            path_parts = [e.name for e in enum_stack] + [func_name]
             swift_property = '.'.join(path_parts)
             
             l10n_strings.append(L10nString(swift_property, localizable_key, i))
