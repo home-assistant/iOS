@@ -151,6 +151,22 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
             guard let domain = item.domain,
                   let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else { break }
 
+            // Get device class from database
+            let deviceClass: String? = {
+                do {
+                    let entity = try Current.database().read { db in
+                        try HAAppEntity
+                            .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId)
+                            .filter(Column(DatabaseTables.AppEntity.entityId.rawValue) == entityId)
+                            .fetchOne(db)
+                    }
+                    return entity?.rawDeviceClass
+                } catch {
+                    Current.Log.error("Failed to fetch entity from database: \(error.localizedDescription)")
+                    return nil
+                }
+            }()
+
             if let state: ControlEntityProvider.State = await ControlEntityProvider(domains: [domain]).state(
                 server: server,
                 entityId: entityId
@@ -159,7 +175,7 @@ struct WidgetCustomTimelineProvider: AppIntentTimelineProvider {
                     .init(
                         value: "\(StatePrecision.adjustPrecision(serverId: serverId, entityId: entityId, stateValue: state.value)) \(state.unitOfMeasurement ?? "")",
                         domainState: state.domainState,
-                        deviceClass: state.deviceClass
+                        deviceClass: deviceClass
                     )
             } else {
                 Current.Log

@@ -95,17 +95,33 @@ struct WidgetSensorsAppIntentTimelineProvider: AppIntentTimelineProvider {
         for sensor: IntentSensorsAppEntity,
         server: Server
     ) async throws -> WidgetSensorsEntry.SensorData {
+        // Get device class from database
+        let deviceClass: String? = {
+            do {
+                let entity = try Current.database().read { db in
+                    try HAAppEntity
+                        .filter(Column(DatabaseTables.AppEntity.serverId.rawValue) == sensor.serverId)
+                        .filter(Column(DatabaseTables.AppEntity.entityId.rawValue) == sensor.entityId)
+                        .fetchOne(db)
+                }
+                return entity?.rawDeviceClass
+            } catch {
+                Current.Log.error("Failed to fetch entity from database: \(error.localizedDescription)")
+                return nil
+            }
+        }()
+
         let state: ControlEntityProvider.State = await ControlEntityProvider(domains: Domain.allCases).state(
             server: server,
             entityId: sensor.entityId
-        ) ?? ControlEntityProvider.State(value: "", unitOfMeasurement: nil, domainState: nil, deviceClass: nil)
+        ) ?? ControlEntityProvider.State(value: "", unitOfMeasurement: nil, domainState: nil)
         return WidgetSensorsEntry.SensorData(
             id: sensor.id,
             key: sensor.displayString,
             value: state.value,
             unitOfMeasurement: state.unitOfMeasurement,
-            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon(deviceClass: state.deviceClass).name,
-            deviceClass: state.deviceClass,
+            icon: sensor.icon ?? Domain(entityId: sensor.entityId)?.icon(deviceClass: deviceClass).name,
+            deviceClass: deviceClass,
             domainState: state.domainState
         )
     }
