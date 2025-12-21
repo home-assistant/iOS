@@ -1,0 +1,115 @@
+---
+name: Clean Unused Strings
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run monthly on the first day of the month at 00:00 UTC
+    - cron: '0 0 1 * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  clean-unused-strings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3  # v5.3.0
+        with:
+          python-version: '3.x'
+
+      - name: Detect unused strings
+        id: detect
+        run: |
+          OUTPUT=$(python3 Tools/detect_unused_strings.py 2>&1 || true)
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          echo "$OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Check if any unused strings were found
+          if echo "$OUTPUT" | grep -q "Total unused:"; then
+            COUNT=$(echo "$OUTPUT" | grep "Total unused:" | grep -oE '[0-9]+')
+            echo "has_unused=true" >> $GITHUB_OUTPUT
+            echo "count=$COUNT" >> $GITHUB_OUTPUT
+          else
+            echo "has_unused=false" >> $GITHUB_OUTPUT
+            echo "count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip if no unused strings
+        if: steps.detect.outputs.has_unused != 'true'
+        run: |
+          echo "✅ No unused strings found - nothing to clean up!"
+          exit 0
+
+      - name: Set up Ruby
+        if: steps.detect.outputs.has_unused == 'true'
+        uses: ruby/setup-ruby@ac793fdd38cc468a4dd57246fa9d0e868aba9085  # v1.270.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Install Pods (for SwiftGen)
+        if: steps.detect.outputs.has_unused == 'true'
+        run: |
+          bundle install
+          bundle exec pod install --repo-update
+
+      - name: Remove unused strings
+        if: steps.detect.outputs.has_unused == 'true'
+        id: remove
+        run: |
+          python3 Tools/remove_unused_strings.py
+          echo "removed=true" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.remove.outputs.removed == 'true'
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f  # v7.0.5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            Remove unused L10n strings
+            
+            Automatically detected and removed ${{ steps.detect.outputs.count }} unused localization strings.
+          branch: automated/cleanup-unused-strings
+          delete-branch: true
+          title: 'Remove unused L10n strings'
+          body: |
+            ## Automated Cleanup: Unused L10n Strings
+            
+            This PR was automatically created by the `Clean Unused Strings` workflow.
+            
+            ### Summary
+            - **Removed**: ${{ steps.detect.outputs.count }} unused localization strings
+            - **Modified files**: All `Localizable.strings` files across language directories
+            - **Regenerated**: `Sources/Shared/Resources/Swiftgen/Strings.swift`
+            
+            ### Details
+            
+            <details>
+            <summary>Unused strings that were removed</summary>
+            
+            ```
+            ${{ steps.detect.outputs.output }}
+            ```
+            
+            </details>
+            
+            ### Review Notes
+            - Please review the removed strings to ensure they are truly unused
+            - The script checks for both L10n property usage and direct key usage
+            - Strings.swift has been regenerated automatically using SwiftGen
+            
+            ---
+            
+            *This is an automated cleanup PR. If you believe any of these strings should be kept, please comment and close this PR.*
+          labels: |
+            automated
+            localization
+            cleanup
