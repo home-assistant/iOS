@@ -24,7 +24,10 @@ struct ControlAutomation: ControlWidget {
                 return intent
             }()) {
                 // ControlWidget can only display SF Symbol
-                Label(template.displayText ?? template.intentAutomationEntity.displayString, systemImage: template.icon.id)
+                Label(
+                    template.displayText ?? template.intentAutomationEntity.displayString,
+                    systemImage: template.icon.id
+                )
             }
             .tint(.haPrimary)
         }

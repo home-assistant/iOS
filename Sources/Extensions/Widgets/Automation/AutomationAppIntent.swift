@@ -6,9 +6,15 @@ import SwiftUI
 
 @available(iOS 16.4, *)
 final class AutomationAppIntent: AppIntent {
-    static let title: LocalizedStringResource = .init("widgets.automation.trigger.title", defaultValue: "Trigger automation")
+    static let title: LocalizedStringResource = .init(
+        "widgets.automation.trigger.title",
+        defaultValue: "Trigger automation"
+    )
 
-    @Parameter(title: LocalizedStringResource("app_intents.automations.parameter.automation.title", defaultValue: "Automation"))
+    @Parameter(title: LocalizedStringResource(
+        "app_intents.automations.parameter.automation.title",
+        defaultValue: "Automation"
+    ))
     var automation: IntentAutomationEntity
 
     @Parameter(
@@ -66,7 +72,8 @@ final class AutomationAppIntent: AppIntent {
         if showConfirmationNotification {
             Current.notificationDispatcher.send(.init(
                 id: .automationAppIntentRun,
-                title: success ? L10n.AppIntents.Automations.SuccessMessage.content(automation.displayString) : L10n.AppIntents
+                title: success ? L10n.AppIntents.Automations.SuccessMessage.content(automation.displayString) : L10n
+                    .AppIntents
                     .Automations.FailureMessage.content(automation.displayString)
             ))
         }
