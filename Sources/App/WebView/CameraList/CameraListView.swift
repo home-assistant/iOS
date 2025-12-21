@@ -6,7 +6,7 @@ struct CameraListView: View {
     @StateObject private var viewModel: CameraListViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCamera: (camera: HAAppEntity, server: Server)?
-    
+
     init(serverId: String? = nil) {
         self._viewModel = .init(wrappedValue: CameraListViewModel(serverId: serverId))
     }
@@ -14,7 +14,7 @@ struct CameraListView: View {
     var body: some View {
         NavigationView {
             Group {
-                if viewModel.filteredCameras.isEmpty && !viewModel.cameras.isEmpty {
+                if viewModel.filteredCameras.isEmpty, !viewModel.cameras.isEmpty {
                     emptySearchResultView
                 } else if viewModel.cameras.isEmpty {
                     noCamerasView
@@ -49,7 +49,7 @@ struct CameraListView: View {
             if viewModel.shouldShowServerPicker {
                 ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
             }
-            
+
             ForEach(viewModel.filteredCameras, id: \.id) { camera in
                 Button(action: {
                     openCamera(camera)
@@ -96,13 +96,13 @@ struct CameraListView: View {
         }
         .padding()
     }
-    
+
     private func openCamera(_ camera: HAAppEntity) {
         guard let server = viewModel.server(for: camera) else {
             Current.Log.error("No server found for camera: \(camera.entityId)")
             return
         }
-        
+
         selectedCamera = (camera, server)
     }
 }
@@ -111,14 +111,14 @@ struct CameraListView: View {
 private struct CameraPresentation: Identifiable {
     let camera: HAAppEntity
     let server: Server
-    
+
     var id: String { camera.id }
 }
 
 struct CameraListRow: View {
     let camera: HAAppEntity
     let areaName: String?
-    
+
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
             Image(systemSymbol: .videoFill)

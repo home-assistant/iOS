@@ -23,18 +23,18 @@ final class CameraListViewModel: ObservableObject {
     func fetchCameras() {
         let entitiesPerServer = controlEntityProvider.getEntities()
         cameras = entitiesPerServer.flatMap(\.1)
-        
+
         if selectedServerId == nil {
             selectedServerId = Current.servers.all.first?.identifier.rawValue
         }
-        
+
         // Build area mapping for all servers
         buildAreaMapping()
     }
 
     private func buildAreaMapping() {
         entityToAreaMap.removeAll()
-        
+
         for server in Current.servers.all {
             do {
                 let areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
@@ -52,7 +52,7 @@ final class CameraListViewModel: ObservableObject {
     var filteredCameras: [HAAppEntity] {
         cameras.filter { camera in
             let matchesServer = selectedServerId == nil || camera.serverId == selectedServerId
-            let matchesSearch = searchTerm.count <= 2 || 
+            let matchesSearch = searchTerm.count <= 2 ||
                 camera.name.lowercased().contains(searchTerm.lowercased()) ||
                 camera.entityId.lowercased().contains(searchTerm.lowercased())
             return matchesServer && matchesSearch
