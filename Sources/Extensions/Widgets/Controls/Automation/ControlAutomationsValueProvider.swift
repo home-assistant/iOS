@@ -1,8 +1,8 @@
 import AppIntents
 import Foundation
+import SFSafeSymbols
 import Shared
 import WidgetKit
-import SFSafeSymbols
 
 @available(iOSApplicationExtension 18, *)
 struct ControlAutomationItem {
