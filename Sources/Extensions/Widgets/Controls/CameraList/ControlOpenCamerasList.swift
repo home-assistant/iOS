@@ -1,9 +1,9 @@
 import AppIntents
 import Foundation
+import SFSafeSymbols
 import Shared
 import SwiftUI
 import WidgetKit
-import SFSafeSymbols
 
 @available(iOS 18, *)
 struct ControlOpenCamerasList: ControlWidget {
