@@ -4505,6 +4505,10 @@ public enum L10n {
           }
         }
       }
+      public enum OpenCamerasList {
+        /// Opens a list of all cameras
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_cameras_list.description") }
+      }
       public enum OpenCover {
         /// Opens the selected cover entity inside the app
         public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_cover.description") }

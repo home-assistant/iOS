@@ -64,6 +64,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenPage()
         ControlOpenEntity()
         ControlOpenCamera()
+        ControlOpenCamerasList()
         ControlOpenCoverEntity()
         ControlOpenInputBoolean()
         ControlOpenLight()
