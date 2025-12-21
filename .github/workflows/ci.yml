@@ -93,7 +93,7 @@ jobs:
           echo "output<<EOF" >> $GITHUB_OUTPUT
           echo "$OUTPUT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          
+
           # Check if any unused strings were found
           if echo "$OUTPUT" | grep -q "Total unused:"; then
             COUNT=$(echo "$OUTPUT" | grep "Total unused:" | grep -oE '[0-9]+')
@@ -111,19 +111,20 @@ jobs:
           header: unused-strings-check
           message: |
             ⚠️ **Unused L10n strings detected**
-            
+
             Found **${{ steps.detect.outputs.count }}** unused localization strings in the codebase.
-            
+
             <details>
             <summary>Click to see details</summary>
-            
+
             ```
             ${{ steps.detect.outputs.output }}
             ```
-            
+
             </details>
-            
-            Consider running `python3 Tools/remove_unused_strings.py` to clean up these strings, or use the automated cleanup workflow.
+
+            Consider running `python3 Tools/remove_unused_strings.py` to clean up these strings,
+            or use the automated cleanup workflow.
 
   test:
     needs: check-swiftlint-disables

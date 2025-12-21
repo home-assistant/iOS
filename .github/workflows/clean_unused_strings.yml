@@ -31,7 +31,7 @@ jobs:
           echo "output<<EOF" >> $GITHUB_OUTPUT
           echo "$OUTPUT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          
+
           # Check if any unused strings were found
           if echo "$OUTPUT" | grep -q "Total unused:"; then
             COUNT=$(echo "$OUTPUT" | grep "Total unused:" | grep -oE '[0-9]+')
@@ -75,40 +75,42 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |
             Remove unused L10n strings
-            
-            Automatically detected and removed ${{ steps.detect.outputs.count }} unused localization strings.
+
+            Automatically detected and removed ${{ steps.detect.outputs.count }}
+            unused localization strings.
           branch: automated/cleanup-unused-strings
           delete-branch: true
           title: 'Remove unused L10n strings'
           body: |
             ## Automated Cleanup: Unused L10n Strings
-            
+
             This PR was automatically created by the `Clean Unused Strings` workflow.
-            
+
             ### Summary
             - **Removed**: ${{ steps.detect.outputs.count }} unused localization strings
             - **Modified files**: All `Localizable.strings` files across language directories
             - **Regenerated**: `Sources/Shared/Resources/Swiftgen/Strings.swift`
-            
+
             ### Details
-            
+
             <details>
             <summary>Unused strings that were removed</summary>
-            
+
             ```
             ${{ steps.detect.outputs.output }}
             ```
-            
+
             </details>
-            
+
             ### Review Notes
             - Please review the removed strings to ensure they are truly unused
             - The script checks for both L10n property usage and direct key usage
             - Strings.swift has been regenerated automatically using SwiftGen
-            
+
             ---
-            
-            *This is an automated cleanup PR. If you believe any of these strings should be kept, please comment and close this PR.*
+
+            *This is an automated cleanup PR. If you believe any of these strings
+            should be kept, please comment and close this PR.*
           labels: |
             automated
             localization
