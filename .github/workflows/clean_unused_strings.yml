@@ -63,7 +63,7 @@ jobs:
           ORIGINAL_SH=$(readlink -f /bin/sh)
           sudo ln -sf /bin/bash /bin/sh
           # Ensure original shell is restored even if pod install fails
-          trap "sudo ln -sf '$ORIGINAL_SH' /bin/sh" EXIT
+          trap "sudo ln -sf \"$ORIGINAL_SH\" /bin/sh" EXIT
           bundle exec pod install --repo-update
 
       - name: Remove unused strings
