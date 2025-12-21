@@ -129,13 +129,11 @@ struct CameraListRow: View {
                     Text(areaName)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                    Text("•")
+                } else {
+                    Text(camera.entityId)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                Text(camera.entityId)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
