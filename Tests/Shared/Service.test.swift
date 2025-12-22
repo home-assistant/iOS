@@ -17,14 +17,23 @@ struct ServiceTests {
 
         // Test initialization from raw value
         #expect(Service(rawValue: "turn_on") == .turnOn, "Service(rawValue: 'turn_on') should initialize to .turnOn")
-        #expect(Service(rawValue: "turn_off") == .turnOff, "Service(rawValue: 'turn_off') should initialize to .turnOff")
+        #expect(
+            Service(rawValue: "turn_off") == .turnOff,
+            "Service(rawValue: 'turn_off') should initialize to .turnOff"
+        )
         #expect(Service(rawValue: "toggle") == .toggle, "Service(rawValue: 'toggle') should initialize to .toggle")
         #expect(Service(rawValue: "press") == .press, "Service(rawValue: 'press') should initialize to .press")
         #expect(Service(rawValue: "lock") == .lock, "Service(rawValue: 'lock') should initialize to .lock")
         #expect(Service(rawValue: "unlock") == .unlock, "Service(rawValue: 'unlock') should initialize to .unlock")
         #expect(Service(rawValue: "open") == .open, "Service(rawValue: 'open') should initialize to .open")
-        #expect(Service(rawValue: "open_cover") == .openCover, "Service(rawValue: 'open_cover') should initialize to .openCover")
-        #expect(Service(rawValue: "close_cover") == .closeCover, "Service(rawValue: 'close_cover') should initialize to .closeCover")
+        #expect(
+            Service(rawValue: "open_cover") == .openCover,
+            "Service(rawValue: 'open_cover') should initialize to .openCover"
+        )
+        #expect(
+            Service(rawValue: "close_cover") == .closeCover,
+            "Service(rawValue: 'close_cover') should initialize to .closeCover"
+        )
         #expect(Service(rawValue: "trigger") == .trigger, "Service(rawValue: 'trigger') should initialize to .trigger")
 
         // Test invalid raw value
