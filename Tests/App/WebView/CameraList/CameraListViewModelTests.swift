@@ -49,7 +49,7 @@ class CameraListViewModelTests: XCTestCase {
     }
 
     func testCustomCameraOrderIsApplied() {
-        // Given: Custom camera order stored
+        // Given: Custom camera order stored before creating view model
         let areaName = L10n.CameraList.noArea
         let storage = CameraOrderStorage(
             areaOrders: [areaName: ["camera.zebra", "camera.beta", "camera.alpha"]],
@@ -57,12 +57,8 @@ class CameraListViewModelTests: XCTestCase {
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
         
-        // Wait for async load to complete
-        let expectation = self.expectation(description: "Load camera orders")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        // Create view model after setting up storage
+        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
         
         sut.cameras = [
             makeCamera(entityId: "camera.alpha", name: "Alpha Camera"),
@@ -70,6 +66,9 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.zebra", name: "Zebra Camera"),
         ]
         sut.selectedServerId = "test_server"
+        
+        // Give promises a chance to resolve
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
@@ -92,12 +91,8 @@ class CameraListViewModelTests: XCTestCase {
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
         
-        // Wait for async load
-        let expectation = self.expectation(description: "Load camera orders")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        // Create view model after setting up storage
+        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
         
         sut.cameras = [
             makeCamera(entityId: "camera.alpha", name: "Alpha Camera"),
@@ -106,6 +101,9 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.new", name: "New Camera"),
         ]
         sut.selectedServerId = "test_server"
+        
+        // Give promises a chance to resolve
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
@@ -146,17 +144,16 @@ class CameraListViewModelTests: XCTestCase {
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
         
-        // Wait for async load
-        let expectation = self.expectation(description: "Load camera orders")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        // Create view model after setting up storage
+        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
         
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
         ]
         sut.selectedServerId = "test_server"
+        
+        // Give promises a chance to resolve
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
@@ -174,18 +171,17 @@ class CameraListViewModelTests: XCTestCase {
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
         
-        // Wait for async load
-        let expectation = self.expectation(description: "Load camera orders")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        // Create view model after setting up storage
+        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
         
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
             makeCamera(entityId: "camera.2", name: "Camera 2"),
         ]
         sut.selectedServerId = "test_server"
+        
+        // Give promises a chance to resolve
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
@@ -242,19 +238,17 @@ class CameraListViewModelTests: XCTestCase {
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
         
-        // Wait for async load
-        let expectation = self.expectation(description: "Load camera orders")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        // Create view model after setting up storage
+        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
         
-        // When: Creating new view model with cameras
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
             makeCamera(entityId: "camera.2", name: "Camera 2"),
         ]
         sut.selectedServerId = "test_server"
+        
+        // Give promises a chance to resolve
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         
         // Then: Order should be restored
         let grouped = sut.groupedCameras
@@ -408,10 +402,21 @@ class CameraListViewModelTests: XCTestCase {
 class MockDiskCache: DiskCache {
     var storedValues: [String: Any] = [:]
     var savedValues: [String: Any] = [:]
+    var shouldLoadSynchronously = true
 
     func value<T: Codable>(for key: String) -> Promise<T> {
         if let value = storedValues[key] as? T {
-            return .value(value)
+            if shouldLoadSynchronously {
+                // Return already-resolved promise for synchronous behavior in tests
+                return .value(value)
+            } else {
+                // Return promise that resolves asynchronously
+                return Promise { seal in
+                    DispatchQueue.main.async {
+                        seal.fulfill(value)
+                    }
+                }
+            }
         } else {
             return Promise(error: NSError(domain: "MockDiskCache", code: 404, userInfo: [
                 NSLocalizedDescriptionKey: "Value not found for key: \(key)",
@@ -422,7 +427,15 @@ class MockDiskCache: DiskCache {
     func set<T: Codable>(_ value: T, for key: String) -> Promise<Void> {
         savedValues[key] = value
         storedValues[key] = value
-        return .value(())
+        if shouldLoadSynchronously {
+            return .value(())
+        } else {
+            return Promise { seal in
+                DispatchQueue.main.async {
+                    seal.fulfill(())
+                }
+            }
+        }
     }
 
     func setStoredValue<T: Codable>(_ value: T, forKey key: String) {
