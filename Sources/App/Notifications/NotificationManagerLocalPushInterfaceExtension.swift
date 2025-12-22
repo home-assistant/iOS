@@ -55,7 +55,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                                     "Adding server \(server.identifier.rawValue) to disconnected set. Current disconnected servers: \(disconnectedServers.map(\.rawValue))"
                                 )
                             disconnectedServers.insert(server.identifier)
-                            Current.Log.verbose("Disconnected servers after insert: \(disconnectedServers.map(\.rawValue))")
+                            Current.Log
+                                .verbose("Disconnected servers after insert: \(disconnectedServers.map(\.rawValue))")
                             DispatchQueue.main.async { [weak self] in
                                 self?.scheduleReconnection()
                             }
@@ -70,7 +71,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                                     "Removing server \(server.identifier.rawValue) from disconnected set. Current disconnected servers: \(disconnectedServers.map(\.rawValue))"
                                 )
                             disconnectedServers.remove(server.identifier)
-                            Current.Log.verbose("Disconnected servers after remove: \(disconnectedServers.map(\.rawValue))")
+                            Current.Log
+                                .verbose("Disconnected servers after remove: \(disconnectedServers.map(\.rawValue))")
                             if disconnectedServers.isEmpty {
                                 Current.Log.verbose("All servers reconnected, cancelling reconnection timer")
                                 DispatchQueue.main.async { [weak self] in
