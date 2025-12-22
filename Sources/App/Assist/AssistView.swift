@@ -26,7 +26,7 @@ struct AssistView: View {
     var body: some View {
         if #available(iOS 26.0, *) {
             NavigationStack {
-                TranscriptView(story: .constant(Story(title: "Abc", text: "", url: nil, isDone: false)))
+                HAAssistTranscriptView(story: .constant(HAAssistStory(title: "Abc", text: "", url: nil, isDone: false)))
             }
         } else {
             EmptyView()
