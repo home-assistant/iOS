@@ -3,6 +3,7 @@ import HAKit
 import UIKit
 
 public enum Domain: String, CaseIterable {
+    case automation
     case button
     case cover
     case fan
@@ -69,6 +70,8 @@ public enum Domain: String, CaseIterable {
         let deviceClass = DeviceClass(rawValue: deviceClass ?? "")
         var image: MaterialDesignIcons = .bookmarkIcon
         switch self {
+        case .automation:
+            image = .robotIcon
         case .button:
             image = MaterialDesignIcons.gestureTapButtonIcon
         case .cover:
@@ -175,6 +178,7 @@ public enum Domain: String, CaseIterable {
 public extension Domain {
     var carPlaySupportedDomains: [Domain] {
         [
+            .automation,
             .button,
             .cover,
             .fan,
