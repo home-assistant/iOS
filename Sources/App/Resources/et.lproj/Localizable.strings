@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistanti  Facebooki leht";
 "about.home_assistant_on_twitter.title" = "Home Assistant Twitteris";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Ärata oma kodu";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Jäta arvustus";
 "about.title" = "Teave";
@@ -52,7 +51,6 @@
 "alerts.prompt.ok" = "Sobib";
 "always_open_label" = "Alati avatud";
 "announcement.drop_support.button" = "Jätka";
-"announcement.drop_support.button_read_more" = "Lisateave";
 "announcement.drop_support.subtitle" = "Pärast hoolikat kaalumist lõpetame oma tulevastes värskendustes iOS 12, 13 ja 14 toe.";
 "announcement.drop_support.title" = "Oluline uuendus";
 "app_intents.assist.pipeline.default.title" = "Vaikimisi";
@@ -213,9 +211,6 @@
 "connection.error.generic_title" = "Oh oh! Näib, et ei saa ühendust luua.";
 "connection.permission.internal_url.body1" = "Selleks, et pääseda Home Assistantile turvaliselt ligi, pead andma asukoha kasutamise loa (\"Alati\").";
 "connection.permission.internal_url.body2" = "See luba võimaldab Home Assistantil tuvastada traadita võrgu, millega oled ühendatud, ja luua kohaliku ühenduse.";
-"connection.permission.internal_url.body3" = "Saad alati kontrolli selle üle kas asukohta jagatakse Home Assistantiga. Neid seadeid saad muuta kaasrakenduse seadete kuval.";
-"connection.permission.internal_url.button_configure" = "Kohaliku juurdepääsu seadistamine";
-"connection.permission.internal_url.button_ignore" = "Ma tean, mida ma teen. Luba kohalikud ühendused ilma lubadele juurdepääsuta.";
 "connection.permission.internal_url.footer" = "Kui soovid siiski kasutada kohalikku URL-i ja ei soovi asukoha luba anda, võid puudutada allolevat nupp, kuid pea meeles turvariske.";
 "connection.permission.internal_url.ignore.alert.title" = "Kas oled kindel?";
 "connection.permission.internal_url.title" = "Juurdepääsuluba";
@@ -318,7 +313,6 @@
 "help_label" = "Abi";
 "improv.button.continue" = "Jätka";
 "improv.connection_state.authorized" = "Wi-Fi seadistamine";
-"improv.connection_state.autorization_required" = "Jätkamiseks volita oma seade";
 "improv.connection_state.provisioning" = "Wi-Fi-ga ühendamine";
 "improv.error_state.invalid_rpc_packet" = "Sobimatu RPC pakett";
 "improv.error_state.not_authorized" = "Tuvastamise tõrge";
@@ -465,9 +459,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "notifications_configurator.settings.footer" = "Identifikaator peab sisaldama ainult tähti ja allkriipse ning olema suurtähtedega. See peab olema rakenduse jaoks globaalselt unikaalne.";
 "notifications_configurator.settings.footer.id_set" = "Identifikaatorit ei saa pärast loomist muuta. Identifikaatori muutmiseks pead toimingu kustutama ja uuesti looma.";
 "notifications_configurator.settings.header" = "Seaded";
-"off_label" = "Väljas";
 "ok_label" = "Sobib";
-"on_label" = "Sees";
 "onboarding.connect.mac_safari_warning.message" = "Proovi Safari taaskäivitada kui sisselogimisvorm ei avane.";
 "onboarding.connect.mac_safari_warning.title" = "Safari käivitamine";
 "onboarding.connect.title" = "Ühendun %@";
@@ -482,7 +474,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.connection_test_result.error_code" = "Veakood:";
 "onboarding.connection_test_result.local_network_permission.description" = "\"Kohaliku võrgu\" privaatsusluba võib olla keelatud. Seda saad muuta  rakenduse süsteemiseadetes.";
 "onboarding.device_name_check.error.prompt" = "Millist seadme nime tuleks selle asemel kasutada?";
-"onboarding.device_name_check.error.rename_action" = "Nimeta ümber";
 "onboarding.device_name_check.error.title" = "Seade nimega \"%1$@\" on juba olemas.";
 "onboarding.invitation.accept_button" = "Nõustu";
 "onboarding.invitation.other_options" = "Muud valikud";
@@ -532,15 +523,11 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.network_input.primary_description" = "Parima kogemuse saamiseks peab Home Assistant teadma millal oled koduvõrguga ühendatud.";
 "onboarding.network_input.secondary_button.title" = "Jäta vahele";
 "onboarding.network_input.title" = "Milline on Sinu koduvõrk?";
-"onboarding.permission.location.buttons.allow_and_share" = "Luba ja jaga Home Assistantiga";
-"onboarding.permission.location.buttons.allow_for_app" = "Luba ainult rakenduses kasutamiseks";
-"onboarding.permission.location.buttons.deny" = "Keeldu";
 "onboarding.permission.location.deny.alert.body" = "Kui oled kindel, jätka ja koputa ka järgmisel hüpikaknas nuppu \"Keela\", juhul kui pole kaugühendust konfigureeritud, kasutab rakendus kohaliku ühenduse konfiguratsiooni, et pääseda ligi Home Assistantile.";
 "onboarding.permission.location.deny.alert.header" = "Teave";
 "onboarding.permission.location.deny.alert.message" = "Ilma asukoha loata võivad rakenduse tulevased versioonid keelata juurdepääsu kohalikule Home Assistant'i serverile privaatsusprobleemide tõttu. Kui oled kindel, jätka ja puuduta ka järgmises hüpikaknas valikut \"Keelata\". Seda tehes soovitame kasutada oma sisemist URL-i välisena, kuna see on ainus URL, millele rakendus üritab ligi pääseda.";
 "onboarding.permission.location.deny.alert.title" = "Kas oled kindel?";
 "onboarding.permission.location.description" = "Selleks, et tuvastada, kas oled kodus ja ühendud lokaalselt Home Assistantiga, nõuab Apple, et me küsiksime asukoha luba.";
-"onboarding.permission.location.privacy_note" = "Asukohta ei jagata kohaliku Home Assistant'i serverig, kui te ei vali valikut \"Luba ja jaga Home Assistant'iga\". Jagamise saab valida hiljem kaaslase rakenduse seadetes > andurid.";
 "onboarding.permissions.allow" = "Luba";
 "onboarding.permissions.allowed" = "Valmis";
 "onboarding.permissions.change_later_note" = "Seda luba saad hiljem muuta seadetes";
@@ -571,7 +558,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.scanning.manual" = "Sisesta aadress käsitsi";
 "onboarding.scanning.manual.button.divider.title" = "või";
 "onboarding.scanning.manual.button.title" = "Sisesta aadress käsitsi";
-"onboarding.scanning.manual_hint" = "Ei leia oma serverit?";
 "onboarding.scanning.title" = "Serverite otsimine";
 "onboarding.servers.auto_connect.button" = "Ühenda";
 "onboarding.servers.docs.read" = "Loe dokumentatsiooni";
@@ -579,11 +565,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "onboarding.servers.search.message" = "Otsin läheduses olevaid servereid...";
 "onboarding.servers.title" = "Otsing koduvõrgus";
 "onboarding.welcome.body" = "Võimaldab oma Home Assistantile liikvel olles ligi pääseda. See töötab teie kodus lokaalselt seadme, näiteks Home Assistant Greeni või Raspberry Pi kaudu.";
-"onboarding.welcome.continue_button" = "Home Assistantiga ühenduse loomine";
 "onboarding.welcome.description" = "See rakendus loob ühenduse Home Assistanti serveriga ja võimaldab integreerida teie ja teie telefoni andmeid. \
 \
  Home Assistant on tasuta avatud lähtekoodiga koduautomaatika tarkvara, mis keskendub kohalikule juhtimisele ja privaatsusele.";
-"onboarding.welcome.get_started" = "Alusta Home Assistantiga";
 "onboarding.welcome.header" = "Home Assistanti kaasrakendus";
 "onboarding.welcome.learn_more" = "Lisateave";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistanti logo";
@@ -606,7 +590,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "post_onboarding.permission.notification.title" = "Kas soovid märguandeid saada?";
 "preview_output" = "Kujunduse eelvaade";
 "privacyLabel" = "Privaatsus";
-"reload_label" = "Taaslae";
 "requires_version" = "Nõuab %@ või uuemat versiooni.";
 "retry_label" = "Proovi uuesti";
 "save_label" = "Salvesta";
@@ -614,10 +597,8 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "sensors.geocoded_location.setting.use_zones" = "Kasuta tsooni nime";
 "servers_selection.title" = "Serverid";
 "settings.connection_section.activate_server" = "Aktiveeri";
-"settings.connection_section.activate_swipe_hint" = "Serveri vaatamisel saate kiiresti aktiveerida järgmise kolme sõrmega vasakule või paremale libistades.";
 "settings.connection_section.add_server" = "Lisa server";
 "settings.connection_section.all_servers" = "Kõik serverid";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Olen kindel";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Kui teil on ebaturvaline ühendus võib see paljastada teie autentimistõendi avalikes võrkudes.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Kas oled kindel?";
 "settings.connection_section.always_fallback_internal.footer" = "Selle lubamine ebaturvalise URL-iga (http) võib kahjustada teie turvalisust avalikes võrkudes.";
@@ -650,7 +631,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.internal_url_ssids.footer" = "Loetletud SSID-dega ühendamisel kasutatakse sisemist URL-i";
 "settings.connection_section.internal_url_ssids.header" = "SSID-d";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
-"settings.connection_section.invite_to_server" = "Kutsu kedagi selle koduga liituma";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Vähem turvaline";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Kõige turvalisem";
 "settings.connection_section.local_access_security_level.title" = "Kohaliku juurdepääsu turvalisus";
@@ -670,7 +650,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.connection_section.servers_footer" = "Järjestuse muutmine vaikeserveri määratlemiseks";
 "settings.connection_section.servers_header" = "Serverid";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Taustal SSID-dele juurdepääsemiseks on vaja asukohaluba „Alati” ja asukoha täielikku täpsust. Sätete muutmiseks puuduta siin.";
-"settings.connection_section.ssid_permission_message" = "Taustal SSID-dele juurdepääsemiseks on vaja luba \"Alati\" asukohale. Seadete muutmiseks puuduta siin.";
 "settings.connection_section.validate_error.edit_url" = "Muuda URL-i";
 "settings.connection_section.validate_error.title" = "Viga URL-i salvestamisel";
 "settings.connection_section.validate_error.use_anyway" = "Kasuta igal juhul";
@@ -723,12 +702,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings.navigation_bar.about_button.title" = "Teave";
 "settings.navigation_bar.title" = "Seaded";
 "settings.reset_section.reset_alert.message" = "Seaded lähtestatakse ja see seade eemaldatakse tõuketeavitustest ning eemaldatakse ka Home Assistanti konfiguratsioonist.";
-"settings.reset_section.reset_alert.progress_message" = "Lähtestamine…";
 "settings.reset_section.reset_alert.title" = "Lähtesta";
 "settings.reset_section.reset_app.title" = "Lähtesta rakendus (eemalda serverid ja andmed)";
 "settings.reset_section.reset_row.title" = "Lähtesta";
 "settings.reset_section.reset_web_cache.title" = "Lähtesta avakuva";
-"settings.server_select.page_title" = "Server";
 "settings.server_select.title" = "Server";
 "settings.status_section.header" = "Olek";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
@@ -776,7 +753,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.general.app_icon.enum.electric_violet" = "Tumelilla";
 "settings_details.general.app_icon.enum.fire_orange" = "Heleoranž";
 "settings_details.general.app_icon.enum.green" = "Roheline";
-"settings_details.general.app_icon.enum.ha_blue" = "Koduassistendi Sinine";
 "settings_details.general.app_icon.enum.old_beta" = "Vana beetaversioon";
 "settings_details.general.app_icon.enum.old_dev" = "Vana arendusversioon";
 "settings_details.general.app_icon.enum.old_release" = "Vana väljalase";
@@ -786,7 +762,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.general.app_icon.enum.pride_non_binary" = "Uhke: mittebinaarne";
 "settings_details.general.app_icon.enum.pride_poc" = "Pride: 8 värvi";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Rainbow (pööratud)";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.enum.purple" = "Lilla";
 "settings_details.general.app_icon.enum.red" = "Punane";
@@ -929,7 +904,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "settings_details.privacy.analytics.generic_title" = "Analüütika";
 "settings_details.privacy.body" = "Teil on kontroll oma andmete üle.";
 "settings_details.privacy.crash_reporting.description" = "Võimaldab rakenduse kokkujooksmiste ja muude vigade põhjalikumat jälgimist, mis viib kiiremate paranduste avaldamiseni. Kasutajat tuvastavat teavet ei saadeta, välja arvatud seadme põhiteave. Selle seade muudatuste jõustumiseks pead rakenduse taaskäivitama.";
-"settings_details.privacy.crash_reporting.sentry" = "See funktsioon kasutab praegu aruande sihtkohana Sentryt.";
 "settings_details.privacy.crash_reporting.title" = "Vearaportid";
 "settings_details.privacy.messaging.description" = "Tõukemärguannete toimimiseks peab Firebase'i pilvsõnumside olema lubatud.";
 "settings_details.privacy.messaging.title" = "Firebase'i pilvsõnumside";
@@ -965,17 +939,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "share_extension.entered_placeholder" = "'alustati' sündmusest";
 "share_extension.error.title" = "Edastamine nurjus";
 "shortcut_item.open_settings.title" = "Ava seaded";
-"success_label" = "Õnnestus";
 "thread.active_operational_data_set.title" = "Aktiivne tööandmete kogum";
 "thread.border_agent_id.title" = "Ääreseadme agendi ID";
-"thread.credentials.border_agent_id_title" = "Ääreseadme agendi ID";
-"thread.credentials.network_key_title" = "Võrgu võti";
-"thread.credentials.network_name_title" = "Võrgu nimi";
-"thread.credentials.no_credential_available" = "Sinu iCloudi Keychainis ei ole volitused saadaval.";
-"thread.credentials.screen_title" = "Threadi sidumse volitused";
 "thread.credentials.share_credentials.no_credentials_message" = "Veendu, et oled sisse logitud oma iCloudi kontoga, mis on Apple Home'i Home omanik.";
 "thread.credentials.share_credentials.no_credentials_title" = "Pole identimisteavet mida jagada";
-"thread.credentials.share_credentials_button_title" = "Volituste jagamine Home Assistantiga";
 "thread.extended_pan_id.title" = "Laiendatud PAN ID";
 "thread.management.title" = "Threadi sidumse volitused";
 "thread.network_key.title" = "Võrgu võti";
@@ -1023,7 +990,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "url_handler.x_callback_url.error.serviceMissing" = "teenus (nt homeassistant.turn_on) peab olema määratletud";
 "url_handler.x_callback_url.error.templateMissing" = "Tuleb määratleda renderdatav mall";
 "url_label" = "URL";
-"username_label" = "Kasutajanimi";
 "watch.assist.button.recording.title" = "Salvestamine...";
 "watch.assist.button.send_request.title" = "Puuduta päringu saatmiseks";
 "watch.assist.lack_config.error.title" = "Seadista Assist iOS-i kaasrakenduse abil";
@@ -1238,7 +1204,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.labels.complication_text_areas.row3_column2.label" = "3. rida, 2. veerg";
 "watch.labels.complication_text_areas.trailing.description" = "Mõõdiku tagaservas kuvatav tekst.";
 "watch.labels.complication_text_areas.trailing.label" = "Tagumine";
-"watch.labels.no_action" = "Toiminguid pole konfigureeritud. Sellest sõnumist loobumiseks seadista oma telefonis toimingud.";
 "watch.labels.no_config" = "Kella konfiguratsiooni pole saadaval, ava iOS-i rakendus ja loo oma konfiguratsioon kaasrakenduse seadete alt.";
 "watch.labels.selected_pipeline.title" = "Voog";
 "watch.placeholder_complication_name" = "Kohatäide";
@@ -1337,7 +1302,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.details.parameters.action" = "Toiming";
 "widgets.details.parameters.details_template" = "Üksikasjade tekstimall (ainult ristkülikus)";
 "widgets.details.parameters.lower_template" = "Väiksema teksti mall";
-"widgets.details.parameters.run_action" = "Käivita toiming (ainult ristkülikukus)";
 "widgets.details.parameters.run_script" = "Käivita skript (ainult ristkülikukujulise perekonna puhul)";
 "widgets.details.parameters.script" = "Skript";
 "widgets.details.parameters.server" = "Server";
@@ -1352,7 +1316,6 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.gauge.parameters.gauge_type.normal" = "Tavaline";
 "widgets.gauge.parameters.max_label_template" = "Max sildi mall";
 "widgets.gauge.parameters.min_label_template" = "Min sildi mall";
-"widgets.gauge.parameters.run_action" = "Käivita toiming";
 "widgets.gauge.parameters.run_script" = "Käivita skript";
 "widgets.gauge.parameters.script" = "Skript";
 "widgets.gauge.parameters.server" = "Server";

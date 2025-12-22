@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant na Facebooku";
 "about.home_assistant_on_twitter.title" = "Home Assistant na X";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Probuďte svůj domov";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Napište recenzi";
 "about.title" = "O aplikaci";
@@ -52,7 +51,6 @@
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Vždy otevřeno";
 "announcement.drop_support.button" = "Pokračovat";
-"announcement.drop_support.button_read_more" = "Přečtěte si více";
 "announcement.drop_support.subtitle" = "Po pečlivém zvážení ukončíme podporu pro iOS 12, 13 a 14 v našich nadcházejících aktualizacích.";
 "announcement.drop_support.title" = "Důležitá aktualizace";
 "app_intents.assist.pipeline.default.title" = "Výchozí";
@@ -213,9 +211,6 @@
 "connection.error.generic_title" = "Jéje! Zdá se, že se nám nedaří navázat spojení.";
 "connection.permission.internal_url.body1" = "Chcete-li získat místní přístup k Home Assistantovi bezpečným způsobem, musíte místu oprávnění pro polohu na (\"Vždy\").";
 "connection.permission.internal_url.body2" = "Toto oprávnění umožňuje Home Assistantovidetekovat bezdrátovou síť, ke které jste připojeni, a navázat místní připojení.";
-"connection.permission.internal_url.body3" = "Sdílení polohy do Home Assistanta máte vždy pod kontrolou. Tato nastavení můžete změnit na obrazovce nastavení doprovodné aplikace.";
-"connection.permission.internal_url.button_configure" = "Nastavit místní přístup";
-"connection.permission.internal_url.button_ignore" = "Vím, co dělám. Povolit místní připojení bez oprávnění přístupu.";
 "connection.permission.internal_url.footer" = "Pokud stále chcete používat místní adresu URL a nechcete poskytnout oprávnění pro polohu, můžete klepnout na tlačítko níže, ale uvědomte si bezpečnostní rizika.";
 "connection.permission.internal_url.ignore.alert.title" = "Jste si jisti?";
 "connection.permission.internal_url.title" = "Povolení přístupu";
@@ -318,7 +313,6 @@
 "help_label" = "Nápověda";
 "improv.button.continue" = "Pokračovat";
 "improv.connection_state.authorized" = "Nastavování Wi-Fi";
-"improv.connection_state.autorization_required" = "Chcete-li pokračovat, autorizujte své zařízení";
 "improv.connection_state.provisioning" = "Připojování k Wi-Fi";
 "improv.error_state.invalid_rpc_packet" = "Neplatný paket RPC";
 "improv.error_state.not_authorized" = "Není autorizováno";
@@ -465,9 +459,7 @@
 "notifications_configurator.settings.footer" = "Identifikátor musí obsahovat jen velká písmena a podtržítka. Musí být jedinečné pro aplikaci.";
 "notifications_configurator.settings.footer.id_set" = "Identifikátor nelze po vytvoření změnit. Chcete-li změnit identifikátor, musíte akci smazat a znovu vytvořit.";
 "notifications_configurator.settings.header" = "Nastavení";
-"off_label" = "Vypnuto";
 "ok_label" = "OK";
-"on_label" = "Zapnuto";
 "onboarding.connect.mac_safari_warning.message" = "Pokud se přihlašovací formulář neotevře, zkuste Safari restartovat.";
 "onboarding.connect.mac_safari_warning.title" = "Spouštění Safari";
 "onboarding.connect.title" = "Připojování k %@";
@@ -482,7 +474,6 @@
 "onboarding.connection_test_result.error_code" = "Kód chyby:";
 "onboarding.connection_test_result.local_network_permission.description" = "Oprávnění soukromí pro položku \"Sítě a bezdrátové připojení\" mohlo být odepřeno. Toto můžete změnit v nastavení iPhonu.";
 "onboarding.device_name_check.error.prompt" = "Jaký název zařízení by měl být místo toho použit?";
-"onboarding.device_name_check.error.rename_action" = "Přejmenovat";
 "onboarding.device_name_check.error.title" = "Zařízení s názvem \"%1$@\" již existuje";
 "onboarding.invitation.accept_button" = "Přijmout";
 "onboarding.invitation.other_options" = "Další volby";
@@ -532,15 +523,11 @@ Vzdálené, až budete připraveni.";
 "onboarding.network_input.primary_description" = "Pro co nejlepší zážitek potřebuje Home Assistant vědět, kdy jste připojeni k domácí síti.";
 "onboarding.network_input.secondary_button.title" = "Přeskočit";
 "onboarding.network_input.title" = "Jaká je vaše domácí síť?";
-"onboarding.permission.location.buttons.allow_and_share" = "Povolit a sdílet s Home Assistantem";
-"onboarding.permission.location.buttons.allow_for_app" = "Povolit jen použití aplikace";
-"onboarding.permission.location.buttons.deny" = "Odmítnout";
 "onboarding.permission.location.deny.alert.body" = "Pokud jste si jisti, pokračujte a v dalším vyskakovacím okně klepněte na \"Odmítnout\", protože v případě, že nemáte nastavené vzdálené připojení, použije aplikace pro přístup k aplikaci Home Assistant nastavení místního připojení.";
 "onboarding.permission.location.deny.alert.header" = "Informace";
 "onboarding.permission.location.deny.alert.message" = "Bez povolení k poloze mohou budoucí verze aplikace odepřít přístup k vašemu místnímu serveru Home Assistant z důvodu ochrany soukromí. Pokud jste si jisti, pokračujte a v dalším vyskakovacím okně klepněte na \"Odmítnout\". Pokud tak učiníte, doporučujeme použít svou interní adresu URL jako externí, protože je to jediná adresa URL, ke které se aplikace pokusí získat přístup.";
 "onboarding.permission.location.deny.alert.title" = "Jste si jisti?";
 "onboarding.permission.location.description" = "Aby bylo možné zjistit, zda jste doma, a připojit se místně k Home Assistantovi, Apple vyžaduje, abychom vás požádali o povolení k poloze.";
-"onboarding.permission.location.privacy_note" = "Vaše poloha nebude sdílena s vaším místním serverem Home Assistant, pokud nezvolíte \"Povolit a sdílet s Home Assistantem\". Sdílení můžete zvolit později doprovodné aplikaci v Nastavení > Senzory.";
 "onboarding.permissions.allow" = "Povolit";
 "onboarding.permissions.allowed" = "Hotovo";
 "onboarding.permissions.change_later_note" = "Toto oprávnění můžete později změnit v Nastavení";
@@ -571,7 +558,6 @@ Vzdálené, až budete připraveni.";
 "onboarding.scanning.manual" = "Zadejte adresu ručně";
 "onboarding.scanning.manual.button.divider.title" = "nebo";
 "onboarding.scanning.manual.button.title" = "Zadat adresu ručně";
-"onboarding.scanning.manual_hint" = "Nenašli jste svůj server?";
 "onboarding.scanning.title" = "Vyhledávání serverů";
 "onboarding.servers.auto_connect.button" = "Připojit";
 "onboarding.servers.docs.read" = "Přečíst si dokumentaci";
@@ -579,11 +565,9 @@ Vzdálené, až budete připraveni.";
 "onboarding.servers.search.message" = "Hledání serverů v okolí...";
 "onboarding.servers.title" = "Prohledávání domácí sítě";
 "onboarding.welcome.body" = "Umožní vám přístup k vaší instalaci Home Assistant na cestách. Běží lokálně ve vaší domácnosti prostřednictvím zařízení, jako je Home Assistant Green nebo Raspberry Pi.";
-"onboarding.welcome.continue_button" = "Připojit k mému Home Assistantovi";
 "onboarding.welcome.description" = "Tato aplikace se připojí k Vašemu Home Assistantovi a umožní Vám propojení s Vašim telefonem.\
 \
 Home Assistant je bezplatný a otevřený software pro domácí automatizaci se zaměřením na místní ovládání a soukromí.";
-"onboarding.welcome.get_started" = "Začněte s Home Assistantem";
 "onboarding.welcome.header" = "Doprovodná aplikace Home Assistant";
 "onboarding.welcome.learn_more" = "Více informací";
 "onboarding.welcome.logo.accessibility_label" = "Logo Home Assistanta";
@@ -606,7 +590,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "post_onboarding.permission.notification.title" = "Chcete dostávat oznámení?";
 "preview_output" = "Náhled výstupu";
 "privacyLabel" = "Soukromí";
-"reload_label" = "Znovu načíst";
 "requires_version" = "Vyžaduje %@ nebo novější.";
 "retry_label" = "Opakovat";
 "save_label" = "Uložit";
@@ -614,10 +597,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "sensors.geocoded_location.setting.use_zones" = "Použít název zóny";
 "servers_selection.title" = "Servery";
 "settings.connection_section.activate_server" = "Aktivovat";
-"settings.connection_section.activate_swipe_hint" = "Při prohlížení serveru rychle aktivujte přejetím třemi prsty doleva nebo doprava.";
 "settings.connection_section.add_server" = "Přidat server";
 "settings.connection_section.all_servers" = "Všechny servery";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Jsem si jistý";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Pokud máte nezabezpečené připojení, může to odhalit váš ověřovací token ve veřejných sítích.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Jste si jisti?";
 "settings.connection_section.always_fallback_internal.footer" = "Povolení v nezabezpečené adrese URL (http) může ohrozit vaši bezpečnost ve veřejných sítích.";
@@ -650,7 +631,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.internal_url_ssids.footer" = "Interní URL bude použita při připojení k uvedeným SSID";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "NázevMéSítě";
-"settings.connection_section.invite_to_server" = "Pozvěte někoho na tento server";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Méně bezpečné";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Nejbezpečnější";
 "settings.connection_section.local_access_security_level.title" = "Zabezpečení lokálního přístupu";
@@ -670,7 +650,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.servers_footer" = "Změnit pořadí pro definování výchozího serveru";
 "settings.connection_section.servers_header" = "Servery";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\" a \"Plnou\" přesnost polohy. Klepnutím sem změníte nastavení.";
-"settings.connection_section.ssid_permission_message" = "Přístup k SSID na pozadí vyžaduje oprávnění k poloze \"Vždy\". Klepnutím sem změníte nastavení.";
 "settings.connection_section.validate_error.edit_url" = "Upravit URL";
 "settings.connection_section.validate_error.title" = "Chyba při ukládání URL";
 "settings.connection_section.validate_error.use_anyway" = "Přesto použít";
@@ -723,12 +702,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.navigation_bar.about_button.title" = "O aplikaci";
 "settings.navigation_bar.title" = "Nastavení";
 "settings.reset_section.reset_alert.message" = "Vaše nastavení bude resetováno a toto zařízení bude odhlášeno také z oznámení a bude odebráno z nastavení Vašeho Home Assistanta.";
-"settings.reset_section.reset_alert.progress_message" = "Resetování...";
 "settings.reset_section.reset_alert.title" = "Resetovat";
 "settings.reset_section.reset_app.title" = "Resetovat aplikaci (odebere servery a data)";
 "settings.reset_section.reset_row.title" = "Resetovat";
 "settings.reset_section.reset_web_cache.title" = "Resetovat mezipaměť frontendu";
-"settings.server_select.page_title" = "Server";
 "settings.server_select.title" = "Server";
 "settings.status_section.header" = "Stav";
 "settings.status_section.location_name_row.placeholder" = "Můj Home Assistant";
@@ -776,7 +753,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.general.app_icon.enum.electric_violet" = "Elektrická fialová";
 "settings_details.general.app_icon.enum.fire_orange" = "Ohnivě oranžová";
 "settings_details.general.app_icon.enum.green" = "Zelená";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blue";
 "settings_details.general.app_icon.enum.old_beta" = "Stará beta";
 "settings_details.general.app_icon.enum.old_dev" = "Stará vývojová";
 "settings_details.general.app_icon.enum.old_release" = "Staré vydání";
@@ -786,7 +762,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.general.app_icon.enum.pride_non_binary" = "Hrdost: Nebinární";
 "settings_details.general.app_icon.enum.pride_poc" = "Hrdost: 8 barev";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Hrdost: Duha";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Hrdost: Duha (obrácená)";
 "settings_details.general.app_icon.enum.pride_trans" = "Hrdost: Trans";
 "settings_details.general.app_icon.enum.purple" = "Nachová";
 "settings_details.general.app_icon.enum.red" = "Červená";
@@ -929,7 +904,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings_details.privacy.analytics.generic_title" = "Analýza";
 "settings_details.privacy.body" = "Máte kontrolu nad svými daty.";
 "settings_details.privacy.crash_reporting.description" = "Umožňuje hlubší sledování chyb a dalších chyb v aplikaci, což vede k rychlejšímu publikování oprav. Nejsou odesílány žádné uživatelsky identifikovatelné informace, kromě základních informací o zařízení. Změny tohoto nastavení se projeví až po restartování aplikace.";
-"settings_details.privacy.crash_reporting.sentry" = "Tato funkce aktuálně používá Sentry jako cíl sestavy.";
 "settings_details.privacy.crash_reporting.title" = "Hlášení chyb";
 "settings_details.privacy.messaging.description" = "Aby push oznámení fungovala, musí být povolena služba Firebase Cloud Messaging.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
@@ -965,17 +939,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "share_extension.entered_placeholder" = "\"entered\" v události";
 "share_extension.error.title" = "Nelze odeslat";
 "shortcut_item.open_settings.title" = "Otevřít Nastavení";
-"success_label" = "Úspěch";
 "thread.active_operational_data_set.title" = "Aktivní soubor provozních dat";
 "thread.border_agent_id.title" = "ID hraničního agenta";
-"thread.credentials.border_agent_id_title" = "ID hraničního agenta";
-"thread.credentials.network_key_title" = "Síťový klíč";
-"thread.credentials.network_name_title" = "Název sítě";
-"thread.credentials.no_credential_available" = "Nejsou dostupné přihlašovací údaje ke Klíčence na iCloudu.";
-"thread.credentials.screen_title" = "Přihlašovací údaje vlákna";
 "thread.credentials.share_credentials.no_credentials_message" = "Ujistěte se, že jste přihlášeni pomocí svého účtu iCloud, který je vlastníkem domácnosti v Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Nemáte přihlašovací údaje, které byste mohli sdílet";
-"thread.credentials.share_credentials_button_title" = "Sdílet přihlašovací údaje s Home Assistantem";
 "thread.extended_pan_id.title" = "ID rozšířené PAN";
 "thread.management.title" = "Přihlašovací údaje Thread";
 "thread.network_key.title" = "Síťový klíč";
@@ -1023,7 +990,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "url_handler.x_callback_url.error.serviceMissing" = "Musí být definována služba (např. homeassistant.turn_on)";
 "url_handler.x_callback_url.error.templateMissing" = "Musí být definována vykreslitelná šablona";
 "url_label" = "URL";
-"username_label" = "Uživatelské jméno";
 "watch.assist.button.recording.title" = "Nahrávání...";
 "watch.assist.button.send_request.title" = "Klepnutím odešlete požadavek";
 "watch.assist.lack_config.error.title" = "Nastavte Assist pomocí doprovodné aplikace pro iOS";
@@ -1238,7 +1204,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.labels.complication_text_areas.row3_column2.label" = "Řádek 3, Sloupec 2";
 "watch.labels.complication_text_areas.trailing.description" = "Text, který se má zobrazit na konci ručičkového ukazatele.";
 "watch.labels.complication_text_areas.trailing.label" = "Konec";
-"watch.labels.no_action" = "Nejsou nastaveny žádné akce. Aby se tato zpráva nezobrazovala, musíte nastavit v telefonu nějaké akce.";
 "watch.labels.no_config" = "Není k dispozici žádné nastavení hodinek. Otevřete aplikaci pro iOS a vytvořte nastavení v doprovodné aplikaci.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Zástupný symbol";
@@ -1337,7 +1302,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.details.parameters.action" = "Akce";
 "widgets.details.parameters.details_template" = "Textová šablona podrobností (jen v obdélníkové rodině)";
 "widgets.details.parameters.lower_template" = "Šablona dolního textu";
-"widgets.details.parameters.run_action" = "Spustit akci (jen v obdélníkové rodině)";
 "widgets.details.parameters.run_script" = "Spustit skript (jen v obdélníkové rodině)";
 "widgets.details.parameters.script" = "Skript";
 "widgets.details.parameters.server" = "Server";
@@ -1352,7 +1316,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.gauge.parameters.gauge_type.normal" = "Normální";
 "widgets.gauge.parameters.max_label_template" = "Šablona štítku maximum";
 "widgets.gauge.parameters.min_label_template" = "Šablona štítku minimum";
-"widgets.gauge.parameters.run_action" = "Spustit akci";
 "widgets.gauge.parameters.run_script" = "Spustit skript";
 "widgets.gauge.parameters.script" = "Skript";
 "widgets.gauge.parameters.server" = "Server";

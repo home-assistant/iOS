@@ -34,20 +34,14 @@ public enum L10n {
   public static var helpLabel: String { return L10n.tr("Localizable", "help_label") }
   /// No
   public static var noLabel: String { return L10n.tr("Localizable", "no_label") }
-  /// Off
-  public static var offLabel: String { return L10n.tr("Localizable", "off_label") }
   /// OK
   public static var okLabel: String { return L10n.tr("Localizable", "ok_label") }
-  /// On
-  public static var onLabel: String { return L10n.tr("Localizable", "on_label") }
   /// Open
   public static var openLabel: String { return L10n.tr("Localizable", "open_label") }
   /// Preview Output
   public static var previewOutput: String { return L10n.tr("Localizable", "preview_output") }
   /// Privacy
   public static var privacyLabel: String { return L10n.tr("Localizable", "privacyLabel") }
-  /// Reload
-  public static var reloadLabel: String { return L10n.tr("Localizable", "reload_label") }
   /// Requires %@ or later.
   public static func requiresVersion(_ p1: Any) -> String {
     return L10n.tr("Localizable", "requires_version", String(describing: p1))
@@ -56,14 +50,10 @@ public enum L10n {
   public static var retryLabel: String { return L10n.tr("Localizable", "retry_label") }
   /// Save
   public static var saveLabel: String { return L10n.tr("Localizable", "save_label") }
-  /// Success
-  public static var successLabel: String { return L10n.tr("Localizable", "success_label") }
   /// Unknown
   public static var unknownLabel: String { return L10n.tr("Localizable", "unknownLabel") }
   /// URL
   public static var urlLabel: String { return L10n.tr("Localizable", "url_label") }
-  /// Username
-  public static var usernameLabel: String { return L10n.tr("Localizable", "username_label") }
   /// Yes
   public static var yesLabel: String { return L10n.tr("Localizable", "yes_label") }
 
@@ -126,8 +116,6 @@ public enum L10n {
     public enum Logo {
       /// Home Assistant Companion
       public static var appTitle: String { return L10n.tr("Localizable", "about.logo.app_title") }
-      /// Awaken Your Home
-      public static var tagline: String { return L10n.tr("Localizable", "about.logo.tagline") }
       /// Home Assistant
       public static var title: String { return L10n.tr("Localizable", "about.logo.title") }
     }
@@ -272,8 +260,6 @@ public enum L10n {
     public enum DropSupport {
       /// Continue
       public static var button: String { return L10n.tr("Localizable", "announcement.drop_support.button") }
-      /// Read more
-      public static var buttonReadMore: String { return L10n.tr("Localizable", "announcement.drop_support.button_read_more") }
       /// After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.
       public static var subtitle: String { return L10n.tr("Localizable", "announcement.drop_support.subtitle") }
       /// Important update
@@ -876,12 +862,6 @@ public enum L10n {
         public static var body1: String { return L10n.tr("Localizable", "connection.permission.internal_url.body1") }
         /// This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.
         public static var body2: String { return L10n.tr("Localizable", "connection.permission.internal_url.body2") }
-        /// You are always in control if your location is shared with Home Assistant. You can change these settings in the companion app setting screen.
-        public static var body3: String { return L10n.tr("Localizable", "connection.permission.internal_url.body3") }
-        /// Configure local access
-        public static var buttonConfigure: String { return L10n.tr("Localizable", "connection.permission.internal_url.button_configure") }
-        /// I know what I am doing. Allow local connections without permission access.
-        public static var buttonIgnore: String { return L10n.tr("Localizable", "connection.permission.internal_url.button_ignore") }
         /// If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.
         public static var footer: String { return L10n.tr("Localizable", "connection.permission.internal_url.footer") }
         /// Permission access
@@ -1245,8 +1225,6 @@ public enum L10n {
     public enum ConnectionState {
       /// Setting up Wi-Fi
       public static var authorized: String { return L10n.tr("Localizable", "improv.connection_state.authorized") }
-      /// Please authorize your device to continue
-      public static var autorizationRequired: String { return L10n.tr("Localizable", "improv.connection_state.autorization_required") }
       /// Connecting to Wi-Fi
       public static var provisioning: String { return L10n.tr("Localizable", "improv.connection_state.provisioning") }
     }
@@ -1841,8 +1819,6 @@ public enum L10n {
       public enum Error {
         /// What device name should be used instead?
         public static var prompt: String { return L10n.tr("Localizable", "onboarding.device_name_check.error.prompt") }
-        /// Rename
-        public static var renameAction: String { return L10n.tr("Localizable", "onboarding.device_name_check.error.rename_action") }
         /// A device already exists with the name '%1$@'
         public static func title(_ p1: Any) -> String {
           return L10n.tr("Localizable", "onboarding.device_name_check.error.title", String(describing: p1))
@@ -2010,16 +1986,6 @@ public enum L10n {
       public enum Location {
         /// To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.
         public static var description: String { return L10n.tr("Localizable", "onboarding.permission.location.description") }
-        /// Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.
-        public static var privacyNote: String { return L10n.tr("Localizable", "onboarding.permission.location.privacy_note") }
-        public enum Buttons {
-          /// Allow & Share with Home Assistant
-          public static var allowAndShare: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.allow_and_share") }
-          /// Allow for App use only
-          public static var allowForApp: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.allow_for_app") }
-          /// Deny
-          public static var deny: String { return L10n.tr("Localizable", "onboarding.permission.location.buttons.deny") }
-        }
         public enum Deny {
           public enum Alert {
             /// If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.
@@ -2111,8 +2077,6 @@ public enum L10n {
       }
       /// Enter Address Manually
       public static var manual: String { return L10n.tr("Localizable", "onboarding.scanning.manual") }
-      /// Not finding your server?
-      public static var manualHint: String { return L10n.tr("Localizable", "onboarding.scanning.manual_hint") }
       /// Scanning for Servers
       public static var title: String { return L10n.tr("Localizable", "onboarding.scanning.title") }
       public enum Manual {
@@ -2149,14 +2113,10 @@ public enum L10n {
     public enum Welcome {
       /// Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.
       public static var body: String { return L10n.tr("Localizable", "onboarding.welcome.body") }
-      /// Connect to my Home Assistant
-      public static var continueButton: String { return L10n.tr("Localizable", "onboarding.welcome.continue_button") }
       /// This app connects to your Home Assistant server and allows integrating data about you and your phone.
       /// 
       /// Home Assistant is free and open source home automation software with a focus on local control and privacy.
       public static var description: String { return L10n.tr("Localizable", "onboarding.welcome.description") }
-      /// Get started with Home Assistant
-      public static var getStarted: String { return L10n.tr("Localizable", "onboarding.welcome.get_started") }
       /// Home Assistant Companion App
       public static var header: String { return L10n.tr("Localizable", "onboarding.welcome.header") }
       /// Learn more
@@ -2242,8 +2202,6 @@ public enum L10n {
     public enum ConnectionSection {
       /// Activate
       public static var activateServer: String { return L10n.tr("Localizable", "settings.connection_section.activate_server") }
-      /// Quickly activate using a three-finger swipe left or right when viewing a server.
-      public static var activateSwipeHint: String { return L10n.tr("Localizable", "settings.connection_section.activate_swipe_hint") }
       /// Add Server
       public static var addServer: String { return L10n.tr("Localizable", "settings.connection_section.add_server") }
       /// All Servers
@@ -2256,8 +2214,6 @@ public enum L10n {
       public static var details: String { return L10n.tr("Localizable", "settings.connection_section.details") }
       /// Connection
       public static var header: String { return L10n.tr("Localizable", "settings.connection_section.header") }
-      /// Invite someone to this server
-      public static var inviteToServer: String { return L10n.tr("Localizable", "settings.connection_section.invite_to_server") }
       /// Directly connect to the Home Assistant server for push notifications when on internal SSIDs.
       public static var localPushDescription: String { return L10n.tr("Localizable", "settings.connection_section.local_push_description") }
       /// Logged in as
@@ -2270,16 +2226,12 @@ public enum L10n {
       public static var serversHeader: String { return L10n.tr("Localizable", "settings.connection_section.servers_header") }
       /// Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.
       public static var ssidPermissionAndAccuracyMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_and_accuracy_message") }
-      /// Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.
-      public static var ssidPermissionMessage: String { return L10n.tr("Localizable", "settings.connection_section.ssid_permission_message") }
       public enum AlwaysFallbackInternal {
         /// Enabling this with an unsecure URL (http) may compromise your security on public networks.
         public static var footer: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.footer") }
         /// Always fallback to internal URL
         public static var title: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.title") }
         public enum Confirmation {
-          /// I am sure
-          public static var confirmButton: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.confirm_button") }
           /// If you have an unsecure connection this can expose your authentication token on public networks.
           public static var message: String { return L10n.tr("Localizable", "settings.connection_section.always_fallback_internal.confirmation.message") }
           /// Are you sure?
@@ -2603,8 +2555,6 @@ public enum L10n {
       public enum ResetAlert {
         /// Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.
         public static var message: String { return L10n.tr("Localizable", "settings.reset_section.reset_alert.message") }
-        /// Resetting…
-        public static var progressMessage: String { return L10n.tr("Localizable", "settings.reset_section.reset_alert.progress_message") }
         /// Reset
         public static var title: String { return L10n.tr("Localizable", "settings.reset_section.reset_alert.title") }
       }
@@ -2622,8 +2572,6 @@ public enum L10n {
       }
     }
     public enum ServerSelect {
-      /// Server
-      public static var pageTitle: String { return L10n.tr("Localizable", "settings.server_select.page_title") }
       /// Server
       public static var title: String { return L10n.tr("Localizable", "settings.server_select.title") }
     }
@@ -2789,8 +2737,6 @@ public enum L10n {
           public static var fireOrange: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.fire_orange") }
           /// Green
           public static var green: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.green") }
-          /// Home Assistant Blue
-          public static var haBlue: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.ha_blue") }
           /// Old Beta
           public static var oldBeta: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_beta") }
           /// Old Dev
@@ -2809,8 +2755,6 @@ public enum L10n {
           public static var pridePoc: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_poc") }
           /// Pride: Rainbow
           public static var prideRainbow: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow") }
-          /// Pride: Rainbow (Inverted)
-          public static var prideRainbowInvert: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow_invert") }
           /// Pride: Trans
           public static var prideTrans: String { return L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_trans") }
           /// Purple
@@ -3248,8 +3192,6 @@ public enum L10n {
       public enum CrashReporting {
         /// Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.
         public static var description: String { return L10n.tr("Localizable", "settings_details.privacy.crash_reporting.description") }
-        /// This feature currently uses Sentry as the report destination.
-        public static var sentry: String { return L10n.tr("Localizable", "settings_details.privacy.crash_reporting.sentry") }
         /// Crash Reporting
         public static var title: String { return L10n.tr("Localizable", "settings_details.privacy.crash_reporting.title") }
       }
@@ -3381,18 +3323,6 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "thread.border_agent_id.title") }
     }
     public enum Credentials {
-      /// Border Agent ID
-      public static var borderAgentIdTitle: String { return L10n.tr("Localizable", "thread.credentials.border_agent_id_title") }
-      /// Network Key
-      public static var networkKeyTitle: String { return L10n.tr("Localizable", "thread.credentials.network_key_title") }
-      /// Network Name
-      public static var networkNameTitle: String { return L10n.tr("Localizable", "thread.credentials.network_name_title") }
-      /// You don't have credentials available on your iCloud Keychain.
-      public static var noCredentialAvailable: String { return L10n.tr("Localizable", "thread.credentials.no_credential_available") }
-      /// Thread Credentials
-      public static var screenTitle: String { return L10n.tr("Localizable", "thread.credentials.screen_title") }
-      /// Share credential with Home Assistant
-      public static var shareCredentialsButtonTitle: String { return L10n.tr("Localizable", "thread.credentials.share_credentials_button_title") }
       public enum ShareCredentials {
         /// Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.
         public static var noCredentialsMessage: String { return L10n.tr("Localizable", "thread.credentials.share_credentials.no_credentials_message") }
@@ -3874,8 +3804,6 @@ public enum L10n {
       }
     }
     public enum Labels {
-      /// No actions configured. Configure actions on your phone to dismiss this message.
-      public static var noAction: String { return L10n.tr("Localizable", "watch.labels.no_action") }
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
       public enum ComplicationGroup {
@@ -4671,8 +4599,6 @@ public enum L10n {
         public static var detailsTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.details_template") }
         /// Lower Text Template
         public static var lowerTemplate: String { return L10n.tr("Localizable", "widgets.details.parameters.lower_template") }
-        /// Run Action (only in rectangular family)
-        public static var runAction: String { return L10n.tr("Localizable", "widgets.details.parameters.run_action") }
         /// Run Script (only in rectangular family)
         public static var runScript: String { return L10n.tr("Localizable", "widgets.details.parameters.run_script") }
         /// Script
@@ -4703,8 +4629,6 @@ public enum L10n {
         public static var maxLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.max_label_template") }
         /// Min Label Template
         public static var minLabelTemplate: String { return L10n.tr("Localizable", "widgets.gauge.parameters.min_label_template") }
-        /// Run Action
-        public static var runAction: String { return L10n.tr("Localizable", "widgets.gauge.parameters.run_action") }
         /// Run Script
         public static var runScript: String { return L10n.tr("Localizable", "widgets.gauge.parameters.run_script") }
         /// Script

@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant på Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant på Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Ta kontroll over hjemmet ditt";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Legg igjen en anmeldelse";
 "about.title" = "Om";
@@ -52,7 +51,6 @@
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Alltid åpen";
 "announcement.drop_support.button" = "Continue";
-"announcement.drop_support.button_read_more" = "Read more";
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "app_intents.assist.pipeline.default.title" = "Default";
@@ -213,9 +211,6 @@
 "connection.error.generic_title" = "Uh oh! Looks like we are unable to establish a connection.";
 "connection.permission.internal_url.body1" = "To access Home Assistant locally in a secure way, you need to grant the location permission ('Always').";
 "connection.permission.internal_url.body2" = "This permission allows Home Assistant to detect the wireless network that you're connected to and establish a local connection.";
-"connection.permission.internal_url.body3" = "You are always in control if your location is shared with Home Assistant. You can change these settings in the companion app setting screen.";
-"connection.permission.internal_url.button_configure" = "Configure local access";
-"connection.permission.internal_url.button_ignore" = "I know what I am doing. Allow local connections without permission access.";
 "connection.permission.internal_url.footer" = "If you still want to use the local URL and don't want to provide location permission, you can tap the button below, but please, be aware of the security risks.";
 "connection.permission.internal_url.ignore.alert.title" = "Are you sure?";
 "connection.permission.internal_url.title" = "Permission access";
@@ -318,7 +313,6 @@
 "help_label" = "Hjelp";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
-"improv.connection_state.autorization_required" = "Please authorize your device to continue";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";
 "improv.error_state.invalid_rpc_packet" = "Invalid RPC Packet";
 "improv.error_state.not_authorized" = "Not authorized";
@@ -465,9 +459,7 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "notifications_configurator.settings.footer" = "Identifikatoren må bare inneholde bokstaver og understreker. Det må være globalt unikt for appen.";
 "notifications_configurator.settings.footer.id_set" = "Identifikator kan ikke endres etter opprettelsen. Du må slette og gjenskape handlingen for å endre identifikatoren.";
 "notifications_configurator.settings.header" = "Innstillinger";
-"off_label" = "Av";
 "ok_label" = "OK";
-"on_label" = "På";
 "onboarding.connect.mac_safari_warning.message" = "Prøv å starte Safari på nytt hvis påloggingsskjemaet ikke åpnes.";
 "onboarding.connect.mac_safari_warning.title" = "Starter Safari";
 "onboarding.connect.title" = "Kobler til %@";
@@ -482,7 +474,6 @@ Koder vil fungere på alle enheter med Home Assistant installert som har maskinv
 "onboarding.connection_test_result.error_code" = "Feilkode:";
 "onboarding.connection_test_result.local_network_permission.description" = "Personverntillatelse for «Lokalt nettverk» kan ha blitt nektet. Du kan endre dette i appen for systeminnstillinger.";
 "onboarding.device_name_check.error.prompt" = "Hvilket enhetsnavn bør brukes i stedet?";
-"onboarding.device_name_check.error.rename_action" = "Gi nytt navn";
 "onboarding.device_name_check.error.title" = "Det finnes allerede en enhet med navnet ' %1$@ '";
 "onboarding.invitation.accept_button" = "Aksepter";
 "onboarding.invitation.other_options" = "Andre alternativer";
@@ -532,15 +523,11 @@ Remote when you're ready.";
 "onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
 "onboarding.network_input.secondary_button.title" = "Hopp over";
 "onboarding.network_input.title" = "What is your home network?";
-"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
-"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
-"onboarding.permission.location.buttons.deny" = "Deny";
 "onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
 "onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
 "onboarding.permission.location.deny.alert.title" = "Are you sure?";
 "onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
-"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Tillate";
 "onboarding.permissions.allowed" = "Ferdig";
 "onboarding.permissions.change_later_note" = "Du kan endre denne tillatelsen senere i Innstillinger";
@@ -571,7 +558,6 @@ Remote when you're ready.";
 "onboarding.scanning.manual" = "Skriv inn adressen manuelt";
 "onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
-"onboarding.scanning.manual_hint" = "Finner du ikke serveren din?";
 "onboarding.scanning.title" = "Søker etter servere";
 "onboarding.servers.auto_connect.button" = "Koble til";
 "onboarding.servers.docs.read" = "Read documentation";
@@ -579,11 +565,9 @@ Remote when you're ready.";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Søker på hjemmenettverket";
 "onboarding.welcome.body" = "Allows you to access your Home Assistant installation on the go. It runs locally in your home via a device like the Home Assistant Green or Raspberry Pi.";
-"onboarding.welcome.continue_button" = "Connect to my Home Assistant";
 "onboarding.welcome.description" = "Denne appen kobles til Home Assistant -serveren og lar deg integrere data om deg og telefonen. \
 \
  Home Assistant er gratis og åpen kildekode hjemmeautomatiseringsprogramvare med fokus på lokal kontroll og personvern.";
-"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.header" = "Home Assistant Companion App";
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
@@ -606,7 +590,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
 "preview_output" = "Forhåndsvisning";
 "privacyLabel" = "Privacy";
-"reload_label" = "Reload";
 "requires_version" = "Krever %@ eller nyere.";
 "retry_label" = "Prøv på nytt";
 "save_label" = "Save";
@@ -614,10 +597,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "sensors.geocoded_location.setting.use_zones" = "Bruk sone-navn";
 "servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Aktiver";
-"settings.connection_section.activate_swipe_hint" = "Aktiver raskt ved hjelp av et sveip med tre fingre mot venstre eller høyre når du viser en server.";
 "settings.connection_section.add_server" = "Legg til server";
 "settings.connection_section.all_servers" = "Alle servere";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "I am sure";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "If you have an unsecure connection this can expose your authentication token on public networks.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Are you sure?";
 "settings.connection_section.always_fallback_internal.footer" = "Enabling this with an unsecure URL (http) may compromise your security on public networks.";
@@ -650,7 +631,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.internal_url_ssids.footer" = "Intern URL-adresse vil bli brukt når du er koblet til oppførte SSID-er";
 "settings.connection_section.internal_url_ssids.header" = "SSIDer";
 "settings.connection_section.internal_url_ssids.placeholder" = "MittRareNettverksNavn";
-"settings.connection_section.invite_to_server" = "Inviter noen til denne serveren";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Mindre sikker";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Mest sikker";
 "settings.connection_section.local_access_security_level.title" = "Lokal tilgangssikkerhet";
@@ -670,7 +650,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.servers_footer" = "Reorder to define default server";
 "settings.connection_section.servers_header" = "Servere";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "For å få tilgang til SSID-er i bakgrunnen, krever 'Alltid' plasseringstillatelse og 'Full' posisjonsnøyaktighet. Trykk her for å endre innstillingene.";
-"settings.connection_section.ssid_permission_message" = "Tilgang til SSID-er i bakgrunnen krever \"Alltid\" posisjonstillatelse. Trykk her for å endre innstillingene dine.";
 "settings.connection_section.validate_error.edit_url" = "Rediger URL";
 "settings.connection_section.validate_error.title" = "Feil ved lagring av URL";
 "settings.connection_section.validate_error.use_anyway" = "Bruk uansett";
@@ -723,12 +702,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.navigation_bar.about_button.title" = "Om";
 "settings.navigation_bar.title" = "Innstillinger";
 "settings.reset_section.reset_alert.message" = "Innstillingene tilbakestilles og denne enheten vil bli avregistrert fra push-varsling samt fjernet fra Home Assistant konfigurasjonen.";
-"settings.reset_section.reset_alert.progress_message" = "Tilbakestiller…";
 "settings.reset_section.reset_alert.title" = "Tilbakestill";
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Tilbakestille";
 "settings.reset_section.reset_web_cache.title" = "Tilbakestill frontend-hurtigbuffer";
-"settings.server_select.page_title" = "Server";
 "settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "Min Home Assistant";
@@ -776,7 +753,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.enum.electric_violet" = "Elektrisk Fiolett";
 "settings_details.general.app_icon.enum.fire_orange" = "Brann Oransje";
 "settings_details.general.app_icon.enum.green" = "Grønn";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blå";
 "settings_details.general.app_icon.enum.old_beta" = "Gammel Beta";
 "settings_details.general.app_icon.enum.old_dev" = "Gammel Beta";
 "settings_details.general.app_icon.enum.old_release" = "Gammel Versjonen";
@@ -786,7 +762,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.enum.pride_non_binary" = "Pride: Ikke-binær";
 "settings_details.general.app_icon.enum.pride_poc" = "Pride: 8-farger";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: regnbue (omvendt)";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.enum.purple" = "Lilla";
 "settings_details.general.app_icon.enum.red" = "Rød";
@@ -929,7 +904,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.privacy.analytics.generic_title" = "Analytics";
 "settings_details.privacy.body" = "You are in control of your data.";
 "settings_details.privacy.crash_reporting.description" = "Gjør det mulig å spore krasj og andre feil i appen dypere, noe som fører til at raskere reparasjoner publiseres. Ingen brukeridentifiserbar informasjon sendes, annet enn grunnleggende enhetsinformasjon. Du må starte appen på nytt for at endringer i denne innstillingen skal tre i kraft.";
-"settings_details.privacy.crash_reporting.sentry" = "Denne funksjonen bruker Sentry for øyeblikket som rapportdestinasjon.";
 "settings_details.privacy.crash_reporting.title" = "Rapportering om krasj";
 "settings_details.privacy.messaging.description" = "Firebase Cloud Meldinger må være aktivert for push-varsler for å fungere.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Meldinger";
@@ -965,17 +939,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "'angitt' i tilfelle";
 "share_extension.error.title" = "Kunne ikke sende";
 "shortcut_item.open_settings.title" = "Open Settings";
-"success_label" = "Suksess";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";
-"thread.credentials.border_agent_id_title" = "Border Agent ID";
-"thread.credentials.network_key_title" = "Nettverksnøkkel";
-"thread.credentials.network_name_title" = "Nettverksnavn";
-"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
-"thread.credentials.screen_title" = "Thread Credentials";
 "thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
-"thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "thread.extended_pan_id.title" = "Extended PAN ID";
 "thread.management.title" = "Thread Credentials";
 "thread.network_key.title" = "Network Key";
@@ -1023,7 +990,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "url_handler.x_callback_url.error.serviceMissing" = "Service (f.eks. homeassistant. turn_on) må defineres";
 "url_handler.x_callback_url.error.templateMissing" = "En gjengivelsesmal må defineres";
 "url_label" = "URL";
-"username_label" = "Brukernavn";
 "watch.assist.button.recording.title" = "Recording...";
 "watch.assist.button.send_request.title" = "Tap to send request";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
@@ -1238,7 +1204,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "Rad 3, kolonne 2";
 "watch.labels.complication_text_areas.trailing.description" = "Teksten som skal vises på den etterfølgende kanten av måleren.";
 "watch.labels.complication_text_areas.trailing.label" = "Etterfølgende";
-"watch.labels.no_action" = "Ingen handlinger konfigurert. Konfigurere handlinger på telefonen din for å fjerne denne meldingen.";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Plassholder";
@@ -1337,7 +1302,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Lower Text Template";
-"widgets.details.parameters.run_action" = "Run Action (only in rectangular family)";
 "widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
 "widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
@@ -1352,7 +1316,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.gauge_type.normal" = "Normal";
 "widgets.gauge.parameters.max_label_template" = "Max Label Template";
 "widgets.gauge.parameters.min_label_template" = "Min Label Template";
-"widgets.gauge.parameters.run_action" = "Run Action";
 "widgets.gauge.parameters.run_script" = "Run Script";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";

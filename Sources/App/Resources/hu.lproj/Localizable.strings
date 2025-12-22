@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant a Facebookon";
 "about.home_assistant_on_twitter.title" = "Home Assistant a Twitteren";
 "about.logo.app_title" = "Home Assistant mobilalkalmazás";
-"about.logo.tagline" = "Ébressze fel otthonát";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Írja meg véleményét";
 "about.title" = "Névjegy";
@@ -52,7 +51,6 @@
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Megnyitás mindig";
 "announcement.drop_support.button" = "Tovább";
-"announcement.drop_support.button_read_more" = "Bővebben";
 "announcement.drop_support.subtitle" = "Alapos mérlegelés után a következő frissítéseinkben megszüntetjük az iOS 12, 13 és 14 támogatását.";
 "announcement.drop_support.title" = "Fontos frissítés";
 "app_intents.assist.pipeline.default.title" = "Alapértelmezett";
@@ -213,9 +211,6 @@
 "connection.error.generic_title" = "Ajjaj! Úgy tűnik, nem sikerült kapcsolatot létesíteni.";
 "connection.permission.internal_url.body1" = "Ahhoz, hogy biztonságosan elérhesse a Home Assistantot helyi hálózaton, engedélyeznie kell a helyhozzáférést („Mindig”).";
 "connection.permission.internal_url.body2" = "Ez az engedély lehetővé teszi a Home Assistant számára, hogy felismerje a vezeték nélküli hálózatot, amelyhez csatlakozik és helyi kapcsolatot létesítsen.";
-"connection.permission.internal_url.body3" = "Ön mindig ellenőrizheti, hogy megosztja-e a helyzetét a Home Assistanttal. Ezeket a beállításokat a társalkalmazás beállítási képernyőjén módosíthatja.";
-"connection.permission.internal_url.button_configure" = "Helyi hozzáférés beállítása";
-"connection.permission.internal_url.button_ignore" = "Tudom, mit csinálok. Engedélyezze a helyi kapcsolódást hozzáférési engedély nélkül.";
 "connection.permission.internal_url.footer" = "Ha továbbra is szeretné használni a helyi URL-t és nem kíván helyhozzáférési engedélyt adni, kattintson az alábbi gombra, de kérjük, vegye figyelembe az ezzel járó biztonsági kockázatokat.";
 "connection.permission.internal_url.ignore.alert.title" = "Biztos benne?";
 "connection.permission.internal_url.title" = "Hozzáférési engedély";
@@ -318,7 +313,6 @@
 "help_label" = "Súgó";
 "improv.button.continue" = "Folytatás";
 "improv.connection_state.authorized" = "Wi-Fi beállítása";
-"improv.connection_state.autorization_required" = "Kérjük, engedélyezze a készüléket a folytatáshoz";
 "improv.connection_state.provisioning" = "Csatlakozás Wi-Fi-hez";
 "improv.error_state.invalid_rpc_packet" = "Érvénytelen RPC csomag";
 "improv.error_state.not_authorized" = "Nem engedélyezett";
@@ -465,9 +459,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "notifications_configurator.settings.footer" = "Az azonosító csak betűket és aláhúzásjelet tartalmazhat és nagybetűs lehet. Globálisan egyedinek kell lennie az alkalmazásban.";
 "notifications_configurator.settings.footer.id_set" = "Az azonosító a létrehozás után nem módosítható. Az azonosító megváltoztatásához törölni és újra létrehozni kell a műveletet.";
 "notifications_configurator.settings.header" = "Beállítások";
-"off_label" = "Ki";
 "ok_label" = "OK";
-"on_label" = "Be";
 "onboarding.connect.mac_safari_warning.message" = "Próbálja meg újraindítani a Safarit, ha a bejelentkezési űrlap nem nyílik meg.";
 "onboarding.connect.mac_safari_warning.title" = "A Safari elindítása";
 "onboarding.connect.title" = "Csatlakozás a következőhöz: %@";
@@ -482,7 +474,6 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "onboarding.connection_test_result.error_code" = "Hibakód:";
 "onboarding.connection_test_result.local_network_permission.description" = "A \"Helyi hálózat\" adatvédelmi engedély lehet, hogy meg lett vonva. Ezt a rendszerbeállítások alkalmazásban módosíthatja.";
 "onboarding.device_name_check.error.prompt" = "Milyen eszköznevet kell helyette használni?";
-"onboarding.device_name_check.error.rename_action" = "Átnevezés";
 "onboarding.device_name_check.error.title" = "Már létezik egy eszköz a '%1$@' névvel.";
 "onboarding.invitation.accept_button" = "Elfogadás";
 "onboarding.invitation.other_options" = "Egyéb lehetőségek";
@@ -532,15 +523,11 @@ Remote when you're ready.";
 "onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
 "onboarding.network_input.secondary_button.title" = "Skip";
 "onboarding.network_input.title" = "What is your home network?";
-"onboarding.permission.location.buttons.allow_and_share" = "Engedélyezés és megosztás a Home Assistanttal";
-"onboarding.permission.location.buttons.allow_for_app" = "Csak az alkalmazás használatához engedélyezés";
-"onboarding.permission.location.buttons.deny" = "Elutasítás";
 "onboarding.permission.location.deny.alert.body" = "Ha biztos benne, kérjük, folytassa, és a következő felugró ablaknál is koppintson a „Tiltás” gombra. Amennyiben nincs beállítva távoli kapcsolat, az alkalmazás a helyi kapcsolat beállításait fogja használni a Home Assistant eléréséhez.";
 "onboarding.permission.location.deny.alert.header" = "Információ";
 "onboarding.permission.location.deny.alert.message" = "Ha nem ad helymeghatározási engedélyt, a jövőbeli verziók adatvédelmi okokból megtagadhatják a helyi Home Assistant kiszolgáló elérését. Ha biztos a döntésében, folytassa, és a következő felugró ablakban válassza az 'Elutasítás' lehetőséget. Ebben az esetben javasoljuk, hogy a belső URL-címét használja külsőként, mivel az alkalmazás csak ezt próbálja majd elérni.";
 "onboarding.permission.location.deny.alert.title" = "Biztos benne?";
 "onboarding.permission.location.description" = "A tartózkodási helye azonosításához, valamint a Home Assistant helyi kapcsolódásához az Apple előírja, hogy engedélyt kérjünk a tartózkodási hely elérésére.";
-"onboarding.permission.location.privacy_note" = "A tartózkodási helye nem kerül megosztásra a helyi Home Assistant kiszolgálóval, hacsak nem választja az „Engedélyezés és megosztás a Home Assistanttal” lehetőséget. Később is dönthet a megosztásról a társalkalmazás beállításainál, az érzékelők menüpontban.";
 "onboarding.permissions.allow" = "Engedélyezés";
 "onboarding.permissions.allowed" = "Kész";
 "onboarding.permissions.change_later_note" = "Ezt az engedélyt később módosíthatja a beállításokban";
@@ -571,7 +558,6 @@ Remote when you're ready.";
 "onboarding.scanning.manual" = "Cím kézi megadása";
 "onboarding.scanning.manual.button.divider.title" = "vagy";
 "onboarding.scanning.manual.button.title" = "Cím megadása kézzel";
-"onboarding.scanning.manual_hint" = "Nem találja a szerverét?";
 "onboarding.scanning.title" = "Szerverek keresése";
 "onboarding.servers.auto_connect.button" = "Csatlakozás";
 "onboarding.servers.docs.read" = "Dokumentáció elolvasása";
@@ -579,11 +565,9 @@ Remote when you're ready.";
 "onboarding.servers.search.message" = "Kiszolgálók keresése a közelben…";
 "onboarding.servers.title" = "Keresés az otthoni hálózaton";
 "onboarding.welcome.body" = "Lehetővé teszi, hogy útközben is elérje a Home Assistant telepítését. Helyben fut, például egy Home Assistant Green vagy Raspberry Pi eszközön keresztül.";
-"onboarding.welcome.continue_button" = "Csatlakozás a saját Home Assistant rendszeremhez";
 "onboarding.welcome.description" = "Ez az alkalmazás csatlakozik a Home Assistant szerverhez és lehetővé teszi az Önre és telefonjára vonatkozó adatok integrálását.\
 \
 A Home Assistant egy ingyenes és nyílt forráskódú otthoni automatizálási szoftver, amely a vezérlés helyben történő kivitelezésére és az adatvédelemre összpontosít.";
-"onboarding.welcome.get_started" = "Első lépések a Home Assistanttal";
 "onboarding.welcome.header" = "Home Assistant Mobilalkalmazás";
 "onboarding.welcome.learn_more" = "Tudjon meg többet";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant logo";
@@ -606,7 +590,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "post_onboarding.permission.notification.title" = "Szeretne értesítéseket kapni?";
 "preview_output" = "Eredmény előnézete";
 "privacyLabel" = "Adatvédelem";
-"reload_label" = "Újratöltés";
 "requires_version" = "%@ vagy újabb szükséges.";
 "retry_label" = "Újra";
 "save_label" = "Mentés";
@@ -614,10 +597,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "sensors.geocoded_location.setting.use_zones" = "Zónanév használata";
 "servers_selection.title" = "Szerverek";
 "settings.connection_section.activate_server" = "Aktiválás";
-"settings.connection_section.activate_swipe_hint" = "Gyorsan aktiválja három ujjal balra vagy jobbra csúsztatással, amikor egy szervert választ.";
 "settings.connection_section.add_server" = "Szerver hozzáadása";
 "settings.connection_section.all_servers" = "Az összes szerver";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Biztos vagyok benne";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Ha a kapcsolat nem biztonságos, ez nyilvános hálózatokon felfedheti az azonosító tokenjét.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Biztos benne?";
 "settings.connection_section.always_fallback_internal.footer" = "Ha ezt egy nem biztonságos URL-lel (http) engedélyezi, az veszélyeztetheti az Ön biztonságát nyilvános hálózatokon.";
@@ -650,7 +631,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.internal_url_ssids.footer" = "A belső URL-t használja a rendszer, ha a felsorolt SSID-ek közül valamelyikéhez csatlakozik";
 "settings.connection_section.internal_url_ssids.header" = "SSID-k";
 "settings.connection_section.internal_url_ssids.placeholder" = "SajátHálózatNév";
-"settings.connection_section.invite_to_server" = "Meghívás erre a kiszolgálóra";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
 "settings.connection_section.local_access_security_level.title" = "Local access security";
@@ -670,7 +650,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.servers_footer" = "Rendezze át a kiszolgálókat az alapértelmezett meghatározásához";
 "settings.connection_section.servers_header" = "Kiszolgálók";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "A háttérben lévő SSID-k eléréséhez a \"Mindig\" helymeghatározási engedély és a \"Teljes\" helymeghatározási pontosság szükséges. A beállítások módosításához koppintson ide.";
-"settings.connection_section.ssid_permission_message" = "A háttérben lévő SSID-k eléréséhez \"Mindig\" helyengedély szükséges. A beállítások módosításához koppintson ide.";
 "settings.connection_section.validate_error.edit_url" = "URL szerkesztése";
 "settings.connection_section.validate_error.title" = "Hiba történt az URL mentésekor";
 "settings.connection_section.validate_error.use_anyway" = "Mindenképpen használja";
@@ -723,12 +702,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.navigation_bar.about_button.title" = "Névjegy";
 "settings.navigation_bar.title" = "Beállítások";
 "settings.reset_section.reset_alert.message" = "A beállításai visszaállnak, és ez az eszköz le lesz választva az értesítési szolgáltatásról, valamint eltávolításra kerül a Home Assistant konfigurációjából.";
-"settings.reset_section.reset_alert.progress_message" = "Visszaállítás...";
 "settings.reset_section.reset_alert.title" = "Visszaállítás";
 "settings.reset_section.reset_app.title" = "Alkalmazás visszaállítása (kiszolgálók és adatok eltávolítása)";
 "settings.reset_section.reset_row.title" = "Visszaállítás";
 "settings.reset_section.reset_web_cache.title" = "Kezelőfelület cache törlése";
-"settings.server_select.page_title" = "Szerver";
 "settings.server_select.title" = "Szerver";
 "settings.status_section.header" = "Állapot";
 "settings.status_section.location_name_row.placeholder" = "Az én Home Assistantom";
@@ -776,7 +753,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.enum.electric_violet" = "Ibolya";
 "settings_details.general.app_icon.enum.fire_orange" = "Tűznarancs";
 "settings_details.general.app_icon.enum.green" = "Zöld";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant kék";
 "settings_details.general.app_icon.enum.old_beta" = "Régi béta";
 "settings_details.general.app_icon.enum.old_dev" = "Régi fejlesztői";
 "settings_details.general.app_icon.enum.old_release" = "Régi kiadás";
@@ -786,7 +762,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.enum.pride_non_binary" = "Pride: nem bináris";
 "settings_details.general.app_icon.enum.pride_poc" = "Pride: 8 színű";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Szivárvány";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Szivárvány (inverz)";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Transz";
 "settings_details.general.app_icon.enum.purple" = "Lila";
 "settings_details.general.app_icon.enum.red" = "Piros";
@@ -929,7 +904,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.privacy.analytics.generic_title" = "Analitika";
 "settings_details.privacy.body" = "Ön irányítja az adatai kezelését.";
 "settings_details.privacy.crash_reporting.description" = "Lehetővé teszi az alkalmazásban előforduló összeomlások és egyéb hibák mélyebb nyomon követését, ami gyorsabb javítások közzétételéhez vezet. Az alapvető eszközadatokon kívül nem küldünk a felhasználóval azonosítható adatokat. Az alkalmazás újraindítása szükséges ahhoz, hogy a beállítás módosítása érvénybe lépjen.";
-"settings_details.privacy.crash_reporting.sentry" = "Ez a funkció jelenleg a Sentry-t használja a jelentés célállomásaként.";
 "settings_details.privacy.crash_reporting.title" = "Összeomlás jelentése";
 "settings_details.privacy.messaging.description" = "A Firebase Cloud Messagingnek engedélyezve kell lennie a push értesítések működéséhez.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
@@ -965,17 +939,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "'entered' az eseményben";
 "share_extension.error.title" = "Nem sikerült elküldeni";
 "shortcut_item.open_settings.title" = "Beállítások megnyitása";
-"success_label" = "Sikerült";
 "thread.active_operational_data_set.title" = "Aktív működési adatkészlet";
 "thread.border_agent_id.title" = "Border Agent azonosító";
-"thread.credentials.border_agent_id_title" = "Border Agent azonosító";
-"thread.credentials.network_key_title" = "Hálózati kulcs";
-"thread.credentials.network_name_title" = "Hálózat neve";
-"thread.credentials.no_credential_available" = "Nem állnak rendelkezésre hitelesítő adatok az iCloud-kulcskarikán.";
-"thread.credentials.screen_title" = "Thread hitelesítő adatai";
 "thread.credentials.share_credentials.no_credentials_message" = "Győződjön meg róla, hogy bejelentkezett az iCloud fiókjával, amely egy Otthon tulajdonosa az Apple Home-ban.";
 "thread.credentials.share_credentials.no_credentials_title" = "Nincsenek megosztandó hitelesítő adatai";
-"thread.credentials.share_credentials_button_title" = "Hitelesítő adatok megosztása a Home Assistanttal";
 "thread.extended_pan_id.title" = "Kiterjesztett PAN azonosító";
 "thread.management.title" = "Thread hitelesítő adatai";
 "thread.network_key.title" = "Hálózati kulcs";
@@ -1023,7 +990,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "url_handler.x_callback_url.error.serviceMissing" = "szolgáltatást (pl. homeassistant.turn_on) definiálni kell";
 "url_handler.x_callback_url.error.templateMissing" = "Meg kell határozni egy renderelhető sablont";
 "url_label" = "URL";
-"username_label" = "Felhasználónév";
 "watch.assist.button.recording.title" = "Felvétel...";
 "watch.assist.button.send_request.title" = "Koppintson a kérelem elküldéséhez";
 "watch.assist.lack_config.error.title" = "Kérjük, konfigurálja az Assist funkciót az iOS mobilalkalmazás segítségével";
@@ -1238,7 +1204,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "3. sor, 2. oszlop";
 "watch.labels.complication_text_areas.trailing.description" = "A mérőműszer záró szélén megjelenítendő szöveg.";
 "watch.labels.complication_text_areas.trailing.label" = "Záró";
-"watch.labels.no_action" = "Nincsenek konfigurálva műveletek. Konfigurálja a műveleteket a telefonján az üzenet elvetéséhez.";
 "watch.labels.no_config" = "Nincs elérhető watch konfiguráció. Nyissa meg az iOS alkalmazást és hozza létre a konfigurációját a mobilalkamazás beállításai alatt.";
 "watch.labels.selected_pipeline.title" = "Csatorna";
 "watch.placeholder_complication_name" = "Helykitöltő";
@@ -1337,7 +1302,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.action" = "Művelet";
 "widgets.details.parameters.details_template" = "Részletek szöveg sablon (csak a téglalap alakú családban)";
 "widgets.details.parameters.lower_template" = "Alsó szöveg sablon";
-"widgets.details.parameters.run_action" = "Művelet végrehajtása (csak a téglalap alakú családban)";
 "widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
 "widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Szerver";
@@ -1352,7 +1316,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.gauge_type.normal" = "Normál";
 "widgets.gauge.parameters.max_label_template" = "Max. címke sablon";
 "widgets.gauge.parameters.min_label_template" = "Min. címke sablon";
-"widgets.gauge.parameters.run_action" = "Művelet futtatása";
 "widgets.gauge.parameters.run_script" = "Run Script";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Szerver";
