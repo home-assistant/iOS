@@ -756,6 +756,8 @@
 		426CBB6C2C9C550D003CA3AC /* IntentSwitchEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */; };
 		426D9C742C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
 		426D9C752C9C60B000F278AF /* ControlEntityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */; };
+		426E02992EF98F5F008237D4 /* CameraListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426E02982EF98F5F008237D4 /* CameraListRow.swift */; };
+		426E029B2EF98F65008237D4 /* CameraSectionReorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426E029A2EF98F65008237D4 /* CameraSectionReorderView.swift */; };
 		426EE49B2CA4194E00A5EF4F /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */; };
 		4272B9A92CDCE15C008CC262 /* CarPlayConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4272B9A82CDCE15C008CC262 /* CarPlayConfig.test.swift */; };
 		4272B9AB2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 4272B9AA2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite */; };
@@ -2305,6 +2307,8 @@
 		426CBB692C9C543F003CA3AC /* ControlSwitchValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSwitchValueProvider.swift; sourceTree = "<group>"; };
 		426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSwitchEntity.swift; sourceTree = "<group>"; };
 		426D9C722C9C582F00F278AF /* ControlEntityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlEntityProvider.swift; sourceTree = "<group>"; };
+		426E02982EF98F5F008237D4 /* CameraListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraListRow.swift; sourceTree = "<group>"; };
+		426E029A2EF98F65008237D4 /* CameraSectionReorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSectionReorderView.swift; sourceTree = "<group>"; };
 		426EE49A2CA4194E00A5EF4F /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
 		4272B9A82CDCE15C008CC262 /* CarPlayConfig.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfig.test.swift; sourceTree = "<group>"; };
 		4272B9AA2CDCE2EB008CC262 /* CarPlayConfigV1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = CarPlayConfigV1.sqlite; sourceTree = "<group>"; };
@@ -4985,6 +4989,8 @@
 			children = (
 				428863522EF963FF00319CF4 /* CameraListView.swift */,
 				428863532EF963FF00319CF4 /* CameraListViewModel.swift */,
+				426E02982EF98F5F008237D4 /* CameraListRow.swift */,
+				426E029A2EF98F65008237D4 /* CameraSectionReorderView.swift */,
 			);
 			path = CameraList;
 			sourceTree = "<group>";
@@ -8786,6 +8792,7 @@
 				B6B6B14A215B137C003DE2DD /* ComplicationEditViewController.swift in Sources */,
 				42C0FD0C2DDB206C001016D6 /* UIScreen+Camera.swift in Sources */,
 				1185DFB0271FF53800ED7D9A /* OnboardingAuthStepConnectivity.swift in Sources */,
+				426E02992EF98F5F008237D4 /* CameraListRow.swift in Sources */,
 				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
 				115EF6A72549152F0048597B /* AccountRow.swift in Sources */,
 				111858DF24CB83DF00B8CDDC /* Intents.intentdefinition in Sources */,
@@ -8814,6 +8821,7 @@
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */,
+				426E029B2EF98F65008237D4 /* CameraSectionReorderView.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,

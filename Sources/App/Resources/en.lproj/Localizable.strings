@@ -1358,4 +1358,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
+"camera_list.title" = "Cameras";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.no_results.title" = "No Results";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_area" = "Not in a room";
+"camera_list.reorder.section.title" = "Reorder sections";
+"camera_list.edit.on.title" = "Done";
+"camera_list.edit.off.title" = "Edit";
 "yes_label" = "Yes";
