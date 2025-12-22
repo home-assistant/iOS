@@ -717,7 +717,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.reset_section.reset_app.title" = "Reset App (Remove servers and data)";
 "settings.reset_section.reset_row.title" = "Reiniciar";
 "settings.reset_section.reset_web_cache.title" = "Restablecer caché del frontend";
-"settings.server_select.title" = "[%key_id:130602264%]";
+"settings.server_select.title" = "Servidor";
 "settings.status_section.header" = "Estado";
 "settings.status_section.location_name_row.placeholder" = "Mi Home Assistant";
 "settings.status_section.location_name_row.title" = "Nombre";
