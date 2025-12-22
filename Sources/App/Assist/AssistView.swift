@@ -58,7 +58,11 @@ struct AssistView: View {
         .navigationViewStyle(.stack)
         .onAppear {
             assistSession.inProgress = true
+            viewModel.enableOnDeviceSTT = enableOnDeviceSTT
             viewModel.initialRoutine()
+        }
+        .onChange(of: enableOnDeviceSTT) { newValue in
+            viewModel.enableOnDeviceSTT = newValue
         }
         .onChange(of: viewModel.focusOnInput) { newValue in
             if newValue {
@@ -261,12 +265,8 @@ struct AssistView: View {
     private func assistMicButtonAction() {
         feedbackGenerator.notificationOccurred(.success)
         isFirstResponder = false
-        
-        if #available(iOS 26.0, *), enableOnDeviceSTT {
-            viewModel.assistWithOnDeviceSTT()
-        } else {
-            viewModel.assistWithAudio()
-        }
+
+        viewModel.assistWithAudio()
     }
 
     private var sendIcon: some View {

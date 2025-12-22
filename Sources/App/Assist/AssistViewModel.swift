@@ -22,10 +22,24 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private(set) var canSendAudioData = false
     
-    // On-device transcription (stored as Any to avoid @available on stored properties)
-    private var onDeviceRecorder: Any?
-    private var onDeviceTranscriber: Any?
-    private var transcriptionTask: Task<Void, Never>?
+    // On-device transcription
+    var enableOnDeviceSTT: Bool = false
+    private var _transcriber: Any?
+    
+    @available(iOS 26.0, *)
+    @MainActor
+    var transcriber: HAAssistTranscriberManager {
+        get {
+            if let existing = _transcriber as? HAAssistTranscriberManager {
+                return existing
+            }
+            let manager = HAAssistTranscriberManager()
+            manager.autoStopEnabled = true
+            manager.silenceThreshold = .init(value: 2.0, unit: .seconds)
+            _transcriber = manager
+            return manager
+        }
+    }
 
     init(
         server: Server,
@@ -69,14 +83,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     func onDisappear() {
         audioRecorder.stopRecording()
         audioPlayer.pause()
-        
-        // Clean up on-device transcription if iOS 26+
-        if #available(iOS 26.0, *) {
-            transcriptionTask?.cancel()
-            transcriptionTask = nil
-            onDeviceRecorder = nil
-            onDeviceTranscriber = nil
-        }
     }
 
     func assistWithText() {
@@ -98,94 +104,16 @@ final class AssistViewModel: NSObject, ObservableObject {
         // Remove text from input to make animation look better
         inputText = ""
 
-        audioRecorder.startRecording()
-        // Wait until green light from recorder delegate 'didStartRecording'
-    }
-    
-    @available(iOS 26.0, *)
-    func assistWithOnDeviceSTT() {
-        audioPlayer.pause()
-        audioRecorder.stopRecording()
-
-        if isRecording {
-            stopOnDeviceRecording()
-            return
-        }
-        
-        // Remove text from input to make animation look better
-        inputText = ""
-        
-        // Create transcriber and recorder
-        let transcriber = HAAssistTranscriber()
-        self.onDeviceTranscriber = transcriber as Any
-        
-        let recorder = HAAssistRecorder(transcriber: transcriber)
-        self.onDeviceRecorder = recorder as Any
-        
-        // Set up callback for when recording ends
-        recorder.onRecordingEnded = { [weak self] in
+        if enableOnDeviceSTT, #available(iOS 26.0, *) {
+            // Use on-device transcription
             Task { @MainActor in
-                self?.handleOnDeviceTranscriptionComplete()
+                await startOnDeviceTranscription()
             }
+        } else {
+            // Use traditional audio recording and server-side STT
+            audioRecorder.startRecording()
+            // Wait until green light from recorder delegate 'didStartRecording'
         }
-
-        // Start recording and transcription
-        isRecording = true
-
-        transcriptionTask = Task { @MainActor in
-            do {
-                try await recorder.record()
-            } catch {
-                Current.Log.error("On-device transcription failed: \(error)")
-                showError(message: "Failed to start on-device transcription: \(error.localizedDescription)")
-                isRecording = false
-            }
-        }
-
-        #if DEBUG
-        appendToChat(.init(content: "Using on-device Speech-to-Text", itemType: .info))
-        #endif
-    }
-    
-    @available(iOS 26.0, *)
-    private func stopOnDeviceRecording() {
-        Task { @MainActor in
-            do {
-                try await (onDeviceRecorder as? HAAssistRecorder)?.stopRecording()
-            } catch {
-                Current.Log.error("Failed to stop on-device recording: \(error)")
-            }
-        }
-    }
-    
-    @available(iOS 26.0, *)
-    private func handleOnDeviceTranscriptionComplete() {
-        guard let transcriber = onDeviceTranscriber as? HAAssistTranscriber else {
-            isRecording = false
-            return
-        }
-        
-        isRecording = false
-        
-        // Get the final transcription
-        let finalText = transcriber.finalizedTranscript.characters.map(String.init).joined()
-        
-        if finalText.isEmpty {
-            showError(message: "No speech was detected")
-            return
-        }
-        
-        // Show the transcribed text as input
-        appendToChat(.init(content: finalText, itemType: .input))
-        
-        // Send the transcribed text to the assistant
-        assistService.assist(source: .text(input: finalText, pipelineId: preferredPipelineId))
-        
-        // Clean up
-        transcriptionTask?.cancel()
-        transcriptionTask = nil
-        onDeviceRecorder = nil
-        onDeviceTranscriber = nil
     }
 
     private func startAssistAudioPipeline(audioSampleRate: Double) {
@@ -263,8 +191,18 @@ final class AssistViewModel: NSObject, ObservableObject {
     func stopStreaming() {
         isRecording = false
         canSendAudioData = false
-        audioRecorder.stopRecording()
-        assistService.finishSendingAudio()
+        
+        if enableOnDeviceSTT, #available(iOS 26.0, *) {
+            // Stop on-device transcription
+            Task { @MainActor in
+                await stopOnDeviceTranscription()
+            }
+        } else {
+            // Stop traditional audio recording
+            audioRecorder.stopRecording()
+            assistService.finishSendingAudio()
+        }
+        
         Current.Log.info("Stop recording audio for Assist")
     }
 
@@ -296,6 +234,77 @@ final class AssistViewModel: NSObject, ObservableObject {
         if assistService.shouldStartListeningAgainAfterPlaybackEnd {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             assistWithAudio()
+        }
+    }
+    
+    // MARK: - On-Device Transcription Methods
+    
+    @available(iOS 26.0, *)
+    @MainActor
+    private func startOnDeviceTranscription() async {
+        do {
+            isRecording = true
+            #if DEBUG
+            appendToChat(.init(content: "Starting on-device transcription...", itemType: .info))
+            #endif
+            
+            try await transcriber.start()
+            
+            // Poll for transcription updates
+            startTranscriptionObservation()
+            
+        } catch {
+            Current.Log.error("Failed to start on-device transcription: \(error)")
+            showError(message: "Failed to start voice recognition: \(error.localizedDescription)")
+            isRecording = false
+        }
+    }
+    
+    @available(iOS 26.0, *)
+    @MainActor
+    private func stopOnDeviceTranscription() async {
+        do {
+            try await transcriber.stop()
+            
+            // Send the final transcription as text
+            let finalText = transcriber.lastTranscription
+            if !finalText.isEmpty {
+                #if DEBUG
+                appendToChat(.init(content: "Transcribed: \(finalText)", itemType: .info))
+                #endif
+                
+                // Send transcribed text to assist pipeline
+                inputText = finalText
+                assistWithText()
+            }
+            
+            // Reset for next use
+            transcriber.reset()
+            
+        } catch {
+            Current.Log.error("Failed to stop on-device transcription: \(error)")
+            showError(message: "Failed to stop voice recognition: \(error.localizedDescription)")
+        }
+    }
+    
+    @available(iOS 26.0, *)
+    @MainActor
+    private func startTranscriptionObservation() {
+        Task {
+            while isRecording && transcriber.state == .transcribing {
+                try? await Task.sleep(for: .milliseconds(100))
+                
+                // Update input text with current transcription for live feedback
+                let currentTranscription = transcriber.lastTranscription
+                if !currentTranscription.isEmpty {
+                    inputText = currentTranscription
+                }
+            }
+            
+            // Transcription ended (likely due to silence detection)
+            if transcriber.state == .notTranscribing && isRecording {
+                await stopOnDeviceTranscription()
+            }
         }
     }
 }
