@@ -7,6 +7,7 @@ struct AssistView: View {
     @StateObject private var viewModel: AssistViewModel
     @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
+    @State private var showSettings = false
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
@@ -23,50 +24,64 @@ struct AssistView: View {
     }
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: .zero) {
-                if !Current.isCatalyst {
-                    pipelinesPicker
-                }
-                chatList
+        if #available(iOS 26.0, *) {
+            NavigationStack {
+                TranscriptView(story: .constant(Story(title: "Abc", text: "", url: nil, isDone: false)))
             }
-            .navigationTitle("Assist")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if showCloseButton {
-                        closeButton
-                    }
-                }
-
-                #if targetEnvironment(macCatalyst)
-                ToolbarItem(placement: .topBarTrailing) {
-                    macPicker
-                }
-                #endif
-            }
+        } else {
+            EmptyView()
         }
-        .navigationViewStyle(.stack)
-        .onAppear {
-            assistSession.inProgress = true
-            viewModel.initialRoutine()
-        }
-        .onChange(of: viewModel.focusOnInput) { newValue in
-            if newValue {
-                isFirstResponder = true
-            }
-        }
-        .onDisappear {
-            assistSession.inProgress = false
-            viewModel.onDisappear()
-        }
-        .alert(isPresented: $viewModel.showError) {
-            .init(
-                title: Text(verbatim: L10n.errorLabel),
-                message: Text(viewModel.errorMessage),
-                dismissButton: .default(Text(verbatim: L10n.okLabel))
-            )
-        }
+//        NavigationView {
+//            VStack(spacing: .zero) {
+//                if !Current.isCatalyst {
+//                    pipelinesPicker
+//                }
+//                chatList
+//            }
+//            .navigationTitle("Assist")
+//            .navigationBarTitleDisplayMode(.inline)
+//            .toolbar {
+//                ToolbarItem(placement: .topBarLeading) {
+//                    if showCloseButton {
+//                        closeButton
+//                    }
+//                }
+//
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    settingsButton
+//                }
+//
+//                #if targetEnvironment(macCatalyst)
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    macPicker
+//                }
+//                #endif
+//            }
+//            .sheet(isPresented: $showSettings) {
+//                AssistSettingsView()
+//            }
+//        }
+//        .navigationViewStyle(.stack)
+//        .onAppear {
+//            assistSession.inProgress = true
+//            viewModel.initialRoutine()
+//        }
+//        .onChange(of: viewModel.focusOnInput) { newValue in
+//            if newValue {
+//                isFirstResponder = true
+//            }
+//        }
+//        .onDisappear {
+//            assistSession.inProgress = false
+//            viewModel.onDisappear()
+//        }
+//        .alert(isPresented: $viewModel.showError) {
+//            .init(
+//                title: Text(verbatim: L10n.errorLabel),
+//                message: Text(viewModel.errorMessage),
+//                dismissButton: .default(Text(verbatim: L10n.okLabel))
+//            )
+//        }
     }
 
     private var closeButton: some View {
@@ -78,6 +93,16 @@ struct AssistView: View {
         .buttonStyle(.plain)
         .tint(Color(uiColor: .label))
         .keyboardShortcut(.cancelAction)
+    }
+
+    private var settingsButton: some View {
+        Button {
+            showSettings = true
+        } label: {
+            Image(systemSymbol: .gearshape)
+        }
+        .buttonStyle(.plain)
+        .tint(Color(uiColor: .label))
     }
 
     private var pipelinesPicker: some View {
@@ -306,3 +331,52 @@ struct AssistView: View {
         }
     }
 }
+// MARK: - Settings View
+struct AssistSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var enableTextToSpeech = false
+    @State private var enableAutoListen = false
+    @State private var enableHapticFeedback = true
+    @State private var showTimestamps = false
+    @State private var compactMode = false
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section {
+                    Toggle("Enable Text-to-Speech", isOn: $enableTextToSpeech)
+                    Toggle("Auto-Listen After Response", isOn: $enableAutoListen)
+                    Toggle("Haptic Feedback", isOn: $enableHapticFeedback)
+                } header: {
+                    Text("Voice & Audio")
+                }
+                
+                Section {
+                    Toggle("Show Timestamps", isOn: $showTimestamps)
+                    Toggle("Compact Mode", isOn: $compactMode)
+                } header: {
+                    Text("Appearance")
+                }
+                
+                Section {
+                    Button("Clear Conversation History") {
+                        // Action placeholder
+                    }
+                    .foregroundColor(.red)
+                } header: {
+                    Text("Data")
+                }
+            }
+            .navigationTitle("Assist Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
