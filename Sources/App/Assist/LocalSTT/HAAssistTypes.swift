@@ -46,15 +46,3 @@ enum HAAssistRecordingState: Equatable {
     case recording
     case paused
 }
-
-// MARK: - Playback State
-enum HAAssistPlaybackState: Equatable {
-    case playing
-    case notPlaying
-}
-
-// MARK: - Audio Data
-struct HAAssistAudioData: @unchecked Sendable {
-    var buffer: AVAudioPCMBuffer
-    var time: AVAudioTime
-}

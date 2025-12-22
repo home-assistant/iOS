@@ -611,11 +611,9 @@
 		42145A622DAFD49A00891E04 /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
 		42145A642DAFD4CC00891E04 /* MaterialDesignIcons+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */; };
 		42153DC82EC5F88E00F26474 /* ServersObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42153DC72EC5F88E00F26474 /* ServersObserver.swift */; };
-		4217640D2EF9AF2300947FE2 /* HAAssistExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764092EF9AE0900947FE2 /* HAAssistExtensions.swift */; };
 		4217640E2EF9AF2300947FE2 /* HAAssistRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421763FF2EF9ADC700947FE2 /* HAAssistRecorder.swift */; };
 		4217640F2EF9AF2300947FE2 /* HAAssistTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421763FD2EF9ADB300947FE2 /* HAAssistTranscriber.swift */; };
 		421764102EF9AF2300947FE2 /* HAAssistTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */; };
-		421764112EF9AF2300947FE2 /* HAAssistStory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764012EF9ADD700947FE2 /* HAAssistStory.swift */; };
 		421764122EF9AF2300947FE2 /* HAAssistDebugTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764072EF9AE0400947FE2 /* HAAssistDebugTranscriptView.swift */; };
 		421764132EF9AF2300947FE2 /* HAAssistBufferConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764032EF9ADE500947FE2 /* HAAssistBufferConverter.swift */; };
 		421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */; };
@@ -2197,11 +2195,9 @@
 		42153DC72EC5F88E00F26474 /* ServersObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersObserver.swift; sourceTree = "<group>"; };
 		421763FD2EF9ADB300947FE2 /* HAAssistTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistTranscriber.swift; sourceTree = "<group>"; };
 		421763FF2EF9ADC700947FE2 /* HAAssistRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistRecorder.swift; sourceTree = "<group>"; };
-		421764012EF9ADD700947FE2 /* HAAssistStory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistStory.swift; sourceTree = "<group>"; };
 		421764032EF9ADE500947FE2 /* HAAssistBufferConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistBufferConverter.swift; sourceTree = "<group>"; };
 		421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistTypes.swift; sourceTree = "<group>"; };
 		421764072EF9AE0400947FE2 /* HAAssistDebugTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistDebugTranscriptView.swift; sourceTree = "<group>"; };
-		421764092EF9AE0900947FE2 /* HAAssistExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistExtensions.swift; sourceTree = "<group>"; };
 		4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistViewTintedWrapper.swift; sourceTree = "<group>"; };
 		42196AD02DA5AF3D00BD501E /* MockBonjour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBonjour.swift; sourceTree = "<group>"; };
 		42196AD52DA5AF7A00BD501E /* OnboardingServersListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingServersListViewModelTests.swift; sourceTree = "<group>"; };
@@ -5147,6 +5143,18 @@
 			path = General;
 			sourceTree = "<group>";
 		};
+		429D51BB2EFA09580014AD0D /* LocalSTT */ = {
+			isa = PBXGroup;
+			children = (
+				421763FD2EF9ADB300947FE2 /* HAAssistTranscriber.swift */,
+				421763FF2EF9ADC700947FE2 /* HAAssistRecorder.swift */,
+				421764032EF9ADE500947FE2 /* HAAssistBufferConverter.swift */,
+				421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */,
+				421764072EF9AE0400947FE2 /* HAAssistDebugTranscriptView.swift */,
+			);
+			path = LocalSTT;
+			sourceTree = "<group>";
+		};
 		42A2AB7E2C80750A00C5608D /* Control */ = {
 			isa = PBXGroup;
 			children = (
@@ -5572,6 +5580,7 @@
 		42B94BD92B9606CD00DEE060 /* Assist */ = {
 			isa = PBXGroup;
 			children = (
+				429D51BB2EFA09580014AD0D /* LocalSTT */,
 				425C5A052CF756CF00206B5B /* Views */,
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
@@ -5579,13 +5588,6 @@
 				42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */,
 				429106882BA9D5F700D452F9 /* AssistView+Build.swift */,
 				42070EE72BAC43240031E96F /* AssistSession.swift */,
-				421763FD2EF9ADB300947FE2 /* HAAssistTranscriber.swift */,
-				421763FF2EF9ADC700947FE2 /* HAAssistRecorder.swift */,
-				421764012EF9ADD700947FE2 /* HAAssistStory.swift */,
-				421764032EF9ADE500947FE2 /* HAAssistBufferConverter.swift */,
-				421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */,
-				421764072EF9AE0400947FE2 /* HAAssistDebugTranscriptView.swift */,
-				421764092EF9AE0900947FE2 /* HAAssistExtensions.swift */,
 			);
 			path = Assist;
 			sourceTree = "<group>";
@@ -8849,11 +8851,9 @@
 				42DF7DE22EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
-				4217640D2EF9AF2300947FE2 /* HAAssistExtensions.swift in Sources */,
 				4217640E2EF9AF2300947FE2 /* HAAssistRecorder.swift in Sources */,
 				4217640F2EF9AF2300947FE2 /* HAAssistTranscriber.swift in Sources */,
 				421764102EF9AF2300947FE2 /* HAAssistTypes.swift in Sources */,
-				421764112EF9AF2300947FE2 /* HAAssistStory.swift in Sources */,
 				421764122EF9AF2300947FE2 /* HAAssistDebugTranscriptView.swift in Sources */,
 				421764132EF9AF2300947FE2 /* HAAssistBufferConverter.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,

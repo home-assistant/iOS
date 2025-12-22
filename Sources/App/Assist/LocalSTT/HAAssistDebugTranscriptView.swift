@@ -56,15 +56,6 @@ struct HAAssistDebugTranscriptView: View {
             }
 
             ToolbarItem {
-                Button {
-                    handlePlayButtonTap()
-                } label: {
-                    Label("Play", systemImage: isPlaying ? "pause.fill" : "play").foregroundStyle(.blue).font(.title)
-                }
-                .disabled(!isDone)
-            }
-
-            ToolbarItem {
                 if downloadProgress > 0 && downloadProgress < 100 {
                     ProgressView(value: downloadProgress, total: 100)
                 }
@@ -86,9 +77,6 @@ struct HAAssistDebugTranscriptView: View {
                     isDone = true
                 }
             }
-        }
-        .onChange(of: isPlaying) {
-            handlePlayback()
         }
         .onAppear {
             // Set up callback for recording completion
@@ -119,23 +107,6 @@ struct HAAssistDebugTranscriptView: View {
 // MARK: - Helper Methods
 @available(iOS 26.0, *)
 extension HAAssistDebugTranscriptView {
-    func handlePlayback() {
-        guard recorder.hasRecording else {
-            return
-        }
-
-        if isPlaying {
-            recorder.playRecording()
-            timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
-                currentPlaybackTime = recorder.playerNode?.currentTime ?? 0.0
-            }
-        } else {
-            recorder.stopPlaying()
-            currentPlaybackTime = 0.0
-            timer?.invalidate()
-            timer = nil
-        }
-    }
 
     func handleRecordingButtonTap() {
         isRecording.toggle()

@@ -8,6 +8,7 @@ import Speech
 import AVFoundation
 import Foundation
 import SwiftUI
+import Shared
 
 @available(iOS 26.0, *)
 @Observable
@@ -34,7 +35,7 @@ final class HAAssistTranscriber {
     
     // Track silence duration for auto-stop
     private var lastSpeechTime: Date?
-    var silenceThreshold: TimeInterval = 3.0 // Stop after 3 seconds of silence
+    var silenceThreshold: Measurement<UnitDuration> = .init(value: 2.0, unit: .seconds)
     var autoStopEnabled: Bool = true
 
     func setUpTranscriber() async throws {
@@ -93,7 +94,7 @@ final class HAAssistTranscriber {
                         print("Silence detected")
                         // Check if enough time has passed since last speech
                         if let lastSpeech = lastSpeechTime,
-                           Date().timeIntervalSince(lastSpeech) >= silenceThreshold {
+                           Current.date().timeIntervalSince(lastSpeech) >= silenceThreshold.converted(to: .seconds).value {
                             print("Speech has ended after \(silenceThreshold) seconds of silence")
                             onSpeechEnded?()
                         }
