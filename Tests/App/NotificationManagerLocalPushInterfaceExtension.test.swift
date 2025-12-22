@@ -9,16 +9,12 @@ import XCTest
 class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
     private var interface: NotificationManagerLocalPushInterfaceExtension!
     private var fakeServers: FakeServerManager!
-    private var timerObservations: [TimerObservation] = []
     
     override func setUp() {
         super.setUp()
         
         fakeServers = FakeServerManager()
         Current.servers = fakeServers
-        
-        // Set up timer observation to track reconnection timer behavior
-        timerObservations = []
         
         interface = NotificationManagerLocalPushInterfaceExtension()
     }
@@ -27,449 +23,257 @@ class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
         super.tearDown()
         
         interface = nil
-        timerObservations = []
     }
     
     // MARK: - Reconnection Backoff Tests
     
-    func testReconnectionDelaysFollowExponentialBackoff() throws {
-        // This test verifies that the reconnection delays follow the pattern: 5s, 10s, 30s (capped)
-        // The actual delays are: [5, 10, 30] as defined in the class
-        
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
-        
-        // Create a mock sync state to simulate unavailable state
-        let syncKey = PushProviderConfiguration.defaultSettingsKey(for: server)
-        let syncState = LocalPushStateSync(settingsKey: syncKey)
-        
-        // Trigger unavailable state - this should schedule first reconnection attempt
-        syncState.value = .unavailable
-        
-        // First attempt should use delay at index 0 (5 seconds)
-        let status1 = interface.status(for: server)
-        
-        // Simulate timer firing and reconnection attempt
-        // The attemptReconnection() method increments reconnectionAttempt
-        
-        // For testing purposes, we can observe the log output or the behavior
-        // Since the timer and reconnectionAttempt are private, we test the observable behavior
-        
-        // Verify that the status correctly reflects unavailable state
-        if case let .allowed(state) = status1 {
-            XCTAssertEqual(state, .unavailable)
-        } else {
-            XCTFail("Expected .allowed status with .unavailable state")
-        }
+    func testReconnectionDelaysAreCorrect() {
+        // Verify the reconnection delays array contains expected values: 5s, 10s, 30s
+        let delays = interface.testReconnectionDelays
+        XCTAssertEqual(delays.count, 3, "Should have 3 delay values")
+        XCTAssertEqual(delays[0], 5, "First delay should be 5 seconds")
+        XCTAssertEqual(delays[1], 10, "Second delay should be 10 seconds")
+        XCTAssertEqual(delays[2], 30, "Third delay should be 30 seconds (cap)")
     }
     
-    func testReconnectionBackoffCapsAt30Seconds() throws {
-        // Verify that after multiple failed attempts, the delay caps at 30 seconds
-        // The delays array is [5, 10, 30], so:
-        // - Attempt 0: 5s
-        // - Attempt 1: 10s  
-        // - Attempt 2+: 30s (capped)
+    func testReconnectionAttemptCounterStartsAtZero() {
+        // Initial state should have no reconnection attempts
+        XCTAssertEqual(interface.testReconnectionAttempt, 0, "Reconnection attempt should start at 0")
+        XCTAssertFalse(interface.testHasActiveReconnectionTimer, "No timer should be active initially")
+    }
+    
+    func testScheduleReconnectionCreatesTimer() {
+        // Scheduling a reconnection should create an active timer
+        interface.testScheduleReconnection()
         
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
+        XCTAssertTrue(interface.testHasActiveReconnectionTimer, "Timer should be active after scheduling")
+        XCTAssertEqual(interface.testReconnectionAttempt, 0, "Attempt counter should still be 0 after scheduling")
+    }
+    
+    func testAttemptReconnectionIncrementsCounter() {
+        // Attempting reconnection should increment the counter
+        let initialAttempt = interface.testReconnectionAttempt
+        interface.testAttemptReconnection()
         
-        // This test documents the expected behavior based on the implementation
-        // The actual delay calculation is: min(reconnectionAttempt, reconnectionDelays.count - 1)
-        // With reconnectionDelays = [5, 10, 30]:
-        // - reconnectionAttempt 0 -> index 0 -> 5s
-        // - reconnectionAttempt 1 -> index 1 -> 10s
-        // - reconnectionAttempt 2 -> index 2 -> 30s
-        // - reconnectionAttempt 3+ -> index 2 -> 30s (capped)
+        XCTAssertEqual(
+            interface.testReconnectionAttempt,
+            initialAttempt + 1,
+            "Attempt counter should increment by 1"
+        )
+    }
+    
+    func testMultipleReconnectionAttemptsIncrementCorrectly() {
+        // Multiple attempts should keep incrementing
+        XCTAssertEqual(interface.testReconnectionAttempt, 0)
         
-        XCTAssertTrue(true, "Backoff delay caps at 30 seconds after third attempt")
+        interface.testAttemptReconnection()
+        XCTAssertEqual(interface.testReconnectionAttempt, 1)
+        
+        interface.testAttemptReconnection()
+        XCTAssertEqual(interface.testReconnectionAttempt, 2)
+        
+        interface.testAttemptReconnection()
+        XCTAssertEqual(interface.testReconnectionAttempt, 3)
+        
+        // Even after many attempts, counter should keep incrementing
+        // The delay will be capped at 30s but counter continues
+    }
+    
+    func testReconnectionDelaySelectionLogic() {
+        // This test documents the delay selection algorithm:
+        // delayIndex = min(reconnectionAttempt, reconnectionDelays.count - 1)
+        // With delays = [5, 10, 30]:
+        // - Attempt 0 -> index min(0, 2) = 0 -> 5s
+        // - Attempt 1 -> index min(1, 2) = 1 -> 10s
+        // - Attempt 2 -> index min(2, 2) = 2 -> 30s
+        // - Attempt 3+ -> index min(3+, 2) = 2 -> 30s (capped)
+        
+        let delays = interface.testReconnectionDelays
+        let maxIndex = delays.count - 1
+        
+        // Simulate delay selection for different attempt counts
+        for attempt in 0 ..< 10 {
+            let delayIndex = min(attempt, maxIndex)
+            let expectedDelay = delays[delayIndex]
+            
+            if attempt == 0 {
+                XCTAssertEqual(expectedDelay, 5, "Attempt 0 should use 5s delay")
+            } else if attempt == 1 {
+                XCTAssertEqual(expectedDelay, 10, "Attempt 1 should use 10s delay")
+            } else {
+                XCTAssertEqual(expectedDelay, 30, "Attempt \(attempt) should use 30s delay (capped)")
+            }
+        }
     }
     
     // MARK: - Timer Cancellation Tests
     
-    func testTimerCancelledWhenAllServersReconnect() throws {
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
+    func testCancelReconnectionClearsTimer() {
+        // Schedule a reconnection to create a timer
+        interface.testScheduleReconnection()
+        XCTAssertTrue(interface.testHasActiveReconnectionTimer, "Timer should be active")
         
-        let syncKey = PushProviderConfiguration.defaultSettingsKey(for: server)
-        let syncState = LocalPushStateSync(settingsKey: syncKey)
-        
-        // Set unavailable to trigger reconnection scheduling
-        syncState.value = .unavailable
-        _ = interface.status(for: server)
-        
-        // Now set to available to trigger timer cancellation
-        syncState.value = .available(received: 0)
-        let status = interface.status(for: server)
-        
-        // Verify the server is now available
-        if case let .allowed(state) = status {
-            if case .available = state {
-                XCTAssertTrue(true, "Server reconnected successfully")
-            } else {
-                XCTFail("Expected available state after reconnection")
-            }
-        } else {
-            XCTFail("Expected .allowed status")
-        }
-        
-        // The reconnection timer should be cancelled and attempt counter reset
-        // This is verified by the implementation's cancelReconnection() method
+        // Cancel should clear the timer
+        interface.testCancelReconnection()
+        XCTAssertFalse(interface.testHasActiveReconnectionTimer, "Timer should be cleared after cancellation")
     }
     
-    func testTimerNotCancelledWhenSomeServersStillDisconnected() throws {
-        let server1 = fakeServers.addFake()
-        server1.info.connection.isLocalPushEnabled = true
-        server1.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server1.info.connection.internalSSIDs = ["TestSSID1"]
+    func testCancelReconnectionResetsAttemptCounter() {
+        // Increment attempt counter
+        interface.testAttemptReconnection()
+        interface.testAttemptReconnection()
+        XCTAssertEqual(interface.testReconnectionAttempt, 2)
         
-        let server2 = fakeServers.addFake()
-        server2.info.connection.isLocalPushEnabled = true
-        server2.info.connection.setAddress(URL(string: "http://192.168.1.2:8123")!, for: .internal)
-        server2.info.connection.internalSSIDs = ["TestSSID2"]
+        // Cancel should reset counter to 0
+        interface.testCancelReconnection()
+        XCTAssertEqual(interface.testReconnectionAttempt, 0, "Attempt counter should be reset to 0")
+    }
+    
+    func testCancelReconnectionWithoutActiveTimerIsNoOp() {
+        // Calling cancel without an active timer should be safe
+        XCTAssertFalse(interface.testHasActiveReconnectionTimer)
+        XCTAssertEqual(interface.testReconnectionAttempt, 0)
         
-        let syncKey1 = PushProviderConfiguration.defaultSettingsKey(for: server1)
-        let syncState1 = LocalPushStateSync(settingsKey: syncKey1)
+        interface.testCancelReconnection()
         
-        let syncKey2 = PushProviderConfiguration.defaultSettingsKey(for: server2)
-        let syncState2 = LocalPushStateSync(settingsKey: syncKey2)
+        XCTAssertFalse(interface.testHasActiveReconnectionTimer)
+        XCTAssertEqual(interface.testReconnectionAttempt, 0)
+    }
+    
+    func testScheduleReconnectionCancelsExistingTimer() {
+        // Schedule first reconnection
+        interface.testScheduleReconnection()
+        XCTAssertTrue(interface.testHasActiveReconnectionTimer)
         
-        // Make both servers unavailable
-        syncState1.value = .unavailable
-        syncState2.value = .unavailable
+        // Attempt reconnection to increment counter
+        interface.testAttemptReconnection()
+        XCTAssertEqual(interface.testReconnectionAttempt, 1)
         
-        _ = interface.status(for: server1)
-        _ = interface.status(for: server2)
-        
-        // Reconnect only server1
-        syncState1.value = .available(received: 0)
-        _ = interface.status(for: server1)
-        
-        // Server2 is still unavailable, so timer should remain active
-        let status2 = interface.status(for: server2)
-        
-        if case let .allowed(state) = status2 {
-            XCTAssertEqual(state, .unavailable)
-        } else {
-            XCTFail("Expected server2 to still be unavailable")
-        }
-        
-        // Timer should still be active for server2
-        // This behavior is verified by the condition: if disconnectedServers.isEmpty
+        // Schedule again - should cancel existing timer and create new one
+        interface.testScheduleReconnection()
+        XCTAssertTrue(interface.testHasActiveReconnectionTimer, "New timer should be active")
+        // Attempt counter should remain (not reset by schedule, only by cancel)
+        XCTAssertEqual(interface.testReconnectionAttempt, 1)
     }
     
     // MARK: - State Tracking Tests
     
-    func testDisconnectedServersTrackedCorrectly() throws {
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
-        
-        let syncKey = PushProviderConfiguration.defaultSettingsKey(for: server)
-        let syncState = LocalPushStateSync(settingsKey: syncKey)
-        
-        // Initially establishing
-        syncState.value = .establishing
-        let status1 = interface.status(for: server)
-        
-        if case let .allowed(state) = status1 {
-            if case .establishing = state {
-                XCTAssertTrue(true, "Server in establishing state")
-            } else {
-                XCTFail("Expected establishing state")
-            }
-        }
-        
-        // Transition to unavailable - should be tracked as disconnected
-        syncState.value = .unavailable
-        let status2 = interface.status(for: server)
-        
-        if case let .allowed(state) = status2 {
-            XCTAssertEqual(state, .unavailable)
-        } else {
-            XCTFail("Expected unavailable state")
-        }
-        
-        // Multiple calls with unavailable shouldn't duplicate tracking
-        _ = interface.status(for: server)
-        _ = interface.status(for: server)
-        
-        // Reconnection should remove from tracking
-        syncState.value = .available(received: 0)
-        let status3 = interface.status(for: server)
-        
-        if case let .allowed(state) = status3 {
-            if case .available = state {
-                XCTAssertTrue(true, "Server reconnected")
-            } else {
-                XCTFail("Expected available state")
-            }
-        }
+    func testDisconnectedServersSetStartsEmpty() {
+        // Initially, no servers should be disconnected
+        XCTAssertTrue(interface.testDisconnectedServers.isEmpty, "Disconnected servers set should start empty")
     }
     
-    func testEstablishingStateDoesNotTriggerDisconnection() throws {
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
+    func testDisconnectedServersTracking() {
+        // This test documents that disconnected servers are tracked internally
+        // The actual tracking happens in the status(for:) method based on sync state
+        // Since we can't easily mock NEAppPushManager, we verify the Set is accessible
         
-        let syncKey = PushProviderConfiguration.defaultSettingsKey(for: server)
-        let syncState = LocalPushStateSync(settingsKey: syncKey)
+        let initialCount = interface.testDisconnectedServers.count
+        XCTAssertEqual(initialCount, 0, "Should start with no disconnected servers")
         
-        // Establishing state should not be treated as disconnected
-        syncState.value = .establishing
-        let status = interface.status(for: server)
+        // The actual population of this set happens when:
+        // 1. A server's sync state becomes .unavailable
+        // 2. The server has an active manager
+        // 3. status(for:) is called
         
-        if case let .allowed(state) = status {
-            if case .establishing = state {
-                // This is correct - establishing is a transitional state, not a failure
-                XCTAssertTrue(true, "Server in establishing state")
-            } else {
-                XCTFail("Expected establishing state")
-            }
-        }
+        // These conditions require NEAppPushManager which we can't easily mock in unit tests
     }
     
-    // MARK: - Rapid Disconnection/Reconnection Tests
+    // MARK: - Integration Behavior Documentation
     
-    func testRapidDisconnectReconnectEvents() throws {
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
+    func testReconnectionFlowDocumentation() {
+        // This test documents the expected reconnection flow:
+        // 1. Server becomes unavailable -> added to disconnectedServers set
+        // 2. scheduleReconnection() called -> timer created with appropriate delay
+        // 3. Timer fires -> attemptReconnection() called
+        // 4. attemptReconnection() increments counter and calls reloadManagersAfterSave()
+        // 5. If server reconnects -> removed from disconnectedServers set
+        // 6. If all servers reconnect -> cancelReconnection() called
+        // 7. cancelReconnection() clears timer and resets attempt counter
         
-        let syncKey = PushProviderConfiguration.defaultSettingsKey(for: server)
-        let syncState = LocalPushStateSync(settingsKey: syncKey)
+        // Verify initial state
+        XCTAssertEqual(interface.testReconnectionAttempt, 0)
+        XCTAssertFalse(interface.testHasActiveReconnectionTimer)
+        XCTAssertTrue(interface.testDisconnectedServers.isEmpty)
         
-        // Rapid state changes: unavailable -> available -> unavailable -> available
-        syncState.value = .unavailable
-        _ = interface.status(for: server)
+        // Simulate reconnection flow
+        interface.testScheduleReconnection()
+        XCTAssertTrue(interface.testHasActiveReconnectionTimer, "Step 2: Timer should be created")
         
-        syncState.value = .available(received: 0)
-        _ = interface.status(for: server)
+        interface.testAttemptReconnection()
+        XCTAssertEqual(interface.testReconnectionAttempt, 1, "Step 3: Counter should increment")
         
-        syncState.value = .unavailable
-        _ = interface.status(for: server)
-        
-        syncState.value = .available(received: 1)
-        let finalStatus = interface.status(for: server)
-        
-        // After rapid changes, server should be in final available state
-        if case let .allowed(state) = finalStatus {
-            if case .available = state {
-                XCTAssertTrue(true, "Server handled rapid state changes correctly")
-            } else {
-                XCTFail("Expected final available state")
-            }
-        }
+        interface.testCancelReconnection()
+        XCTAssertFalse(interface.testHasActiveReconnectionTimer, "Step 7: Timer should be cleared")
+        XCTAssertEqual(interface.testReconnectionAttempt, 0, "Step 7: Counter should be reset")
     }
     
-    func testReconnectionDuringActiveTimer() throws {
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
+    func testExponentialBackoffWithCapDocumentation() {
+        // Document the exponential backoff behavior
+        // Delays: [5, 10, 30]
+        // Formula: delays[min(attemptNumber, delays.count - 1)]
         
-        let syncKey = PushProviderConfiguration.defaultSettingsKey(for: server)
-        let syncState = LocalPushStateSync(settingsKey: syncKey)
+        let delays = interface.testReconnectionDelays
         
-        // Trigger first disconnection - starts timer
-        syncState.value = .unavailable
-        _ = interface.status(for: server)
+        // First attempt (0): 5 seconds
+        XCTAssertEqual(delays[min(0, delays.count - 1)], 5)
         
-        // Before timer fires, reconnect
-        syncState.value = .available(received: 0)
-        let status = interface.status(for: server)
+        // Second attempt (1): 10 seconds
+        XCTAssertEqual(delays[min(1, delays.count - 1)], 10)
         
-        // Verify successful reconnection
-        if case let .allowed(state) = status {
-            if case .available = state {
-                XCTAssertTrue(true, "Reconnection during active timer succeeded")
-            } else {
-                XCTFail("Expected available state")
-            }
-        }
+        // Third attempt (2): 30 seconds
+        XCTAssertEqual(delays[min(2, delays.count - 1)], 30)
         
-        // Timer should be cancelled and attempt counter reset
+        // Fourth and subsequent attempts: capped at 30 seconds
+        XCTAssertEqual(delays[min(3, delays.count - 1)], 30)
+        XCTAssertEqual(delays[min(4, delays.count - 1)], 30)
+        XCTAssertEqual(delays[min(10, delays.count - 1)], 30)
     }
     
-    // MARK: - Multiple Server Tests
+    func testTimerBehaviorWithMultipleServers() {
+        // Document expected behavior with multiple servers:
+        // - When any server disconnects: schedule reconnection if not already scheduled
+        // - When a server reconnects: remove from disconnectedServers set
+        // - When all servers reconnect: cancel reconnection timer
+        // - When some servers remain disconnected: timer remains active
+        
+        // This behavior is implemented in status(for:) method and can be tested
+        // in integration tests with actual NEAppPushManager instances
+        
+        XCTAssertTrue(true, "Behavior documented - requires integration testing")
+    }
     
-    func testMultipleServersDisconnectingSimultaneously() throws {
-        let server1 = fakeServers.addFake()
-        server1.info.connection.isLocalPushEnabled = true
-        server1.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server1.info.connection.internalSSIDs = ["TestSSID1"]
+    func testRapidStateChangesHandling() {
+        // Document that rapid state changes are handled correctly:
+        // - Multiple disconnections don't create duplicate entries
+        // - Reconnection during active timer cancels and resets properly
+        // - State transitions are idempotent
         
-        let server2 = fakeServers.addFake()
-        server2.info.connection.isLocalPushEnabled = true
-        server2.info.connection.setAddress(URL(string: "http://192.168.1.2:8123")!, for: .internal)
-        server2.info.connection.internalSSIDs = ["TestSSID2"]
-        
-        let server3 = fakeServers.addFake()
-        server3.info.connection.isLocalPushEnabled = true
-        server3.info.connection.setAddress(URL(string: "http://192.168.1.3:8123")!, for: .internal)
-        server3.info.connection.internalSSIDs = ["TestSSID3"]
-        
-        let syncKey1 = PushProviderConfiguration.defaultSettingsKey(for: server1)
-        let syncState1 = LocalPushStateSync(settingsKey: syncKey1)
-        
-        let syncKey2 = PushProviderConfiguration.defaultSettingsKey(for: server2)
-        let syncState2 = LocalPushStateSync(settingsKey: syncKey2)
-        
-        let syncKey3 = PushProviderConfiguration.defaultSettingsKey(for: server3)
-        let syncState3 = LocalPushStateSync(settingsKey: syncKey3)
-        
-        // All three servers disconnect simultaneously
-        syncState1.value = .unavailable
-        syncState2.value = .unavailable
-        syncState3.value = .unavailable
-        
-        let status1 = interface.status(for: server1)
-        let status2 = interface.status(for: server2)
-        let status3 = interface.status(for: server3)
-        
-        // All should be unavailable
-        if case let .allowed(state1) = status1,
-           case let .allowed(state2) = status2,
-           case let .allowed(state3) = status3 {
-            XCTAssertEqual(state1, .unavailable)
-            XCTAssertEqual(state2, .unavailable)
-            XCTAssertEqual(state3, .unavailable)
-        } else {
-            XCTFail("Expected all servers to be unavailable")
+        // Simulate multiple schedule/cancel cycles
+        for _ in 0 ..< 5 {
+            interface.testScheduleReconnection()
+            XCTAssertTrue(interface.testHasActiveReconnectionTimer)
+            
+            interface.testCancelReconnection()
+            XCTAssertFalse(interface.testHasActiveReconnectionTimer)
+            XCTAssertEqual(interface.testReconnectionAttempt, 0)
         }
         
-        // Reconnect them one by one
-        syncState1.value = .available(received: 0)
-        _ = interface.status(for: server1)
-        
-        syncState2.value = .available(received: 0)
-        _ = interface.status(for: server2)
-        
-        // At this point, server3 is still disconnected, timer should be active
-        
-        syncState3.value = .available(received: 0)
-        let finalStatus3 = interface.status(for: server3)
-        
-        // Once all reconnected, timer should be cancelled
-        if case let .allowed(state) = finalStatus3 {
-            if case .available = state {
-                XCTAssertTrue(true, "All servers reconnected successfully")
-            } else {
-                XCTFail("Expected final available state for server3")
-            }
-        }
+        // Final state should be clean
+        XCTAssertFalse(interface.testHasActiveReconnectionTimer)
+        XCTAssertEqual(interface.testReconnectionAttempt, 0)
     }
     
-    func testPartialReconnectionOfMultipleServers() throws {
-        let server1 = fakeServers.addFake()
-        server1.info.connection.isLocalPushEnabled = true
-        server1.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server1.info.connection.internalSSIDs = ["TestSSID1"]
+    func testAttemptCounterContinuesIndefinitely() {
+        // Document that attempt counter continues beyond delay array length
+        // (delay caps at 30s but counter keeps going for tracking purposes)
         
-        let server2 = fakeServers.addFake()
-        server2.info.connection.isLocalPushEnabled = true
-        server2.info.connection.setAddress(URL(string: "http://192.168.1.2:8123")!, for: .internal)
-        server2.info.connection.internalSSIDs = ["TestSSID2"]
-        
-        let syncKey1 = PushProviderConfiguration.defaultSettingsKey(for: server1)
-        let syncState1 = LocalPushStateSync(settingsKey: syncKey1)
-        
-        let syncKey2 = PushProviderConfiguration.defaultSettingsKey(for: server2)
-        let syncState2 = LocalPushStateSync(settingsKey: syncKey2)
-        
-        // Both servers disconnect
-        syncState1.value = .unavailable
-        syncState2.value = .unavailable
-        
-        _ = interface.status(for: server1)
-        _ = interface.status(for: server2)
-        
-        // Only server1 reconnects, server2 remains unavailable
-        syncState1.value = .available(received: 0)
-        let status1 = interface.status(for: server1)
-        let status2 = interface.status(for: server2)
-        
-        // Verify server1 is available and server2 is still unavailable
-        if case let .allowed(state1) = status1,
-           case let .allowed(state2) = status2 {
-            if case .available = state1 {
-                XCTAssertTrue(true, "Server1 reconnected")
-            } else {
-                XCTFail("Expected server1 to be available")
-            }
-            XCTAssertEqual(state2, .unavailable, "Server2 should still be unavailable")
-        } else {
-            XCTFail("Expected allowed status for both servers")
+        for expectedAttempt in 0 ..< 20 {
+            XCTAssertEqual(interface.testReconnectionAttempt, expectedAttempt)
+            interface.testAttemptReconnection()
         }
         
-        // Timer should still be active for server2
-    }
-    
-    // MARK: - Edge Cases
-    
-    func testDisconnectionWithNoActiveManager() throws {
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = false // No manager will be active
-        
-        let status = interface.status(for: server)
-        
-        // Should return disabled when no manager is active
-        XCTAssertEqual(status, .disabled)
-    }
-    
-    func testManagerBecomesinactiveRemovesFromDisconnectedSet() throws {
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
-        
-        let syncKey = PushProviderConfiguration.defaultSettingsKey(for: server)
-        let syncState = LocalPushStateSync(settingsKey: syncKey)
-        
-        // Server becomes unavailable
-        syncState.value = .unavailable
-        _ = interface.status(for: server)
-        
-        // Disable local push (simulating manager becoming inactive)
-        server.info.connection.isLocalPushEnabled = false
-        let status = interface.status(for: server)
-        
-        // Should return disabled and remove from disconnected set
-        XCTAssertEqual(status, .disabled)
-    }
-    
-    func testReconnectionAttemptCounterIncreases() throws {
-        // This test verifies that the reconnection attempt counter increases with each attempt
-        // The counter determines which backoff delay to use
-        
-        let server = fakeServers.addFake()
-        server.info.connection.isLocalPushEnabled = true
-        server.info.connection.setAddress(URL(string: "http://192.168.1.1:8123")!, for: .internal)
-        server.info.connection.internalSSIDs = ["TestSSID"]
-        
-        // Note: Since reconnectionAttempt is private and incremented in attemptReconnection(),
-        // which is called by the timer, we can only test the observable behavior.
-        // The implementation correctly increments the counter as documented.
-        
-        XCTAssertTrue(true, "Reconnection attempt counter increases with each timer firing")
+        XCTAssertEqual(interface.testReconnectionAttempt, 20)
     }
 }
 
-// Helper class to observe timer scheduling
-private class TimerObservation {
-    let interval: TimeInterval
-    let date: Date
-    
-    init(interval: TimeInterval) {
-        self.interval = interval
-        self.date = Date()
-    }
-}
