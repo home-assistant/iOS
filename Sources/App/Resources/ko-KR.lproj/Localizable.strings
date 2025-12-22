@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "파이프라인";
 "app_intents.assist.preferred_pipeline.title" = "선호됨";
 "app_intents.assist.refresh_warning.title" = "Assist 파이프라인을 찾을 수 없나요? 앱에서 Assist를 열어 파이프라인 목록을 새로 고칩니다.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "닫힘 상태 아이콘";
 "app_intents.controls.assist.parameter.with_voice" = "음성으로";
 "app_intents.controls.assist.title" = "앱에서 Assist";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "음량 조절";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "파이프라인 선택";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "취소";
 "carPlay.action.intro.item.body" = "iPhone에서 계속하려면 탭하세요.";
 "carPlay.action.intro.item.title" = "첫 번째 동작 만들기";
@@ -1204,6 +1215,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "행 3, 열 2";
 "watch.labels.complication_text_areas.trailing.description" = "게이지의 후행 가장자리에 표시할 텍스트입니다.";
 "watch.labels.complication_text_areas.trailing.label" = "후행";
+"watch.labels.no_action" = "구성된 작업이 없습니다. 휴대폰에서 이 메시지를 무시하도록 작업을 구성하세요.";
 "watch.labels.no_config" = "사용할 수 있는 시계 구성이 없으면 iOS 앱을 열고 컴패니언 앱 설정에서 구성을 만듭니다.";
 "watch.labels.selected_pipeline.title" = "파이프라인";
 "watch.placeholder_complication_name" = "자리 표시자";
@@ -1233,10 +1245,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.assist.description" = "앱에서 Assist를 열기";
 "widgets.assist.title" = "어시스트";
 "widgets.assist.unknown_configuration" = "설정";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "모든 위젯 새로고침";
 "widgets.controls.assist.description" = "Home Assistant 앱에서 Assist 열기";
 "widgets.controls.assist.pipeline.placeholder" = "파이프라인을 선택하세요";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Press button";
 "widgets.controls.button.placeholder_title" = "Choose button";
 "widgets.controls.button.title" = "Button";
@@ -1252,6 +1269,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_camera.configuration.parameter.entity" = "Camera";
 "widgets.controls.open_camera.configuration.title" = "Open Camera";
 "widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Cover";
 "widgets.controls.open_cover.configuration.title" = "Open Cover";
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";

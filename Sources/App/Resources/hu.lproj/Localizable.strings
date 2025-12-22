@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "Csatorna";
 "app_intents.assist.preferred_pipeline.title" = "Preferált";
 "app_intents.assist.refresh_warning.title" = "Nem található az Assist csatorna? Nyissa meg az Assist funkciót az alkalmazásban a csatornalista frissítéséhez.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Zárt állapot ikonja";
 "app_intents.controls.assist.parameter.with_voice" = "Hanggal";
 "app_intents.controls.assist.title" = "Assist az alkalmazásban";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "Hangerőszabályzó";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Válasszon folyamatot";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Mégse";
 "carPlay.action.intro.item.body" = "Koppintással folytathatja iPhone-on";
 "carPlay.action.intro.item.title" = "Az első művelet létrehozása";
@@ -1204,6 +1215,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "3. sor, 2. oszlop";
 "watch.labels.complication_text_areas.trailing.description" = "A mérőműszer záró szélén megjelenítendő szöveg.";
 "watch.labels.complication_text_areas.trailing.label" = "Záró";
+"watch.labels.no_action" = "Nincsenek konfigurálva műveletek. Konfigurálja a műveleteket a telefonján az üzenet elvetéséhez.";
 "watch.labels.no_config" = "Nincs elérhető watch konfiguráció. Nyissa meg az iOS alkalmazást és hozza létre a konfigurációját a mobilalkamazás beállításai alatt.";
 "watch.labels.selected_pipeline.title" = "Csatorna";
 "watch.placeholder_complication_name" = "Helykitöltő";
@@ -1233,10 +1245,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.assist.description" = "Nyissa meg az Assist-et az alkalmazásban";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Beállítás";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Minden widget újratöltése";
 "widgets.controls.assist.description" = "Az Assist funkció megnyitása a Home Assistant alkalmazásban";
 "widgets.controls.assist.pipeline.placeholder" = "Válasszon egy csatornát";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Press button";
 "widgets.controls.button.placeholder_title" = "Choose button";
 "widgets.controls.button.title" = "Button";
@@ -1252,6 +1269,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_camera.configuration.parameter.entity" = "Camera";
 "widgets.controls.open_camera.configuration.title" = "Open Camera";
 "widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Cover";
 "widgets.controls.open_cover.configuration.title" = "Open Cover";
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";
