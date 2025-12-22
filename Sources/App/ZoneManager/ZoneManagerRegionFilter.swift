@@ -4,7 +4,7 @@ import Shared
 
 protocol ZoneManagerRegionFilter {
     func regions(
-        from zones: AnyCollection<RLMZone>,
+        from zones: AnyCollection<AppZone>,
         currentRegions: AnyCollection<CLRegion>,
         lastLocation: CLLocation?
     ) -> AnyCollection<CLRegion>
@@ -65,7 +65,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
     }
 
     func regions(
-        from zones: AnyCollection<RLMZone>,
+        from zones: AnyCollection<AppZone>,
         currentRegions: AnyCollection<CLRegion>,
         lastLocation: CLLocation?
     ) -> AnyCollection<CLRegion> {
@@ -101,12 +101,12 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
                 return lhs.key.location.distance(from: sourceLocation) < rhs.key.location.distance(from: sourceLocation)
             } else {
                 // We have neither a location nor a home zone, so just like...strip the bigger ones?
-                return lhs.key.Radius < rhs.key.Radius
+                return lhs.key.radius < rhs.key.radius
             }
         }
 
         // just used for logging
-        var strippedZones = [RLMZone]()
+        var strippedZones = [AppZone]()
 
         for option in sorted.reversed() {
             let currentCount = Counts(segmented.values.flatMap { $0 })
@@ -139,8 +139,8 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
 
     private func logError(
         counts: Counts,
-        allZones: AnyCollection<RLMZone>,
-        strippedZones: AnyCollection<RLMZone>,
+        allZones: AnyCollection<AppZone>,
+        strippedZones: AnyCollection<AppZone>,
         decisionSource: String
     ) {
         Current.clientEventStore.addEvent(ClientEvent(
@@ -149,7 +149,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
                 "counts": counts.eventPayload,
                 "limits": limits.eventPayload,
                 "total_zones": allZones.count,
-                "stripped_zones": strippedZones.map(\.identifier),
+                "stripped_zones": strippedZones.map(\.id),
                 "stripped_decision": decisionSource,
             ]
         ))

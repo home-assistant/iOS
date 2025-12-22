@@ -511,7 +511,7 @@ public class HomeAssistantAPI {
     public func SubmitLocation(
         updateType: LocationUpdateTrigger,
         location rawLocation: CLLocation?,
-        zone: RLMZone?
+        zone: AppZone?
     ) -> Promise<Void> {
         let update: WebhookUpdateLocation
         let location: CLLocation?
@@ -529,7 +529,8 @@ public class HomeAssistantAPI {
                 update = .init(trigger: updateType, usingNameOf: zone)
             } else if let rawLocation {
                 // note this is a different zone than the event - e.g. the zone may be the one we are exiting
-                update = .init(trigger: updateType, usingNameOf: RLMZone.zone(of: rawLocation, in: server))
+                let foundZone = try? AppZone.zone(of: rawLocation, in: server)
+                update = .init(trigger: updateType, usingNameOf: foundZone)
             } else {
                 update = .init(trigger: updateType)
             }
@@ -660,7 +661,7 @@ public class HomeAssistantAPI {
     public func zoneStateEvent(
         region: CLRegion,
         state: CLRegionState,
-        zone: RLMZone
+        zone: AppZone
     ) -> (eventType: String, eventData: [String: Any]) {
         var eventData: [String: Any] = sharedEventDeviceInfo
         eventData["zone"] = zone.entityId

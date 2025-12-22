@@ -28,11 +28,11 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
     }
 
     var eventType: EventType
-    var associatedZone: RLMZone?
+    var associatedZone: AppZone?
 
     init(
         eventType: ZoneManagerEvent.EventType,
-        associatedZone: RLMZone? = nil
+        associatedZone: AppZone? = nil
     ) {
         self.eventType = eventType
         self.associatedZone = associatedZone
@@ -40,7 +40,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
 
     static func == (lhs: ZoneManagerEvent, rhs: ZoneManagerEvent) -> Bool {
         lhs.eventType == rhs.eventType &&
-            lhs.associatedZone?.identifier == rhs.associatedZone?.identifier
+            lhs.associatedZone?.id == rhs.associatedZone?.id
     }
 
     var description: String {
@@ -49,11 +49,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
         attributes.append(String(describing: eventType))
 
         if let zone = associatedZone {
-            if zone.isInvalidated {
-                attributes.append("zone deleted")
-            } else {
-                attributes.append(zone.identifier)
-            }
+            attributes.append(zone.id)
         }
 
         return "ZoneManagerEvent(\(attributes.joined(separator: ", ")))"
