@@ -59,6 +59,22 @@ final class CameraListViewModel: ObservableObject {
         }
     }
 
+    var groupedCameras: [(area: String, cameras: [HAAppEntity])] {
+        let filtered = filteredCameras
+        
+        // Group cameras by area
+        let grouped = Dictionary(grouping: filtered) { camera -> String in
+            areaName(for: camera) ?? L10n.CameraList.noArea
+        }
+        
+        // Sort groups alphabetically, but put "No Area" last
+        return grouped.sorted { lhs, rhs in
+            if lhs.key == L10n.CameraList.noArea { return false }
+            if rhs.key == L10n.CameraList.noArea { return true }
+            return lhs.key.localizedCaseInsensitiveCompare(rhs.key) == .orderedAscending
+        }.map { (area: $0.key, cameras: $0.value.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) }
+    }
+
     func server(for camera: HAAppEntity) -> Server? {
         Current.servers.all.first(where: { $0.identifier.rawValue == camera.serverId })
     }

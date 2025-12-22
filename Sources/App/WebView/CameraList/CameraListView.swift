@@ -50,13 +50,17 @@ struct CameraListView: View {
                 ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
             }
 
-            ForEach(viewModel.filteredCameras, id: \.id) { camera in
-                Button(action: {
-                    openCamera(camera)
-                }, label: {
-                    CameraListRow(camera: camera, areaName: viewModel.areaName(for: camera))
-                })
-                .tint(.accentColor)
+            ForEach(viewModel.groupedCameras, id: \.area) { group in
+                Section(header: Text(group.area)) {
+                    ForEach(group.cameras, id: \.id) { camera in
+                        Button(action: {
+                            openCamera(camera)
+                        }, label: {
+                            CameraListRow(camera: camera)
+                        })
+                        .tint(.accentColor)
+                    }
+                }
             }
         }
         .searchable(text: $viewModel.searchTerm, prompt: L10n.CameraList.searchPlaceholder)
@@ -117,29 +121,15 @@ private struct CameraPresentation: Identifiable {
 
 struct CameraListRow: View {
     let camera: HAAppEntity
-    let areaName: String?
-
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
             Image(systemSymbol: .videoFill)
                 .font(.title2)
                 .foregroundStyle(.haPrimary)
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                 Text(camera.name)
                     .font(.body)
                     .foregroundStyle(Color.primary)
-                HStack(spacing: DesignSystem.Spaces.half) {
-                    if let areaName {
-                        Text(areaName)
-                            .font(.footnote)
-                            .foregroundStyle(Color.secondary)
-                    } else {
-                        Text(camera.entityId)
-                            .font(.footnote)
-                            .foregroundStyle(Color.secondary)
-                    }
-                }
-            }
+                    .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, DesignSystem.Spaces.half)

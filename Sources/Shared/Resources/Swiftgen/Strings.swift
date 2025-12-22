@@ -549,6 +549,8 @@ public enum L10n {
   }
 
   public enum CameraList {
+    /// Not in a room
+    public static var noArea: String { return L10n.tr("Localizable", "camera_list.no_area") }
     /// Search cameras
     public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
     /// Cameras
