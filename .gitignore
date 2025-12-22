@@ -84,3 +84,8 @@ Configuration/HomeAssistant.overrides.xcconfig
 Brewfile.lock.json
 vendor/bundle
 .env.development
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
