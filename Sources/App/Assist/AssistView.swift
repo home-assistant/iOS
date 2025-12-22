@@ -8,6 +8,7 @@ struct AssistView: View {
     @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
+    @AppStorage("enableOnDeviceSTT") private var enableOnDeviceSTT = false
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
@@ -24,64 +25,57 @@ struct AssistView: View {
     }
 
     var body: some View {
-        if #available(iOS 26.0, *) {
-            NavigationStack {
-                HAAssistTranscriptView(story: .constant(HAAssistStory(title: "Abc", text: "", url: nil, isDone: false)))
+        NavigationView {
+            VStack(spacing: .zero) {
+                if !Current.isCatalyst {
+                    pipelinesPicker
+                }
+                chatList
             }
-        } else {
-            EmptyView()
+            .navigationTitle("Assist")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if showCloseButton {
+                        closeButton
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    settingsButton
+                }
+
+                #if targetEnvironment(macCatalyst)
+                ToolbarItem(placement: .topBarTrailing) {
+                    macPicker
+                }
+                #endif
+            }
+            .sheet(isPresented: $showSettings) {
+                AssistSettingsView()
+            }
         }
-//        NavigationView {
-//            VStack(spacing: .zero) {
-//                if !Current.isCatalyst {
-//                    pipelinesPicker
-//                }
-//                chatList
-//            }
-//            .navigationTitle("Assist")
-//            .navigationBarTitleDisplayMode(.inline)
-//            .toolbar {
-//                ToolbarItem(placement: .topBarLeading) {
-//                    if showCloseButton {
-//                        closeButton
-//                    }
-//                }
-//
-//                ToolbarItem(placement: .topBarTrailing) {
-//                    settingsButton
-//                }
-//
-//                #if targetEnvironment(macCatalyst)
-//                ToolbarItem(placement: .topBarTrailing) {
-//                    macPicker
-//                }
-//                #endif
-//            }
-//            .sheet(isPresented: $showSettings) {
-//                AssistSettingsView()
-//            }
-//        }
-//        .navigationViewStyle(.stack)
-//        .onAppear {
-//            assistSession.inProgress = true
-//            viewModel.initialRoutine()
-//        }
-//        .onChange(of: viewModel.focusOnInput) { newValue in
-//            if newValue {
-//                isFirstResponder = true
-//            }
-//        }
-//        .onDisappear {
-//            assistSession.inProgress = false
-//            viewModel.onDisappear()
-//        }
-//        .alert(isPresented: $viewModel.showError) {
-//            .init(
-//                title: Text(verbatim: L10n.errorLabel),
-//                message: Text(viewModel.errorMessage),
-//                dismissButton: .default(Text(verbatim: L10n.okLabel))
-//            )
-//        }
+        .navigationViewStyle(.stack)
+        .onAppear {
+            assistSession.inProgress = true
+            viewModel.initialRoutine()
+        }
+        .onChange(of: viewModel.focusOnInput) { newValue in
+            if newValue {
+                isFirstResponder = true
+            }
+        }
+        .onDisappear {
+            assistSession.inProgress = false
+            viewModel.onDisappear()
+        }
+        .alert(isPresented: $viewModel.showError) {
+            .init(
+                title: Text(verbatim: L10n.errorLabel),
+                message: Text(viewModel.errorMessage),
+                dismissButton: .default(Text(verbatim: L10n.okLabel))
+            )
+        }
     }
 
     private var closeButton: some View {
@@ -267,7 +261,12 @@ struct AssistView: View {
     private func assistMicButtonAction() {
         feedbackGenerator.notificationOccurred(.success)
         isFirstResponder = false
-        viewModel.assistWithAudio()
+        
+        if #available(iOS 26.0, *), enableOnDeviceSTT {
+            viewModel.assistWithOnDeviceSTT()
+        } else {
+            viewModel.assistWithAudio()
+        }
     }
 
     private var sendIcon: some View {
@@ -334,37 +333,22 @@ struct AssistView: View {
 // MARK: - Settings View
 struct AssistSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var enableTextToSpeech = false
-    @State private var enableAutoListen = false
-    @State private var enableHapticFeedback = true
-    @State private var showTimestamps = false
-    @State private var compactMode = false
-    
+    @AppStorage("enableOnDeviceSTT") private var enableOnDeviceSTT = false
+
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    Toggle("Enable Text-to-Speech", isOn: $enableTextToSpeech)
-                    Toggle("Auto-Listen After Response", isOn: $enableAutoListen)
-                    Toggle("Haptic Feedback", isOn: $enableHapticFeedback)
-                } header: {
-                    Text("Voice & Audio")
-                }
-                
-                Section {
-                    Toggle("Show Timestamps", isOn: $showTimestamps)
-                    Toggle("Compact Mode", isOn: $compactMode)
-                } header: {
-                    Text("Appearance")
-                }
-                
-                Section {
-                    Button("Clear Conversation History") {
-                        // Action placeholder
+                    if #available(iOS 26.0, *) {
+                        Toggle("Enable on-device Speech-to-Text", isOn: $enableOnDeviceSTT)
+                    } else {
+                        Text("On-device Speech-to-Text requires iOS 26 or later")
+                            .foregroundColor(.secondary)
                     }
-                    .foregroundColor(.red)
-                } header: {
-                    Text("Data")
+                } footer: {
+                    if #available(iOS 26.0, *) {
+                        Text("Use Apple's on-device speech recognition for improved privacy. Your voice will be processed locally and transcribed to text before being sent to your server.")
+                    }
                 }
             }
             .navigationTitle("Assist Settings")

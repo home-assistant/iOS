@@ -616,7 +616,7 @@
 		4217640F2EF9AF2300947FE2 /* HAAssistTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421763FD2EF9ADB300947FE2 /* HAAssistTranscriber.swift */; };
 		421764102EF9AF2300947FE2 /* HAAssistTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */; };
 		421764112EF9AF2300947FE2 /* HAAssistStory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764012EF9ADD700947FE2 /* HAAssistStory.swift */; };
-		421764122EF9AF2300947FE2 /* HAAssistTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764072EF9AE0400947FE2 /* HAAssistTranscriptView.swift */; };
+		421764122EF9AF2300947FE2 /* HAAssistDebugTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764072EF9AE0400947FE2 /* HAAssistDebugTranscriptView.swift */; };
 		421764132EF9AF2300947FE2 /* HAAssistBufferConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421764032EF9ADE500947FE2 /* HAAssistBufferConverter.swift */; };
 		421960702CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */; };
 		42196ACE2DA5A49600BD501E /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
@@ -2200,7 +2200,7 @@
 		421764012EF9ADD700947FE2 /* HAAssistStory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistStory.swift; sourceTree = "<group>"; };
 		421764032EF9ADE500947FE2 /* HAAssistBufferConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistBufferConverter.swift; sourceTree = "<group>"; };
 		421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistTypes.swift; sourceTree = "<group>"; };
-		421764072EF9AE0400947FE2 /* HAAssistTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistTranscriptView.swift; sourceTree = "<group>"; };
+		421764072EF9AE0400947FE2 /* HAAssistDebugTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistDebugTranscriptView.swift; sourceTree = "<group>"; };
 		421764092EF9AE0900947FE2 /* HAAssistExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistExtensions.swift; sourceTree = "<group>"; };
 		4219606F2CA2AE1600F7134E /* WidgetAssistViewTintedWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAssistViewTintedWrapper.swift; sourceTree = "<group>"; };
 		42196AD02DA5AF3D00BD501E /* MockBonjour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBonjour.swift; sourceTree = "<group>"; };
@@ -5584,7 +5584,7 @@
 				421764012EF9ADD700947FE2 /* HAAssistStory.swift */,
 				421764032EF9ADE500947FE2 /* HAAssistBufferConverter.swift */,
 				421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */,
-				421764072EF9AE0400947FE2 /* HAAssistTranscriptView.swift */,
+				421764072EF9AE0400947FE2 /* HAAssistDebugTranscriptView.swift */,
 				421764092EF9AE0900947FE2 /* HAAssistExtensions.swift */,
 			);
 			path = Assist;
@@ -8854,7 +8854,7 @@
 				4217640F2EF9AF2300947FE2 /* HAAssistTranscriber.swift in Sources */,
 				421764102EF9AF2300947FE2 /* HAAssistTypes.swift in Sources */,
 				421764112EF9AF2300947FE2 /* HAAssistStory.swift in Sources */,
-				421764122EF9AF2300947FE2 /* HAAssistTranscriptView.swift in Sources */,
+				421764122EF9AF2300947FE2 /* HAAssistDebugTranscriptView.swift in Sources */,
 				421764132EF9AF2300947FE2 /* HAAssistBufferConverter.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,
 				42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */,

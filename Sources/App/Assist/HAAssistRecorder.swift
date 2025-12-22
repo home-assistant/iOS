@@ -15,15 +15,19 @@ class HAAssistRecorder {
     private let transcriber: HAAssistTranscriber
     var playerNode: AVAudioPlayerNode?
 
-    var story: Binding<HAAssistStory>
-
     var file: AVAudioFile?
     private let url: URL
+    
+    var hasRecording: Bool {
+        return file != nil
+    }
+    
+    // Callback to notify when recording has ended
+    var onRecordingEnded: (() -> Void)?
 
-    init(transcriber: HAAssistTranscriber, story: Binding<HAAssistStory>) {
+    init(transcriber: HAAssistTranscriber) {
         audioEngine = AVAudioEngine()
         self.transcriber = transcriber
-        self.story = story
         self.url = FileManager.default.temporaryDirectory
             .appending(component: UUID().uuidString)
             .appendingPathExtension(for: .wav)
@@ -37,7 +41,6 @@ class HAAssistRecorder {
     }
 
     func record() async throws {
-        self.story.url.wrappedValue = url
         guard await isAuthorized() else {
             print("user denied mic permission")
             return
@@ -54,13 +57,10 @@ class HAAssistRecorder {
 
     func stopRecording() async throws {
         audioEngine.stop()
-        story.isDone.wrappedValue = true
 
         try await transcriber.finishTranscribing()
-
-        Task {
-            self.story.title.wrappedValue = try await story.wrappedValue.suggestedTitle() ?? story.title.wrappedValue
-        }
+        
+        onRecordingEnded?()
     }
 
     func pauseRecording() {

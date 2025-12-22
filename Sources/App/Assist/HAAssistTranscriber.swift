@@ -1,7 +1,7 @@
 //
 //  HAAssistTranscriber.swift
 //
-//  Speech transcription handler for spoken word recording
+//  Speech transcription handler for voice-to-text
 //
 
 import Speech
@@ -26,8 +26,6 @@ final class HAAssistTranscriber {
     var converter = HAAssistBufferConverter()
     var downloadProgress: Progress?
 
-    var story: Binding<HAAssistStory>
-
     var volatileTranscript: AttributedString = ""
     var finalizedTranscript: AttributedString = ""
     
@@ -39,13 +37,9 @@ final class HAAssistTranscriber {
     var silenceThreshold: TimeInterval = 3.0 // Stop after 3 seconds of silence
     var autoStopEnabled: Bool = true
 
-    init(story: Binding<HAAssistStory>) {
-        self.story = story
-    }
-
     func setUpTranscriber() async throws {
         transcriber = SpeechTranscriber(
-            locale: Locale.current,
+            locale: .autoupdatingCurrent,
             transcriptionOptions: [],
             reportingOptions: [.fastResults],
             attributeOptions: [.audioTimeRange]
@@ -78,7 +72,6 @@ final class HAAssistTranscriber {
                     if result.isFinal {
                         finalizedTranscript += text
                         volatileTranscript = ""
-                        updateStoryWithNewText(withFinal: text)
                     } else {
                         volatileTranscript = text
                         volatileTranscript.foregroundColor = .purple.opacity(0.4)
@@ -112,10 +105,6 @@ final class HAAssistTranscriber {
         }
 
         try await analyzer?.start(inputSequence: inputSequence)
-    }
-
-    func updateStoryWithNewText(withFinal str: AttributedString) {
-        story.text.wrappedValue.append(str)
     }
 
     func streamAudioToTranscriber(_ buffer: AVAudioPCMBuffer) async throws {

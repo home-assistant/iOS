@@ -1,7 +1,7 @@
 //
 //  HAAssistTranscriptView.swift
 //
-//  Main UI for recording and playing back transcriptions
+//  Main UI for recording and transcribing voice to text
 //
 
 import Foundation
@@ -10,31 +10,28 @@ import Speech
 import AVFoundation
 
 @available(iOS 26.0, *)
-struct HAAssistTranscriptView: View {
-    @Binding var story: HAAssistStory
+struct HAAssistDebugTranscriptView: View {
     @State var isRecording = false
     @State var isPlaying = false
 
     @State var recorder: HAAssistRecorder
     @State var speechTranscriber: HAAssistTranscriber
-
+    
+    @State var isDone = false
     @State var downloadProgress = 0.0
-
     @State var currentPlaybackTime = 0.0
-
     @State var timer: Timer?
 
-    init(story: Binding<HAAssistStory>) {
-        self._story = story
-        let transcriber = HAAssistTranscriber(story: story)
-        recorder = HAAssistRecorder(transcriber: transcriber, story: story)
+    init() {
+        let transcriber = HAAssistTranscriber()
+        recorder = HAAssistRecorder(transcriber: transcriber)
         speechTranscriber = transcriber
     }
 
     var body: some View {
         VStack(alignment: .leading) {
             Group {
-                if !story.isDone {
+                if !isDone {
                     liveRecordingView
                 } else {
                     playbackView
@@ -43,7 +40,7 @@ struct HAAssistTranscriptView: View {
             Spacer()
         }
         .padding(20)
-        .navigationTitle(story.title)
+        .navigationTitle("Voice Transcription")
         .toolbar {
             ToolbarItem {
                 Button {
@@ -55,7 +52,7 @@ struct HAAssistTranscriptView: View {
                         Label("Record", systemImage: "record.circle").tint(.red)
                     }
                 }
-                .disabled(story.isDone)
+                .disabled(isDone)
             }
 
             ToolbarItem {
@@ -64,11 +61,13 @@ struct HAAssistTranscriptView: View {
                 } label: {
                     Label("Play", systemImage: isPlaying ? "pause.fill" : "play").foregroundStyle(.blue).font(.title)
                 }
-                .disabled(!story.isDone)
+                .disabled(!isDone)
             }
 
             ToolbarItem {
-                ProgressView(value: downloadProgress, total: 100)
+                if downloadProgress > 0 && downloadProgress < 100 {
+                    ProgressView(value: downloadProgress, total: 100)
+                }
             }
         }
         .onChange(of: isRecording) { oldValue, newValue in
@@ -84,33 +83,44 @@ struct HAAssistTranscriptView: View {
             } else {
                 Task {
                     try await recorder.stopRecording()
+                    isDone = true
                 }
             }
         }
         .onChange(of: isPlaying) {
             handlePlayback()
         }
+        .onAppear {
+            // Set up callback for recording completion
+            recorder.onRecordingEnded = {
+                Task { @MainActor in
+                    isDone = true
+                }
+            }
+        }
     }
 
     @ViewBuilder
     var liveRecordingView: some View {
-        Text(speechTranscriber.finalizedTranscript + speechTranscriber.volatileTranscript)
-            .font(.title)
-            .frame(maxWidth: .infinity, alignment: .leading)
+        ScrollView {
+            Text(speechTranscriber.finalizedTranscript + speechTranscriber.volatileTranscript)
+                .font(.title)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 
     @ViewBuilder
     var playbackView: some View {
-        textScrollView(attributedString: story.storyBrokenUpByLines())
+        textScrollView(attributedString: speechTranscriber.finalizedTranscript)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 // MARK: - Helper Methods
 @available(iOS 26.0, *)
-extension HAAssistTranscriptView {
+extension HAAssistDebugTranscriptView {
     func handlePlayback() {
-        guard story.url != nil else {
+        guard recorder.hasRecording else {
             return
         }
 
@@ -122,6 +132,7 @@ extension HAAssistTranscriptView {
         } else {
             recorder.stopPlaying()
             currentPlaybackTime = 0.0
+            timer?.invalidate()
             timer = nil
         }
     }
