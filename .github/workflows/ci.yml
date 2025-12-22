@@ -123,8 +123,8 @@ jobs:
 
             </details>
 
-            Consider running `python3 Tools/remove_unused_strings.py` to clean up these strings,
-            or use the automated cleanup workflow.
+            To clean up these strings, manually remove them from the `Localizable.strings` files
+            and regenerate `Strings.swift` using SwiftGen.
 
   test:
     needs: check-swiftlint-disables

@@ -23,29 +23,6 @@ python3 Tools/detect_unused_strings.py
 - `0`: No unused strings found
 - `1`: Unused strings detected (normal for reporting)
 
-### remove_unused_strings.py
-
-Removes unused localization strings from all language files and regenerates Strings.swift.
-
-**Usage:**
-```bash
-python3 Tools/remove_unused_strings.py
-```
-
-**What it does:**
-1. Uses `detect_unused_strings.py` to find unused strings
-2. Removes them from all `*.lproj/Localizable.strings` files
-3. Regenerates `Strings.swift` using SwiftGen
-
-**Requirements:**
-- Python 3.x
-- SwiftGen (installed via CocoaPods)
-- Pods must be installed before running (`bundle exec pod install`)
-
-**Exit codes:**
-- `0`: Successfully removed unused strings and regenerated Strings.swift
-- `1`: Error occurred during processing
-
 ## Shell Scripts
 
 ### BuildMaterialDesignIconsFont.sh
