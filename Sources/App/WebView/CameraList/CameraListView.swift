@@ -6,6 +6,8 @@ struct CameraListView: View {
     @StateObject private var viewModel: CameraListViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCamera: (camera: HAAppEntity, server: Server)?
+    @State private var isEditing = false
+    @State private var showSectionReorder = false
 
     init(serverId: String? = nil) {
         self._viewModel = .init(wrappedValue: CameraListViewModel(serverId: serverId))
@@ -25,6 +27,22 @@ struct CameraListView: View {
             .navigationTitle(L10n.CameraList.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if !viewModel.cameras.isEmpty {
+                        Button(isEditing ? L10n.CameraList.Edit.On.title : L10n.CameraList.Edit.Off.title) {
+                            isEditing.toggle()
+                        }
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if !viewModel.cameras.isEmpty, viewModel.groupedCameras.count > 1 {
+                        Button(action: {
+                            showSectionReorder = true
+                        }) {
+                            Image(systemSymbol: .listDash)
+                        }
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
                         dismiss()
@@ -33,6 +51,9 @@ struct CameraListView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .sheet(isPresented: $showSectionReorder) {
+            CameraSectionReorderView(viewModel: viewModel)
+        }
         .fullScreenCover(item: Binding(
             get: { selectedCamera.map { CameraPresentation(camera: $0.camera, server: $0.server) } },
             set: { selectedCamera = $0.map { ($0.camera, $0.server) } }
@@ -54,15 +75,22 @@ struct CameraListView: View {
                 Section(header: Text(group.area)) {
                     ForEach(group.cameras, id: \.id) { camera in
                         Button(action: {
-                            openCamera(camera)
+                            if !isEditing {
+                                openCamera(camera)
+                            }
                         }, label: {
                             CameraListRow(camera: camera)
                         })
                         .tint(.accentColor)
+                        .disabled(isEditing)
+                    }
+                    .onMove { source, destination in
+                        viewModel.moveCameras(in: group.area, from: source, to: destination)
                     }
                 }
             }
         }
+        .environment(\.editMode, .constant(isEditing ? .active : .inactive))
         .searchable(text: $viewModel.searchTerm, prompt: L10n.CameraList.searchPlaceholder)
         .onAppear {
             viewModel.fetchCameras()
@@ -117,23 +145,6 @@ private struct CameraPresentation: Identifiable {
     let server: Server
 
     var id: String { camera.id }
-}
-
-struct CameraListRow: View {
-    let camera: HAAppEntity
-    var body: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: .videoFill)
-                .font(.title2)
-                .foregroundStyle(.haPrimary)
-                Text(camera.name)
-                    .font(.body)
-                    .foregroundStyle(Color.primary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, DesignSystem.Spaces.half)
-    }
 }
 
 #Preview {

@@ -1361,3 +1361,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "camera_list.no_results.title" = "No Results";
 "camera_list.no_results.message" = "No cameras match your search";
 "camera_list.no_area" = "Not in a room";
+"camera_list.reorder.section.title" = "Reorder sections";
+"camera_list.edit.on.title" = "Done";
+"camera_list.edit.off.title" = "Edit";
