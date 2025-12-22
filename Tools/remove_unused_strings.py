@@ -74,8 +74,18 @@ def regenerate_strings_swift(repo_root: Path) -> bool:
     """Regenerate Strings.swift using SwiftGen."""
     try:
         print("\nRegenerating Strings.swift using SwiftGen...")
+        # Run SwiftGen with specific arguments to only regenerate Strings.swift
+        # This avoids modifying other generated files like Assets.swift, MaterialDesignIcons.swift, etc.
         result = subprocess.run(
-            ['./Pods/SwiftGen/bin/swiftgen'],
+            [
+                './Pods/SwiftGen/bin/swiftgen',
+                'run', 'strings',
+                '--inputs', 'Sources/App/Resources/en.lproj/Localizable.strings',
+                '--templateName', 'structured-swift5',
+                '--output', 'Sources/Shared/Resources/SwiftGen/Strings.swift',
+                '--param', 'publicAccess=true',
+                '--param', 'lookupFunction=Current.localized.string'
+            ],
             cwd=repo_root,
             capture_output=True,
             text=True
