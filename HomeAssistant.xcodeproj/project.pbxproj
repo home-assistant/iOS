@@ -626,6 +626,10 @@
 		421F2B822EF8350D00F21FE5 /* OpenCameraListAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B7F2EF8346C00F21FE5 /* OpenCameraListAppIntent.swift */; };
 		421F2B892EF8433E00F21FE5 /* ControlOpenCamerasList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B872EF8433E00F21FE5 /* ControlOpenCamerasList.swift */; };
 		421F2B8A2EF8433E00F21FE5 /* ControlOpenCamerasList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B872EF8433E00F21FE5 /* ControlOpenCamerasList.swift */; };
+		421F2B9A2EF8479400F21FE5 /* ControlAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B962EF8479400F21FE5 /* ControlAutomation.swift */; };
+		421F2B9B2EF8479400F21FE5 /* ControlAutomationsValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B972EF8479400F21FE5 /* ControlAutomationsValueProvider.swift */; };
+		421F2B9C2EF8479400F21FE5 /* IntentAutomationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2B982EF8479400F21FE5 /* IntentAutomationEntity.swift */; };
+		421F2BA12EF847AA00F21FE5 /* AutomationAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F2BA02EF847AA00F21FE5 /* AutomationAppIntent.swift */; };
 		4221ED352D009EF700BAE3EB /* AppDatabaseUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */; };
 		4223688B2D40F9B7005911E4 /* WidgetCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688A2D40F9B7005911E4 /* WidgetCustom.swift */; };
 		4223688E2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */; };
@@ -2196,6 +2200,10 @@
 		421F2B7B2EF8346400F21FE5 /* CameraListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraListViewModel.swift; sourceTree = "<group>"; };
 		421F2B7F2EF8346C00F21FE5 /* OpenCameraListAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCameraListAppIntent.swift; sourceTree = "<group>"; };
 		421F2B872EF8433E00F21FE5 /* ControlOpenCamerasList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenCamerasList.swift; sourceTree = "<group>"; };
+		421F2B962EF8479400F21FE5 /* ControlAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAutomation.swift; sourceTree = "<group>"; };
+		421F2B972EF8479400F21FE5 /* ControlAutomationsValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlAutomationsValueProvider.swift; sourceTree = "<group>"; };
+		421F2B982EF8479400F21FE5 /* IntentAutomationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentAutomationEntity.swift; sourceTree = "<group>"; };
+		421F2BA02EF847AA00F21FE5 /* AutomationAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomationAppIntent.swift; sourceTree = "<group>"; };
 		4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabaseUpdater.swift; sourceTree = "<group>"; };
 		4223688A2D40F9B7005911E4 /* WidgetCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustom.swift; sourceTree = "<group>"; };
 		4223688D2D40FB00005911E4 /* WidgetCustomTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCustomTimelineProvider.swift; sourceTree = "<group>"; };
@@ -4588,6 +4596,15 @@
 				421F2B872EF8433E00F21FE5 /* ControlOpenCamerasList.swift */,
 			);
 			path = CameraList;
+		421F2B992EF8479400F21FE5 /* Automation */ = {
+			isa = PBXGroup;
+			children = (
+				421F2BA02EF847AA00F21FE5 /* AutomationAppIntent.swift */,
+				421F2B962EF8479400F21FE5 /* ControlAutomation.swift */,
+				421F2B972EF8479400F21FE5 /* ControlAutomationsValueProvider.swift */,
+				421F2B982EF8479400F21FE5 /* IntentAutomationEntity.swift */,
+			);
+			path = Automation;
 			sourceTree = "<group>";
 		};
 		422368872D40F959005911E4 /* Custom */ = {
@@ -4604,6 +4621,7 @@
 			isa = PBXGroup;
 			children = (
 				421F2B882EF8433E00F21FE5 /* CameraList */,
+				421F2B992EF8479400F21FE5 /* Automation */,
 				420396382EF16A4700C9DF74 /* OpenEntity */,
 				4203961A2EF16A4700C9DF74 /* Button */,
 				42C101252CD3DAAA0012BA78 /* Cover */,
@@ -8449,6 +8467,7 @@
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
 				42BA1BC82C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */,
+				421F2BA12EF847AA00F21FE5 /* AutomationAppIntent.swift in Sources */,
 				42BF7F302DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */,
 				420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */,
@@ -8467,6 +8486,9 @@
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
 				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,
 				42F958992BB4684700497981 /* WidgetAssist.swift in Sources */,
+				421F2B9A2EF8479400F21FE5 /* ControlAutomation.swift in Sources */,
+				421F2B9B2EF8479400F21FE5 /* ControlAutomationsValueProvider.swift in Sources */,
+				421F2B9C2EF8479400F21FE5 /* IntentAutomationEntity.swift in Sources */,
 				3E4087F12CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
 				3E02C0F52CA8047000102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				4080D5C52C319B0A00099C88 /* WidgetDetailsAppIntentTimelineProvider.swift in Sources */,

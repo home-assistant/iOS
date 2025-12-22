@@ -381,6 +381,8 @@ public extension MagicItem {
             }
         case .sensor, .binarySensor, .zone, .person, .camera:
             break
+        case .automation:
+            request = .trigger(entityId: entityId)
         }
         if let request, let connection = Current.api(for: server)?.connection {
             return connection.send(request).promise

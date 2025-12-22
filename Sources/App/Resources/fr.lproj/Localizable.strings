@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "Avec la voix";
 "app_intents.controls.assist.title" = "Assist in app";
 "app_intents.cover.title" = "Ouverture";
+"app_intents.fan.off_state_icon.title" = "Icon for off state";
+"app_intents.fan.on_state_icon.title" = "Icon for on state";
+"app_intents.fan.title" = "Fan";
 "app_intents.haptic_confirmation.title" = "Confirmation haptique";
 "app_intents.icon.title" = "Icône";
 "app_intents.intent.cover.title" = "Contrôler l'ouverture";
+"app_intents.intent.fan.title" = "Control fan";
 "app_intents.intent.light.title" = "Control light";
 "app_intents.intent.switch.title" = "Control switch";
 "app_intents.lights.light.target" = "Statut de la cible";
@@ -1274,6 +1278,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.cover.description" = "Ouvrir/fermer l'ouverture";
 "widgets.controls.cover.placeholder_title" = "Choisir l'ouverture";
 "widgets.controls.cover.title" = "Ouverture";
+"widgets.controls.fan.description" = "Turn on/off your fan";
+"widgets.controls.fan.placeholder_title" = "Choose fan";
+"widgets.controls.fan.title" = "Fan";
 "widgets.controls.light.description" = "Allumer/éteindre votre lumière";
 "widgets.controls.light.placeholder_title" = "Choose Light";
 "widgets.controls.light.title" = "Lumière";

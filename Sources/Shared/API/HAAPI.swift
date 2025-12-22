@@ -798,6 +798,8 @@ public class HomeAssistantAPI {
             }
         case .sensor, .binarySensor, .zone, .person, .camera:
             break
+        case .automation:
+            request = .trigger(entityId: entityId)
         }
         if let request {
             return connection.send(request).promise

@@ -1,7 +1,7 @@
 "panel::calendar" = "Calendar";
 "panel::config" = "Gosodiadau";
 "panel::developer_tools" = "Offer datblygu";
-"panel::energy" = "Energy";
+"panel::energy" = "Ynni";
 "panel::history" = "Hanes";
 "panel::logbook" = "Llyfr cofnodion";
 "panel::mailbox" = "Blwch post";
@@ -10,5 +10,5 @@
 "panel::profile" = "Profile";
 "panel::shopping_list" = "Rhestr siopa";
 "panel::states" = "Trosolwg";
-"state::default::unavailable" = "Ddim ar gael";
+"state::default::unavailable" = "Dim ar gael";
 "state::default::unknown" = "Anhysbys";

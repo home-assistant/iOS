@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "音声付き";
 "app_intents.controls.assist.title" = "アプリでアシスト";
 "app_intents.cover.title" = "カバー";
+"app_intents.fan.off_state_icon.title" = "オフ状態のアイコン";
+"app_intents.fan.on_state_icon.title" = "オン状態のアイコン";
+"app_intents.fan.title" = "ファン";
 "app_intents.haptic_confirmation.title" = "触覚による確認";
 "app_intents.icon.title" = "アイコン";
 "app_intents.intent.cover.title" = "コントロールカバー";
+"app_intents.intent.fan.title" = "制御ファン";
 "app_intents.intent.light.title" = "ライトの制御";
 "app_intents.intent.switch.title" = "スイッチの制御";
 "app_intents.lights.light.target" = "ターゲットの状態";
@@ -391,7 +395,7 @@
 "menu.help.help" = "%@ ヘルプ";
 "menu.status_item.quit" = "終了する";
 "menu.status_item.toggle" = "トグル %1$@";
-"menu.view.find" = "Find";
+"menu.view.find" = "探す";
 "menu.view.reload_page" = "ページをリロード";
 "navBar.close" = "閉じる";
 "network.error.no_active_url.body" = "コンパニオンアプリの設定を開き、サーバーの設定を確認してください。内部URLは、ローカルネットワークが定義されている場合にのみ使用されます（SSID）。VPNを使用している場合は、外部URLを内部URLと同じに設定してみてください。";
@@ -1273,6 +1277,9 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.controls.cover.description" = "トグルカバー";
 "widgets.controls.cover.placeholder_title" = "カバーを選ぶ";
 "widgets.controls.cover.title" = "カバー";
+"widgets.controls.fan.description" = "ファンのオン/オフ";
+"widgets.controls.fan.placeholder_title" = "ファンを選択";
+"widgets.controls.fan.title" = "ファン";
 "widgets.controls.light.description" = "照明を点灯/消灯する";
 "widgets.controls.light.placeholder_title" = "ライトを選ぶ";
 "widgets.controls.light.title" = "照明";

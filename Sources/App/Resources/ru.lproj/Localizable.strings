@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "С помощью голоса";
 "app_intents.controls.assist.title" = "Assist в приложении";
 "app_intents.cover.title" = "Шторы";
+"app_intents.fan.off_state_icon.title" = "Icon for off state";
+"app_intents.fan.on_state_icon.title" = "Icon for on state";
+"app_intents.fan.title" = "Fan";
 "app_intents.haptic_confirmation.title" = "Тактильное подтверждение";
 "app_intents.icon.title" = "Иконка";
 "app_intents.intent.cover.title" = "Управлять шторами";
+"app_intents.intent.fan.title" = "Control fan";
 "app_intents.intent.light.title" = "Управлять светом";
 "app_intents.intent.switch.title" = "Управлять переключателем";
 "app_intents.lights.light.target" = "Целевое состояние";
@@ -1274,6 +1278,9 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.controls.cover.description" = "Переключить шторы";
 "widgets.controls.cover.placeholder_title" = "Выбрать шторы";
 "widgets.controls.cover.title" = "Шторы";
+"widgets.controls.fan.description" = "Turn on/off your fan";
+"widgets.controls.fan.placeholder_title" = "Choose fan";
+"widgets.controls.fan.title" = "Fan";
 "widgets.controls.light.description" = "Включить/выключить свет";
 "widgets.controls.light.placeholder_title" = "Выберите освещение";
 "widgets.controls.light.title" = "Свет";

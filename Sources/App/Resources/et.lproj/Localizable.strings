@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "Häälega";
 "app_intents.controls.assist.title" = "Assist rakenduses";
 "app_intents.cover.title" = "Avakate";
+"app_intents.fan.off_state_icon.title" = "Väljalülitatud oleku ikoon";
+"app_intents.fan.on_state_icon.title" = "Sisselülitatud oleku ikoon";
+"app_intents.fan.title" = "Ventilaator";
 "app_intents.haptic_confirmation.title" = "Tunnetatav kinnitus";
 "app_intents.icon.title" = "Ikoon";
 "app_intents.intent.cover.title" = "Juhi avakatet";
+"app_intents.intent.fan.title" = "Ventilaatori juhtimine";
 "app_intents.intent.light.title" = "Juhi valgustit";
 "app_intents.intent.switch.title" = "Juhi lülitit";
 "app_intents.lights.light.target" = "Sihtolek";
@@ -391,7 +395,7 @@
 "menu.help.help" = "%@ Abi";
 "menu.status_item.quit" = "Välju";
 "menu.status_item.toggle" = "Muuda %1$@ olekut";
-"menu.view.find" = "Find";
+"menu.view.find" = "Otsi";
 "menu.view.reload_page" = "Taaslae vaade";
 "navBar.close" = "Sulge";
 "network.error.no_active_url.body" = "Ava kaasrakenduse sätted ja kontrolli oma serveri sätteid, sisemist URL-i kasutatakse ainult siis kui kohalik võrk on määratletud (SSID). VPN-i kasutamisel proovi määrata oma väline URL sisemise URL-iga samaks.";
@@ -1274,6 +1278,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.cover.description" = "Muuda avakatte asendit";
 "widgets.controls.cover.placeholder_title" = "Vali avakate";
 "widgets.controls.cover.title" = "Avakate";
+"widgets.controls.fan.description" = "Lülita ventilaator sisse/välja";
+"widgets.controls.fan.placeholder_title" = "Vali ventilaator";
+"widgets.controls.fan.title" = "Ventilaator";
 "widgets.controls.light.description" = "Valgusti sisse/välja lülitamine";
 "widgets.controls.light.placeholder_title" = "Vali valgusti";
 "widgets.controls.light.title" = "Valgusti";
