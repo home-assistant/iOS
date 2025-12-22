@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "Voog";
 "app_intents.assist.preferred_pipeline.title" = "Eelistatud";
 "app_intents.assist.refresh_warning.title" = "Ei leia oma Assisti voogu? Voogude loendi värskendamiseks ava rakenduses Assist.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Suletud oleku ikoon";
 "app_intents.controls.assist.parameter.with_voice" = "Häälega";
 "app_intents.controls.assist.title" = "Assist rakenduses";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "Helitugevuse reguleerimine";
 "assist_pipeline_picker.no_pipelines" = "Ühendusvoogu pole saadaval";
 "assist_pipeline_picker.placeholder" = "Vali voog";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Loobu";
 "carPlay.action.intro.item.body" = "Puuduta jätkamiseks oma iPhone'is";
 "carPlay.action.intro.item.title" = "Loo oma esimene toiming";
@@ -1204,6 +1215,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "watch.labels.complication_text_areas.row3_column2.label" = "3. rida, 2. veerg";
 "watch.labels.complication_text_areas.trailing.description" = "Mõõdiku tagaservas kuvatav tekst.";
 "watch.labels.complication_text_areas.trailing.label" = "Tagumine";
+"watch.labels.no_action" = "Toiminguid pole konfigureeritud. Sellest sõnumist loobumiseks seadista oma telefonis toimingud.";
 "watch.labels.no_config" = "Kella konfiguratsiooni pole saadaval, ava iOS-i rakendus ja loo oma konfiguratsioon kaasrakenduse seadete alt.";
 "watch.labels.selected_pipeline.title" = "Voog";
 "watch.placeholder_complication_name" = "Kohatäide";
@@ -1233,10 +1245,15 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.assist.description" = "Ava abiline rakenduses";
 "widgets.assist.title" = "Abiline";
 "widgets.assist.unknown_configuration" = "Seadista";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Taaslae kõik paanid";
 "widgets.controls.assist.description" = "Ava Assist rakenduses Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Vali voog";
 "widgets.controls.assist.title" = "Abiline";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Vajuta nuppu";
 "widgets.controls.button.placeholder_title" = "Vali nupp";
 "widgets.controls.button.title" = "Nupp";
@@ -1252,6 +1269,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.open_camera.configuration.parameter.entity" = "Kaamera";
 "widgets.controls.open_camera.configuration.title" = "Ava kaamera";
 "widgets.controls.open_camera.description" = "Avab valitud kaameraüksuse rakenduses";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Avakate";
 "widgets.controls.open_cover.configuration.title" = "Ava avakate";
 "widgets.controls.open_cover.description" = "Avab valitud avakatte üksuse rakenduses";

@@ -3851,6 +3851,8 @@ public enum L10n {
       }
     }
     public enum Labels {
+      /// No actions configured. Configure actions on your phone to dismiss this message.
+      public static var noAction: String { return L10n.tr("Localizable", "watch.labels.no_action") }
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
       public enum ComplicationGroup {

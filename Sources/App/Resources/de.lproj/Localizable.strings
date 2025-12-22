@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Bevorzugt";
 "app_intents.assist.refresh_warning.title" = "Du kannst deine Assist-Pipeline nicht finden? Öffne Assist in der App, um die Liste der Pipelines zu aktualisieren.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Symbol für den geschlossenen Zustand";
 "app_intents.controls.assist.parameter.with_voice" = "Mit Stimme";
 "app_intents.controls.assist.title" = "Assist in der App";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "Lautstärkeregler";
 "assist_pipeline_picker.no_pipelines" = "Keine Pipelines verfügbar";
 "assist_pipeline_picker.placeholder" = "Pipeline auswählen";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Abbrechen";
 "carPlay.action.intro.item.body" = "Tippe, um auf deinem iPhone fortzufahren";
 "carPlay.action.intro.item.title" = "Erstelle deine erste Aktion";
@@ -1205,6 +1216,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.labels.complication_text_areas.row3_column2.label" = "Zeile 3, Spalte 2";
 "watch.labels.complication_text_areas.trailing.description" = "Der Text, der an der nachlaufenden Kante der Analoganzeige angezeigt wird.";
 "watch.labels.complication_text_areas.trailing.label" = "Nachlaufend";
+"watch.labels.no_action" = "Keine Aktionen konfiguriert. Konfiguriere Aktionen auf deinem Telefon, um diese Nachricht zu schließen.";
 "watch.labels.no_config" = "Keine Watch-Konfiguration verfügbar. Öffne die iOS-App und erstelle deine Konfiguration in den Einstellungen der Companion-App.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platzhalter";
@@ -1234,10 +1246,15 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.assist.description" = "Assist in der App öffnen";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Konfigurieren";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Alle Widgets neu laden";
 "widgets.controls.assist.description" = "Assist in der Home Assistant-App öffnen";
 "widgets.controls.assist.pipeline.placeholder" = "Eine Pipeline auswählen";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Taste drücken";
 "widgets.controls.button.placeholder_title" = "Taste auswählen";
 "widgets.controls.button.title" = "Taste";
@@ -1253,6 +1270,7 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.controls.open_camera.configuration.parameter.entity" = "Kamera";
 "widgets.controls.open_camera.configuration.title" = "Kamera öffnen";
 "widgets.controls.open_camera.description" = "Öffnet die ausgewählte Kamera-Entität innerhalb der App.";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Abdeckung";
 "widgets.controls.open_cover.configuration.title" = "Abdeckung öffnen";
 "widgets.controls.open_cover.description" = "Öffnet die ausgewählte Abdeckung-Entität innerhalb der App.";
