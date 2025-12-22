@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-      - uses: ruby/setup-ruby@ac793fdd38cc468a4dd57246fa9d0e868aba9085  # v1.270.0
+      - uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b  # v1.275.0
         with:
           ruby-version: "3.1"
           bundler-cache: true
@@ -81,7 +81,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3  # v5.3.0
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548  # v5.3.0
         with:
           python-version: '3.x'
 
