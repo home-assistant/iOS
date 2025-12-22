@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant no Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant no Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Desperte sua casa";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Deixe um comentário";
 "about.title" = "Sobre";
@@ -52,7 +51,6 @@
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Sempre aberto";
 "announcement.drop_support.button" = "Continuar";
-"announcement.drop_support.button_read_more" = "Leia mais";
 "announcement.drop_support.subtitle" = "Após consideração cuidadosa, descontinuaremos o suporte para iOS 12, 13 e 14 em nossas próximas atualizações.";
 "announcement.drop_support.title" = "Atualização Importante";
 "app_intents.assist.pipeline.default.title" = "Padrão";
@@ -213,9 +211,6 @@
 "connection.error.generic_title" = "Uh oh! Parece que não conseguimos estabelecer uma conexão.";
 "connection.permission.internal_url.body1" = "Para acessar o Home Assistant localmente de forma segura, você precisa conceder a permissão de localização ('Sempre').";
 "connection.permission.internal_url.body2" = "Essa permissão permite que o Home Assistant detecte a rede sem fio à qual você está conectado e estabeleça uma conexão local.";
-"connection.permission.internal_url.body3" = "Você sempre estará no controle se sua localização for compartilhada com o Home Assistant. Você pode alterar essas configurações na tela de configuração do aplicativo complementar.";
-"connection.permission.internal_url.button_configure" = "Configurar acesso local";
-"connection.permission.internal_url.button_ignore" = "Eu sei o que estou fazendo. Permitir conexões locais sem acesso de permissão.";
 "connection.permission.internal_url.footer" = "Se você ainda quiser usar a URL local e não quiser fornecer permissão de localização, toque no botão abaixo, mas esteja ciente dos riscos de segurança.";
 "connection.permission.internal_url.ignore.alert.title" = "Tem certeza?";
 "connection.permission.internal_url.title" = "Permissão de acesso";
@@ -318,7 +313,6 @@
 "help_label" = "Ajuda";
 "improv.button.continue" = "Continuar";
 "improv.connection_state.authorized" = "Configurando Wi-Fi";
-"improv.connection_state.autorization_required" = "Por favor, autorize seu dispositivo a continuar";
 "improv.connection_state.provisioning" = "Conectando-se ao Wi-Fi";
 "improv.error_state.invalid_rpc_packet" = "Pacote RPC inválido";
 "improv.error_state.not_authorized" = "Não autorizado";
@@ -465,9 +459,7 @@
 "notifications_configurator.settings.footer" = "O identificador deve conter apenas letras, sublinhados e ser maiúsculo. Ele deve ser globalmente exclusivo para o aplicativo.";
 "notifications_configurator.settings.footer.id_set" = "O identificador não pode ser alterado após a criação. Você deve excluir e recriar a ação para alterar o identificador.";
 "notifications_configurator.settings.header" = "Configurações";
-"off_label" = "Desligado";
 "ok_label" = "OK";
-"on_label" = "Ligado";
 "onboarding.connect.mac_safari_warning.message" = "Tente reiniciar o Safari se o formulário de login não abrir.";
 "onboarding.connect.mac_safari_warning.title" = "Iniciando o Safari";
 "onboarding.connect.title" = "Conectando-se a %@";
@@ -482,7 +474,6 @@
 "onboarding.connection_test_result.error_code" = "Erro de código:";
 "onboarding.connection_test_result.local_network_permission.description" = "A permissão de privacidade da \"Rede Local\" pode ter sido negada. Você pode alterar isso no aplicativo em Configurações do sistema.";
 "onboarding.device_name_check.error.prompt" = "Qual nome de dispositivo deve ser usado?";
-"onboarding.device_name_check.error.rename_action" = "Renomear";
 "onboarding.device_name_check.error.title" = "Já existe um dispositivo com o nome ' %1$@ '";
 "onboarding.invitation.accept_button" = "Aceitar";
 "onboarding.invitation.other_options" = "Outras opções";
@@ -532,15 +523,11 @@ Remoto quando você estiver pronto.";
 "onboarding.network_input.primary_description" = "Para a melhor experiência, Home Assistant precisa saber quando está conectado a sua rede doméstica.";
 "onboarding.network_input.secondary_button.title" = "Pular";
 "onboarding.network_input.title" = "Qual sua rede doméstica?";
-"onboarding.permission.location.buttons.allow_and_share" = "Permitir e compartilhar com o Home Assistant";
-"onboarding.permission.location.buttons.allow_for_app" = "Permitir apenas o uso do aplicativo";
-"onboarding.permission.location.buttons.deny" = "Negar";
 "onboarding.permission.location.deny.alert.body" = "Se tiver certeza, continue e toque em \"Negar\" no próximo pop-up também. Caso você não tenha uma conexão remota configurada, o aplicativo usará sua configuração de conexão local para acessar o Home Assistant.";
 "onboarding.permission.location.deny.alert.header" = "Informação";
 "onboarding.permission.location.deny.alert.message" = "Sem a permissão de localização, versões futuras do aplicativo podem negar acesso ao seu servidor local do Home Assistant devido a questões de privacidade. Se tiver certeza, continue e toque em \"Negar\" no próximo pop-up. Ao fazer isso, recomendamos que você use sua URL interna como externa, pois é a única URL que o aplicativo tentará acessar.";
 "onboarding.permission.location.deny.alert.title" = "Tem certeza?";
 "onboarding.permission.location.description" = "Para identificar se você está em casa e se conectar localmente ao Home Assistant, a Apple exige que peçamos sua permissão de localização.";
-"onboarding.permission.location.privacy_note" = "Sua localização não será compartilhada com o servidor local do Home Assistant, a menos que você selecione \"Permitir e Compartilhar com o Home Assistant\". Você pode optar por compartilhar mais tarde nas configurações do aplicativo complementar > sensores.";
 "onboarding.permissions.allow" = "Permitir";
 "onboarding.permissions.allowed" = "Feito";
 "onboarding.permissions.change_later_note" = "Você pode alterar essa permissão mais tarde em Configurações";
@@ -571,7 +558,6 @@ Remoto quando você estiver pronto.";
 "onboarding.scanning.manual" = "Digite o endereço manualmente";
 "onboarding.scanning.manual.button.divider.title" = "ou";
 "onboarding.scanning.manual.button.title" = "Digite o endereço manualmente";
-"onboarding.scanning.manual_hint" = "Não encontrou seu servidor?";
 "onboarding.scanning.title" = "Escaneando servidores";
 "onboarding.servers.auto_connect.button" = "Conectar";
 "onboarding.servers.docs.read" = "Leia a documentação";
@@ -579,11 +565,9 @@ Remoto quando você estiver pronto.";
 "onboarding.servers.search.message" = "Procurando servidores nas proximidades...";
 "onboarding.servers.title" = "Pesquisando na rede doméstica";
 "onboarding.welcome.body" = "Permite que você acesse a instalação do Home Assistant em qualquer lugar. Ele funciona localmente na sua casa por meio de um dispositivo como o Home Assistant Green ou o Raspberry Pi.";
-"onboarding.welcome.continue_button" = "Conecte-se ao meu Home Assistant";
 "onboarding.welcome.description" = "Este aplicativo se conecta ao servidor do Home Assistant e permite integrar dados sobre você e seu telefone. \
 \
  O Home Assistant é um software de automação residencial gratuito e de código aberto com foco no controle local e na privacidade.";
-"onboarding.welcome.get_started" = "Comece a usar o Home Assistant";
 "onboarding.welcome.header" = "Aplicativo do Home Assistant";
 "onboarding.welcome.learn_more" = "Saiba mais";
 "onboarding.welcome.logo.accessibility_label" = "Logotipo do Home Assistant";
@@ -606,7 +590,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "post_onboarding.permission.notification.title" = "Deseja receber notificações?";
 "preview_output" = "Pré-visualização da saída";
 "privacyLabel" = "Privacidade";
-"reload_label" = "Recarregar";
 "requires_version" = "Requer %@ ou posterior.";
 "retry_label" = "Repetir";
 "save_label" = "Salvar";
@@ -614,10 +597,8 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "sensors.geocoded_location.setting.use_zones" = "Usar nome da zona";
 "servers_selection.title" = "Servidores";
 "settings.connection_section.activate_server" = "Ativar";
-"settings.connection_section.activate_swipe_hint" = "Ative rapidamente usando um deslize de três dedos para a esquerda ou para a direita ao visualizar um servidor.";
 "settings.connection_section.add_server" = "Adicionar servidor";
 "settings.connection_section.all_servers" = "Todos os servidores";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Tenho certeza";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Se você tiver uma conexão insegura, isso pode expor seu token de autenticação em redes públicas.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Tem certeza?";
 "settings.connection_section.always_fallback_internal.footer" = "Habilitar isso com uma URL não segura (http) pode comprometer sua segurança em redes públicas.";
@@ -650,7 +631,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.internal_url_ssids.footer" = "O URL interno será usado quando conectado aos SSIDs listados";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MeuNomeDeRedeDivertido";
-"settings.connection_section.invite_to_server" = "Convidar alguém para este servidor";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Menos seguro";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Mais seguro";
 "settings.connection_section.local_access_security_level.title" = "Segurança de acesso local";
@@ -670,7 +650,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.connection_section.servers_footer" = "Reordenar para definir o servidor padrão";
 "settings.connection_section.servers_header" = "Servidores";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Acessar SSIDs em segundo plano requer permissão de localização 'Sempre' e precisão de localização 'Total'. Toque aqui para alterar suas configurações.";
-"settings.connection_section.ssid_permission_message" = "Acessar SSIDs em segundo plano requer permissão de localização 'Sempre'. Toque aqui para alterar suas configurações.";
 "settings.connection_section.validate_error.edit_url" = "Editar URL";
 "settings.connection_section.validate_error.title" = "Erro ao salvar o URL";
 "settings.connection_section.validate_error.use_anyway" = "Usar mesmo assim";
@@ -723,12 +702,10 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings.navigation_bar.about_button.title" = "Sobre";
 "settings.navigation_bar.title" = "Configurações";
 "settings.reset_section.reset_alert.message" = "Suas configurações serão redefinidas e este dispositivo não será registrado nas notificações push e será removido da configuração do Home Assistant.";
-"settings.reset_section.reset_alert.progress_message" = "Redefinindo…";
 "settings.reset_section.reset_alert.title" = "Redefinir";
 "settings.reset_section.reset_app.title" = "Redefinir aplicativo (remover servidores e dados)";
 "settings.reset_section.reset_row.title" = "Redefinir";
 "settings.reset_section.reset_web_cache.title" = "Redefinir cache de frontend";
-"settings.server_select.page_title" = "Servidor";
 "settings.server_select.title" = "Servidor";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "Meu Home Assistant";
@@ -776,7 +753,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.general.app_icon.enum.electric_violet" = "Violeta Elétrica";
 "settings_details.general.app_icon.enum.fire_orange" = "Laranja Fogo";
 "settings_details.general.app_icon.enum.green" = "Verde";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blue";
 "settings_details.general.app_icon.enum.old_beta" = "Beta antigo";
 "settings_details.general.app_icon.enum.old_dev" = "Desenvolvedor Antigo";
 "settings_details.general.app_icon.enum.old_release" = "Versão antiga";
@@ -786,7 +762,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.general.app_icon.enum.pride_non_binary" = "Orgulho: Não Binário";
 "settings_details.general.app_icon.enum.pride_poc" = "Orgulho: 8 cores";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Orgulho: Arco-íris";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Orgulho: Arco-íris (Invertido)";
 "settings_details.general.app_icon.enum.pride_trans" = "Orgulho: Trans";
 "settings_details.general.app_icon.enum.purple" = "Roxo";
 "settings_details.general.app_icon.enum.red" = "Vermelho";
@@ -929,7 +904,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "settings_details.privacy.analytics.generic_title" = "Analytics";
 "settings_details.privacy.body" = "Você no controle dos seus dados.";
 "settings_details.privacy.crash_reporting.description" = "Permite um rastreamento mais profundo de falhas e outros erros no aplicativo, levando à publicação de correções mais rápidas. Nenhuma informação de identificação do usuário é enviada, exceto as informações básicas do dispositivo. Você deve reiniciar o aplicativo para que as alterações nessa configuração tenham efeito.";
-"settings_details.privacy.crash_reporting.sentry" = "Este recurso atualmente usa o Sentry como destino do relatório.";
 "settings_details.privacy.crash_reporting.title" = "Relatório de falhas";
 "settings_details.privacy.messaging.description" = "O Firebase Cloud Messaging deve estar ativado para que as notificações push funcionem.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
@@ -965,17 +939,10 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "share_extension.entered_placeholder" = "'entrou' no evento";
 "share_extension.error.title" = "Não foi possível enviar";
 "shortcut_item.open_settings.title" = "Abrir Configurações";
-"success_label" = "Sucesso";
 "thread.active_operational_data_set.title" = "Conjunto de dados operacionais ativos";
 "thread.border_agent_id.title" = "ID do agente de borda";
-"thread.credentials.border_agent_id_title" = "ID do agente de borda";
-"thread.credentials.network_key_title" = "Chave de rede";
-"thread.credentials.network_name_title" = "Nome da rede";
-"thread.credentials.no_credential_available" = "Você não tem credenciais disponíveis nas suas Chaves do iCloud.";
-"thread.credentials.screen_title" = "Credenciais do Thread";
 "thread.credentials.share_credentials.no_credentials_message" = "Certifique-se de estar conectado com sua conta iCloud que é proprietária de uma casa no Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Você não tem credenciais para compartilhar";
-"thread.credentials.share_credentials_button_title" = "Compartilhe credencial com o Home Assistant";
 "thread.extended_pan_id.title" = "ID PAN estendido";
 "thread.management.title" = "Credenciais do Thread";
 "thread.network_key.title" = "Chave de rede";
@@ -1023,7 +990,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "url_handler.x_callback_url.error.serviceMissing" = "serviço (por exemplo, homeassistant.turn_on) deve ser definido";
 "url_handler.x_callback_url.error.templateMissing" = "Um modelo renderizável deve ser definido";
 "url_label" = "URL";
-"username_label" = "Nome de usuário";
 "watch.assist.button.recording.title" = "Gravando...";
 "watch.assist.button.send_request.title" = "Toque para enviar solicitação";
 "watch.assist.lack_config.error.title" = "Configure o Assist usando o aplicativo complementar do iOS";
@@ -1238,7 +1204,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "watch.labels.complication_text_areas.row3_column2.label" = "Linha 3, Coluna 2";
 "watch.labels.complication_text_areas.trailing.description" = "O texto a ser exibido na borda do medidor.";
 "watch.labels.complication_text_areas.trailing.label" = "Seguindo";
-"watch.labels.no_action" = "Nenhuma ação configurada. Configure ações em seu telefone para dispensar esta mensagem.";
 "watch.labels.no_config" = "Nenhuma configuração de relógio disponível, abra o aplicativo iOS e crie sua configuração nas configurações do aplicativo complementar.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Espaço reservado";
@@ -1337,7 +1302,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.details.parameters.action" = "Ação";
 "widgets.details.parameters.details_template" = "Modelo de texto de detalhes (somente na família retangular)";
 "widgets.details.parameters.lower_template" = "Modelo de texto inferior";
-"widgets.details.parameters.run_action" = "Executar ação (somente na família retangular)";
 "widgets.details.parameters.run_script" = "Executar script (somente na família retangular)";
 "widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Servidor";
@@ -1352,7 +1316,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "widgets.gauge.parameters.gauge_type.normal" = "Normal";
 "widgets.gauge.parameters.max_label_template" = "Modelo de rótulo máximo";
 "widgets.gauge.parameters.min_label_template" = "Modelo de rótulo mínimo";
-"widgets.gauge.parameters.run_action" = "Executar ação";
 "widgets.gauge.parameters.run_script" = "Executar script";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Servidor";
