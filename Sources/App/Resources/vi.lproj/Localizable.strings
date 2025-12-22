@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant trên Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant trên Twitter";
 "about.logo.app_title" = "Đồng hành Home Assistant";
-"about.logo.tagline" = "Đánh thức ngôi nhà của bạn";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Để lại đánh giá";
 "about.title" = "Giới thiệu";
@@ -52,7 +51,6 @@
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Always Open";
 "announcement.drop_support.button" = "Continue";
-"announcement.drop_support.button_read_more" = "Read more";
 "announcement.drop_support.subtitle" = "After careful consideration, we will be discontinuing support for iOS 12, 13 and 14 in our upcoming updates.";
 "announcement.drop_support.title" = "Important update";
 "app_intents.assist.pipeline.default.title" = "Default";
@@ -213,9 +211,6 @@
 "connection.error.generic_title" = "Ồ không! Có vẻ như chúng ta không thể thiết lập kết nối.";
 "connection.permission.internal_url.body1" = "Để truy cập Home Assistant cục bộ theo cách an toàn, bạn cần cấp quyền vị trí ('Luôn luôn').";
 "connection.permission.internal_url.body2" = "Quyền này cho phép Home Assistant phát hiện mạng không dây mà bạn đang kết nối và thiết lập kết nối cục bộ.";
-"connection.permission.internal_url.body3" = "Bạn luôn nắm quyền kiểm soát việc chia sẻ vị trí của mình với Home Assistant. Bạn có thể thay đổi các cài đặt này trong màn hình cài đặt của ứng dụng đồng hành.";
-"connection.permission.internal_url.button_configure" = "Cấu hình truy cập cục bộ";
-"connection.permission.internal_url.button_ignore" = "Tôi biết mình đang làm gì. Cho phép kết nối cục bộ mà không cần quyền truy cập.";
 "connection.permission.internal_url.footer" = "Nếu bạn vẫn muốn sử dụng URL cục bộ và không muốn cấp quyền vị trí, bạn có thể nhấn vào nút bên dưới, nhưng vui lòng lưu ý đến các rủi ro bảo mật.";
 "connection.permission.internal_url.ignore.alert.title" = "Bạn có chắc không?";
 "connection.permission.internal_url.title" = "Quyền truy cập";
@@ -318,7 +313,6 @@
 "help_label" = "Help";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
-"improv.connection_state.autorization_required" = "Please authorize your device to continue";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";
 "improv.error_state.invalid_rpc_packet" = "Invalid RPC Packet";
 "improv.error_state.not_authorized" = "Not authorized";
@@ -465,9 +459,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "notifications_configurator.settings.footer" = "Mã định danh phải chỉ chứa chữ cái và dấu gạch dưới, và phải viết hoa. Mã định danh phải là duy nhất trên toàn ứng dụng.";
 "notifications_configurator.settings.footer.id_set" = "Không thể thay đổi mã định danh sau khi tạo. Bạn phải xóa và tạo lại hành động để thay đổi mã định danh.";
 "notifications_configurator.settings.header" = "Cài đặt";
-"off_label" = "Off";
 "ok_label" = "OK";
-"on_label" = "On";
 "onboarding.connect.mac_safari_warning.message" = "Hãy thử khởi động lại Safari nếu biểu mẫu đăng nhập không mở.";
 "onboarding.connect.mac_safari_warning.title" = "Đang khởi chạy Safari";
 "onboarding.connect.title" = "Connecting to %@";
@@ -482,7 +474,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "onboarding.connection_test_result.error_code" = "Mã lỗi:";
 "onboarding.connection_test_result.local_network_permission.description" = "Quyền riêng tư \"Mạng cục bộ\" có thể đã bị từ chối. Bạn có thể thay đổi điều này trong ứng dụng Cài đặt hệ thống.";
 "onboarding.device_name_check.error.prompt" = "Thay vào đó nên sử dụng tên thiết bị nào?";
-"onboarding.device_name_check.error.rename_action" = "Đổi tên";
 "onboarding.device_name_check.error.title" = "Một thiết bị đã tồn tại với tên ' %1$@ '";
 "onboarding.invitation.accept_button" = "Chấp nhận";
 "onboarding.invitation.other_options" = "Các tùy chọn khác";
@@ -532,15 +523,11 @@ Remote when you're ready.";
 "onboarding.network_input.primary_description" = "For the best experience, Home Assistant needs to know when you’re connected to your home network.";
 "onboarding.network_input.secondary_button.title" = "Skip";
 "onboarding.network_input.title" = "What is your home network?";
-"onboarding.permission.location.buttons.allow_and_share" = "Allow & Share with Home Assistant";
-"onboarding.permission.location.buttons.allow_for_app" = "Allow for App use only";
-"onboarding.permission.location.buttons.deny" = "Deny";
 "onboarding.permission.location.deny.alert.body" = "If you are sure, please continue and tap 'Deny' on the next popup as well, in case you don't have a remote connection configured, the App will use your local connection configuration to access Home Assistant.";
 "onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Without location permission future versions of the App may deny access to your local Home Assistant server due to privacy concerns. If you are sure, please continue and tap 'Deny' on the next popup as well. By doing that we recommend you use your internal URL as external, since it is the only URL the app will try to access.";
 "onboarding.permission.location.deny.alert.title" = "Are you sure?";
 "onboarding.permission.location.description" = "To identify if you are at home and connect locally to Home Assistant, Apple requires that we ask for your location permission.";
-"onboarding.permission.location.privacy_note" = "Your location won't be shared with your local Home Assistant server unless you select 'Allow & Share with Home Assistant'. You can choose to share later in companion app settings > sensors.";
 "onboarding.permissions.allow" = "Cho phép";
 "onboarding.permissions.allowed" = "Xong";
 "onboarding.permissions.change_later_note" = "Bạn có thể thay đổi quyền này sau trong Cài đặt";
@@ -571,7 +558,6 @@ Remote when you're ready.";
 "onboarding.scanning.manual" = "Nhập đường dẫn thủ công";
 "onboarding.scanning.manual.button.divider.title" = "or";
 "onboarding.scanning.manual.button.title" = "Enter address manually";
-"onboarding.scanning.manual_hint" = "Không tìm thấy máy chủ nào.";
 "onboarding.scanning.title" = "Đang quét tìm máy chủ";
 "onboarding.servers.auto_connect.button" = "Kết nối";
 "onboarding.servers.docs.read" = "Read documentation";
@@ -579,11 +565,9 @@ Remote when you're ready.";
 "onboarding.servers.search.message" = "Looking for servers nearby...";
 "onboarding.servers.title" = "Tìm kiếm trên mạng gia đình";
 "onboarding.welcome.body" = "Cho phép bạn truy cập cài đặt Home Assistant mọi lúc mọi nơi. Nó chạy cục bộ tại nhà bạn thông qua một thiết bị như Home Assistant Green hoặc Raspberry Pi.";
-"onboarding.welcome.continue_button" = "Kết nối với Home Assistant của tôi";
 "onboarding.welcome.description" = "Ứng dụng này kết nối với máy chủ Home Assistant và cho phép tích hợp dữ liệu về bạn và điện thoại của bạn. \
 \
 Home Assistant là phần mềm tự động hóa gia đình mã nguồn mở và miễn phí, tập trung vào quyền kiểm soát và quyền riêng tư cục bộ.";
-"onboarding.welcome.get_started" = "Get started with Home Assistant";
 "onboarding.welcome.header" = "Ứng dụng đồng hành Home Assistant";
 "onboarding.welcome.learn_more" = "Learn more";
 "onboarding.welcome.logo.accessibility_label" = "Biểu trưng Home Assistant";
@@ -606,7 +590,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "post_onboarding.permission.notification.title" = "Do you want to receive notifications?";
 "preview_output" = "Xem trước đầu ra";
 "privacyLabel" = "Privacy";
-"reload_label" = "Reload";
 "requires_version" = "Yêu cầu %@ trở lên.";
 "retry_label" = "Retry";
 "save_label" = "Save";
@@ -614,10 +597,8 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "servers_selection.title" = "Servers";
 "settings.connection_section.activate_server" = "Kích hoạt";
-"settings.connection_section.activate_swipe_hint" = "Kích hoạt nhanh bằng cách vuốt ba ngón tay sang trái hoặc phải khi xem máy chủ.";
 "settings.connection_section.add_server" = "Thêm máy chủ";
 "settings.connection_section.all_servers" = "Tất cả máy chủ";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Tôi chắc chắn";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Nếu bạn có kết nối không an toàn, mã thông báo xác thực của bạn có thể bị lộ trên mạng công cộng.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Bạn có chắc không?";
 "settings.connection_section.always_fallback_internal.footer" = "Việc bật tính năng này bằng URL không an toàn (http) có thể làm giảm khả năng bảo mật của bạn trên mạng công cộng.";
@@ -650,7 +631,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
-"settings.connection_section.invite_to_server" = "Mời ai đó vào máy chủ này";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Less secure";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Most secure";
 "settings.connection_section.local_access_security_level.title" = "Local access security";
@@ -670,7 +650,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.servers_footer" = "Sắp xếp lại để xác định máy chủ mặc định";
 "settings.connection_section.servers_header" = "Máy chủ";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Accessing SSIDs in the background requires 'Always' location permission and 'Full' location accuracy. Tap here to change your settings.";
-"settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
 "settings.connection_section.validate_error.title" = "Error Saving URL";
 "settings.connection_section.validate_error.use_anyway" = "Use Anyway";
@@ -723,12 +702,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.navigation_bar.about_button.title" = "Giới thiệu";
 "settings.navigation_bar.title" = "Cài đặt";
 "settings.reset_section.reset_alert.message" = "Cài đặt của bạn sẽ được đặt lại và thiết bị này sẽ bị hủy đăng ký khỏi thông báo đẩy cũng như bị xóa khỏi cấu hình Home Assistant của bạn.";
-"settings.reset_section.reset_alert.progress_message" = "Resetting…";
 "settings.reset_section.reset_alert.title" = "Đặt lại";
 "settings.reset_section.reset_app.title" = "Đặt lại ứng dụng (Xóa máy chủ và dữ liệu)";
 "settings.reset_section.reset_row.title" = "Đặt lại";
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
-"settings.server_select.page_title" = "Máy chủ";
 "settings.server_select.title" = "Máy chủ";
 "settings.status_section.header" = "Trạng thái";
 "settings.status_section.location_name_row.placeholder" = "Home Assistant của tôi";
@@ -776,7 +753,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.enum.electric_violet" = "Electric Violet";
 "settings_details.general.app_icon.enum.fire_orange" = "Fire Orange";
 "settings_details.general.app_icon.enum.green" = "Green";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blue";
 "settings_details.general.app_icon.enum.old_beta" = "Old Beta";
 "settings_details.general.app_icon.enum.old_dev" = "Old Dev";
 "settings_details.general.app_icon.enum.old_release" = "Old Release";
@@ -786,7 +762,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.general.app_icon.enum.pride_non_binary" = "Tự hào: Phi nhị giới";
 "settings_details.general.app_icon.enum.pride_poc" = "Pride: 8-Color";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Rainbow (Inverted)";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.enum.purple" = "Purple";
 "settings_details.general.app_icon.enum.red" = "Red";
@@ -929,7 +904,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings_details.privacy.analytics.generic_title" = "Analytics";
 "settings_details.privacy.body" = "Bạn kiểm soát dữ liệu của mình.";
 "settings_details.privacy.crash_reporting.description" = "Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
-"settings_details.privacy.crash_reporting.sentry" = "This feature currently uses Sentry as the report destination.";
 "settings_details.privacy.crash_reporting.title" = "Crash Reporting";
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging must be enabled for push notifications to function.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
@@ -965,17 +939,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "share_extension.entered_placeholder" = "'entered' trong sự kiện";
 "share_extension.error.title" = "Không thể Gửi";
 "shortcut_item.open_settings.title" = "Open Settings";
-"success_label" = "Thành công";
 "thread.active_operational_data_set.title" = "Active operational data set";
 "thread.border_agent_id.title" = "Border Agent ID";
-"thread.credentials.border_agent_id_title" = "Border Agent ID";
-"thread.credentials.network_key_title" = "Network Key";
-"thread.credentials.network_name_title" = "Network Name";
-"thread.credentials.no_credential_available" = "You don't have credentials available on your iCloud Keychain.";
-"thread.credentials.screen_title" = "Thread Credentials";
 "thread.credentials.share_credentials.no_credentials_message" = "Make sure your are logged in with your iCloud account which is owner of a Home in Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "You don't have credentials to share";
-"thread.credentials.share_credentials_button_title" = "Share credential with Home Assistant";
 "thread.extended_pan_id.title" = "Extended PAN ID";
 "thread.management.title" = "Thread Credentials";
 "thread.network_key.title" = "Network Key";
@@ -1023,7 +990,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
 "url_label" = "URL";
-"username_label" = "Tên người dùng";
 "watch.assist.button.recording.title" = "Đang ghi...";
 "watch.assist.button.send_request.title" = "Nhấn để gửi yêu cầu";
 "watch.assist.lack_config.error.title" = "Please configure Assist using iOS companion App";
@@ -1238,7 +1204,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "Row 3, Column 2";
 "watch.labels.complication_text_areas.trailing.description" = "The text to display on the trailing edge of the gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
-"watch.labels.no_action" = "No actions configured. Configure actions on your phone to dismiss this message.";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Placeholder";
@@ -1337,7 +1302,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.details.parameters.action" = "Action";
 "widgets.details.parameters.details_template" = "Details Text Template (only in rectangular family)";
 "widgets.details.parameters.lower_template" = "Lower Text Template";
-"widgets.details.parameters.run_action" = "Run Action (only in rectangular family)";
 "widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
 "widgets.details.parameters.script" = "Script";
 "widgets.details.parameters.server" = "Server";
@@ -1352,7 +1316,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.gauge.parameters.gauge_type.normal" = "Normal";
 "widgets.gauge.parameters.max_label_template" = "Max Label Template";
 "widgets.gauge.parameters.min_label_template" = "Min Label Template";
-"widgets.gauge.parameters.run_action" = "Run Action";
 "widgets.gauge.parameters.run_script" = "Run Script";
 "widgets.gauge.parameters.script" = "Script";
 "widgets.gauge.parameters.server" = "Server";
