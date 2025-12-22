@@ -34,7 +34,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     private let reconnectionDelays: [TimeInterval] = [
         NotificationManagerLocalPushInterfaceExtension.reconnectionDelayInitial,
         NotificationManagerLocalPushInterfaceExtension.reconnectionDelayShortBackoff,
-        NotificationManagerLocalPushInterfaceExtension.reconnectionDelayLongBackoff
+        NotificationManagerLocalPushInterfaceExtension.reconnectionDelayLongBackoff,
     ]
 
     // Track servers that have failed connections
