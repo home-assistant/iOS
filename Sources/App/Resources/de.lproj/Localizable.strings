@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "Mit Stimme";
 "app_intents.controls.assist.title" = "Assist in der App";
 "app_intents.cover.title" = "Abdeckung";
+"app_intents.fan.off_state_icon.title" = "Symbol für Aus-Zustand";
+"app_intents.fan.on_state_icon.title" = "Symbol für Ein-Zustand";
+"app_intents.fan.title" = "Ventilator";
 "app_intents.haptic_confirmation.title" = "Haptische Bestätigung";
 "app_intents.icon.title" = "Symbol";
 "app_intents.intent.cover.title" = "Abdeckung steuern";
+"app_intents.intent.fan.title" = "Ventilator steuern";
 "app_intents.intent.light.title" = "Leuchte steuern";
 "app_intents.intent.switch.title" = "Schalter steuern";
 "app_intents.lights.light.target" = "Zielzustand";
@@ -391,7 +395,7 @@
 "menu.help.help" = "%@ Hilfe";
 "menu.status_item.quit" = "Beenden";
 "menu.status_item.toggle" = "Schalte %1$@ um";
-"menu.view.find" = "Find";
+"menu.view.find" = "Suchen";
 "menu.view.reload_page" = "Seite neu laden";
 "navBar.close" = "Schließen";
 "network.error.no_active_url.body" = "Öffne die Einstellungen der Companion-App und überprüfe deine Servereinstellungen. Die interne URL wird nur verwendet, wenn ein lokales Netzwerk definiert ist (SSID). Wenn du ein VPN verwendest, versuche, deine externe URL auf den gleichen Wert wie die interne URL einzustellen.";
@@ -1275,6 +1279,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.controls.cover.description" = "Abdeckung umschalten";
 "widgets.controls.cover.placeholder_title" = "Abdeckung auswählen";
 "widgets.controls.cover.title" = "Abdeckung";
+"widgets.controls.fan.description" = "Deinen Ventilator ein-/ausschalten";
+"widgets.controls.fan.placeholder_title" = "Ventilator auswählen";
+"widgets.controls.fan.title" = "Ventilator";
 "widgets.controls.light.description" = "Schalte deine Leuchte ein/aus";
 "widgets.controls.light.placeholder_title" = "Leuchte auswählen";
 "widgets.controls.light.title" = "Leuchte";

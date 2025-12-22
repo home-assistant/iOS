@@ -63,9 +63,13 @@
 "app_intents.controls.assist.parameter.with_voice" = "음성으로";
 "app_intents.controls.assist.title" = "앱에서 Assist";
 "app_intents.cover.title" = "커버";
+"app_intents.fan.off_state_icon.title" = "Icon for off state";
+"app_intents.fan.on_state_icon.title" = "Icon for on state";
+"app_intents.fan.title" = "Fan";
 "app_intents.haptic_confirmation.title" = "진동으로 확인";
 "app_intents.icon.title" = "아이콘";
 "app_intents.intent.cover.title" = "커버 제어";
+"app_intents.intent.fan.title" = "Control fan";
 "app_intents.intent.light.title" = "조명 제어";
 "app_intents.intent.switch.title" = "스위치 제어";
 "app_intents.lights.light.target" = "대상 상태";
@@ -1274,6 +1278,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.cover.description" = "커버 토글";
 "widgets.controls.cover.placeholder_title" = "커버 선택";
 "widgets.controls.cover.title" = "커버";
+"widgets.controls.fan.description" = "Turn on/off your fan";
+"widgets.controls.fan.placeholder_title" = "Choose fan";
+"widgets.controls.fan.title" = "Fan";
 "widgets.controls.light.description" = "조명 켜기/끄기";
 "widgets.controls.light.placeholder_title" = "조명 선택";
 "widgets.controls.light.title" = "조명";
