@@ -21,12 +21,17 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         }
     }
 
+    // Serial queue for thread-safe access to shared mutable state
+    private let queue = DispatchQueue(label: "io.homeassistant.LocalPushInterface")
+
     // Reconnection timer properties
+    // These properties must only be accessed on the main queue since Timer.scheduledTimer requires main thread
     private var reconnectionTimer: Timer?
     private var reconnectionAttempt = 0
     private let reconnectionDelays: [TimeInterval] = [5, 10, 30]
 
     // Track servers that have failed connections
+    // Access to this property is synchronized via the queue
     private var disconnectedServers = Set<Identifier<Server>>()
 
     func status(for server: Server) -> NotificationManagerLocalPushStatus {
@@ -39,43 +44,50 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                 Current.Log.verbose("Server \(server.identifier.rawValue) sync state: \(state)")
 
                 // Track disconnected state for reconnection logic
-                switch state {
-                case .unavailable:
-                    if !disconnectedServers.contains(server.identifier) {
-                        Current.Log.info("Server \(server.identifier.rawValue) local push became unavailable")
-                        Current.Log
-                            .verbose(
-                                "Adding server \(server.identifier.rawValue) to disconnected set. Current disconnected servers: \(disconnectedServers.map(\.rawValue))"
-                            )
-                        disconnectedServers.insert(server.identifier)
-                        Current.Log.verbose("Disconnected servers after insert: \(disconnectedServers.map(\.rawValue))")
-                        scheduleReconnection()
-                    } else {
-                        Current.Log.verbose("Server \(server.identifier.rawValue) already in disconnected set")
-                    }
-                case .available, .establishing:
-                    if disconnectedServers.contains(server.identifier) {
-                        Current.Log.info("Server \(server.identifier.rawValue) local push reconnected successfully")
-                        Current.Log
-                            .verbose(
-                                "Removing server \(server.identifier.rawValue) from disconnected set. Current disconnected servers: \(disconnectedServers.map(\.rawValue))"
-                            )
-                        disconnectedServers.remove(server.identifier)
-                        Current.Log.verbose("Disconnected servers after remove: \(disconnectedServers.map(\.rawValue))")
-                        if disconnectedServers.isEmpty {
-                            Current.Log.verbose("All servers reconnected, cancelling reconnection timer")
-                            cancelReconnection()
+                // Use queue to synchronize access to disconnectedServers
+                queue.sync {
+                    switch state {
+                    case .unavailable:
+                        if !disconnectedServers.contains(server.identifier) {
+                            Current.Log.info("Server \(server.identifier.rawValue) local push became unavailable")
+                            Current.Log
+                                .verbose(
+                                    "Adding server \(server.identifier.rawValue) to disconnected set. Current disconnected servers: \(disconnectedServers.map(\.rawValue))"
+                                )
+                            disconnectedServers.insert(server.identifier)
+                            Current.Log.verbose("Disconnected servers after insert: \(disconnectedServers.map(\.rawValue))")
+                            DispatchQueue.main.async { [weak self] in
+                                self?.scheduleReconnection()
+                            }
+                        } else {
+                            Current.Log.verbose("Server \(server.identifier.rawValue) already in disconnected set")
+                        }
+                    case .available, .establishing:
+                        if disconnectedServers.contains(server.identifier) {
+                            Current.Log.info("Server \(server.identifier.rawValue) local push reconnected successfully")
+                            Current.Log
+                                .verbose(
+                                    "Removing server \(server.identifier.rawValue) from disconnected set. Current disconnected servers: \(disconnectedServers.map(\.rawValue))"
+                                )
+                            disconnectedServers.remove(server.identifier)
+                            Current.Log.verbose("Disconnected servers after remove: \(disconnectedServers.map(\.rawValue))")
+                            if disconnectedServers.isEmpty {
+                                Current.Log.verbose("All servers reconnected, cancelling reconnection timer")
+                                DispatchQueue.main.async { [weak self] in
+                                    self?.cancelReconnection()
+                                }
+                            } else {
+                                Current.Log
+                                    .verbose(
+                                        "Still have \(disconnectedServers.count) disconnected server(s), keeping timer active"
+                                    )
+                            }
                         } else {
                             Current.Log
                                 .verbose(
-                                    "Still have \(disconnectedServers.count) disconnected server(s), keeping timer active"
+                                    "Server \(server.identifier.rawValue) is connected and was not in disconnected set"
                                 )
                         }
-                    } else {
-                        Current.Log
-                            .verbose(
-                                "Server \(server.identifier.rawValue) is connected and was not in disconnected set"
-                            )
                     }
                 }
 
@@ -88,12 +100,14 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         } else {
             // manager isn't running
             Current.Log.verbose("Server \(server.identifier.rawValue) has no active managers")
-            if disconnectedServers.contains(server.identifier) {
-                Current.Log
-                    .verbose(
-                        "Removing server \(server.identifier.rawValue) from disconnected set (manager not running)"
-                    )
-                disconnectedServers.remove(server.identifier)
+            queue.sync {
+                if disconnectedServers.contains(server.identifier) {
+                    Current.Log
+                        .verbose(
+                            "Removing server \(server.identifier.rawValue) from disconnected set (manager not running)"
+                        )
+                    disconnectedServers.remove(server.identifier)
+                }
             }
             return .disabled
         }
@@ -143,13 +157,19 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     deinit {
         Current.Log.verbose("NotificationManagerLocalPushInterfaceExtension deinit, cleaning up reconnection timer")
-        cancelReconnection()
+        // Cancel timer on main thread since Timer must be invalidated on the thread it was created
+        DispatchQueue.main.async { [reconnectionTimer] in
+            reconnectionTimer?.invalidate()
+        }
     }
 
     // MARK: - Reconnection Logic
 
     /// Schedules a reconnection attempt with gradual backoff
+    /// Must be called on the main thread
     private func scheduleReconnection() {
+        dispatchPrecondition(condition: .onQueue(.main))
+
         Current.Log
             .verbose(
                 "scheduleReconnection called. Current attempt: \(reconnectionAttempt), timer active: \(reconnectionTimer != nil)"
@@ -162,11 +182,16 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         let delayIndex = min(reconnectionAttempt, reconnectionDelays.count - 1)
         let delay = reconnectionDelays[delayIndex]
 
+        // Get disconnected server count in a thread-safe way
+        let serverInfo = queue.sync { () -> (count: Int, identifiers: [String]) in
+            (disconnectedServers.count, disconnectedServers.map(\.rawValue))
+        }
+
         Current.Log
             .info(
-                "Scheduling local push reconnection attempt #\(reconnectionAttempt + 1) in \(delay) seconds for \(disconnectedServers.count) server(s)"
+                "Scheduling local push reconnection attempt #\(reconnectionAttempt + 1) in \(delay) seconds for \(serverInfo.count) server(s)"
             )
-        Current.Log.verbose("Disconnected servers: \(disconnectedServers.map(\.rawValue))")
+        Current.Log.verbose("Disconnected servers: \(serverInfo.identifiers)")
         Current.Log.verbose("Using delay index \(delayIndex) from reconnectionDelays array")
 
         reconnectionTimer = Timer.scheduledTimer(
@@ -181,13 +206,22 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     }
 
     /// Attempts to reconnect by reloading managers
+    /// Must be called on the main thread
     private func attemptReconnection() {
+        dispatchPrecondition(condition: .onQueue(.main))
+
         reconnectionAttempt += 1
+
+        // Get disconnected server info in a thread-safe way
+        let serverInfo = queue.sync { () -> (count: Int, identifiers: [String]) in
+            (disconnectedServers.count, disconnectedServers.map(\.rawValue))
+        }
+
         Current.Log
             .info(
-                "Attempting local push reconnection #\(reconnectionAttempt) for servers: \(disconnectedServers.map(\.rawValue))"
+                "Attempting local push reconnection #\(reconnectionAttempt) for servers: \(serverInfo.identifiers)"
             )
-        Current.Log.verbose("Current disconnected server count: \(disconnectedServers.count)")
+        Current.Log.verbose("Current disconnected server count: \(serverInfo.count)")
         Current.Log
             .verbose(
                 "Next delay will be: \(reconnectionDelays[min(reconnectionAttempt, reconnectionDelays.count - 1)])s"
@@ -203,7 +237,10 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     }
 
     /// Cancels any pending reconnection timer and resets the attempt counter
+    /// Must be called on the main thread
     private func cancelReconnection() {
+        dispatchPrecondition(condition: .onQueue(.main))
+
         Current.Log
             .verbose(
                 "cancelReconnection called. Timer active: \(reconnectionTimer != nil), attempt count: \(reconnectionAttempt)"
@@ -223,7 +260,13 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     private func updateManagers() {
         Current.Log.info("updateManagers called - loading NEAppPushManager preferences")
-        Current.Log.verbose("Current disconnected servers: \(disconnectedServers.map(\.rawValue))")
+
+        // Get disconnected server info in a thread-safe way
+        let disconnectedServerIds = queue.sync {
+            disconnectedServers.map(\.rawValue)
+        }
+
+        Current.Log.verbose("Current disconnected servers: \(disconnectedServerIds)")
         Current.Log.verbose("Reconnection attempt count: \(reconnectionAttempt)")
 
         NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
@@ -261,7 +304,13 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     /// Managers for removed SSIDs or disabled servers are intentionally not recreated.
     private func reloadManagersAfterSave() {
         Current.Log.info("Reloading managers after configuration changes")
-        Current.Log.verbose("Current disconnected servers: \(disconnectedServers.map(\.rawValue))")
+
+        // Get disconnected server info in a thread-safe way
+        let disconnectedServerIds = queue.sync {
+            disconnectedServers.map(\.rawValue)
+        }
+
+        Current.Log.verbose("Current disconnected servers: \(disconnectedServerIds)")
 
         NEAppPushManager.loadAllFromPreferences { [weak self] managers, error in
             guard let self else {
