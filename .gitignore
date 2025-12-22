@@ -73,8 +73,9 @@ env.sh
 .env
 
 push_certs/*
-Tools/*.ttf
-Tools/*.json
+Tools/*
+!Tools/detect_unused_strings.py
+!Tools/remove_unused_strings.py
 dSYMs/
 
 # Local configuration overrides
