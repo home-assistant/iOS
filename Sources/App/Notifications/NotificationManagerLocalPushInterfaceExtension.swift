@@ -53,8 +53,12 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                     } else {
                         Current.Log.verbose("Server \(server.identifier.rawValue) already in disconnected set")
                     }
-                    // Schedule reconnection if there's no active timer
-                    // This handles both initial disconnections and failed reconnection attempts
+                    // Always attempt to schedule reconnection for unavailable servers.
+                    // scheduleReconnectionIfNeeded() is idempotent and will only schedule if:
+                    // 1. No timer is already active (prevents duplicate timers)
+                    // 2. There are disconnected servers needing reconnection
+                    // This ensures both initial disconnections and failed reconnection attempts
+                    // properly schedule the next attempt with appropriate backoff.
                     scheduleReconnectionIfNeeded()
                 case .available, .establishing:
                     if disconnectedServers.contains(server.identifier) {
@@ -198,7 +202,9 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     /// Attempts to reconnect by reloading managers
     private func attemptReconnection() {
-        // Clear the timer reference since it has now fired
+        // Clear the timer reference first since it has now fired.
+        // This allows scheduleReconnectionIfNeeded() to schedule a new timer
+        // if this reconnection attempt fails.
         reconnectionTimer = nil
         
         reconnectionAttempt += 1
