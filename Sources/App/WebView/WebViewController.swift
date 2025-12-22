@@ -1376,7 +1376,12 @@ extension WebViewController {
         alert.addAction(.init(title: L10n.okLabel, style: .default))
         
         DispatchQueue.main.async { [weak self] in
-            self?.present(alert, animated: true)
+            guard let self else { return }
+            if presentedViewController != nil {
+                Current.Log.info("Navigation error alert not shown because another view is already presented")
+                return
+            }
+            present(alert, animated: true)
         }
     }
 
