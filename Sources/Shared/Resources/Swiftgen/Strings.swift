@@ -300,6 +300,34 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "app_intents.assist.refresh_warning.title") }
       }
     }
+    public enum Automations {
+      public enum Automation {
+        /// Automation
+        public static var title: String { return L10n.tr("Localizable", "app_intents.automations.automation.title") }
+      }
+      public enum FailureMessage {
+        /// Automation "%@" failed to execute, please check your logs.
+        public static func content(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.automations.failure_message.content", String(describing: p1))
+        }
+      }
+      public enum Icon {
+        /// Icon
+        public static var title: String { return L10n.tr("Localizable", "app_intents.automations.icon.title") }
+      }
+      public enum Parameter {
+        public enum Automation {
+          /// Automation
+          public static var title: String { return L10n.tr("Localizable", "app_intents.automations.parameter.automation.title") }
+        }
+      }
+      public enum SuccessMessage {
+        /// Automation "%@" executed.
+        public static func content(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_intents.automations.success_message.content", String(describing: p1))
+        }
+      }
+    }
     public enum ClosedStateIcon {
       /// Icon for closed state
       public static var title: String { return L10n.tr("Localizable", "app_intents.closed_state_icon.title") }
@@ -318,6 +346,18 @@ public enum L10n {
       /// Cover
       public static var title: String { return L10n.tr("Localizable", "app_intents.cover.title") }
     }
+    public enum Fan {
+      /// Fan
+      public static var title: String { return L10n.tr("Localizable", "app_intents.fan.title") }
+      public enum OffStateIcon {
+        /// Icon for off state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.off_state_icon.title") }
+      }
+      public enum OnStateIcon {
+        /// Icon for on state
+        public static var title: String { return L10n.tr("Localizable", "app_intents.fan.on_state_icon.title") }
+      }
+    }
     public enum HapticConfirmation {
       /// Haptic confirmation
       public static var title: String { return L10n.tr("Localizable", "app_intents.haptic_confirmation.title") }
@@ -330,6 +370,10 @@ public enum L10n {
       public enum Cover {
         /// Control cover
         public static var title: String { return L10n.tr("Localizable", "app_intents.intent.cover.title") }
+      }
+      public enum Fan {
+        /// Control fan
+        public static var title: String { return L10n.tr("Localizable", "app_intents.intent.fan.title") }
       }
       public enum Light {
         /// Control light
@@ -4411,6 +4455,16 @@ public enum L10n {
       /// Configure
       public static var unknownConfiguration: String { return L10n.tr("Localizable", "widgets.assist.unknown_configuration") }
     }
+    public enum Automation {
+      public enum Trigger {
+        /// Trigger automation
+        public static var title: String { return L10n.tr("Localizable", "widgets.automation.trigger.title") }
+      }
+    }
+    public enum Automations {
+      /// Run Automation
+      public static var description: String { return L10n.tr("Localizable", "widgets.automations.description") }
+    }
     public enum Button {
       /// Reload all widgets
       public static var reloadTimeline: String { return L10n.tr("Localizable", "widgets.button.reload_timeline") }
@@ -4425,6 +4479,16 @@ public enum L10n {
           /// Choose a pipeline
           public static var placeholder: String { return L10n.tr("Localizable", "widgets.controls.assist.pipeline.placeholder") }
         }
+      }
+      public enum Automation {
+        /// Run automation
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.automation.description") }
+        /// Automation
+        public static var displayName: String { return L10n.tr("Localizable", "widgets.controls.automation.display_name") }
+      }
+      public enum Automations {
+        /// Choose automation
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.automations.placeholder_title") }
       }
       public enum Button {
         /// Press button
@@ -4441,6 +4505,14 @@ public enum L10n {
         public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.cover.placeholder_title") }
         /// Cover
         public static var title: String { return L10n.tr("Localizable", "widgets.controls.cover.title") }
+      }
+      public enum Fan {
+        /// Turn on/off your fan
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.fan.description") }
+        /// Choose fan
+        public static var placeholderTitle: String { return L10n.tr("Localizable", "widgets.controls.fan.placeholder_title") }
+        /// Fan
+        public static var title: String { return L10n.tr("Localizable", "widgets.controls.fan.title") }
       }
       public enum Light {
         /// Turn on/off your light

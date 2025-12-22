@@ -780,7 +780,7 @@ public class HomeAssistantAPI {
         switch domain {
         case .button, .inputButton:
             request = .pressButton(domain: domain, entityId: entityId)
-        case .cover, .inputBoolean, .light, .switch:
+        case .cover, .inputBoolean, .light, .switch, .fan:
             request = .toggleDomain(domain: domain, entityId: entityId)
         case .scene:
             request = .applyScene(entityId: entityId)
@@ -798,6 +798,8 @@ public class HomeAssistantAPI {
             }
         case .sensor, .binarySensor, .zone, .person, .camera:
             break
+        case .automation:
+            request = .trigger(entityId: entityId)
         }
         if let request {
             return connection.send(request).promise

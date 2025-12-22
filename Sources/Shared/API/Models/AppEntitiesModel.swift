@@ -14,6 +14,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
     /// ServerId: Int
     private var lastEntitiesCount: [String: Int] = [:]
     private let domainsAppUse: [String] = [
+        Domain.automation,
         Domain.scene,
         Domain.script,
         Domain.light,
@@ -26,6 +27,7 @@ final class AppEntitiesModel: AppEntitiesModelProtocol {
         Domain.inputButton,
         Domain.lock,
         Domain.camera,
+        Domain.fan,
     ].map(\.rawValue)
 
     public func updateModel(_ entities: Set<HAEntity>, server: Server) {
