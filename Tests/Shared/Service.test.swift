@@ -4,6 +4,7 @@ import Testing
 struct ServiceTests {
     @Test func testEnumCases() async throws {
         // Test raw values
+        #expect(Service.turnOn.rawValue == "turn_on", "Service.turnOn raw value should be 'turn_on'")
         #expect(Service.turnOff.rawValue == "turn_off", "Service.turnOff raw value should be 'turn_off'")
         #expect(Service.toggle.rawValue == "toggle", "Service.toggle raw value should be 'toggle'")
         #expect(Service.press.rawValue == "press", "Service.press raw value should be 'press'")
