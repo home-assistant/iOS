@@ -562,6 +562,25 @@ public enum L10n {
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
   }
 
+  public enum CameraList {
+    /// Search cameras
+    public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
+    /// Cameras
+    public static var title: String { return L10n.tr("Localizable", "camera_list.title") }
+    public enum Empty {
+      /// No camera entities found in your Home Assistant setup
+      public static var message: String { return L10n.tr("Localizable", "camera_list.empty.message") }
+      /// No Cameras
+      public static var title: String { return L10n.tr("Localizable", "camera_list.empty.title") }
+    }
+    public enum NoResults {
+      /// No cameras match your search
+      public static var message: String { return L10n.tr("Localizable", "camera_list.no_results.message") }
+      /// No Results
+      public static var title: String { return L10n.tr("Localizable", "camera_list.no_results.title") }
+    }
+  }
+
   public enum CarPlay {
     public enum Action {
       public enum Intro {
@@ -4533,6 +4552,10 @@ public enum L10n {
             public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_camera.configuration.parameter.entity") }
           }
         }
+      }
+      public enum OpenCamerasList {
+        /// Opens a list of all cameras
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_cameras_list.description") }
       }
       public enum OpenCover {
         /// Opens the selected cover entity inside the app
