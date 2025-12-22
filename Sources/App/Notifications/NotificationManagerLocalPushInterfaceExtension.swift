@@ -24,7 +24,18 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
     // Reconnection timer properties
     private var reconnectionTimer: Timer?
     private var reconnectionAttempt = 0
-    private let reconnectionDelays: [TimeInterval] = [5, 10, 30]
+    /// Backoff delays (in seconds) between reconnection attempts:
+    /// - 5s: quick initial retry for transient issues
+    /// - 10s: short backoff for repeated transient failures
+    /// - 30s: longer backoff for more persistent connectivity problems
+    private static let reconnectionDelayInitial: TimeInterval = 5
+    private static let reconnectionDelayShortBackoff: TimeInterval = 10
+    private static let reconnectionDelayLongBackoff: TimeInterval = 30
+    private let reconnectionDelays: [TimeInterval] = [
+        NotificationManagerLocalPushInterfaceExtension.reconnectionDelayInitial,
+        NotificationManagerLocalPushInterfaceExtension.reconnectionDelayShortBackoff,
+        NotificationManagerLocalPushInterfaceExtension.reconnectionDelayLongBackoff
+    ]
 
     // Track servers that have failed connections
     private var disconnectedServers = Set<Identifier<Server>>()
