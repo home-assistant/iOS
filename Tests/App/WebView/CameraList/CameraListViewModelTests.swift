@@ -67,7 +67,8 @@ class CameraListViewModelTests: XCTestCase {
         ]
         sut.selectedServerId = "test_server"
         
-        // Give promises a chance to resolve
+        // Note: RunLoop is needed because loadCameraOrders() uses .done{} which schedules
+        // callbacks asynchronously even though MockDiskCache returns fulfilled promises
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
         
         // When: Getting grouped cameras
