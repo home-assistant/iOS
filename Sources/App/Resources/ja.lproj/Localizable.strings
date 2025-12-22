@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "パイプライン";
 "app_intents.assist.preferred_pipeline.title" = "優先";
 "app_intents.assist.refresh_warning.title" = "アシストパイプラインが見つかりませんか？アプリでアシストを開き、パイプラインの一覧を更新してください。";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "クローズド状態のアイコン";
 "app_intents.controls.assist.parameter.with_voice" = "音声付き";
 "app_intents.controls.assist.title" = "アプリでアシスト";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "音量調節";
 "assist_pipeline_picker.no_pipelines" = "利用可能なパイプラインはありません";
 "assist_pipeline_picker.placeholder" = "パイプラインを選択";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "キャンセル";
 "carPlay.action.intro.item.body" = "iPhoneで続けるをタップ";
 "carPlay.action.intro.item.title" = "最初のアクションを作成する";
@@ -1203,6 +1214,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "watch.labels.complication_text_areas.row3_column2.label" = "行3、列2";
 "watch.labels.complication_text_areas.trailing.description" = "ゲージの末尾に表示するテキスト。";
 "watch.labels.complication_text_areas.trailing.label" = "トレーリング";
+"watch.labels.no_action" = "アクションが構成されていません。このメッセージを閉じるには、電話機でアクションを構成してください。";
 "watch.labels.no_config" = "利用できる時計の設定がありません。iOS アプリを開き、コンパニオン アプリの設定で設定を作成してください。";
 "watch.labels.selected_pipeline.title" = "パイプライン";
 "watch.placeholder_complication_name" = "プレースホルダー";
@@ -1232,10 +1244,15 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.assist.description" = "アプリでアシストを開く";
 "widgets.assist.title" = "アシスト";
 "widgets.assist.unknown_configuration" = "設定";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "すべてのウィジェットを再読み込み";
 "widgets.controls.assist.description" = "Home Assistantアプリでアシストを開く";
 "widgets.controls.assist.pipeline.placeholder" = "パイプラインを選択";
 "widgets.controls.assist.title" = "アシスト";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "ボタンを押す";
 "widgets.controls.button.placeholder_title" = "ボタンを選択";
 "widgets.controls.button.title" = "ボタン";
@@ -1251,6 +1268,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.controls.open_camera.configuration.parameter.entity" = "カメラ";
 "widgets.controls.open_camera.configuration.title" = "カメラを開く";
 "widgets.controls.open_camera.description" = "選択したカメラエンティティをアプリ内で開きます";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "カバー";
 "widgets.controls.open_cover.configuration.title" = "カバーを開く";
 "widgets.controls.open_cover.description" = "選択したカバーエンティティをアプリ内で開きます";

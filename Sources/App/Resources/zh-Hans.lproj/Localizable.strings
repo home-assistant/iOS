@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "管道";
 "app_intents.assist.preferred_pipeline.title" = "首选";
 "app_intents.assist.refresh_warning.title" = "找不到您的语音助手管道 ？在应用中打开语音助手，刷新管道列表。";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "关闭状态的图标";
 "app_intents.controls.assist.parameter.with_voice" = "带有语音";
 "app_intents.controls.assist.title" = "应用中语音助手";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "音量控制";
 "assist_pipeline_picker.no_pipelines" = "没有可用的管道";
 "assist_pipeline_picker.placeholder" = "选取管道";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "取消";
 "carPlay.action.intro.item.body" = "在您的 iPhone 上点击并继续";
 "carPlay.action.intro.item.title" = "创建您的第一个动作";
@@ -1203,6 +1214,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "watch.labels.complication_text_areas.row3_column2.label" = "第3行，第2列";
 "watch.labels.complication_text_areas.trailing.description" = "显示在仪表后缘的文本。";
 "watch.labels.complication_text_areas.trailing.label" = "结尾";
+"watch.labels.no_action" = "未配置动作。请在手机上配置动作以消除此消息。";
 "watch.labels.no_config" = "没有可用的手表配置，请打开 iOS 应用并在配套应用中创建您的配置。";
 "watch.labels.selected_pipeline.title" = "管道";
 "watch.placeholder_complication_name" = "占位符";
@@ -1231,10 +1243,15 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.assist.description" = "打开应用中的语音助手";
 "widgets.assist.title" = "语音助手";
 "widgets.assist.unknown_configuration" = "配置";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "重新加载所有小组件";
 "widgets.controls.assist.description" = "打开 Home Assistant 应用中的语音助手";
 "widgets.controls.assist.pipeline.placeholder" = "选择管道";
 "widgets.controls.assist.title" = "语音助手";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "按下按钮";
 "widgets.controls.button.placeholder_title" = "选择按钮";
 "widgets.controls.button.title" = "按钮";
@@ -1250,6 +1267,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "widgets.controls.open_camera.configuration.parameter.entity" = "摄像头";
 "widgets.controls.open_camera.configuration.title" = "打开摄像头";
 "widgets.controls.open_camera.description" = "在应用中打开选定的摄像头实体";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "覆盖";
 "widgets.controls.open_cover.configuration.title" = "打开覆盖";
 "widgets.controls.open_cover.description" = "在应用中打开选定的覆盖实体";

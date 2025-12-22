@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "Saluran";
 "app_intents.assist.preferred_pipeline.title" = "Diutamakan";
 "app_intents.assist.refresh_warning.title" = "Tidak dapat menemukan saluran Assist Anda? Buka Assist di aplikasi untuk menyegarkan daftar salurannya.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Ikon untuk status tertutup";
 "app_intents.controls.assist.parameter.with_voice" = "Dengan suara";
 "app_intents.controls.assist.title" = "Assist dalam aplikasi";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "Pengatur volume";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Pilih saluran";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Batalkan";
 "carPlay.action.intro.item.body" = "Ketuk untuk melanjutkan di iPhone Anda";
 "carPlay.action.intro.item.title" = "Buat aksi pertama Anda";
@@ -1203,6 +1214,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "watch.labels.complication_text_areas.row3_column2.label" = "Baris 3, Kolom 2";
 "watch.labels.complication_text_areas.trailing.description" = "Teks yang akan ditampilkan pada tepi akhir gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "DI Akhir";
+"watch.labels.no_action" = "Tidak ada aksi yang dikonfigurasi. Konfigurasikan aksi di ponsel Anda untuk menutup pesan ini.";
 "watch.labels.no_config" = "Tidak ada konfigurasi Watch yang tersedia, buka Aplikasi iOS dan buat konfigurasi Anda di bawah pengaturan aplikasi pendamping.";
 "watch.labels.selected_pipeline.title" = "Saluran";
 "watch.placeholder_complication_name" = "Penampung";
@@ -1232,10 +1244,15 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.assist.description" = "Buka Assist di aplikasi";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Konfigurasikan";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Muat ulang semua widget";
 "widgets.controls.assist.description" = "Buka Assist di aplikasi Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Pilih saluran";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Press button";
 "widgets.controls.button.placeholder_title" = "Choose button";
 "widgets.controls.button.title" = "Button";
@@ -1251,6 +1268,7 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.controls.open_camera.configuration.parameter.entity" = "Camera";
 "widgets.controls.open_camera.configuration.title" = "Open Camera";
 "widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Cover";
 "widgets.controls.open_cover.configuration.title" = "Open Cover";
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";

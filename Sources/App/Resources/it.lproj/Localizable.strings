@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferito";
 "app_intents.assist.refresh_warning.title" = "Non riesci a trovare la tua pipeline di Assist? Apri Assist nell'app per aggiornare l'elenco delle pipeline.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Icona per stato chiuso";
 "app_intents.controls.assist.parameter.with_voice" = "Con voce";
 "app_intents.controls.assist.title" = "Assistenza in app";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "Controllo del volume";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Seleziona pipeline";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Annulla";
 "carPlay.action.intro.item.body" = "Tocca per continuare sul tuo iPhone";
 "carPlay.action.intro.item.title" = "Crea la tua prima azione";
@@ -1204,6 +1215,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "Riga 3, colonna 2";
 "watch.labels.complication_text_areas.trailing.description" = "Il testo da visualizzare sul bordo posteriore dell'indicatore.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
+"watch.labels.no_action" = "Nessuna azione configurata. Configura le azioni sul tuo telefono per chiudere questo messaggio.";
 "watch.labels.no_config" = "Nessuna configurazione disponibile per l'orologio. Apri l'app iOS e crea la tua configurazione nelle impostazioni dell'app complementare.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Segnaposto";
@@ -1233,10 +1245,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.assist.description" = "Apri Assist nell'app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configura";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Ricarica tutti i widget";
 "widgets.controls.assist.description" = "Apri Assist nell'app Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Scegli una pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Press button";
 "widgets.controls.button.placeholder_title" = "Choose button";
 "widgets.controls.button.title" = "Button";
@@ -1252,6 +1269,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_camera.configuration.parameter.entity" = "Camera";
 "widgets.controls.open_camera.configuration.title" = "Open Camera";
 "widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Cover";
 "widgets.controls.open_cover.configuration.title" = "Open Cover";
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";
