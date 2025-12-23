@@ -22,6 +22,11 @@ final class HomeViewModel: ObservableObject {
         let entities: [HAAppEntity]
     }
 
+    private var allowedDomains: [Domain] = [
+        .light,
+        .cover,
+    ]
+
     init(server: Server) {
         self.server = server
     }
@@ -39,10 +44,7 @@ final class HomeViewModel: ObservableObject {
             // Filter entities for the selected server
             let serverEntities = allEntities.filter {
                 $0.serverId == serverId &&
-                    [
-                        Domain.light.rawValue,
-                        Domain.cover.rawValue,
-                    ].contains($0.domain)
+                    allowedDomains.map(\.rawValue).contains($0.domain)
             }
 
             // Fetch all areas for this server
@@ -118,7 +120,7 @@ final class HomeViewModel: ObservableObject {
         if server.info.version > .canSubscribeEntitiesChangesWithFilter {
             filter = [
                 "include": [
-                    "domains": [Domain.light.rawValue],
+                    "domains": allowedDomains.map(\.rawValue),
                 ],
             ]
         }

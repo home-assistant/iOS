@@ -116,6 +116,10 @@ public enum Domain: String, CaseIterable {
                 return state == .on ?
                     CoreStrings.commonStateOpen :
                     CoreStrings.commonStateClosed
+            case .shade:
+                return state == .on ?
+                    CoreStrings.componentCoverEntityComponentStateOpen :
+                    CoreStrings.componentCoverEntityComponentStateClosed
             default:
                 // For other device classes without specific strings, use generic on/off
                 return state == .on ?
