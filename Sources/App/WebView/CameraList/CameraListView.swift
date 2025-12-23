@@ -6,6 +6,8 @@ struct CameraListView: View {
     @StateObject private var viewModel: CameraListViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCamera: (camera: HAAppEntity, server: Server)?
+    @State private var isEditing = false
+    @State private var showSectionReorder = false
 
     init(serverId: String? = nil) {
         self._viewModel = .init(wrappedValue: CameraListViewModel(serverId: serverId))
@@ -25,6 +27,22 @@ struct CameraListView: View {
             .navigationTitle(L10n.CameraList.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if !viewModel.cameras.isEmpty {
+                        Button(isEditing ? L10n.CameraList.Edit.On.title : L10n.CameraList.Edit.Off.title) {
+                            isEditing.toggle()
+                        }
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    if !viewModel.cameras.isEmpty, viewModel.groupedCameras.count > 1 {
+                        Button(action: {
+                            showSectionReorder = true
+                        }) {
+                            Image(systemSymbol: .listDash)
+                        }
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
                         dismiss()
@@ -33,6 +51,9 @@ struct CameraListView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .sheet(isPresented: $showSectionReorder) {
+            CameraSectionReorderView(viewModel: viewModel)
+        }
         .fullScreenCover(item: Binding(
             get: { selectedCamera.map { CameraPresentation(camera: $0.camera, server: $0.server) } },
             set: { selectedCamera = $0.map { ($0.camera, $0.server) } }
@@ -50,15 +71,26 @@ struct CameraListView: View {
                 ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
             }
 
-            ForEach(viewModel.filteredCameras, id: \.id) { camera in
-                Button(action: {
-                    openCamera(camera)
-                }, label: {
-                    CameraListRow(camera: camera, areaName: viewModel.areaName(for: camera))
-                })
-                .tint(.accentColor)
+            ForEach(viewModel.groupedCameras, id: \.area) { group in
+                Section(header: Text(group.area)) {
+                    ForEach(group.cameras, id: \.id) { camera in
+                        Button(action: {
+                            if !isEditing {
+                                openCamera(camera)
+                            }
+                        }, label: {
+                            CameraListRow(camera: camera)
+                        })
+                        .tint(.accentColor)
+                        .disabled(isEditing)
+                    }
+                    .onMove { source, destination in
+                        viewModel.moveCameras(in: group.area, from: source, to: destination)
+                    }
+                }
             }
         }
+        .environment(\.editMode, .constant(isEditing ? .active : .inactive))
         .searchable(text: $viewModel.searchTerm, prompt: L10n.CameraList.searchPlaceholder)
         .onAppear {
             viewModel.fetchCameras()
@@ -113,37 +145,6 @@ private struct CameraPresentation: Identifiable {
     let server: Server
 
     var id: String { camera.id }
-}
-
-struct CameraListRow: View {
-    let camera: HAAppEntity
-    let areaName: String?
-
-    var body: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: .videoFill)
-                .font(.title2)
-                .foregroundStyle(.haPrimary)
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                Text(camera.name)
-                    .font(.body)
-                    .foregroundStyle(Color.primary)
-                HStack(spacing: DesignSystem.Spaces.half) {
-                    if let areaName {
-                        Text(areaName)
-                            .font(.footnote)
-                            .foregroundStyle(Color.secondary)
-                    } else {
-                        Text(camera.entityId)
-                            .font(.footnote)
-                            .foregroundStyle(Color.secondary)
-                    }
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, DesignSystem.Spaces.half)
-    }
 }
 
 #Preview {

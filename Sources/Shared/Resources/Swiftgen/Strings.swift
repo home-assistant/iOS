@@ -585,10 +585,22 @@ public enum L10n {
   }
 
   public enum CameraList {
+    /// Not in a room
+    public static var noArea: String { return L10n.tr("Localizable", "camera_list.no_area") }
     /// Search cameras
     public static var searchPlaceholder: String { return L10n.tr("Localizable", "camera_list.search_placeholder") }
     /// Cameras
     public static var title: String { return L10n.tr("Localizable", "camera_list.title") }
+    public enum Edit {
+      public enum Off {
+        /// Edit
+        public static var title: String { return L10n.tr("Localizable", "camera_list.edit.off.title") }
+      }
+      public enum On {
+        /// Done
+        public static var title: String { return L10n.tr("Localizable", "camera_list.edit.on.title") }
+      }
+    }
     public enum Empty {
       /// No camera entities found in your Home Assistant setup
       public static var message: String { return L10n.tr("Localizable", "camera_list.empty.message") }
@@ -600,6 +612,12 @@ public enum L10n {
       public static var message: String { return L10n.tr("Localizable", "camera_list.no_results.message") }
       /// No Results
       public static var title: String { return L10n.tr("Localizable", "camera_list.no_results.title") }
+    }
+    public enum Reorder {
+      public enum Section {
+        /// Reorder sections
+        public static var title: String { return L10n.tr("Localizable", "camera_list.reorder.section.title") }
+      }
     }
   }
 
@@ -3887,6 +3905,8 @@ public enum L10n {
       }
     }
     public enum Labels {
+      /// No actions configured. Configure actions on your phone to dismiss this message.
+      public static var noAction: String { return L10n.tr("Localizable", "watch.labels.no_action") }
       /// No watch configuration available, open the iOS App and create your configuration under companion app settings.
       public static var noConfig: String { return L10n.tr("Localizable", "watch.labels.no_config") }
       public enum ComplicationGroup {

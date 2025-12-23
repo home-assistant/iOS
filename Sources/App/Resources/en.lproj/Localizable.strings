@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Preferred";
 "app_intents.assist.refresh_warning.title" = "Can't find your Assist pipeline? Open Assist in the app to refresh pipelines list.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Icon for closed state";
 "app_intents.controls.assist.parameter.with_voice" = "With voice";
 "app_intents.controls.assist.title" = "Assist in app";
@@ -82,11 +87,6 @@
 "app_intents.perform_action.action_parameter_disambiguation_intro" = "There are %@ options matching ‘%@’.";
 "app_intents.perform_action.response_failure" = "Failed: %@";
 "app_intents.perform_action.response_success" = "Done";
-"app_intents.automations.automation.title" = "Automation";
-"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
-"app_intents.automations.icon.title" = "Icon";
-"app_intents.automations.parameter.automation.title" = "Automation";
-"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.scenes.failure_message.content" = "Scene \"%@\" failed to execute, please check your logs.";
 "app_intents.scenes.icon.title" = "Icon";
 "app_intents.scenes.parameter.scene.title" = "Scene";
@@ -128,6 +128,12 @@
 "assist.settings.modern_ui.footer" = "Enable the new modern interface design for Assist. This is a labs feature and may have limited functionality as well as it can be removed without previous notice.";
 "assist_pipeline_picker.no_pipelines" = "No pipelines available";
 "assist_pipeline_picker.placeholder" = "Pick pipeline";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Cancel";
 "carPlay.action.intro.item.body" = "Tap to continue on your iPhone";
 "carPlay.action.intro.item.title" = "Create your first action";
@@ -1219,6 +1225,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "Row 3, Column 2";
 "watch.labels.complication_text_areas.trailing.description" = "The text to display on the trailing edge of the gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
+"watch.labels.no_action" = "No actions configured. Configure actions on your phone to dismiss this message.";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Placeholder";
@@ -1248,10 +1255,15 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.assist.description" = "Open Assist in the app";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Configure";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Reload all widgets";
 "widgets.controls.assist.description" = "Open Assist in Home Assistant app";
 "widgets.controls.assist.pipeline.placeholder" = "Choose a pipeline";
 "widgets.controls.assist.title" = "Assist";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Press button";
 "widgets.controls.button.placeholder_title" = "Choose button";
 "widgets.controls.button.title" = "Button";
@@ -1291,9 +1303,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_switch.configuration.parameter.entity" = "Switch";
 "widgets.controls.open_switch.configuration.title" = "Open Switch";
 "widgets.controls.open_switch.description" = "Opens the selected switch entity inside the app";
-"widgets.controls.automation.description" = "Run automation";
-"widgets.controls.automation.display_name" = "Automation";
-"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.scene.description" = "Run scene";
 "widgets.controls.scene.display_name" = "Scene";
 "widgets.controls.scenes.placeholder_title" = "Choose scene";
@@ -1351,8 +1360,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.preview.empty.create.button" = "Create widget";
 "widgets.reload_widgets.app_intent.description" = "Reload all widgets timelines.";
 "widgets.reload_widgets.app_intent.title" = "Reload widgets";
-"widgets.automation.trigger.title" = "Trigger automation";
-"widgets.automations.description" = "Run Automation";
 "widgets.scene.activate.title" = "Activate scene";
 "widgets.scene.description.title" = "Run Scene";
 "widgets.scripts.description" = "Run Scripts";
@@ -1361,12 +1368,14 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.sensors.description" = "Display state of sensors";
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
-"yes_label" = "Yes";
-
-/* Camera List */
 "camera_list.title" = "Cameras";
 "camera_list.search_placeholder" = "Search cameras";
 "camera_list.empty.title" = "No Cameras";
 "camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
 "camera_list.no_results.title" = "No Results";
 "camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_area" = "Not in a room";
+"camera_list.reorder.section.title" = "Reorder sections";
+"camera_list.edit.on.title" = "Done";
+"camera_list.edit.off.title" = "Edit";
+"yes_label" = "Yes";

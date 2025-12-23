@@ -57,6 +57,11 @@
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Προτιμώμενο";
 "app_intents.assist.refresh_warning.title" = "Δεν μπορείτε να βρείτε το Assist pipeline σας; Ανοίξτε τον Βοηθό στην εφαρμογή για να ανανεώσετε τη λίστα pipelines.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Εικονίδιο για κατάσταση κλειστό";
 "app_intents.controls.assist.parameter.with_voice" = "Με φωνή";
 "app_intents.controls.assist.title" = "Βοηθός στην εφαρμογή";
@@ -113,6 +118,12 @@
 "assist.watch.volume.title" = "Ελεγχος έντασης";
 "assist_pipeline_picker.no_pipelines" = "Δεν υπάρχουν διαθέσιμα pipelines";
 "assist_pipeline_picker.placeholder" = "Επιλογή pipeline";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
@@ -1204,6 +1215,7 @@
 "watch.labels.complication_text_areas.row3_column2.label" = "Γραμμή 3, Στήλη 2";
 "watch.labels.complication_text_areas.trailing.description" = "Το κείμενο που θα εμφανίζεται στο τελικό άκρο του μετρητή.";
 "watch.labels.complication_text_areas.trailing.label" = "Ακολουθία";
+"watch.labels.no_action" = "Δεν έχουν διαμορφωθεί ενέργειες. Διαμορφώστε τις ενέργειες στο τηλέφωνό σας για να παραβλέψετε αυτό το μήνυμα.";
 "watch.labels.no_config" = "Δεν υπάρχει διαθέσιμη διαμόρφωση ρολογιού, ανοίξτε την εφαρμογή για iOS και δημιουργήστε τη διαμόρφωσή σας στις ρυθμίσεις της εφαρμογής companion.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Σύμβολο κράτησης θέσης";
@@ -1233,10 +1245,15 @@
 "widgets.assist.description" = "Ανοίξτε το Assist στην εφαρμογή";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Διαμόρφωση";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Επαναφόρτωση όλων των γραφικών στοιχείων";
 "widgets.controls.assist.description" = "Ανοίξτε τον βοηθό στην εφαρμογή Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Επιλέξτε ένα pipeline";
 "widgets.controls.assist.title" = "Βοηθός";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Πάτημα κουμπιού";
 "widgets.controls.button.placeholder_title" = "Επιλογή κουμπιού";
 "widgets.controls.button.title" = "Κουμπί";
@@ -1252,6 +1269,7 @@
 "widgets.controls.open_camera.configuration.parameter.entity" = "Κάμερα";
 "widgets.controls.open_camera.configuration.title" = "Ανοιγμα κάμερας";
 "widgets.controls.open_camera.description" = "Ανοίγει την επιλεγμένη οντότητα κάμερας μέσα στην εφαρμογή";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Κάλυμμα";
 "widgets.controls.open_cover.configuration.title" = "Ανοιγμα καλύμματος";
 "widgets.controls.open_cover.description" = "Ανοίγει την επιλεγμένη οντότητα καλύμματος μέσα στην εφαρμογή";
