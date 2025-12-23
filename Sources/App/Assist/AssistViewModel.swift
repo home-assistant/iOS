@@ -92,7 +92,6 @@ final class AssistViewModel: NSObject, ObservableObject {
         // Remove text from input to make animation look better
         inputText = ""
 
-
         audioRecorder.startRecording()
         // Wait until green light from recorder delegate 'didStartRecording'
     }
@@ -220,8 +219,6 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - On-Device Transcription Methods
-
-
 }
 
 extension AssistViewModel: AudioRecorderDelegate {
