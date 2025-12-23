@@ -39,7 +39,7 @@ struct AssistSettingsView: View {
                         }
                     }
                 } header: {
-                    Label(L10n.Assist.Settings.header, systemSymbol: .flaskFill)
+                    Label(L10n.Assist.Settings.Labs.header, systemSymbol: .flaskFill)
                 } footer: {
                     Text(L10n.Assist.Settings.ModernUi.footer)
                 }

@@ -540,13 +540,17 @@ public enum L10n {
       public static var title: String { return L10n.tr("Localizable", "assist.pipelines_picker.title") }
     }
     public enum Settings {
-      /// Labs
-      public static var header: String { return L10n.tr("Localizable", "assist.settings.modern_ui.header") }
       /// Assist Settings
       public static var title: String { return L10n.tr("Localizable", "assist.settings.title") }
+      public enum Labs {
+        /// Labs
+        public static var header: String { return L10n.tr("Localizable", "assist.settings.labs.header") }
+      }
       public enum ModernUi {
         /// Enable the new modern interface design for Assist. This is a labs feature and may have limited functionality as well as it can be removed without previous notice.
         public static var footer: String { return L10n.tr("Localizable", "assist.settings.modern_ui.footer") }
+        /// Labs
+        public static var header: String { return L10n.tr("Localizable", "assist.settings.modern_ui.header") }
         /// Experimental UI
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.modern_ui.toggle") }
         public enum Theme {
