@@ -54,7 +54,21 @@ final class WatchCommunicatorService {
         InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
             Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
 
-            guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
+            guard let self else { return }
+
+            // Handle custom syncComplication message (paginated approach)
+            if message.identifier == WatchComplicationSyncMessages.Identifier.syncComplication {
+                syncSingleComplication(message: message)
+                return
+            }
+
+            // Handle legacy syncComplications message (for backward compatibility)
+            if message.identifier == WatchComplicationSyncMessages.Identifier.syncComplications {
+                syncComplications(message: message)
+                return
+            }
+
+            guard let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
                 Current.Log
                     .error(
                         "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
@@ -67,6 +81,10 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
             case .watchConfig:
                 watchConfig(message: message)
+            case .syncServers:
+                syncServers(message: message)
+            case .renderTemplates:
+                renderTemplates(message: message)
             case .actionRowPressed:
                 actionRowPressed(message: message)
             case .pushAction:
@@ -151,6 +169,269 @@ final class WatchCommunicatorService {
     private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
         message.reply(.init(identifier: responseIdentifier))
+    }
+
+    /// Syncs server configuration to the watch via send/reply pattern
+    ///
+    /// This method handles requests from the watch for server configuration data.
+    /// It serializes the current server state and sends it back via a reply message.
+    ///
+    /// Protocol:
+    /// 1. Watch sends "syncServers" InteractiveImmediateMessage
+    /// 2. Phone replies with "syncServersResponse" containing server data
+    /// 3. Watch restores servers from the data (same as ExtensionDelegate.updateContext does)
+    ///
+    /// - Parameter message: The InteractiveImmediateMessage requesting servers
+    private func syncServers(message: InteractiveImmediateMessage) {
+        Current.Log.info("Watch requested servers sync")
+
+        let serversData = Current.servers.restorableState()
+
+        Current.Log.info("Sending \(serversData.count) bytes of server data to watch")
+
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.syncServersResponse.rawValue,
+            content: ["servers": serversData]
+        ))
+    }
+
+    /// Renders Jinja2 templates on behalf of the watch
+    ///
+    /// This method handles template rendering requests from watch complications.
+    /// The iPhone is better positioned to render templates because:
+    /// - Better network connectivity to Home Assistant
+    /// - More processing power
+    /// - Can handle longer timeouts without blocking the UI
+    ///
+    /// Protocol:
+    /// 1. Watch sends "renderTemplates" message with templates dictionary and server ID
+    /// 2. iPhone renders templates via Home Assistant API
+    /// 3. iPhone replies with rendered values or error
+    ///
+    /// - Parameter message: The InteractiveImmediateMessage containing:
+    ///   - "templates": [String: String] - Dictionary of template keys to template strings
+    ///   - "serverIdentifier": String - Server identifier to use for rendering
+    private func renderTemplates(message: InteractiveImmediateMessage) {
+        guard let templatesDict = message.content["templates"] as? [String: String],
+              let serverIdentifier = message.content["serverIdentifier"] as? String else {
+            Current.Log.error("Invalid renderTemplates request - missing templates or serverIdentifier")
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                content: ["error": "Missing required parameters"]
+            ))
+            return
+        }
+
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverIdentifier }),
+              let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available for server \(serverIdentifier)")
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                content: ["error": "No API available for server"]
+            ))
+            return
+        }
+
+        Current.Log.info("Rendering \(templatesDict.count) templates for server \(serverIdentifier)")
+
+        // Create a combined template string with keys as markers
+        // Format: "key1:::{{template1}}|||key2:::{{template2}}|||..."
+        let combinedTemplate = templatesDict
+            .map { key, template in "\(key):::\(template)" }
+            .joined(separator: "|||")
+
+        // Send render request to Home Assistant
+        connection.send(.init(
+            type: .rest(.post, "template"),
+            data: ["template": combinedTemplate],
+            shouldRetry: true
+        )) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case let .success(data):
+                // Parse the response
+                var renderedResults: [String: Any] = [:]
+
+                switch data {
+                case let .primitive(response):
+                    if let renderedString = response as? String {
+                        // Split the response back into individual results
+                        let parts = renderedString.components(separatedBy: "|||")
+
+                        for part in parts {
+                            let keyValue = part.components(separatedBy: ":::")
+                            if keyValue.count == 2 {
+                                let key = keyValue[0]
+                                let value = keyValue[1]
+                                renderedResults[key] = value
+                            }
+                        }
+
+                        if renderedResults.count == templatesDict.count {
+                            Current.Log.info("Successfully rendered \(renderedResults.count) templates")
+                            message.reply(.init(
+                                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                                content: ["rendered": renderedResults]
+                            ))
+                        } else {
+                            Current.Log
+                                .error(
+                                    "Rendered count mismatch: expected \(templatesDict.count), got \(renderedResults.count)"
+                                )
+                            message.reply(.init(
+                                identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                                content: ["error": "Rendered count mismatch"]
+                            ))
+                        }
+                    } else {
+                        Current.Log.error("Template rendering returned non-string response")
+                        message.reply(.init(
+                            identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                            content: ["error": "Invalid response format"]
+                        ))
+                    }
+
+                default:
+                    Current.Log.error("Template rendering returned unexpected data type")
+                    message.reply(.init(
+                        identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                        content: ["error": "Unexpected response data type"]
+                    ))
+                }
+
+            case let .failure(error):
+                Current.Log.error("Failed to render templates: \(error)")
+                message.reply(.init(
+                    identifier: InteractiveImmediateResponses.renderTemplatesResponse.rawValue,
+                    content: ["error": error.localizedDescription]
+                ))
+            }
+        }
+    }
+
+    /// Syncs a single complication to the watch by index (paginated approach with reply)
+    /// This avoids payload size limits by sending complications one at a time.
+    ///
+    /// Protocol:
+    /// 1. Watch sends "syncComplication" InteractiveImmediateMessage with {"index": N}
+    /// 2. Phone replies with complication data containing:
+    ///    - "complicationData": Data (JSON of the complication)
+    ///    - "hasMore": Bool (true if index+1 < total)
+    ///    - "index": Int (the index sent by watch)
+    ///    - "total": Int (total number of complications)
+    /// 3. Watch saves the complication and requests next if hasMore is true
+    ///
+    /// - Parameter message: The InteractiveImmediateMessage containing {"index": Int}
+    private func syncSingleComplication(message: InteractiveImmediateMessage) {
+        guard let index = message.content[WatchComplicationSyncMessages.ContentKey.index] as? Int else {
+            Current.Log.error("syncComplication message missing 'index' parameter")
+            message.reply(.init(
+                identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
+                content: [
+                    WatchComplicationSyncMessages.ContentKey.error: "Missing index parameter",
+                    WatchComplicationSyncMessages.ContentKey.hasMore: false,
+                    WatchComplicationSyncMessages.ContentKey.index: -1,
+                    WatchComplicationSyncMessages.ContentKey.total: 0,
+                ]
+            ))
+            return
+        }
+
+        Current.Log.info("Watch requested complication at index \(index)")
+
+        let realm = Current.realm()
+        let complications = realm.objects(WatchComplication.self)
+        let total = complications.count
+
+        // Validate index
+        guard index >= 0, index < total else {
+            Current.Log.error("Invalid complication index \(index) (total: \(total))")
+            message.reply(.init(
+                identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
+                content: [
+                    WatchComplicationSyncMessages.ContentKey.error: "Invalid index \(index), total is \(total)",
+                    WatchComplicationSyncMessages.ContentKey.hasMore: false,
+                    WatchComplicationSyncMessages.ContentKey.index: -1,
+                    WatchComplicationSyncMessages.ContentKey.total: total,
+                ]
+            ))
+            return
+        }
+
+        let complication = complications[index]
+
+        // Serialize this single complication
+        guard let complicationJSONString = complication.toJSONString(),
+              let complicationData = complicationJSONString.data(using: .utf8) else {
+            Current.Log.error("Failed to serialize complication at index \(index)")
+            message.reply(.init(
+                identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
+                content: [
+                    WatchComplicationSyncMessages.ContentKey.error: "Failed to serialize complication",
+                    WatchComplicationSyncMessages.ContentKey.hasMore: false,
+                    WatchComplicationSyncMessages.ContentKey.index: index,
+                    WatchComplicationSyncMessages.ContentKey.total: total,
+                ]
+            ))
+            return
+        }
+
+        let hasMore = (index + 1) < total
+
+        Current.Log.info("Sending complication \(index + 1) of \(total) to watch (hasMore: \(hasMore))")
+
+        // Reply with complication data
+        message.reply(.init(
+            identifier: WatchComplicationSyncMessages.Identifier.syncComplicationResponse,
+            content: [
+                WatchComplicationSyncMessages.ContentKey.complicationData: complicationData,
+                WatchComplicationSyncMessages.ContentKey.hasMore: hasMore,
+                WatchComplicationSyncMessages.ContentKey.index: index,
+                WatchComplicationSyncMessages.ContentKey.total: total,
+            ]
+        ))
+    }
+
+    /// Legacy method for syncing all complications at once via Context
+    /// Kept for backward compatibility but may fail with large payloads
+    private func syncComplications(message: InteractiveImmediateMessage) {
+        Current.Log.info("Watch requested complications sync - fetching complications from phone database")
+
+        let realm = Current.realm()
+        let complications = realm.objects(WatchComplication.self)
+
+        Current.Log.info("Found \(complications.count) complications in phone database")
+
+        // Convert complications to JSON data, then send as Data type
+        // WatchConnectivity supports Data, but not arbitrary nested dictionaries with complex types
+        let complicationsArray = complications.compactMap { complication -> [String: Any]? in
+            complication.toJSON()
+        }
+
+        // Serialize the complications array to Data (JSON)
+        guard let complicationsData = try? JSONSerialization.data(withJSONObject: complicationsArray, options: []) else {
+            Current.Log.error("Failed to serialize complications to JSON data")
+            message.reply(.init(
+                identifier: "syncComplicationsResponse",
+                content: ["success": false, "error": "Failed to serialize complications"]
+            ))
+            return
+        }
+
+        Current.Log
+            .verbose("Serialized \(complications.count) complications to \(complicationsData.count) bytes of JSON data")
+
+        var contextContent: [String: Any] = [:]
+        // Include complications as Data (will be deserialized on watch side)
+        contextContent["complicationsData"] = complicationsData
+        Current.Log.info("Successfully sent \(complications.count) complications to watch via Context")
+
+        // Reply to acknowledge success
+        message.reply(.init(
+            identifier: "syncComplicationsResponse",
+            content: ["success": true, "count": complications.count]
+        ))
     }
 
     private func magicItemPressed(message: InteractiveImmediateMessage) {

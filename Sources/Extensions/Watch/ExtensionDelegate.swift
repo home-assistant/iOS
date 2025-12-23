@@ -4,6 +4,7 @@ import PromiseKit
 import Shared
 import UserNotifications
 import WatchKit
+import WidgetKit
 import XCGLogger
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
@@ -72,14 +73,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             case let backgroundTask as WKApplicationRefreshBackgroundTask:
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKApplicationRefreshBackgroundTask received")
-
-                firstly {
-                    when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
-                }.ensureThen {
-                    Current.backgroundRefreshScheduler.schedule()
-                }.ensure {
-                    backgroundTask.setTaskCompletedWithSnapshot(false)
-                }.cauterize()
+                // No need to update complication here anymore since they render templates by themselves now
+                backgroundTask.setTaskCompletedWithSnapshot(false)
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
                 snapshotTask.setTaskCompleted(
@@ -111,27 +106,39 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     // Triggered when a complication is tapped
     func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
-        let complication: WatchComplication?
+        let complication: AppWatchComplication?
 
         if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
            identifier != CLKDefaultComplicationIdentifier {
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: identifier
-            )
+            // Fetch from GRDB instead of Realm
+            do {
+                complication = try Current.database().read { db in
+                    try AppWatchComplication.fetch(identifier: identifier, from: db)
+                }
+            } catch {
+                Current.Log.error("Failed to fetch complication from GRDB: \(error.localizedDescription)")
+                complication = nil
+            }
         } else if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date,
                   let clkFamily = date.complicationFamilyFromEncodedDate {
             let family = ComplicationGroupMember(family: clkFamily)
-            complication = Current.realm().object(
-                ofType: WatchComplication.self,
-                forPrimaryKey: family.rawValue
-            )
+            // Fetch from GRDB using family rawValue as identifier
+            do {
+                complication = try Current.database().read { db in
+                    try AppWatchComplication.fetch(identifier: family.rawValue, from: db)
+                }
+            } catch {
+                Current.Log.error("Failed to fetch complication by family from GRDB: \(error.localizedDescription)")
+                complication = nil
+            }
         } else {
             complication = nil
         }
 
         if let complication {
-            Current.Log.info("launched for \(complication.identifier) of family \(complication.Family)")
+            // Parse family from rawFamily string
+            let familyString = complication.rawFamily.isEmpty ? "unknown" : complication.rawFamily
+            Current.Log.info("launched for \(complication.identifier) of family \(familyString)")
         } else if let identifier = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String,
                   identifier == AssistDefaultComplication.defaultComplicationId {
             NotificationCenter.default.post(name: AssistDefaultComplication.launchNotification, object: nil)
@@ -184,7 +191,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         Context.observations.store[.init(queue: .main)] = { [weak self] context in
-            Current.Log.verbose("Received context: \(context)")
+            Current.Log.info("Received context with \(context.content.count) keys: \(Array(context.content.keys))")
 
             self?.updateContext(context.content)
         }
@@ -244,40 +251,30 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     private func updateContext(_ content: Content) {
-        let realm = Current.realm()
+        // Enhanced logging to diagnose sync issues
+        Current.Log.info("Received context update with keys: \(content.keys)")
 
-        if let servers = content["servers"] as? Data {
-            Current.servers.restoreState(servers)
-        }
-
-        if let complicationsDictionary = content["complications"] as? [[String: Any]] {
-            let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
-
-            Current.Log.verbose("Updating complications from context \(complications)")
-
-            realm.reentrantWrite {
-                realm.delete(realm.objects(WatchComplication.self))
-                realm.add(complications, update: .all)
-            }
-        }
+        // Note: Servers are now synced via send/reply pattern
+        // See WatchHomeViewModel.requestServers() and WatchCommunicatorService.syncServers()
 
         updateComplications()
     }
 
     private var isUpdatingComplications = false
+
     private func updateComplications() {
-        // avoid double-updating due to e.g. complication info update request
-        guard !isUpdatingComplications else { return }
+        if #available(watchOS 9.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
 
-        isUpdatingComplications = true
+        CLKComplicationServer.sharedInstance().reloadComplicationDescriptors()
 
-        firstly {
-            when(fulfilled: Current.apis.map { $0.updateComplications(passively: true) })
-        }.ensure { [self] in
-            isUpdatingComplications = false
-        }.ensure { [self] in
-            endWatchConnectivityBackgroundTaskIfNecessary()
-        }.cauterize()
+        if let activeComplications = CLKComplicationServer.sharedInstance().activeComplications {
+            Current.Log.info("Reloading \(activeComplications.count) active complications")
+            for complication in activeComplications {
+                CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
+            }
+        }
     }
 
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
