@@ -68,18 +68,47 @@ struct ModernAssistView: View {
         static let recordingSpringDamping: Double = 0.7
     }
     
-    @State private var isRecording = false
-    @State private var inputText = ""
+    @Binding var isRecording: Bool
+    @Binding var inputText: String
     @State private var pulseAnimation = false
     @State private var glowIntensity: CGFloat = 0
-    @State private var selectedTheme: ModernAssistTheme
+    @Binding var selectedTheme: ModernAssistTheme
+    @Binding var selectedPipeline: String
     @FocusState private var isTextFieldFocused: Bool
     
     @Binding var messages: [AssistChatItem]
+    var pipelines: [String]
     
-    init(messages: Binding<[AssistChatItem]>, selectedTheme: ModernAssistTheme = .ocean) {
+    let onClose: () -> Void
+    let onSettings: () -> Void
+    let onSendMessage: () -> Void
+    let onStartRecording: () -> Void
+    let onStopRecording: () -> Void
+    
+    init(
+        messages: Binding<[AssistChatItem]>,
+        inputText: Binding<String>,
+        isRecording: Binding<Bool>,
+        selectedTheme: Binding<ModernAssistTheme>,
+        selectedPipeline: Binding<String>,
+        pipelines: [String],
+        onClose: @escaping () -> Void,
+        onSettings: @escaping () -> Void,
+        onSendMessage: @escaping () -> Void,
+        onStartRecording: @escaping () -> Void,
+        onStopRecording: @escaping () -> Void
+    ) {
         self._messages = messages
-        self._selectedTheme = State(initialValue: selectedTheme)
+        self._inputText = inputText
+        self._isRecording = isRecording
+        self._selectedTheme = selectedTheme
+        self._selectedPipeline = selectedPipeline
+        self.pipelines = pipelines
+        self.onClose = onClose
+        self.onSettings = onSettings
+        self.onSendMessage = onSendMessage
+        self.onStartRecording = onStartRecording
+        self.onStopRecording = onStopRecording
     }
     
     var body: some View {
@@ -90,13 +119,13 @@ struct ModernAssistView: View {
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {}) {
+                    Button(action: onSettings) {
                         Image(systemSymbol: .gearshapeFill)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
-
+                        onClose()
                     }
                 }
             })
@@ -173,10 +202,10 @@ struct ModernAssistView: View {
                             endPoint: .trailing
                         )
                     )
-                Picker("Theme", selection: $selectedTheme) {
-                    ForEach(ModernAssistTheme.allCases) { theme in
-                        Text(theme.rawValue)
-                            .tag(theme)
+                Picker("Pipeline", selection: $selectedPipeline) {
+                    ForEach(pipelines, id: \.self) { pipeline in
+                        Text(pipeline)
+                            .tag(pipeline)
                     }
                 }
                 .pickerStyle(.menu)
@@ -321,7 +350,7 @@ struct ModernAssistView: View {
         .glassEffect(.clear.interactive(), in: .circle)
         .onTapGesture {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                isRecording = false
+                onStopRecording()
             }
         }
         .sensoryFeedback(.warning, trigger: isRecording)
@@ -344,7 +373,7 @@ struct ModernAssistView: View {
                 if inputText.isEmpty {
                     Button(action: {
                         withAnimation(.spring(response: Constants.recordingSpringResponse, dampingFraction: Constants.recordingSpringDamping)) {
-                            isRecording = true
+                            onStartRecording()
                         }
                     }) {
                         Image(systemSymbol: .micFill)
@@ -359,8 +388,7 @@ struct ModernAssistView: View {
                 } else {
                     Button(action: {
                         withAnimation(.spring(response: Constants.sendSpringResponse)) {
-                            // Send action
-                            inputText = ""
+                            onSendMessage()
                         }
                     }) {
                         Image(systemSymbol: .arrowUp)
@@ -482,22 +510,6 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - Preview
-//@available(iOS 26.0, *)
-//#Preview("Midnight Theme") {
-//    ModernAssistView()
-//}
-//
-//@available(iOS 26.0, *)
-//#Preview("Aurora Theme") {
-//    ModernAssistView(selectedTheme: .aurora)
-//}
-//
-//@available(iOS 26.0, *)
-//#Preview("Sunset Theme") {
-//    ModernAssistView(selectedTheme: .sunset)
-//}
-
 @available(iOS 26.0, *)
 #Preview("Ocean Theme") {
     @Previewable @State var messages: [AssistChatItem] = [
@@ -517,27 +529,36 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
         AssistChatItem(content: "Great, thanks for the update!", itemType: .input),
         AssistChatItem(content: "You're welcome! Is there anything else I can help you with?", itemType: .output)
     ]
+    @Previewable @State var inputText: String = ""
+    @Previewable @State var isRecording: Bool = false
+    @Previewable @State var selectedTheme: ModernAssistTheme = .ocean
+    @Previewable @State var selectedPipeline: String = "Home Assistant"
     
-    return ModernAssistView(messages: $messages, selectedTheme: .ocean)
+    let pipelines = ["Home Assistant", "OpenAI", "Local Model"]
+    
+    return ModernAssistView(
+        messages: $messages,
+        inputText: $inputText,
+        isRecording: $isRecording,
+        selectedTheme: $selectedTheme,
+        selectedPipeline: $selectedPipeline,
+        pipelines: pipelines,
+        onClose: {
+            print("Close tapped")
+        },
+        onSettings: {
+            print("Settings tapped")
+        },
+        onSendMessage: {
+            print("Send message tapped")
+        },
+        onStartRecording: {
+            print("Start recording tapped")
+            isRecording = true
+        },
+        onStopRecording: {
+            print("Stop recording tapped")
+            isRecording = false
+        }
+    )
 }
-//
-//@available(iOS 26.0, *)
-//#Preview("Forest Theme") {
-//    ModernAssistView(selectedTheme: .forest)
-//}
-//
-//@available(iOS 26.0, *)
-//#Preview("Galaxy Theme") {
-//    ModernAssistView(selectedTheme: .galaxy)
-//}
-//
-//@available(iOS 26.0, *)
-//#Preview("Lavender Theme") {
-//    ModernAssistView(selectedTheme: .lavender)
-//}
-//
-//@available(iOS 26.0, *)
-//#Preview("Ember Theme") {
-//    ModernAssistView(selectedTheme: .ember)
-//}
-//
