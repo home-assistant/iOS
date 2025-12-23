@@ -1,16 +1,17 @@
+import Combine
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
-struct ModernAssistView: View {
+struct ModernAssistView: View, KeyboardReadable {
     @Environment(\.colorScheme) private var colorScheme
 
     // MARK: - Constants
 
     private enum Constants {
         // Layout
-        static let inputHeight: CGFloat = 120
+        static let inputHeight: CGFloat = 50
         static let textFieldHeight: CGFloat = 50
         static let buttonWidth: CGFloat = 60
         static let orbSize: CGFloat = 300
@@ -27,7 +28,7 @@ struct ModernAssistView: View {
         static let messageBubbleHorizontalPadding: CGFloat = DesignSystem.Spaces.two
         static let messageBubbleVerticalPadding: CGFloat = DesignSystem.Spaces.oneAndHalf
         static let minSpacerLength: CGFloat = DesignSystem.Spaces.five
-        static let bottomScrollInset: CGFloat = 120
+        static let bottomScrollInset: CGFloat = 60
 
         // Corner Radius
         static let messageBubbleCornerRadius: CGFloat = DesignSystem.CornerRadius.two
@@ -82,6 +83,8 @@ struct ModernAssistView: View {
     @Binding var selectedTheme: ModernAssistTheme
     @Binding var selectedPipeline: String
     @FocusState private var isTextFieldFocused: Bool
+    @State private var keyboardObserver: AnyCancellable?
+    @State private var keyboardVisible = false
 
     @Binding var messages: [AssistChatItem]
     var pipelines: [String]
@@ -120,9 +123,10 @@ struct ModernAssistView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
+            ZStack {
+                backgroundGradient
+                    .ignoresSafeArea()
                 chatArea
-                modernInputArea
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -138,12 +142,17 @@ struct ModernAssistView: View {
             })
             .safeAreaInset(edge: .top, content: {
                 modernHeader
+                    .ignoresSafeArea()
             })
-            .background(backgroundGradient)
-            .ignoresSafeArea(edges: [.bottom, .top])
+            .safeAreaInset(edge: .bottom, content: {
+                modernInputArea
+            })
             .scrollEdgeEffectStyle(.soft, for: .all)
             .onAppear {
                 startAmbientAnimation()
+            }
+            .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+                keyboardVisible = newIsKeyboardVisible
             }
         }
     }
@@ -258,6 +267,11 @@ struct ModernAssistView: View {
                     proxy.scrollTo(Constants.bottomScrollAnchor, anchor: .bottom)
                 }
             }
+            .onChange(of: keyboardVisible, { _, _ in
+                withAnimation(.easeOut(duration: 0.3)) {
+                    proxy.scrollTo(Constants.bottomScrollAnchor, anchor: .bottom)
+                }
+            })
             .onAppear {
                 proxy.scrollTo(Constants.bottomScrollAnchor, anchor: .bottom)
             }
@@ -338,21 +352,22 @@ struct ModernAssistView: View {
 
     private var modernInputArea: some View {
         ZStack {
-            // Recording state - animated orb
-            if isRecording {
-                recordingOrb
-                    .transition(.scale.combined(with: .opacity))
-            } else {
-                inputControls
-                    .transition(.scale.combined(with: .opacity))
+            bottomGradientView
+                .ignoresSafeArea()
+            Group {
+                // Recording state - animated orb
+                if isRecording {
+                    recordingOrb
+                        .transition(.scale.combined(with: .opacity))
+                } else {
+                    inputControls
+                        .transition(.scale.combined(with: .opacity))
+                }
             }
+            .padding(.bottom, keyboardVisible ? DesignSystem.Spaces.two : .zero)
         }
         .frame(height: Constants.inputHeight)
         .frame(maxWidth: .infinity)
-        .ignoresSafeArea()
-        .background(
-            bottomGradientView
-        )
     }
 
     private var bottomGradientView: some View {
@@ -406,41 +421,35 @@ struct ModernAssistView: View {
                     .frame(height: Constants.textFieldHeight)
                     .glassEffect(.clear.interactive(), in: .capsule)
                     .padding(.leading, Constants.horizontalPadding)
-
-                if inputText.isEmpty {
-                    Button(action: {
-                        withAnimation(.spring(
-                            response: Constants.recordingSpringResponse,
-                            dampingFraction: Constants.recordingSpringDamping
-                        )) {
-                            onStartRecording()
-                        }
-                    }) {
-                        Image(systemSymbol: .micFill)
-                            .font(.title3)
-                            .foregroundColor(selectedTheme.buttonTextColor(for: colorScheme))
-                            .padding()
-                            .glassEffect(.clear.interactive(), in: .circle)
+                    .onSubmit {
+                        onSendMessage()
                     }
-                    .buttonStyle(.plain)
-                    .padding(.trailing, Constants.horizontalPadding)
-                } else {
-                    Button(action: {
-                        withAnimation(.spring(response: Constants.sendSpringResponse)) {
+
+                Button(action: {
+                    withAnimation(.spring(
+                        response: Constants.recordingSpringResponse,
+                        dampingFraction: Constants.recordingSpringDamping
+                    )) {
+                        if inputText.isEmpty {
+                            onStartRecording()
+                        } else {
                             onSendMessage()
                         }
-                    }) {
-                        Image(systemSymbol: .arrowUp)
-                            .font(.title3)
-                            .foregroundColor(selectedTheme.buttonTextColor(for: colorScheme))
-                            .padding()
-                            .glassEffect(.clear.interactive(), in: .circle)
                     }
-                    .buttonStyle(.plain)
-                    .padding(.trailing, Constants.horizontalPadding)
+                }) {
+                    Image(systemSymbol: inputText.isEmpty ? .micFill : .arrowUp)
+                        .contentTransition(.symbolEffect(
+                            .replace.magic(fallback: .downUp.byLayer),
+                            options: .repeat(.continuous)
+                        ))
+                        .font(.title3)
+                        .foregroundColor(selectedTheme.buttonTextColor(for: colorScheme))
+                        .padding()
+                        .glassEffect(.clear.interactive(), in: .circle)
                 }
+                .buttonStyle(.plain)
+                .padding(.trailing, Constants.horizontalPadding)
             }
-            .padding(.vertical, Constants.inputVerticalPadding)
         }
     }
 
@@ -644,74 +653,6 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
             return .white
         }
     }
-}
-
-@available(iOS 26.0, *)
-#Preview("Ocean Theme") {
-    @Previewable @State var messages: [AssistChatItem] = [
-        AssistChatItem(content: "Hello! How can I help you today?", itemType: .output),
-        AssistChatItem(content: "What's the weather like?", itemType: .input),
-        AssistChatItem(
-            content: "I'll check the weather for you. The current temperature is 72°F with clear skies.",
-            itemType: .output
-        ),
-        AssistChatItem(content: "Can you turn on the living room lights?", itemType: .input),
-        AssistChatItem(content: "Sure! I've turned on the living room lights for you.", itemType: .output),
-        AssistChatItem(content: "What about the temperature? It feels a bit cold.", itemType: .input),
-        AssistChatItem(
-            content: "The thermostat is currently set to 68°F. Would you like me to increase it?",
-            itemType: .output
-        ),
-        AssistChatItem(content: "Yes, please set it to 72°F", itemType: .input),
-        AssistChatItem(
-            content: "Done! I've set the thermostat to 72°F. It should warm up in a few minutes.",
-            itemType: .output
-        ),
-        AssistChatItem(content: "Thanks! Can you also check if the front door is locked?", itemType: .input),
-        AssistChatItem(
-            content: "The front door is currently locked and secure. All entry points are secured.",
-            itemType: .output
-        ),
-        AssistChatItem(content: "Perfect! What's on my calendar for today?", itemType: .input),
-        AssistChatItem(
-            content: "You have 3 events today:\n• 10:00 AM - Team Meeting\n• 2:00 PM - Client Call\n• 5:30 PM - Dentist Appointment",
-            itemType: .output
-        ),
-        AssistChatItem(content: "Great, thanks for the update!", itemType: .input),
-        AssistChatItem(content: "", itemType: .typing),
-    ]
-    @Previewable @State var inputText: String = ""
-    @Previewable @State var isRecording: Bool = false
-    @Previewable @State var selectedTheme: ModernAssistTheme = .ocean
-    @Previewable @State var selectedPipeline: String = "Home Assistant"
-
-    let pipelines = ["Home Assistant", "OpenAI", "Local Model"]
-
-    return ModernAssistView(
-        messages: $messages,
-        inputText: $inputText,
-        isRecording: $isRecording,
-        selectedTheme: $selectedTheme,
-        selectedPipeline: $selectedPipeline,
-        pipelines: pipelines,
-        onClose: {
-            print("Close tapped")
-        },
-        onSettings: {
-            print("Settings tapped")
-        },
-        onSendMessage: {
-            print("Send message tapped")
-        },
-        onStartRecording: {
-            print("Start recording tapped")
-            isRecording = true
-        },
-        onStopRecording: {
-            print("Stop recording tapped")
-            isRecording = false
-        }
-    )
 }
 
 @available(iOS 26.0, *)

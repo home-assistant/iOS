@@ -74,6 +74,9 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     func assistWithText() {
+        guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return
+        }
         audioPlayer.pause()
         stopStreaming()
         assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId))
