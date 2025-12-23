@@ -1,4 +1,5 @@
 import SFSafeSymbols
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -9,6 +10,7 @@ struct AssistView: View {
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
     @AppStorage("enableOnDeviceSTT") private var enableOnDeviceSTT = false
+    @AppStorage("enableAssistModernUI") private var enableModernUI = false
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
@@ -18,6 +20,16 @@ struct AssistView: View {
     }
 
     private let showCloseButton: Bool
+    
+    // State for modern UI
+    @State private var selectedTheme: ModernAssistTheme = .midnight
+    
+    private var shouldUseModernUI: Bool {
+        if #available(iOS 26.0, *) {
+            return !Current.isCatalyst && enableModernUI
+        }
+        return false
+    }
 
     init(viewModel: AssistViewModel, showCloseButton: Bool = true) {
         self._viewModel = .init(wrappedValue: viewModel)
@@ -25,7 +37,13 @@ struct AssistView: View {
     }
 
     var body: some View {
-       classicUI
+        Group {
+            if #available(iOS 26.0, *), shouldUseModernUI {
+                modernUI
+            } else {
+                classicUI
+            }
+        }
         .onAppear {
             assistSession.inProgress = true
             viewModel.enableOnDeviceSTT = enableOnDeviceSTT
@@ -90,6 +108,47 @@ struct AssistView: View {
             }
         }
         .navigationViewStyle(.stack)
+    }
+    
+    @available(iOS 26.0, *)
+    private var modernUI: some View {
+        ModernAssistView(
+            messages: $viewModel.chatItems,
+            inputText: $viewModel.inputText,
+            isRecording: $viewModel.isRecording,
+            selectedTheme: $selectedTheme,
+            selectedPipeline: .init(
+                get: {
+                    viewModel.pipelines.first(where: { $0.id == viewModel.preferredPipelineId })?.name ?? ""
+                },
+                set: { newValue in
+                    if let pipeline = viewModel.pipelines.first(where: { $0.name == newValue }) {
+                        viewModel.preferredPipelineId = pipeline.id
+                    }
+                }
+            ),
+            pipelines: viewModel.pipelines.map(\.name),
+            onClose: {
+                dismiss()
+            },
+            onSettings: {
+                showSettings = true
+            },
+            onSendMessage: {
+                viewModel.assistWithText()
+            },
+            onStartRecording: {
+                isFirstResponder = false
+                viewModel.assistWithAudio()
+            },
+            onStopRecording: {
+                viewModel.stopStreaming()
+            }
+        )
+        .preferredColorScheme(.dark)
+        .sheet(isPresented: $showSettings) {
+            AssistSettingsView()
+        }
     }
 
     private var closeButton: some View {

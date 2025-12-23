@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import SwiftUI
 import Shared
 
@@ -66,6 +67,9 @@ struct ModernAssistView: View {
         static let sendSpringResponse: Double = 0.3
         static let recordingSpringResponse: Double = 0.4
         static let recordingSpringDamping: Double = 0.7
+        
+        // Identifiers
+        static let bottomScrollAnchor: String = "bottom"
     }
     
     @Binding var isRecording: Bool
@@ -230,72 +234,78 @@ struct ModernAssistView: View {
                         modernMessageBubble(message: message)
                             .id(message.id)
                     }
+                    VStack {}
+                        .frame(height: Constants.bottomScrollInset)
+                        .id(Constants.bottomScrollAnchor)
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
-                .padding(.bottom, Constants.bottomScrollInset)
             }
             .onChange(of: messages.count) { oldValue, newValue in
-                if let lastMessage = messages.last {
-                    withAnimation(.easeOut(duration: 0.3)) {
-                        proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                    }
+                withAnimation(.easeOut(duration: 0.3)) {
+                    proxy.scrollTo(Constants.bottomScrollAnchor, anchor: .bottom)
                 }
             }
             .onAppear {
-                if let lastMessage = messages.last {
-                    proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                }
+                proxy.scrollTo(Constants.bottomScrollAnchor, anchor: .bottom)
             }
         }
     }
     
     private func modernMessageBubble(message: AssistChatItem) -> some View {
         let isUser = message.itemType == .input
+        let isTyping = message.itemType == .typing
         
         return HStack {
             if isUser { Spacer(minLength: Constants.minSpacerLength) }
             
             VStack(alignment: isUser ? .trailing : .leading, spacing: 0) {
-                Text(message.content)
-                    .font(.body)
-                    .foregroundColor(isUser ? .white : .white.opacity(Constants.whiteTextOpacity))
-                    .padding(.horizontal, Constants.messageBubbleHorizontalPadding)
-                    .padding(.vertical, Constants.messageBubbleVerticalPadding)
-                    .background(
-                        ZStack {
-                            if isUser {
-                                RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
-                                    .fill(
-                                        LinearGradient(
-                                            colors: [
-                                                Color.blue,
-                                                Color.blue.opacity(Constants.userBubbleOpacity)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
+                Group {
+                    if isTyping {
+                        AssistTypingIndicator()
+                            .padding(.vertical, DesignSystem.Spaces.half)
+                    } else {
+                        Text(message.content)
+                            .font(.body)
+                            .foregroundColor(isUser ? .white : .white.opacity(Constants.whiteTextOpacity))
+                    }
+                }
+                .padding(.horizontal, Constants.messageBubbleHorizontalPadding)
+                .padding(.vertical, Constants.messageBubbleVerticalPadding)
+                .background(
+                    ZStack {
+                        if isUser {
+                            RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.blue,
+                                            Color.blue.opacity(Constants.userBubbleOpacity)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                        } else {
+                            RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
+                                .fill(.white.opacity(Constants.assistantBubbleOpacity))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
+                                        .stroke(
+                                            LinearGradient(
+                                                colors: [
+                                                    .white.opacity(Constants.strokeStartOpacity),
+                                                    .white.opacity(Constants.strokeEndOpacity)
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: Constants.messageBubbleStrokeWidth
                                         )
-                                    )
-                            } else {
-                                RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
-                                    .fill(.white.opacity(Constants.assistantBubbleOpacity))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
-                                            .stroke(
-                                                LinearGradient(
-                                                    colors: [
-                                                        .white.opacity(Constants.strokeStartOpacity),
-                                                        .white.opacity(Constants.strokeEndOpacity)
-                                                    ],
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                ),
-                                                lineWidth: Constants.messageBubbleStrokeWidth
-                                            )
-                                    )
-                            }
+                                )
                         }
-                    )
+                    }
+                )
             }
             
             if !isUser { Spacer(minLength: Constants.minSpacerLength) }
@@ -323,21 +333,11 @@ struct ModernAssistView: View {
     }
 
     private var bottomGradientView: some View {
-        Rectangle()
-            .fill(.ultraThinMaterial)
-            .blur(radius: Constants.materialBlurRadius)
-            .offset(y: Constants.bottomMaterialOffset)
-            .preferredColorScheme(.dark)
-            .opacity(Constants.bottomMaterialOpacity)
+        LinearGradient(colors: [.black, .clear], startPoint: .bottom, endPoint: .top)
     }
 
     private var topGradientView: some View {
-        Rectangle()
-            .fill(.ultraThinMaterial)
-            .blur(radius: Constants.materialBlurRadius)
-            .offset(y: Constants.topMaterialOffset)
-            .preferredColorScheme(.dark)
-            .opacity(Constants.topMaterialOpacity)
+        LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
     }
 
     private var recordingOrb: some View {
@@ -527,7 +527,7 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
         AssistChatItem(content: "Perfect! What's on my calendar for today?", itemType: .input),
         AssistChatItem(content: "You have 3 events today:\n• 10:00 AM - Team Meeting\n• 2:00 PM - Client Call\n• 5:30 PM - Dentist Appointment", itemType: .output),
         AssistChatItem(content: "Great, thanks for the update!", itemType: .input),
-        AssistChatItem(content: "You're welcome! Is there anything else I can help you with?", itemType: .output)
+        AssistChatItem(content: "", itemType: .typing)
     ]
     @Previewable @State var inputText: String = ""
     @Previewable @State var isRecording: Bool = false

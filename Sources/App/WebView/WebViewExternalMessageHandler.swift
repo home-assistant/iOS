@@ -453,6 +453,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 preferredPipelineId: pipeline,
                 autoStartRecording: autoStartRecording
             ))
+            assistView.modalPresentationStyle = .fullScreen
             webViewController?.presentOverlayController(controller: assistView, animated: animated)
         }
     }
