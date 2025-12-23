@@ -78,6 +78,7 @@ struct HomeView: View {
                     }
                 }
             }
+            .background(ModernAssistBackgroundView(theme: .homeAssistant))
             .sheet(isPresented: $showSettings) {
                 SettingsView()
             }
@@ -92,17 +93,16 @@ struct HomeView: View {
         Text(title)
             .font(.title2.bold())
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 8)
-            .background(Color(uiColor: .systemBackground))
+            .padding(.vertical, DesignSystem.Spaces.one)
     }
 
     private func entityTilesGrid(for entities: [HAAppEntity]) -> some View {
         let columns = [
-            GridItem(.flexible(), spacing: 12),
-            GridItem(.flexible(), spacing: 12),
+            GridItem(.flexible(), spacing: DesignSystem.Spaces.oneAndHalf),
+            GridItem(.flexible(), spacing: DesignSystem.Spaces.oneAndHalf),
         ]
 
-        return LazyVGrid(columns: columns, spacing: 12) {
+        return LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
             ForEach(entities) { entity in
                 EntityTileView(
                     server: viewModel.server,

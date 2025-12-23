@@ -7,7 +7,7 @@ import SwiftUI
 struct EntityTileView: View {
     enum Constants {
         static let tileHeight: CGFloat = 65
-        static let cornerRadius: CGFloat = 14
+        static let cornerRadius: CGFloat = 16
         static let iconSize: CGFloat = 38
         static let iconFontSize: CGFloat = 20
         static let iconOpacity: CGFloat = 0.3
@@ -51,11 +51,9 @@ struct EntityTileView: View {
         }
         .frame(height: Constants.tileHeight)
         .frame(maxWidth: .infinity)
-        .background(Color.tileBackground)
-        .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-        .overlay(
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .stroke(Color.tileBorder, lineWidth: Constants.borderLineWidth)
+        .glassEffect(
+            .clear.interactive(),
+            in: RoundedRectangle(cornerRadius: Constants.cornerRadius, style: .continuous)
         )
     }
 
