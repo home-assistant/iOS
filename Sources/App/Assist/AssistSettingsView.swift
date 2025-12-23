@@ -21,11 +21,11 @@ struct AssistSettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section {
-                    Toggle(L10n.Assist.Settings.OnDeviceStt.toggle, isOn: $enableOnDeviceSTT)
-                } footer: {
-                    Text(L10n.Assist.Settings.OnDeviceStt.footer)
-                }
+//                Section {
+//                    Toggle(L10n.Assist.Settings.OnDeviceStt.toggle, isOn: $enableOnDeviceSTT)
+//                } footer: {
+//                    Text(L10n.Assist.Settings.OnDeviceStt.footer)
+//                }
 
                 Section {
                     Toggle(L10n.Assist.Settings.ModernUi.toggle, isOn: $enableModernUI)

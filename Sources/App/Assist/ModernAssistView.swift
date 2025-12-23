@@ -420,10 +420,9 @@ struct ModernAssistView: View {
                             .font(.title3)
                             .foregroundColor(selectedTheme.buttonTextColor(for: colorScheme))
                             .padding()
-                            .glassEffect(.clear.interactive(), in: .capsule)
+                            .glassEffect(.clear.interactive(), in: .circle)
                     }
                     .buttonStyle(.plain)
-                    .frame(width: Constants.buttonWidth)
                     .padding(.trailing, Constants.horizontalPadding)
                 } else {
                     Button(action: {
@@ -435,10 +434,9 @@ struct ModernAssistView: View {
                             .font(.title3)
                             .foregroundColor(selectedTheme.buttonTextColor(for: colorScheme))
                             .padding()
-                            .glassEffect(.clear.interactive(), in: .capsule)
+                            .glassEffect(.clear.interactive(), in: .circle)
                     }
                     .buttonStyle(.plain)
-                    .frame(width: Constants.buttonWidth)
                     .padding(.trailing, Constants.horizontalPadding)
                 }
             }
