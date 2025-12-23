@@ -1,6 +1,6 @@
 import Foundation
 
-public struct AssistChatItem: Equatable {
+public struct AssistChatItem: Equatable, Identifiable {
     public init(id: String = UUID().uuidString, content: String, itemType: AssistChatItem.ItemType) {
         self.id = id
         self.content = content

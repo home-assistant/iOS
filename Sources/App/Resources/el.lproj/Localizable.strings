@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Το Home Assistant στο Facebook";
 "about.home_assistant_on_twitter.title" = "Το Home Assistant στο Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Ζωντανέψτε το σπίτι σας";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Αφήστε μια κριτική";
 "about.title" = "Σχετικά";
@@ -52,13 +51,17 @@
 "alerts.prompt.ok" = "Εντάξει";
 "always_open_label" = "Πάντα ανοιχτό";
 "announcement.drop_support.button" = "Συνέχεια";
-"announcement.drop_support.button_read_more" = "Διαβάστε περισσότερα";
 "announcement.drop_support.subtitle" = "Μετά από προσεκτική εξέταση, θα διακόψουμε την υποστήριξη για τα iOS 12, 13 και 14 στις επερχόμενες ενημερώσεις μας.";
 "announcement.drop_support.title" = "Σημαντική ενημέρωση";
 "app_intents.assist.pipeline.default.title" = "Προεπιλογή";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Προτιμώμενο";
 "app_intents.assist.refresh_warning.title" = "Δεν μπορείτε να βρείτε το Assist pipeline σας; Ανοίξτε τον Βοηθό στην εφαρμογή για να ανανεώσετε τη λίστα pipelines.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Εικονίδιο για κατάσταση κλειστό";
 "app_intents.controls.assist.parameter.with_voice" = "Με φωνή";
 "app_intents.controls.assist.title" = "Βοηθός στην εφαρμογή";
@@ -115,6 +118,12 @@
 "assist.watch.volume.title" = "Ελεγχος έντασης";
 "assist_pipeline_picker.no_pipelines" = "Δεν υπάρχουν διαθέσιμα pipelines";
 "assist_pipeline_picker.placeholder" = "Επιλογή pipeline";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Ακύρωση";
 "carPlay.action.intro.item.body" = "Πατήστε για να συνεχίσετε στο iPhone σας";
 "carPlay.action.intro.item.title" = "Δημιουργήστε την πρώτη σας ενέργεια";
@@ -213,9 +222,6 @@
 "connection.error.generic_title" = "Ωχ! Φαίνεται ότι δεν μπορούμε να δημιουργήσουμε μια σύνδεση.";
 "connection.permission.internal_url.body1" = "Για να αποκτήσετε τοπικά πρόσβαση στο Home Assistant με ασφαλή τρόπο, πρέπει να εκχωρήσετε την άδεια τοποθεσίας (\"Πάντα\").";
 "connection.permission.internal_url.body2" = "Αυτό το δικαίωμα επιτρέπει στο Home Assistant να εντοπίσει το ασύρματο δίκτυο στο οποίο είστε συνδεδεμένοι και να δημιουργήσει μια τοπική σύνδεση.";
-"connection.permission.internal_url.body3" = "Εχετε πάντα τον έλεγχο εάν η τοποθεσία σας μοιράζεται με το Home Assistant. Μπορείτε να αλλάξετε αυτές τις ρυθμίσεις στην οθόνη ρυθμίσεων της εφαρμογής companion.";
-"connection.permission.internal_url.button_configure" = "Διαμόρφωση τοπικής πρόσβασης";
-"connection.permission.internal_url.button_ignore" = "Ξέρω τι κάνω. Να επιτρέπονται τοπικές συνδέσεις χωρίς πρόσβαση με άδεια.";
 "connection.permission.internal_url.footer" = "Αν εξακολουθείτε να θέλετε να χρησιμοποιήσετε την τοπική διεύθυνση URL και δεν θέλετε να δώσετε άδεια τοποθεσίας, μπορείτε να πατήσετε το παρακάτω κουμπί, όμως παρακαλώ, λάβετε υπόψη τους κινδύνους ασφαλείας.";
 "connection.permission.internal_url.ignore.alert.title" = "Είστε σίγουρος/η;";
 "connection.permission.internal_url.title" = "Αδεια πρόσβασης";
@@ -318,7 +324,6 @@
 "help_label" = "Βοήθεια";
 "improv.button.continue" = "Συνέχεια";
 "improv.connection_state.authorized" = "Ρύθμιση Wi-Fi";
-"improv.connection_state.autorization_required" = "Παρακαλώ εξουσιοδοτήστε τη συσκευή σας για να συνεχίσετε";
 "improv.connection_state.provisioning" = "Σύνδεση στο Wi-Fi";
 "improv.error_state.invalid_rpc_packet" = "Μη έγκυρο πακέτο RPC";
 "improv.error_state.not_authorized" = "Μη εξουσιοδοτημενο";
@@ -465,9 +470,7 @@
 "notifications_configurator.settings.footer" = "Το αναγνωριστικό πρέπει να περιέχει μόνο γράμματα και χαρακτήρες υπογράμμισης και να είναι κεφαλαία. Πρέπει να είναι παγκοσμίως μοναδικό για την εφαρμογή.";
 "notifications_configurator.settings.footer.id_set" = "Δεν είναι δυνατή η αλλαγή του αναγνωριστικού μετά τη δημιουργία. Πρέπει να διαγράψετε και να δημιουργήσετε ξανά την ενέργεια για να αλλάξετε το αναγνωριστικό.";
 "notifications_configurator.settings.header" = "Ρυθμίσεις";
-"off_label" = "Μη Ενεργό";
 "ok_label" = "Εντάξει";
-"on_label" = "Ενεργό";
 "onboarding.connect.mac_safari_warning.message" = "Δοκιμάστε να κάνετε επανεκκίνηση του Safari, εάν η φόρμα σύνδεσης δεν ανοίγει.";
 "onboarding.connect.mac_safari_warning.title" = "Εκκίνηση του Safari";
 "onboarding.connect.title" = "Σύνδεση με %@";
@@ -482,7 +485,6 @@
 "onboarding.connection_test_result.error_code" = "Κωδικός σφάλματος:";
 "onboarding.connection_test_result.local_network_permission.description" = "Η άδεια απορρήτου \"Τοπικό δίκτυο\" ενδέχεται να μην έχει χορηγηθεί. Μπορείτε να το αλλάξετε αυτό στην εφαρμογή Ρυθμίσεις του συστήματος.";
 "onboarding.device_name_check.error.prompt" = "Ποιο όνομα συσκευής θα πρέπει να χρησιμοποιηθεί αντ' αυτού;";
-"onboarding.device_name_check.error.rename_action" = "Μετονομασία";
 "onboarding.device_name_check.error.title" = "Υπάρχει ήδη μια συσκευή με το όνομα \"%1$@\"";
 "onboarding.invitation.accept_button" = "Αποδοχή";
 "onboarding.invitation.other_options" = "Αλλες επιλογές";
@@ -532,15 +534,11 @@
 "onboarding.network_input.primary_description" = "Για την καλύτερη δυνατή εμπειρία, το Home Assistant πρέπει να γνωρίζει πότε είστε συνδεδεμένος/η στο δίκτυο του σπιτιού σας.";
 "onboarding.network_input.secondary_button.title" = "Παράλειψη";
 "onboarding.network_input.title" = "Ποιό είναι το δίκτυο του σπιτιού σας;";
-"onboarding.permission.location.buttons.allow_and_share" = "Αποδοχή και κοινή χρήση με το Home Assistant";
-"onboarding.permission.location.buttons.allow_for_app" = "Να επιτρέπεται μόνο για χρήση εφαρμογής";
-"onboarding.permission.location.buttons.deny" = "Αρνηση";
 "onboarding.permission.location.deny.alert.body" = "Αν είστε σίγουρος/η, συνεχίστε και πατήστε 'Άρνηση' και στο επόμενο αναδυόμενο παράθυρο, σε περίπτωση που δεν έχετε διαμορφώσει απομακρυσμένη σύνδεση, η εφαρμογή θα χρησιμοποιήσει τη διαμόρφωση της τοπικής σας σύνδεσης για να αποκτήσει πρόσβαση στο Home Assistant.";
 "onboarding.permission.location.deny.alert.header" = "Πληροφορίες";
 "onboarding.permission.location.deny.alert.message" = "Χωρίς την άδεια της τοποθεσίας, οι μελλοντικές εκδόσεις της εφαρμογής ενδέχεται να αρνηθούν την πρόσβαση στον τοπικό διακομιστή του Home Assistant σας λόγω ανησυχιών για το απόρρητο. Εάν είστε σίγουρος/η, παρακαλώ συνεχίστε, πατώντας 'Αρνηση' και στο επόμενο αναδυόμενο παράθυρο. Οταν το κάνετε αυτό, συνιστάται να χρησιμοποιήσετε την εσωτερική σας διεύθυνση URL ως εξωτερική, καθώς είναι η μόνη διεύθυνση URL στην οποία θα προσπαθήσει η εφαρμογή να αποκτήσει πρόσβαση.";
 "onboarding.permission.location.deny.alert.title" = "Είσαι σίγουρος/η;";
 "onboarding.permission.location.description" = "Για να εντοπίσουμε αν βρίσκεστε στο σπίτι και να συνδεθείτε τοπικά στο Home Assistant, η Apple απαιτεί να ζητήσουμε την άδεια για την τοποθεσία σας.";
-"onboarding.permission.location.privacy_note" = "Η τοποθεσία σας δεν θα κοινοποιηθεί στον τοπικό σας διακομιστή Home Assistant, εκτός και αν επιλέξετε \"Να επιτρέπεται και Κοινοποίηση στο Home Assistant\". Μπορείτε να επιλέξετε να κάνετε κοινοποίηση αργότερα στις ρυθμίσεις της εφαρμογής companion > αισθητήρες.";
 "onboarding.permissions.allow" = "Επιτρέπω";
 "onboarding.permissions.allowed" = "Έγινε";
 "onboarding.permissions.change_later_note" = "Μπορείτε να αλλάξετε αυτό το δικαίωμα αργότερα στις Ρυθμίσεις";
@@ -571,7 +569,6 @@
 "onboarding.scanning.manual" = "Εισαγωγή διεύθυνσης χειροκίνητα";
 "onboarding.scanning.manual.button.divider.title" = "ή";
 "onboarding.scanning.manual.button.title" = "Εισάγετε τη διεύθυνση χειροκίνητα";
-"onboarding.scanning.manual_hint" = "Δεν βρίσκετε τον διακομιστή σας;";
 "onboarding.scanning.title" = "Σάρωση για διακομιστές";
 "onboarding.servers.auto_connect.button" = "Σύνδεση";
 "onboarding.servers.docs.read" = "Διαβάστε την τεκμηρίωση";
@@ -579,11 +576,9 @@
 "onboarding.servers.search.message" = "Αναζήτηση διακομιστών σε κοντινή απόσταση...";
 "onboarding.servers.title" = "Αναζήτηση στο δίκτυο του σπιτιού";
 "onboarding.welcome.body" = "Σας επιτρέπει να έχετε πρόσβαση στην εγκατάσταση του Home Assistant εν κινήσει. Εκτελείται τοπικά στο σπίτι σας μέσω μιας συσκευής όπως το Home Assistant Green ή το Raspberry Pi.";
-"onboarding.welcome.continue_button" = "Σύνδεση με το Home Assistant μου";
 "onboarding.welcome.description" = "Αυτή η εφαρμογή συνδέεται με τον διακομιστή Home Assistant και επιτρέπει την ενσωμάτωση δεδομένων σχετικά με εσάς και το τηλέφωνό σας. \
 \
  Το Home Assistant είναι δωρεάν και ανοιχτού κώδικα λογισμικό αυτοματισμού σπιτιού με έμφαση στον τοπικό έλεγχο και την ιδιωτικότητα.";
-"onboarding.welcome.get_started" = "Ξεκινήστε με το Home Assistant";
 "onboarding.welcome.header" = "Εφαρμογή Home Assistant Companion";
 "onboarding.welcome.learn_more" = "Μάθετε περισσότερα";
 "onboarding.welcome.logo.accessibility_label" = "Λογότυπο Home Assistant";
@@ -606,7 +601,6 @@
 "post_onboarding.permission.notification.title" = "Θέλετε να λαμβάνετε ειδοποιήσεις;";
 "preview_output" = "Έξοδος προεπισκόπησης";
 "privacyLabel" = "Απόρρητο";
-"reload_label" = "Επαναφόρτωση";
 "requires_version" = "Απαιτεί %@ ή μεταγενέστερη έκδοση.";
 "retry_label" = "Επανάληψη";
 "save_label" = "Αποθήκευση";
@@ -614,10 +608,8 @@
 "sensors.geocoded_location.setting.use_zones" = "Χρήση ονόματος ζώνης";
 "servers_selection.title" = "Διακομιστές";
 "settings.connection_section.activate_server" = "Ενεργοποίηση";
-"settings.connection_section.activate_swipe_hint" = "Γρήγορη ενεργοποίηση με σάρωση τριών δακτύλων προς τα αριστερά ή προς τα δεξιά κατά την προβολή ενός διακομιστή.";
 "settings.connection_section.add_server" = "Προσθήκη διακομιστή";
 "settings.connection_section.all_servers" = "Όλοι οι διακομιστές";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Είμαι σίγουρος/η";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Εάν έχετε μη ασφαλή σύνδεση, αυτό μπορεί να εκθέσει το token ελέγχου ταυτότητας σε δημόσια δίκτυα.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Είστε σίγουρος/η;";
 "settings.connection_section.always_fallback_internal.footer" = "Η ενεργοποίηση αυτής της λειτουργίας με μη ασφαλή διεύθυνση URL (http) μπορεί να θέσει σε κίνδυνο την ασφάλειά σας σε δημόσια δίκτυα.";
@@ -650,7 +642,6 @@
 "settings.connection_section.internal_url_ssids.footer" = "Η εσωτερική διεύθυνση URL θα χρησιμοποιηθεί όταν συνδέεται με καταχωρημένα SSID";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
-"settings.connection_section.invite_to_server" = "Προσκαλέστε κάποιον σε αυτόν τον server";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Λιγότερο ασφαλές";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Πιο ασφαλές";
 "settings.connection_section.local_access_security_level.title" = "Ασφάλεια τοπικής πρόσβασης";
@@ -670,7 +661,6 @@
 "settings.connection_section.servers_footer" = "Κάντε αναδιάταξη για να ορίσετε τον προεπιλεγμένο διακομιστή";
 "settings.connection_section.servers_header" = "Διακομιστές";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\" και ακρίβεια τοποθεσίας \"Πλήρης\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
-"settings.connection_section.ssid_permission_message" = "Η πρόσβαση σε SSID στο παρασκήνιο απαιτεί άδεια τοποθεσίας \"Πάντα\". Πατήστε εδώ για να αλλάξετε τις ρυθμίσεις σας.";
 "settings.connection_section.validate_error.edit_url" = "Επεξεργασία διεύθυνσης URL";
 "settings.connection_section.validate_error.title" = "Σφάλμα αποθήκευσης διεύθυνσης URL";
 "settings.connection_section.validate_error.use_anyway" = "Χρήση οπωσδήποτε";
@@ -723,12 +713,10 @@
 "settings.navigation_bar.about_button.title" = "Σχετικά";
 "settings.navigation_bar.title" = "Ρυθμίσεις";
 "settings.reset_section.reset_alert.message" = "Θα γίνει επαναφορά των ρυθμίσεών σας και αυτή η συσκευή θα καταργηθεί από τις ειδοποιήσεις push και από τη διαμόρφωση του Home Assistant.";
-"settings.reset_section.reset_alert.progress_message" = "Επαναφορά…";
 "settings.reset_section.reset_alert.title" = "Επαναφορά";
 "settings.reset_section.reset_app.title" = "Επαναφορά εφαρμογής (Κατάργηση διακομιστών και δεδομένων)";
 "settings.reset_section.reset_row.title" = "Επαναφορά";
 "settings.reset_section.reset_web_cache.title" = "Επαναφορά της προσωρινής μνήμης";
-"settings.server_select.page_title" = "Διακομιστής";
 "settings.server_select.title" = "Διακομιστής";
 "settings.status_section.header" = "Κατάσταση";
 "settings.status_section.location_name_row.placeholder" = "Το Home Assistant μου";
@@ -776,7 +764,6 @@
 "settings_details.general.app_icon.enum.electric_violet" = "Ηλεκτρικό βιολετί";
 "settings_details.general.app_icon.enum.fire_orange" = "Πορτοκαλί της φωτιάς";
 "settings_details.general.app_icon.enum.green" = "Πράσινο";
-"settings_details.general.app_icon.enum.ha_blue" = "Μπλε Home Assistant";
 "settings_details.general.app_icon.enum.old_beta" = "Παλιά beta";
 "settings_details.general.app_icon.enum.old_dev" = "Παλιά ανάπτυξη";
 "settings_details.general.app_icon.enum.old_release" = "Παλιά έκδοση";
@@ -786,7 +773,6 @@
 "settings_details.general.app_icon.enum.pride_non_binary" = "Pride: Μη δυαδική";
 "settings_details.general.app_icon.enum.pride_poc" = "Υπερηφάνεια: 8-Χρώματα";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Υπερηφάνεια: Ουράνιο τόξο";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Υπερηφάνεια: Ουράνιο τόξο (ανεστραμμένο)";
 "settings_details.general.app_icon.enum.pride_trans" = "Υπερηφάνεια: Trans";
 "settings_details.general.app_icon.enum.purple" = "Μωβ";
 "settings_details.general.app_icon.enum.red" = "Κόκκινο";
@@ -929,7 +915,6 @@
 "settings_details.privacy.analytics.generic_title" = "Ανάλυση";
 "settings_details.privacy.body" = "Εσείς έχετε τον έλεγχο των δεδομένων σας.";
 "settings_details.privacy.crash_reporting.description" = "Επιτρέπει βαθύτερη παρακολούθηση των σφαλμάτων και άλλων σφαλμάτων στην εφαρμογή, με αποτέλεσμα την ταχύτερη δημοσίευση διορθώσεων. Δεν αποστέλλονται πληροφορίες που να είναι αναγνωρίσιμες από το χρήστη, εκτός από τις βασικές πληροφορίες συσκευής. Πρέπει να κάνετε επανεκκίνηση της εφαρμογής για να εφαρμοστούν οι αλλαγές σε αυτή τη ρύθμιση.";
-"settings_details.privacy.crash_reporting.sentry" = "Αυτή η δυνατότητα χρησιμοποιεί αυτή τη στιγμή το Sentry ως προορισμό αναφοράς.";
 "settings_details.privacy.crash_reporting.title" = "Αναφορά σφαλμάτων";
 "settings_details.privacy.messaging.description" = "Το Firebase Cloud Messaging πρέπει να είναι ενεργοποιημένο για να λειτουργούν οι ειδοποιήσεις push.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
@@ -965,17 +950,10 @@
 "share_extension.entered_placeholder" = "'εισήχθη' σε συμβάν";
 "share_extension.error.title" = "Αδυναμία αποστολής";
 "shortcut_item.open_settings.title" = "Ανοιγμα ρυθμίσεων";
-"success_label" = "Επιτυχία!";
 "thread.active_operational_data_set.title" = "Σύνολο ενεργών επιχειρησιακών δεδομένων";
 "thread.border_agent_id.title" = "Border Agent ID";
-"thread.credentials.border_agent_id_title" = "Border Agent ID";
-"thread.credentials.network_key_title" = "Κλειδί δικτύου";
-"thread.credentials.network_name_title" = "Ονομα δικτύου";
-"thread.credentials.no_credential_available" = "Δεν έχετε διαθέσιμα διαπιστευτήρια στην Κλειδοθήκη iCloud.";
-"thread.credentials.screen_title" = "Διαπιστευτήρια Thread";
 "thread.credentials.share_credentials.no_credentials_message" = "Βεβαιωθείτε ότι έχετε συνδεθεί με το λογαριασμό σας στο iCloud, ο οποίος είναι ιδιοκτήτης ενός Σπιτιού στο Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Δεν έχετε διαπιστευτήρια για κοινή χρήση";
-"thread.credentials.share_credentials_button_title" = "Μοιραστείτε τα διαπιστευτήρια με το Home Assistant";
 "thread.extended_pan_id.title" = "Εκτεταμένο PAN ID";
 "thread.management.title" = "Διαπιστευτήρια νήματος";
 "thread.network_key.title" = "Κλειδί δικτύου";
@@ -1023,7 +1001,6 @@
 "url_handler.x_callback_url.error.serviceMissing" = "υπηρεσία (π.χ. homeassistant.turn_on) πρέπει να οριστεί";
 "url_handler.x_callback_url.error.templateMissing" = "Πρέπει να οριστεί ένα πρότυπο που μπορεί να αποδοθεί";
 "url_label" = "URL";
-"username_label" = "Όνομα χρήστη";
 "watch.assist.button.recording.title" = "Εγγραφή...";
 "watch.assist.button.send_request.title" = "Πατήστε για αποστολή αιτήματος";
 "watch.assist.lack_config.error.title" = "Παρακαλώ ρυθμίστε το Assist χρησιμοποιώντας την εφαρμογή iOS companion";
@@ -1268,10 +1245,15 @@
 "widgets.assist.description" = "Ανοίξτε το Assist στην εφαρμογή";
 "widgets.assist.title" = "Assist";
 "widgets.assist.unknown_configuration" = "Διαμόρφωση";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Επαναφόρτωση όλων των γραφικών στοιχείων";
 "widgets.controls.assist.description" = "Ανοίξτε τον βοηθό στην εφαρμογή Home Assistant";
 "widgets.controls.assist.pipeline.placeholder" = "Επιλέξτε ένα pipeline";
 "widgets.controls.assist.title" = "Βοηθός";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Πάτημα κουμπιού";
 "widgets.controls.button.placeholder_title" = "Επιλογή κουμπιού";
 "widgets.controls.button.title" = "Κουμπί";
@@ -1287,6 +1269,7 @@
 "widgets.controls.open_camera.configuration.parameter.entity" = "Κάμερα";
 "widgets.controls.open_camera.configuration.title" = "Ανοιγμα κάμερας";
 "widgets.controls.open_camera.description" = "Ανοίγει την επιλεγμένη οντότητα κάμερας μέσα στην εφαρμογή";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Κάλυμμα";
 "widgets.controls.open_cover.configuration.title" = "Ανοιγμα καλύμματος";
 "widgets.controls.open_cover.description" = "Ανοίγει την επιλεγμένη οντότητα καλύμματος μέσα στην εφαρμογή";
@@ -1337,7 +1320,6 @@
 "widgets.details.parameters.action" = "Ενέργεια";
 "widgets.details.parameters.details_template" = "Πρότυπο κειμένου λεπτομερειών (μόνο σε ορθογώνια)";
 "widgets.details.parameters.lower_template" = "Πρότυπο κάτω κειμένου";
-"widgets.details.parameters.run_action" = "Εκτέλεση ενέργειας (μόνο σε ορθογώνια)";
 "widgets.details.parameters.run_script" = "Εκτέλεση σεναρίου (μόνο σε ορθογώνια)";
 "widgets.details.parameters.script" = "Σενάριο";
 "widgets.details.parameters.server" = "Διακομιστής";
@@ -1352,7 +1334,6 @@
 "widgets.gauge.parameters.gauge_type.normal" = "Κανονικό";
 "widgets.gauge.parameters.max_label_template" = "Πρότυπο ετικέτας Μέγιστου";
 "widgets.gauge.parameters.min_label_template" = "Πρότυπο ετικέτας Ελάχιστου";
-"widgets.gauge.parameters.run_action" = "Εκτέλεση ενέργειας";
 "widgets.gauge.parameters.run_script" = "Εκτέλεση σεναρίου";
 "widgets.gauge.parameters.script" = "Σενάριο";
 "widgets.gauge.parameters.server" = "Διακομιστής";

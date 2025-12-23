@@ -123,13 +123,13 @@ jobs:
 
             </details>
 
-            Consider running `python3 Tools/remove_unused_strings.py` to clean up these strings,
-            or use the automated cleanup workflow.
+            To clean up these strings, manually remove them from the `Localizable.strings` files
+            and regenerate `Strings.swift` using SwiftGen.
 
   test:
     needs: check-swiftlint-disables
     runs-on: macos-15
-    timeout-minutes: 60
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
 
@@ -197,7 +197,7 @@ jobs:
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == 'home-assistant/iOS'
     runs-on: macos-15
-    timeout-minutes: 60
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
       - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v4.6.2

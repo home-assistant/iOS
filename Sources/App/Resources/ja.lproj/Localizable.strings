@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home AssistantのFacebook";
 "about.home_assistant_on_twitter.title" = "Home AssistantのTwitter";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "あなたの家を呼び覚ます";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "レビューを残す";
 "about.title" = "～について";
@@ -52,13 +51,17 @@
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "常に開く";
 "announcement.drop_support.button" = "続行";
-"announcement.drop_support.button_read_more" = "続きを読む";
 "announcement.drop_support.subtitle" = "慎重に検討した結果、今後のアップデートで iOS 12、13、14 のサポートを終了する予定です。";
 "announcement.drop_support.title" = "重要なアップデート";
 "app_intents.assist.pipeline.default.title" = "デフォルト";
 "app_intents.assist.pipeline.title" = "パイプライン";
 "app_intents.assist.preferred_pipeline.title" = "優先";
 "app_intents.assist.refresh_warning.title" = "アシストパイプラインが見つかりませんか？アプリでアシストを開き、パイプラインの一覧を更新してください。";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "クローズド状態のアイコン";
 "app_intents.controls.assist.parameter.with_voice" = "音声付き";
 "app_intents.controls.assist.title" = "アプリでアシスト";
@@ -115,6 +118,12 @@
 "assist.watch.volume.title" = "音量調節";
 "assist_pipeline_picker.no_pipelines" = "利用可能なパイプラインはありません";
 "assist_pipeline_picker.placeholder" = "パイプラインを選択";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "キャンセル";
 "carPlay.action.intro.item.body" = "iPhoneで続けるをタップ";
 "carPlay.action.intro.item.title" = "最初のアクションを作成する";
@@ -213,9 +222,6 @@
 "connection.error.generic_title" = "ああ！接続が確立できないようだ。";
 "connection.permission.internal_url.body1" = "Home Assistant にローカルで安全にアクセスするには、位置情報の許可（「常に」）を付与する必要があります。";
 "connection.permission.internal_url.body2" = "この許可により、Home Assistant は接続しているワイヤレス ネットワークを検出し、ローカル接続を確立できるようになります。";
-"connection.permission.internal_url.body3" = "あなたの位置情報が Home Assistant と共有されるかどうかは、常にあなたが管理します。これらの設定は、コンパニオン アプリの設定画面で変更できます。";
-"connection.permission.internal_url.button_configure" = "ローカルアクセスの設定";
-"connection.permission.internal_url.button_ignore" = "自分が何をしているのかはわかっています。アクセス権なしでローカル接続を許可します。";
 "connection.permission.internal_url.footer" = "引き続きローカル URL を使用し、位置情報の許可を与えたくない場合は、下のボタンをタップできますが、セキュリティ上のリスクに注意してください。";
 "connection.permission.internal_url.ignore.alert.title" = "よろしいですか？";
 "connection.permission.internal_url.title" = "アクセス許可";
@@ -318,7 +324,6 @@
 "help_label" = "ヘルプ";
 "improv.button.continue" = "続行";
 "improv.connection_state.authorized" = "Wi-Fiの設定";
-"improv.connection_state.autorization_required" = "続行するにはデバイスを認証してください。";
 "improv.connection_state.provisioning" = "Wi-Fiへの接続";
 "improv.error_state.invalid_rpc_packet" = "無効な RPC パケット";
 "improv.error_state.not_authorized" = "認証されていません";
@@ -465,9 +470,7 @@
 "notifications_configurator.settings.footer" = "識別子は、文字とアンダースコアのみを含み、大文字にする必要があります。アプリに対してグローバルに一意である必要があります。";
 "notifications_configurator.settings.footer.id_set" = "識別子は作成後に変更することはできません。識別子を変更するには、アクションを削除して再度作成する必要があります。";
 "notifications_configurator.settings.header" = "設定";
-"off_label" = "オフ";
 "ok_label" = "OK";
-"on_label" = "オン";
 "onboarding.connect.mac_safari_warning.message" = "ログインフォームが開かない場合は、Safariを再起動してみてください。";
 "onboarding.connect.mac_safari_warning.title" = "Safariの起動";
 "onboarding.connect.title" = "%@ に接続しています";
@@ -482,7 +485,6 @@
 "onboarding.connection_test_result.error_code" = "エラー コード:";
 "onboarding.connection_test_result.local_network_permission.description" = "「ローカル ネットワーク」のプライバシー許可が拒否された可能性があります。これは、システム設定アプリで変更できます。";
 "onboarding.device_name_check.error.prompt" = "代わりにどのデバイス名を使用する必要がありますか？";
-"onboarding.device_name_check.error.rename_action" = "リネーム";
 "onboarding.device_name_check.error.title" = "'%1$@' という名前のデバイスは既に存在します";
 "onboarding.invitation.accept_button" = "受け入れる";
 "onboarding.invitation.other_options" = "その他のオプション";
@@ -531,15 +533,11 @@
 "onboarding.network_input.primary_description" = "最適な使い心地を実現するには、Home Assistant がホーム ネットワークに接続されていることを認識する必要があります。";
 "onboarding.network_input.secondary_button.title" = "スキップ";
 "onboarding.network_input.title" = "あなたのホームネットワークは何ですか?";
-"onboarding.permission.location.buttons.allow_and_share" = "Home Assistantを許可して共有";
-"onboarding.permission.location.buttons.allow_for_app" = "アプリの使用のみを許可";
-"onboarding.permission.location.buttons.deny" = "拒否";
 "onboarding.permission.location.deny.alert.body" = "確認する場合は、続行して次のポップアップでも「拒否」をタップしてください。リモート接続が設定されていない場合、アプリはローカル接続設定を使用して Home Assistant にアクセスします。";
 "onboarding.permission.location.deny.alert.header" = "情報";
 "onboarding.permission.location.deny.alert.message" = "位置情報の許可がない場合、プライバシー保護のため、アプリの今後のバージョンではローカルのHome Assistantサーバーへのアクセスが拒否される可能性があります。許可しない場合は、続行して次のポップアップでも「拒否」をタップしてください。その際、アプリがアクセスを試みるURLは内部URLのみとなるため、外部URLとして内部URLを使用することをお勧めします。";
 "onboarding.permission.location.deny.alert.title" = "よろしいですか？";
 "onboarding.permission.location.description" = "あなたが自宅にいるかどうかを識別し、ローカルで Home Assistant に接続するために、Apple は位置情報の許可を求める必要があります。";
-"onboarding.permission.location.privacy_note" = "「Home Assistantに許可して共有」を選択しない限り、位置情報はローカルのHome Assistantサーバーと共有されません。コンパニオンアプリの設定 > センサーで、後で共有を選択できます。";
 "onboarding.permissions.allow" = "許可";
 "onboarding.permissions.allowed" = "完了";
 "onboarding.permissions.change_later_note" = "この権限は後で、設定から変更することができます";
@@ -570,7 +568,6 @@
 "onboarding.scanning.manual" = "アドレスを手動で入力";
 "onboarding.scanning.manual.button.divider.title" = "または";
 "onboarding.scanning.manual.button.title" = "住所を手動で入力";
-"onboarding.scanning.manual_hint" = "サーバーが見つかりませんか？";
 "onboarding.scanning.title" = "サーバーのスキャン";
 "onboarding.servers.auto_connect.button" = "接続";
 "onboarding.servers.docs.read" = "ドキュメントを読む";
@@ -578,11 +575,9 @@
 "onboarding.servers.search.message" = "近くのサーバーを探しています...";
 "onboarding.servers.title" = "ホームネットワークで検索";
 "onboarding.welcome.body" = "外出先からHome Assistantにアクセスできます。Home Assistant GreenやRaspberry Piなどのデバイスを介して、ご自宅でローカルに動作します。";
-"onboarding.welcome.continue_button" = "Home Assistantに接続";
 "onboarding.welcome.description" = "このアプリは、あなたのHome Assistantのサーバーに接続し、あなたとあなたの携帯電話に関するデータを統合することができます。\
 \
 Home Assistantは、ローカルコントロールとプライバシーに重点を置いた、フリーでオープンソースなホームオートメーションソフトウェアです。";
-"onboarding.welcome.get_started" = "Home Assistantを使い始める";
 "onboarding.welcome.header" = "ホームアシスタントコンパニオンアプリ";
 "onboarding.welcome.learn_more" = "もっと詳しく知る";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant のロゴ";
@@ -605,7 +600,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "post_onboarding.permission.notification.title" = "通知を受け取りますか?";
 "preview_output" = "プレビュー出力";
 "privacyLabel" = "プライバシー";
-"reload_label" = "リロード";
 "requires_version" = "%@ 以降が必要です。";
 "retry_label" = "リトライ";
 "save_label" = "保存";
@@ -613,10 +607,8 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "sensors.geocoded_location.setting.use_zones" = "ゾーン名を使用";
 "servers_selection.title" = "サーバー";
 "settings.connection_section.activate_server" = "アクティベート";
-"settings.connection_section.activate_swipe_hint" = "サーバーを表示しているときに、3本指で左右にスワイプすることですばやくアクティブ化できます。";
 "settings.connection_section.add_server" = "サーバーの追加";
 "settings.connection_section.all_servers" = "すべてのサーバー";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "確認しました";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "安全でない接続の場合、認証トークンがパブリックネットワーク上で公開される可能性があります。";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "よろしいですか？";
 "settings.connection_section.always_fallback_internal.footer" = "安全でない URL (http) でこれを有効にすると、パブリック ネットワーク上のセキュリティが危険にさらされる可能性があります。";
@@ -649,7 +641,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.internal_url_ssids.footer" = "リストアップされたSSIDに接続すると、内部URLが使用されます";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
-"settings.connection_section.invite_to_server" = "このサーバーに誰かを招待する";
 "settings.connection_section.local_access_security_level.less_secure.title" = "安全性が低い";
 "settings.connection_section.local_access_security_level.most_secure.title" = "最も安全";
 "settings.connection_section.local_access_security_level.title" = "ローカルアクセスセキュリティ";
@@ -669,7 +660,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.servers_footer" = "デフォルトサーバーを定義するための並べ替え";
 "settings.connection_section.servers_header" = "サーバー";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "バックグラウンドで SSID にアクセスするには、「常に」位置情報の許可と「完全な」位置精度が必要です。ここをタップして設定を変更します。";
-"settings.connection_section.ssid_permission_message" = "バックグラウンドで SSID にアクセスするには、\"常時\"位置情報の許可が必要です。ここをタップして設定を変更します。";
 "settings.connection_section.validate_error.edit_url" = "URLの編集";
 "settings.connection_section.validate_error.title" = "URLの保存中にエラーが発生しました";
 "settings.connection_section.validate_error.use_anyway" = "とにかく使う";
@@ -722,12 +712,10 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.navigation_bar.about_button.title" = "～について";
 "settings.navigation_bar.title" = "設定";
 "settings.reset_section.reset_alert.message" = "設定がリセットされ、このデバイスはプッシュ通知から登録解除されるだけでなく、Home Assistantの設定からも削除されます。";
-"settings.reset_section.reset_alert.progress_message" = "リセット中…...";
 "settings.reset_section.reset_alert.title" = "リセット";
 "settings.reset_section.reset_app.title" = "アプリをリセット（サーバーとデータを削除）";
 "settings.reset_section.reset_row.title" = "リセット";
 "settings.reset_section.reset_web_cache.title" = "フロントエンドキャッシュのリセット";
-"settings.server_select.page_title" = "サーバー";
 "settings.server_select.title" = "サーバー";
 "settings.status_section.header" = "ステータス";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
@@ -775,7 +763,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.general.app_icon.enum.electric_violet" = "エレクトリックバイオレット";
 "settings_details.general.app_icon.enum.fire_orange" = "ファイアオレンジ";
 "settings_details.general.app_icon.enum.green" = "緑";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistantブルー";
 "settings_details.general.app_icon.enum.old_beta" = "古いベータ";
 "settings_details.general.app_icon.enum.old_dev" = "古いDev";
 "settings_details.general.app_icon.enum.old_release" = "古いリリース";
@@ -785,7 +772,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.general.app_icon.enum.pride_non_binary" = "プライド:ノンバイナリー";
 "settings_details.general.app_icon.enum.pride_poc" = "プライド: 8色";
 "settings_details.general.app_icon.enum.pride_rainbow" = "プライド: レインボー";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "プライド: レインボー(反転)";
 "settings_details.general.app_icon.enum.pride_trans" = "プライド: トランス";
 "settings_details.general.app_icon.enum.purple" = "紫";
 "settings_details.general.app_icon.enum.red" = "赤";
@@ -928,7 +914,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings_details.privacy.analytics.generic_title" = "分析";
 "settings_details.privacy.body" = "自分のデータは自分で管理する。";
 "settings_details.privacy.crash_reporting.description" = "アプリのクラッシュやその他のエラーをより詳細に追跡できるため、より迅速に修正を公開できます。基本的なデバイス情報以外に、ユーザーを特定できる情報は送信されません。この設定の変更を有効にするには、アプリを再起動する必要があります。";
-"settings_details.privacy.crash_reporting.sentry" = "この機能は現在、レポートの送信先としてSentryを使用しています。";
 "settings_details.privacy.crash_reporting.title" = "クラッシュレポート";
 "settings_details.privacy.messaging.description" = "プッシュ通知を機能させるには、Firebase Cloud Messaging を有効にする必要があります。";
 "settings_details.privacy.messaging.title" = "Firebaseクラウドメッセージング";
@@ -964,17 +949,10 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "share_extension.entered_placeholder" = "イベントに'入力' されました";
 "share_extension.error.title" = "送信できませんでした";
 "shortcut_item.open_settings.title" = "設定を開く";
-"success_label" = "成功";
 "thread.active_operational_data_set.title" = "アクティブな運用データセット";
 "thread.border_agent_id.title" = "Border Agent ID";
-"thread.credentials.border_agent_id_title" = "Border Agent ID";
-"thread.credentials.network_key_title" = "ネットワークキー";
-"thread.credentials.network_name_title" = "ネットワーク名";
-"thread.credentials.no_credential_available" = "iCloud キーチェーンで使用できる認証情報がありません。";
-"thread.credentials.screen_title" = "Thread 認証情報";
 "thread.credentials.share_credentials.no_credentials_message" = "Apple Home のホーム所有者である iCloud アカウントでログインしていることを確認してください。";
 "thread.credentials.share_credentials.no_credentials_title" = "共有する資格情報がありません";
-"thread.credentials.share_credentials_button_title" = "Home Assistantと認証情報を共有する";
 "thread.extended_pan_id.title" = "拡張PAN ID";
 "thread.management.title" = "Thread 認証情報";
 "thread.network_key.title" = "ネットワークキー";
@@ -1022,7 +1000,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "url_handler.x_callback_url.error.serviceMissing" = "サービス (例: homeassistant.turn_on) を定義する必要があります";
 "url_handler.x_callback_url.error.templateMissing" = "レンダリング可能なテンプレートを定義する必要があります";
 "url_label" = "URL";
-"username_label" = "ユーザー名";
 "watch.assist.button.recording.title" = "録音中...";
 "watch.assist.button.send_request.title" = "タップしてリクエストを送信";
 "watch.assist.lack_config.error.title" = "iOSコンパニオンアプリを使用してアシストを設定してください";
@@ -1267,10 +1244,15 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.assist.description" = "アプリでアシストを開く";
 "widgets.assist.title" = "アシスト";
 "widgets.assist.unknown_configuration" = "設定";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "すべてのウィジェットを再読み込み";
 "widgets.controls.assist.description" = "Home Assistantアプリでアシストを開く";
 "widgets.controls.assist.pipeline.placeholder" = "パイプラインを選択";
 "widgets.controls.assist.title" = "アシスト";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "ボタンを押す";
 "widgets.controls.button.placeholder_title" = "ボタンを選択";
 "widgets.controls.button.title" = "ボタン";
@@ -1286,6 +1268,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.controls.open_camera.configuration.parameter.entity" = "カメラ";
 "widgets.controls.open_camera.configuration.title" = "カメラを開く";
 "widgets.controls.open_camera.description" = "選択したカメラエンティティをアプリ内で開きます";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "カバー";
 "widgets.controls.open_cover.configuration.title" = "カバーを開く";
 "widgets.controls.open_cover.description" = "選択したカバーエンティティをアプリ内で開きます";
@@ -1336,7 +1319,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.details.parameters.action" = "アクション";
 "widgets.details.parameters.details_template" = "詳細テキスト テンプレート (長方形ファミリのみ)";
 "widgets.details.parameters.lower_template" = "下部テキストテンプレート";
-"widgets.details.parameters.run_action" = "アクションを実行 (長方形ファミリのみ)";
 "widgets.details.parameters.run_script" = "スクリプトの実行（長方形ファミリーのみ）";
 "widgets.details.parameters.script" = "スクリプト";
 "widgets.details.parameters.server" = "サーバー";
@@ -1351,7 +1333,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.gauge.parameters.gauge_type.normal" = "ノーマル";
 "widgets.gauge.parameters.max_label_template" = "最大ラベルテンプレート";
 "widgets.gauge.parameters.min_label_template" = "最小ラベルテンプレート";
-"widgets.gauge.parameters.run_action" = "アクションを実行";
 "widgets.gauge.parameters.run_script" = "スクリプトを実行";
 "widgets.gauge.parameters.script" = "スクリプト";
 "widgets.gauge.parameters.server" = "サーバー";

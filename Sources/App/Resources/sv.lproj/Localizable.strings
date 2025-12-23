@@ -12,7 +12,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant på Facebook";
 "about.home_assistant_on_twitter.title" = "Home Assistant på Twitter";
 "about.logo.app_title" = "Home Assistant Companion";
-"about.logo.tagline" = "Väck ditt hem till liv";
 "about.logo.title" = "Home Assistant";
 "about.review.title" = "Skriv en recension";
 "about.title" = "Om";
@@ -52,13 +51,17 @@
 "alerts.prompt.ok" = "OK";
 "always_open_label" = "Alltid öppen";
 "announcement.drop_support.button" = "Fortsätt";
-"announcement.drop_support.button_read_more" = "Läs mer";
 "announcement.drop_support.subtitle" = "Efter noggrant övervägande kommer vi att upphöra med stödet för iOS 12, 13 och 14 i våra kommande uppdateringar.";
 "announcement.drop_support.title" = "Viktig uppdatering";
 "app_intents.assist.pipeline.default.title" = "Standard";
 "app_intents.assist.pipeline.title" = "Pipeline";
 "app_intents.assist.preferred_pipeline.title" = "Föredragen";
 "app_intents.assist.refresh_warning.title" = "Hittar du inte din Assist-pipeline? Öppna Assist i appen för att uppdatera listan över pipelines.";
+"app_intents.automations.automation.title" = "Automation";
+"app_intents.automations.failure_message.content" = "Automation \"%@\" failed to execute, please check your logs.";
+"app_intents.automations.icon.title" = "Icon";
+"app_intents.automations.parameter.automation.title" = "Automation";
+"app_intents.automations.success_message.content" = "Automation \"%@\" executed.";
 "app_intents.closed_state_icon.title" = "Ikon för stängt tillstånd";
 "app_intents.controls.assist.parameter.with_voice" = "Med rösten";
 "app_intents.controls.assist.title" = "Assistent i appen";
@@ -115,6 +118,12 @@
 "assist.watch.volume.title" = "Volymkontroll";
 "assist_pipeline_picker.no_pipelines" = "Inga pipelines tillgängliga";
 "assist_pipeline_picker.placeholder" = "Välj pipeline";
+"camera_list.empty.message" = "No camera entities found in your Home Assistant setup";
+"camera_list.empty.title" = "No Cameras";
+"camera_list.no_results.message" = "No cameras match your search";
+"camera_list.no_results.title" = "No Results";
+"camera_list.search_placeholder" = "Search cameras";
+"camera_list.title" = "Cameras";
 "cancel_label" = "Avbryt";
 "carPlay.action.intro.item.body" = "Tryck för att fortsätta på din iPhone";
 "carPlay.action.intro.item.title" = "Skapa din första åtgärd";
@@ -213,9 +222,6 @@
 "connection.error.generic_title" = "Hoppsan! Det ser ut som om vi inte kan upprätta en anslutning.";
 "connection.permission.internal_url.body1" = "För att komma åt Home Assistant lokalt på ett säkert sätt måste du bevilja platsbehörigheten ('Alltid').";
 "connection.permission.internal_url.body2" = "Den här behörigheten gör att Home Assistant kan upptäcka det trådlösa nätverk som du är ansluten till och upprätta en lokal anslutning.";
-"connection.permission.internal_url.body3" = "Du har alltid kontroll över om din plats delas med Home Assistant. Du kan ändra dessa inställningar i Companion-appen.";
-"connection.permission.internal_url.button_configure" = "Konfigurera lokal åtkomst";
-"connection.permission.internal_url.button_ignore" = "Jag vet vad jag gör. Tillåt lokala anslutningar utan behörighetsåtkomst.";
 "connection.permission.internal_url.footer" = "Om du fortfarande vill använda den lokala URL:en och inte vill ge platsbehörighet kan du trycka på knappen nedan, men var medveten om säkerhetsriskerna.";
 "connection.permission.internal_url.ignore.alert.title" = "Är du säker?";
 "connection.permission.internal_url.title" = "Åtkomst med behörighet";
@@ -318,7 +324,6 @@
 "help_label" = "Hjälp";
 "improv.button.continue" = "Fortsätt";
 "improv.connection_state.authorized" = "Konfigurerar Wi-Fi";
-"improv.connection_state.autorization_required" = "Vänligen auktorisera din enhet för att fortsätta";
 "improv.connection_state.provisioning" = "Ansluter till Wi-Fi";
 "improv.error_state.invalid_rpc_packet" = "Ogiltigt RPC-paket";
 "improv.error_state.not_authorized" = "Ej behörig";
@@ -390,7 +395,7 @@
 "menu.actions.configure" = "Konfigurera...";
 "menu.actions.title" = "Åtgärder";
 "menu.application.about" = "Om %@";
-"menu.application.preferences" = "Inställningar...";
+"menu.application.preferences" = "Preferenser …";
 "menu.file.update_sensors" = "Uppdatera sensorer";
 "menu.help.help" = "%@ Hjälp";
 "menu.status_item.quit" = "Avsluta";
@@ -465,9 +470,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "notifications_configurator.settings.footer" = "Identifieraren får endast innehålla stora bokstäver och understreck. Den måste vara globalt unik för appen.";
 "notifications_configurator.settings.footer.id_set" = "Identifieraren kan inte ändras efter att den har skapats. Du måste ta bort och återskapa åtgärden för att ändra identifieraren.";
 "notifications_configurator.settings.header" = "Inställningar";
-"off_label" = "Av";
 "ok_label" = "OK";
-"on_label" = "På";
 "onboarding.connect.mac_safari_warning.message" = "Prova att starta om Safari om inloggningsformuläret inte öppnas.";
 "onboarding.connect.mac_safari_warning.title" = "Startar Safari";
 "onboarding.connect.title" = "Ansluter till %@";
@@ -482,7 +485,6 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.connection_test_result.error_code" = "Felkod:";
 "onboarding.connection_test_result.local_network_permission.description" = "Sekretessbehörighet för \"Lokalt nätverk\" kan ha nekats. Du kan ändra detta i appen Inställningar.";
 "onboarding.device_name_check.error.prompt" = "Vilket enhetsnamn ska användas istället?";
-"onboarding.device_name_check.error.rename_action" = "Döp om";
 "onboarding.device_name_check.error.title" = "Det finns redan en enhet med namnet '%1$@'";
 "onboarding.invitation.accept_button" = "Acceptera";
 "onboarding.invitation.other_options" = "Andra alternativ";
@@ -531,15 +533,11 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.network_input.primary_description" = "För bästa upplevelse behöver Home Assistant veta när du är ansluten till ditt hemnätverk.";
 "onboarding.network_input.secondary_button.title" = "Hoppa över";
 "onboarding.network_input.title" = "Vilket är ditt hemnätverk?";
-"onboarding.permission.location.buttons.allow_and_share" = "Tillåt samt dela med Home Assistant";
-"onboarding.permission.location.buttons.allow_for_app" = "Tillåt endast i appanvändning";
-"onboarding.permission.location.buttons.deny" = "Neka";
 "onboarding.permission.location.deny.alert.body" = "Om du är säker: fortsätt och tryck på \"Neka\" i nästa popup-fönster också. Om du inte har en fjärranslutning konfigurerad kommer appen att använda din lokala anslutningskonfiguration för att komma åt Home Assistant.";
 "onboarding.permission.location.deny.alert.header" = "Information";
 "onboarding.permission.location.deny.alert.message" = "Utan platsbehörighet kan framtida versioner av appen neka åtkomst till din lokala Home Assistant-server på grund av integritetsproblem. Om du är säker, fortsätt och tryck på \"Neka\" i nästa popup också. I så fall rekommenderas att du använder den interna URL:en som extern, eftersom det är den enda URL som appen kommer att ansluta till.";
 "onboarding.permission.location.deny.alert.title" = "Är du säker?";
 "onboarding.permission.location.description" = "För att identifiera om du är hemma och ansluta lokalt till Home Assistant kräver Apple att vi ber om din platsbehörighet.";
-"onboarding.permission.location.privacy_note" = "Din platsdata kommer inte att delas med din lokala Home Assistant-server om du inte väljer \"Tillåt samt dela med Home Assistant\". Du kan välja att dela senare i inställningarna för Companion-appen > sensorer.";
 "onboarding.permissions.allow" = "Tillåt";
 "onboarding.permissions.allowed" = "Klart";
 "onboarding.permissions.change_later_note" = "Du kan ändra denna behörighet senare i Inställningar";
@@ -570,7 +568,6 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.scanning.manual" = "Ange adress manuellt";
 "onboarding.scanning.manual.button.divider.title" = "eller";
 "onboarding.scanning.manual.button.title" = "Ange adress manuellt";
-"onboarding.scanning.manual_hint" = "Hittar du inte din server?";
 "onboarding.scanning.title" = "Söker efter servrar";
 "onboarding.servers.auto_connect.button" = "Anslut";
 "onboarding.servers.docs.read" = "Läs dokumentationen";
@@ -578,11 +575,9 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "onboarding.servers.search.message" = "Letar efter servrar i närheten...";
 "onboarding.servers.title" = "Söker på hemnätverket";
 "onboarding.welcome.body" = "Gör att du kan komma åt din Home Assistant-installation när du är på språng. Den körs lokalt i ditt hem via en enhet som Home Assistant Green eller Raspberry Pi.";
-"onboarding.welcome.continue_button" = "Anslut till min Home Assistant";
 "onboarding.welcome.description" = "Den här appen ansluter till din Home Assistant-server och låter dig integrera data om dig och din telefon. \
 \
 Home Assistant är gratis och öppen källkod för hemautomatisering med fokus på lokal kontroll och integritet.";
-"onboarding.welcome.get_started" = "Kom igång med Home Assistant";
 "onboarding.welcome.header" = "Home Assistant Companion-app";
 "onboarding.welcome.learn_more" = "Läs mer";
 "onboarding.welcome.logo.accessibility_label" = "Home Assistant-logotyp";
@@ -605,7 +600,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "post_onboarding.permission.notification.title" = "Vill du kunna ta emot aviseringar?";
 "preview_output" = "Förhandsgranska";
 "privacyLabel" = "Integritet";
-"reload_label" = "Ladda om";
 "requires_version" = "Kräver %@ eller nyare.";
 "retry_label" = "Försök igen";
 "save_label" = "Spara";
@@ -613,10 +607,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "sensors.geocoded_location.setting.use_zones" = "Använd zonnamn";
 "servers_selection.title" = "Servrar";
 "settings.connection_section.activate_server" = "Aktivera";
-"settings.connection_section.activate_swipe_hint" = "Svep med tre fingrar åt vänster eller höger för att snabbt aktivera när du visar en server.";
 "settings.connection_section.add_server" = "Lägg till server";
 "settings.connection_section.all_servers" = "Alla servrar";
-"settings.connection_section.always_fallback_internal.confirmation.confirm_button" = "Jag är säker";
 "settings.connection_section.always_fallback_internal.confirmation.message" = "Om du har en osäker anslutning kan detta exponera din autentiseringstoken på offentliga nätverk.";
 "settings.connection_section.always_fallback_internal.confirmation.title" = "Är du säker?";
 "settings.connection_section.always_fallback_internal.footer" = "Om du aktiverar detta med en osäker URL (http) kan din säkerhet äventyras i offentliga nätverk.";
@@ -649,7 +641,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.internal_url_ssids.footer" = "Internt URL kommer att användas vid anslutning till angivna SSID:n";
 "settings.connection_section.internal_url_ssids.header" = "SSID:n";
 "settings.connection_section.internal_url_ssids.placeholder" = "MittRoligaNätverksNamn";
-"settings.connection_section.invite_to_server" = "Bjud in någon till den här servern";
 "settings.connection_section.local_access_security_level.less_secure.title" = "Mindre säker";
 "settings.connection_section.local_access_security_level.most_secure.title" = "Säkrast";
 "settings.connection_section.local_access_security_level.title" = "Lokal åtkomstsäkerhet";
@@ -669,7 +660,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.servers_footer" = "Ändra ordning för att definiera standardserver";
 "settings.connection_section.servers_header" = "Servrar";
 "settings.connection_section.ssid_permission_and_accuracy_message" = "Åtkomst till SSID:er i bakgrunden kräver 'Alltid'-tillåtelse och 'Maximal' platsnoggrannhet.";
-"settings.connection_section.ssid_permission_message" = "Bakgrundsåtkomst till SSID:er kräver 'Alltid'-tillåtelse för platsåtkomst. Tryck här för att ändra dina inställningar.";
 "settings.connection_section.validate_error.edit_url" = "Redigera URL";
 "settings.connection_section.validate_error.title" = "Fel vid sparande av URL";
 "settings.connection_section.validate_error.use_anyway" = "Använd ändå";
@@ -722,12 +712,10 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.navigation_bar.about_button.title" = "Om";
 "settings.navigation_bar.title" = "Inställningar";
 "settings.reset_section.reset_alert.message" = "Dina inställningar återställs och den här enheten kommer att avregistreras från push-meddelanden och tas bort från din Home Assistant-konfiguration.";
-"settings.reset_section.reset_alert.progress_message" = "Återställer...";
 "settings.reset_section.reset_alert.title" = "Återställ";
 "settings.reset_section.reset_app.title" = "Återställ app (ta bort servrar och data)";
 "settings.reset_section.reset_row.title" = "Återställ";
 "settings.reset_section.reset_web_cache.title" = "Återställ frontend-cache";
-"settings.server_select.page_title" = "Server";
 "settings.server_select.title" = "Server";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
@@ -754,7 +742,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.actions.footer" = "Åtgärder används i Apple Watch-appen, åtgärder för appikoner, widgeten Idag och CarPlay.";
 "settings_details.actions.footer_mac" = "Åtgärder används i program-menyn och widgetar.";
 "settings_details.actions.learn.button.title" = "Introduktion till iOS-åtgärder";
-"settings_details.actions.scenes.customize_action" = "Skräddarsy";
+"settings_details.actions.scenes.customize_action" = "Anpassa";
 "settings_details.actions.scenes.empty" = "Inga scener";
 "settings_details.actions.scenes.footer" = "Scener visas bredvid åtgärder när de är aktiverade. När de utförs utlöser de scen-förändringar.";
 "settings_details.actions.scenes.select_all" = "Välj alla";
@@ -775,7 +763,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.general.app_icon.enum.electric_violet" = "Elektriskt lila";
 "settings_details.general.app_icon.enum.fire_orange" = "Brandgul";
 "settings_details.general.app_icon.enum.green" = "Grön";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant-blå";
 "settings_details.general.app_icon.enum.old_beta" = "Gammal Beta";
 "settings_details.general.app_icon.enum.old_dev" = "Gammal Dev";
 "settings_details.general.app_icon.enum.old_release" = "Gammal release";
@@ -785,7 +772,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.general.app_icon.enum.pride_non_binary" = "Pride: Icke-binär";
 "settings_details.general.app_icon.enum.pride_poc" = "Pride: 8 färger";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Regnbåge";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Regnbåge (inverterad)";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.enum.purple" = "Lila";
 "settings_details.general.app_icon.enum.red" = "Röd";
@@ -928,7 +914,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings_details.privacy.analytics.generic_title" = "Analyser";
 "settings_details.privacy.body" = "Du har kontroll över dina data.";
 "settings_details.privacy.crash_reporting.description" = "Tillåter djupare spårning av krascher och andra fel i appen, vilket leder till att rättelser kan publiceras snabbare. Ingen användaridentifierbar information skickas, utöver grundläggande enhetsinformation. Du måste starta om appen för att ändringarna ska slå igenom.";
-"settings_details.privacy.crash_reporting.sentry" = "Den här funktionen använder för närvarande Sentry som rapportdestination.";
 "settings_details.privacy.crash_reporting.title" = "Kraschrapportering";
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging måste vara aktiverat för att push-meddelanden ska fungera.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
@@ -964,17 +949,10 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "share_extension.entered_placeholder" = "'inlagt' i händelse";
 "share_extension.error.title" = "Kunde inte skicka";
 "shortcut_item.open_settings.title" = "Öppna inställningar";
-"success_label" = "Lyckades";
 "thread.active_operational_data_set.title" = "Aktivt driftsdataset";
 "thread.border_agent_id.title" = "Gränsvakts-ID";
-"thread.credentials.border_agent_id_title" = "Gränsvakts-ID";
-"thread.credentials.network_key_title" = "Nätverksnyckel";
-"thread.credentials.network_name_title" = "Nätverksnamn";
-"thread.credentials.no_credential_available" = "Du har inga inloggningsuppgifter tillgängliga på din iCloud-nyckelring.";
-"thread.credentials.screen_title" = "Thread-autentiseringsuppgifter";
 "thread.credentials.share_credentials.no_credentials_message" = "Se till att du är inloggad med ditt iCloud-konto som är ägare till ett hem i Apple Home.";
 "thread.credentials.share_credentials.no_credentials_title" = "Du har inga inloggningsuppgifter att dela";
-"thread.credentials.share_credentials_button_title" = "Dela autentiseringsuppgifter med Home Assistant";
 "thread.extended_pan_id.title" = "Utökat PAN-ID";
 "thread.management.title" = "Autentiseringsuppgifter för Thread";
 "thread.network_key.title" = "Nätverksnyckel";
@@ -1022,7 +1000,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "url_handler.x_callback_url.error.serviceMissing" = "tjänst (e.g. homeassistant.turn_on) måste definieras";
 "url_handler.x_callback_url.error.templateMissing" = "En mall som kan återges måste definieras";
 "url_label" = "URL";
-"username_label" = "Användarnamn";
 "watch.assist.button.recording.title" = "Spelar in...";
 "watch.assist.button.send_request.title" = "Tryck för att skicka förfrågan";
 "watch.assist.lack_config.error.title" = "Vänligen konfigurera Assistenten med hjälp av iOS Companion App";
@@ -1260,24 +1237,29 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.action.name.nothing" = "Ingenting";
 "widgets.action.name.run_script" = "Kör skript";
 "widgets.actions.description" = "Utför Home Assistant-åtgärder.";
-"widgets.actions.not_configured" = "Inga åtgärder inställda";
+"widgets.actions.not_configured" = "Inga åtgärder konfigurerade";
 "widgets.actions.parameters.action" = "Åtgärd";
 "widgets.actions.title" = "Åtgärder";
 "widgets.assist.action_title" = "Fråga Assist";
 "widgets.assist.description" = "Öppna Assist i appen";
 "widgets.assist.title" = "Assistent";
 "widgets.assist.unknown_configuration" = "Konfigurera";
+"widgets.automation.trigger.title" = "Trigger automation";
+"widgets.automations.description" = "Run Automation";
 "widgets.button.reload_timeline" = "Ladda om alla widgets";
 "widgets.controls.assist.description" = "Öppna Assist i Home Assistant-appen";
 "widgets.controls.assist.pipeline.placeholder" = "Välj en pipeline";
 "widgets.controls.assist.title" = "Assistent";
+"widgets.controls.automation.description" = "Run automation";
+"widgets.controls.automation.display_name" = "Automation";
+"widgets.controls.automations.placeholder_title" = "Choose automation";
 "widgets.controls.button.description" = "Tryck knapp";
 "widgets.controls.button.placeholder_title" = "Välj knapp";
 "widgets.controls.button.title" = "Knapp";
 "widgets.controls.cover.description" = "Växla skydd";
 "widgets.controls.cover.placeholder_title" = "Välj skydd";
 "widgets.controls.cover.title" = "Skydd";
-"widgets.controls.fan.description" = "Turn on/off your fan";
+"widgets.controls.fan.description" = "Slå på/av din fläkt";
 "widgets.controls.fan.placeholder_title" = "Välj fläkt";
 "widgets.controls.fan.title" = "Fläkt";
 "widgets.controls.light.description" = "Tänd/släck din lampa";
@@ -1286,6 +1268,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.controls.open_camera.configuration.parameter.entity" = "Kamera";
 "widgets.controls.open_camera.configuration.title" = "Öppna kamera";
 "widgets.controls.open_camera.description" = "Opens the selected camera entity inside the app";
+"widgets.controls.open_cameras_list.description" = "Opens a list of all cameras";
 "widgets.controls.open_cover.configuration.parameter.entity" = "Cover";
 "widgets.controls.open_cover.configuration.title" = "Open Cover";
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";
@@ -1336,7 +1319,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.details.parameters.action" = "Åtgärd";
 "widgets.details.parameters.details_template" = "Detaljer Textmall (endast i rektangulär familj)";
 "widgets.details.parameters.lower_template" = "Mall för nedre text";
-"widgets.details.parameters.run_action" = "Kör åtgärd (endast i rektangulär familj)";
 "widgets.details.parameters.run_script" = "Run Script (only in rectangular family)";
 "widgets.details.parameters.script" = "Skript";
 "widgets.details.parameters.server" = "Server";
@@ -1351,7 +1333,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "widgets.gauge.parameters.gauge_type.normal" = "Normal";
 "widgets.gauge.parameters.max_label_template" = "Mall för största värdeetikett";
 "widgets.gauge.parameters.min_label_template" = "Mall för minsta värdeetikett";
-"widgets.gauge.parameters.run_action" = "Kör åtgärd";
 "widgets.gauge.parameters.run_script" = "Kör skript";
 "widgets.gauge.parameters.script" = "Skript";
 "widgets.gauge.parameters.server" = "Server";
