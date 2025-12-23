@@ -1030,6 +1030,7 @@
 		42DF986D2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986C2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift */; };
 		42DF986F2E93A21A00837EA2 /* NotificationSubControllerMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */; };
 		42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */; };
+		42DFE8722EFA9CB30058DADB /* CameraListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8702EFA9CB30058DADB /* CameraListViewModelTests.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -2734,6 +2735,7 @@
 		42DF986C2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMJPEG.swift; sourceTree = "<group>"; };
 		42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMap.swift; sourceTree = "<group>"; };
 		42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMedia.swift; sourceTree = "<group>"; };
+		42DFE8702EFA9CB30058DADB /* CameraListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraListViewModelTests.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
@@ -4243,6 +4245,7 @@
 		39A32EE32C0E38A100985722 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				42DFE8712EFA9CB30058DADB /* CameraList */,
 				42A47A882C452D7C00C9B43D /* Mocks */,
 				42DD84182B14D83B00936F16 /* WebViewExternalBusMessageTests.swift */,
 				42A47A862C452D5400C9B43D /* WebViewExternalMessageHandlerTests.swift */,
@@ -5803,6 +5806,14 @@
 				42DF7DE12EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		42DFE8712EFA9CB30058DADB /* CameraList */ = {
+			isa = PBXGroup;
+			children = (
+				42DFE8702EFA9CB30058DADB /* CameraListViewModelTests.swift */,
+			);
+			path = CameraList;
 			sourceTree = "<group>";
 		};
 		42E3B8BB2D8ACDC100F5D084 /* Extensions */ = {
@@ -9043,6 +9054,7 @@
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
 				420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
+				42DFE8722EFA9CB30058DADB /* CameraListViewModelTests.swift in Sources */,
 				11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */,
 				11ED439C2726600000B5FD45 /* OnboardingAuthStepSensors.test.swift in Sources */,
 				42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */,

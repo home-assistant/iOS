@@ -6,20 +6,29 @@ import XCTest
 class CameraListViewModelTests: XCTestCase {
     private var sut: CameraListViewModel!
     private var mockDiskCache: MockDiskCache!
+    private var fakeServerManager: FakeServerManager!
 
     override func setUp() {
         super.setUp()
 
         // Setup mock disk cache
         mockDiskCache = MockDiskCache()
+        Current.diskCache = mockDiskCache
+
+        // Setup fake server manager with a test server
+        fakeServerManager = FakeServerManager()
+        let serverInfo = ServerInfo.fake()
+        _ = fakeServerManager.add(identifier: Identifier(rawValue: "test_server"), serverInfo: serverInfo)
+        Current.servers = fakeServerManager
 
         // Create system under test
-        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
+        sut = CameraListViewModel(serverId: "test_server")
     }
 
     override func tearDown() {
         sut = nil
         mockDiskCache = nil
+        fakeServerManager = nil
 
         super.tearDown()
     }
@@ -58,7 +67,7 @@ class CameraListViewModelTests: XCTestCase {
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
 
         // Create view model after setting up storage
-        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
+        sut = CameraListViewModel(serverId: "test_server")
 
         sut.cameras = [
             makeCamera(entityId: "camera.alpha", name: "Alpha Camera"),
@@ -69,17 +78,23 @@ class CameraListViewModelTests: XCTestCase {
 
         // Note: RunLoop is needed because loadCameraOrders() uses .done{} which schedules
         // callbacks asynchronously even though MockDiskCache returns fulfilled promises
-        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+        // Run the loop multiple times to ensure all promise callbacks complete
+        for _ in 0 ..< 3 {
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.01))
+        }
 
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
 
         // Then: Cameras should follow custom order
+        XCTAssertEqual(grouped.count, 1, "Should have exactly one group")
         if let cameras = grouped.first?.cameras {
             XCTAssertEqual(cameras.count, 3)
-            XCTAssertEqual(cameras[0].entityId, "camera.zebra")
-            XCTAssertEqual(cameras[1].entityId, "camera.beta")
-            XCTAssertEqual(cameras[2].entityId, "camera.alpha")
+            XCTAssertEqual(cameras[0].entityId, "camera.zebra", "First camera should be zebra")
+            XCTAssertEqual(cameras[1].entityId, "camera.beta", "Second camera should be beta")
+            XCTAssertEqual(cameras[2].entityId, "camera.alpha", "Third camera should be alpha")
+        } else {
+            XCTFail("Should have cameras in the first group")
         }
     }
 
@@ -93,7 +108,7 @@ class CameraListViewModelTests: XCTestCase {
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
 
         // Create view model after setting up storage
-        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
+        sut = CameraListViewModel(serverId: "test_server")
 
         sut.cameras = [
             makeCamera(entityId: "camera.alpha", name: "Alpha Camera"),
@@ -104,18 +119,24 @@ class CameraListViewModelTests: XCTestCase {
         sut.selectedServerId = "test_server"
 
         // Give promises a chance to resolve
-        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+        // Run the loop multiple times to ensure all promise callbacks complete
+        for _ in 0 ..< 3 {
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.01))
+        }
 
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
 
         // Then: Custom order first, then new cameras alphabetically
+        XCTAssertEqual(grouped.count, 1, "Should have exactly one group")
         if let cameras = grouped.first?.cameras {
             XCTAssertEqual(cameras.count, 4)
-            XCTAssertEqual(cameras[0].entityId, "camera.zebra")
-            XCTAssertEqual(cameras[1].entityId, "camera.alpha")
-            XCTAssertEqual(cameras[2].entityId, "camera.beta") // New cameras alphabetically
-            XCTAssertEqual(cameras[3].entityId, "camera.new")
+            XCTAssertEqual(cameras[0].entityId, "camera.zebra", "First camera should be zebra (custom order)")
+            XCTAssertEqual(cameras[1].entityId, "camera.alpha", "Second camera should be alpha (custom order)")
+            XCTAssertEqual(cameras[2].entityId, "camera.beta", "Third camera should be beta (new, alphabetically)")
+            XCTAssertEqual(cameras[3].entityId, "camera.new", "Fourth camera should be new (new, alphabetically)")
+        } else {
+            XCTFail("Should have cameras in the first group")
         }
     }
 
@@ -146,7 +167,7 @@ class CameraListViewModelTests: XCTestCase {
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
 
         // Create view model after setting up storage
-        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
+        sut = CameraListViewModel(serverId: "test_server")
 
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
@@ -173,7 +194,7 @@ class CameraListViewModelTests: XCTestCase {
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
 
         // Create view model after setting up storage
-        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
+        sut = CameraListViewModel(serverId: "test_server")
 
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
@@ -240,7 +261,7 @@ class CameraListViewModelTests: XCTestCase {
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
 
         // Create view model after setting up storage
-        sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
+        sut = CameraListViewModel(serverId: "test_server")
 
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
@@ -249,13 +270,19 @@ class CameraListViewModelTests: XCTestCase {
         sut.selectedServerId = "test_server"
 
         // Give promises a chance to resolve
-        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+        // Run the loop multiple times to ensure all promise callbacks complete
+        for _ in 0 ..< 3 {
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.01))
+        }
 
         // Then: Order should be restored
         let grouped = sut.groupedCameras
+        XCTAssertEqual(grouped.count, 1, "Should have exactly one group")
         if let cameras = grouped.first?.cameras, cameras.count == 2 {
-            XCTAssertEqual(cameras[0].entityId, "camera.2")
-            XCTAssertEqual(cameras[1].entityId, "camera.1")
+            XCTAssertEqual(cameras[0].entityId, "camera.2", "First camera should be camera.2")
+            XCTAssertEqual(cameras[1].entityId, "camera.1", "Second camera should be camera.1")
+        } else {
+            XCTFail("Should have 2 cameras in the first group")
         }
     }
 
@@ -274,9 +301,13 @@ class CameraListViewModelTests: XCTestCase {
         mockDiskCache.setStoredValue(storage1, forKey: "camera_order_server1")
         mockDiskCache.setStoredValue(storage2, forKey: "camera_order_server2")
 
+        // Add the additional servers to the server manager
+        _ = fakeServerManager.add(identifier: Identifier(rawValue: "server1"), serverInfo: ServerInfo.fake())
+        _ = fakeServerManager.add(identifier: Identifier(rawValue: "server2"), serverInfo: ServerInfo.fake())
+
         // When: Creating view models for different servers
-        let vm1 = CameraListViewModel(serverId: "server1", diskCache: mockDiskCache)
-        let vm2 = CameraListViewModel(serverId: "server2", diskCache: mockDiskCache)
+        let vm1 = CameraListViewModel(serverId: "server1")
+        let vm2 = CameraListViewModel(serverId: "server2")
 
         // Then: Each should maintain its own order
         XCTAssertNotNil(vm1)

@@ -19,17 +19,15 @@ final class CameraListViewModel: ObservableObject {
     private let controlEntityProvider = ControlEntityProvider(domains: [.camera])
     private var entityToAreaMap: [String: String] = [:]
     private var cameraOrderStorage: [String: CameraOrderStorage] = [:] // [serverId: CameraOrderStorage]
-    private let diskCache: DiskCache
 
     var shouldShowServerPicker: Bool {
         // Only show server picker if not initialized with a specific serverId
         initialServerId == nil
     }
 
-    init(serverId: String? = nil, diskCache: DiskCache = Current.diskCache) {
+    init(serverId: String? = nil) {
         self.initialServerId = serverId
         self.selectedServerId = serverId
-        self.diskCache = diskCache
         loadCameraOrders()
     }
 
@@ -185,7 +183,7 @@ final class CameraListViewModel: ObservableObject {
             let serverId = server.identifier.rawValue
             let cacheKey = "camera_order_\(serverId)"
 
-            diskCache.value(for: cacheKey).done { [weak self] (storage: CameraOrderStorage) in
+            Current.diskCache.value(for: cacheKey).done { [weak self] (storage: CameraOrderStorage) in
                 self?.cameraOrderStorage[serverId] = storage
             }.catch { error in
                 // Storage doesn't exist or failed to load - this is expected for first run
@@ -198,7 +196,7 @@ final class CameraListViewModel: ObservableObject {
         for (serverId, storage) in cameraOrderStorage {
             let cacheKey = "camera_order_\(serverId)"
 
-            diskCache.set(storage, for: cacheKey).catch { error in
+            Current.diskCache.set(storage, for: cacheKey).catch { error in
                 Current.Log.error("Failed to save camera order for server \(serverId): \(error.localizedDescription)")
             }
         }
