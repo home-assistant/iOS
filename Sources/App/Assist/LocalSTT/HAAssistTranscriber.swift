@@ -32,6 +32,7 @@ final class HAAssistTranscriber {
     var silenceThreshold: Measurement<UnitDuration> = .init(value: 2.0, unit: .seconds)
     var autoStopEnabled: Bool = true
 
+    // swiftlint:disable:next cyclomatic_complexity
     func setUpTranscriber() async throws {
         transcriber = SpeechTranscriber(
             locale: .autoupdatingCurrent,
