@@ -11,6 +11,11 @@ struct AssistView: View {
     @State private var showSettings = false
     @AppStorage("enableOnDeviceSTT") private var enableOnDeviceSTT = false
     @AppStorage("enableAssistModernUI") private var enableModernUI = false
+    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
+    
+    private var selectedTheme: ModernAssistTheme {
+        ModernAssistTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant
+    }
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
@@ -20,9 +25,6 @@ struct AssistView: View {
     }
 
     private let showCloseButton: Bool
-    
-    // State for modern UI
-    @State private var selectedTheme: ModernAssistTheme = .homeAssistant
     
     private var shouldUseModernUI: Bool {
         if #available(iOS 26.0, *) {
@@ -116,7 +118,10 @@ struct AssistView: View {
             messages: $viewModel.chatItems,
             inputText: $viewModel.inputText,
             isRecording: $viewModel.isRecording,
-            selectedTheme: $selectedTheme,
+            selectedTheme: .init(
+                get: { selectedTheme },
+                set: { selectedThemeRawValue = $0.rawValue }
+            ),
             selectedPipeline: .init(
                 get: {
                     viewModel.pipelines.first(where: { $0.id == viewModel.preferredPipelineId })?.name ?? ""
@@ -145,7 +150,6 @@ struct AssistView: View {
                 viewModel.stopStreaming()
             }
         )
-        .preferredColorScheme(.dark)
         .sheet(isPresented: $showSettings) {
             AssistSettingsView()
         }
