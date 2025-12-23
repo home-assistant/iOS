@@ -1,14 +1,8 @@
-//
-//  HAAssistTranscriber.swift
-//
-//  Speech transcription handler for voice-to-text
-//
-
-import Speech
 import AVFoundation
 import Foundation
-import SwiftUI
 import Shared
+import Speech
+import SwiftUI
 
 @available(iOS 26.0, *)
 @Observable
@@ -18,8 +12,8 @@ final class HAAssistTranscriber {
     private var transcriber: SpeechTranscriber?
     private var detector: SpeechDetector!
     private var analyzer: SpeechAnalyzer?
-    private var recognizerTask: Task<(), Error>?
-    private var detectorTask: Task<(), Error>?
+    private var recognizerTask: Task<Void, Error>?
+    private var detectorTask: Task<Void, Error>?
 
     // The format of the audio.
     var analyzerFormat: AVAudioFormat?
@@ -29,15 +23,16 @@ final class HAAssistTranscriber {
 
     var volatileTranscript: AttributedString = ""
     var finalizedTranscript: AttributedString = ""
-    
+
     // Callback to notify when speech has ended
     var onSpeechEnded: (() -> Void)?
-    
+
     // Track silence duration for auto-stop
     private var lastSpeechTime: Date?
     var silenceThreshold: Measurement<UnitDuration> = .init(value: 2.0, unit: .seconds)
     var autoStopEnabled: Bool = true
 
+    // swiftlint:disable:next cyclomatic_complexity
     func setUpTranscriber() async throws {
         transcriber = SpeechTranscriber(
             locale: .autoupdatingCurrent,
@@ -61,7 +56,7 @@ final class HAAssistTranscriber {
             return
         }
 
-        self.analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber])
+        analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber])
         (inputSequence, inputBuilder) = AsyncStream<AnalyzerInput>.makeStream()
 
         guard let inputSequence else { return }
@@ -82,7 +77,7 @@ final class HAAssistTranscriber {
                 print("speech recognition failed: \(error)")
             }
         }
-        
+
         // Monitor speech detection to know when to stop
         detectorTask = Task {
             do {
@@ -94,7 +89,8 @@ final class HAAssistTranscriber {
                         print("Silence detected")
                         // Check if enough time has passed since last speech
                         if let lastSpeech = lastSpeechTime,
-                           Current.date().timeIntervalSince(lastSpeech) >= silenceThreshold.converted(to: .seconds).value {
+                           Current.date().timeIntervalSince(lastSpeech) >= silenceThreshold.converted(to: .seconds)
+                           .value {
                             print("Speech has ended after \(silenceThreshold) seconds of silence")
                             onSpeechEnded?()
                         }
@@ -113,7 +109,7 @@ final class HAAssistTranscriber {
             throw HAAssistTranscriptionError.invalidAudioDataType
         }
 
-        let converted = try self.converter.convertBuffer(buffer, to: analyzerFormat)
+        let converted = try converter.convertBuffer(buffer, to: analyzerFormat)
         let input = AnalyzerInput(buffer: converted)
 
         inputBuilder.yield(input)
@@ -130,6 +126,7 @@ final class HAAssistTranscriber {
 }
 
 // MARK: - Model Management
+
 @available(iOS 26.0, *)
 extension HAAssistTranscriber {
     func ensureModel(transcriber: SpeechTranscriber, locale: Locale) async throws {
@@ -156,7 +153,7 @@ extension HAAssistTranscriber {
 
     func downloadIfNeeded(for module: SpeechTranscriber) async throws {
         if let downloader = try await AssetInventory.assetInstallationRequest(supporting: [module]) {
-            self.downloadProgress = downloader.progress
+            downloadProgress = downloader.progress
             try await downloader.downloadAndInstall()
         }
     }

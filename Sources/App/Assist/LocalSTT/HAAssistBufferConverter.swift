@@ -1,11 +1,5 @@
-//
-//  HAAssistBufferConverter.swift
-//
-//  Audio buffer format conversion utilities
-//
-
-import Foundation
 import AVFoundation
+import Foundation
 
 @available(iOS 26.0, *)
 class HAAssistBufferConverter {
@@ -16,7 +10,7 @@ class HAAssistBufferConverter {
     }
 
     private var converter: AVAudioConverter?
-    
+
     func convertBuffer(_ buffer: AVAudioPCMBuffer, to format: AVAudioFormat) throws -> AVAudioPCMBuffer {
         let inputFormat = buffer.format
         guard inputFormat != format else {
@@ -25,7 +19,9 @@ class HAAssistBufferConverter {
 
         if converter == nil || converter?.outputFormat != format {
             converter = AVAudioConverter(from: inputFormat, to: format)
-            converter?.primeMethod = .none // Sacrifice quality of first samples in order to avoid any timestamp drift from source
+            converter?
+                .primeMethod =
+                .none // Sacrifice quality of first samples in order to avoid any timestamp drift from source
         }
 
         guard let converter else {
@@ -42,8 +38,9 @@ class HAAssistBufferConverter {
         var nsError: NSError?
         var bufferProcessed = false
 
-        let status = converter.convert(to: conversionBuffer, error: &nsError) { packetCount, inputStatusPointer in
-            defer { bufferProcessed = true } // This closure can be called multiple times, but it only offers a single buffer.
+        let status = converter.convert(to: conversionBuffer, error: &nsError) { _, inputStatusPointer in
+            defer { bufferProcessed = true
+            } // This closure can be called multiple times, but it only offers a single buffer.
             inputStatusPointer.pointee = bufferProcessed ? .noDataNow : .haveData
             return bufferProcessed ? nil : buffer
         }
