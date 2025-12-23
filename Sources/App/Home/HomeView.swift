@@ -7,7 +7,7 @@ struct HomeView: View {
     @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewControllerProvider = ViewControllerProvider()
-    
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -76,7 +76,7 @@ struct HomeView: View {
         }
         .navigationViewStyle(.stack)
     }
-    
+
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.title2.bold())
@@ -84,13 +84,13 @@ struct HomeView: View {
             .padding(.vertical, 8)
             .background(Color(uiColor: .systemBackground))
     }
-    
+
     private func entityTilesGrid(for entities: [HAAppEntity]) -> some View {
         let columns = [
             GridItem(.flexible(), spacing: 12),
-            GridItem(.flexible(), spacing: 12)
+            GridItem(.flexible(), spacing: 12),
         ]
-        
+
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(entities) { entity in
                 EntityTileView(entity: entity)
@@ -101,7 +101,7 @@ struct HomeView: View {
 
 struct EntityTileView: View {
     let entity: HAAppEntity
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .center, spacing: 12) {
@@ -127,11 +127,11 @@ struct EntityTileView: View {
                 .stroke(Color.tileBorder, lineWidth: 1)
         )
     }
-    
+
     private var iconView: some View {
         let icon = entity.icon.flatMap { MaterialDesignIcons(serversideValueNamed: $0) } ?? .homeIcon
         let iconColor = Color.haPrimary
-        
+
         return VStack {
             Text(verbatim: icon.unicode)
                 .font(.custom(MaterialDesignIcons.familyName, size: 20))
