@@ -1032,6 +1032,7 @@
 		42DF986F2E93A21A00837EA2 /* NotificationSubControllerMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */; };
 		42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */; };
 		42DFE86F2EFA26D50058DADB /* AssistSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */; };
+		42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -2738,6 +2739,7 @@
 		42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMap.swift; sourceTree = "<group>"; };
 		42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMedia.swift; sourceTree = "<group>"; };
 		42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsView.swift; sourceTree = "<group>"; };
+		42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistWavesAnimation.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
@@ -4793,6 +4795,7 @@
 			isa = PBXGroup;
 			children = (
 				425C5A062CF756DF00206B5B /* AssistMicAnimationView.swift */,
+				42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -8729,6 +8732,7 @@
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
+				42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */,
 				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,

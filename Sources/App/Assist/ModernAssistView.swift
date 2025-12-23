@@ -393,20 +393,16 @@ struct ModernAssistView: View, KeyboardReadable {
     }
 
     private var recordingOrb: some View {
-        VStack {
-            Image(systemSymbol: .waveform)
-                .font(.title)
-                .symbolEffect(.variableColor.iterative.dimInactiveLayers.reversing, options: .repeat(.continuous))
-                .padding()
-        }
-        .glassEffect(.clear.interactive(), in: .circle)
-        .onTapGesture {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                onStopRecording()
+        AssistWavesAnimation()
+            .frame(height: Constants.inputHeight)
+            .frame(maxWidth: .infinity)
+            .onTapGesture {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                    onStopRecording()
+                }
             }
-        }
-        .sensoryFeedback(.warning, trigger: isRecording)
-        .sensoryFeedback(.success, trigger: !isRecording)
+            .sensoryFeedback(.warning, trigger: isRecording)
+            .sensoryFeedback(.success, trigger: !isRecording)
     }
 
     private var inputControls: some View {
