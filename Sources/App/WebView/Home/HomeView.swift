@@ -105,8 +105,8 @@ struct HomeView: View {
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(entities) { entity in
                 EntityTileView(
-                    entity: entity,
-                    state: viewModel.entityStates[entity.entityId]?.state
+                    appEntity: entity,
+                    haEntity: viewModel.entityStates[entity.entityId]
                 )
             }
         }

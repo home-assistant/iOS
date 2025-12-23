@@ -1,8 +1,8 @@
 import Foundation
 import GRDB
+import HAKit
 import Shared
 import SwiftUI
-import HAKit
 
 @available(iOS 26.0, *)
 @Observable
