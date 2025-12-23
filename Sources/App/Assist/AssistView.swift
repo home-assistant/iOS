@@ -25,43 +25,7 @@ struct AssistView: View {
     }
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: .zero) {
-                if !Current.isCatalyst {
-                    pipelinesPicker
-                }
-                chatList
-            }
-            .navigationTitle("Assist")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if showCloseButton {
-                        closeButton
-                    }
-                }
-
-                #if !targetEnvironment(macCatalyst)
-                if #available(iOS 26.0, *) {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        settingsButton
-                    }
-                }
-                #endif
-
-                #if targetEnvironment(macCatalyst)
-                ToolbarItem(placement: .topBarTrailing) {
-                    macPicker
-                }
-                #endif
-            }
-            .sheet(isPresented: $showSettings) {
-                if #available(iOS 26.0, *) {
-                    AssistSettingsView()
-                }
-            }
-        }
-        .navigationViewStyle(.stack)
+       classicUI
         .onAppear {
             assistSession.inProgress = true
             viewModel.enableOnDeviceSTT = enableOnDeviceSTT
@@ -86,6 +50,46 @@ struct AssistView: View {
                 dismissButton: .default(Text(verbatim: L10n.okLabel))
             )
         }
+    }
+
+    private var classicUI: some View {
+        NavigationView {
+            VStack(spacing: .zero) {
+                if !Current.isCatalyst {
+                    pipelinesPicker
+                }
+                chatList
+            }
+            .navigationTitle("Assist")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if showCloseButton {
+                        closeButton
+                    }
+                }
+
+#if !targetEnvironment(macCatalyst)
+                ToolbarItem(placement: .topBarTrailing) {
+                    if #available(iOS 26.0, *) {
+                        settingsButton
+                    }
+                }
+#endif
+
+#if targetEnvironment(macCatalyst)
+                ToolbarItem(placement: .topBarTrailing) {
+                    macPicker
+                }
+#endif
+            }
+            .sheet(isPresented: $showSettings) {
+                if #available(iOS 26.0, *) {
+                    AssistSettingsView()
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 
     private var closeButton: some View {
