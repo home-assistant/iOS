@@ -1035,6 +1035,7 @@
 		42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */; };
 		42DFE87A2EFB08C80058DADB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8782EFB08C80058DADB /* HomeViewModel.swift */; };
 		42DFE87B2EFB08C80058DADB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8772EFB08C80058DADB /* HomeView.swift */; };
+		42DFE87D2EFB128B0058DADB /* EntityTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE87C2EFB128B0058DADB /* EntityTileView.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -2744,6 +2745,7 @@
 		42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistWavesAnimation.swift; sourceTree = "<group>"; };
 		42DFE8772EFB08C80058DADB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		42DFE8782EFB08C80058DADB /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		42DFE87C2EFB128B0058DADB /* EntityTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTileView.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
@@ -5824,6 +5826,7 @@
 			children = (
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
+				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -8787,6 +8790,7 @@
 				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
+				42DFE87D2EFB128B0058DADB /* EntityTileView.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
 				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,

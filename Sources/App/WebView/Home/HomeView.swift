@@ -36,8 +36,7 @@ struct HomeView: View {
                     ScrollView {
                         LazyVStack(
                             alignment: .leading,
-                            spacing: DesignSystem.Spaces.three,
-                            pinnedViews: [.sectionHeaders]
+                            spacing: DesignSystem.Spaces.three
                         ) {
                             ForEach(viewModel.groupedEntities) { section in
                                 Section {
@@ -54,12 +53,12 @@ struct HomeView: View {
             .navigationTitle("Home")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    CloseButton {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button {
                         dismiss()
+                    } label: {
+                        Image(systemSymbol: .safari)
                     }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showSettings = true
                     } label: {
@@ -98,51 +97,6 @@ struct HomeView: View {
                 EntityTileView(entity: entity)
             }
         }
-    }
-}
-
-struct EntityTileView: View {
-    let entity: HAAppEntity
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .center, spacing: 12) {
-                iconView
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(entity.name)
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color(uiColor: .label))
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding([.leading, .trailing], 12)
-        }
-        .frame(height: 80)
-        .frame(maxWidth: .infinity)
-        .background(Color.tileBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(Color.tileBorder, lineWidth: 1)
-        )
-    }
-
-    private var iconView: some View {
-        let icon = entity.icon.flatMap { MaterialDesignIcons(serversideValueNamed: $0) } ?? .homeIcon
-        let iconColor = Color.haPrimary
-
-        return VStack {
-            Text(verbatim: icon.unicode)
-                .font(.custom(MaterialDesignIcons.familyName, size: 20))
-                .foregroundColor(iconColor)
-                .fixedSize(horizontal: false, vertical: false)
-        }
-        .frame(width: 38, height: 38)
-        .background(iconColor.opacity(0.3))
-        .clipShape(Circle())
     }
 }
 
