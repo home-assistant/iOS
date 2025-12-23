@@ -7,7 +7,14 @@ import Shared
 final class AssistViewModel: NSObject, ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
     @Published var pipelines: [Pipeline] = []
-    @Published var preferredPipelineId: String = ""
+    @Published var preferredPipelineId: String = "" {
+        didSet {
+            if !oldValue.isEmpty, oldValue != preferredPipelineId {
+                onPipelineChanged()
+            }
+        }
+    }
+
     @Published var inputText = ""
     @Published var isRecording = false
     @Published var showError = false
@@ -232,6 +239,14 @@ final class AssistViewModel: NSObject, ObservableObject {
         if assistService.shouldStartListeningAgainAfterPlaybackEnd {
             assistService.resetShouldStartListeningAgainAfterPlaybackEnd()
             assistWithAudio()
+        }
+    }
+
+    private func onPipelineChanged() {
+        // Find the pipeline name from the ID
+        if let pipeline = pipelines.first(where: { $0.id == preferredPipelineId }) {
+            appendToChat(.init(content: pipeline.name, itemType: .info))
+            Current.Log.info("Pipeline changed to: \(pipeline.name) (\(preferredPipelineId))")
         }
     }
 

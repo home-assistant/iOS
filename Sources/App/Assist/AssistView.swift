@@ -8,7 +8,7 @@ struct AssistView: View {
     @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
-    @AppStorage("enableOnDeviceSTT") private var enableOnDeviceSTT = false
+    @AppStorage("enableAssistOnDeviceSTT") private var enableOnDeviceSTT = false
     @AppStorage("enableAssistModernUI") private var enableModernUI = false
     @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
 
