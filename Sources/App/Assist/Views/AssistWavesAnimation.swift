@@ -1,3 +1,4 @@
+import Shared
 import SwiftUI
 
 struct AssistWavesAnimation: View {
@@ -9,36 +10,53 @@ struct AssistWavesAnimation: View {
     // Check out these colors - I added a gradient feel based on your input
     private let colors: [Color] = [.blue, .cyan, .blue.opacity(0.8), .teal, .blue]
 
+    @State private var instructionOpacity: Double = 1.0
+
     var body: some View {
-        HStack(spacing: 6) {
-            ForEach(0 ..< numberOfBars, id: \.self) { index in
-                WaveBar(
-                    color: colors[index % colors.count],
-                    minHeight: minHeight,
-                    maxHeight: maxHeight,
-                    // We stagger the animation slightly based on index
-                    // to prevent them from moving in perfect unison
-                    delay: Double(index) * 0.1
-                )
-                .blur(radius: 40)
-            }
-        }
-        // This creates a nice glow effect without hiding the bars
-        .background(
+        ZStack {
+            Text(L10n.Assist.Button.FinishRecording.title)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+                .opacity(instructionOpacity)
+                .offset(y: -100) // Position above the waves
+                .onAppear {
+                    // Wait 2 seconds so the user can read it, then fade out
+                    withAnimation(.easeOut(duration: 1.0).delay(2.0)) {
+                        instructionOpacity = 0
+                    }
+                }
+
             HStack(spacing: 6) {
                 ForEach(0 ..< numberOfBars, id: \.self) { index in
                     WaveBar(
                         color: colors[index % colors.count],
                         minHeight: minHeight,
                         maxHeight: maxHeight,
+                        // We stagger the animation slightly based on index
+                        // to prevent them from moving in perfect unison
                         delay: Double(index) * 0.1
                     )
+                    .blur(radius: 40)
                 }
             }
-            .blur(radius: 60) // Soft glow
-            .opacity(0.5)
-        )
-        .offset(y: 70)
+            // This creates a nice glow effect without hiding the bars
+            .background(
+                HStack(spacing: 6) {
+                    ForEach(0 ..< numberOfBars, id: \.self) { index in
+                        WaveBar(
+                            color: colors[index % colors.count],
+                            minHeight: minHeight,
+                            maxHeight: maxHeight,
+                            delay: Double(index) * 0.1
+                        )
+                    }
+                }
+                .blur(radius: 60) // Soft glow
+                .opacity(0.5)
+            )
+            .offset(y: 70)
+        }
     }
 }
 
@@ -59,7 +77,7 @@ struct WaveBar: View {
     var body: some View {
         Capsule()
             .fill(color)
-            .frame(maxWidth: .infinity) // Fixed width for cleaner look
+            .frame(maxWidth: .infinity)
             .frame(height: isAnimating ? maxHeight * CGFloat.random(in: 0.5 ... 1.0) : minHeight)
             .onAppear {
                 // Different animation speeds for different bars creates the "Voice" chaos

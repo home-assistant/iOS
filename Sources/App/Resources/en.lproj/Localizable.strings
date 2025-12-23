@@ -110,6 +110,7 @@
 "app_intents.state.toggle" = "Toggle";
 "app_intents.switch.title" = "Switch";
 "app_intents.widget_action.actions_parameter_configuration" = "Which actions?";
+"assist.button.finish_recording.title" = "Tap to finish recording...";
 "assist.button.listening.title" = "Listening...";
 "assist.error.pipelines_response" = "Failed to obtain Assist pipelines, please check your pipelines configuration.";
 "assist.pipelines_picker.title" = "Assist Pipelines";
