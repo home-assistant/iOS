@@ -3,6 +3,7 @@ import SwiftUI
 
 enum SettingsItem: String, Hashable, CaseIterable {
     case servers
+    case home
     case general
     case gestures
     case location
@@ -22,6 +23,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     var title: String {
         switch self {
         case .servers: return L10n.Settings.ConnectionSection.servers
+        case .home: return "Home"
         case .general: return L10n.SettingsDetails.General.title
         case .gestures: return L10n.Gestures.Screen.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
@@ -45,6 +47,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
             switch self {
             case .servers:
                 MaterialDesignIconsImage(icon: .serverIcon, size: 24)
+            case .home:
+                MaterialDesignIconsImage(icon: .homeIcon, size: 24)
             case .general:
                 MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: 24)
             case .gestures:
@@ -93,6 +97,8 @@ enum SettingsItem: String, Hashable, CaseIterable {
         switch self {
         case .servers:
             SettingsServersView()
+        case .home:
+            HomeView()
         case .general:
             GeneralSettingsView()
         case .gestures:
@@ -142,7 +148,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     }
 
     static var generalItems: [SettingsItem] {
-        [.general, .gestures, .location, .notifications]
+        [.home, .general, .gestures, .location, .notifications]
     }
 
     static var integrationItems: [SettingsItem] {
