@@ -16,6 +16,7 @@ struct EntityTileView: View {
         let value: String
         let iconColor: Color
     }
+
     let entity: HAAppEntity
     let state: State?
 
@@ -81,7 +82,6 @@ struct EntityTileView: View {
         icon: "mdi:lightbulb",
         rawDeviceClass: nil
     ), state: .init(value: "On", iconColor: .yellow))
-    .padding()
-    .background(Color(uiColor: .systemGroupedBackground))
+        .padding()
+        .background(Color(uiColor: .systemGroupedBackground))
 }
-
