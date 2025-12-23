@@ -9,9 +9,9 @@ import SwiftUI
 final class HAAssistTranscriber {
     private var inputSequence: AsyncStream<AnalyzerInput>?
     private var inputBuilder: AsyncStream<AnalyzerInput>.Continuation?
-    private var transcriber: SpeechTranscriber?
-    private var detector: SpeechDetector!
-    private var analyzer: SpeechAnalyzer?
+    private let transcriber: SpeechTranscriber
+    private let detector: SpeechDetector
+    private let analyzer: SpeechAnalyzer
     private var recognizerTask: Task<Void, Error>?
     private var detectorTask: Task<Void, Error>?
 
@@ -32,23 +32,19 @@ final class HAAssistTranscriber {
     var silenceThreshold: Measurement<UnitDuration> = .init(value: 2.0, unit: .seconds)
     var autoStopEnabled: Bool = true
 
-    // swiftlint:disable:next cyclomatic_complexity
-    func setUpTranscriber() async throws {
-        transcriber = SpeechTranscriber(
+    init() {
+        self.transcriber = SpeechTranscriber(
             locale: .autoupdatingCurrent,
             transcriptionOptions: [],
             reportingOptions: [.fastResults],
             attributeOptions: [.audioTimeRange]
         )
 
-        detector = SpeechDetector()
+        self.detector = SpeechDetector()
+        self.analyzer = SpeechAnalyzer(modules: [transcriber, detector])
+    }
 
-        guard let transcriber, let detector else {
-            throw HAAssistTranscriptionError.failedToSetupRecognitionStream
-        }
-
-        analyzer = SpeechAnalyzer(modules: [transcriber, detector])
-
+    func setUpTranscriber() async throws {
         do {
             try await ensureModel(transcriber: transcriber, locale: Locale.current)
         } catch let error as HAAssistTranscriptionError {
@@ -101,7 +97,7 @@ final class HAAssistTranscriber {
             }
         }
 
-        try await analyzer?.start(inputSequence: inputSequence)
+        try await analyzer.start(inputSequence: inputSequence)
     }
 
     func streamAudioToTranscriber(_ buffer: AVAudioPCMBuffer) async throws {
@@ -117,7 +113,7 @@ final class HAAssistTranscriber {
 
     func finishTranscribing() async throws {
         inputBuilder?.finish()
-        try await analyzer?.finalizeAndFinishThroughEndOfInput()
+        try await analyzer.finalizeAndFinishThroughEndOfInput()
         recognizerTask?.cancel()
         recognizerTask = nil
         detectorTask?.cancel()
