@@ -32,6 +32,8 @@ public enum L10n {
   public static var errorLabel: String { return L10n.tr("Localizable", "error_label") }
   /// Help
   public static var helpLabel: String { return L10n.tr("Localizable", "help_label") }
+  /// Not in a room
+  public static var noArea: String { return L10n.tr("Localizable", "no_area") }
   /// No
   public static var noLabel: String { return L10n.tr("Localizable", "no_label") }
   /// OK

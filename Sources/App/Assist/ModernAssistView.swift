@@ -14,8 +14,6 @@ struct ModernAssistView: View, KeyboardReadable {
         static let inputHeight: CGFloat = 50
         static let textFieldHeight: CGFloat = 50
         static let buttonWidth: CGFloat = 60
-        static let orbSize: CGFloat = 300
-        static let orbRadius: CGFloat = 150
 
         // Spacing
         static let horizontalPadding: CGFloat = DesignSystem.Spaces.two
@@ -40,17 +38,11 @@ struct ModernAssistView: View, KeyboardReadable {
         // Offsets
         static let topMaterialOffset: CGFloat = 0
         static let bottomMaterialOffset: CGFloat = DesignSystem.Spaces.two
-        static let orbYOffsetMin: CGFloat = -50
-        static let orbYOffsetMax: CGFloat = 50
-        static let orbYOffset2Min: CGFloat = 0
-        static let orbYOffset2Max: CGFloat = 100
-        static let orbXOffsetLeft: CGFloat = -100
         static let pickerXOffset: CGFloat = -5
 
         // Opacity
         static let topMaterialOpacity: Double = 0.5
         static let bottomMaterialOpacity: Double = 0.9
-        static let orbOpacity: Double = 0.3
         static let whiteTextOpacity: Double = 0.95
         static let buttonTextOpacity: Double = 0.7
         static let assistantBubbleOpacity: Double = 0.1
@@ -66,7 +58,6 @@ struct ModernAssistView: View, KeyboardReadable {
         static let titleFontSize: CGFloat = 34
 
         // Animation Durations
-        static let ambientAnimationDuration: Double = 4
         static let recordingAnimationDuration: Double = 1.5
         static let sendSpringResponse: Double = 0.3
         static let recordingSpringResponse: Double = 0.4
@@ -78,8 +69,6 @@ struct ModernAssistView: View, KeyboardReadable {
 
     @Binding var isRecording: Bool
     @Binding var inputText: String
-    @State private var pulseAnimation = false
-    @State private var glowIntensity: CGFloat = 0
     @Binding var selectedTheme: ModernAssistTheme
     @Binding var selectedPipeline: String
     @FocusState private var isTextFieldFocused: Bool
@@ -124,8 +113,7 @@ struct ModernAssistView: View, KeyboardReadable {
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundGradient
-                    .ignoresSafeArea()
+                ModernAssistBackgroundView(theme: selectedTheme)
                 chatArea
             }
             .toolbar(content: {
@@ -148,72 +136,8 @@ struct ModernAssistView: View, KeyboardReadable {
                 modernInputArea
             })
             .scrollEdgeEffectStyle(.soft, for: .all)
-            .onAppear {
-                startAmbientAnimation()
-            }
             .onReceive(keyboardPublisher) { newIsKeyboardVisible in
                 keyboardVisible = newIsKeyboardVisible
-            }
-        }
-    }
-
-    // MARK: - Background
-
-    private var backgroundGradient: some View {
-        LinearGradient(
-            colors: selectedTheme.gradientColors(for: colorScheme),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
-        .overlay {
-            // Animated orbs in background
-            GeometryReader { geometry in
-                ZStack {
-                    Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [
-                                    selectedTheme.orbColors(for: colorScheme).0.opacity(selectedTheme.orbOpacity(
-                                        for: colorScheme,
-                                        defaultOpacity: Constants.orbOpacity
-                                    )),
-                                    Color.clear,
-                                ],
-                                center: .center,
-                                startRadius: 0,
-                                endRadius: Constants.orbRadius
-                            )
-                        )
-                        .frame(width: Constants.orbSize, height: Constants.orbSize)
-                        .offset(
-                            x: Constants.orbXOffsetLeft,
-                            y: pulseAnimation ? Constants.orbYOffsetMin : Constants.orbYOffsetMax
-                        )
-                        .blur(radius: Constants.backgroundBlurRadius)
-
-                    Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [
-                                    selectedTheme.orbColors(for: colorScheme).1.opacity(selectedTheme.orbOpacity(
-                                        for: colorScheme,
-                                        defaultOpacity: Constants.orbOpacity
-                                    )),
-                                    Color.clear,
-                                ],
-                                center: .center,
-                                startRadius: 0,
-                                endRadius: Constants.orbRadius
-                            )
-                        )
-                        .frame(width: Constants.orbSize, height: Constants.orbSize)
-                        .offset(
-                            x: geometry.size.width - Constants.orbXOffsetLeft * -1,
-                            y: pulseAnimation ? Constants.orbYOffset2Max : Constants.orbYOffset2Min
-                        )
-                        .blur(radius: Constants.backgroundBlurRadius)
-                }
             }
         }
     }
@@ -450,19 +374,6 @@ struct ModernAssistView: View, KeyboardReadable {
     }
 
     // MARK: - Animations
-
-    private func startAmbientAnimation() {
-        withAnimation(.easeInOut(duration: Constants.ambientAnimationDuration).repeatForever(autoreverses: true)) {
-            pulseAnimation = true
-        }
-
-        // Start recording animation when recording
-        withAnimation(.easeInOut(duration: Constants.recordingAnimationDuration).repeatForever(autoreverses: true)) {
-            if isRecording {
-                glowIntensity = 1
-            }
-        }
-    }
 }
 
 // MARK: - Background Theme
