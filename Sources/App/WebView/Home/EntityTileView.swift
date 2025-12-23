@@ -1,5 +1,5 @@
-import HAKit
 import AppIntents
+import HAKit
 import Shared
 import SwiftUI
 
@@ -89,7 +89,13 @@ struct EntityTileView: View {
     private func intentForEntity() -> some AppIntent {
         if Domain(entityId: appEntity.entityId) == .light {
             let intent = LightIntent()
-            intent.light = .init(id: appEntity.entityId, entityId: appEntity.entityId, serverId: server.identifier.rawValue, displayString: "", iconName: "")
+            intent.light = .init(
+                id: appEntity.entityId,
+                entityId: appEntity.entityId,
+                serverId: server.identifier.rawValue,
+                displayString: "",
+                iconName: ""
+            )
             intent.toggle = true
             // Since toggle is true, value won't be used, but we set it to false to have a default
             intent.value = false

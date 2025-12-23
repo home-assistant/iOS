@@ -37,7 +37,13 @@ final class HomeViewModel: ObservableObject {
             let allEntities = try HAAppEntity.config() ?? []
 
             // Filter entities for the selected server
-            let serverEntities = allEntities.filter { $0.serverId == serverId && $0.domain == Domain.light.rawValue }
+            let serverEntities = allEntities.filter {
+                $0.serverId == serverId &&
+                    [
+                        Domain.light.rawValue,
+                        Domain.cover.rawValue,
+                    ].contains($0.domain)
+            }
 
             // Fetch all areas for this server
             let areas = try AppArea.fetchAreas(for: serverId)
