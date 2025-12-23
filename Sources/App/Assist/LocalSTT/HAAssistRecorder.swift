@@ -1,37 +1,31 @@
-//
-//  HAAssistRecorder.swift
-//
-//  Audio recording and playback management
-//
-
-import Foundation
 import AVFoundation
+import Foundation
 import SwiftUI
 
 @available(iOS 26.0, *)
 class HAAssistRecorder {
-    private var outputContinuation: AsyncStream<AVAudioPCMBuffer>.Continuation? = nil
+    private var outputContinuation: AsyncStream<AVAudioPCMBuffer>.Continuation?
     private let audioEngine: AVAudioEngine
     private let transcriber: HAAssistTranscriber
     var playerNode: AVAudioPlayerNode?
 
     var file: AVAudioFile?
     private let url: URL
-    
+
     var hasRecording: Bool {
-        return file != nil
+        file != nil
     }
-    
+
     // Callback to notify when recording has ended
     var onRecordingEnded: (() -> Void)?
 
     init(transcriber: HAAssistTranscriber) {
-        audioEngine = AVAudioEngine()
+        self.audioEngine = AVAudioEngine()
         self.transcriber = transcriber
         self.url = FileManager.default.temporaryDirectory
             .appending(component: UUID().uuidString)
             .appendingPathExtension(for: .wav)
-        
+
         // Set up callback for when speech ends
         transcriber.onSpeechEnded = { [weak self] in
             Task { @MainActor in
@@ -45,13 +39,13 @@ class HAAssistRecorder {
             print("user denied mic permission")
             return
         }
-#if os(iOS)
+        #if os(iOS)
         try setUpAudioSession()
-#endif
+        #endif
         try await transcriber.setUpTranscriber()
 
         for await input in try await audioStream() {
-            try await self.transcriber.streamAudioToTranscriber(input)
+            try await transcriber.streamAudioToTranscriber(input)
         }
     }
 
@@ -59,7 +53,7 @@ class HAAssistRecorder {
         audioEngine.stop()
 
         try await transcriber.finishTranscribing()
-        
+
         onRecordingEnded?()
     }
 
@@ -71,22 +65,25 @@ class HAAssistRecorder {
         try audioEngine.start()
     }
 
-#if os(iOS)
+    #if os(iOS)
     func setUpAudioSession() throws {
         let audioSession = AVAudioSession.sharedInstance()
         try audioSession.setCategory(.playAndRecord, mode: .spokenAudio)
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
     }
-#endif
+    #endif
 
     private func audioStream() async throws -> AsyncStream<AVAudioPCMBuffer> {
         try setupAudioEngine()
-        audioEngine.inputNode.installTap(onBus: 0,
-                                         bufferSize: 4096,
-                                         format: audioEngine.inputNode.outputFormat(forBus: 0)) { [weak self] (buffer, time) in
+        audioEngine.inputNode.installTap(
+            onBus: 0,
+            bufferSize: 4096,
+            format: audioEngine.inputNode
+                .outputFormat(forBus: 0)
+        ) { [weak self] buffer, _ in
             guard let self else { return }
             writeBufferToDisk(buffer: buffer)
-            self.outputContinuation?.yield(buffer)
+            outputContinuation?.yield(buffer)
         }
 
         audioEngine.prepare()
@@ -100,8 +97,10 @@ class HAAssistRecorder {
 
     private func setupAudioEngine() throws {
         let inputSettings = audioEngine.inputNode.inputFormat(forBus: 0).settings
-        self.file = try AVAudioFile(forWriting: url,
-                                    settings: inputSettings)
+        file = try AVAudioFile(
+            forWriting: url,
+            settings: inputSettings
+        )
 
         audioEngine.inputNode.removeTap(onBus: 0)
     }
@@ -117,13 +116,17 @@ class HAAssistRecorder {
         }
 
         audioEngine.attach(playerNode)
-        audioEngine.connect(playerNode,
-                            to: audioEngine.outputNode,
-                            format: file.processingFormat)
+        audioEngine.connect(
+            playerNode,
+            to: audioEngine.outputNode,
+            format: file.processingFormat
+        )
 
-        playerNode.scheduleFile(file,
-                                at: nil,
-                                completionCallbackType: .dataPlayedBack) { _ in
+        playerNode.scheduleFile(
+            file,
+            at: nil,
+            completionCallbackType: .dataPlayedBack
+        ) { _ in
         }
 
         do {
@@ -140,6 +143,7 @@ class HAAssistRecorder {
 }
 
 // MARK: - Authorization & File Writing
+
 @available(iOS 26.0, *)
 extension HAAssistRecorder {
     func isAuthorized() async -> Bool {
@@ -152,7 +156,7 @@ extension HAAssistRecorder {
 
     func writeBufferToDisk(buffer: AVAudioPCMBuffer) {
         do {
-            try self.file?.write(from: buffer)
+            try file?.write(from: buffer)
         } catch {
             print("file writing error: \(error)")
         }

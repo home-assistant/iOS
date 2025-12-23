@@ -1,5 +1,4 @@
 import SFSafeSymbols
-import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -12,7 +11,7 @@ struct AssistView: View {
     @AppStorage("enableOnDeviceSTT") private var enableOnDeviceSTT = false
     @AppStorage("enableAssistModernUI") private var enableModernUI = false
     @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
-    
+
     private var selectedTheme: ModernAssistTheme {
         ModernAssistTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant
     }
@@ -25,7 +24,7 @@ struct AssistView: View {
     }
 
     private let showCloseButton: Bool
-    
+
     private var shouldUseModernUI: Bool {
         if #available(iOS 26.0, *) {
             return !Current.isCatalyst && enableModernUI
@@ -89,19 +88,19 @@ struct AssistView: View {
                     }
                 }
 
-#if !targetEnvironment(macCatalyst)
+                #if !targetEnvironment(macCatalyst)
                 ToolbarItem(placement: .topBarTrailing) {
                     if #available(iOS 26.0, *) {
                         settingsButton
                     }
                 }
-#endif
+                #endif
 
-#if targetEnvironment(macCatalyst)
+                #if targetEnvironment(macCatalyst)
                 ToolbarItem(placement: .topBarTrailing) {
                     macPicker
                 }
-#endif
+                #endif
             }
             .sheet(isPresented: $showSettings) {
                 if #available(iOS 26.0, *) {
@@ -111,7 +110,7 @@ struct AssistView: View {
         }
         .navigationViewStyle(.stack)
     }
-    
+
     @available(iOS 26.0, *)
     private var modernUI: some View {
         ModernAssistView(
@@ -403,4 +402,3 @@ struct AssistView: View {
         }
     }
 }
-

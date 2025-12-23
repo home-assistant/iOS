@@ -1,12 +1,13 @@
 import SFSafeSymbols
-import SwiftUI
 import Shared
+import SwiftUI
 
 @available(iOS 26.0, *)
 struct ModernAssistView: View {
     @Environment(\.colorScheme) private var colorScheme
-    
+
     // MARK: - Constants
+
     private enum Constants {
         // Layout
         static let inputHeight: CGFloat = 120
@@ -14,7 +15,7 @@ struct ModernAssistView: View {
         static let buttonWidth: CGFloat = 60
         static let orbSize: CGFloat = 300
         static let orbRadius: CGFloat = 150
-        
+
         // Spacing
         static let horizontalPadding: CGFloat = DesignSystem.Spaces.two
         static let headerHorizontalPadding: CGFloat = DesignSystem.Spaces.three
@@ -27,14 +28,14 @@ struct ModernAssistView: View {
         static let messageBubbleVerticalPadding: CGFloat = DesignSystem.Spaces.oneAndHalf
         static let minSpacerLength: CGFloat = DesignSystem.Spaces.five
         static let bottomScrollInset: CGFloat = 120
-        
+
         // Corner Radius
         static let messageBubbleCornerRadius: CGFloat = DesignSystem.CornerRadius.two
-        
+
         // Blur
         static let backgroundBlurRadius: CGFloat = DesignSystem.Spaces.five
         static let materialBlurRadius: CGFloat = DesignSystem.Spaces.two
-        
+
         // Offsets
         static let topMaterialOffset: CGFloat = 0
         static let bottomMaterialOffset: CGFloat = DesignSystem.Spaces.two
@@ -44,7 +45,7 @@ struct ModernAssistView: View {
         static let orbYOffset2Max: CGFloat = 100
         static let orbXOffsetLeft: CGFloat = -100
         static let pickerXOffset: CGFloat = -5
-        
+
         // Opacity
         static let topMaterialOpacity: Double = 0.5
         static let bottomMaterialOpacity: Double = 0.9
@@ -56,24 +57,24 @@ struct ModernAssistView: View {
         static let strokeEndOpacity: Double = 0.1
         static let userBubbleOpacity: Double = 0.8
         static let headerGradientOpacity: Double = 0.8
-        
+
         // Stroke Width
         static let messageBubbleStrokeWidth: CGFloat = DesignSystem.Border.Width.default
-        
+
         // Font Sizes
         static let titleFontSize: CGFloat = 34
-        
+
         // Animation Durations
         static let ambientAnimationDuration: Double = 4
         static let recordingAnimationDuration: Double = 1.5
         static let sendSpringResponse: Double = 0.3
         static let recordingSpringResponse: Double = 0.4
         static let recordingSpringDamping: Double = 0.7
-        
+
         // Identifiers
         static let bottomScrollAnchor: String = "bottom"
     }
-    
+
     @Binding var isRecording: Bool
     @Binding var inputText: String
     @State private var pulseAnimation = false
@@ -81,16 +82,16 @@ struct ModernAssistView: View {
     @Binding var selectedTheme: ModernAssistTheme
     @Binding var selectedPipeline: String
     @FocusState private var isTextFieldFocused: Bool
-    
+
     @Binding var messages: [AssistChatItem]
     var pipelines: [String]
-    
+
     let onClose: () -> Void
     let onSettings: () -> Void
     let onSendMessage: () -> Void
     let onStartRecording: () -> Void
     let onStopRecording: () -> Void
-    
+
     init(
         messages: Binding<[AssistChatItem]>,
         inputText: Binding<String>,
@@ -116,7 +117,7 @@ struct ModernAssistView: View {
         self.onStartRecording = onStartRecording
         self.onStopRecording = onStopRecording
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
@@ -146,8 +147,9 @@ struct ModernAssistView: View {
             }
         }
     }
-    
+
     // MARK: - Background
+
     private var backgroundGradient: some View {
         LinearGradient(
             colors: selectedTheme.gradientColors(for: colorScheme),
@@ -163,8 +165,11 @@ struct ModernAssistView: View {
                         .fill(
                             RadialGradient(
                                 colors: [
-                                    selectedTheme.orbColors(for: colorScheme).0.opacity(selectedTheme.orbOpacity(for: colorScheme, defaultOpacity: Constants.orbOpacity)),
-                                    Color.clear
+                                    selectedTheme.orbColors(for: colorScheme).0.opacity(selectedTheme.orbOpacity(
+                                        for: colorScheme,
+                                        defaultOpacity: Constants.orbOpacity
+                                    )),
+                                    Color.clear,
                                 ],
                                 center: .center,
                                 startRadius: 0,
@@ -172,15 +177,21 @@ struct ModernAssistView: View {
                             )
                         )
                         .frame(width: Constants.orbSize, height: Constants.orbSize)
-                        .offset(x: Constants.orbXOffsetLeft, y: pulseAnimation ? Constants.orbYOffsetMin : Constants.orbYOffsetMax)
+                        .offset(
+                            x: Constants.orbXOffsetLeft,
+                            y: pulseAnimation ? Constants.orbYOffsetMin : Constants.orbYOffsetMax
+                        )
                         .blur(radius: Constants.backgroundBlurRadius)
-                    
+
                     Circle()
                         .fill(
                             RadialGradient(
                                 colors: [
-                                    selectedTheme.orbColors(for: colorScheme).1.opacity(selectedTheme.orbOpacity(for: colorScheme, defaultOpacity: Constants.orbOpacity)),
-                                    Color.clear
+                                    selectedTheme.orbColors(for: colorScheme).1.opacity(selectedTheme.orbOpacity(
+                                        for: colorScheme,
+                                        defaultOpacity: Constants.orbOpacity
+                                    )),
+                                    Color.clear,
                                 ],
                                 center: .center,
                                 startRadius: 0,
@@ -188,14 +199,18 @@ struct ModernAssistView: View {
                             )
                         )
                         .frame(width: Constants.orbSize, height: Constants.orbSize)
-                        .offset(x: geometry.size.width - Constants.orbXOffsetLeft * -1, y: pulseAnimation ? Constants.orbYOffset2Max : Constants.orbYOffset2Min)
+                        .offset(
+                            x: geometry.size.width - Constants.orbXOffsetLeft * -1,
+                            y: pulseAnimation ? Constants.orbYOffset2Max : Constants.orbYOffset2Min
+                        )
                         .blur(radius: Constants.backgroundBlurRadius)
                 }
             }
         }
     }
-    
+
     // MARK: - Header
+
     private var modernHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -212,7 +227,7 @@ struct ModernAssistView: View {
                 .buttonStyle(.glass)
                 .offset(x: Constants.pickerXOffset)
             }
-            
+
             Spacer()
         }
         .padding(.horizontal, Constants.headerHorizontalPadding)
@@ -220,8 +235,9 @@ struct ModernAssistView: View {
         .padding(.bottom, Constants.headerBottomPadding)
         .background(topGradientView)
     }
-    
+
     // MARK: - Chat Area
+
     private var chatArea: some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -237,7 +253,7 @@ struct ModernAssistView: View {
                 .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
             }
-            .onChange(of: messages.count) { oldValue, newValue in
+            .onChange(of: messages.count) { _, _ in
                 withAnimation(.easeOut(duration: 0.3)) {
                     proxy.scrollTo(Constants.bottomScrollAnchor, anchor: .bottom)
                 }
@@ -247,36 +263,36 @@ struct ModernAssistView: View {
             }
         }
     }
-    
+
     private func modernMessageBubble(message: AssistChatItem) -> some View {
         let isUser = message.itemType == .input
         let isTyping = message.itemType == .typing
         let alignment: HorizontalAlignment = {
             switch message.itemType {
             case .input:
-                    .trailing
+                .trailing
             case .output:
-                    .leading
+                .leading
             case .typing:
-                    .leading
+                .leading
             case .error:
-                    .center
+                .center
             case .info:
-                    .center
+                .center
             }
         }()
         let alignment2: Alignment = {
             switch message.itemType {
             case .input:
-                    .trailing
+                .trailing
             case .output:
-                    .leading
+                .leading
             case .typing:
-                    .leading
+                .leading
             case .error:
-                    .center
+                .center
             case .info:
-                    .center
+                .center
             }
         }()
 
@@ -295,27 +311,31 @@ struct ModernAssistView: View {
                 }
                 .padding(.horizontal, Constants.messageBubbleHorizontalPadding)
                 .padding(.vertical, Constants.messageBubbleVerticalPadding)
-                .glassEffect(isUser ? .regular.tint(.haPrimary).interactive() : .clear.interactive(), in: RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous))
+                .glassEffect(
+                    isUser ? .regular.tint(.haPrimary).interactive() : .clear.interactive(),
+                    in: RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
+                )
             }
             .frame(maxWidth: .infinity, alignment: alignment2)
         }
     }
-    
+
     private var messageBackgroundColor: Color {
         if selectedTheme == .homeAssistant {
             return colorScheme == .dark ? .white.opacity(Constants.assistantBubbleOpacity) : .black.opacity(0.05)
         }
         return .white.opacity(Constants.assistantBubbleOpacity)
     }
-    
+
     private var messageStrokeColor: Color {
         if selectedTheme == .homeAssistant {
             return colorScheme == .dark ? .white : .black
         }
         return .white
     }
-    
+
     // MARK: - Input Area
+
     private var modernInputArea: some View {
         ZStack {
             // Recording state - animated orb
@@ -342,7 +362,7 @@ struct ModernAssistView: View {
             }
             return .black
         }()
-        
+
         return LinearGradient(colors: [gradientColor, .clear], startPoint: .bottom, endPoint: .top)
     }
 
@@ -353,7 +373,7 @@ struct ModernAssistView: View {
             }
             return .black
         }()
-        
+
         return LinearGradient(colors: [gradientColor, .clear], startPoint: .top, endPoint: .bottom)
     }
 
@@ -373,7 +393,7 @@ struct ModernAssistView: View {
         .sensoryFeedback(.warning, trigger: isRecording)
         .sensoryFeedback(.success, trigger: !isRecording)
     }
-    
+
     private var inputControls: some View {
         GlassEffectContainer {
             HStack(spacing: DesignSystem.Spaces.one) {
@@ -389,7 +409,10 @@ struct ModernAssistView: View {
 
                 if inputText.isEmpty {
                     Button(action: {
-                        withAnimation(.spring(response: Constants.recordingSpringResponse, dampingFraction: Constants.recordingSpringDamping)) {
+                        withAnimation(.spring(
+                            response: Constants.recordingSpringResponse,
+                            dampingFraction: Constants.recordingSpringDamping
+                        )) {
                             onStartRecording()
                         }
                     }) {
@@ -420,16 +443,16 @@ struct ModernAssistView: View {
                 }
             }
             .padding(.vertical, Constants.inputVerticalPadding)
-
         }
     }
-    
+
     // MARK: - Animations
+
     private func startAmbientAnimation() {
         withAnimation(.easeInOut(duration: Constants.ambientAnimationDuration).repeatForever(autoreverses: true)) {
             pulseAnimation = true
         }
-        
+
         // Start recording animation when recording
         withAnimation(.easeInOut(duration: Constants.recordingAnimationDuration).repeatForever(autoreverses: true)) {
             if isRecording {
@@ -440,6 +463,7 @@ struct ModernAssistView: View {
 }
 
 // MARK: - Background Theme
+
 enum ModernAssistTheme: String, CaseIterable, Identifiable {
     case midnight = "Midnight"
     case aurora = "Aurora"
@@ -450,80 +474,80 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     case lavender = "Lavender"
     case ember = "Ember"
     case homeAssistant = "Home Assistant"
-    
+
     var id: String { rawValue }
-    
+
     func gradientColors(for colorScheme: ColorScheme) -> [Color] {
         switch self {
         case .midnight:
             return [
                 Color(red: 0.05, green: 0.05, blue: 0.15),
                 Color(red: 0.1, green: 0.05, blue: 0.2),
-                Color(red: 0.05, green: 0.1, blue: 0.25)
+                Color(red: 0.05, green: 0.1, blue: 0.25),
             ]
         case .aurora:
             return [
                 Color(red: 0.0, green: 0.15, blue: 0.2),
                 Color(red: 0.1, green: 0.2, blue: 0.3),
-                Color(red: 0.0, green: 0.25, blue: 0.25)
+                Color(red: 0.0, green: 0.25, blue: 0.25),
             ]
         case .sunset:
             return [
                 Color(red: 0.2, green: 0.05, blue: 0.15),
                 Color(red: 0.25, green: 0.1, blue: 0.15),
-                Color(red: 0.15, green: 0.05, blue: 0.2)
+                Color(red: 0.15, green: 0.05, blue: 0.2),
             ]
         case .ocean:
             return [
                 Color(red: 0.0, green: 0.1, blue: 0.2),
                 Color(red: 0.0, green: 0.15, blue: 0.25),
-                Color(red: 0.05, green: 0.2, blue: 0.3)
+                Color(red: 0.05, green: 0.2, blue: 0.3),
             ]
         case .forest:
             return [
                 Color(red: 0.05, green: 0.15, blue: 0.1),
                 Color(red: 0.1, green: 0.2, blue: 0.15),
-                Color(red: 0.05, green: 0.15, blue: 0.2)
+                Color(red: 0.05, green: 0.15, blue: 0.2),
             ]
         case .galaxy:
             return [
                 Color(red: 0.1, green: 0.05, blue: 0.2),
                 Color(red: 0.15, green: 0.05, blue: 0.25),
-                Color(red: 0.2, green: 0.1, blue: 0.3)
+                Color(red: 0.2, green: 0.1, blue: 0.3),
             ]
         case .lavender:
             return [
                 Color(red: 0.15, green: 0.1, blue: 0.2),
                 Color(red: 0.18, green: 0.12, blue: 0.25),
-                Color(red: 0.2, green: 0.15, blue: 0.3)
+                Color(red: 0.2, green: 0.15, blue: 0.3),
             ]
         case .ember:
             return [
                 Color(red: 0.2, green: 0.08, blue: 0.05),
                 Color(red: 0.25, green: 0.1, blue: 0.08),
-                Color(red: 0.2, green: 0.12, blue: 0.1)
+                Color(red: 0.2, green: 0.12, blue: 0.1),
             ]
         case .homeAssistant:
             if colorScheme == .dark {
                 return [
-                    Color(red: 0.02, green: 0.02, blue: 0.08),  // Very dark with blue tint
-                    Color(red: 0.05, green: 0.08, blue: 0.15),  // Dark with more blue
-                    Color(red: 0.08, green: 0.12, blue: 0.2)    // Medium-dark with prominent blue
+                    Color(red: 0.02, green: 0.02, blue: 0.08), // Very dark with blue tint
+                    Color(red: 0.05, green: 0.08, blue: 0.15), // Dark with more blue
+                    Color(red: 0.08, green: 0.12, blue: 0.2), // Medium-dark with prominent blue
                 ]
             } else {
                 return [
-                    Color(red: 0.88, green: 0.92, blue: 0.98),  // Very light with blue tint
-                    Color(red: 0.9, green: 0.93, blue: 0.96),   // Light with subtle blue
-                    Color(red: 0.92, green: 0.94, blue: 0.97)   // Almost white with blue hint
+                    Color(red: 0.88, green: 0.92, blue: 0.98), // Very light with blue tint
+                    Color(red: 0.9, green: 0.93, blue: 0.96), // Light with subtle blue
+                    Color(red: 0.92, green: 0.94, blue: 0.97), // Almost white with blue hint
                 ]
             }
         }
     }
-    
+
     var gradientColors: [Color] {
         gradientColors(for: .dark)
     }
-    
+
     func orbColors(for colorScheme: ColorScheme) -> (Color, Color) {
         switch self {
         case .midnight:
@@ -546,21 +570,21 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
             return (.haPrimary, .haPrimary.opacity(0.7))
         }
     }
-    
+
     var orbColors: (Color, Color) {
         orbColors(for: .dark)
     }
-    
+
     // Orb opacity for Home Assistant theme needs to be higher
     func orbOpacity(for colorScheme: ColorScheme, defaultOpacity: Double) -> Double {
         switch self {
         case .homeAssistant:
-            return colorScheme == .dark ? 0.5 : 0.4  // Higher opacity for more prominence
+            return colorScheme == .dark ? 0.5 : 0.4 // Higher opacity for more prominence
         default:
             return defaultOpacity
         }
     }
-    
+
     // Text colors for different elements
     func primaryTextColor(for colorScheme: ColorScheme) -> Color {
         switch self {
@@ -570,7 +594,7 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
             return .white
         }
     }
-    
+
     func secondaryTextColor(for colorScheme: ColorScheme) -> Color {
         switch self {
         case .homeAssistant:
@@ -579,7 +603,7 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
             return .white.opacity(0.95)
         }
     }
-    
+
     func buttonTextColor(for colorScheme: ColorScheme) -> Color {
         switch self {
         case .homeAssistant:
@@ -588,7 +612,7 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
             return .white.opacity(0.7)
         }
     }
-    
+
     func headerTextColor(for colorScheme: ColorScheme) -> LinearGradient {
         switch self {
         case .homeAssistant:
@@ -613,7 +637,7 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
             )
         }
     }
-    
+
     func textFieldTextColor(for colorScheme: ColorScheme) -> Color {
         switch self {
         case .homeAssistant:
@@ -629,27 +653,42 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     @Previewable @State var messages: [AssistChatItem] = [
         AssistChatItem(content: "Hello! How can I help you today?", itemType: .output),
         AssistChatItem(content: "What's the weather like?", itemType: .input),
-        AssistChatItem(content: "I'll check the weather for you. The current temperature is 72°F with clear skies.", itemType: .output),
+        AssistChatItem(
+            content: "I'll check the weather for you. The current temperature is 72°F with clear skies.",
+            itemType: .output
+        ),
         AssistChatItem(content: "Can you turn on the living room lights?", itemType: .input),
         AssistChatItem(content: "Sure! I've turned on the living room lights for you.", itemType: .output),
         AssistChatItem(content: "What about the temperature? It feels a bit cold.", itemType: .input),
-        AssistChatItem(content: "The thermostat is currently set to 68°F. Would you like me to increase it?", itemType: .output),
+        AssistChatItem(
+            content: "The thermostat is currently set to 68°F. Would you like me to increase it?",
+            itemType: .output
+        ),
         AssistChatItem(content: "Yes, please set it to 72°F", itemType: .input),
-        AssistChatItem(content: "Done! I've set the thermostat to 72°F. It should warm up in a few minutes.", itemType: .output),
+        AssistChatItem(
+            content: "Done! I've set the thermostat to 72°F. It should warm up in a few minutes.",
+            itemType: .output
+        ),
         AssistChatItem(content: "Thanks! Can you also check if the front door is locked?", itemType: .input),
-        AssistChatItem(content: "The front door is currently locked and secure. All entry points are secured.", itemType: .output),
+        AssistChatItem(
+            content: "The front door is currently locked and secure. All entry points are secured.",
+            itemType: .output
+        ),
         AssistChatItem(content: "Perfect! What's on my calendar for today?", itemType: .input),
-        AssistChatItem(content: "You have 3 events today:\n• 10:00 AM - Team Meeting\n• 2:00 PM - Client Call\n• 5:30 PM - Dentist Appointment", itemType: .output),
+        AssistChatItem(
+            content: "You have 3 events today:\n• 10:00 AM - Team Meeting\n• 2:00 PM - Client Call\n• 5:30 PM - Dentist Appointment",
+            itemType: .output
+        ),
         AssistChatItem(content: "Great, thanks for the update!", itemType: .input),
-        AssistChatItem(content: "", itemType: .typing)
+        AssistChatItem(content: "", itemType: .typing),
     ]
     @Previewable @State var inputText: String = ""
     @Previewable @State var isRecording: Bool = false
     @Previewable @State var selectedTheme: ModernAssistTheme = .ocean
     @Previewable @State var selectedPipeline: String = "Home Assistant"
-    
+
     let pipelines = ["Home Assistant", "OpenAI", "Local Model"]
-    
+
     return ModernAssistView(
         messages: $messages,
         inputText: $inputText,
@@ -676,22 +715,26 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
         }
     )
 }
+
 @available(iOS 26.0, *)
 #Preview("Home Assistant Theme - Light") {
     @Previewable @State var messages: [AssistChatItem] = [
         AssistChatItem(content: "Hello! How can I help you today?", itemType: .output),
         AssistChatItem(content: "What's the weather like?", itemType: .input),
-        AssistChatItem(content: "I'll check the weather for you. The current temperature is 72°F with clear skies.", itemType: .output),
+        AssistChatItem(
+            content: "I'll check the weather for you. The current temperature is 72°F with clear skies.",
+            itemType: .output
+        ),
         AssistChatItem(content: "Can you turn on the living room lights?", itemType: .input),
-        AssistChatItem(content: "Sure! I've turned on the living room lights for you.", itemType: .output)
+        AssistChatItem(content: "Sure! I've turned on the living room lights for you.", itemType: .output),
     ]
     @Previewable @State var inputText: String = ""
     @Previewable @State var isRecording: Bool = false
     @Previewable @State var selectedTheme: ModernAssistTheme = .homeAssistant
     @Previewable @State var selectedPipeline: String = "Home Assistant"
-    
+
     let pipelines = ["Home Assistant", "OpenAI", "Local Model"]
-    
+
     return ModernAssistView(
         messages: $messages,
         inputText: $inputText,
@@ -725,17 +768,20 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     @Previewable @State var messages: [AssistChatItem] = [
         AssistChatItem(content: "Hello! How can I help you today?", itemType: .output),
         AssistChatItem(content: "What's the weather like?", itemType: .input),
-        AssistChatItem(content: "I'll check the weather for you. The current temperature is 72°F with clear skies.", itemType: .output),
+        AssistChatItem(
+            content: "I'll check the weather for you. The current temperature is 72°F with clear skies.",
+            itemType: .output
+        ),
         AssistChatItem(content: "Can you turn on the living room lights?", itemType: .input),
-        AssistChatItem(content: "Sure! I've turned on the living room lights for you.", itemType: .output)
+        AssistChatItem(content: "Sure! I've turned on the living room lights for you.", itemType: .output),
     ]
     @Previewable @State var inputText: String = ""
     @Previewable @State var isRecording: Bool = false
     @Previewable @State var selectedTheme: ModernAssistTheme = .homeAssistant
     @Previewable @State var selectedPipeline: String = "Home Assistant"
-    
+
     let pipelines = ["Home Assistant", "OpenAI", "Local Model"]
-    
+
     return ModernAssistView(
         messages: $messages,
         inputText: $inputText,
@@ -763,4 +809,3 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     )
     .environment(\.colorScheme, .dark)
 }
-

@@ -1,19 +1,15 @@
-//
-//  HAAssistTypes.swift
-//
-//  Type definitions and enums for transcription and recording
-//
-
-import Foundation
 import AVFoundation
+import Foundation
 
 // MARK: - Transcription State
+
 enum HAAssistTranscriptionState {
     case transcribing
     case notTranscribing
 }
 
 // MARK: - Transcription Error
+
 enum HAAssistTranscriptionError: Error {
     case couldNotDownloadModel
     case failedToSetupRecognitionStream
@@ -41,6 +37,7 @@ enum HAAssistTranscriptionError: Error {
 }
 
 // MARK: - Recording State
+
 enum HAAssistRecordingState: Equatable {
     case stopped
     case recording
