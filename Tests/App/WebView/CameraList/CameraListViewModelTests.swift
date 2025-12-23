@@ -1,6 +1,6 @@
 @testable import HomeAssistant
-@testable import Shared
 import PromiseKit
+@testable import Shared
 import XCTest
 
 class CameraListViewModelTests: XCTestCase {
@@ -9,10 +9,10 @@ class CameraListViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
+
         // Setup mock disk cache
         mockDiskCache = MockDiskCache()
-        
+
         // Create system under test
         sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
     }
@@ -20,7 +20,7 @@ class CameraListViewModelTests: XCTestCase {
     override func tearDown() {
         sut = nil
         mockDiskCache = nil
-        
+
         super.tearDown()
     }
 
@@ -34,10 +34,10 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.beta", name: "Beta Camera"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
-        
+
         // Then: Cameras should be sorted alphabetically within the group
         XCTAssertEqual(grouped.count, 1) // All in "No Area"
         if let cameras = grouped.first?.cameras {
@@ -56,24 +56,24 @@ class CameraListViewModelTests: XCTestCase {
             sectionOrder: nil
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
-        
+
         // Create view model after setting up storage
         sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
-        
+
         sut.cameras = [
             makeCamera(entityId: "camera.alpha", name: "Alpha Camera"),
             makeCamera(entityId: "camera.beta", name: "Beta Camera"),
             makeCamera(entityId: "camera.zebra", name: "Zebra Camera"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // Note: RunLoop is needed because loadCameraOrders() uses .done{} which schedules
         // callbacks asynchronously even though MockDiskCache returns fulfilled promises
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
-        
+
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
-        
+
         // Then: Cameras should follow custom order
         if let cameras = grouped.first?.cameras {
             XCTAssertEqual(cameras.count, 3)
@@ -91,10 +91,10 @@ class CameraListViewModelTests: XCTestCase {
             sectionOrder: nil
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
-        
+
         // Create view model after setting up storage
         sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
-        
+
         sut.cameras = [
             makeCamera(entityId: "camera.alpha", name: "Alpha Camera"),
             makeCamera(entityId: "camera.beta", name: "Beta Camera"),
@@ -102,13 +102,13 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.new", name: "New Camera"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // Give promises a chance to resolve
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
-        
+
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
-        
+
         // Then: Custom order first, then new cameras alphabetically
         if let cameras = grouped.first?.cameras {
             XCTAssertEqual(cameras.count, 4)
@@ -128,10 +128,10 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.2", name: "Alpha Area Camera"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
-        
+
         // Then: Should have at least one section
         XCTAssertGreaterThanOrEqual(grouped.count, 1)
     }
@@ -144,21 +144,21 @@ class CameraListViewModelTests: XCTestCase {
             sectionOrder: [areaName]
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
-        
+
         // Create view model after setting up storage
         sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
-        
+
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // Give promises a chance to resolve
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
-        
+
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
-        
+
         // Then: Sections should follow custom order
         XCTAssertEqual(grouped.count, 1)
         XCTAssertEqual(grouped[0].area, areaName)
@@ -171,22 +171,22 @@ class CameraListViewModelTests: XCTestCase {
             sectionOrder: []
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
-        
+
         // Create view model after setting up storage
         sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
-        
+
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
             makeCamera(entityId: "camera.2", name: "Camera 2"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // Give promises a chance to resolve
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
-        
+
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
-        
+
         // Then: New sections should be added
         XCTAssertGreaterThanOrEqual(grouped.count, 1)
     }
@@ -202,13 +202,13 @@ class CameraListViewModelTests: XCTestCase {
         ]
         sut.selectedServerId = "test_server"
         mockDiskCache.savedValues.removeAll()
-        
+
         // When: Moving cameras
         sut.moveCameras(in: areaName, from: IndexSet(integer: 0), to: 2)
-        
+
         // Then: New order should be saved
         XCTAssertTrue(mockDiskCache.savedValues.count > 0, "Should have saved camera order")
-        
+
         if let savedStorage = mockDiskCache.savedValues["camera_order_test_server"] as? CameraOrderStorage {
             XCTAssertNotNil(savedStorage.areaOrders[areaName], "Should have order for area")
         }
@@ -218,13 +218,13 @@ class CameraListViewModelTests: XCTestCase {
         // Given: Section names
         let sections = ["Kitchen", "Bedroom", "Living Room"]
         mockDiskCache.savedValues.removeAll()
-        
+
         // When: Saving section order
         sut.saveSectionOrder(sections)
-        
+
         // Then: Order should be saved
         XCTAssertTrue(mockDiskCache.savedValues.count > 0, "Should have saved section order")
-        
+
         if let savedStorage = mockDiskCache.savedValues["camera_order_test_server"] as? CameraOrderStorage {
             XCTAssertEqual(savedStorage.sectionOrder, sections)
         }
@@ -238,19 +238,19 @@ class CameraListViewModelTests: XCTestCase {
             sectionOrder: [areaName]
         )
         mockDiskCache.setStoredValue(storage, forKey: "camera_order_test_server")
-        
+
         // Create view model after setting up storage
         sut = CameraListViewModel(serverId: "test_server", diskCache: mockDiskCache)
-        
+
         sut.cameras = [
             makeCamera(entityId: "camera.1", name: "Camera 1"),
             makeCamera(entityId: "camera.2", name: "Camera 2"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // Give promises a chance to resolve
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
-        
+
         // Then: Order should be restored
         let grouped = sut.groupedCameras
         if let cameras = grouped.first?.cameras, cameras.count == 2 {
@@ -273,11 +273,11 @@ class CameraListViewModelTests: XCTestCase {
         )
         mockDiskCache.setStoredValue(storage1, forKey: "camera_order_server1")
         mockDiskCache.setStoredValue(storage2, forKey: "camera_order_server2")
-        
+
         // When: Creating view models for different servers
         let vm1 = CameraListViewModel(serverId: "server1", diskCache: mockDiskCache)
         let vm2 = CameraListViewModel(serverId: "server2", diskCache: mockDiskCache)
-        
+
         // Then: Each should maintain its own order
         XCTAssertNotNil(vm1)
         XCTAssertNotNil(vm2)
@@ -288,10 +288,10 @@ class CameraListViewModelTests: XCTestCase {
         // Given: No cameras
         sut.cameras = []
         sut.selectedServerId = "test_server"
-        
+
         // When: Getting grouped cameras
         let grouped = sut.groupedCameras
-        
+
         // Then: Should handle empty state gracefully
         XCTAssertEqual(grouped.count, 0)
     }
@@ -304,10 +304,10 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.garage", name: "Garage", serverId: "test_server"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // When: Searching for "door"
         sut.searchTerm = "door"
-        
+
         // Then: Only matching camera should be returned
         let filtered = sut.filteredCameras
         XCTAssertEqual(filtered.count, 1)
@@ -321,10 +321,10 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.back_yard", name: "Back Camera", serverId: "test_server"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // When: Searching by entity ID
         sut.searchTerm = "front_door"
-        
+
         // Then: Matching camera by entity ID
         let filtered = sut.filteredCameras
         XCTAssertEqual(filtered.count, 1)
@@ -337,10 +337,10 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.1", name: "Camera A", serverId: "test_server"),
         ]
         sut.selectedServerId = "test_server"
-        
+
         // When: Searching with one character
         sut.searchTerm = "a"
-        
+
         // Then: All cameras returned (search term too short)
         let filtered = sut.filteredCameras
         XCTAssertEqual(filtered.count, 1)
@@ -354,10 +354,10 @@ class CameraListViewModelTests: XCTestCase {
             makeCamera(entityId: "camera.3", name: "Camera 3", serverId: "server1"),
         ]
         sut.selectedServerId = "server1"
-        
+
         // When: Getting filtered cameras
         let filtered = sut.filteredCameras
-        
+
         // Then: Only cameras from selected server
         XCTAssertEqual(filtered.count, 2)
         XCTAssertTrue(filtered.allSatisfy { $0.serverId == "server1" })
@@ -366,7 +366,7 @@ class CameraListViewModelTests: XCTestCase {
     func testShouldShowServerPickerWithSpecificServer() {
         // Given: View model initialized with specific server
         let vmWithServer = CameraListViewModel(serverId: "test_server")
-        
+
         // Then: Should not show server picker
         XCTAssertFalse(vmWithServer.shouldShowServerPicker)
     }
@@ -374,7 +374,7 @@ class CameraListViewModelTests: XCTestCase {
     func testShouldShowServerPickerWithoutServer() {
         // Given: View model initialized without server
         let vmWithoutServer = CameraListViewModel(serverId: nil)
-        
+
         // Then: Should show server picker
         XCTAssertTrue(vmWithoutServer.shouldShowServerPicker)
     }
@@ -425,7 +425,7 @@ class MockDiskCache: DiskCache {
         }
     }
 
-    func set<T: Codable>(_ value: T, for key: String) -> Promise<Void> {
+    func set(_ value: some Codable, for key: String) -> Promise<Void> {
         savedValues[key] = value
         storedValues[key] = value
         if shouldLoadSynchronously {
@@ -439,7 +439,7 @@ class MockDiskCache: DiskCache {
         }
     }
 
-    func setStoredValue<T: Codable>(_ value: T, forKey key: String) {
+    func setStoredValue(_ value: some Codable, forKey key: String) {
         storedValues[key] = value
     }
 }
