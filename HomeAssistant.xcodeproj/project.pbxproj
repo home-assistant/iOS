@@ -720,6 +720,8 @@
 		426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		426266452C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
 		426266462C11B02C0081A818 /* InteractiveImmediateMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */; };
+		4263A6662EFB291D0089C338 /* LightIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427647212C8F36DB0027B21F /* LightIntent.swift */; };
+		4263A6672EFB29620089C338 /* IntentLightEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4276471D2C8F2F100027B21F /* IntentLightEntity.swift */; };
 		42646B772E0BE6F100F6B367 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */; };
 		426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426490672C0F1A41002155CC /* WatchAssistView.swift */; };
 		4264906B2C0F1B5F002155CC /* AssistChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */; };
@@ -8743,6 +8745,7 @@
 				42070EE82BAC43240031E96F /* AssistSession.swift in Sources */,
 				427FEE092D9C04050047C00C /* OnboardingServersListViewModel.swift in Sources */,
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
+				4263A6662EFB291D0089C338 /* LightIntent.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
@@ -8931,6 +8934,7 @@
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
 				42BF8DB42EC4E73700DCB7E7 /* ConnectionSettingsView.swift in Sources */,
 				42BF8DB52EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift in Sources */,
+				4263A6672EFB29620089C338 /* IntentLightEntity.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				428863552EF963FF00319CF4 /* CameraListView.swift in Sources */,
 				428863562EF963FF00319CF4 /* CameraListViewModel.swift in Sources */,

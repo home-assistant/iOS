@@ -1,4 +1,5 @@
 import HAKit
+import AppIntents
 import Shared
 import SwiftUI
 
@@ -14,10 +15,12 @@ struct EntityTileView: View {
         static let textVStackSpacing: CGFloat = 2
     }
 
+    let server: Server
     let appEntity: HAAppEntity
     let haEntity: HAEntity?
 
-    init(appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+        self.server = server
         self.appEntity = appEntity
         self.haEntity = haEntity
     }
@@ -35,7 +38,7 @@ struct EntityTileView: View {
                         .multilineTextAlignment(.leading)
                     if let haEntity {
                         Text(
-                            Domain(entityId: appEntity.id)?.contextualStateDescription(for: haEntity) ?? haEntity
+                            Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity
                                 .state
                         )
                         .font(.caption)
@@ -69,20 +72,36 @@ struct EntityTileView: View {
             icon = .homeIcon
         }
 
-        return VStack {
-            Text(verbatim: icon.unicode)
-                .font(.custom(MaterialDesignIcons.familyName, size: Constants.iconFontSize))
-                .foregroundColor(iconColor)
-                .fixedSize(horizontal: false, vertical: false)
+        return Button(intent: intentForEntity()) {
+            VStack {
+                Text(verbatim: icon.unicode)
+                    .font(.custom(MaterialDesignIcons.familyName, size: Constants.iconFontSize))
+                    .foregroundColor(iconColor)
+                    .fixedSize(horizontal: false, vertical: false)
+            }
+            .frame(width: Constants.iconSize, height: Constants.iconSize)
+            .background(iconColor.opacity(Constants.iconOpacity))
+            .clipShape(Circle())
         }
-        .frame(width: Constants.iconSize, height: Constants.iconSize)
-        .background(iconColor.opacity(Constants.iconOpacity))
-        .clipShape(Circle())
+        .buttonStyle(.plain)
+    }
+
+    private func intentForEntity() -> some AppIntent {
+        if Domain(entityId: appEntity.entityId) == .light {
+            let intent = LightIntent()
+            intent.light = .init(id: appEntity.entityId, entityId: appEntity.entityId, serverId: server.identifier.rawValue, displayString: "", iconName: "")
+            intent.toggle = true
+            // Since toggle is true, value won't be used, but we set it to false to have a default
+            intent.value = false
+            return intent
+        } else {
+            // Does nothing without setup
+            return LightIntent()
+        }
     }
 
     private var iconColor: Color {
         guard let haEntity, haEntity.state == Domain.State.on.rawValue else { return .secondary }
-        let state = haEntity.state
         // Check color_mode first if available to prioritize the correct attribute
         if let colorMode = haEntity.attributes["color_mode"] as? String {
             switch colorMode {
