@@ -886,7 +886,6 @@
 		429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E4C9922DCC9A6600DF2813 /* HAProgressView.swift */; };
 		429D51BD2EFA0B2D0014AD0D /* HAAssistTranscriberManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51BC2EFA0B2D0014AD0D /* HAAssistTranscriberManager.swift */; };
 		429D51BF2EFA0B3C0014AD0D /* HAAssistTranscriberExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51BE2EFA0B3C0014AD0D /* HAAssistTranscriberExampleView.swift */; };
-		429D51C12EFA0B4D0014AD0D /* HAAssistTranscriberManager-Usage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51C02EFA0B4D0014AD0D /* HAAssistTranscriberManager-Usage.swift */; };
 		429D51C32EFA0B5C0014AD0D /* ExampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51C22EFA0B5C0014AD0D /* ExampleViewModel.swift */; };
 		429D51C52EFA0E750014AD0D /* ModernAssistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D51C42EFA0E750014AD0D /* ModernAssistView.swift */; };
 		42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */; };
@@ -2446,7 +2445,6 @@
 		429C721F2B28D0EC00BCD558 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		429D51BC2EFA0B2D0014AD0D /* HAAssistTranscriberManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistTranscriberManager.swift; sourceTree = "<group>"; };
 		429D51BE2EFA0B3C0014AD0D /* HAAssistTranscriberExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAssistTranscriberExampleView.swift; sourceTree = "<group>"; };
-		429D51C02EFA0B4D0014AD0D /* HAAssistTranscriberManager-Usage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAssistTranscriberManager-Usage.swift"; sourceTree = "<group>"; };
 		429D51C22EFA0B5C0014AD0D /* ExampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewModel.swift; sourceTree = "<group>"; };
 		429D51C42EFA0E750014AD0D /* ModernAssistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernAssistView.swift; sourceTree = "<group>"; };
 		42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarButtonsConfigurator.swift; sourceTree = "<group>"; };
@@ -5162,7 +5160,6 @@
 				421764052EF9ADEE00947FE2 /* HAAssistTypes.swift */,
 				429D51BC2EFA0B2D0014AD0D /* HAAssistTranscriberManager.swift */,
 				429D51BE2EFA0B3C0014AD0D /* HAAssistTranscriberExampleView.swift */,
-				429D51C02EFA0B4D0014AD0D /* HAAssistTranscriberManager-Usage.swift */,
 				429D51C22EFA0B5C0014AD0D /* ExampleViewModel.swift */,
 			);
 			path = LocalSTT;
@@ -8692,7 +8689,6 @@
 				42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */,
 				42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				4240DF472E1D148F00FB0DE6 /* DeviceNameView.swift in Sources */,
-				429D51C12EFA0B4D0014AD0D /* HAAssistTranscriberManager-Usage.swift in Sources */,
 				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
