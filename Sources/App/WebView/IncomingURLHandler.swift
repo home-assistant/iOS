@@ -176,8 +176,7 @@ class IncomingURLHandler {
                         webViewController.webViewExternalMessageHandler.showAssist(
                             server: server,
                             pipeline: pipelineId,
-                            autoStartRecording: startlistening,
-                            animated: false
+                            autoStartRecording: startlistening
                         )
                     }
             case .createCustomWidget:
@@ -240,8 +239,7 @@ class IncomingURLHandler {
                     webView.webViewExternalMessageHandler.showAssist(
                         server: server,
                         pipeline: pipeline?.identifier ?? "",
-                        autoStartRecording: autoStartRecording,
-                        animated: false
+                        autoStartRecording: autoStartRecording
                     )
                 case let .rejected(error):
                     Current.Log.error("Failed to obtain webview to open Assist In App: \(error.localizedDescription)")

@@ -465,6 +465,7 @@ struct ModernAssistView: View {
 // MARK: - Background Theme
 
 enum ModernAssistTheme: String, CaseIterable, Identifiable {
+    case homeAssistant = "Home Assistant"
     case midnight = "Midnight"
     case aurora = "Aurora"
     case sunset = "Sunset"
@@ -473,7 +474,6 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     case galaxy = "Galaxy"
     case lavender = "Lavender"
     case ember = "Ember"
-    case homeAssistant = "Home Assistant"
 
     var id: String { rawValue }
 
