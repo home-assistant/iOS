@@ -512,6 +512,10 @@ public enum L10n {
 
   public enum Assist {
     public enum Button {
+      public enum FinishRecording {
+        /// Tap to finish recording...
+        public static var title: String { return L10n.tr("Localizable", "assist.button.finish_recording.title") }
+      }
       public enum Listening {
         /// Listening...
         public static var title: String { return L10n.tr("Localizable", "assist.button.listening.title") }
