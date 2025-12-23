@@ -214,10 +214,10 @@ struct ModernAssistView: View {
     private var modernHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Assist")
+                Text(L10n.Assist.ModernUi.Header.title)
                     .font(.system(size: Constants.titleFontSize, weight: .bold))
                     .foregroundStyle(selectedTheme.headerTextColor(for: colorScheme))
-                Picker("Pipeline", selection: $selectedPipeline) {
+                Picker(L10n.Assist.ModernUi.Pipeline.label, selection: $selectedPipeline) {
                     ForEach(pipelines, id: \.self) { pipeline in
                         Text(pipeline)
                             .tag(pipeline)
@@ -398,7 +398,7 @@ struct ModernAssistView: View {
         GlassEffectContainer {
             HStack(spacing: DesignSystem.Spaces.one) {
                 // Text input field
-                TextField("Ask me anything...", text: $inputText)
+                TextField(L10n.Assist.ModernUi.TextField.placeholder, text: $inputText)
                     .focused($isTextFieldFocused)
                     .foregroundColor(selectedTheme.textFieldTextColor(for: colorScheme))
                     .tint(.blue)

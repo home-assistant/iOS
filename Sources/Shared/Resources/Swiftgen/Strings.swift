@@ -521,9 +521,45 @@ public enum L10n {
       /// Failed to obtain Assist pipelines, please check your pipelines configuration.
       public static var pipelinesResponse: String { return L10n.tr("Localizable", "assist.error.pipelines_response") }
     }
+    public enum ModernUi {
+      public enum Header {
+        /// Assist
+        public static var title: String { return L10n.tr("Localizable", "assist.modern_ui.header.title") }
+      }
+      public enum Pipeline {
+        /// Pipeline
+        public static var label: String { return L10n.tr("Localizable", "assist.modern_ui.pipeline.label") }
+      }
+      public enum TextField {
+        /// Ask me anything...
+        public static var placeholder: String { return L10n.tr("Localizable", "assist.modern_ui.text_field.placeholder") }
+      }
+    }
     public enum PipelinesPicker {
       /// Assist Pipelines
       public static var title: String { return L10n.tr("Localizable", "assist.pipelines_picker.title") }
+    }
+    public enum Settings {
+      /// Labs
+      public static var header: String { return L10n.tr("Localizable", "assist.settings.modern_ui.header") }
+      /// Assist Settings
+      public static var title: String { return L10n.tr("Localizable", "assist.settings.title") }
+      public enum ModernUi {
+        /// Enable the new modern interface design for Assist. This is a labs feature and may have limited functionality as well as it can be removed without previous notice.
+        public static var footer: String { return L10n.tr("Localizable", "assist.settings.modern_ui.footer") }
+        /// Experimental UI
+        public static var toggle: String { return L10n.tr("Localizable", "assist.settings.modern_ui.toggle") }
+        public enum Theme {
+          /// Theme
+          public static var label: String { return L10n.tr("Localizable", "assist.settings.modern_ui.theme.label") }
+        }
+      }
+      public enum OnDeviceStt {
+        /// Use Apple's on-device speech recognition for improved privacy. Your voice will be processed locally and transcribed to text before being sent to your server. Not all languages are supported.
+        public static var footer: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.footer") }
+        /// Enable on-device Speech-to-Text
+        public static var toggle: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.toggle") }
+      }
     }
     public enum Watch {
       public enum MicButton {
