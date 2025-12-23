@@ -1,55 +1,76 @@
 import SwiftUI
 
 struct AssistWavesAnimation: View {
-    @State private var animationPhase: CGFloat = 0
+    // Configuration
+    private let numberOfBars = 5
+    private let minHeight: CGFloat = 40
+    private let maxHeight: CGFloat = 200
 
-    @State private var circle1Size: CGFloat = 50
-    @State private var circle2Size: CGFloat = 50
-    @State private var circle3Size: CGFloat = 50
-    @State private var circle4Size: CGFloat = 50
+    // Check out these colors - I added a gradient feel based on your input
+    private let colors: [Color] = [.blue, .cyan, .blue.opacity(0.8), .teal, .blue]
 
     var body: some View {
-        HStack(spacing: .zero) {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.blue)
-                .frame(maxWidth: .infinity)
-                .frame(height: circle1Size)
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.cyan)
-                .frame(maxWidth: .infinity)
-                .frame(height: circle2Size)
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.blue.opacity(0.8))
-                .frame(maxWidth: .infinity)
-                .frame(height: circle3Size)
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.teal)
-                .frame(maxWidth: .infinity)
-                .frame(height: circle4Size)
+        HStack(spacing: 6) {
+            ForEach(0 ..< numberOfBars, id: \.self) { index in
+                WaveBar(
+                    color: colors[index % colors.count],
+                    minHeight: minHeight,
+                    maxHeight: maxHeight,
+                    // We stagger the animation slightly based on index
+                    // to prevent them from moving in perfect unison
+                    delay: Double(index) * 0.1
+                )
+                .blur(radius: 40)
+            }
         }
-        .blur(radius: 50)
-        .onAppear {
-            startWaveAnimation()
-        }
+        // This creates a nice glow effect without hiding the bars
+        .background(
+            HStack(spacing: 6) {
+                ForEach(0 ..< numberOfBars, id: \.self) { index in
+                    WaveBar(
+                        color: colors[index % colors.count],
+                        minHeight: minHeight,
+                        maxHeight: maxHeight,
+                        delay: Double(index) * 0.1
+                    )
+                }
+            }
+            .blur(radius: 60) // Soft glow
+            .opacity(0.5)
+        )
+        .offset(y: 70)
+    }
+}
+
+// Subview to handle individual bar animation
+struct WaveBar: View {
+    let color: Color
+    let minHeight: CGFloat
+    let maxHeight: CGFloat
+    let delay: Double
+
+    @State private var isAnimating = false
+
+    // Generate a random duration for a more "organic" voice feel
+    var randomDuration: Double {
+        Double.random(in: 0.5 ... 0.9)
     }
 
-    private func startWaveAnimation() {
-        // Create staggered wave animations for each bar
-        withAnimation(.easeInOut(duration: 0.2).repeatForever(autoreverses: true).delay(0.8)) {
-            circle1Size = 35
-        }
-
-        withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true).delay(0.5)) {
-            circle2Size = 150
-        }
-
-        withAnimation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true).delay(0.4)) {
-            circle3Size = 80
-        }
-
-        withAnimation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true).delay(0.3)) {
-            circle4Size = 70
-        }
+    var body: some View {
+        Capsule()
+            .fill(color)
+            .frame(maxWidth: .infinity) // Fixed width for cleaner look
+            .frame(height: isAnimating ? maxHeight * CGFloat.random(in: 0.5 ... 1.0) : minHeight)
+            .onAppear {
+                // Different animation speeds for different bars creates the "Voice" chaos
+                withAnimation(
+                    .easeInOut(duration: randomDuration)
+                        .repeatForever(autoreverses: true)
+                        .delay(delay)
+                ) {
+                    isAnimating = true
+                }
+            }
     }
 }
 
