@@ -3,6 +3,71 @@ import Shared
 
 @available(iOS 26.0, *)
 struct ModernAssistView: View {
+    // MARK: - Constants
+    private enum Constants {
+        // Layout
+        static let inputHeight: CGFloat = 120
+        static let textFieldHeight: CGFloat = 50
+        static let buttonWidth: CGFloat = 60
+        static let orbSize: CGFloat = 300
+        static let orbRadius: CGFloat = 150
+        
+        // Spacing
+        static let horizontalPadding: CGFloat = 20
+        static let headerHorizontalPadding: CGFloat = 24
+        static let verticalPadding: CGFloat = 12
+        static let messageSpacing: CGFloat = 16
+        static let headerTopPadding: CGFloat = 60
+        static let headerBottomPadding: CGFloat = 20
+        static let inputVerticalPadding: CGFloat = 20
+        static let messageBubbleHorizontalPadding: CGFloat = 16
+        static let messageBubbleVerticalPadding: CGFloat = 12
+        static let minSpacerLength: CGFloat = 40
+        static let bottomScrollInset: CGFloat = 120
+        
+        // Corner Radius
+        static let messageBubbleCornerRadius: CGFloat = 20
+        
+        // Blur
+        static let backgroundBlurRadius: CGFloat = 40
+        static let materialBlurRadius: CGFloat = 20
+        
+        // Offsets
+        static let topMaterialOffset: CGFloat = 0
+        static let bottomMaterialOffset: CGFloat = 20
+        static let orbYOffsetMin: CGFloat = -50
+        static let orbYOffsetMax: CGFloat = 50
+        static let orbYOffset2Min: CGFloat = 0
+        static let orbYOffset2Max: CGFloat = 100
+        static let orbXOffsetLeft: CGFloat = -100
+        static let pickerXOffset: CGFloat = -5
+        
+        // Opacity
+        static let topMaterialOpacity: Double = 0.5
+        static let bottomMaterialOpacity: Double = 0.9
+        static let orbOpacity: Double = 0.3
+        static let whiteTextOpacity: Double = 0.95
+        static let buttonTextOpacity: Double = 0.7
+        static let assistantBubbleOpacity: Double = 0.1
+        static let strokeStartOpacity: Double = 0.3
+        static let strokeEndOpacity: Double = 0.1
+        static let userBubbleOpacity: Double = 0.8
+        static let headerGradientOpacity: Double = 0.8
+        
+        // Stroke Width
+        static let messageBubbleStrokeWidth: CGFloat = 1
+        
+        // Font Sizes
+        static let titleFontSize: CGFloat = 34
+        
+        // Animation Durations
+        static let ambientAnimationDuration: Double = 4
+        static let recordingAnimationDuration: Double = 1.5
+        static let sendSpringResponse: Double = 0.3
+        static let recordingSpringResponse: Double = 0.4
+        static let recordingSpringDamping: Double = 0.7
+    }
+    
     @State private var isRecording = false
     @State private var inputText = ""
     @State private var pulseAnimation = false
@@ -79,33 +144,33 @@ struct ModernAssistView: View {
                         .fill(
                             RadialGradient(
                                 colors: [
-                                    selectedTheme.orbColors.0.opacity(0.3),
+                                    selectedTheme.orbColors.0.opacity(Constants.orbOpacity),
                                     Color.clear
                                 ],
                                 center: .center,
                                 startRadius: 0,
-                                endRadius: 150
+                                endRadius: Constants.orbRadius
                             )
                         )
-                        .frame(width: 300, height: 300)
-                        .offset(x: -100, y: pulseAnimation ? -50 : 50)
-                        .blur(radius: 40)
+                        .frame(width: Constants.orbSize, height: Constants.orbSize)
+                        .offset(x: Constants.orbXOffsetLeft, y: pulseAnimation ? Constants.orbYOffsetMin : Constants.orbYOffsetMax)
+                        .blur(radius: Constants.backgroundBlurRadius)
                     
                     Circle()
                         .fill(
                             RadialGradient(
                                 colors: [
-                                    selectedTheme.orbColors.1.opacity(0.3),
+                                    selectedTheme.orbColors.1.opacity(Constants.orbOpacity),
                                     Color.clear
                                 ],
                                 center: .center,
                                 startRadius: 0,
-                                endRadius: 150
+                                endRadius: Constants.orbRadius
                             )
                         )
-                        .frame(width: 300, height: 300)
-                        .offset(x: geometry.size.width - 100, y: pulseAnimation ? 100 : 0)
-                        .blur(radius: 40)
+                        .frame(width: Constants.orbSize, height: Constants.orbSize)
+                        .offset(x: geometry.size.width - Constants.orbXOffsetLeft * -1, y: pulseAnimation ? Constants.orbYOffset2Max : Constants.orbYOffset2Min)
+                        .blur(radius: Constants.backgroundBlurRadius)
                 }
             }
         }
@@ -116,10 +181,10 @@ struct ModernAssistView: View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Assist")
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: Constants.titleFontSize, weight: .bold))
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [.white, .white.opacity(0.8)],
+                            colors: [.white, .white.opacity(Constants.headerGradientOpacity)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
@@ -132,69 +197,85 @@ struct ModernAssistView: View {
                 }
                 .pickerStyle(.menu)
                 .buttonStyle(.glass)
-                .offset(x: -5)
+                .offset(x: Constants.pickerXOffset)
             }
             
             Spacer()
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 60)
-        .padding(.bottom, 20)
+        .padding(.horizontal, Constants.headerHorizontalPadding)
+        .padding(.top, Constants.headerTopPadding)
+        .padding(.bottom, Constants.headerBottomPadding)
         .background(topGradientView)
     }
     
     // MARK: - Chat Area
     private var chatArea: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                ForEach(messages) { message in
-                    modernMessageBubble(message: message)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: Constants.messageSpacing) {
+                    ForEach(messages) { message in
+                        modernMessageBubble(message: message)
+                            .id(message.id)
+                    }
+                }
+                .padding(.horizontal, Constants.horizontalPadding)
+                .padding(.vertical, Constants.verticalPadding)
+                .padding(.bottom, Constants.bottomScrollInset)
+            }
+            .onChange(of: messages.count) { oldValue, newValue in
+                if let lastMessage = messages.last {
+                    withAnimation(.easeOut(duration: 0.3)) {
+                        proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                    }
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            .onAppear {
+                if let lastMessage = messages.last {
+                    proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                }
+            }
         }
     }
     
     private func modernMessageBubble(message: MockMessage) -> some View {
         HStack {
-            if message.isUser { Spacer(minLength: 40) }
+            if message.isUser { Spacer(minLength: Constants.minSpacerLength) }
             
             VStack(alignment: message.isUser ? .trailing : .leading, spacing: 0) {
                 Text(message.text)
                     .font(.body)
-                    .foregroundColor(message.isUser ? .white : .white.opacity(0.95))
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
+                    .foregroundColor(message.isUser ? .white : .white.opacity(Constants.whiteTextOpacity))
+                    .padding(.horizontal, Constants.messageBubbleHorizontalPadding)
+                    .padding(.vertical, Constants.messageBubbleVerticalPadding)
                     .background(
                         ZStack {
                             if message.isUser {
-                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
                                     .fill(
                                         LinearGradient(
                                             colors: [
                                                 Color.blue,
-                                                Color.blue.opacity(0.8)
+                                                Color.blue.opacity(Constants.userBubbleOpacity)
                                             ],
                                             startPoint: .topLeading,
                                             endPoint: .bottomTrailing
                                         )
                                     )
                             } else {
-                                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .fill(.white.opacity(0.1))
+                                RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
+                                    .fill(.white.opacity(Constants.assistantBubbleOpacity))
                                     .overlay(
-                                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                        RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
                                             .stroke(
                                                 LinearGradient(
                                                     colors: [
-                                                        .white.opacity(0.3),
-                                                        .white.opacity(0.1)
+                                                        .white.opacity(Constants.strokeStartOpacity),
+                                                        .white.opacity(Constants.strokeEndOpacity)
                                                     ],
                                                     startPoint: .topLeading,
                                                     endPoint: .bottomTrailing
                                                 ),
-                                                lineWidth: 1
+                                                lineWidth: Constants.messageBubbleStrokeWidth
                                             )
                                     )
                             }
@@ -202,7 +283,7 @@ struct ModernAssistView: View {
                     )
             }
             
-            if !message.isUser { Spacer(minLength: 40) }
+            if !message.isUser { Spacer(minLength: Constants.minSpacerLength) }
         }
     }
     
@@ -218,7 +299,7 @@ struct ModernAssistView: View {
                     .transition(.scale.combined(with: .opacity))
             }
         }
-        .frame(height: 120)
+        .frame(height: Constants.inputHeight)
         .frame(maxWidth: .infinity)
         .ignoresSafeArea()
         .background(
@@ -229,19 +310,19 @@ struct ModernAssistView: View {
     private var bottomGradientView: some View {
         Rectangle()
             .fill(.ultraThinMaterial)
-            .blur(radius: 20)
-            .offset(y: 20)
+            .blur(radius: Constants.materialBlurRadius)
+            .offset(y: Constants.bottomMaterialOffset)
             .preferredColorScheme(.dark)
-            .opacity(0.9)
+            .opacity(Constants.bottomMaterialOpacity)
     }
 
     private var topGradientView: some View {
         Rectangle()
             .fill(.ultraThinMaterial)
-            .blur(radius: 20)
-            .offset(y: 0)
+            .blur(radius: Constants.materialBlurRadius)
+            .offset(y: Constants.topMaterialOffset)
             .preferredColorScheme(.dark)
-            .opacity(0.5)
+            .opacity(Constants.topMaterialOpacity)
     }
 
     private var recordingOrb: some View {
@@ -262,61 +343,64 @@ struct ModernAssistView: View {
     }
     
     private var inputControls: some View {
-        HStack(spacing: DesignSystem.Spaces.one) {
-            // Text input field
-            TextField("Ask me anything...", text: $inputText)
-                .focused($isTextFieldFocused)
-                .foregroundColor(.white)
-                .tint(.blue)
-                .padding(.leading, 20)
-                .frame(height: 50)
-                .glassEffect(.clear.interactive(), in: .capsule)
-                .padding(.leading, 20)
-            
-            if inputText.isEmpty {
-                Button(action: {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        isRecording = true
+        GlassEffectContainer {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                // Text input field
+                TextField("Ask me anything...", text: $inputText)
+                    .focused($isTextFieldFocused)
+                    .foregroundColor(.white)
+                    .tint(.blue)
+                    .padding(.leading, Constants.horizontalPadding)
+                    .frame(height: Constants.textFieldHeight)
+                    .glassEffect(.clear.interactive(), in: .capsule)
+                    .padding(.leading, Constants.horizontalPadding)
+
+                if inputText.isEmpty {
+                    Button(action: {
+                        withAnimation(.spring(response: Constants.recordingSpringResponse, dampingFraction: Constants.recordingSpringDamping)) {
+                            isRecording = true
+                        }
+                    }) {
+                        Image(systemSymbol: .micFill)
+                            .font(.title3)
+                            .foregroundColor(.white.opacity(Constants.buttonTextOpacity))
+                            .padding()
+                            .glassEffect(.clear.interactive(), in: .capsule)
                     }
-                }) {
-                    Image(systemSymbol: .micFill)
-                        .font(.title3)
-                        .foregroundColor(.white.opacity(0.7))
-                        .padding()
-                        .glassEffect(.clear, in: .capsule)
-                }
-                .buttonStyle(.plain)
-                .frame(width: 60)
-                .padding(.trailing, 20)
-            } else {
-                Button(action: {
-                    withAnimation(.spring(response: 0.3)) {
-                        // Send action
-                        inputText = ""
+                    .buttonStyle(.plain)
+                    .frame(width: Constants.buttonWidth)
+                    .padding(.trailing, Constants.horizontalPadding)
+                } else {
+                    Button(action: {
+                        withAnimation(.spring(response: Constants.sendSpringResponse)) {
+                            // Send action
+                            inputText = ""
+                        }
+                    }) {
+                        Image(systemSymbol: .arrowUp)
+                            .font(.title3)
+                            .foregroundColor(.white.opacity(Constants.buttonTextOpacity))
+                            .padding()
+                            .glassEffect(.clear.interactive(), in: .capsule)
                     }
-                }) {
-                    Image(systemSymbol: .arrowUp)
-                        .font(.title3)
-                        .foregroundColor(.white.opacity(0.7))
-                        .padding()
-                        .glassEffect(.clear, in: .capsule)
+                    .buttonStyle(.plain)
+                    .frame(width: Constants.buttonWidth)
+                    .padding(.trailing, Constants.horizontalPadding)
                 }
-                .buttonStyle(.plain)
-                .frame(width: 60)
-                .padding(.trailing, 20)
             }
+            .padding(.vertical, Constants.inputVerticalPadding)
+
         }
-        .padding(.vertical, 20)
     }
     
     // MARK: - Animations
     private func startAmbientAnimation() {
-        withAnimation(.easeInOut(duration: 4).repeatForever(autoreverses: true)) {
+        withAnimation(.easeInOut(duration: Constants.ambientAnimationDuration).repeatForever(autoreverses: true)) {
             pulseAnimation = true
         }
         
         // Start recording animation when recording
-        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+        withAnimation(.easeInOut(duration: Constants.recordingAnimationDuration).repeatForever(autoreverses: true)) {
             if isRecording {
                 glowIntensity = 1
             }
