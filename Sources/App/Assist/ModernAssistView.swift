@@ -13,28 +13,28 @@ struct ModernAssistView: View {
         static let orbRadius: CGFloat = 150
         
         // Spacing
-        static let horizontalPadding: CGFloat = 20
-        static let headerHorizontalPadding: CGFloat = 24
-        static let verticalPadding: CGFloat = 12
-        static let messageSpacing: CGFloat = 16
+        static let horizontalPadding: CGFloat = DesignSystem.Spaces.two
+        static let headerHorizontalPadding: CGFloat = DesignSystem.Spaces.three
+        static let verticalPadding: CGFloat = DesignSystem.Spaces.oneAndHalf
+        static let messageSpacing: CGFloat = DesignSystem.Spaces.two
         static let headerTopPadding: CGFloat = 60
-        static let headerBottomPadding: CGFloat = 20
-        static let inputVerticalPadding: CGFloat = 20
-        static let messageBubbleHorizontalPadding: CGFloat = 16
-        static let messageBubbleVerticalPadding: CGFloat = 12
-        static let minSpacerLength: CGFloat = 40
+        static let headerBottomPadding: CGFloat = DesignSystem.Spaces.two
+        static let inputVerticalPadding: CGFloat = DesignSystem.Spaces.two
+        static let messageBubbleHorizontalPadding: CGFloat = DesignSystem.Spaces.two
+        static let messageBubbleVerticalPadding: CGFloat = DesignSystem.Spaces.oneAndHalf
+        static let minSpacerLength: CGFloat = DesignSystem.Spaces.five
         static let bottomScrollInset: CGFloat = 120
         
         // Corner Radius
-        static let messageBubbleCornerRadius: CGFloat = 20
+        static let messageBubbleCornerRadius: CGFloat = DesignSystem.CornerRadius.two
         
         // Blur
-        static let backgroundBlurRadius: CGFloat = 40
-        static let materialBlurRadius: CGFloat = 20
+        static let backgroundBlurRadius: CGFloat = DesignSystem.Spaces.five
+        static let materialBlurRadius: CGFloat = DesignSystem.Spaces.two
         
         // Offsets
         static let topMaterialOffset: CGFloat = 0
-        static let bottomMaterialOffset: CGFloat = 20
+        static let bottomMaterialOffset: CGFloat = DesignSystem.Spaces.two
         static let orbYOffsetMin: CGFloat = -50
         static let orbYOffsetMax: CGFloat = 50
         static let orbYOffset2Min: CGFloat = 0
@@ -55,7 +55,7 @@ struct ModernAssistView: View {
         static let headerGradientOpacity: Double = 0.8
         
         // Stroke Width
-        static let messageBubbleStrokeWidth: CGFloat = 1
+        static let messageBubbleStrokeWidth: CGFloat = DesignSystem.Border.Width.default
         
         // Font Sizes
         static let titleFontSize: CGFloat = 34
@@ -75,26 +75,10 @@ struct ModernAssistView: View {
     @State private var selectedTheme: ModernAssistTheme
     @FocusState private var isTextFieldFocused: Bool
     
-    // Sample chat messages for preview
-    @State private var messages: [MockMessage] = [
-        MockMessage(text: "Hello! How can I help you today?", isUser: false),
-        MockMessage(text: "What's the weather like?", isUser: true),
-        MockMessage(text: "I'll check the weather for you. The current temperature is 72°F with clear skies.", isUser: false),
-        MockMessage(text: "Can you turn on the living room lights?", isUser: true),
-        MockMessage(text: "Sure! I've turned on the living room lights for you.", isUser: false),
-        MockMessage(text: "What about the temperature? It feels a bit cold.", isUser: true),
-        MockMessage(text: "The thermostat is currently set to 68°F. Would you like me to increase it?", isUser: false),
-        MockMessage(text: "Yes, please set it to 72°F", isUser: true),
-        MockMessage(text: "Done! I've set the thermostat to 72°F. It should warm up in a few minutes.", isUser: false),
-        MockMessage(text: "Thanks! Can you also check if the front door is locked?", isUser: true),
-        MockMessage(text: "The front door is currently locked and secure. All entry points are secured.", isUser: false),
-        MockMessage(text: "Perfect! What's on my calendar for today?", isUser: true),
-        MockMessage(text: "You have 3 events today:\n• 10:00 AM - Team Meeting\n• 2:00 PM - Client Call\n• 5:30 PM - Dentist Appointment", isUser: false),
-        MockMessage(text: "Great, thanks for the update!", isUser: true),
-        MockMessage(text: "You're welcome! Is there anything else I can help you with?", isUser: false)
-    ]
+    @Binding var messages: [AssistChatItem]
     
-    init(selectedTheme: ModernAssistTheme = .ocean) {
+    init(messages: Binding<[AssistChatItem]>, selectedTheme: ModernAssistTheme = .ocean) {
+        self._messages = messages
         self._selectedTheme = State(initialValue: selectedTheme)
     }
     
@@ -237,19 +221,21 @@ struct ModernAssistView: View {
         }
     }
     
-    private func modernMessageBubble(message: MockMessage) -> some View {
-        HStack {
-            if message.isUser { Spacer(minLength: Constants.minSpacerLength) }
+    private func modernMessageBubble(message: AssistChatItem) -> some View {
+        let isUser = message.itemType == .input
+        
+        return HStack {
+            if isUser { Spacer(minLength: Constants.minSpacerLength) }
             
-            VStack(alignment: message.isUser ? .trailing : .leading, spacing: 0) {
-                Text(message.text)
+            VStack(alignment: isUser ? .trailing : .leading, spacing: 0) {
+                Text(message.content)
                     .font(.body)
-                    .foregroundColor(message.isUser ? .white : .white.opacity(Constants.whiteTextOpacity))
+                    .foregroundColor(isUser ? .white : .white.opacity(Constants.whiteTextOpacity))
                     .padding(.horizontal, Constants.messageBubbleHorizontalPadding)
                     .padding(.vertical, Constants.messageBubbleVerticalPadding)
                     .background(
                         ZStack {
-                            if message.isUser {
+                            if isUser {
                                 RoundedRectangle(cornerRadius: Constants.messageBubbleCornerRadius, style: .continuous)
                                     .fill(
                                         LinearGradient(
@@ -283,7 +269,7 @@ struct ModernAssistView: View {
                     )
             }
             
-            if !message.isUser { Spacer(minLength: Constants.minSpacerLength) }
+            if !isUser { Spacer(minLength: Constants.minSpacerLength) }
         }
     }
     
@@ -496,13 +482,6 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - Mock Data
-struct MockMessage: Identifiable {
-    let id = UUID()
-    let text: String
-    let isUser: Bool
-}
-
 // MARK: - Preview
 //@available(iOS 26.0, *)
 //#Preview("Midnight Theme") {
@@ -521,7 +500,25 @@ struct MockMessage: Identifiable {
 
 @available(iOS 26.0, *)
 #Preview("Ocean Theme") {
-    ModernAssistView(selectedTheme: .ocean)
+    @Previewable @State var messages: [AssistChatItem] = [
+        AssistChatItem(content: "Hello! How can I help you today?", itemType: .output),
+        AssistChatItem(content: "What's the weather like?", itemType: .input),
+        AssistChatItem(content: "I'll check the weather for you. The current temperature is 72°F with clear skies.", itemType: .output),
+        AssistChatItem(content: "Can you turn on the living room lights?", itemType: .input),
+        AssistChatItem(content: "Sure! I've turned on the living room lights for you.", itemType: .output),
+        AssistChatItem(content: "What about the temperature? It feels a bit cold.", itemType: .input),
+        AssistChatItem(content: "The thermostat is currently set to 68°F. Would you like me to increase it?", itemType: .output),
+        AssistChatItem(content: "Yes, please set it to 72°F", itemType: .input),
+        AssistChatItem(content: "Done! I've set the thermostat to 72°F. It should warm up in a few minutes.", itemType: .output),
+        AssistChatItem(content: "Thanks! Can you also check if the front door is locked?", itemType: .input),
+        AssistChatItem(content: "The front door is currently locked and secure. All entry points are secured.", itemType: .output),
+        AssistChatItem(content: "Perfect! What's on my calendar for today?", itemType: .input),
+        AssistChatItem(content: "You have 3 events today:\n• 10:00 AM - Team Meeting\n• 2:00 PM - Client Call\n• 5:30 PM - Dentist Appointment", itemType: .output),
+        AssistChatItem(content: "Great, thanks for the update!", itemType: .input),
+        AssistChatItem(content: "You're welcome! Is there anything else I can help you with?", itemType: .output)
+    ]
+    
+    return ModernAssistView(messages: $messages, selectedTheme: .ocean)
 }
 //
 //@available(iOS 26.0, *)
