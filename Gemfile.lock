@@ -323,7 +323,6 @@ PLATFORMS
   x86_64-darwin-21
   x86_64-darwin-22
   x86_64-darwin-23
-  x86_64-linux-gnu
 
 DEPENDENCIES
   cocoapods
@@ -335,4 +334,4 @@ DEPENDENCIES
   rubocop
 
 BUNDLED WITH
-   2.5.23
+   2.2.2

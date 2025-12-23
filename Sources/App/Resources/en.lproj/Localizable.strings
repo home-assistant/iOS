@@ -1381,3 +1381,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "camera_list.edit.on.title" = "Done";
 "camera_list.edit.off.title" = "Edit";
 "yes_label" = "Yes";
+"no_area" = "Not in a room";

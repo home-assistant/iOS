@@ -1033,6 +1033,8 @@
 		42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */; };
 		42DFE86F2EFA26D50058DADB /* AssistSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */; };
 		42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */; };
+		42DFE87A2EFB08C80058DADB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8782EFB08C80058DADB /* HomeViewModel.swift */; };
+		42DFE87B2EFB08C80058DADB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8772EFB08C80058DADB /* HomeView.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -2107,7 +2109,6 @@
 		3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPush.swift; sourceTree = "<group>"; };
 		399792702B7F909900231B54 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
 		39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scaledToSize.swift"; sourceTree = "<group>"; };
-		3A3245389EDC832EB895D4A3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeView.swift; path = Sources/App/Home/HomeView.swift; sourceTree = SOURCE_ROOT; };
 		3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSensorsAppEntity.swift; sourceTree = "<group>"; };
 		3E02C0E42CA7FCF400102131 /* WidgetSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensors.swift; sourceTree = "<group>"; };
 		3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsAppIntent.swift; sourceTree = "<group>"; };
@@ -2741,6 +2742,8 @@
 		42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMedia.swift; sourceTree = "<group>"; };
 		42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsView.swift; sourceTree = "<group>"; };
 		42DFE8732EFAE33D0058DADB /* AssistWavesAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistWavesAnimation.swift; sourceTree = "<group>"; };
+		42DFE8772EFB08C80058DADB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		42DFE8782EFB08C80058DADB /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
@@ -2831,7 +2834,6 @@
 		6F1D92E4B7A5CD1007EB0782 /* Pods_watchOS_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7150FCF154251F240E33FF76 /* Pods-iOS-Extensions-NotificationContent.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.beta.xcconfig"; sourceTree = "<group>"; };
 		755DF7AFFAA21F6CE428E998 /* Pods-watchOS-WatchExtension-Watch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.release.xcconfig"; sourceTree = "<group>"; };
-		77BB4A0DB45BB40ACBE5FBA0 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeViewModel.swift; path = Sources/App/Home/HomeViewModel.swift; sourceTree = SOURCE_ROOT; };
 		7A6E8DF7DED57BAD4EF47D11 /* Pods_iOS_Extensions_Today.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_Today.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D94AB7BD65F15C8FEE0912E /* Pods-iOS-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.release.xcconfig"; sourceTree = "<group>"; };
 		80854D28D2FCD1482E92ED31 /* Pods-Tests-App.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.beta.xcconfig"; sourceTree = "<group>"; };
@@ -3825,6 +3827,7 @@
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
+				42DFE8792EFB08C80058DADB /* Home */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -5816,6 +5819,15 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		42DFE8792EFB08C80058DADB /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				42DFE8772EFB08C80058DADB /* HomeView.swift */,
+				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		42E3B8BB2D8ACDC100F5D084 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -6286,8 +6298,6 @@
 				29278BB24639BA945D3D86B4 /* Frameworks */,
 				42A746A22E832FB8005E0332 /* .github */,
 				42A7474C2E832FB8005E0332 /* fastlane */,
-				3A3245389EDC832EB895D4A3 /* HomeView.swift */,
-				77BB4A0DB45BB40ACBE5FBA0 /* HomeViewModel.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -7502,7 +7512,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B657A8E11CA646EB00121384 /* Build configuration list for PBXProject "Codegen" */;
+			buildConfigurationList = B657A8E11CA646EB00121384 /* Build configuration list for PBXProject "HomeAssistant" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -8814,6 +8824,8 @@
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				42FCCFE22B9B1B610057783F /* BarcodeScannerCamera.swift in Sources */,
 				42B7BFEC2E97AF070056BADC /* LocalAccessPermissionViewModel.swift in Sources */,
+				42DFE87A2EFB08C80058DADB /* HomeViewModel.swift in Sources */,
+				42DFE87B2EFB08C80058DADB /* HomeView.swift in Sources */,
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
@@ -11438,7 +11450,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B657A8E11CA646EB00121384 /* Build configuration list for PBXProject "Codegen" */ = {
+		B657A8E11CA646EB00121384 /* Build configuration list for PBXProject "HomeAssistant" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B657A90E1CA646EB00121384 /* Debug */,

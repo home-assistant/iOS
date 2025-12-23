@@ -255,6 +255,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+
+        #if DEBUG
+        let view = HomeView().embeddedInHostingController()
+        view.modalPresentationStyle = .fullScreen
+        present(view, animated: false)
+        #endif
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
