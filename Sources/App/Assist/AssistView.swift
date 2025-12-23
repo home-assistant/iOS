@@ -41,9 +41,13 @@ struct AssistView: View {
                     }
                 }
 
-                ToolbarItem(placement: .topBarTrailing) {
-                    settingsButton
+                #if !targetEnvironment(macCatalyst)
+                if #available(iOS 26.0, *) {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        settingsButton
+                    }
                 }
+                #endif
 
                 #if targetEnvironment(macCatalyst)
                 ToolbarItem(placement: .topBarTrailing) {
@@ -52,7 +56,9 @@ struct AssistView: View {
                 #endif
             }
             .sheet(isPresented: $showSettings) {
-                AssistSettingsView()
+                if #available(iOS 26.0, *) {
+                    AssistSettingsView()
+                }
             }
         }
         .navigationViewStyle(.stack)
@@ -138,7 +144,7 @@ struct AssistView: View {
         VStack {
             if item.itemType == .typing {
                 AssistTypingIndicator()
-                    .padding(.vertical, Spaces.half)
+                    .padding(.vertical, DesignSystem.Spaces.half)
             } else {
                 Text(item.markdown)
             }
@@ -327,39 +333,6 @@ struct AssistView: View {
             [.topLeft, .topRight, .bottomRight]
         case .error, .info:
             [.allCorners]
-        }
-    }
-}
-// MARK: - Settings View
-struct AssistSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
-    @AppStorage("enableOnDeviceSTT") private var enableOnDeviceSTT = false
-
-    var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    if #available(iOS 26.0, *) {
-                        Toggle("Enable on-device Speech-to-Text", isOn: $enableOnDeviceSTT)
-                    } else {
-                        Text("On-device Speech-to-Text requires iOS 26 or later")
-                            .foregroundColor(.secondary)
-                    }
-                } footer: {
-                    if #available(iOS 26.0, *) {
-                        Text("Use Apple's on-device speech recognition for improved privacy. Your voice will be processed locally and transcribed to text before being sent to your server.")
-                    }
-                }
-            }
-            .navigationTitle("Assist Settings")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 }

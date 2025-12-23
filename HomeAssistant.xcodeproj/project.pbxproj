@@ -1037,6 +1037,7 @@
 		42DF986D2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986C2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift */; };
 		42DF986F2E93A21A00837EA2 /* NotificationSubControllerMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */; };
 		42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */; };
+		42DFE86F2EFA26D50058DADB /* AssistSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -2748,6 +2749,7 @@
 		42DF986C2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMJPEG.swift; sourceTree = "<group>"; };
 		42DF986E2E93A21A00837EA2 /* NotificationSubControllerMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMap.swift; sourceTree = "<group>"; };
 		42DF98702E93A22C00837EA2 /* NotificationSubControllerMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSubControllerMedia.swift; sourceTree = "<group>"; };
+		42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsView.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
@@ -5596,6 +5598,7 @@
 				4291068A2BA9D77600D452F9 /* Audio */,
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
 				42B94BDC2B9606CD00DEE060 /* AssistView.swift */,
+				42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */,
 				42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */,
 				429106882BA9D5F700D452F9 /* AssistView+Build.swift */,
 				42070EE72BAC43240031E96F /* AssistSession.swift */,
@@ -8759,6 +8762,7 @@
 				42DF7DE02EC53D85003F3C4A /* ServersListView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
 				42C0F7CC2D47B47F00BD5C76 /* IconPicker.swift in Sources */,
+				42DFE86F2EFA26D50058DADB /* AssistSettingsView.swift in Sources */,
 				421155232D354F3F00A71630 /* AppIcon.swift in Sources */,
 				42FCD0142B9B29740057783F /* ThreadCredentialDetailsView.swift in Sources */,
 				42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */,
