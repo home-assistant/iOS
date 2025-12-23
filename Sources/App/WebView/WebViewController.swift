@@ -257,9 +257,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         checkForLocalSecurityLevelDecisionNeeded()
 
         #if DEBUG
-        let view = HomeView().embeddedInHostingController()
-        view.modalPresentationStyle = .fullScreen
-        present(view, animated: false)
+        if #available(iOS 26.0, *) {
+            let view = HomeView(server: server).embeddedInHostingController()
+            view.modalPresentationStyle = .fullScreen
+            present(view, animated: false)
+        }
         #endif
     }
 

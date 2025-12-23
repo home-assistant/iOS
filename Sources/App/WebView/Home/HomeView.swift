@@ -1,11 +1,15 @@
 import Shared
 import SwiftUI
 
+@available(iOS 26.0, *)
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
-    @State private var selectedServerId: String?
+    @StateObject private var viewModel: HomeViewModel
     @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
+
+    init(server: Server) {
+        _viewModel = StateObject(wrappedValue: HomeViewModel(server: server))
+    }
 
     var body: some View {
         NavigationView {
@@ -51,6 +55,7 @@ struct HomeView: View {
                 }
             }
             .navigationTitle("Home")
+            .navigationTitle("Connected")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
@@ -65,14 +70,19 @@ struct HomeView: View {
                         Image(systemSymbol: .gearshape)
                     }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        /* no-op */
+                    } label: {
+                        Image(systemSymbol: .listDash)
+                    }
+                }
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
             }
             .task {
-                if let serverId = selectedServerId ?? Current.servers.all.first?.identifier.rawValue {
-                    await viewModel.loadEntities(for: serverId)
-                }
+                await viewModel.loadEntities()
             }
         }
         .navigationViewStyle(.stack)
@@ -101,5 +111,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(server: ServerFixture.standard)
 }

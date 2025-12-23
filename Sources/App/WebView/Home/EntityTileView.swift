@@ -1,17 +1,18 @@
 import Shared
 import SwiftUI
 
-private enum Constants {
-    static let tileHeight: CGFloat = 65
-    static let cornerRadius: CGFloat = 14
-    static let iconSize: CGFloat = 38
-    static let iconFontSize: CGFloat = 20
-    static let iconOpacity: CGFloat = 0.3
-    static let borderLineWidth: CGFloat = 1
-    static let textVStackSpacing: CGFloat = 2
-}
-
+@available(iOS 26.0, *)
 struct EntityTileView: View {
+    enum Constants {
+        static let tileHeight: CGFloat = 65
+        static let cornerRadius: CGFloat = 14
+        static let iconSize: CGFloat = 38
+        static let iconFontSize: CGFloat = 20
+        static let iconOpacity: CGFloat = 0.3
+        static let borderLineWidth: CGFloat = 1
+        static let textVStackSpacing: CGFloat = 2
+    }
+
     struct State {
         let value: String
         let iconColor: Color

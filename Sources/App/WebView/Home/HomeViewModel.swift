@@ -3,11 +3,14 @@ import GRDB
 import Shared
 import SwiftUI
 
+@available(iOS 26.0, *)
+@Observable
 @MainActor
 final class HomeViewModel: ObservableObject {
-    @Published var groupedEntities: [RoomSection] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
+    var groupedEntities: [RoomSection] = []
+    var isLoading = false
+    var errorMessage: String?
+    var server: Server
 
     struct RoomSection: Identifiable, Equatable {
         let id: String
@@ -15,9 +18,15 @@ final class HomeViewModel: ObservableObject {
         let entities: [HAAppEntity]
     }
 
-    func loadEntities(for serverId: String) async {
+    init(server: Server) {
+        self.server = server
+    }
+
+    func loadEntities() async {
         isLoading = true
         errorMessage = nil
+
+        let serverId = server.identifier.rawValue
 
         do {
             // Fetch all entities from database
