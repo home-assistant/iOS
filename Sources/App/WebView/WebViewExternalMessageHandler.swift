@@ -454,6 +454,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 autoStartRecording: autoStartRecording
             ))
             assistView.modalPresentationStyle = .fullScreen
+            assistView.modalTransitionStyle = .crossDissolve
             webViewController?.presentOverlayController(controller: assistView, animated: animated)
         }
     }

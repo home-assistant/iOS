@@ -22,7 +22,7 @@ struct AssistView: View {
     private let showCloseButton: Bool
     
     // State for modern UI
-    @State private var selectedTheme: ModernAssistTheme = .midnight
+    @State private var selectedTheme: ModernAssistTheme = .homeAssistant
     
     private var shouldUseModernUI: Bool {
         if #available(iOS 26.0, *) {
