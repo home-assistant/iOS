@@ -43,7 +43,7 @@ final class HAAssistTranscriber {
 
         detector = SpeechDetector()
 
-        guard let transcriber else {
+        guard let transcriber, let detector else {
             throw HAAssistTranscriptionError.failedToSetupRecognitionStream
         }
 
