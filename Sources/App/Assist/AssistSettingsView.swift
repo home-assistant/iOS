@@ -29,16 +29,16 @@ struct AssistSettingsView: View {
         NavigationView {
             Form {
                 Section {
-                    Toggle("Enable on-device Speech-to-Text", isOn: $enableOnDeviceSTT)
+                    Toggle(L10n.Assist.Settings.OnDeviceStt.toggle, isOn: $enableOnDeviceSTT)
                 } footer: {
-                    Text("Use Apple's on-device speech recognition for improved privacy. Your voice will be processed locally and transcribed to text before being sent to your server. Not all languages are supported.")
+                    Text(L10n.Assist.Settings.OnDeviceStt.footer)
                 }
 
                 Section {
-                    Toggle("Experimental UI", isOn: $enableModernUI)
+                    Toggle(L10n.Assist.Settings.ModernUi.toggle, isOn: $enableModernUI)
 
                     if enableModernUI {
-                        Picker("Theme", selection: selectedTheme) {
+                        Picker(L10n.Assist.Settings.ModernUi.Theme.label, selection: selectedTheme) {
                             ForEach(ModernAssistTheme.allCases) { theme in
                                 Text(theme.rawValue)
                                     .tag(theme)
@@ -46,13 +46,13 @@ struct AssistSettingsView: View {
                         }
                     }
                 } header: {
-                    Label("Labs", systemSymbol: .flaskFill)
+                    Label(L10n.Assist.Settings.header, systemSymbol: .flaskFill)
                 } footer: {
-                    Text("Enable the new modern interface design for Assist. This is a labs feature and may have limited functionality as well as it can be removed without previous notice.")
+                    Text(L10n.Assist.Settings.ModernUi.footer)
                 }
 
             }
-            .navigationTitle("Assist Settings")
+            .navigationTitle(L10n.Assist.Settings.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
