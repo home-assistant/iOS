@@ -7,7 +7,14 @@ import Shared
 final class AssistViewModel: NSObject, ObservableObject {
     @Published var chatItems: [AssistChatItem] = []
     @Published var pipelines: [Pipeline] = []
-    @Published var preferredPipelineId: String = ""
+    @Published var preferredPipelineId: String = "" {
+        didSet {
+            if !oldValue.isEmpty, oldValue != preferredPipelineId {
+                onPipelineChanged()
+            }
+        }
+    }
+
     @Published var inputText = ""
     @Published var isRecording = false
     @Published var showError = false
@@ -67,6 +74,9 @@ final class AssistViewModel: NSObject, ObservableObject {
     }
 
     func assistWithText() {
+        guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return
+        }
         audioPlayer.pause()
         stopStreaming()
         assistService.assist(source: .text(input: inputText, pipelineId: preferredPipelineId))
@@ -164,8 +174,11 @@ final class AssistViewModel: NSObject, ObservableObject {
     func stopStreaming() {
         isRecording = false
         canSendAudioData = false
+
+        // Stop traditional audio recording
         audioRecorder.stopRecording()
         assistService.finishSendingAudio()
+
         Current.Log.info("Stop recording audio for Assist")
     }
 
@@ -199,6 +212,16 @@ final class AssistViewModel: NSObject, ObservableObject {
             assistWithAudio()
         }
     }
+
+    private func onPipelineChanged() {
+        // Find the pipeline name from the ID
+        if let pipeline = pipelines.first(where: { $0.id == preferredPipelineId }) {
+            appendToChat(.init(content: pipeline.name, itemType: .info))
+            Current.Log.info("Pipeline changed to: \(pipeline.name) (\(preferredPipelineId))")
+        }
+    }
+
+    // MARK: - On-Device Transcription Methods
 }
 
 extension AssistViewModel: AudioRecorderDelegate {

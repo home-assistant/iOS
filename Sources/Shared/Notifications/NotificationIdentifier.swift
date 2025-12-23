@@ -1,6 +1,7 @@
 import Foundation
 
 public enum NotificationIdentifier: String {
+    case automationAppIntentRun
     case scriptAppIntentRun
     case sceneAppIntentRun
     case carPlayIntro

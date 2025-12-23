@@ -14,7 +14,7 @@ protocol WebViewExternalMessageHandlerProtocol {
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
     func stopImprovScanIfNeeded()
-    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool, animated: Bool)
+    func showAssist(server: Server, pipeline: String, autoStartRecording: Bool)
 }
 
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
@@ -133,8 +133,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 showAssist(
                     server: webViewController.server,
                     pipeline: pipelineId ?? "",
-                    autoStartRecording: startListening ?? false,
-                    animated: true
+                    autoStartRecording: startListening ?? false
                 )
             case .scanForImprov:
                 scanImprov()
@@ -426,7 +425,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
-    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false, animated: Bool) {
+    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
@@ -453,7 +452,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 preferredPipelineId: pipeline,
                 autoStartRecording: autoStartRecording
             ))
-            webViewController?.presentOverlayController(controller: assistView, animated: animated)
+            assistView.modalPresentationStyle = .fullScreen
+            assistView.modalTransitionStyle = .crossDissolve
+            webViewController?.presentOverlayController(controller: assistView, animated: true)
         }
     }
 

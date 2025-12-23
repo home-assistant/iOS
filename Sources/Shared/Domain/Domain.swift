@@ -3,8 +3,10 @@ import HAKit
 import UIKit
 
 public enum Domain: String, CaseIterable {
+    case automation
     case button
     case cover
+    case fan
     case inputBoolean = "input_boolean"
     case inputButton = "input_button"
     case light
@@ -48,6 +50,8 @@ public enum Domain: String, CaseIterable {
         switch self {
         case .cover:
             states = [.open, .closed, .opening, .closing]
+        case .fan:
+            states = [.on, .off]
         case .light:
             states = [.on, .off]
         case .lock:
@@ -66,10 +70,14 @@ public enum Domain: String, CaseIterable {
         let deviceClass = DeviceClass(rawValue: deviceClass ?? "")
         var image: MaterialDesignIcons = .bookmarkIcon
         switch self {
+        case .automation:
+            image = .robotIcon
         case .button:
             image = MaterialDesignIcons.gestureTapButtonIcon
         case .cover:
             image = imageForCover(deviceClass: deviceClass ?? .unknown, state: state ?? .unknown)
+        case .fan:
+            image = .fanIcon
         case .inputBoolean:
             image = .toggleSwitchOutlineIcon
         case .inputButton:
@@ -170,8 +178,10 @@ public enum Domain: String, CaseIterable {
 public extension Domain {
     var carPlaySupportedDomains: [Domain] {
         [
+            .automation,
             .button,
             .cover,
+            .fan,
             .inputBoolean,
             .inputButton,
             .light,

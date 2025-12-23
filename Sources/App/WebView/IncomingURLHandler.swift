@@ -68,8 +68,23 @@ class IncomingURLHandler {
 
                 let queryParameters = components.queryItems
                 let serverId = queryParameters?.first(where: { $0.name == "serverId" })?.value
+                let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value
 
-                guard let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value,
+                // If no entityId is provided, show the camera list
+                if entityId == nil {
+                    Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                        .done { webViewController in
+                            let view = CameraListView(serverId: serverId).embeddedInHostingController()
+                            view.modalPresentationStyle = .pageSheet
+                            if #available(iOS 16.0, *) {
+                                view.sheetPresentationController?.detents = [.medium(), .large()]
+                            }
+                            webViewController.present(view, animated: true)
+                        }
+                    return true
+                }
+
+                guard let entityId,
                       let server = Current.servers.all.first(where: { server in
                           server.identifier.rawValue == serverId
                       }) else {
@@ -161,8 +176,7 @@ class IncomingURLHandler {
                         webViewController.webViewExternalMessageHandler.showAssist(
                             server: server,
                             pipeline: pipelineId,
-                            autoStartRecording: startlistening,
-                            animated: false
+                            autoStartRecording: startlistening
                         )
                     }
             case .createCustomWidget:
@@ -225,8 +239,7 @@ class IncomingURLHandler {
                     webView.webViewExternalMessageHandler.showAssist(
                         server: server,
                         pipeline: pipeline?.identifier ?? "",
-                        autoStartRecording: autoStartRecording,
-                        animated: false
+                        autoStartRecording: autoStartRecording
                     )
                 case let .rejected(error):
                     Current.Log.error("Failed to obtain webview to open Assist In App: \(error.localizedDescription)")

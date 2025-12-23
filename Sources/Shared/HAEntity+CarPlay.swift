@@ -51,6 +51,10 @@ public extension HAEntity {
                 image = .accountIcon
             case .camera:
                 image = .cameraIcon
+            case .fan:
+                image = .fanIcon
+            case .automation:
+                image = .homeAutomationIcon
             }
         }
 
@@ -105,6 +109,10 @@ public extension HAEntity {
                 image = .accountIcon
             case .camera:
                 image = .cameraIcon
+            case .fan:
+                image = .fanIcon
+            case .automation:
+                image = .homeAutomationIcon
             }
         }
 
