@@ -54,8 +54,8 @@ struct HomeView: View {
                     }
                 }
             }
-            .navigationTitle("Home")
-            .navigationTitle("Connected")
+            .navigationTitle(viewModel.server.info.name)
+            .navigationSubtitle("Connected")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
@@ -104,12 +104,16 @@ struct HomeView: View {
 
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(entities) { entity in
-                EntityTileView(entity: entity)
+                EntityTileView(
+                    entity: entity,
+                    state: viewModel.entityStates[entity.entityId]?.state
+                )
             }
         }
     }
 }
 
+@available(iOS 26.0, *)
 #Preview {
     HomeView(server: ServerFixture.standard)
 }

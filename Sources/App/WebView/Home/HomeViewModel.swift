@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 import Shared
 import SwiftUI
+import HAKit
 
 @available(iOS 26.0, *)
 @Observable
@@ -11,6 +12,9 @@ final class HomeViewModel: ObservableObject {
     var isLoading = false
     var errorMessage: String?
     var server: Server
+    var entityStates: [String: HAEntity] = [:]
+
+    private var entitiesSubscriptionToken: HACancellable?
 
     struct RoomSection: Identifiable, Equatable {
         let id: String
@@ -93,10 +97,33 @@ final class HomeViewModel: ObservableObject {
 
             groupedEntities = sections
             isLoading = false
+            subscribeToEntitiesChanges()
         } catch {
             Current.Log.error("Failed to load entities for HomeView: \(error.localizedDescription)")
             errorMessage = "Failed to load entities: \(error.localizedDescription)"
             isLoading = false
         }
+    }
+
+    private func subscribeToEntitiesChanges() {
+        entitiesSubscriptionToken?.cancel()
+
+        var filter: [String: Any] = [:]
+        if server.info.version > .canSubscribeEntitiesChangesWithFilter {
+            filter = [
+                "include": [
+                    "domains": [Domain.light.rawValue],
+                ],
+            ]
+        }
+
+        // Guarantee fresh data
+        Current.api(for: server)?.connection.disconnect()
+        entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states(filter)
+            .subscribe { [weak self] _, states in
+                Task { @MainActor [weak self] in
+                    self?.entityStates = states.all.reduce(into: [:]) { $0[$1.entityId] = $1 }
+                }
+            }
     }
 }
