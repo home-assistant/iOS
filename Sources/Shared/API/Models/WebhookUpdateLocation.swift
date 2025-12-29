@@ -22,20 +22,20 @@ public struct WebhookUpdateLocation: ImmutableMappable {
     // Not sent
     public var trigger: LocationUpdateTrigger
 
-    public init(trigger: LocationUpdateTrigger) {
+    public init(trigger: LocationUpdateTrigger) async {
         self.trigger = trigger
-        if let battery = Current.device.batteries().first {
+        if let battery = await Current.device.batteries().first {
             self.battery = battery.level
         }
     }
 
-    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) {
-        self.init(trigger: trigger)
+    public init(trigger: LocationUpdateTrigger, usingNameOf zone: RLMZone?) async {
+        await self.init(trigger: trigger)
         self.locationName = zone?.deviceTrackerName ?? LocationNames.NotHome.rawValue
     }
 
-    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
-        self.init(trigger: trigger)
+    public init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) async {
+        await self.init(trigger: trigger)
 
         let useLocation: Bool
 
@@ -72,7 +72,7 @@ public struct WebhookUpdateLocation: ImmutableMappable {
 
             #if os(iOS)
             // https://github.com/home-assistant/iOS/issues/32
-            if let currentSSID = Current.connectivity.currentWiFiSSID(), zone.SSIDTrigger.contains(currentSSID) {
+            if let currentSSID = await Current.connectivity.currentWiFiSSID(), zone.SSIDTrigger.contains(currentSSID) {
                 self.location = zone.center
                 self.locationName = zone.Name
                 return

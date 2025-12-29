@@ -47,11 +47,15 @@ final class WebViewSceneDelegate: NSObject, UIWindowSceneDelegate {
             if connectionOptions.responds(to: #selector(getter: UIScene.ConnectionOptions.shortcutItem)),
                let shortcutItem = connectionOptions.shortcutItem {
                 self.windowScene(scene, performActionFor: shortcutItem, completionHandler: { _ in })
-            } else if let url = Current.servers.all.first?.info.connection.activeURL() {
-                URLOpener.shared.open(url, options: [:], completionHandler: nil)
-                // Close window to avoid empty window left behind
-                if let scene = window.windowScene {
-                    UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil, errorHandler: nil)
+            } else {
+                Task {
+                    if let url = await Current.servers.all.first?.info.connection.activeURL() {
+                        URLOpener.shared.open(url, options: [:], completionHandler: nil)
+                        // Close window to avoid empty window left behind
+                        if let scene = window.windowScene {
+                            UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil, errorHandler: nil)
+                        }
+                    }
                 }
             }
         } else {

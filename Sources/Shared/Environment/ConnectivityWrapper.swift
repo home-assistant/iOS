@@ -10,8 +10,8 @@ import NetworkExtension
 public class ConnectivityWrapper {
     public var connectivityDidChangeNotification: () -> Notification.Name
     public var hasWiFi: () -> Bool
-    public var currentWiFiSSID: () -> String?
-    public var currentWiFiBSSID: () -> String?
+    public var currentWiFiSSID: () async -> String?
+    public var currentWiFiBSSID: () async -> String?
     public var currentNetworkHardwareAddress: () -> String?
     public var simpleNetworkType: () -> NetworkType
     public var cellularNetworkType: () -> NetworkType
@@ -20,8 +20,12 @@ public class ConnectivityWrapper {
     #if targetEnvironment(macCatalyst)
     init() {
         self.hasWiFi = { Current.macBridge.networkConnectivity.hasWiFi }
-        self.currentWiFiSSID = { Current.macBridge.networkConnectivity.wifi?.ssid }
-        self.currentWiFiBSSID = { Current.macBridge.networkConnectivity.wifi?.bssid }
+        self.currentWiFiSSID = { 
+            Current.macBridge.networkConnectivity.wifi?.ssid 
+        }
+        self.currentWiFiBSSID = { 
+            Current.macBridge.networkConnectivity.wifi?.bssid 
+        }
         self.connectivityDidChangeNotification = { Current.macBridge.networkConnectivityDidChangeNotification }
         self.simpleNetworkType = {
             switch Current.macBridge.networkConnectivity.networkType {
@@ -56,35 +60,42 @@ public class ConnectivityWrapper {
         }
         self.hasWiFi = { true }
         self.currentWiFiSSID = {
-            nil
+            #if targetEnvironment(simulator)
+            return "Simulator"
+            #else
+            let hotspotNetwork = await NEHotspotNetwork.fetchCurrent()
+            Current.Log.verbose("Current SSID: \(String(describing: hotspotNetwork?.ssid))")
+            return hotspotNetwork?.ssid
+            #endif
         }
         self.currentWiFiBSSID = {
-            nil
+            let hotspotNetwork = await NEHotspotNetwork.fetchCurrent()
+            Current.Log.verbose("Current BSSID: \(String(describing: hotspotNetwork?.bssid))")
+            return hotspotNetwork?.bssid
         }
         self.connectivityDidChangeNotification = { .reachabilityChanged }
         self.simpleNetworkType = { reachability?.getSimpleNetworkType() ?? .unknown }
         self.cellularNetworkType = { reachability?.getNetworkType() ?? .unknown }
         self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
-
-        syncNetworkInformation()
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(connectivityDidChange(_:)),
-            name: .reachabilityChanged,
-            object: nil
-        )
     }
     #else
     init() {
         self.hasWiFi = { true }
         self.currentWiFiSSID = {
-            let ssid = WatchUserDefaults.shared.string(for: .watchSSID)
-            Current.Log.verbose("Watch current WiFi SSID: \(String(describing: ssid))")
-            return ssid
+            #if targetEnvironment(simulator)
+            return "Simulator"
+            #else
+            let hotspotNetwork = await NEHotspotNetwork.fetchCurrent()
+            Current.Log.verbose("Current SSID: \(String(describing: hotspotNetwork?.ssid))")
+            return hotspotNetwork?.ssid
+            #endif
         }
-        self.currentWiFiBSSID = { nil }
+        self.currentWiFiBSSID = {
+            let hotspotNetwork = await NEHotspotNetwork.fetchCurrent()
+            Current.Log.verbose("Current BSSID: \(String(describing: hotspotNetwork?.bssid))")
+            return hotspotNetwork?.bssid
+        }
         self.connectivityDidChangeNotification = { .init(rawValue: "_noop_") }
         self.simpleNetworkType = { .unknown }
         self.cellularNetworkType = { .unknown }
@@ -102,32 +113,4 @@ public class ConnectivityWrapper {
         CTTelephonyNetworkInfo().serviceCurrentRadioAccessTechnology
     }
     #endif
-
-    @objc private func connectivityDidChange(_ note: Notification) {
-        syncNetworkInformation()
-    }
-
-    public func syncNetworkInformation(completion: (() -> Void)? = nil) {
-        #if targetEnvironment(macCatalyst)
-        // macOS uses macBridge to retrieve network information
-        completion?()
-        #else
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            Current.Log
-                .verbose(
-                    "Current SSID: \(String(describing: hotspotNetwork?.ssid)), current BSSID: \(String(describing: hotspotNetwork?.bssid))"
-                )
-            let ssid = hotspotNetwork?.ssid
-            self.currentWiFiSSID = {
-                #if targetEnvironment(simulator)
-                return "Simulator"
-                #endif
-                return ssid
-            }
-            let bssid = hotspotNetwork?.bssid
-            self.currentWiFiBSSID = { bssid }
-            completion?()
-        }
-        #endif
-    }
 }

@@ -272,26 +272,29 @@ public class WebhookManager: NSObject {
 
                 /* If user's cloud subscription expired or account was signed out, retry with activeURL
                  instad of cloud hook */
-                if let self,
-                   let error = error as? WebhookError,
-                   error == WebhookError.unacceptableStatusCode(503),
-                   overrideURL == nil,
-                   let activeURL = server.info.connection.activeURL() {
-                    let event = ClientEvent(
-                        text: "Retrying with active URL - \(activeURL.absoluteString)",
-                        type: .networkRequest
-                    )
-                    Current.clientEventStore.addEvent(event)
-                    let promise: Promise<Any> = sendEphemeral(
-                        server: server,
-                        request: request,
-                        overrideURL: activeURL
-                    )
-                    promise.cauterize()
-                } else {
-                    Current.Log.error(
-                        "Not retrying with active URL, error: \(error), overrideURL: \(overrideURL?.absoluteString ?? "--"), activeURL: \(server.info.connection.activeURL()?.absoluteString ?? "Unknown")"
-                    )
+                Task {
+                    if let self,
+                       let error = error as? WebhookError,
+                       error == WebhookError.unacceptableStatusCode(503),
+                       overrideURL == nil,
+                       let activeURL = await server.info.connection.activeURL() {
+                        let event = ClientEvent(
+                            text: "Retrying with active URL - \(activeURL.absoluteString)",
+                            type: .networkRequest
+                        )
+                        Current.clientEventStore.addEvent(event)
+                        let promise: Promise<Any> = self.sendEphemeral(
+                            server: server,
+                            request: request,
+                            overrideURL: activeURL
+                        )
+                        promise.cauterize()
+                    } else {
+                        let activeURLString = await server.info.connection.activeURL()?.absoluteString ?? "Unknown"
+                        Current.Log.error(
+                            "Not retrying with active URL, error: \(error), overrideURL: \(overrideURL?.absoluteString ?? "--"), activeURL: \(activeURLString)"
+                        )
+                    }
                 }
             }
         }
@@ -536,29 +539,35 @@ public class WebhookManager: NSObject {
         baseURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
         Promise { seal in
-            let webhookURL: URL
+            Task {
+                let webhookURL: URL
 
-            if let baseURL {
-                webhookURL = baseURL.appendingPathComponent(server.info.connection.webhookPath, isDirectory: false)
-            } else {
-                if let url = server.info.connection.webhookURL() {
-                    webhookURL = url
+                if let baseURL {
+                    webhookURL = baseURL.appendingPathComponent(server.info.connection.webhookPath, isDirectory: false)
                 } else {
-                    seal.resolve(.rejected(ServerConnectionError.noActiveURL(server.info.name)))
-                    return
+                    if let url = await server.info.connection.webhookURL() {
+                        webhookURL = url
+                    } else {
+                        seal.resolve(.rejected(ServerConnectionError.noActiveURL(server.info.name)))
+                        return
+                    }
+                }
+
+                do {
+                    var urlRequest = try URLRequest(url: webhookURL, method: .post)
+                    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+                    let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server)).toJSON(request)
+                    let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
+
+                    // httpBody is ignored by URLSession but is made available in tests
+                    urlRequest.httpBody = data
+
+                    seal.fulfill((urlRequest, data))
+                } catch {
+                    seal.reject(error)
                 }
             }
-
-            var urlRequest = try URLRequest(url: webhookURL, method: .post)
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server)).toJSON(request)
-            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
-
-            // httpBody is ignored by URLSession but is made available in tests
-            urlRequest.httpBody = data
-
-            seal.fulfill((urlRequest, data))
         }
     }
 

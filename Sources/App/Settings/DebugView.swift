@@ -440,10 +440,11 @@ struct DebugView: View {
     }
 
     private func wait(seconds: Int) async {
-        await Task.sleep(UInt64(seconds * 1_000_000_000))
+        try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 
     private func revokeToken(api: HomeAssistantAPI) async {
+        let activeURL = await api.server.info.connection.activeURL()?.absoluteString ?? "Unknown active URL"
         await withCheckedContinuation { continuation in
             api.tokenManager.revokeToken().pipe { result in
                 switch result {
@@ -452,7 +453,7 @@ struct DebugView: View {
                 case let .rejected(error):
                     Current.Log
                         .error(
-                            "Failed to revoke token for api \(api.server.info.name) \(api.server.info.connection.activeURL()?.absoluteString ?? "Uknown active URL"), error: \(error.localizedDescription)"
+                            "Failed to revoke token for api \(api.server.info.name) \(activeURL), error: \(error.localizedDescription)"
                         )
                 }
                 continuation.resume()

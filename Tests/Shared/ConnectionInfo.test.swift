@@ -3,7 +3,7 @@ import Version
 import XCTest
 
 class ConnectionInfoTests: XCTestCase {
-    func testInternalOnlyURL() {
+    func testInternalOnlyURL() async {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -22,13 +22,13 @@ class ConnectionInfoTests: XCTestCase {
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(await info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), url?.appendingPathComponent("api"))
     }
 
-    func testInternalOnlyURLWithoutSSIDWithAlwaysFallbackEnabled() {
+    func testInternalOnlyURLWithoutSSIDWithAlwaysFallbackEnabled() async {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -47,13 +47,13 @@ class ConnectionInfoTests: XCTestCase {
         info.internalSSIDs = []
         Current.connectivity.currentWiFiSSID = { "" }
 
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(await info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), url?.appendingPathComponent("api"))
     }
 
-    func testInternalOnlyURLWithoutSSIDWithLocalAccessSecurityLevelMostSecure() {
+    func testInternalOnlyURLWithoutSSIDWithLocalAccessSecurityLevelMostSecure() async {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -72,13 +72,13 @@ class ConnectionInfoTests: XCTestCase {
         info.internalSSIDs = []
         Current.connectivity.currentWiFiSSID = { "" }
 
-        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(await info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .none)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
+        XCTAssertEqual(await info.webhookURL(), nil)
+        XCTAssertEqual(await info.activeAPIURL(), nil)
     }
 
-    func testInternalURLWithUndefinedSSID() {
+    func testInternalURLWithUndefinedSSID() async {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -96,13 +96,13 @@ class ConnectionInfoTests: XCTestCase {
 
         Current.connectivity.currentWiFiSSID = { nil }
 
-        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(await info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .none)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
+        XCTAssertEqual(await info.webhookURL(), nil)
+        XCTAssertEqual(await info.activeAPIURL(), nil)
     }
 
-    func testRemoteOnlyURL() {
+    func testRemoteOnlyURL() async {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -119,13 +119,13 @@ class ConnectionInfoTests: XCTestCase {
         )
 
         info.useCloud = true
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(await info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), url?.appendingPathComponent("api"))
     }
 
-    func testRemoteOnlyURLWithUseCloudOffAndNoSSIDNeitherInternalURLWithLocalAccessSecurityLevelMostSecure() {
+    func testRemoteOnlyURLWithUseCloudOffAndNoSSIDNeitherInternalURLWithLocalAccessSecurityLevelMostSecure() async {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -142,13 +142,13 @@ class ConnectionInfoTests: XCTestCase {
         )
 
         info.useCloud = false
-        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(await info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .none)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
+        XCTAssertEqual(await info.webhookURL(), nil)
+        XCTAssertEqual(await info.activeAPIURL(), nil)
     }
 
-    func testExternalOnlyURL() {
+    func testExternalOnlyURL() async {
         let url = URL(string: "http://example.com:8123")
         var info = ConnectionInfo(
             externalURL: url,
@@ -164,30 +164,30 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(await info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), url?.appendingPathComponent("api"))
 
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(await info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), url?.appendingPathComponent("api"))
 
         info.internalSSIDs = nil
         info.internalHardwareAddresses = ["unit_tests"]
         Current.connectivity.currentNetworkHardwareAddress = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), url)
+        XCTAssertEqual(await info.activeURL(), url)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), url?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), url?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), url?.appendingPathComponent("api"))
     }
 
-    func testInternalExternalURL() {
+    func testInternalExternalURL() async {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let externalURL = URL(string: "http://external.example.com:8123")
         var info = ConnectionInfo(
@@ -204,30 +204,30 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        XCTAssertEqual(info.activeURL(), externalURL)
+        XCTAssertEqual(await info.activeURL(), externalURL)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
 
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
 
         info.internalSSIDs = nil
         info.internalHardwareAddresses = ["unit_tests"]
         Current.connectivity.currentNetworkHardwareAddress = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
     }
 
-    func testExternalRemoteURL() {
+    func testExternalRemoteURL() async {
         let externalURL = URL(string: "http://external.example.com:8123")
         let remoteURL = URL(string: "http://remote.example.com:8123")
         var info = ConnectionInfo(
@@ -244,20 +244,20 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        XCTAssertEqual(info.activeURL(), externalURL)
+        XCTAssertEqual(await info.activeURL(), externalURL)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
 
         info.useCloud = true
 
-        XCTAssertEqual(info.activeURL(), remoteURL)
+        XCTAssertEqual(await info.activeURL(), remoteURL)
         XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
     }
 
-    func testInternalRemoteURL() {
+    func testInternalRemoteURL() async {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let remoteURL = URL(string: "http://remote.example.com:8123")
         var info = ConnectionInfo(
@@ -276,30 +276,30 @@ class ConnectionInfoTests: XCTestCase {
 
         info.useCloud = true
 
-        XCTAssertEqual(info.activeURL(), remoteURL)
+        XCTAssertEqual(await info.activeURL(), remoteURL)
         XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
 
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
 
         info.internalSSIDs = nil
         info.internalHardwareAddresses = ["unit_tests"]
         Current.connectivity.currentNetworkHardwareAddress = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
     }
 
-    func testInternalRemoteURLWithoutSSIDDefinedWithMostSecureLocalAccessLevel() {
+    func testInternalRemoteURLWithoutSSIDDefinedWithMostSecureLocalAccessLevel() async {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let remoteURL = URL(string: "http://remote.example.com:8123")
         var info = ConnectionInfo(
@@ -316,13 +316,13 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .mostSecure
         )
 
-        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(await info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .none)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
+        XCTAssertEqual(await info.webhookURL(), nil)
+        XCTAssertEqual(await info.activeAPIURL(), nil)
     }
 
-    func testInternalExternalRemoteURL() {
+    func testInternalExternalRemoteURL() async {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let externalURL = URL(string: "http://external.example.com:8123")
         let remoteURL = URL(string: "http://remote.example.com:8123")
@@ -340,39 +340,39 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        XCTAssertEqual(info.activeURL(), externalURL)
+        XCTAssertEqual(await info.activeURL(), externalURL)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
 
         info.useCloud = true
 
-        XCTAssertEqual(info.activeURL(), remoteURL)
+        XCTAssertEqual(await info.activeURL(), remoteURL)
         XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
 
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
 
         info.internalSSIDs = nil
         info.internalHardwareAddresses = ["unit_tests"]
         Current.connectivity.currentNetworkHardwareAddress = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
 
         info.internalHardwareAddresses = nil
     }
 
-    func testOverrideURL() {
+    func testOverrideURL() async {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let externalURL = URL(string: "http://external.example.com:8123")
         let remoteURL = URL(string: "http://remote.example.com:8123")
@@ -393,51 +393,51 @@ class ConnectionInfoTests: XCTestCase {
         // valid override states
 
         info.overrideActiveURLType = .remoteUI
-        XCTAssertEqual(info.activeURL(), remoteURL)
+        XCTAssertEqual(await info.activeURL(), remoteURL)
         XCTAssertEqual(info.activeURLType, .remoteUI)
-        XCTAssertEqual(info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), remoteURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), remoteURL?.appendingPathComponent("api"))
 
         info.overrideActiveURLType = .external
-        XCTAssertEqual(info.activeURL(), externalURL)
+        XCTAssertEqual(await info.activeURL(), externalURL)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
 
         info.overrideActiveURLType = .internal
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
 
         // invalid override states
 
         info.set(address: nil, for: .remoteUI)
         info.overrideActiveURLType = .remoteUI
-        XCTAssertEqual(info.activeURL(), externalURL)
+        XCTAssertEqual(await info.activeURL(), externalURL)
         XCTAssertEqual(info.activeURLType, .external)
-        XCTAssertEqual(info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), externalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), externalURL?.appendingPathComponent("api"))
 
         // No SSID defined for internal URL
         info.set(address: nil, for: .external)
         info.overrideActiveURLType = .external
-        XCTAssertEqual(info.activeURL(), nil)
+        XCTAssertEqual(await info.activeURL(), nil)
         XCTAssertEqual(info.activeURLType, .none)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
+        XCTAssertEqual(await info.webhookURL(), nil)
+        XCTAssertEqual(await info.activeAPIURL(), nil)
 
         // With SSID defined for internal URL
         info.internalSSIDs = ["unit_tests"]
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
-        XCTAssertEqual(info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.activeAPIURL(), internalURL?.appendingPathComponent("api"))
     }
 
-    func testNoFallbackURL() {
+    func testNoFallbackURL() async {
         var info = ConnectionInfo(
             externalURL: nil,
             internalURL: nil,
@@ -452,12 +452,12 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        XCTAssertEqual(info.activeURL(), nil)
-        XCTAssertEqual(info.webhookURL(), nil)
-        XCTAssertEqual(info.activeAPIURL(), nil)
+        XCTAssertEqual(await info.activeURL(), nil)
+        XCTAssertEqual(await info.webhookURL(), nil)
+        XCTAssertEqual(await info.activeAPIURL(), nil)
     }
 
-    func testWebhookURL() {
+    func testWebhookURL() async {
         let internalURL = URL(string: "http://internal.example.com:8123")
         let externalURL = URL(string: "http://external.example.com:8123")
         let cloudhookURL = URL(string: "http://cloudhook.example.com")
@@ -478,17 +478,17 @@ class ConnectionInfoTests: XCTestCase {
 
         Current.connectivity.currentWiFiSSID = { nil }
 
-        XCTAssertEqual(info.webhookURL(), cloudhookURL)
+        XCTAssertEqual(await info.webhookURL(), cloudhookURL)
 
         info.set(address: internalURL, for: .internal)
-        XCTAssertEqual(info.webhookURL(), cloudhookURL)
+        XCTAssertEqual(await info.webhookURL(), cloudhookURL)
 
         Current.connectivity.currentWiFiSSID = { "unit_tests" }
 
-        XCTAssertEqual(info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
+        XCTAssertEqual(await info.webhookURL(), internalURL?.appendingPathComponent("api/webhook/webhook_id1"))
 
         Current.connectivity.currentWiFiSSID = { nil }
-        XCTAssertEqual(info.webhookURL(), cloudhookURL)
+        XCTAssertEqual(await info.webhookURL(), cloudhookURL)
     }
 
     func testWebhookSecret() {
@@ -682,7 +682,7 @@ class ConnectionInfoTests: XCTestCase {
         XCTAssertEqual(info.invitationURL(), internalURL)
     }
 
-    func testFallbackToInternalURLWhenItIsHTTPS() {
+    func testFallbackToInternalURLWhenItIsHTTPS() async {
         let internalURL = URL(string: "https://internal.com:8123")
         var info = ConnectionInfo(
             externalURL: nil,
@@ -698,7 +698,7 @@ class ConnectionInfoTests: XCTestCase {
             connectionAccessSecurityLevel: .mostSecure
         )
 
-        XCTAssertEqual(info.activeURL(), internalURL)
+        XCTAssertEqual(await info.activeURL(), internalURL)
         XCTAssertEqual(info.activeURLType, .internal)
     }
 }

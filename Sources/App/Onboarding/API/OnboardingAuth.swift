@@ -150,29 +150,49 @@ class OnboardingAuth {
     ) -> Promise<HomeAssistantAPI> {
         Current.Log.info()
 
-        var connectionInfo = ConnectionInfo(discovered: instance, authDetails: authDetails)
-
-        return tokenExchange.tokenInfo(
-            code: code,
-            connectionInfo: &connectionInfo
-        ).then { tokenInfo -> Promise<HomeAssistantAPI> in
-            Current.Log.verbose()
-
-            var serverInfo = ServerInfo(
-                name: ServerInfo.defaultName,
-                connection: connectionInfo,
-                token: tokenInfo,
-                version: instance.version
+        return firstly {
+            // Get the current WiFi SSID asynchronously
+            Promise { seal in
+                Task {
+                    let ssid = await Current.connectivity.currentWiFiSSID()
+                    seal.fulfill(ssid)
+                }
+            }
+        }.then { ssid -> Promise<HomeAssistantAPI> in
+            var connectionInfo = ConnectionInfo(
+                discovered: instance,
+                authDetails: authDetails,
+                currentSSID: ssid
             )
 
-            let identifier = Identifier<Server>(rawValue: instance.uuid ?? UUID().uuidString)
-            let server = Server(
-                identifier: identifier,
-                getter: { serverInfo },
-                setter: { serverInfo = $0; return true }
-            )
+            return self.tokenExchange.tokenInfo(
+                code: code,
+                connectionInfo: &connectionInfo
+            ).then { tokenInfo -> Promise<HomeAssistantAPI> in
+                Current.Log.verbose()
 
-            return .value(HomeAssistantAPI(server: server))
+                var serverInfo = ServerInfo(
+                    name: ServerInfo.defaultName,
+                    connection: connectionInfo,
+                    token: tokenInfo,
+                    version: instance.version
+                )
+
+                let identifier = Identifier<Server>(rawValue: instance.uuid ?? UUID().uuidString)
+                let server = Server(
+                    identifier: identifier,
+                    getter: { serverInfo },
+                    setter: { serverInfo = $0; return true }
+                )
+                
+                // Wrap the async call in a Promise
+                return Promise { seal in
+                    Task {
+                        let activeURL = await server.info.connection.activeURL()
+                        seal.fulfill(HomeAssistantAPI(server: server, activeURL: activeURL))
+                    }
+                }
+            }
         }
     }
 
@@ -188,7 +208,7 @@ class OnboardingAuth {
 }
 
 private extension ConnectionInfo {
-    init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails) {
+    init(discovered: DiscoveredHomeAssistant, authDetails: OnboardingAuthDetails, currentSSID: String?) {
         self.init(
             externalURL: discovered.externalURL,
             internalURL: discovered.internalURL,
@@ -196,7 +216,7 @@ private extension ConnectionInfo {
             remoteUIURL: nil,
             webhookID: "",
             webhookSecret: nil,
-            internalSSIDs: Current.connectivity.currentWiFiSSID().map { [$0] },
+            internalSSIDs: currentSSID.map { [$0] },
             internalHardwareAddresses: nil,
             isLocalPushEnabled: false,
             securityExceptions: authDetails.exceptions,

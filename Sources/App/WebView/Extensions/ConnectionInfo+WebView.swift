@@ -2,11 +2,11 @@ import Foundation
 import Shared
 
 extension ConnectionInfo {
-    mutating func webviewURLComponents() -> URLComponents? {
+    mutating func webviewURLComponents() async -> URLComponents? {
         if Current.appConfiguration == .fastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
             return URLComponents(string: "https://companion.home-assistant.io/app/ios/demo")!
         }
-        guard let activeURL = activeURL() else {
+        guard let activeURL = await activeURL() else {
             Current.Log.error("No activeURL available while webviewURLComponents was called")
             return nil
         }
@@ -21,12 +21,12 @@ extension ConnectionInfo {
         return components
     }
 
-    mutating func webviewURL() -> URL? {
-        webviewURLComponents()?.url
+    mutating func webviewURL() async -> URL? {
+        await webviewURLComponents()?.url
     }
 
-    mutating func webviewURL(from raw: String) -> URL? {
-        guard let baseURLComponents = webviewURLComponents(), let baseURL = baseURLComponents.url else {
+    mutating func webviewURL(from raw: String) async -> URL? {
+        guard let baseURLComponents = await webviewURLComponents(), let baseURL = baseURLComponents.url else {
             return nil
         }
 

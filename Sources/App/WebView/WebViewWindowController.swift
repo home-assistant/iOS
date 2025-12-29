@@ -310,19 +310,21 @@ final class WebViewWindowController {
         avoidUnecessaryReload: Bool = false,
         isComingFromAppIntent: Bool
     ) {
-        let webviewURL = server.info.connection.webviewURL(from: openUrlRaw)
-        let externalURL = URL(string: openUrlRaw)
+        Task {
+            let webviewURL = await server.info.connection.webviewURL(from: openUrlRaw)
+            let externalURL = URL(string: openUrlRaw)
 
-        open(
-            from: from,
-            server: server,
-            urlString: openUrlRaw,
-            webviewURL: webviewURL,
-            externalURL: externalURL,
-            skipConfirm: skipConfirm,
-            avoidUnecessaryReload: avoidUnecessaryReload,
-            isComingFromAppIntent: isComingFromAppIntent
-        )
+            open(
+                from: from,
+                server: server,
+                urlString: openUrlRaw,
+                webviewURL: webviewURL,
+                externalURL: externalURL,
+                skipConfirm: skipConfirm,
+                avoidUnecessaryReload: avoidUnecessaryReload,
+                isComingFromAppIntent: isComingFromAppIntent
+            )
+        }
     }
 
     func clearCachedControllers() {

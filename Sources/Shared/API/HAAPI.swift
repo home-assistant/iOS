@@ -62,14 +62,14 @@ public class HomeAssistantAPI {
     }
 
     /// Initialize an API object with an authenticated tokenManager.
-    public init(server: Server, urlConfig: URLSessionConfiguration = .default) {
+    public init(server: Server, urlConfig: URLSessionConfiguration = .default, activeURL: URL?) {
         self.server = server
         let tokenManager = TokenManager(server: server)
         self.tokenManager = tokenManager
         self.connection = HAKit.connection(configuration: .init(
             connectionInfo: {
                 do {
-                    if let activeURL = server.info.connection.activeURL() {
+                    if let activeURL {
                         return try .init(
                             url: activeURL,
                             userAgent: HomeAssistantAPI.userAgent,
@@ -115,12 +115,13 @@ public class HomeAssistantAPI {
         Current.sensors.register(observer: self)
     }
 
-    convenience init?() {
-        if let server = Current.servers.all.first {
-            self.init(server: server, urlConfig: .default)
-        } else {
+    convenience init?() async {
+        guard let server = Current.servers.all.first else {
             return nil
         }
+        
+        let activeURL = await server.info.connection.activeURL()
+        self.init(server: server, urlConfig: .default, activeURL: activeURL)
     }
 
     private static func configureSessionManager(
@@ -277,41 +278,42 @@ public class HomeAssistantAPI {
 
     public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         Promise { seal in
+            Task {
+                var finalURL = url
 
-            var finalURL = url
+                let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
 
-            let dataManager: Alamofire.Session = needsAuth ? self.manager : Self.unauthenticatedManager
+                if needsAuth {
+                    guard let activeURL = await server.info.connection.activeURL() else {
+                        seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                        return
+                    }
 
-            if needsAuth {
-                guard let activeURL = server.info.connection.activeURL() else {
-                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                    if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
+                        Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
+                        finalURL = activeURL.appendingPathComponent(url.absoluteString)
+                    }
+
+                    Current.Log.verbose("Data download needs auth!")
+                }
+
+                guard let downloadPath = temporaryDownloadFileURL(appropriateFor: finalURL) else {
+                    Current.Log.error("Unable to get download path!")
+                    seal.reject(APIError.cantBuildURL)
                     return
                 }
 
-                if !url.absoluteString.hasPrefix(activeURL.absoluteString) {
-                    Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
-                    finalURL = activeURL.appendingPathComponent(url.absoluteString)
+                let destination: DownloadRequest.Destination = { _, _ in
+                    (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
                 }
 
-                Current.Log.verbose("Data download needs auth!")
-            }
-
-            guard let downloadPath = temporaryDownloadFileURL(appropriateFor: finalURL) else {
-                Current.Log.error("Unable to get download path!")
-                seal.reject(APIError.cantBuildURL)
-                return
-            }
-
-            let destination: DownloadRequest.Destination = { _, _ in
-                (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
-            }
-
-            dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
-                switch downloadResponse.result {
-                case .success:
-                    seal.fulfill(downloadResponse.fileURL!)
-                case let .failure(error):
-                    seal.reject(error)
+                dataManager.download(finalURL, to: destination).validate().responseData { downloadResponse in
+                    switch downloadResponse.result {
+                    case .success:
+                        seal.fulfill(downloadResponse.fileURL!)
+                    case let .failure(error):
+                        seal.reject(error)
+                    }
                 }
             }
         }
@@ -372,24 +374,26 @@ public class HomeAssistantAPI {
 
     public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
-            guard let queryUrl = server.info.connection.activeAPIURL()?
-                .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
-                seal.reject(ServerConnectionError.noActiveURL(server.info.name))
-                return
-            }
-            _ = manager.request(queryUrl)
-                .validate()
-                .responseData { response in
-                    switch response.result {
-                    case let .success(data):
-                        if let image = UIImage(data: data) {
-                            seal.fulfill(image)
-                        }
-                    case let .failure(error):
-                        Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
-                        seal.reject(error)
-                    }
+            Task {
+                guard let queryUrl = await server.info.connection.activeAPIURL()?
+                    .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {
+                    seal.reject(ServerConnectionError.noActiveURL(server.info.name))
+                    return
                 }
+                _ = manager.request(queryUrl)
+                    .validate()
+                    .responseData { response in
+                        switch response.result {
+                        case let .success(data):
+                            if let image = UIImage(data: data) {
+                                seal.fulfill(image)
+                            }
+                        case let .failure(error):
+                            Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
+                            seal.reject(error)
+                        }
+                    }
+            }
         }
     }
 
@@ -941,6 +945,12 @@ public class HomeAssistantAPI {
             }
             connection.caches.states().once { [weak self] states in
                 let states = states.all
+                guard let self else {
+                    Current.Log.error("Failed to retrieve profile picture URL: self is nil in states closure")
+                    completion(nil)
+                    return
+                }
+                
                 guard let person = states.first(where: { $0.attributes["user_id"] as? String == user.id }) else {
                     Current.Log.error("Profile picture: No person found for user \(user.id)")
                     completion(nil)
@@ -953,13 +963,16 @@ public class HomeAssistantAPI {
                     return
                 }
 
-                guard let url = self?.server.info.connection.activeURL()?.appendingPathComponent(path) else {
-                    Current.Log.error("Profile picture: Missing active URL for user entity picture, user id \(user.id)")
-                    completion(nil)
-                    return
+                Task {
+                    guard let activeURL = await self.server.info.connection.activeURL() else {
+                        Current.Log.error("Profile picture: Missing active URL for user entity picture, user id \(user.id)")
+                        completion(nil)
+                        return
+                    }
+                    
+                    let url = activeURL.appendingPathComponent(path)
+                    completion(url)
                 }
-
-                completion(url)
             }
         }
     }
@@ -1008,3 +1021,4 @@ extension HomeAssistantAPI: SensorObserver {
         // we don't do anything for this
     }
 }
+

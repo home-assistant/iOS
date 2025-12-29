@@ -87,9 +87,10 @@ class ZoneManager {
         Current.Log.info(state)
     }
 
-    private func perform(event: ZoneManagerEvent) {
+    private func perform(event: ZoneManagerEvent) async {
+        let startSSID = await Current.connectivity.currentWiFiSSID() ?? "none"
         let logPayload: [String: String] = [
-            "start_ssid": Current.connectivity.currentWiFiSSID() ?? "none",
+            "start_ssid": startSSID,
             "event": event.description,
         ]
 
@@ -232,7 +233,9 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
 
     func collector(_ collector: ZoneManagerCollector, didCollect event: ZoneManagerEvent) {
         fire(event: event)
-        perform(event: event)
+        Task {
+            await perform(event: event)
+        }
     }
 }
 

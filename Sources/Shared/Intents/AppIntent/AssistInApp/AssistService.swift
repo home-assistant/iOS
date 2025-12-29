@@ -132,7 +132,9 @@ public final class AssistService: AssistServiceProtocol {
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable
-            handleAssistEvent(data: data, cancellable: cancellable)
+            Task {
+                await self.handleAssistEvent(data: data, cancellable: cancellable)
+            }
         }
     }
 
@@ -146,11 +148,13 @@ public final class AssistService: AssistServiceProtocol {
         )) { [weak self] cancellable, data in
             guard let self else { return }
             self.cancellable = cancellable
-            handleAssistEvent(data: data, cancellable: cancellable)
+            Task {
+                await self.handleAssistEvent(data: data, cancellable: cancellable)
+            }
         }
     }
 
-    private func handleAssistEvent(data: AssistResponse, cancellable: HACancellable) {
+    private func handleAssistEvent(data: AssistResponse, cancellable: HACancellable) async {
         Current.Log.info("Assist stage: \(data.type.rawValue)")
         Current.Log.info("Assist data: \(String(describing: data.data))")
         delegate?.didReceiveEvent(data.type)
@@ -168,7 +172,7 @@ public final class AssistService: AssistServiceProtocol {
                 continueConversation: (data.data?.intentOutput?.continueConversation).orFalse
             )
         case .ttsEnd:
-            ttsEnd(mediaUrlPath: data.data?.ttsOutput?.urlPath)
+            await ttsEnd(mediaUrlPath: data.data?.ttsOutput?.urlPath)
         case .intentProgress:
             intentProgress(messageChunk: data.data?.chatLogDelta?.content)
         case .error:
@@ -213,9 +217,10 @@ extension AssistService {
         shouldStartListeningAgainAfterPlaybackEnd = continueConversation
     }
 
-    private func ttsEnd(mediaUrlPath: String?) {
+    private func ttsEnd(mediaUrlPath: String?) async {
         guard let mediaUrlPath,
-              let mediaUrl = server.info.connection.activeURL()?.appendingPathComponent(mediaUrlPath) else { return }
+              let baseUrl = await server.info.connection.activeURL() else { return }
+        let mediaUrl = baseUrl.appendingPathComponent(mediaUrlPath)
         delegate?.didReceiveTtsMediaUrl(mediaUrl)
     }
 

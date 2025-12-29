@@ -1,4 +1,5 @@
 import Alamofire
+import Alamofire
 import Foundation
 import Version
 #if os(watchOS)
@@ -202,7 +203,7 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
-    public mutating func activeURL() -> URL? {
+    public mutating func activeURL() async -> URL? {
         if let overrideActiveURLType {
             let overrideURL: URL?
 
@@ -228,7 +229,9 @@ public struct ConnectionInfo: Codable, Equatable {
 
         let url: URL?
 
-        if let internalURL, isOnInternalNetwork || overrideActiveURLType == .internal {
+        let isInternal = await isOnInternalNetwork()
+        
+        if let internalURL, isInternal || overrideActiveURLType == .internal {
             // Home network, local connection
             activeURLType = .internal
             url = internalURL
@@ -274,20 +277,22 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns the activeURL with /api appended.
-    public mutating func activeAPIURL() -> URL? {
-        if let activeURL = activeURL() {
+    public mutating func activeAPIURL() async -> URL? {
+        if let activeURL = await activeURL() {
             return activeURL.appendingPathComponent("api", isDirectory: false)
         } else {
             return nil
         }
     }
 
-    public mutating func webhookURL() -> URL? {
-        if let cloudhookURL, !isOnInternalNetwork {
+    public mutating func webhookURL() async -> URL? {
+        let isInternal = await isOnInternalNetwork()
+        
+        if let cloudhookURL, !isInternal {
             return cloudhookURL
         }
 
-        if let activeURL = activeURL() {
+        if let activeURL = await activeURL() {
             return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
         } else {
             return nil
@@ -321,14 +326,14 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns true if current SSID is SSID marked for internal URL use.
-    public var isOnInternalNetwork: Bool {
-        if let current = Current.connectivity.currentWiFiSSID(),
-           internalSSIDs?.contains(current) == true {
+    public func isOnInternalNetwork() async -> Bool {
+        let currentSSID = await Current.connectivity.currentWiFiSSID()
+        if let currentSSID, internalSSIDs?.contains(currentSSID) == true {
             return true
         }
 
-        if let current = Current.connectivity.currentNetworkHardwareAddress(),
-           internalHardwareAddresses?.contains(current) == true {
+        if let currentHardwareAddress = Current.connectivity.currentNetworkHardwareAddress(),
+           internalHardwareAddresses?.contains(currentHardwareAddress) == true {
             return true
         }
 
@@ -383,19 +388,22 @@ class ServerRequestAdapter: RequestAdapter {
     ) {
         var updatedRequest: URLRequest = urlRequest
 
-        if let currentURL = urlRequest.url {
-            if let activeURL = server.info.connection.activeURL() {
-                let expectedURL = activeURL.adapting(url: currentURL)
-                if currentURL != expectedURL {
-                    Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
-                    updatedRequest.url = expectedURL
+        Task {
+            if let currentURL = urlRequest.url {
+                if let activeURL = await server.info.connection.activeURL() {
+                    let expectedURL = activeURL.adapting(url: currentURL)
+                    if currentURL != expectedURL {
+                        Current.Log.verbose("Changing request URL from \(currentURL) to \(expectedURL)")
+                        updatedRequest.url = expectedURL
+                    }
+                } else {
+                    Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
+                    completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
+                    return
                 }
-            } else {
-                Current.Log.error("ActiveURL was not avaiable when ServerRequestAdapter adapt was called")
-                completion(.failure(ServerConnectionError.noActiveURL(server.info.name)))
             }
-        }
 
-        completion(.success(updatedRequest))
+            completion(.success(updatedRequest))
+        }
     }
 }

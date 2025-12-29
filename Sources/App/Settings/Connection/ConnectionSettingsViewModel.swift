@@ -205,13 +205,16 @@ final class ConnectionSettingsViewModel: ObservableObject {
     }
 
     func activateServer() {
-        if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
-            if let url = server.info.connection.activeURL() {
-                URLOpener.shared.open(url, options: [:], completionHandler: nil)
-            }
-        } else {
-            Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(server: self.server)
+        let server = self.server
+        Task {
+            if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
+                if let url = await server.info.connection.activeURL() {
+                    URLOpener.shared.open(url, options: [:], completionHandler: nil)
+                }
+            } else {
+                Current.sceneManager.webViewWindowControllerPromise.done {
+                    $0.open(server: self.server)
+                }
             }
         }
     }

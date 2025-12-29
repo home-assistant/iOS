@@ -61,11 +61,13 @@ final class ConnectionURLViewModel: ObservableObject {
     }
 
     func addSSID() {
-        let currentSSID = Current.connectivity.currentWiFiSSID()
-        if let currentSSID, !ssids.contains(currentSSID) {
-            ssids.append(currentSSID)
-        } else {
-            ssids.append("")
+        Task {
+            let currentSSID = await Current.connectivity.currentWiFiSSID()
+            if let currentSSID, !ssids.contains(currentSSID) {
+                ssids.append(currentSSID)
+            } else {
+                ssids.append("")
+            }
         }
     }
 

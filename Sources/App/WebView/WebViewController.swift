@@ -781,23 +781,28 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         loadActiveURLIfNeededInProgress = true
         Current.Log.info("loadActiveURLIfNeeded called")
 
-        Current.connectivity.syncNetworkInformation { [weak self] in
+        let server = self.server
+        Task { [weak self] in
             defer {
                 self?.loadActiveURLIfNeededInProgress = false
             }
 
             guard let self else { return }
-            guard let webviewURL = server.info.connection.webviewURL() else {
+            guard let webviewURL = await server.info.connection.webviewURL() else {
                 Current.Log.info("not loading, no url")
-                showNoActiveURLError()
+                await MainActor.run {
+                    self.showNoActiveURLError()
+                }
                 return
             }
 
-            hideNoActiveURLError()
+            await MainActor.run {
+                self.hideNoActiveURLError()
+            }
 
             guard webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false else {
                 // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
-                webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
+                self.webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
                 return
             }
 
@@ -818,7 +823,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 request = URLRequest(url: webviewURL)
             }
 
-            load(request: request)
+            await MainActor.run {
+                self.load(request: request)
+            }
         }
     }
 
@@ -1310,13 +1317,22 @@ extension WebViewController {
             initialURL = nil
 
             // it's for the restored page, let's load the default url
-
-            if let webviewURL = server.info.connection.webviewURL() {
-                decisionHandler(.cancel)
-                load(request: URLRequest(url: webviewURL))
-            } else {
-                // we don't have anything we can do about this
-                decisionHandler(.allow)
+            let server = self.server
+            Task { [weak self] in
+                guard let self else {
+                    decisionHandler(.allow)
+                    return
+                }
+                
+                if let webviewURL = await server.info.connection.webviewURL() {
+                    decisionHandler(.cancel)
+                    await MainActor.run {
+                        self.load(request: URLRequest(url: webviewURL))
+                    }
+                } else {
+                    // we don't have anything we can do about this
+                    decisionHandler(.allow)
+                }
             }
         }
     }
@@ -1515,8 +1531,14 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     func navigateToPath(path: String) {
-        if let activeURL = server.info.connection.activeURL(), let url = URL(string: activeURL.absoluteString + path) {
-            load(request: URLRequest(url: url))
+        let server = self.server
+        Task {
+            if let activeURL = await server.info.connection.activeURL(), 
+               let url = URL(string: activeURL.absoluteString + path) {
+                await MainActor.run {
+                    load(request: URLRequest(url: url))
+                }
+            }
         }
     }
 
@@ -1526,18 +1548,23 @@ extension WebViewController: WebViewControllerProtocol {
     }
 
     @objc func refresh() {
-        Current.connectivity.syncNetworkInformation { [weak self] in
+        let server = self.server
+        Task { [weak self] in
             guard let self else { return }
             // called via menu/keyboard shortcut too
-            if let webviewURL = server.info.connection.webviewURL() {
-                if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
-                    reload()
-                } else {
-                    load(request: URLRequest(url: webviewURL))
+            if let webviewURL = await server.info.connection.webviewURL() {
+                await MainActor.run {
+                    if webView.url?.baseIsEqual(to: webviewURL) == true, !lastNavigationWasServerError {
+                        reload()
+                    } else {
+                        load(request: URLRequest(url: webviewURL))
+                    }
+                    hideNoActiveURLError()
                 }
-                hideNoActiveURLError()
             } else {
-                showNoActiveURLError()
+                await MainActor.run {
+                    showNoActiveURLError()
+                }
             }
         }
     }
