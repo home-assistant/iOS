@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
+public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord, ConfigurationExportable {
     public static var watchConfigId: String { "watch-config" }
     public var id = WatchConfig.watchConfigId
     public var assist: Assist = .init(showAssist: true)
@@ -34,6 +34,10 @@ public struct WatchConfig: WatchCodable, FetchableRecord, PersistableRecord {
             try WatchConfig.fetchOne(db)
         })
     }
+
+    // MARK: - ConfigurationExportable
+
+    public static var configurationType: ConfigurationType { .watch }
 }
 
 public protocol WatchCodable: Codable {

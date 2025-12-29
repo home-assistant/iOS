@@ -2,6 +2,7 @@ import SFSafeSymbols
 import Shared
 import StoreKit
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct WatchConfigurationView: View {
     @Environment(\.dismiss) private var dismiss
@@ -9,6 +10,11 @@ struct WatchConfigurationView: View {
 
     @State private var isLoaded = false
     @State private var showResetConfirmation = false
+    @State private var showShareSheet = false
+    @State private var exportedFileURL: URL?
+    @State private var showImportPicker = false
+    @State private var showImportConfirmation = false
+    @State private var importURL: URL?
 
     var body: some View {
         content
@@ -42,6 +48,41 @@ struct WatchConfigurationView: View {
                     Text(verbatim: L10n.okLabel)
                 })
             }
+            .sheet(isPresented: $showShareSheet) {
+                if let url = exportedFileURL {
+                    ShareActivityView(activityItems: [url])
+                }
+            }
+            .fileImporter(
+                isPresented: $showImportPicker,
+                allowedContentTypes: [.init(filenameExtension: "homeassistant") ?? .json],
+                allowsMultipleSelection: false
+            ) { result in
+                switch result {
+                case let .success(urls):
+                    if let url = urls.first {
+                        importURL = url
+                        showImportConfirmation = true
+                    }
+                case let .failure(error):
+                    Current.Log.error("File import failed: \(error.localizedDescription)")
+                    viewModel.showError = true
+                }
+            }
+            .alert(L10n.CarPlay.Import.Confirmation.title, isPresented: $showImportConfirmation) {
+                Button(L10n.yesLabel, role: .destructive) {
+                    if let url = importURL {
+                        viewModel.importConfiguration(from: url) { success in
+                            if success {
+                                viewModel.loadWatchConfig()
+                            }
+                        }
+                    }
+                }
+                Button(L10n.noLabel, role: .cancel) {}
+            } message: {
+                Text(L10n.CarPlay.Import.Confirmation.message)
+            }
     }
 
     private var content: some View {
@@ -56,6 +97,7 @@ struct WatchConfigurationView: View {
                 }
             itemsSection
             assistSection
+            exportImportSection
             resetView
         }
         .preferredColorScheme(.dark)
@@ -78,6 +120,25 @@ struct WatchConfigurationView: View {
                 }
             }
             Button(L10n.noLabel, role: .cancel) {}
+        }
+    }
+
+    private var exportImportSection: some View {
+        Section {
+            Button {
+                if let url = viewModel.exportConfiguration() {
+                    exportedFileURL = url
+                    showShareSheet = true
+                }
+            } label: {
+                Label(L10n.CarPlay.Export.Button.title, systemSymbol: .squareAndArrowUp)
+            }
+
+            Button {
+                showImportPicker = true
+            } label: {
+                Label(L10n.CarPlay.Import.Button.title, systemSymbol: .squareAndArrowDown)
+            }
         }
     }
 

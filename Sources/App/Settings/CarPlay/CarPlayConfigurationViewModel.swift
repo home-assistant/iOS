@@ -146,4 +146,33 @@ final class CarPlayConfigurationViewModel: ObservableObject {
     func moveItem(from source: IndexSet, to destination: Int) {
         config.quickAccessItems.move(fromOffsets: source, toOffset: destination)
     }
+
+    // MARK: - Export/Import
+
+    func exportConfiguration() -> URL? {
+        do {
+            return try ConfigurationManager.shared.exportConfiguration(config)
+        } catch {
+            Current.Log.error("Failed to export CarPlay configuration: \(error.localizedDescription)")
+            showError(message: L10n.CarPlay.Export.Error.message(error.localizedDescription))
+            return nil
+        }
+    }
+
+    @MainActor
+    func importConfiguration(from url: URL, completion: @escaping (Bool) -> Void) {
+        ConfigurationManager.shared.importConfiguration(from: url) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success:
+                loadDatabase()
+                completion(true)
+            case let .failure(error):
+                Current.Log.error("Failed to import CarPlay configuration: \(error.localizedDescription)")
+                showError(message: L10n.CarPlay.Import.Error.message(error.localizedDescription))
+                completion(false)
+            }
+        }
+    }
 }

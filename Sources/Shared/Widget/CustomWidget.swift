@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatable {
+public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatable, ConfigurationExportable {
     public var id: String
     public var name: String
     public var items: [MagicItem]
@@ -29,4 +29,8 @@ public struct CustomWidget: Codable, FetchableRecord, PersistableRecord, Equatab
             try CustomWidget.fetchAll(db)
         })
     }
+
+    // MARK: - ConfigurationExportable
+
+    public static var configurationType: ConfigurationType { .widgets }
 }
