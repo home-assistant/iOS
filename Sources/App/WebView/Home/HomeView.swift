@@ -1,6 +1,6 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
-import SFSafeSymbols
 
 @available(iOS 26.0, *)
 struct HomeView: View {
@@ -8,19 +8,11 @@ struct HomeView: View {
     @State private var showSettings = false
     @State private var selectedSectionIds: Set<String> = []
     @State private var allowMultipleSelection = false
+    @State private var showReorder = false
     @Environment(\.dismiss) private var dismiss
 
     init(server: Server) {
         _viewModel = StateObject(wrappedValue: HomeViewModel(server: server))
-    }
-
-    private var filteredSections: [HomeViewModel.RoomSection] {
-        // If no sections are selected, show all
-        guard !selectedSectionIds.isEmpty else {
-            return viewModel.groupedEntities
-        }
-        // Otherwise, filter to only selected sections
-        return viewModel.groupedEntities.filter { selectedSectionIds.contains($0.id) }
     }
 
     var body: some View {
@@ -36,8 +28,16 @@ struct HomeView: View {
                 .sheet(isPresented: $showSettings) {
                     SettingsView()
                 }
+                .sheet(isPresented: $showReorder) {
+                    HomeSectionsReorderView(
+                        sections: viewModel.groupedEntities.map { ($0.id, $0.name) },
+                        sectionOrder: $viewModel.sectionOrder,
+                        onDone: { viewModel.saveSectionOrder() }
+                    )
+                }
                 .task {
                     await viewModel.loadEntities()
+                    viewModel.loadSectionOrderIfNeeded()
                 }
         }
         .navigationViewStyle(.stack)
@@ -51,7 +51,10 @@ struct HomeView: View {
                 loadingView
             } else if let errorMessage = viewModel.errorMessage {
                 errorView(errorMessage)
-            } else if filteredSections.isEmpty {
+            } else if viewModel.filteredSections(
+                sectionOrder: viewModel.sectionOrder,
+                selectedSectionIds: selectedSectionIds
+            ).isEmpty {
                 emptyStateView
             } else {
                 entitiesListView
@@ -59,7 +62,11 @@ struct HomeView: View {
         }
         .animation(DesignSystem.Animation.default, value: viewModel.isLoading)
         .animation(DesignSystem.Animation.default, value: viewModel.errorMessage)
-        .animation(DesignSystem.Animation.default, value: filteredSections.isEmpty)
+        .animation(
+            DesignSystem.Animation.default,
+            value: viewModel
+                .filteredSections(sectionOrder: viewModel.sectionOrder, selectedSectionIds: selectedSectionIds).isEmpty
+        )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
@@ -99,7 +106,10 @@ struct HomeView: View {
                 alignment: .leading,
                 spacing: DesignSystem.Spaces.three
             ) {
-                ForEach(filteredSections) { section in
+                ForEach(viewModel.filteredSections(
+                    sectionOrder: viewModel.sectionOrder,
+                    selectedSectionIds: selectedSectionIds
+                )) { section in
                     Section {
                         entityTilesGrid(for: section.entities)
                     } header: {
@@ -122,13 +132,18 @@ struct HomeView: View {
                     Text("No sections available")
                         .foregroundColor(.secondary)
                 } else {
-                    Button {
-                        selectedSectionIds.removeAll()
-                    } label: {
-                        Label(
-                            "Show All",
-                            systemImage: selectedSectionIds.isEmpty ? SFSymbol.checkmark.rawValue : ""
-                        )
+                    Toggle(isOn: Binding(
+                        get: { selectedSectionIds.isEmpty },
+                        set: { isOn in
+                            if isOn {
+                                // Turning 'Show All' on clears filters
+                                selectedSectionIds.removeAll()
+                            } else {
+                                // Optionally do nothing when turning off
+                            }
+                        }
+                    )) {
+                        Text("Show All")
                     }
 
                     Toggle(isOn: $allowMultipleSelection) {
@@ -138,13 +153,17 @@ struct HomeView: View {
                     Divider()
 
                     ForEach(viewModel.groupedEntities) { section in
-                        Button {
-                            toggleSection(section.id)
-                        } label: {
-                            Label(
-                                section.name,
-                                systemImage: selectedSectionIds.contains(section.id) ? "checkmark" : ""
-                            )
+                        Toggle(isOn: Binding(
+                            get: { selectedSectionIds.contains(section.id) },
+                            set: { _ in
+                                selectedSectionIds = viewModel.toggledSelection(
+                                    for: section.id,
+                                    current: selectedSectionIds,
+                                    allowMultipleSelection: allowMultipleSelection
+                                )
+                            }
+                        )) {
+                            Text(section.name)
                         }
                     }
                 }
@@ -155,7 +174,7 @@ struct HomeView: View {
         ToolbarItem(placement: .primaryAction) {
             Menu {
                 Button {
-                    /* no-op */
+                    showReorder = true
                 } label: {
                     Label("Reorder", systemSymbol: .listDash)
                 }
@@ -173,28 +192,6 @@ struct HomeView: View {
                 }
             } label: {
                 Image(systemSymbol: .ellipsis)
-            }
-        }
-    }
-
-    // MARK: - Helper Methods
-
-    private func toggleSection(_ sectionId: String) {
-        if allowMultipleSelection {
-            // Multiple selection mode: toggle the section
-            if selectedSectionIds.contains(sectionId) {
-                selectedSectionIds.remove(sectionId)
-            } else {
-                selectedSectionIds.insert(sectionId)
-            }
-        } else {
-            // Single selection mode: replace selection
-            if selectedSectionIds.contains(sectionId) {
-                // If tapping the already selected one, deselect it (show all)
-                selectedSectionIds.removeAll()
-            } else {
-                // Select only this section
-                selectedSectionIds = [sectionId]
             }
         }
     }

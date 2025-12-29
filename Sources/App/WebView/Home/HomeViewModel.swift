@@ -13,14 +13,15 @@ final class HomeViewModel: ObservableObject {
     var errorMessage: String?
     var server: Server
     var entityStates: [String: HAEntity] = [:]
-
-    private var entitiesSubscriptionToken: HACancellable?
+    var sectionOrder: [String] = []
 
     struct RoomSection: Identifiable, Equatable {
         let id: String
         let name: String
         let entities: [HAAppEntity]
     }
+
+    private var entitiesSubscriptionToken: HACancellable?
 
     private var allowedDomains: [Domain] = [
         .light,
@@ -117,5 +118,76 @@ final class HomeViewModel: ObservableObject {
                     self?.entityStates = states.all.reduce(into: [:]) { $0[$1.entityId] = $1 }
                 }
             }
+    }
+
+    func filteredSections(sectionOrder: [String], selectedSectionIds: Set<String>) -> [RoomSection] {
+        // Apply saved ordering
+        let orderedSections: [RoomSection]
+        if sectionOrder.isEmpty {
+            orderedSections = groupedEntities
+        } else {
+            let orderIndex = Dictionary(uniqueKeysWithValues: sectionOrder.enumerated().map { ($1, $0) })
+            orderedSections = groupedEntities.sorted { a, b in
+                let ia = orderIndex[a.id] ?? Int.max
+                let ib = orderIndex[b.id] ?? Int.max
+                if ia == ib { return a.name < b.name }
+                return ia < ib
+            }
+        }
+        // If no sections are selected, show all
+        guard !selectedSectionIds.isEmpty else {
+            return orderedSections
+        }
+        // Otherwise, filter to only selected sections
+        return orderedSections.filter { selectedSectionIds.contains($0.id) }
+    }
+
+    func toggledSelection(
+        for sectionId: String,
+        current selected: Set<String>,
+        allowMultipleSelection: Bool
+    ) -> Set<String> {
+        var updated = selected
+        if allowMultipleSelection {
+            if updated.contains(sectionId) {
+                updated.remove(sectionId)
+            } else {
+                updated.insert(sectionId)
+            }
+        } else {
+            if updated.contains(sectionId) {
+                updated.removeAll()
+            } else {
+                updated = [sectionId]
+            }
+        }
+        return updated
+    }
+
+    // MARK: - Section Order Persistence
+
+    private var sectionOrderCacheKey: String {
+        // Use a server-specific key; prefer a stable identifier if available
+        "home.sections.order." + server.identifier.rawValue
+    }
+
+    func loadSectionOrderIfNeeded() {
+        Current.diskCache
+            .value(for: sectionOrderCacheKey)
+            .done { [weak self] (order: [String]) in
+                self?.sectionOrder = order
+            }
+            .catch { [weak self] _ in
+                guard let self else { return }
+                sectionOrder = groupedEntities.map(\.id)
+            }
+    }
+
+    func saveSectionOrder() {
+        Current.diskCache.set(sectionOrder, for: sectionOrderCacheKey).pipe { result in
+            if case let .rejected(error) = result {
+                Current.Log.error("Failed to save sections order: \(result)")
+            }
+        }
     }
 }

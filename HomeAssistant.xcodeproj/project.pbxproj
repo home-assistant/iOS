@@ -1040,7 +1040,6 @@
 		42DFE87B2EFB08C80058DADB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8772EFB08C80058DADB /* HomeView.swift */; };
 		42DFE87D2EFB128B0058DADB /* EntityTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE87C2EFB128B0058DADB /* EntityTileView.swift */; };
 		42DFE8802EFB23240058DADB /* HAEntity+CarPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */; };
-		42DFE8852EFB25430058DADB /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DFE8842EFB25430058DADB /* Domain.swift */; };
 		42E00D112E1E7487006D140D /* SharedPush in Frameworks */ = {isa = PBXBuildFile; productRef = 42E00D102E1E7487006D140D /* SharedPush */; };
 		42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */; };
 		42E0D82B2DCCE5900095A245 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
@@ -1081,6 +1080,7 @@
 		42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1DA6C2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift */; };
 		42F3E1492E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
 		42F3E14A2E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
+		42F5C0832F02B6DB00C50310 /* HomeSectionsReorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
@@ -2752,7 +2752,6 @@
 		42DFE8772EFB08C80058DADB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		42DFE8782EFB08C80058DADB /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		42DFE87C2EFB128B0058DADB /* EntityTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTileView.swift; sourceTree = "<group>"; };
-		42DFE8842EFB25430058DADB /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
 		42E00D122E1E7807006D140D /* NotificationPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRequestView.swift; sourceTree = "<group>"; };
 		42E3B8B82D8AC63300F5D084 /* Float+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Float+HA.swift"; sourceTree = "<group>"; };
 		42E3B8BF2D8ACE0400F5D084 /* OptionalsDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalsDefaultTests.swift; sourceTree = "<group>"; };
@@ -2789,6 +2788,7 @@
 		42F1DA6F2B4EE2E8002729BC /* HAAreaResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAreaResponse.swift; sourceTree = "<group>"; };
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
+		42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSectionsReorderView.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
@@ -5835,7 +5835,7 @@
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
-				42DFE8842EFB25430058DADB /* Domain.swift */,
+				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -8803,6 +8803,7 @@
 				42DFE87D2EFB128B0058DADB /* EntityTileView.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
 				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
+				42F5C0832F02B6DB00C50310 /* HomeSectionsReorderView.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,
 				423B5E0A2D6778370000CB95 /* WidgetBackground.swift in Sources */,
 				423B5E092D67781A0000CB95 /* WidgetBasicContainerView.swift in Sources */,
@@ -8926,7 +8927,6 @@
 				42DC44372E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift in Sources */,
 				4278CB812D01E61D00CFAAC9 /* GesturesSetupView.swift in Sources */,
 				117EBC32261D398B00F5334A /* ZoneManagerAccuracyFuzzer.swift in Sources */,
-				42DFE8852EFB25430058DADB /* Domain.swift in Sources */,
 				42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */,
