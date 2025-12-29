@@ -4,11 +4,14 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 struct HomeView: View {
+    @Namespace private var assist
+    private var assistAnimationSourceID = "assist"
     @StateObject private var viewModel: HomeViewModel
     @State private var showSettings = false
     @State private var selectedSectionIds: Set<String> = []
     @State private var allowMultipleSelection = false
     @State private var showReorder = false
+    @State private var showAssist = false
     @Environment(\.dismiss) private var dismiss
 
     init(server: Server) {
@@ -16,7 +19,7 @@ struct HomeView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             contentView
                 .navigationTitle(viewModel.server.info.name)
                 .navigationSubtitle("Connected")
@@ -35,6 +38,10 @@ struct HomeView: View {
                         onDone: { viewModel.saveSectionOrder() }
                     )
                 }
+                .fullScreenCover(isPresented: $showAssist, content: {
+                    AssistView.build(server: viewModel.server)
+                        .navigationTransition(.zoom(sourceID: assistAnimationSourceID, in: assist))
+                })
                 .task {
                     await viewModel.loadEntities()
                     viewModel.loadSectionOrderIfNeeded()
@@ -126,7 +133,17 @@ struct HomeView: View {
 
     @ToolbarContentBuilder
     private var toolbarMenu: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarTrailing) {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                showAssist = true
+            } label: {
+                Image(.messageProcessingOutline)
+            }
+            .buttonStyle(.glassProminent)
+            .tint(.haPrimary)
+            .matchedTransitionSource(id: assistAnimationSourceID, in: assist)
+        }
+        ToolbarItem(placement: .topBarTrailing) {
             Menu {
                 if viewModel.groupedEntities.isEmpty {
                     Text("No sections available")
