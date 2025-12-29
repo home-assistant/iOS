@@ -34,6 +34,7 @@ final class SceneAppIntent: AppIntent {
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
+        await Current.connectivity.syncNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
         }
