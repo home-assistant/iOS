@@ -225,7 +225,6 @@ public class HomeAssistantAPI {
             if !Current.isAppExtension {
                 promises.append(getConfig())
                 promises.append(Current.modelManager.fetch(apis: [self]))
-                promises.append(updateComplications(passively: false).asVoid())
             }
 
             promises.append(UpdateSensors(trigger: reason.updateSensorTrigger).asVoid())

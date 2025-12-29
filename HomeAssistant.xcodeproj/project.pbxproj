@@ -972,6 +972,14 @@
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
+		42CD571C2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md in Resources */ = {isa = PBXBuildFile; fileRef = 42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */; };
+		42CD571E2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */; };
+		42CD57202EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */; };
+		42CD57212EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */; };
+		42CD57282EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */; };
+		42CD57292EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */; };
+		42CD572A2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */; };
+		42CD572B2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA82B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
 		42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */; };
@@ -1077,6 +1085,8 @@
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
 		42F5CAED2B10CF3A00409816 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15042273188300635D5C /* Assets.swift */; };
+		42F68DAB2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md in Resources */ = {isa = PBXBuildFile; fileRef = 42F68DAA2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md */; };
+		42F68DAF2EE9BEE900639F48 /* ComplicationTemplateRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F68DA62EE9BBC200639F48 /* ComplicationTemplateRenderer.swift */; };
 		42F73F562E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F572E259A0900B704A9 /* BaseSensorUpdateSignaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */; };
 		42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */; };
@@ -2690,6 +2700,11 @@
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
 		42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectView.swift; sourceTree = "<group>"; };
 		42CB330E2DAE530400491DCE /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
+		42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = COMPLICATION_SYNC_PROTOCOL.md; sourceTree = "<group>"; };
+		42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationSyncMessages.swift; sourceTree = "<group>"; };
+		42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationSyncMessages.swift; sourceTree = "<group>"; };
+		42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWatchComplicationTable.swift; sourceTree = "<group>"; };
+		42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWatchComplication.swift; sourceTree = "<group>"; };
 		42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStrings.swift; sourceTree = "<group>"; };
 		42CE8FA62B45D1E900C707F9 /* FrontendStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontendStrings.swift; sourceTree = "<group>"; };
 		42CE8FAC2B46C12C00C707F9 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
@@ -2777,6 +2792,8 @@
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
+		42F68DA62EE9BBC200639F48 /* ComplicationTemplateRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationTemplateRenderer.swift; sourceTree = "<group>"; };
+		42F68DAA2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ARCHITECTURE_DIAGRAMS.md; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
 		42F8D8672DC3B0500022DE43 /* GesturesSetupView.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GesturesSetupView.test.swift; sourceTree = "<group>"; };
@@ -4672,6 +4689,8 @@
 			children = (
 				423F451F2C19D88100766A99 /* Assist */,
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
+				42F68DA62EE9BBC200639F48 /* ComplicationTemplateRenderer.swift */,
+				42F68DAA2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md */,
 			);
 			path = Complication;
 			sourceTree = "<group>";
@@ -4803,6 +4822,7 @@
 		426266432C11B0070081A818 /* Watch */ = {
 			isa = PBXGroup;
 			children = (
+				42CD571F2EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift */,
 				4251AAB82C6CE1B4004CCC9D /* WatchConfig.swift */,
 				426266442C11B02C0081A818 /* InteractiveImmediateMessages.swift */,
 				4278C9C02C8F226500A7B5F4 /* GuaranteedMessages.swift */,
@@ -5657,6 +5677,10 @@
 				428830EA2C6E3A8D0012373D /* WatchHomeView.swift */,
 				428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */,
 				429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */,
+				42CD571B2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md */,
+				42CD571D2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift */,
+				42CD57222EE73DEC0032D7C5 /* AppWatchComplicationTable.swift */,
+				42CD57242EE73DFD0032D7C5 /* AppWatchComplication.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -7863,8 +7887,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				426490732C0F1F36002155CC /* Colors.xcassets in Resources */,
+				42F68DAB2EE9BC5200639F48 /* ARCHITECTURE_DIAGRAMS.md in Resources */,
 				B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */,
 				FC8E9421FDB864726918B612 /* Pods-watchOS-WatchExtension-Watch-metadata.plist in Resources */,
+				42CD571C2EE736250032D7C5 /* COMPLICATION_SYNC_PROTOCOL.md in Resources */,
 				421BBC702E93A64B00745EC8 /* Interface.storyboard in Resources */,
 				426266422C11A6700081A818 /* SharedAssets.xcassets in Resources */,
 			);
@@ -9113,6 +9139,7 @@
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
 				11B38EF0275C54A300205C7B /* FireEventIntentHandler.swift in Sources */,
+				42CD57292EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */,
 				1120C5852749C6350046C38B /* ServerProviding.swift in Sources */,
 				429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */,
 				11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
@@ -9210,6 +9237,7 @@
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
 				11195F73267F01E4003DF674 /* HACancellable+App.swift in Sources */,
+				42CD572B2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */,
 				427A7CE02EBDFB4200D17841 /* AppArea+Queries.swift in Sources */,
 				42E3B8B92D8AC63300F5D084 /* Float+HA.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
@@ -9271,6 +9299,7 @@
 				1121CD4D271295AD0071C2AA /* Style.swift in Sources */,
 				116570782702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657051270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
+				42CD57212EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */,
 				11F855DD24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
 				420CFC802D3F9D89009A94F3 /* DatabaseTables.swift in Sources */,
@@ -9360,12 +9389,14 @@
 				426490682C0F1A49002155CC /* WatchAssistView.swift in Sources */,
 				4264907A2C0F3D97002155CC /* AudioPlayer.swift in Sources */,
 				429764F62E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift in Sources */,
+				42F68DAF2EE9BEE900639F48 /* ComplicationTemplateRenderer.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				423F44F02C17238200766A99 /* ChatBubbleView.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				42DF98712E93A22C00837EA2 /* NotificationSubControllerMedia.swift in Sources */,
 				42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */,
 				42DF986D2E93A20400837EA2 /* NotificationSubControllerMJPEG.swift in Sources */,
+				42CD571E2EE738D60032D7C5 /* WatchComplicationSyncMessages.swift in Sources */,
 				423F44FF2C186E4500766A99 /* WatchCommunicatorService.swift in Sources */,
 				42DF98692E93A1E000837EA2 /* DynamicNotificationController.swift in Sources */,
 				42DF98652E93A11000837EA2 /* HostingController.swift in Sources */,
@@ -9461,6 +9492,7 @@
 				1133F59C25F1DA5D00AD776F /* CLLocation+Sanitize.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
+				42CD57282EE73E850032D7C5 /* AppWatchComplicationTable.swift in Sources */,
 				424151FC2CD8F27100D7A6F9 /* CarPlayConfig.swift in Sources */,
 				11169BC8262BE460005EF90A /* UNNotificationContent+Additions.swift in Sources */,
 				42A3B63B2BD91854007BC0F3 /* Color+Codable.swift in Sources */,
@@ -9580,6 +9612,7 @@
 				42A3B63E2BD918D6007BC0F3 /* MaterialDesignIcons+Encodable.swift in Sources */,
 				427E92BE2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */,
+				42CD572A2EE73ECB0032D7C5 /* AppWatchComplication.swift in Sources */,
 				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */,
 				1182620724F9C492000795C6 /* HACoreMediaObjectCamera.swift in Sources */,
@@ -9630,6 +9663,7 @@
 				420CFC6C2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */,
 				114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */,
 				118261FD24F9B81A000795C6 /* HACoreBlahProperty.swift in Sources */,
+				42CD57202EE73A6B0032D7C5 /* WatchComplicationSyncMessages.swift in Sources */,
 				42FCCFDA2B9B19F70057783F /* ThreadClientService.swift in Sources */,
 				1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */,
 				42E9B0002CE63944009DDA46 /* AudioOutputSensor.swift in Sources */,

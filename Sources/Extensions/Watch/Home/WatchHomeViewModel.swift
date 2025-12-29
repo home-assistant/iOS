@@ -1,8 +1,11 @@
+import ClockKit
 import Communicator
 import Foundation
+import GRDB
 import NetworkExtension
 import PromiseKit
 import Shared
+import WidgetKit
 
 enum WatchHomeType {
     case undefined
@@ -26,6 +29,15 @@ final class WatchHomeViewModel: ObservableObject {
     // are different, the list won't refresh. This is a workaround to force a refresh
     @Published var refreshListID: UUID = .init()
 
+    @Published var complicationCount: Int = 0
+    @Published var serversCount: Int = 0
+
+    private var complicationCountObservation: AnyDatabaseCancellable?
+
+    init() {
+        setupComplicationObservation()
+    }
+
     @MainActor
     func fetchNetworkInfo() async {
         let networkInformation = await Current.networkInformation
@@ -34,9 +46,53 @@ final class WatchHomeViewModel: ObservableObject {
     }
 
     @MainActor
+    func fetchComplicationCount() {
+        do {
+            let count = try Current.database().read { db in
+                try AppWatchComplication.fetchCount(db)
+            }
+            complicationCount = count
+            Current.Log.verbose("Fetched complication count: \(count)")
+        } catch {
+            Current.Log.error("Failed to fetch complication count from GRDB: \(error.localizedDescription)")
+            complicationCount = 0
+        }
+    }
+
+    /// Sets up database observation for AppWatchComplication changes
+    /// Automatically updates complicationCount when complications are added/removed
+    private func setupComplicationObservation() {
+        let observation = ValueObservation.tracking { db in
+            try AppWatchComplication.fetchCount(db)
+        }
+
+        complicationCountObservation = observation.start(
+            in: Current.database(),
+            scheduling: .immediate,
+            onError: { error in
+                Current.Log.error("Error observing complication count: \(error.localizedDescription)")
+            },
+            onChange: { [weak self] count in
+                Task { @MainActor [weak self] in
+                    self?.complicationCount = count
+                    Current.Log.verbose("Complication count updated via observation: \(count)")
+                }
+            }
+        )
+    }
+
+    @MainActor
     func initialRoutine() {
         // First display whatever is in cache
         loadCache()
+        // Complication count is now automatically observed via setupComplicationObservation()
+
+        // Set initial servers count from current state
+        serversCount = Current.servers.all.count
+
+        // Request servers from phone
+        requestServers()
+
         // Now fetch new data in the background (shows loading indicator only for this fetch)
         isLoading = true
         requestConfig()
@@ -51,12 +107,70 @@ final class WatchHomeViewModel: ObservableObject {
             return
         }
         isLoading = true
+
+        // Request watch config via interactive message
         Communicator.shared.send(.init(
             identifier: InteractiveImmediateMessages.watchConfig.rawValue,
             reply: { [weak self] message in
                 self?.handleMessageResponse(message)
             }
         ))
+
+        // Request complications sync from phone
+        requestComplicationsSync()
+    }
+
+    /// Requests server configuration from the iPhone
+    ///
+    /// This method implements the send/reply pattern for syncing servers from iPhone to Watch.
+    /// It replaces the legacy context-based sync to avoid payload size limits.
+    ///
+    /// Flow:
+    /// 1. Watch sends "syncServers" message to iPhone
+    /// 2. iPhone replies with server data
+    /// 3. Watch restores servers from data (same as ExtensionDelegate.updateContext)
+    @MainActor
+    func requestServers() {
+        guard Communicator.shared.currentReachability != .notReachable else {
+            Current.Log.warning("Cannot sync servers - iPhone not reachable")
+            return
+        }
+
+        Current.Log.info("Requesting servers from iPhone")
+
+        Communicator.shared.send(.init(
+            identifier: InteractiveImmediateMessages.syncServers.rawValue,
+            reply: { [weak self] message in
+                self?.handleServersResponse(message)
+            }
+        ), errorHandler: { error in
+            Current.Log.error("Failed to request servers from iPhone: \(error)")
+        })
+    }
+
+    /// Handles the server sync response from the iPhone
+    /// - Parameter message: Reply message containing server data
+    @MainActor
+    private func handleServersResponse(_ message: ImmediateMessage) {
+        guard message.identifier == InteractiveImmediateResponses.syncServersResponse.rawValue else {
+            Current.Log.error("Received unexpected response identifier for servers: \(message.identifier)")
+            return
+        }
+
+        guard let serversData = message.content["servers"] as? Data else {
+            Current.Log.error("No servers data in syncServers response")
+            return
+        }
+
+        Current.Log.info("Received \(serversData.count) bytes of server data from iPhone")
+
+        // Restore servers - same logic as ExtensionDelegate.updateContext
+        Current.servers.restoreState(serversData)
+
+        // Update servers count
+        serversCount = Current.servers.all.count
+
+        Current.Log.info("Successfully restored \(serversCount) servers on watch")
     }
 
     func info(for magicItem: MagicItem) -> MagicItem.Info {
@@ -232,6 +346,121 @@ final class WatchHomeViewModel: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.errorMessage = ""
             self?.showError = false
+        }
+    }
+}
+
+// MARK: - Complication Sync
+
+extension WatchHomeViewModel {
+    /// Initiates the complication sync process from the phone
+    /// This starts a paginated sync where complications are sent one at a time
+    func requestComplicationsSync() {
+        Current.Log.info("Requesting complications sync from phone (paginated approach)")
+        requestNextComplication(index: 0)
+    }
+
+    /// Requests a single complication from the phone by index
+    /// - Parameter index: The index of the complication to request (0-based)
+    ///
+    /// This implements a paginated sync protocol:
+    /// 1. Watch sends interactive request with index
+    /// 2. Phone responds with complication at that index + "hasMore" flag in reply
+    /// 3. If hasMore is true, watch requests next index
+    /// 4. Continues until hasMore is false or error occurs
+    private func requestNextComplication(index: Int) {
+        Current.Log.info("Requesting complication at index \(index)")
+
+        Communicator.shared.send(.init(
+            identifier: WatchComplicationSyncMessages.Identifier.syncComplication,
+            content: [WatchComplicationSyncMessages.ContentKey.index: index],
+            reply: { [weak self] replyMessage in
+                self?.handleComplicationResponse(replyMessage, requestedIndex: index)
+            }
+        ), errorHandler: { error in
+            Current.Log.error("Failed to send syncComplication request for index \(index): \(error)")
+        })
+    }
+
+    /// Handles the response for a single complication request
+    /// - Parameters:
+    ///   - message: The reply message from the phone
+    ///   - requestedIndex: The index that was requested
+    private func handleComplicationResponse(_ message: ImmediateMessage, requestedIndex: Int) {
+        // Check for error
+        if let error = message.content[WatchComplicationSyncMessages.ContentKey.error] as? String {
+            Current.Log.error("Received error for complication at index \(requestedIndex): \(error)")
+            return
+        }
+
+        guard let complicationData = message
+            .content[WatchComplicationSyncMessages.ContentKey.complicationData] as? Data,
+            let hasMore = message.content[WatchComplicationSyncMessages.ContentKey.hasMore] as? Bool,
+            let index = message.content[WatchComplicationSyncMessages.ContentKey.index] as? Int,
+            let total = message.content[WatchComplicationSyncMessages.ContentKey.total] as? Int else {
+            Current.Log.error("Invalid syncComplication response format")
+            return
+        }
+
+        Current.Log.info("Received complication \(index + 1) of \(total) (hasMore: \(hasMore))")
+
+        // Save the complication
+        saveComplicationToDatabase(complicationData, index: index, total: total)
+
+        // Request next complication if more are pending
+        if hasMore {
+            Current.Log.verbose("More complications pending, requesting index \(index + 1)")
+            requestNextComplication(index: index + 1)
+        } else {
+            Current.Log.info("Complication sync complete! Received \(total) complications")
+            // Trigger complication reload
+            reloadComplications()
+        }
+    }
+
+    /// Saves a single complication to the watch GRDB database
+    /// - Parameters:
+    ///   - complicationData: JSON data of the complication
+    ///   - index: The index of this complication
+    ///   - total: Total number of complications being synced
+    private func saveComplicationToDatabase(_ complicationData: Data, index: Int, total: Int) {
+        do {
+            // Convert JSON data to AppWatchComplication
+            let complication = try AppWatchComplication.from(jsonData: complicationData)
+
+            Current.Log.verbose("Deserialized complication: \(complication.identifier)")
+
+            // Save to GRDB database
+            try Current.database().write { db in
+                // On first complication, clear existing ones
+                if index == 0 {
+                    Current.Log.info("Clearing existing complications from watch GRDB database")
+                    try AppWatchComplication.deleteAll(from: db)
+                }
+
+                // Insert or replace the complication
+                try complication.insert(db, onConflict: .replace)
+            }
+
+            Current.Log.info("Saved complication \(index + 1) of \(total) to watch GRDB database")
+        } catch {
+            Current.Log.error("Failed to save complication at index \(index): \(error.localizedDescription)")
+        }
+    }
+
+    /// Triggers a reload of all complications on the watch
+    private func reloadComplications() {
+        if #available(watchOS 9.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+
+        CLKComplicationServer.sharedInstance().reloadComplicationDescriptors()
+
+        if let activeComplications = CLKComplicationServer.sharedInstance().activeComplications {
+            Current.Log.info("Reloading \(activeComplications.count) active complications")
+            for complication in activeComplications {
+                CLKComplicationServer.sharedInstance().reloadTimeline(for: complication)
+            }
         }
     }
 }

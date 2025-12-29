@@ -8,6 +8,8 @@ public enum InteractiveImmediateMessages: String, CaseIterable {
     case assistPipelinesFetch
     case assistAudioDataChunked
     case watchConfig
+    case syncServers
+    case renderTemplates
 }
 
 public enum InteractiveImmediateResponses: String, CaseIterable {
@@ -23,4 +25,6 @@ public enum InteractiveImmediateResponses: String, CaseIterable {
     case assistError
     case watchConfigResponse
     case emptyWatchConfigResponse
+    case syncServersResponse
+    case renderTemplatesResponse
 }

@@ -25,8 +25,8 @@ public extension HomeAssistantAPI {
         var content: Content = Communicator.shared.mostRecentlyReceievedContext.content
 
         #if os(iOS)
-        content[WatchContext.servers.rawValue] = Current.servers.restorableState()
-        content[WatchContext.complications.rawValue] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
+        // Note: Servers are now synced via send/reply pattern, not context
+        // See WatchHomeViewModel.requestServers() and WatchCommunicatorService.syncServers()
 
         #if targetEnvironment(simulator)
         content[WatchContext.ssid.rawValue] = "SimulatorWiFi"
@@ -72,39 +72,5 @@ public extension HomeAssistantAPI {
         }
 
         return nil
-    }
-
-    func updateComplications(passively: Bool) -> Promise<Void> {
-        #if os(iOS)
-        guard case .paired = Communicator.shared.currentWatchState else {
-            Current.Log.verbose("skipping complication updates; no paired watch")
-            return .value(())
-        }
-        #endif
-
-        let complications = Set(
-            Current.realm().objects(WatchComplication.self)
-                .filter("serverIdentifier = %@", server.identifier.rawValue)
-        )
-
-        guard let request = WebhookResponseUpdateComplications.request(for: complications) else {
-            Current.Log.verbose("no complications need templates rendered")
-
-            #if os(iOS)
-            // in case the user deleted the last complication, sync that fact up to the watch
-            _ = HomeAssistantAPI.SyncWatchContext()
-            #else
-            // in case the user updated just the complication's metadata, force a refresh
-            WebhookResponseUpdateComplications.updateComplications()
-            #endif
-
-            return .value(())
-        }
-
-        if passively {
-            return Current.webhooks.sendPassive(identifier: .updateComplications, server: server, request: request)
-        } else {
-            return Current.webhooks.send(identifier: .updateComplications, server: server, request: request)
-        }
     }
 }
