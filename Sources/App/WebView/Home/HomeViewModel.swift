@@ -14,6 +14,7 @@ final class HomeViewModel: ObservableObject {
     var server: Server
     var entityStates: [String: HAEntity] = [:]
     var sectionOrder: [String] = []
+    var hiddenEntityIds: Set<String> = []
 
     struct RoomSection: Identifiable, Equatable {
         let id: String
@@ -37,6 +38,12 @@ final class HomeViewModel: ObservableObject {
     func loadEntities() async {
         isLoading = true
         errorMessage = nil
+
+        // Load hidden entities and section order BEFORE building sections
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.loadHiddenEntitiesIfNeeded() }
+            group.addTask { await self.loadSectionOrderIfNeeded() }
+        }
 
         do {
             let sections = try await fetchAndGroupEntities()
@@ -134,10 +141,11 @@ final class HomeViewModel: ObservableObject {
         let sortedGroups = roomGroups.sorted { $0.value.area.name < $1.value.area.name }
 
         return sortedGroups.map { key, value in
-            RoomSection(
+            let filteredEntities = value.entities.filter { !hiddenEntityIds.contains($0.entityId) }
+            return RoomSection(
                 id: key,
                 name: value.area.name,
-                entities: value.entities.sorted { $0.name < $1.name }
+                entities: filteredEntities.sorted { $0.name < $1.name }
             )
         }
     }
@@ -215,22 +223,89 @@ final class HomeViewModel: ObservableObject {
         "home.sections.order." + server.identifier.rawValue
     }
 
-    func loadSectionOrderIfNeeded() {
-        Current.diskCache
-            .value(for: sectionOrderCacheKey)
-            .done { [weak self] (order: [String]) in
-                self?.sectionOrder = order
+    private func loadSectionOrderIfNeeded() async {
+        do {
+            let order: [String] = try await withCheckedThrowingContinuation { continuation in
+                Current.diskCache
+                    .value(for: sectionOrderCacheKey)
+                    .done { (order: [String]) in
+                        continuation.resume(returning: order)
+                    }
+                    .catch { error in
+                        continuation.resume(throwing: error)
+                    }
             }
-            .catch { [weak self] _ in
-                guard let self else { return }
-                sectionOrder = groupedEntities.map(\.id)
-            }
+            sectionOrder = order
+        } catch {
+            // If no cached order exists, use default (entity IDs)
+            sectionOrder = groupedEntities.map(\.id)
+        }
     }
 
     func saveSectionOrder() {
         Current.diskCache.set(sectionOrder, for: sectionOrderCacheKey).pipe { result in
             if case let .rejected(error) = result {
                 Current.Log.error("Failed to save sections order: \(error)")
+            }
+        }
+    }
+
+    // MARK: - Hidden Entities
+
+    private var hiddenEntitiesCacheKey: String {
+        "home.hiddenEntities." + server.identifier.rawValue
+    }
+
+    private func loadHiddenEntitiesIfNeeded() async {
+        do {
+            let hidden: Set<String> = try await withCheckedThrowingContinuation { continuation in
+                Current.diskCache
+                    .value(for: hiddenEntitiesCacheKey)
+                    .done { (hidden: Set<String>) in
+                        continuation.resume(returning: hidden)
+                    }
+                    .catch { error in
+                        continuation.resume(throwing: error)
+                    }
+            }
+            hiddenEntityIds = hidden
+        } catch {
+            // No hidden entities cached, start with empty set
+            hiddenEntityIds = []
+        }
+    }
+
+    func hideEntity(_ entityId: String) {
+        hiddenEntityIds.insert(entityId)
+        saveHiddenEntities()
+        rebuildSections()
+    }
+
+    func unhideEntity(_ entityId: String) {
+        hiddenEntityIds.remove(entityId)
+        saveHiddenEntities()
+        // Rebuild sections to show the entity again
+        rebuildSections()
+    }
+
+    private func rebuildSections() {
+        // Rebuild sections to remove the hidden entity
+        Task {
+            do {
+                let sections = try await fetchAndGroupEntities()
+                DispatchQueue.main.async { [weak self] in
+                    self?.groupedEntities = sections
+                }
+            } catch {
+                Current.Log.error("Failed to reload entities after hiding: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func saveHiddenEntities() {
+        Current.diskCache.set(hiddenEntityIds, for: hiddenEntitiesCacheKey).pipe { result in
+            if case let .rejected(error) = result {
+                Current.Log.error("Failed to save hidden entities: \(error)")
             }
         }
     }

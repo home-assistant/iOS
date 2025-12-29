@@ -44,7 +44,6 @@ struct HomeView: View {
                 })
                 .task {
                     await viewModel.loadEntities()
-                    viewModel.loadSectionOrderIfNeeded()
                 }
         }
         .navigationViewStyle(.stack)
@@ -235,6 +234,13 @@ struct HomeView: View {
                     appEntity: entity,
                     haEntity: viewModel.entityStates[entity.entityId]
                 )
+                .contextMenu {
+                    Button(role: .destructive) {
+                        viewModel.hideEntity(entity.entityId)
+                    } label: {
+                        Label("Hide", systemImage: "eye.slash")
+                    }
+                }
             }
         }
     }
