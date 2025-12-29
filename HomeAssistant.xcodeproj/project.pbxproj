@@ -1089,6 +1089,8 @@
 		42F5C0922F02D40100C50310 /* ControlOpenExperimentalDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */; };
 		42F5C0932F02D50C00C50310 /* OpenExperimentalDashboardIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C0902F02D34700C50310 /* OpenExperimentalDashboardIntent.swift */; };
 		42F5C0942F02D57E00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */; };
+		42F5C0952F02E5C100C50310 /* ControlOpenExperimentalDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */; };
+		42F5C0962F02E5C800C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
@@ -8748,6 +8750,7 @@
 				426AB2422EF2A7D400FD5D46 /* OpenEntityAppIntent.swift in Sources */,
 				426AB2432EF2A7D400FD5D46 /* ControlOpenLight.swift in Sources */,
 				426AB2442EF2A7D400FD5D46 /* ControlOpenEntityValueProvider.swift in Sources */,
+				42F5C0952F02E5C100C50310 /* ControlOpenExperimentalDashboard.swift in Sources */,
 				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
@@ -8887,6 +8890,7 @@
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */,
 				426E029B2EF98F65008237D4 /* CameraSectionReorderView.swift in Sources */,
+				42F5C0962F02E5C800C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
 				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
