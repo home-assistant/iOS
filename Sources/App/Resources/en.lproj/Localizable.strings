@@ -1382,3 +1382,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "camera_list.edit.off.title" = "Edit";
 "yes_label" = "Yes";
 "no_area" = "Not in a room";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Open Experimental Dashboard";
+"widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
+"widgets.controls.open_experimental_dashboard.description" = "Opens the experimental dashboard for the selected server";
+"app_intents.open_experimental_dashboard.title" = "Open Experimental Dashboard";
+"app_intents.open_experimental_dashboard.description" = "Opens the experimental dashboard";
+"app_intents.server.title" = "Server";

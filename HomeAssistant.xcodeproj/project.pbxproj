@@ -1086,6 +1086,9 @@
 		42F5C0872F02BCCD00C50310 /* IntentSwitchEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */; };
 		42F5C0882F02BCD700C50310 /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		42F5C0892F02BCDE00C50310 /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
+		42F5C0922F02D40100C50310 /* ControlOpenExperimentalDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */; };
+		42F5C0932F02D50C00C50310 /* OpenExperimentalDashboardIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C0902F02D34700C50310 /* OpenExperimentalDashboardIntent.swift */; };
+		42F5C0942F02D57E00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
@@ -2795,6 +2798,9 @@
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSectionsReorderView.swift; sourceTree = "<group>"; };
 		42F5C0842F02BBA000C50310 /* AppIntentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentProvider.swift; sourceTree = "<group>"; };
+		42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenExperimentalDashboardValueProvider.swift; sourceTree = "<group>"; };
+		42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlOpenExperimentalDashboard.swift; sourceTree = "<group>"; };
+		42F5C0902F02D34700C50310 /* OpenExperimentalDashboardIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenExperimentalDashboardIntent.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
@@ -5843,6 +5849,9 @@
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
 				42F5C0842F02BBA000C50310 /* AppIntentProvider.swift */,
+				42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */,
+				42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */,
+				42F5C0902F02D34700C50310 /* OpenExperimentalDashboardIntent.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -8518,11 +8527,13 @@
 				426CBB6A2C9C543F003CA3AC /* ControlSwitchValueProvider.swift in Sources */,
 				421F2BA12EF847AA00F21FE5 /* AutomationAppIntent.swift in Sources */,
 				42BF7F302DF867E600875A0F /* HAAppEntityAppIntentEntity.swift in Sources */,
+				42F5C0922F02D40100C50310 /* ControlOpenExperimentalDashboard.swift in Sources */,
 				420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */,
 				42B74A632D36B08600C37304 /* WidgetBasicView.swift in Sources */,
 				422F88162D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */,
 				115560E127010D8400A8F818 /* WidgetBasicContainerView.swift in Sources */,
+				42F5C0932F02D50C00C50310 /* OpenExperimentalDashboardIntent.swift in Sources */,
 				115560EE27012F7300A8F818 /* WidgetOpenPage.swift in Sources */,
 				427647202C8F36950027B21F /* ControlLightsValueProvider.swift in Sources */,
 				115560E327010DAB00A8F818 /* WidgetBasicButtonView.swift in Sources */,
@@ -8531,6 +8542,7 @@
 				4273C48A2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
 				4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */,
 				42C101242CD3D7700012BA78 /* ControlRefreshDelay.swift in Sources */,
+				42F5C0942F02D57E00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */,
 				422E25ED2C7FF28900256D87 /* ControlScriptsValueProvider.swift in Sources */,
 				424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */,
 				4008F0262C2D0A1A00E24001 /* WidgetCircularView.swift in Sources */,

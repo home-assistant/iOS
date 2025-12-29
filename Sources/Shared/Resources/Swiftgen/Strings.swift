@@ -394,6 +394,12 @@ public enum L10n {
       /// Notify when run
       public static var title: String { return L10n.tr("Localizable", "app_intents.notify_when_run.title") }
     }
+    public enum OpenExperimentalDashboard {
+      /// Opens the experimental dashboard
+      public static var description: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.description") }
+      /// Open Experimental Dashboard
+      public static var title: String { return L10n.tr("Localizable", "app_intents.open_experimental_dashboard.title") }
+    }
     public enum OpenStateIcon {
       /// Icon for open state
       public static var title: String { return L10n.tr("Localizable", "app_intents.open_state_icon.title") }
@@ -489,6 +495,10 @@ public enum L10n {
           return L10n.tr("Localizable", "app_intents.scripts.success_message.content", String(describing: p1))
         }
       }
+    }
+    public enum Server {
+      /// Server
+      public static var title: String { return L10n.tr("Localizable", "app_intents.server.title") }
     }
     public enum ShowConfirmationDialog {
       /// Shows confirmation notification after executed
@@ -4570,6 +4580,18 @@ public enum L10n {
           public enum Parameter {
             /// Entity
             public static var entity: String { return L10n.tr("Localizable", "widgets.controls.open_entity.configuration.parameter.entity") }
+          }
+        }
+      }
+      public enum OpenExperimentalDashboard {
+        /// Opens the experimental dashboard for the selected server
+        public static var description: String { return L10n.tr("Localizable", "widgets.controls.open_experimental_dashboard.description") }
+        public enum Configuration {
+          /// Open Experimental Dashboard
+          public static var title: String { return L10n.tr("Localizable", "widgets.controls.open_experimental_dashboard.configuration.title") }
+          public enum Parameter {
+            /// Server
+            public static var server: String { return L10n.tr("Localizable", "widgets.controls.open_experimental_dashboard.configuration.parameter.server") }
           }
         }
       }
