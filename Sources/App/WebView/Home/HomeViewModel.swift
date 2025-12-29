@@ -68,22 +68,15 @@ final class HomeViewModel: ObservableObject {
                         roomGroups[key] = (area, [])
                     }
                     roomGroups[key]?.entities.append(entity)
-                } else {
-                    // Entities without an area go to "No Area" section
-                    let noAreaKey = "no_area"
-                    if roomGroups[noAreaKey] == nil {
-                        roomGroups[noAreaKey] = (nil, [])
-                    }
-                    roomGroups[noAreaKey]?.entities.append(entity)
                 }
+                // Entities without an area are now skipped
             }
 
             // Convert to sorted array of RoomSections
             var sections: [RoomSection] = []
 
-            // Add sections with areas first, sorted by name
+            // Add sections with areas, sorted by name
             let areasWithEntities = roomGroups
-                .filter { $0.value.area != nil }
                 .sorted { $0.value.area!.name < $1.value.area!.name }
 
             for (key, value) in areasWithEntities {
@@ -91,15 +84,6 @@ final class HomeViewModel: ObservableObject {
                     id: key,
                     name: value.area!.name,
                     entities: value.entities.sorted { $0.name < $1.name }
-                ))
-            }
-
-            // Add "No Area" section at the end if it exists
-            if let noAreaGroup = roomGroups["no_area"], !noAreaGroup.entities.isEmpty {
-                sections.append(RoomSection(
-                    id: "no_area",
-                    name: L10n.noArea,
-                    entities: noAreaGroup.entities.sorted { $0.name < $1.name }
                 ))
             }
 

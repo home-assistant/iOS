@@ -13,81 +13,122 @@ struct HomeView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-                if viewModel.isLoading {
-                    ProgressView()
-                } else if let errorMessage = viewModel.errorMessage {
-                    VStack(spacing: 16) {
-                        Image(systemSymbol: .exclamationmarkTriangle)
-                            .font(.system(size: 48))
-                            .foregroundColor(.secondary)
-                        Text(errorMessage)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                } else if viewModel.groupedEntities.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemSymbol: .house)
-                            .font(.system(size: 48))
-                            .foregroundColor(.secondary)
-                        Text("No entities found")
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                } else {
-                    ScrollView {
-                        LazyVStack(
-                            alignment: .leading,
-                            spacing: DesignSystem.Spaces.three
-                        ) {
-                            ForEach(viewModel.groupedEntities) { section in
-                                Section {
-                                    entityTilesGrid(for: section.entities)
-                                } header: {
-                                    sectionHeader(section.name)
-                                }
-                            }
-                        }
-                        .padding()
-                    }
+            contentView
+                .navigationTitle(viewModel.server.info.name)
+                .navigationSubtitle("Connected")
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    toolbarMenu
                 }
-            }
-            .navigationTitle(viewModel.server.info.name)
-            .navigationSubtitle("Connected")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItemGroup(placement: .primaryAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemSymbol: .safari)
-                    }
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Image(systemSymbol: .gearshape)
-                    }
+                .background(ModernAssistBackgroundView(theme: .homeAssistant))
+                .sheet(isPresented: $showSettings) {
+                    SettingsView()
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        /* no-op */
-                    } label: {
-                        Image(systemSymbol: .listDash)
-                    }
+                .task {
+                    await viewModel.loadEntities()
                 }
-            }
-            .background(ModernAssistBackgroundView(theme: .homeAssistant))
-            .sheet(isPresented: $showSettings) {
-                SettingsView()
-            }
-            .task {
-                await viewModel.loadEntities()
-            }
         }
         .navigationViewStyle(.stack)
     }
+
+    // MARK: - Content Views
+
+    private var contentView: some View {
+        ZStack {
+            if viewModel.isLoading {
+                loadingView
+            } else if let errorMessage = viewModel.errorMessage {
+                errorView(errorMessage)
+            } else if viewModel.groupedEntities.isEmpty {
+                emptyStateView
+            } else {
+                entitiesListView
+            }
+        }
+        .animation(DesignSystem.Animation.default, value: viewModel.isLoading)
+        .animation(DesignSystem.Animation.default, value: viewModel.errorMessage)
+        .animation(DesignSystem.Animation.default, value: viewModel.groupedEntities.isEmpty)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var loadingView: some View {
+        ProgressView()
+            .transition(.opacity.combined(with: .scale))
+    }
+
+    private func errorView(_ errorMessage: String) -> some View {
+        VStack(spacing: DesignSystem.Spaces.two) {
+            Image(systemSymbol: .exclamationmarkTriangle)
+                .font(.system(size: DesignSystem.Spaces.six))
+                .foregroundColor(.secondary)
+            Text(errorMessage)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.secondary)
+        }
+        .transition(.opacity.combined(with: .scale))
+    }
+
+    private var emptyStateView: some View {
+        VStack(spacing: DesignSystem.Spaces.two) {
+            Image(systemSymbol: .house)
+                .font(.system(size: DesignSystem.Spaces.six))
+                .foregroundColor(.secondary)
+            Text("No entities found")
+                .multilineTextAlignment(.center)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .transition(.opacity.combined(with: .scale))
+    }
+
+    private var entitiesListView: some View {
+        ScrollView {
+            LazyVStack(
+                alignment: .leading,
+                spacing: DesignSystem.Spaces.three
+            ) {
+                ForEach(viewModel.groupedEntities) { section in
+                    Section {
+                        entityTilesGrid(for: section.entities)
+                    } header: {
+                        sectionHeader(section.name)
+                    }
+                }
+            }
+            .padding()
+        }
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    // MARK: - Toolbar
+
+    private var toolbarMenu: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Menu {
+                Button {
+                    /* no-op */
+                } label: {
+                    Label("Reorder", systemSymbol: .listDash)
+                }
+
+                Button {
+                    dismiss()
+                } label: {
+                    Label("Open web UI", systemSymbol: .safari)
+                }
+
+                Button {
+                    showSettings = true
+                } label: {
+                    Label("Settings", systemSymbol: .gearshape)
+                }
+            } label: {
+                Image(systemSymbol: .ellipsis)
+            }
+        }
+    }
+
+    // MARK: - Component Views
 
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
