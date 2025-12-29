@@ -241,13 +241,13 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .external
             url = externalURL
         } else if let internalURL, [.lessSecure, .undefined].contains(connectionAccessSecurityLevel) {
-            // Falback to internal URL if no other URL is set
+            // Fallback to internal URL if no other URL is set
             // In case user opted to not check for home network or haven't made a decision yet
             // we allow usage of internal URL as fallback
             activeURLType = .internal
             url = internalURL
         } else if let internalURL, internalURL.scheme == "https" {
-            // Falback to internal URL if no other URL is set and internal URL is HTTPS
+            // Fallback to internal URL if no other URL is set and internal URL is HTTPS
             activeURLType = .internal
             url = internalURL
         } else {
@@ -300,13 +300,13 @@ public struct ConnectionInfo: Codable, Equatable {
             activeURLType = .external
             url = externalURL
         } else if let internalURL, [.lessSecure, .undefined].contains(connectionAccessSecurityLevel) {
-            // Falback to internal URL if no other URL is set
+            // Fallback to internal URL if no other URL is set
             // In case user opted to not check for home network or haven't made a decision yet
             // we allow usage of internal URL as fallback
             activeURLType = .internal
             url = internalURL
         } else if let internalURL, internalURL.scheme == "https" {
-            // Falback to internal URL if no other URL is set and internal URL is HTTPS
+            // Fallback to internal URL if no other URL is set and internal URL is HTTPS
             activeURLType = .internal
             url = internalURL
         } else {
