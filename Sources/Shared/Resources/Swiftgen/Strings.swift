@@ -254,6 +254,12 @@ public enum L10n {
       /// OK
       public static var ok: String { return L10n.tr("Localizable", "alerts.prompt.ok") }
     }
+    public enum NavigationError {
+      /// This page cannot be displayed because it's outside your Home Assistant server or the page was not found.
+      public static var message: String { return L10n.tr("Localizable", "alerts.navigation_error.message") }
+      /// Navigation Error
+      public static var title: String { return L10n.tr("Localizable", "alerts.navigation_error.title") }
+    }
   }
 
   public enum Announcement {
