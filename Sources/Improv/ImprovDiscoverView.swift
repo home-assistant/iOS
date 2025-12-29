@@ -167,9 +167,10 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         selectedPeripheral = peripheral
 
         // This only works if location permission is permitted
-        Current.connectivity.syncNetworkInformation {
-            if let ssid = Current.connectivity.currentWiFiSSID() {
-                self.ssid = ssid
+        Task { @MainActor in
+            let networkInfo = await Current.connectivity.currentNetworkInfo()
+            if let networkSSID = networkInfo.ssid {
+                self.ssid = networkSSID
             }
         }
         showWifiAlert = true
