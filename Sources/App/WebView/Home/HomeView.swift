@@ -8,8 +8,6 @@ struct HomeView: View {
     private var assistAnimationSourceID = "assist"
     @StateObject private var viewModel: HomeViewModel
     @State private var showSettings = false
-    @State private var selectedSectionIds: Set<String> = []
-    @State private var allowMultipleSelection = false
     @State private var showReorder = false
     @State private var showAssist = false
     @Environment(\.dismiss) private var dismiss
@@ -22,8 +20,7 @@ struct HomeView: View {
         NavigationStack {
             contentView
                 .navigationTitle(viewModel.server.info.name)
-                .navigationSubtitle("Connected")
-                .navigationBarTitleDisplayMode(.large)
+                .navigationSubtitle("Experimental feature")
                 .toolbar {
                     toolbarMenu
                 }
@@ -59,7 +56,7 @@ struct HomeView: View {
                 errorView(errorMessage)
             } else if viewModel.filteredSections(
                 sectionOrder: viewModel.sectionOrder,
-                selectedSectionIds: selectedSectionIds
+                selectedSectionIds: viewModel.selectedSectionIds
             ).isEmpty {
                 emptyStateView
             } else {
@@ -71,7 +68,10 @@ struct HomeView: View {
         .animation(
             DesignSystem.Animation.default,
             value: viewModel
-                .filteredSections(sectionOrder: viewModel.sectionOrder, selectedSectionIds: selectedSectionIds).isEmpty
+                .filteredSections(
+                    sectionOrder: viewModel.sectionOrder,
+                    selectedSectionIds: viewModel.selectedSectionIds
+                ).isEmpty
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -114,7 +114,7 @@ struct HomeView: View {
             ) {
                 ForEach(viewModel.filteredSections(
                     sectionOrder: viewModel.sectionOrder,
-                    selectedSectionIds: selectedSectionIds
+                    selectedSectionIds: viewModel.selectedSectionIds
                 )) { section in
                     Section {
                         entityTilesGrid(for: section.entities)
@@ -149,11 +149,12 @@ struct HomeView: View {
                         .foregroundColor(.secondary)
                 } else {
                     Toggle(isOn: Binding(
-                        get: { selectedSectionIds.isEmpty },
+                        get: { viewModel.selectedSectionIds.isEmpty },
                         set: { isOn in
                             if isOn {
                                 // Turning 'Show All' on clears filters
-                                selectedSectionIds.removeAll()
+                                viewModel.selectedSectionIds.removeAll()
+                                viewModel.saveFilterSettings()
                             } else {
                                 // Optionally do nothing when turning off
                             }
@@ -162,21 +163,28 @@ struct HomeView: View {
                         Text("Show All")
                     }
 
-                    Toggle(isOn: $allowMultipleSelection) {
+                    Toggle(isOn: Binding(
+                        get: { viewModel.allowMultipleSelection },
+                        set: { isOn in
+                            viewModel.allowMultipleSelection = isOn
+                            viewModel.saveFilterSettings()
+                        }
+                    )) {
                         Text("Allow multiple selection")
                     }
 
                     Divider()
 
-                    ForEach(viewModel.groupedEntities) { section in
+                    ForEach(orderedSectionsForMenu) { section in
                         Toggle(isOn: Binding(
-                            get: { selectedSectionIds.contains(section.id) },
+                            get: { viewModel.selectedSectionIds.contains(section.id) },
                             set: { _ in
-                                selectedSectionIds = viewModel.toggledSelection(
+                                viewModel.selectedSectionIds = viewModel.toggledSelection(
                                     for: section.id,
-                                    current: selectedSectionIds,
-                                    allowMultipleSelection: allowMultipleSelection
+                                    current: viewModel.selectedSectionIds,
+                                    allowMultipleSelection: viewModel.allowMultipleSelection
                                 )
+                                viewModel.saveFilterSettings()
                             }
                         )) {
                             Text(section.name)
@@ -214,6 +222,21 @@ struct HomeView: View {
 
     // MARK: - Component Views
 
+    private var orderedSectionsForMenu: [HomeViewModel.RoomSection] {
+        // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
+        if viewModel.sectionOrder.isEmpty {
+            return viewModel.groupedEntities
+        } else {
+            let orderIndex = Dictionary(uniqueKeysWithValues: viewModel.sectionOrder.enumerated().map { ($1, $0) })
+            return viewModel.groupedEntities.sorted { a, b in
+                let ia = orderIndex[a.id] ?? Int.max
+                let ib = orderIndex[b.id] ?? Int.max
+                if ia == ib { return a.name < b.name }
+                return ia < ib
+            }
+        }
+    }
+
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.title2.bold())
@@ -234,6 +257,7 @@ struct HomeView: View {
                     appEntity: entity,
                     haEntity: viewModel.entityStates[entity.entityId]
                 )
+                .contentShape(Rectangle())
                 .contextMenu {
                     Button(role: .destructive) {
                         viewModel.hideEntity(entity.entityId)

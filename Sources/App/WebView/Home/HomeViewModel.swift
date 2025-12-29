@@ -15,6 +15,8 @@ final class HomeViewModel: ObservableObject {
     var entityStates: [String: HAEntity] = [:]
     var sectionOrder: [String] = []
     var hiddenEntityIds: Set<String> = []
+    var selectedSectionIds: Set<String> = []
+    var allowMultipleSelection: Bool = false
 
     struct RoomSection: Identifiable, Equatable {
         let id: String
@@ -39,10 +41,11 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        // Load hidden entities and section order BEFORE building sections
+        // Load hidden entities, section order, and filter settings BEFORE building sections
         await withTaskGroup(of: Void.self) { group in
             group.addTask { await self.loadHiddenEntitiesIfNeeded() }
             group.addTask { await self.loadSectionOrderIfNeeded() }
+            group.addTask { await self.loadFilterSettingsIfNeeded() }
         }
 
         do {
@@ -308,5 +311,49 @@ final class HomeViewModel: ObservableObject {
                 Current.Log.error("Failed to save hidden entities: \(error)")
             }
         }
+    }
+
+    // MARK: - Filter Settings Persistence
+
+    private var filterSettingsCacheKey: String {
+        "home.filterSettings." + server.identifier.rawValue
+    }
+
+    private func loadFilterSettingsIfNeeded() async {
+        do {
+            let settings: FilterSettings = try await withCheckedThrowingContinuation { continuation in
+                Current.diskCache
+                    .value(for: filterSettingsCacheKey)
+                    .done { (settings: FilterSettings) in
+                        continuation.resume(returning: settings)
+                    }
+                    .catch { error in
+                        continuation.resume(throwing: error)
+                    }
+            }
+            selectedSectionIds = settings.selectedSectionIds
+            allowMultipleSelection = settings.allowMultipleSelection
+        } catch {
+            // No filter settings cached, use defaults
+            selectedSectionIds = []
+            allowMultipleSelection = false
+        }
+    }
+
+    func saveFilterSettings() {
+        let settings = FilterSettings(
+            selectedSectionIds: selectedSectionIds,
+            allowMultipleSelection: allowMultipleSelection
+        )
+        Current.diskCache.set(settings, for: filterSettingsCacheKey).pipe { result in
+            if case let .rejected(error) = result {
+                Current.Log.error("Failed to save filter settings: \(error)")
+            }
+        }
+    }
+
+    struct FilterSettings: Codable {
+        let selectedSectionIds: Set<String>
+        let allowMultipleSelection: Bool
     }
 }
