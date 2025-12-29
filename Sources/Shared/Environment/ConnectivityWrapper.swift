@@ -92,7 +92,7 @@ public class ConnectivityWrapper {
         self.networkAttributes = { [:] }
 
         syncNetworkInformation()
-        // Rechability observer is not available for watchOS
+        // Reachability observer is not available for watchOS
     }
     #endif
 
