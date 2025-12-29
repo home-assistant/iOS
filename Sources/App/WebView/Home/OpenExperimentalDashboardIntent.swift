@@ -28,11 +28,8 @@ struct OpenExperimentalDashboardIntent: AppIntent {
         }
         #if !WIDGET_EXTENSION
 
-        // Navigate to the experimental dashboard using a custom URL scheme or deep link
-        // This is a placeholder - you'll need to implement the actual navigation mechanism
-        // based on how your app handles deep linking
-        let urlString = "homeassistant://experimental-dashboard/\(server.id)"
-        if let url = URL(string: urlString) {
+        // Navigate to the experimental dashboard using the URL scheme
+        if let url = AppConstants.openExperimentalDashboardDeeplinkURL(serverId: server.id) {
             DispatchQueue.main.async {
                 URLOpener.shared.open(url, options: [:], completionHandler: nil)
             }

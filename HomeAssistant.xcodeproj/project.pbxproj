@@ -1091,6 +1091,7 @@
 		42F5C0942F02D57E00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */; };
 		42F5C0952F02E5C100C50310 /* ControlOpenExperimentalDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */; };
 		42F5C0962F02E5C800C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */; };
+		42F5C0972F02E61300C50310 /* OpenExperimentalDashboardIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C0902F02D34700C50310 /* OpenExperimentalDashboardIntent.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
@@ -8696,6 +8697,7 @@
 				423B5E0B2D677B9B0000CB95 /* WidgetCustom.swift in Sources */,
 				427AE07E2E9925C5001E30CA /* LocalAccessOnlyDisclaimerView.swift in Sources */,
 				115F9D7025F4B7B700CC6A45 /* TemplateSection.swift in Sources */,
+				42F5C0972F02E61300C50310 /* OpenExperimentalDashboardIntent.swift in Sources */,
 				4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */,
 				403AE92A2C2F3A9200D48147 /* IntentServerAppEntitiy.swift in Sources */,
 				1101568524D770B2009424C9 /* NFCReader.swift in Sources */,

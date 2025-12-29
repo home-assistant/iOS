@@ -24,6 +24,7 @@ class IncomingURLHandler {
         case invite
         case createCustomWidget = "createcustomwidget"
         case camera
+        case experimentalDashboard = "experimental-dashboard"
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -216,6 +217,25 @@ class IncomingURLHandler {
                 Current.sceneManager.webViewWindowControllerPromise.done { windowController in
                     windowController.presentInvitation(url: inviteUrl)
                 }
+            case .experimentalDashboard:
+                // homeassistant://experimental-dashboard/{serverId}
+                let serverId = url.queryItems?["serverId"] ?? ""
+
+                guard let server = Current.servers.all.first(where: { server in
+                    server.identifier.rawValue == serverId
+                }) else {
+                    Current.Log.error("No server found for experimental dashboard with ID: \(serverId)")
+                    return false
+                }
+
+                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
+                    .done { controller in
+                        if #available(iOS 26.0, *) {
+                            let view = HomeView(server: server).embeddedInHostingController()
+                            view.modalPresentationStyle = .fullScreen
+                            controller.presentOverlayController(controller: view, animated: false)
+                        }
+                    }
             }
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
