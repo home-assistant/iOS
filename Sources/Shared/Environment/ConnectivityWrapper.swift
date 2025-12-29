@@ -90,6 +90,9 @@ public class ConnectivityWrapper {
         self.cellularNetworkType = { .unknown }
         self.currentNetworkHardwareAddress = { nil }
         self.networkAttributes = { [:] }
+
+        syncNetworkInformation()
+        // Reachability observer is not available for watchOS
     }
     #endif
 
@@ -107,6 +110,7 @@ public class ConnectivityWrapper {
         syncNetworkInformation()
     }
 
+    // TODO: Refactor SSID retrieval to be async instead of hacking around with completion handlers
     public func syncNetworkInformation(completion: (() -> Void)? = nil) {
         #if targetEnvironment(macCatalyst)
         // macOS uses macBridge to retrieve network information
@@ -129,5 +133,13 @@ public class ConnectivityWrapper {
             completion?()
         }
         #endif
+    }
+
+    public func syncNetworkInformation() async {
+        await withCheckedContinuation { continuation in
+            syncNetworkInformation {
+                continuation.resume()
+            }
+        }
     }
 }
