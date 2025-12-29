@@ -40,23 +40,28 @@ final class ConnectionSecurityLevelBlockViewModel: ObservableObject {
     }
 
     func loadRequirements() {
-        requirements = []
+        Task { @MainActor in
+            var newRequirements: [Requirement] = []
 
-        // Check if home network is defined
-        if server.info.connection.internalSSIDs?.isEmpty ?? true,
-           server.info.connection.internalHardwareAddresses?.isEmpty ?? true {
-            requirements.append(.homeNetworkMissing)
-        } else {
-            // Check if user is on home network
-            if !server.info.connection.isOnInternalNetwork {
-                requirements.append(.notOnHomeNetwork)
+            // Check if home network is defined
+            if server.info.connection.internalSSIDs?.isEmpty ?? true,
+               server.info.connection.internalHardwareAddresses?.isEmpty ?? true {
+                newRequirements.append(.homeNetworkMissing)
+            } else {
+                // Check if user is on home network (fetch real-time network info)
+                let isOnInternal = await server.info.connection.isOnInternalNetwork()
+                if !isOnInternal {
+                    newRequirements.append(.notOnHomeNetwork)
+                }
             }
-        }
 
-        // Check location permission
-        let currentPermission = Current.locationManager.currentPermissionState
-        if currentPermission != .authorizedAlways, currentPermission != .authorizedWhenInUse {
-            requirements.append(.locationPermission)
+            // Check location permission
+            let currentPermission = Current.locationManager.currentPermissionState
+            if currentPermission != .authorizedAlways, currentPermission != .authorizedWhenInUse {
+                newRequirements.append(.locationPermission)
+            }
+
+            requirements = newRequirements
         }
     }
 }

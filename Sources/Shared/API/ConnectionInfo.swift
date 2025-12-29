@@ -258,6 +258,65 @@ public struct ConnectionInfo: Codable, Equatable {
         return url?.sanitized()
     }
 
+    /// Returns the url that should be used at this moment to access the Home Assistant instance.
+    /// This version fetches real-time network information asynchronously, avoiding race conditions.
+    public mutating func activeURL() async -> URL? {
+        if let overrideActiveURLType {
+            let overrideURL: URL?
+
+            switch overrideActiveURLType {
+            case .internal:
+                activeURLType = .internal
+                overrideURL = internalURL
+            case .remoteUI:
+                activeURLType = .remoteUI
+                overrideURL = remoteUIURL
+            case .external:
+                activeURLType = .external
+                overrideURL = externalURL
+            case .none:
+                activeURLType = .none
+                overrideURL = nil
+            }
+
+            if let overrideURL {
+                return overrideURL.sanitized()
+            }
+        }
+
+        let url: URL?
+        let onInternalNetwork = await isOnInternalNetwork()
+
+        if let internalURL, onInternalNetwork || overrideActiveURLType == .internal {
+            // Home network, local connection
+            activeURLType = .internal
+            url = internalURL
+        } else if let remoteUIURL, useCloud {
+            // Home Assistant Cloud connection
+            activeURLType = .remoteUI
+            url = remoteUIURL
+        } else if let externalURL {
+            // Custom remote connection
+            activeURLType = .external
+            url = externalURL
+        } else if let internalURL, [.lessSecure, .undefined].contains(connectionAccessSecurityLevel) {
+            // Falback to internal URL if no other URL is set
+            // In case user opted to not check for home network or haven't made a decision yet
+            // we allow usage of internal URL as fallback
+            activeURLType = .internal
+            url = internalURL
+        } else if let internalURL, internalURL.scheme == "https" {
+            // Falback to internal URL if no other URL is set and internal URL is HTTPS
+            activeURLType = .internal
+            url = internalURL
+        } else {
+            url = nil
+            activeURLType = .none
+        }
+
+        return url?.sanitized()
+    }
+
     /// Returns the url that should be used at this moment to share with someone else to access the Home Assistant
     /// instance.
     /// Cloud > Remote > Internal
@@ -282,12 +341,35 @@ public struct ConnectionInfo: Codable, Equatable {
         }
     }
 
+    /// Returns the activeURL with /api appended. Fetches real-time network info.
+    public mutating func activeAPIURL() async -> URL? {
+        if let activeURL = await activeURL() {
+            return activeURL.appendingPathComponent("api", isDirectory: false)
+        } else {
+            return nil
+        }
+    }
+
     public mutating func webhookURL() -> URL? {
         if let cloudhookURL, !isOnInternalNetwork {
             return cloudhookURL
         }
 
         if let activeURL = activeURL() {
+            return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
+        } else {
+            return nil
+        }
+    }
+
+    /// Returns the webhook URL. Fetches real-time network info.
+    public mutating func webhookURL() async -> URL? {
+        let onInternalNetwork = await isOnInternalNetwork()
+        if let cloudhookURL, !onInternalNetwork {
+            return cloudhookURL
+        }
+
+        if let activeURL = await activeURL() {
             return activeURL.appendingPathComponent(webhookPath, isDirectory: false)
         } else {
             return nil
@@ -321,9 +403,26 @@ public struct ConnectionInfo: Codable, Equatable {
     }
 
     /// Returns true if current SSID is SSID marked for internal URL use.
+    /// Note: This uses cached network info. For real-time network state, use `isOnInternalNetwork() async`.
     public var isOnInternalNetwork: Bool {
         if let current = Current.connectivity.currentWiFiSSID(),
            internalSSIDs?.contains(current) == true {
+            return true
+        }
+
+        if let current = Current.connectivity.currentNetworkHardwareAddress(),
+           internalHardwareAddresses?.contains(current) == true {
+            return true
+        }
+
+        return false
+    }
+
+    /// Returns true if current SSID is SSID marked for internal URL use.
+    /// This fetches real-time network information asynchronously.
+    public func isOnInternalNetwork() async -> Bool {
+        let networkInfo = await Current.connectivity.currentNetworkInfo()
+        if let ssid = networkInfo.ssid, internalSSIDs?.contains(ssid) == true {
             return true
         }
 
