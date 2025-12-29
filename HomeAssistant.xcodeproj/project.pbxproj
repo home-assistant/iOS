@@ -1081,6 +1081,11 @@
 		42F3E1492E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
 		42F3E14A2E1D22B400F4E6FC /* HATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F3E1482E1D22B400F4E6FC /* HATextField.swift */; };
 		42F5C0832F02B6DB00C50310 /* HomeSectionsReorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */; };
+		42F5C0852F02BBA000C50310 /* AppIntentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5C0842F02BBA000C50310 /* AppIntentProvider.swift */; };
+		42F5C0862F02BCC700C50310 /* SwitchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F158472CA15FA7009C7201 /* SwitchIntent.swift */; };
+		42F5C0872F02BCCD00C50310 /* IntentSwitchEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CBB6B2C9C550D003CA3AC /* IntentSwitchEntity.swift */; };
+		42F5C0882F02BCD700C50310 /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
+		42F5C0892F02BCDE00C50310 /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
 		42F5CAE52B10CDC600409816 /* HACornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */; };
 		42F5CAE72B10CDC900409816 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28AF2B101D6B0093B31A /* CardView.swift */; };
 		42F5CAE82B10CDC900409816 /* HAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CA28B52B1022680093B31A /* HAButton.swift */; };
@@ -2789,6 +2794,7 @@
 		42F1DA732B4FF9F8002729BC /* MaterialDesignIcons+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaterialDesignIcons+CarPlay.swift"; sourceTree = "<group>"; };
 		42F3E1482E1D22B400F4E6FC /* HATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATextField.swift; sourceTree = "<group>"; };
 		42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSectionsReorderView.swift; sourceTree = "<group>"; };
+		42F5C0842F02BBA000C50310 /* AppIntentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentProvider.swift; sourceTree = "<group>"; };
 		42F5CABB2B10AE1A00409816 /* ServerFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerFixture.swift; sourceTree = "<group>"; };
 		42F73F552E259A0900B704A9 /* BaseSensorUpdateSignaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSensorUpdateSignaler.swift; sourceTree = "<group>"; };
 		42F73F592E264A9D00B704A9 /* WebViewControllerButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerButtons.swift; sourceTree = "<group>"; };
@@ -5836,6 +5842,7 @@
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
+				42F5C0842F02BBA000C50310 /* AppIntentProvider.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -8740,6 +8747,7 @@
 				42266B252B7A4BA900E94A71 /* BarcodeScannerViewModel.swift in Sources */,
 				42E00D132E1E7807006D140D /* NotificationPermissionRequestView.swift in Sources */,
 				11DE823024FAE66F00E636B8 /* UIWindow+Additions.swift in Sources */,
+				42F5C0852F02BBA000C50310 /* AppIntentProvider.swift in Sources */,
 				42FCCFFB2B9B1C310057783F /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
 				42B980D32DC24E1300BC5C08 /* SensorDetailLabelRowView.swift in Sources */,
@@ -8755,6 +8763,7 @@
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
 				42D57FC22E0589DE0061FF3B /* WebRTCClient.swift in Sources */,
 				1130F57E253A2ED500F371BE /* ComplicationFamilySelectViewController.swift in Sources */,
+				42F5C0892F02BCDE00C50310 /* IntentFanEntity.swift in Sources */,
 				426BB0C52D393F0E0062D905 /* EntityPicker.swift in Sources */,
 				1112AEBB25F717E9007A541A /* LocationHistoryDetailViewController.swift in Sources */,
 				11BD7B4D25B53D7F001826F0 /* AppMacBridgeStatusItemConfiguration.swift in Sources */,
@@ -8765,6 +8774,7 @@
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				42DF7DE02EC53D85003F3C4A /* ServersListView.swift in Sources */,
 				4278CB882D01F65300CFAAC9 /* AppleLikeListTopRowHeader.swift in Sources */,
+				42F5C0882F02BCD700C50310 /* FanIntent.swift in Sources */,
 				42C0F7CC2D47B47F00BD5C76 /* IconPicker.swift in Sources */,
 				42DFE86F2EFA26D50058DADB /* AssistSettingsView.swift in Sources */,
 				421155232D354F3F00A71630 /* AppIcon.swift in Sources */,
@@ -8826,6 +8836,7 @@
 				113199DC28ADEEF700FA7572 /* OnboardingAuthLoginViewController.swift in Sources */,
 				42A0B9362EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift in Sources */,
 				11761E2925EC1415007A9D17 /* WebSocketStatusRow.swift in Sources */,
+				42F5C0862F02BCC700C50310 /* SwitchIntent.swift in Sources */,
 				11948E8924DA5D50006F5657 /* InfoLabelRow.swift in Sources */,
 				11EFCDD824F5FCBE00314D85 /* SettingsSceneDelegate.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
@@ -9004,6 +9015,7 @@
 				425573C92B5572DB00145217 /* CarPlayServerListViewModel.swift in Sources */,
 				421D89A22EAF721F00E352A7 /* BaseOnboardingViewModifiers.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
+				42F5C0872F02BCCD00C50310 /* IntentSwitchEntity.swift in Sources */,
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				3E02C0F32CA8032500102131 /* WidgetSensorsAppIntent.swift in Sources */,
 				421B1C182BD6524E001ED18C /* WidgetBuilderViewModel.swift in Sources */,

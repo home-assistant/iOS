@@ -26,6 +26,8 @@ final class HomeViewModel: ObservableObject {
     private var allowedDomains: [Domain] = [
         .light,
         .cover,
+        .switch,
+        .fan,
     ]
 
     init(server: Server) {
@@ -36,58 +38,8 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        let serverId = server.identifier.rawValue
-
         do {
-            // Fetch all entities from database
-            let allEntities = try HAAppEntity.config() ?? []
-
-            // Filter entities for the selected server
-            let serverEntities = allEntities.filter {
-                $0.serverId == serverId &&
-                    allowedDomains.map(\.rawValue).contains($0.domain)
-            }
-
-            // Fetch all areas for this server
-            let areas = try AppArea.fetchAreas(for: serverId)
-
-            // Create a map of entity ID to area
-            var entityToArea: [String: AppArea] = [:]
-            for area in areas {
-                for entityId in area.entities {
-                    entityToArea[entityId] = area
-                }
-            }
-
-            // Group entities by area
-            var roomGroups: [String: (area: AppArea?, entities: [HAAppEntity])] = [:]
-
-            for entity in serverEntities {
-                if let area = entityToArea[entity.entityId] {
-                    let key = area.id
-                    if roomGroups[key] == nil {
-                        roomGroups[key] = (area, [])
-                    }
-                    roomGroups[key]?.entities.append(entity)
-                }
-                // Entities without an area are now skipped
-            }
-
-            // Convert to sorted array of RoomSections
-            var sections: [RoomSection] = []
-
-            // Add sections with areas, sorted by name
-            let areasWithEntities = roomGroups
-                .sorted { $0.value.area!.name < $1.value.area!.name }
-
-            for (key, value) in areasWithEntities {
-                sections.append(RoomSection(
-                    id: key,
-                    name: value.area!.name,
-                    entities: value.entities.sorted { $0.name < $1.name }
-                ))
-            }
-
+            let sections = try await fetchAndGroupEntities()
             groupedEntities = sections
             isLoading = false
             subscribeToEntitiesChanges()
@@ -95,6 +47,98 @@ final class HomeViewModel: ObservableObject {
             Current.Log.error("Failed to load entities for HomeView: \(error.localizedDescription)")
             errorMessage = "Failed to load entities: \(error.localizedDescription)"
             isLoading = false
+        }
+    }
+
+    private func fetchAndGroupEntities() async throws -> [RoomSection] {
+        let serverId = server.identifier.rawValue
+        let allEntities = try HAAppEntity.config() ?? []
+
+        let entitiesWithCategories = try fetchEntitiesWithCategories(serverId: serverId)
+        let serverEntities = filterEntities(
+            allEntities,
+            serverId: serverId,
+            excludingCategories: entitiesWithCategories
+        )
+        let areas = try AppArea.fetchAreas(for: serverId)
+        let entityToAreaMap = createEntityToAreaMap(areas: areas)
+        let roomGroups = groupEntitiesByArea(entities: serverEntities, entityToAreaMap: entityToAreaMap)
+
+        return buildSortedRoomSections(from: roomGroups)
+    }
+
+    private func fetchEntitiesWithCategories(serverId: String) throws -> Set<String> {
+        do {
+            let registryEntities = try Current.database().read { db in
+                try AppEntityRegistryListForDisplay
+                    .filter(
+                        Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId
+                    )
+                    .fetchAll(db)
+            }
+            // Return entity IDs that have a non-nil category (config/diagnostic entities)
+            return Set(registryEntities.filter { $0.registry.entityCategory != nil }.map(\.entityId))
+        } catch {
+            Current.Log.error("Failed to fetch entity registry for filtering: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    private func filterEntities(
+        _ entities: [HAAppEntity],
+        serverId: String,
+        excludingCategories categorizedEntities: Set<String>
+    ) -> [HAAppEntity] {
+        entities.filter {
+            $0.serverId == serverId &&
+                allowedDomains.map(\.rawValue).contains($0.domain) &&
+                !categorizedEntities.contains($0.entityId)
+        }
+    }
+
+    private func createEntityToAreaMap(areas: [AppArea]) -> [String: AppArea] {
+        var entityToArea: [String: AppArea] = [:]
+        for area in areas {
+            for entityId in area.entities {
+                entityToArea[entityId] = area
+            }
+        }
+        return entityToArea
+    }
+
+    private func groupEntitiesByArea(
+        entities: [HAAppEntity],
+        entityToAreaMap: [String: AppArea]
+    ) -> [String: (area: AppArea, entities: [HAAppEntity])] {
+        var roomGroups: [String: (area: AppArea, entities: [HAAppEntity])] = [:]
+
+        for entity in entities {
+            guard let area = entityToAreaMap[entity.entityId] else {
+                // Entities without an area are skipped
+                continue
+            }
+
+            let key = area.id
+            if roomGroups[key] == nil {
+                roomGroups[key] = (area, [])
+            }
+            roomGroups[key]?.entities.append(entity)
+        }
+
+        return roomGroups
+    }
+
+    private func buildSortedRoomSections(
+        from roomGroups: [String: (area: AppArea, entities: [HAAppEntity])]
+    ) -> [RoomSection] {
+        let sortedGroups = roomGroups.sorted { $0.value.area.name < $1.value.area.name }
+
+        return sortedGroups.map { key, value in
+            RoomSection(
+                id: key,
+                name: value.area.name,
+                entities: value.entities.sorted { $0.name < $1.name }
+            )
         }
     }
 
@@ -186,7 +230,7 @@ final class HomeViewModel: ObservableObject {
     func saveSectionOrder() {
         Current.diskCache.set(sectionOrder, for: sectionOrderCacheKey).pipe { result in
             if case let .rejected(error) = result {
-                Current.Log.error("Failed to save sections order: \(result)")
+                Current.Log.error("Failed to save sections order: \(error)")
             }
         }
     }

@@ -70,7 +70,7 @@ struct EntityTileView: View {
             icon = .homeIcon
         }
 
-        return Button(intent: intentForEntity()) {
+        return Button(intent: AppIntentProvider.intent(for: appEntity, server: server)) {
             VStack {
                 Text(verbatim: icon.unicode)
                     .font(.custom(MaterialDesignIcons.familyName, size: Constants.iconFontSize))
@@ -82,41 +82,6 @@ struct EntityTileView: View {
             .clipShape(Circle())
         }
         .buttonStyle(.plain)
-    }
-
-    private func intentForEntity() -> any AppIntent {
-        let domain = Domain(entityId: appEntity.entityId)
-
-        switch domain {
-        case .light:
-            let intent = LightIntent()
-            intent.light = .init(
-                id: appEntity.entityId,
-                entityId: appEntity.entityId,
-                serverId: server.identifier.rawValue,
-                displayString: "",
-                iconName: ""
-            )
-            intent.toggle = true
-            // Since toggle is true, value won't be used, but we set it to false to have a default
-            intent.value = false
-            return intent
-        case .cover:
-            let intent = CoverIntent()
-            intent.entity = .init(
-                id: appEntity.entityId,
-                entityId: appEntity.entityId,
-                serverId: server.identifier.rawValue,
-                displayString: "",
-                iconName: ""
-            )
-            intent.toggle = true
-            // Since toggle is true, value won't be used, but we set it to false to have a default
-            intent.value = false
-            return intent
-        default:
-            return LightIntent()
-        }
     }
 
     private var iconColor: Color {
