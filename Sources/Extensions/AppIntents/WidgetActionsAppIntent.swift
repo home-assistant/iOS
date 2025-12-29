@@ -33,6 +33,7 @@ struct WidgetActionsAppIntent: AppIntent, WidgetConfigurationIntent, CustomInten
     }
 
     func perform() async throws -> some IntentResult {
+        await Current.connectivity.syncNetworkInformation()
         guard let actions else { return .result() }
         for action in actions {
             let intent = PerformAction()

@@ -75,6 +75,7 @@ class LifecycleManager {
 
     @objc private func willEnterForeground() {
         isActive = true
+        syncNetworkInformation()
     }
 
     @objc private func didEnterBackground() {
@@ -110,5 +111,12 @@ class LifecycleManager {
                 )
             })
         }.cauterize()
+        syncNetworkInformation()
+    }
+
+    private func syncNetworkInformation() {
+        Task {
+            await Current.connectivity.syncNetworkInformation()
+        }
     }
 }

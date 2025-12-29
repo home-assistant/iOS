@@ -36,6 +36,7 @@ struct PerformAction: AppIntent, CustomIntentMigratedAppIntent, PredictableInten
     var hapticConfirmation: Bool
 
     func perform() async throws -> some IntentResult {
+        await Current.connectivity.syncNetworkInformation()
         guard let intentAction = $action.wrappedValue,
               let action = Current.realm().object(ofType: Action.self, forPrimaryKey: intentAction.id),
               let server = Current.servers.server(for: action),
