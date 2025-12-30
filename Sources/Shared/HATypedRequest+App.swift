@@ -109,19 +109,19 @@ public extension HATypedRequest {
         ))
     }
 
-    static func fetchAreas() -> HATypedRequest<[HAAreaResponse]> {
+    static func configAreasRegistry() -> HATypedRequest<[HAAreaResponse]> {
         HATypedRequest<[HAAreaResponse]>(request: .init(
             type: "config/area_registry/list"
         ))
     }
 
-    static func fetchEntitiesWithAreas() -> HATypedRequest<[HAEntityAreaResponse]> {
+    static func configEntityRegistryList() -> HATypedRequest<[HAEntityAreaResponse]> {
         HATypedRequest<[HAEntityAreaResponse]>(request: .init(
             type: "config/entity_registry/list"
         ))
     }
 
-    static func fetchDevicesWithAreas() -> HATypedRequest<[HADeviceAreaResponse]> {
+    static func configDeviceRegistryList() -> HATypedRequest<[HADeviceAreaResponse]> {
         HATypedRequest<[HADeviceAreaResponse]>(request: .init(
             type: "config/device_registry/list"
         ))
@@ -133,7 +133,7 @@ public extension HATypedRequest {
         ))
     }
 
-    static func fetchEntityRegistryListForDisplay() -> HATypedRequest<EntityRegistryListForDisplay> {
+    static func configEntityRegistryListForDisplay() -> HATypedRequest<EntityRegistryListForDisplay> {
         HATypedRequest<EntityRegistryListForDisplay>(request: .init(
             type: .webSocket("config/entity_registry/list_for_display")
         ))

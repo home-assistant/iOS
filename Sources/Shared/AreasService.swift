@@ -29,7 +29,7 @@ final class AreasService: AreasServiceProtocol {
 
         request?.cancel()
         let areas = await withCheckedContinuation { continuation in
-            request = connection.send(HATypedRequest<[HAAreaResponse]>.fetchAreas(), completion: { result in
+            request = connection.send(HATypedRequest<[HAAreaResponse]>.configAreasRegistry(), completion: { result in
                 switch result {
                 case let .success(data):
                     continuation.resume(returning: data)
@@ -64,7 +64,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let entitiesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HAEntityAreaResponse]>.fetchEntitiesWithAreas(),
+                HATypedRequest<[HAEntityAreaResponse]>.configEntityRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
@@ -93,7 +93,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let devicesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HADeviceAreaResponse]>.fetchDevicesWithAreas(),
+                HATypedRequest<[HADeviceAreaResponse]>.configDeviceRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
