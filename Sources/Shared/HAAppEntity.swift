@@ -10,6 +10,7 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
     public let name: String
     public let icon: String?
     public let rawDeviceClass: String?
+    public var hiddenBy: String?
 
     public init(
         id: String,
@@ -18,7 +19,8 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         domain: String,
         name: String,
         icon: String?,
-        rawDeviceClass: String?
+        rawDeviceClass: String?,
+        hiddenBy: String? = nil
     ) {
         self.id = id
         self.entityId = entityId
@@ -27,15 +29,24 @@ public struct HAAppEntity: Codable, Identifiable, FetchableRecord, PersistableRe
         self.name = name
         self.icon = icon
         self.rawDeviceClass = rawDeviceClass
+        self.hiddenBy = hiddenBy
     }
 
     public var deviceClass: DeviceClass {
         DeviceClass(rawValue: rawDeviceClass ?? "") ?? .unknown
     }
 
-    public static func config() throws -> [HAAppEntity]? {
+    public var isHidden: Bool {
+        hiddenBy != nil
+    }
+
+    public static func config(includeHiddenEntities: Bool = false) throws -> [HAAppEntity]? {
         try Current.database().read({ db in
-            try HAAppEntity.fetchAll(db)
+            if includeHiddenEntities {
+                try HAAppEntity.fetchAll(db)
+            } else {
+                try HAAppEntity.filter(Column(DatabaseTables.AppEntity.hiddenBy.rawValue) == nil).fetchAll(db)
+            }
         })
     }
 }

@@ -56,10 +56,37 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func updateHiddenByPropertyInEntitiesDatabase(_ entities: [HAEntityRegistryResponse]) {
-        // Get entities from GRDB
-        // Update hiddenBy property if needed
-        // Update entities in GRDB
+    /// Updates the `hiddenBy` property for entities in the local database based on the registry response.
+    ///
+    /// This method synchronizes the hidden state of entities from Home Assistant's entity registry
+    /// with the local database. It fetches all entities (including hidden ones) from the database,
+    /// matches them with the provided registry responses, and updates their `hiddenBy` property
+    /// to reflect the current state from the server.
+    ///
+    /// - Parameter entitiesRegistryResponse: An array of entity registry responses from Home Assistant
+    ///   containing the current `hiddenBy` state for each entity.
+    ///
+    /// - Note: This method includes hidden entities when fetching from the database to ensure
+    ///   all entities can have their hidden state updated.
+    ///
+    /// - Important: If the database write operation fails, an error will be logged but the method
+    ///   will continue processing remaining entities.
+    private func updateHiddenByPropertyInEntitiesDatabase(_ entitiesRegistryResponse: [HAEntityRegistryResponse]) {
+        do {
+            let entities = try HAAppEntity.config(includeHiddenEntities: true) ?? []
+
+            try entities.forEach { entity in
+                if let entityRegistry = entitiesRegistryResponse.first(where: { $0.entityId == entity.entityId }) {
+                    var updatedEntity = entity
+                    updatedEntity.hiddenBy = entityRegistry.hiddenBy
+                    try Current.database().write { db in
+                        try updatedEntity.update(db)
+                    }
+                }
+            }
+        } catch {
+            Current.Log.error("Failed to update hiddenBy property in entities database: \(error.localizedDescription)")
+        }
     }
 
     private func fetchEntitiesForAreas(_ areas: [HAAreasRegistryResponse], server: Server) async -> [HAEntityRegistryResponse] {
