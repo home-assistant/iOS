@@ -1,7 +1,7 @@
 import Foundation
 import HAKit
 
-public struct HAAreaResponse: HADataDecodable {
+public struct HAAreasRegistryResponse: HADataDecodable {
     public let aliases: [String]
     public let areaId: String
     public let name: String
@@ -34,27 +34,34 @@ public struct HAAreaResponse: HADataDecodable {
     }
 }
 
-public struct HAEntityAreaResponse: HADataDecodable {
+public struct HAEntityRegistryResponse: HADataDecodable {
     public let areaId: String?
     public let entityId: String?
     public let deviceId: String?
+    public let hiddenBy: String?
+
+    public var isHidden: Bool {
+        hiddenBy != nil
+    }
 
     public init(data: HAData) throws {
         self.init(
             areaId: try? data.decode("area_id"),
             entityId: try? data.decode("entity_id"),
-            deviceId: try? data.decode("device_id")
+            deviceId: try? data.decode("device_id"),
+            hiddenBy: try? data.decode("hidden_by")
         )
     }
 
-    public init(areaId: String?, entityId: String?, deviceId: String?) {
+    public init(areaId: String?, entityId: String?, deviceId: String?, hiddenBy: String?) {
         self.areaId = areaId
         self.entityId = entityId
         self.deviceId = deviceId
+        self.hiddenBy = hiddenBy
     }
 }
 
-public struct HADeviceAreaResponse: HADataDecodable {
+public struct HADevicesRegistryResponse: HADataDecodable {
     public let areaId: String?
     public let deviceId: String?
 

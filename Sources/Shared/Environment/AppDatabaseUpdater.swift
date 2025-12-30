@@ -112,7 +112,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     private func saveAreasToDatabase(
-        areas: [HAAreaResponse],
+        areas: [HAAreasRegistryResponse],
         areasAndEntities: [String: Set<String>],
         serverId: String
     ) async {

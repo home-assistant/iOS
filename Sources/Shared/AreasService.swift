@@ -2,9 +2,9 @@ import Foundation
 import HAKit
 
 public protocol AreasServiceProtocol {
-    var areas: [String: [HAAreaResponse]] { get }
+    var areas: [String: [HAAreasRegistryResponse]] { get }
     func fetchAreasAndItsEntities(for server: Server) async -> [String: Set<String>]
-    func area(for areaId: String, serverId: String) -> HAAreaResponse?
+    func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse?
 }
 
 final class AreasService: AreasServiceProtocol {
@@ -12,9 +12,9 @@ final class AreasService: AreasServiceProtocol {
 
     private var request: HACancellable?
     /// [ServerId: [HAAreaResponse]]
-    var areas: [String: [HAAreaResponse]] = [:]
+    var areas: [String: [HAAreasRegistryResponse]] = [:]
 
-    func area(for areaId: String, serverId: String) -> HAAreaResponse? {
+    func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse? {
         guard let areasForServer = areas[serverId] else {
             return nil
         }
@@ -29,7 +29,7 @@ final class AreasService: AreasServiceProtocol {
 
         request?.cancel()
         let areas = await withCheckedContinuation { continuation in
-            request = connection.send(HATypedRequest<[HAAreaResponse]>.configAreasRegistry(), completion: { result in
+            request = connection.send(HATypedRequest<[HAAreasRegistryResponse]>.configAreasRegistry(), completion: { result in
                 switch result {
                 case let .success(data):
                     continuation.resume(returning: data)
@@ -45,6 +45,7 @@ final class AreasService: AreasServiceProtocol {
             return [:]
         } else {
             let entitiesForAreas = await fetchEntitiesForAreas(areas, server: server)
+            updateHiddenByPropertyInEntitiesDatabase(entitiesForAreas)
             let deviceForAreas = await fetchDeviceForAreas(areas, entitiesWithAreas: entitiesForAreas, server: server)
             let allEntitiesPerArea = getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
@@ -55,7 +56,13 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func fetchEntitiesForAreas(_ areas: [HAAreaResponse], server: Server) async -> [HAEntityAreaResponse] {
+    private func updateHiddenByPropertyInEntitiesDatabase(_ entities: [HAEntityRegistryResponse]) {
+        // Get entities from GRDB
+        // Update hiddenBy property if needed
+        // Update entities in GRDB
+    }
+
+    private func fetchEntitiesForAreas(_ areas: [HAAreasRegistryResponse], server: Server) async -> [HAEntityRegistryResponse] {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch entities for areas")
             return []
@@ -64,7 +71,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let entitiesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HAEntityAreaResponse]>.configEntityRegistryList(),
+                HATypedRequest<[HAEntityRegistryResponse]>.configEntityRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
@@ -81,10 +88,10 @@ final class AreasService: AreasServiceProtocol {
     }
 
     private func fetchDeviceForAreas(
-        _ areas: [HAAreaResponse],
-        entitiesWithAreas: [HAEntityAreaResponse],
+        _ areas: [HAAreasRegistryResponse],
+        entitiesWithAreas: [HAEntityRegistryResponse],
         server: Server
-    ) async -> [HADeviceAreaResponse] {
+    ) async -> [HADevicesRegistryResponse] {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch devices for areas")
             return []
@@ -93,7 +100,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let devicesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HADeviceAreaResponse]>.configDeviceRegistryList(),
+                HATypedRequest<[HADevicesRegistryResponse]>.configDeviceRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
@@ -110,8 +117,8 @@ final class AreasService: AreasServiceProtocol {
     }
 
     private func getAllEntitiesFromArea(
-        devicesAndAreas: [HADeviceAreaResponse],
-        entitiesAndAreas: [HAEntityAreaResponse]
+        devicesAndAreas: [HADevicesRegistryResponse],
+        entitiesAndAreas: [HAEntityRegistryResponse]
     ) -> [String: Set<String>] {
         /// area_id : [device_id]
         var areasAndDevicesDict: [String: [String]] = [:]
@@ -174,8 +181,8 @@ final class AreasService: AreasServiceProtocol {
     #if DEBUG
     /// For testing purposes only
     public func testGetAllEntitiesFromArea(
-        devicesAndAreas: [HADeviceAreaResponse],
-        entitiesAndAreas: [HAEntityAreaResponse]
+        devicesAndAreas: [HADevicesRegistryResponse],
+        entitiesAndAreas: [HAEntityRegistryResponse]
     ) -> [String: Set<String>] {
         getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }
