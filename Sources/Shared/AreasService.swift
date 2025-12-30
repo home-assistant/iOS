@@ -48,7 +48,7 @@ final class AreasService: AreasServiceProtocol {
             return [:]
         } else {
             let entitiesForAreas = await fetchEntitiesForAreas(areas, server: server)
-            updateHiddenByPropertyInEntitiesDatabase(entitiesForAreas)
+            updatePropertiesInEntitiesDatabase(entitiesForAreas, serverId: server.identifier.rawValue)
             let deviceForAreas = await fetchDeviceForAreas(areas, entitiesWithAreas: entitiesForAreas, server: server)
             let allEntitiesPerArea = getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
@@ -59,29 +59,36 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    /// Updates the `hiddenBy` property for entities in the local database based on the registry response.
+    /// Updates the `hiddenBy` and `disabledBy` properties for entities in the local database based on the registry
+    /// response.
     ///
-    /// This method synchronizes the hidden state of entities from Home Assistant's entity registry
-    /// with the local database. It fetches all entities (including hidden ones) from the database,
-    /// matches them with the provided registry responses, and updates their `hiddenBy` property
+    /// This method synchronizes the hidden and disabled states of entities from Home Assistant's entity registry
+    /// with the local database. It fetches all entities (including hidden and disabled ones) from the database,
+    /// matches them with the provided registry responses, and updates their `hiddenBy` and `disabledBy` properties
     /// to reflect the current state from the server.
     ///
-    /// - Parameter entitiesRegistryResponse: An array of entity registry responses from Home Assistant
-    ///   containing the current `hiddenBy` state for each entity.
+    /// - Parameters:
+    ///   - entitiesRegistryResponse: An array of entity registry responses from Home Assistant
+    ///     containing the current `hiddenBy` and `disabledBy` states for each entity.
+    ///   - serverId: The server identifier to filter entities by.
     ///
-    /// - Note: This method includes hidden entities when fetching from the database to ensure
-    ///   all entities can have their hidden state updated.
+    /// - Note: This method includes hidden and disabled entities when fetching from the database to ensure
+    ///   all entities can have their states updated.
     ///
     /// - Important: If the database write operation fails, an error will be logged but the method
     ///   will continue processing remaining entities.
-    private func updateHiddenByPropertyInEntitiesDatabase(_ entitiesRegistryResponse: [HAEntityRegistryResponse]) {
+    private func updatePropertiesInEntitiesDatabase(
+        _ entitiesRegistryResponse: [HAEntityRegistryResponse],
+        serverId: String
+    ) {
         do {
-            let entities = try HAAppEntity.config(includeHiddenEntities: true) ?? []
+            let entities = try HAAppEntity.config(include: [.all]).filter({ $0.serverId == serverId })
 
             for entity in entities {
                 if let entityRegistry = entitiesRegistryResponse.first(where: { $0.entityId == entity.entityId }) {
                     var updatedEntity = entity
                     updatedEntity.hiddenBy = entityRegistry.hiddenBy
+                    updatedEntity.disabledBy = entityRegistry.disabledBy
                     try Current.database().write { db in
                         try updatedEntity.update(db)
                     }

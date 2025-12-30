@@ -39,9 +39,14 @@ public struct HAEntityRegistryResponse: HADataDecodable {
     public let entityId: String?
     public let deviceId: String?
     public let hiddenBy: String?
+    public let disabledBy: String?
 
     public var isHidden: Bool {
         hiddenBy != nil
+    }
+
+    public var isDisabled: Bool {
+        disabledBy != nil
     }
 
     public init(data: HAData) throws {
@@ -49,15 +54,17 @@ public struct HAEntityRegistryResponse: HADataDecodable {
             areaId: try? data.decode("area_id"),
             entityId: try? data.decode("entity_id"),
             deviceId: try? data.decode("device_id"),
-            hiddenBy: try? data.decode("hidden_by")
+            hiddenBy: try? data.decode("hidden_by"),
+            disabledBy: try? data.decode("disabled_by")
         )
     }
 
-    public init(areaId: String?, entityId: String?, deviceId: String?, hiddenBy: String?) {
+    public init(areaId: String?, entityId: String?, deviceId: String?, hiddenBy: String?, disabledBy: String?) {
         self.areaId = areaId
         self.entityId = entityId
         self.deviceId = deviceId
         self.hiddenBy = hiddenBy
+        self.disabledBy = disabledBy
     }
 }
 

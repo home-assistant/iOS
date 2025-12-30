@@ -94,7 +94,7 @@ struct MagicItemCustomizationView: View {
             viewModel.navigationPathAction = path
         case let .runScript(serverId, scriptId):
             do {
-                let entity = try HAAppEntity.config()?.first(where: { entity in
+                let entity = try HAAppEntity.config().first(where: { entity in
                     entity.serverId == serverId && entity.entityId == scriptId
                 })
                 viewModel.selectedEntity = entity

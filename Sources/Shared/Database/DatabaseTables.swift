@@ -25,6 +25,7 @@ public enum DatabaseTables {
         case icon
         case rawDeviceClass
         case hiddenBy
+        case disabledBy
     }
 
     public enum WatchConfig: String {
