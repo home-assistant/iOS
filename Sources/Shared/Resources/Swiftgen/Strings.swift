@@ -1338,6 +1338,37 @@ public enum L10n {
     }
   }
 
+  public enum HomeView {
+    public enum ContextMenu {
+      /// Hide
+      public static var hide: String { return L10n.tr("Localizable", "home_view.context_menu.hide") }
+    }
+    public enum EmptyState {
+      /// No entities found
+      public static var noEntities: String { return L10n.tr("Localizable", "home_view.empty_state.no_entities") }
+    }
+    public enum Menu {
+      /// Allow multiple selection
+      public static var allowMultipleSelection: String { return L10n.tr("Localizable", "home_view.menu.allow_multiple_selection") }
+      /// No sections available
+      public static var noSectionsAvailable: String { return L10n.tr("Localizable", "home_view.menu.no_sections_available") }
+      /// Open web UI
+      public static var openWebUi: String { return L10n.tr("Localizable", "home_view.menu.open_web_ui") }
+      /// Reorder
+      public static var reorder: String { return L10n.tr("Localizable", "home_view.menu.reorder") }
+      /// Settings
+      public static var settings: String { return L10n.tr("Localizable", "home_view.menu.settings") }
+      /// Show All
+      public static var showAll: String { return L10n.tr("Localizable", "home_view.menu.show_all") }
+    }
+    public enum Navigation {
+      public enum Subtitle {
+        /// Experimental feature
+        public static var experimental: String { return L10n.tr("Localizable", "home_view.navigation.subtitle.experimental") }
+      }
+    }
+  }
+
   public enum Improv {
     public enum Button {
       /// Continue

@@ -20,7 +20,7 @@ struct HomeView: View {
         NavigationStack {
             contentView
                 .navigationTitle(viewModel.server.info.name)
-                .navigationSubtitle("Experimental feature")
+                .navigationSubtitle(L10n.HomeView.Navigation.Subtitle.experimental)
                 .toolbar {
                     toolbarMenu
                 }
@@ -98,7 +98,7 @@ struct HomeView: View {
             Image(systemSymbol: .house)
                 .font(.system(size: DesignSystem.Spaces.six))
                 .foregroundColor(.secondary)
-            Text("No entities found")
+            Text(L10n.HomeView.EmptyState.noEntities)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
         }
@@ -145,7 +145,7 @@ struct HomeView: View {
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
                 if viewModel.groupedEntities.isEmpty {
-                    Text("No sections available")
+                    Text(L10n.HomeView.Menu.noSectionsAvailable)
                         .foregroundColor(.secondary)
                 } else {
                     Toggle(isOn: Binding(
@@ -160,7 +160,7 @@ struct HomeView: View {
                             }
                         }
                     )) {
-                        Text("Show All")
+                        Text(L10n.HomeView.Menu.showAll)
                     }
 
                     Toggle(isOn: Binding(
@@ -170,7 +170,7 @@ struct HomeView: View {
                             viewModel.saveFilterSettings()
                         }
                     )) {
-                        Text("Allow multiple selection")
+                        Text(L10n.HomeView.Menu.allowMultipleSelection)
                     }
 
                     Divider()
@@ -200,19 +200,19 @@ struct HomeView: View {
                 Button {
                     showReorder = true
                 } label: {
-                    Label("Reorder", systemSymbol: .listDash)
+                    Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
                 }
 
                 Button {
                     dismiss()
                 } label: {
-                    Label("Open web UI", systemSymbol: .safari)
+                    Label(L10n.HomeView.Menu.openWebUi, systemSymbol: .safari)
                 }
 
                 Button {
                     showSettings = true
                 } label: {
-                    Label("Settings", systemSymbol: .gearshape)
+                    Label(L10n.HomeView.Menu.settings, systemSymbol: .gearshape)
                 }
             } label: {
                 Image(systemSymbol: .ellipsis)
@@ -262,7 +262,7 @@ struct HomeView: View {
                     Button(role: .destructive) {
                         viewModel.hideEntity(entity.entityId)
                     } label: {
-                        Label("Hide", systemImage: "eye.slash")
+                        Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
                     }
                 }
             }

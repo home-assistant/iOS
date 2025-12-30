@@ -1392,4 +1392,13 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "app_intents.open_experimental_dashboard.title" = "Open Experimental Dashboard";
 "app_intents.open_experimental_dashboard.description" = "Opens the experimental dashboard";
 "app_intents.server.title" = "Server";
+"home_view.navigation.subtitle.experimental" = "Experimental feature";
+"home_view.empty_state.no_entities" = "No entities found";
+"home_view.menu.no_sections_available" = "No sections available";
+"home_view.menu.show_all" = "Show All";
+"home_view.menu.allow_multiple_selection" = "Allow multiple selection";
+"home_view.menu.reorder" = "Reorder";
+"home_view.menu.open_web_ui" = "Open web UI";
+"home_view.menu.settings" = "Settings";
+"home_view.context_menu.hide" = "Hide";
 "yes_label" = "Yes";
