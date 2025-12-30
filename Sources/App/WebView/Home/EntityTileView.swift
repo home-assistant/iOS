@@ -19,6 +19,8 @@ struct EntityTileView: View {
     let appEntity: HAAppEntity
     let haEntity: HAEntity?
 
+    @State private var triggerHaptic = 0
+
     init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
         self.server = server
         self.appEntity = appEntity
@@ -82,6 +84,12 @@ struct EntityTileView: View {
             .clipShape(Circle())
         }
         .buttonStyle(.plain)
+        .simultaneousGesture(
+            TapGesture().onEnded {
+                triggerHaptic += 1
+            }
+        )
+        .sensoryFeedback(.success, trigger: triggerHaptic)
     }
 
     private var iconColor: Color {
