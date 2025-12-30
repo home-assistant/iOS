@@ -155,8 +155,6 @@ struct HomeView: View {
                                 // Turning 'Show All' on clears filters
                                 viewModel.selectedSectionIds.removeAll()
                                 viewModel.saveFilterSettings()
-                            } else {
-                                // Optionally do nothing when turning off
                             }
                         }
                     )) {
@@ -175,7 +173,7 @@ struct HomeView: View {
 
                     Divider()
 
-                    ForEach(orderedSectionsForMenu) { section in
+                    ForEach(viewModel.orderedSectionsForMenu) { section in
                         Toggle(isOn: Binding(
                             get: { viewModel.selectedSectionIds.contains(section.id) },
                             set: { _ in
@@ -221,21 +219,6 @@ struct HomeView: View {
     }
 
     // MARK: - Component Views
-
-    private var orderedSectionsForMenu: [HomeViewModel.RoomSection] {
-        // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
-        if viewModel.sectionOrder.isEmpty {
-            return viewModel.groupedEntities
-        } else {
-            let orderIndex = Dictionary(uniqueKeysWithValues: viewModel.sectionOrder.enumerated().map { ($1, $0) })
-            return viewModel.groupedEntities.sorted { a, b in
-                let ia = orderIndex[a.id] ?? Int.max
-                let ib = orderIndex[b.id] ?? Int.max
-                if ia == ib { return a.name < b.name }
-                return ia < ib
-            }
-        }
-    }
 
     private func sectionHeader(_ title: String) -> some View {
         Text(title)

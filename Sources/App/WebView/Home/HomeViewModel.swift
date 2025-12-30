@@ -197,6 +197,21 @@ final class HomeViewModel: ObservableObject {
         return orderedSections.filter { selectedSectionIds.contains($0.id) }
     }
 
+    var orderedSectionsForMenu: [RoomSection] {
+        // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
+        if sectionOrder.isEmpty {
+            return groupedEntities
+        } else {
+            let orderIndex = Dictionary(uniqueKeysWithValues: sectionOrder.enumerated().map { ($1, $0) })
+            return groupedEntities.sorted { a, b in
+                let ia = orderIndex[a.id] ?? Int.max
+                let ib = orderIndex[b.id] ?? Int.max
+                if ia == ib { return a.name < b.name }
+                return ia < ib
+            }
+        }
+    }
+
     func toggledSelection(
         for sectionId: String,
         current selected: Set<String>,
