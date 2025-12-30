@@ -29,15 +29,18 @@ final class AreasService: AreasServiceProtocol {
 
         request?.cancel()
         let areas = await withCheckedContinuation { continuation in
-            request = connection.send(HATypedRequest<[HAAreasRegistryResponse]>.configAreasRegistry(), completion: { result in
-                switch result {
-                case let .success(data):
-                    continuation.resume(returning: data)
-                case let .failure(error):
-                    Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
-                    continuation.resume(returning: [])
+            request = connection.send(
+                HATypedRequest<[HAAreasRegistryResponse]>.configAreasRegistry(),
+                completion: { result in
+                    switch result {
+                    case let .success(data):
+                        continuation.resume(returning: data)
+                    case let .failure(error):
+                        Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
+                        continuation.resume(returning: [])
+                    }
                 }
-            })
+            )
         }
         self.areas[server.identifier.rawValue] = areas
         if areas.isEmpty {
@@ -75,7 +78,7 @@ final class AreasService: AreasServiceProtocol {
         do {
             let entities = try HAAppEntity.config(includeHiddenEntities: true) ?? []
 
-            try entities.forEach { entity in
+            for entity in entities {
                 if let entityRegistry = entitiesRegistryResponse.first(where: { $0.entityId == entity.entityId }) {
                     var updatedEntity = entity
                     updatedEntity.hiddenBy = entityRegistry.hiddenBy
@@ -89,7 +92,10 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func fetchEntitiesForAreas(_ areas: [HAAreasRegistryResponse], server: Server) async -> [HAEntityRegistryResponse] {
+    private func fetchEntitiesForAreas(
+        _ areas: [HAAreasRegistryResponse],
+        server: Server
+    ) async -> [HAEntityRegistryResponse] {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch entities for areas")
             return []
