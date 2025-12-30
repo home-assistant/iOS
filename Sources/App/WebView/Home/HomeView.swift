@@ -228,9 +228,10 @@ struct HomeView: View {
     }
 
     private func entityTilesGrid(for entities: [HAAppEntity]) -> some View {
+        // Use adaptive columns with a minimum width to allow 2-3 columns depending on available space
+        // Minimum of 150 points ensures good tile appearance, and system will fit as many as possible
         let columns = [
-            GridItem(.flexible(), spacing: DesignSystem.Spaces.oneAndHalf),
-            GridItem(.flexible(), spacing: DesignSystem.Spaces.oneAndHalf),
+            GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
         ]
 
         return LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
