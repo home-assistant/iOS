@@ -648,6 +648,7 @@
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
+		423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
 		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
 		42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
@@ -2239,6 +2240,7 @@
 		422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAApplicationShortcutItem.swift; sourceTree = "<group>"; };
 		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
+		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
 		42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerSource.swift; sourceTree = "<group>"; };
 		4238DCA32DD1F1E300126434 /* AppSessionValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionValues.swift; sourceTree = "<group>"; };
 		4238E8522EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSecurityLevelBlockView.swift; sourceTree = "<group>"; };
@@ -5850,6 +5852,7 @@
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
+				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
 				42F5C0842F02BBA000C50310 /* AppIntentProvider.swift */,
 				42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */,
@@ -9018,6 +9021,7 @@
 				42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */,
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
+				423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */,
 				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
