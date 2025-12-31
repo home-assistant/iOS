@@ -1,21 +1,20 @@
+import HAKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import HAKit
 
 /// Shared UI components for entity display views
 @available(iOS 26.0, *)
 enum EntityDisplayComponents {
-    
     // MARK: - Loading View
-    
+
     static var loadingView: some View {
         ProgressView()
             .transition(.opacity.combined(with: .scale))
     }
-    
+
     // MARK: - Error View
-    
+
     static func errorView(_ errorMessage: String) -> some View {
         VStack(spacing: DesignSystem.Spaces.two) {
             Image(systemSymbol: .exclamationmarkTriangle)
@@ -27,9 +26,9 @@ enum EntityDisplayComponents {
         }
         .transition(.opacity.combined(with: .scale))
     }
-    
+
     // MARK: - Empty State View
-    
+
     static func emptyStateView(message: String) -> some View {
         VStack(spacing: DesignSystem.Spaces.two) {
             Image(systemSymbol: .house)
@@ -42,9 +41,9 @@ enum EntityDisplayComponents {
         .padding()
         .transition(.opacity.combined(with: .scale))
     }
-    
+
     // MARK: - Entity Tiles Grid
-    
+
     static func entityTilesGrid(
         entities: [HAAppEntity],
         server: Server,
@@ -55,7 +54,7 @@ enum EntityDisplayComponents {
         let columns = [
             GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
         ]
-        
+
         return LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
             ForEach(entities) { entity in
                 EntityTileView(

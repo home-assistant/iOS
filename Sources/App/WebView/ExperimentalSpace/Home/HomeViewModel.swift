@@ -37,10 +37,10 @@ final class HomeViewModel: ObservableObject {
         // Load hidden entities, section order, and filter settings BEFORE building sections
         let loadedHiddenEntities = await EntityDisplayService.loadHiddenEntities(for: server)
         hiddenEntityIds = loadedHiddenEntities
-        
+
         async let sectionOrderLoad: Void = loadSectionOrderIfNeeded()
         async let filterSettingsLoad: Void = loadFilterSettingsIfNeeded()
-        
+
         await sectionOrderLoad
         await filterSettingsLoad
 
@@ -74,7 +74,7 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func fetchEntitiesWithCategories(serverId: String) throws -> Set<String> {
-        return try EntityDisplayService.fetchEntitiesWithCategories(serverId: serverId)
+        try EntityDisplayService.fetchEntitiesWithCategories(serverId: serverId)
     }
 
     private func filterEntities(
@@ -82,7 +82,7 @@ final class HomeViewModel: ObservableObject {
         serverId: String,
         excludingCategories categorizedEntities: Set<String>
     ) -> [HAAppEntity] {
-        return EntityDisplayService.filterEntities(
+        EntityDisplayService.filterEntities(
             entities,
             serverId: serverId,
             excludingCategories: categorizedEntities
