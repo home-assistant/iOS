@@ -10,6 +10,7 @@ struct EntityMoreInfoDialogView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var triggerHaptic = 0
+    @State private var areaName: String = ""
 
     init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
         self.server = server
@@ -35,7 +36,8 @@ struct EntityMoreInfoDialogView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle(appEntity.name)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationSubtitle(areaName)
+            .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
@@ -44,6 +46,25 @@ struct EntityMoreInfoDialogView: View {
                     }
                 }
             }
+            .task {
+                await loadAreaName()
+            }
+        }
+    }
+
+    // MARK: - Area Lookup
+
+    private func loadAreaName() async {
+        do {
+            let areas = try AppArea.fetchAreas(
+                containingEntity: appEntity.entityId,
+                serverId: server.identifier.rawValue
+            )
+            if let area = areas.first {
+                areaName = area.name
+            }
+        } catch {
+            Current.Log.error("Failed to fetch area for entity \(appEntity.entityId): \(error.localizedDescription)")
         }
     }
 
