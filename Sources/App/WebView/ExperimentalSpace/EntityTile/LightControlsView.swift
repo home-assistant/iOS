@@ -15,7 +15,7 @@ struct LightControlsView: View {
         static let controlBarHeight: CGFloat = 56
         static let controlIconSize: CGFloat = 20
         static let cornerRadius: CGFloat = 28
-        static let maxColorPresets: Int = 7
+        static let maxColorPresets: Int = 8
         static let colorPresetsRows: Int = 2
         static let colorPresetsColumns: Int = 4
     }
@@ -26,6 +26,7 @@ struct LightControlsView: View {
 
     @State private var brightness: Double = 0
     @State private var selectedColor: Color = .white
+    @State private var pickerColor: Color = .white
     @State private var isOn: Bool = false
     @State private var triggerHaptic = 0
     @State private var iconColor: Color = .secondary
@@ -53,6 +54,8 @@ struct LightControlsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             updateStateFromEntity()
+            // Initialize picker color once; it will not be updated by remote changes afterwards
+            pickerColor = selectedColor
             Task { await loadRecentColors() }
         }
         .onChange(of: haEntity) { _, _ in updateStateFromEntity() }
@@ -137,10 +140,13 @@ struct LightControlsView: View {
 
     private var controlBar: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
+            Spacer()
             controlIconButton(system: "power") {
                 triggerHaptic += 1
                 Task { await toggleLight() }
             }
+            colorPickerSwatch
+            Spacer()
         }
         .frame(height: Constants.controlBarHeight)
         .frame(maxWidth: .infinity)
@@ -198,9 +204,6 @@ struct LightControlsView: View {
                         if index < displayColors.count {
                             let colorInfo = displayColors[index]
                             swatch(color: colorInfo.color, shouldSaveToRecents: colorInfo.isRecent)
-                        } else if index == Constants.maxColorPresets {
-                            // Last position: color picker
-                            colorPickerSwatch
                         } else {
                             Spacer(minLength: Constants.swatchSize)
                         }
@@ -230,17 +233,14 @@ struct LightControlsView: View {
     }
 
     private var colorPickerSwatch: some View {
-        ColorPicker("", selection: $selectedColor)
+        ColorPicker("", selection: $pickerColor)
             .labelsHidden()
             .frame(width: Constants.swatchSize, height: Constants.swatchSize)
             .clipShape(Circle())
             .overlay(
                 Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
             )
-            .onChange(of: selectedColor) { _, newColor in
-                // Skip if we're updating from server to avoid feedback loop
-                guard !isUpdatingFromServer else { return }
-
+            .onChange(of: pickerColor) { _, newColor in
                 triggerHaptic += 1
                 Task {
                     await updateColor(newColor, saveToRecents: true)
@@ -382,13 +382,6 @@ struct LightControlsView: View {
     }
 
     private func updateColor(_ color: Color, saveToRecents: Bool = false) async {
-        guard isOn else { return }
-
-        // Avoid redundant API calls if color hasn't meaningfully changed
-        if colorsAreEqual(color, selectedColor) {
-            return
-        }
-
         let uiColor = UIColor(color)
         var red: CGFloat = 0
         var green: CGFloat = 0
