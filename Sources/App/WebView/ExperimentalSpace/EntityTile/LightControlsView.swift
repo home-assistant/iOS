@@ -1,3 +1,4 @@
+import AppIntents
 import HAKit
 import Shared
 import SwiftUI
@@ -114,13 +115,16 @@ struct LightControlsView: View {
                 Task { await toggleLight() }
             }
             controlIconButton(system: "gearshape") {
+                triggerHaptic += 1
                 // Placeholder for settings/details
             }
             controlIconButton(system: "circle.lefthalf.filled") {
+                triggerHaptic += 1
                 // Toggle color presets visibility
                 withAnimation(.easeInOut) { showColorPresets.toggle() }
             }
             controlIconButton(system: "sun.max") {
+                triggerHaptic += 1
                 // Quick warm preset
                 Task { await updateColor(Color(hue: 40 / 360, saturation: 0.25, brightness: 1.0)) }
             }
@@ -185,6 +189,7 @@ struct LightControlsView: View {
 
     private func swatch(color: Color) -> some View {
         Button {
+            triggerHaptic += 1
             Task { await updateColor(color) }
         } label: {
             Circle()
@@ -202,6 +207,7 @@ struct LightControlsView: View {
 
     private var effectButton: some View {
         Button {
+            triggerHaptic += 1
             // Placeholder for effects sheet
         } label: {
             HStack {
@@ -282,60 +288,40 @@ struct LightControlsView: View {
     // MARK: - Service Calls
 
     private func toggleLight() async {
-        await Current.connectivity.syncNetworkInformation()
-        guard let connection = Current.api(for: server)?.connection else {
-            return
-        }
+        let intent = ToggleLightIntent()
+        intent.light = createLightEntity()
+        intent.turnOn = !isOn
 
-        let newState = !isOn
-        let service = newState ? Service.turnOn.rawValue : Service.turnOff.rawValue
-
-        let _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
-                domain: .init(stringLiteral: Domain.light.rawValue),
-                service: .init(stringLiteral: service),
-                data: [
-                    "entity_id": appEntity.entityId,
-                ]
-            )).promise.pipe { _ in
-                continuation.resume()
+        do {
+            let _ = try await intent.perform()
+            // Update local state
+            isOn = !isOn
+            if !isOn {
+                brightness = 0
+                iconColor = .secondary
             }
+        } catch {
+            Current.Log.verbose("Failed to toggle light: \(error)")
         }
-
-        // Update local state
-        isOn = newState
-        if !newState { brightness = 0 }
     }
 
     private func updateBrightness(_ value: Double) async {
         guard isOn else { return }
-        await Current.connectivity.syncNetworkInformation()
-        guard let connection = Current.api(for: server)?.connection else {
-            return
-        }
 
-        let hasBrightness = Int(value / 100.0 * 255.0)
+        let intent = SetLightBrightnessIntent()
+        intent.light = createLightEntity()
+        intent.brightness = Int(value / 100.0 * 255.0)
 
-        let _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
-                domain: .init(stringLiteral: Domain.light.rawValue),
-                service: .init(stringLiteral: Service.turnOn.rawValue),
-                data: [
-                    "entity_id": appEntity.entityId,
-                    "brightness": hasBrightness,
-                ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
+        do {
+            let _ = try await intent.perform()
+            brightness = value
+        } catch {
+            Current.Log.verbose("Failed to update brightness: \(error)")
         }
     }
 
     private func updateColor(_ color: Color) async {
         guard isOn else { return }
-        await Current.connectivity.syncNetworkInformation()
-        guard let connection = Current.api(for: server)?.connection else {
-            return
-        }
 
         let uiColor = UIColor(color)
         var red: CGFloat = 0
@@ -345,22 +331,30 @@ struct LightControlsView: View {
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         let rgbColor = [Int(red * 255), Int(green * 255), Int(blue * 255)]
 
-        let _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
-                domain: .init(stringLiteral: Domain.light.rawValue),
-                service: .init(stringLiteral: Service.turnOn.rawValue),
-                data: [
-                    "entity_id": appEntity.entityId,
-                    "rgb_color": rgbColor,
-                ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
-        }
+        let intent = SetLightColorIntent()
+        intent.light = createLightEntity()
+        intent.rgbColor = rgbColor
 
-        // Update local state
-        selectedColor = color
-        iconColor = color
+        do {
+            let _ = try await intent.perform()
+            // Update local state
+            selectedColor = color
+            iconColor = color
+        } catch {
+            Current.Log.verbose("Failed to update color: \(error)")
+        }
+    }
+
+    // MARK: - Intent Helpers
+
+    private func createLightEntity() -> IntentLightEntity {
+        IntentLightEntity(
+            id: appEntity.entityId,
+            entityId: appEntity.entityId,
+            serverId: server.identifier.rawValue,
+            displayString: appEntity.name,
+            iconName: appEntity.icon ?? ""
+        )
     }
 
     // MARK: - Helpers
