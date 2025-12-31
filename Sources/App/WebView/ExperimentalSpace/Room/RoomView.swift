@@ -43,11 +43,11 @@ struct RoomView: View {
     private var contentView: some View {
         ZStack {
             if viewModel.isLoading {
-                loadingView
+                EntityDisplayComponents.loadingView
             } else if let errorMessage = viewModel.errorMessage {
-                errorView(errorMessage)
+                EntityDisplayComponents.errorView(errorMessage)
             } else if viewModel.allEntities.isEmpty {
-                emptyStateView
+                EntityDisplayComponents.emptyStateView(message: L10n.RoomView.EmptyState.noEntities)
             } else {
                 entitiesListView
             }
@@ -56,36 +56,6 @@ struct RoomView: View {
         .animation(DesignSystem.Animation.default, value: viewModel.errorMessage)
         .animation(DesignSystem.Animation.default, value: viewModel.allEntities.isEmpty)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private var loadingView: some View {
-        ProgressView()
-            .transition(.opacity.combined(with: .scale))
-    }
-
-    private func errorView(_ errorMessage: String) -> some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: .exclamationmarkTriangle)
-                .font(.system(size: DesignSystem.Spaces.six))
-                .foregroundColor(.secondary)
-            Text(errorMessage)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-        }
-        .transition(.opacity.combined(with: .scale))
-    }
-
-    private var emptyStateView: some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: .house)
-                .font(.system(size: DesignSystem.Spaces.six))
-                .foregroundColor(.secondary)
-            Text(L10n.RoomView.EmptyState.noEntities)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-        }
-        .padding()
-        .transition(.opacity.combined(with: .scale))
     }
 
     private var entitiesListView: some View {
@@ -127,27 +97,21 @@ struct RoomView: View {
     }
 
     private func entityTilesGrid(for entities: [HAAppEntity], isHidden: Bool = false) -> some View {
-        let columns = [
-            GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
-        ]
-
-        return LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
-            ForEach(entities) { entity in
-                EntityTileView(
-                    server: viewModel.server,
-                    appEntity: entity,
-                    haEntity: viewModel.entityStates[entity.entityId]
-                )
-                .contentShape(Rectangle())
-                .opacity(isHidden ? 0.6 : 1.0)
-                .contextMenu {
-                    if isHidden {
-                        Button {
-                            viewModel.unhideEntity(entity.entityId)
-                        } label: {
-                            Label(L10n.RoomView.ContextMenu.unhide, systemSymbol: .eye)
-                        }
+        EntityDisplayComponents.entityTilesGrid(
+            entities: entities,
+            server: viewModel.server,
+            entityStates: viewModel.entityStates,
+            isHidden: isHidden
+        ) { entity in
+            Group {
+                if isHidden {
+                    Button {
+                        viewModel.unhideEntity(entity.entityId)
+                    } label: {
+                        Label(L10n.RoomView.ContextMenu.unhide, systemSymbol: .eye)
                     }
+                } else {
+                    EmptyView()
                 }
             }
         }

@@ -24,14 +24,7 @@ final class HomeViewModel: ObservableObject {
         let entities: [HAAppEntity]
     }
 
-    private var entitiesSubscriptionToken: HACancellable?
-
-    private var allowedDomains: [Domain] = [
-        .light,
-        .cover,
-        .switch,
-        .fan,
-    ]
+    private let entityService = EntityDisplayService()
 
     init(server: Server) {
         self.server = server
@@ -42,11 +35,14 @@ final class HomeViewModel: ObservableObject {
         errorMessage = nil
 
         // Load hidden entities, section order, and filter settings BEFORE building sections
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { await self.loadHiddenEntitiesIfNeeded() }
-            group.addTask { await self.loadSectionOrderIfNeeded() }
-            group.addTask { await self.loadFilterSettingsIfNeeded() }
-        }
+        let loadedHiddenEntities = await EntityDisplayService.loadHiddenEntities(for: server)
+        hiddenEntityIds = loadedHiddenEntities
+        
+        async let sectionOrderLoad: Void = loadSectionOrderIfNeeded()
+        async let filterSettingsLoad: Void = loadFilterSettingsIfNeeded()
+        
+        await sectionOrderLoad
+        await filterSettingsLoad
 
         do {
             let sections = try await fetchAndGroupEntities()
@@ -62,10 +58,10 @@ final class HomeViewModel: ObservableObject {
 
     private func fetchAndGroupEntities() async throws -> [RoomSection] {
         let serverId = server.identifier.rawValue
-        let allEntities = try HAAppEntity.config() ?? []
+        let allEntities = try HAAppEntity.config()
 
-        let entitiesWithCategories = try fetchEntitiesWithCategories(serverId: serverId)
-        let serverEntities = filterEntities(
+        let entitiesWithCategories = try EntityDisplayService.fetchEntitiesWithCategories(serverId: serverId)
+        let serverEntities = EntityDisplayService.filterEntities(
             allEntities,
             serverId: serverId,
             excludingCategories: entitiesWithCategories
@@ -78,20 +74,7 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func fetchEntitiesWithCategories(serverId: String) throws -> Set<String> {
-        do {
-            let registryEntities = try Current.database().read { db in
-                try AppEntityRegistryListForDisplay
-                    .filter(
-                        Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId
-                    )
-                    .fetchAll(db)
-            }
-            // Return entity IDs that have a non-nil category (config/diagnostic entities)
-            return Set(registryEntities.filter { $0.registry.entityCategory != nil }.map(\.entityId))
-        } catch {
-            Current.Log.error("Failed to fetch entity registry for filtering: \(error.localizedDescription)")
-            return []
-        }
+        return try EntityDisplayService.fetchEntitiesWithCategories(serverId: serverId)
     }
 
     private func filterEntities(
@@ -99,11 +82,11 @@ final class HomeViewModel: ObservableObject {
         serverId: String,
         excludingCategories categorizedEntities: Set<String>
     ) -> [HAAppEntity] {
-        entities.filter {
-            $0.serverId == serverId &&
-                allowedDomains.map(\.rawValue).contains($0.domain) &&
-                !categorizedEntities.contains($0.entityId)
-        }
+        return EntityDisplayService.filterEntities(
+            entities,
+            serverId: serverId,
+            excludingCategories: categorizedEntities
+        )
     }
 
     private func createEntityToAreaMap(areas: [AppArea]) -> [String: AppArea] {
@@ -154,25 +137,9 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func subscribeToEntitiesChanges() {
-        entitiesSubscriptionToken?.cancel()
-
-        var filter: [String: Any] = [:]
-        if server.info.version > .canSubscribeEntitiesChangesWithFilter {
-            filter = [
-                "include": [
-                    "domains": allowedDomains.map(\.rawValue),
-                ],
-            ]
+        entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
+            self?.entityStates = states
         }
-
-        // Guarantee fresh data
-        Current.api(for: server)?.connection.disconnect()
-        entitiesSubscriptionToken = Current.api(for: server)?.connection.caches.states(filter)
-            .subscribe { [weak self] _, states in
-                Task { @MainActor [weak self] in
-                    self?.entityStates = states.all.reduce(into: [:]) { $0[$1.entityId] = $1 }
-                }
-            }
     }
 
     func filteredSections(sectionOrder: [String], selectedSectionIds: Set<String>) -> [RoomSection] {
@@ -270,45 +237,22 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Hidden Entities
 
-    private var hiddenEntitiesCacheKey: String {
-        "home.hiddenEntities." + server.identifier.rawValue
-    }
-
-    private func loadHiddenEntitiesIfNeeded() async {
-        do {
-            let hidden: Set<String> = try await withCheckedThrowingContinuation { continuation in
-                Current.diskCache
-                    .value(for: hiddenEntitiesCacheKey)
-                    .done { (hidden: Set<String>) in
-                        continuation.resume(returning: hidden)
-                    }
-                    .catch { error in
-                        continuation.resume(throwing: error)
-                    }
-            }
-            hiddenEntityIds = hidden
-        } catch {
-            // No hidden entities cached, start with empty set
-            hiddenEntityIds = []
-        }
-    }
-
     func hideEntity(_ entityId: String) {
         hiddenEntityIds.insert(entityId)
-        saveHiddenEntities()
+        EntityDisplayService.saveHiddenEntities(hiddenEntityIds, for: server)
         rebuildSections()
     }
 
     func unhideEntity(_ entityId: String) {
         hiddenEntityIds.remove(entityId)
-        saveHiddenEntities()
+        EntityDisplayService.saveHiddenEntities(hiddenEntityIds, for: server)
         // Rebuild sections to show the entity again
         rebuildSections()
     }
 
     func reloadAfterUnhide() async {
         // Reload hidden entities from cache (in case they were changed in RoomView)
-        await loadHiddenEntitiesIfNeeded()
+        hiddenEntityIds = await EntityDisplayService.loadHiddenEntities(for: server)
         // Rebuild sections to reflect the changes
         rebuildSections()
     }
@@ -323,14 +267,6 @@ final class HomeViewModel: ObservableObject {
                 }
             } catch {
                 Current.Log.error("Failed to reload entities after hiding: \(error.localizedDescription)")
-            }
-        }
-    }
-
-    private func saveHiddenEntities() {
-        Current.diskCache.set(hiddenEntityIds, for: hiddenEntitiesCacheKey).pipe { result in
-            if case let .rejected(error) = result {
-                Current.Log.error("Failed to save hidden entities: \(error)")
             }
         }
     }

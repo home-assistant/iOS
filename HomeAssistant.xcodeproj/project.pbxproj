@@ -923,6 +923,8 @@
 		42AF759E2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */; };
 		42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */; };
 		42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */; };
+		42B129432F0565DE00B957AF /* EntityDisplayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B129422F0565DE00B957AF /* EntityDisplayViewModel.swift */; };
+		42B129452F0565E900B957AF /* EntityDisplayComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B129442F0565E900B957AF /* EntityDisplayComponents.swift */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
@@ -2664,6 +2666,8 @@
 		42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewControllerProtocol.swift; sourceTree = "<group>"; };
 		42AF759F2DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewEmptyStateView.swift; sourceTree = "<group>"; };
 		42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSettingsDestination.swift; sourceTree = "<group>"; };
+		42B129422F0565DE00B957AF /* EntityDisplayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDisplayViewModel.swift; sourceTree = "<group>"; };
+		42B129442F0565E900B957AF /* EntityDisplayComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDisplayComponents.swift; sourceTree = "<group>"; };
 		42B19BD02D4A358B00B3262B /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -3857,7 +3861,7 @@
 				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
-				42DFE8792EFB08C80058DADB /* Home */,
+				42DFE8792EFB08C80058DADB /* ExperimentalSpace */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -5558,6 +5562,43 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		42B1294C2F05682F00B957AF /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				42DFE8772EFB08C80058DADB /* HomeView.swift */,
+				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
+				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		42B1294D2F05683E00B957AF /* EntityTile */ = {
+			isa = PBXGroup;
+			children = (
+				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
+				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
+			);
+			path = EntityTile;
+			sourceTree = "<group>";
+		};
+		42B1294E2F05684B00B957AF /* Room */ = {
+			isa = PBXGroup;
+			children = (
+				423622A22F0560A600391BD0 /* RoomViewModel.swift */,
+				423622A42F0560BA00391BD0 /* RoomView.swift */,
+			);
+			path = Room;
+			sourceTree = "<group>";
+		};
+		42B1294F2F05685C00B957AF /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				42B129422F0565DE00B957AF /* EntityDisplayViewModel.swift */,
+				42B129442F0565E900B957AF /* EntityDisplayComponents.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		42B7BFE92E97A7070056BADC /* Location */ = {
 			isa = PBXGroup;
 			children = (
@@ -5850,22 +5891,19 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		42DFE8792EFB08C80058DADB /* Home */ = {
+		42DFE8792EFB08C80058DADB /* ExperimentalSpace */ = {
 			isa = PBXGroup;
 			children = (
-				42DFE8772EFB08C80058DADB /* HomeView.swift */,
-				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
-				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
-				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
-				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
+				42B1294F2F05685C00B957AF /* Shared */,
+				42B1294C2F05682F00B957AF /* Home */,
+				42B1294E2F05684B00B957AF /* Room */,
+				42B1294D2F05683E00B957AF /* EntityTile */,
 				42F5C0842F02BBA000C50310 /* AppIntentProvider.swift */,
 				42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */,
 				42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */,
 				42F5C0902F02D34700C50310 /* OpenExperimentalDashboardIntent.swift */,
-				423622A22F0560A600391BD0 /* RoomViewModel.swift */,
-				423622A42F0560BA00391BD0 /* RoomView.swift */,
 			);
-			path = Home;
+			path = ExperimentalSpace;
 			sourceTree = "<group>";
 		};
 		42E3B8BB2D8ACDC100F5D084 /* Extensions */ = {
@@ -8797,6 +8835,7 @@
 				11F55EED25D3B088003977AC /* NotificationDebugNotificationsViewController.swift in Sources */,
 				42DFE8742EFAE33D0058DADB /* AssistWavesAnimation.swift in Sources */,
 				42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */,
+				42B129432F0565DE00B957AF /* EntityDisplayViewModel.swift in Sources */,
 				42F1DA6D2B4ED29C002729BC /* CarPlayPaginatedListTemplate.swift in Sources */,
 				11DA6B4B27137A60008ADFAF /* InputAccessoryView.swift in Sources */,
 				42DF7DE02EC53D85003F3C4A /* ServersListView.swift in Sources */,
@@ -8839,6 +8878,7 @@
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
 				42DFE87D2EFB128B0058DADB /* EntityTileView.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
+				42B129452F0565E900B957AF /* EntityDisplayComponents.swift in Sources */,
 				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
 				42F5C0832F02B6DB00C50310 /* HomeSectionsReorderView.swift in Sources */,
 				1130F532253A1E7400F371BE /* ComplicationListViewController.swift in Sources */,

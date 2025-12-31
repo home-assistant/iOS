@@ -64,14 +64,14 @@ struct HomeView: View {
     private var contentView: some View {
         ZStack {
             if viewModel.isLoading {
-                loadingView
+                EntityDisplayComponents.loadingView
             } else if let errorMessage = viewModel.errorMessage {
-                errorView(errorMessage)
+                EntityDisplayComponents.errorView(errorMessage)
             } else if viewModel.filteredSections(
                 sectionOrder: viewModel.sectionOrder,
                 selectedSectionIds: viewModel.selectedSectionIds
             ).isEmpty {
-                emptyStateView
+                EntityDisplayComponents.emptyStateView(message: L10n.HomeView.EmptyState.noEntities)
             } else {
                 entitiesListView
             }
@@ -87,36 +87,6 @@ struct HomeView: View {
                 ).isEmpty
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private var loadingView: some View {
-        ProgressView()
-            .transition(.opacity.combined(with: .scale))
-    }
-
-    private func errorView(_ errorMessage: String) -> some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: .exclamationmarkTriangle)
-                .font(.system(size: DesignSystem.Spaces.six))
-                .foregroundColor(.secondary)
-            Text(errorMessage)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-        }
-        .transition(.opacity.combined(with: .scale))
-    }
-
-    private var emptyStateView: some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
-            Image(systemSymbol: .house)
-                .font(.system(size: DesignSystem.Spaces.six))
-                .foregroundColor(.secondary)
-            Text(L10n.HomeView.EmptyState.noEntities)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-        }
-        .padding()
-        .transition(.opacity.combined(with: .scale))
     }
 
     private var entitiesListView: some View {
@@ -243,39 +213,30 @@ struct HomeView: View {
             HStack {
                 Text(title)
                     .font(.title2.bold())
-                Spacer()
+                    .lineLimit(1)
+                    .truncationMode(.middle)
                 Image(systemSymbol: .chevronRight)
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(.secondary)
+                Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, DesignSystem.Spaces.one)
+            .padding(.top, DesignSystem.Spaces.one)
         }
         .buttonStyle(.plain)
+        .padding(.horizontal, DesignSystem.Spaces.one)
     }
 
     private func entityTilesGrid(for entities: [HAAppEntity]) -> some View {
-        // Use adaptive columns with a minimum width to allow 2-3 columns depending on available space
-        // Minimum of 150 points ensures good tile appearance, and system will fit as many as possible
-        let columns = [
-            GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
-        ]
-
-        return LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
-            ForEach(entities) { entity in
-                EntityTileView(
-                    server: viewModel.server,
-                    appEntity: entity,
-                    haEntity: viewModel.entityStates[entity.entityId]
-                )
-                .contentShape(Rectangle())
-                .contextMenu {
-                    Button(role: .destructive) {
-                        viewModel.hideEntity(entity.entityId)
-                    } label: {
-                        Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
-                    }
-                }
+        EntityDisplayComponents.entityTilesGrid(
+            entities: entities,
+            server: viewModel.server,
+            entityStates: viewModel.entityStates
+        ) { entity in
+            Button(role: .destructive) {
+                viewModel.hideEntity(entity.entityId)
+            } label: {
+                Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
             }
         }
     }
