@@ -34,12 +34,11 @@ struct LightControlsView: View {
         ScrollView {
             VStack(spacing: DesignSystem.Spaces.four) {
                 header
-                bulbPreview
+                brightnessSlider
                 controlBar
                 if showColorPresets {
                     colorPresetsGrid
                 }
-                effectButton
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -50,18 +49,17 @@ struct LightControlsView: View {
     // MARK: - Header
 
     private var header: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: DesignSystem.Spaces.one) {
             Text(stateDescription)
                 .font(.system(size: 28, weight: .semibold))
                 .foregroundStyle(.primary)
                 .animation(.easeInOut, value: isOn)
-            if let updated = haEntity?.lastUpdated {
-                Text(relativeDateString(from: updated))
-                    .font(DesignSystem.Font.footnote)
-                    .foregroundStyle(.secondary)
-            }
+
+            Text("\(Int(brightness))%")
+                .font(.system(size: 17, weight: .regular))
+                .foregroundStyle(.secondary)
+                .animation(.easeInOut, value: brightness)
         }
-        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var stateDescription: String {
@@ -99,11 +97,28 @@ struct LightControlsView: View {
                 .clear,
                 in: RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
             )
-            .frame(maxWidth: .infinity)
             .padding(.vertical, DesignSystem.Spaces.two)
             .animation(.easeInOut(duration: 0.2), value: iconColor)
             .animation(.easeInOut(duration: 0.2), value: isOn)
             .animation(.easeInOut(duration: 0.2), value: brightness)
+    }
+
+    // MARK: - Brightness Slider
+
+    private var brightnessSlider: some View {
+        BrightnessSlider(
+            brightness: $brightness,
+            color: iconColor
+        ) { isEditing in
+            if !isEditing {
+                // When user finishes dragging, update the light
+                Task {
+                    await updateBrightness(brightness)
+                }
+            }
+        }
+        .frame(width: 60, height: Constants.bulbPreviewHeight)
+        .transition(.scale.combined(with: .opacity))
     }
 
     // MARK: - Control Bar
@@ -114,28 +129,10 @@ struct LightControlsView: View {
                 triggerHaptic += 1
                 Task { await toggleLight() }
             }
-            controlIconButton(system: "gearshape") {
-                triggerHaptic += 1
-                // Placeholder for settings/details
-            }
-            controlIconButton(system: "circle.lefthalf.filled") {
-                triggerHaptic += 1
-                // Toggle color presets visibility
-                withAnimation(.easeInOut) { showColorPresets.toggle() }
-            }
-            controlIconButton(system: "sun.max") {
-                triggerHaptic += 1
-                // Quick warm preset
-                Task { await updateColor(Color(hue: 40 / 360, saturation: 0.25, brightness: 1.0)) }
-            }
         }
         .frame(height: Constants.controlBarHeight)
         .frame(maxWidth: .infinity)
         .padding(.horizontal, DesignSystem.Spaces.two)
-        .glassEffect(
-            .clear,
-            in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
-        )
         .sensoryFeedback(.impact, trigger: triggerHaptic)
     }
 
@@ -150,7 +147,7 @@ struct LightControlsView: View {
                     .font(.system(size: Constants.controlIconSize, weight: .semibold))
                     .foregroundStyle(.primary)
             }
-            .frame(width: 40, height: 40)
+            .frame(width: 60, height: 60)
         }
         .buttonStyle(.plain)
     }
@@ -166,7 +163,6 @@ struct LightControlsView: View {
             Color(red: 0.99, green: 0.59, blue: 0.51),
             Color(red: 1.00, green: 0.83, blue: 0.66),
             Color(red: 1.00, green: 0.78, blue: 0.79),
-            Color(red: 1.00, green: 0.93, blue: 0.87),
         ]
 
         return VStack(alignment: .leading, spacing: Constants.swatchSpacing) {
@@ -177,6 +173,9 @@ struct LightControlsView: View {
                         let index = row * 4 + col
                         if index < presets.count {
                             swatch(color: presets[index])
+                        } else if index == 7 {
+                            // Last position: color picker
+                            colorPickerSwatch
                         } else {
                             Spacer(minLength: Constants.swatchSize)
                         }
@@ -203,29 +202,18 @@ struct LightControlsView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Effect Button
-
-    private var effectButton: some View {
-        Button {
-            triggerHaptic += 1
-            // Placeholder for effects sheet
-        } label: {
-            HStack {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 18, weight: .semibold))
-                Text("Effect")
-                    .font(DesignSystem.Font.headline)
-                Spacer()
-            }
-            .padding(.horizontal, DesignSystem.Spaces.two)
-            .frame(height: 48)
-            .frame(maxWidth: .infinity)
-            .glassEffect(
-                .clear,
-                in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
+    private var colorPickerSwatch: some View {
+        ColorPicker("", selection: $selectedColor)
+            .labelsHidden()
+            .frame(width: Constants.swatchSize, height: Constants.swatchSize)
+            .clipShape(Circle())
+            .overlay(
+                Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
             )
-        }
-        .buttonStyle(.plain)
+            .onChange(of: selectedColor) { _, newColor in
+                triggerHaptic += 1
+                Task { await updateColor(newColor) }
+            }
     }
 
     // MARK: - State Management

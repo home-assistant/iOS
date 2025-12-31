@@ -981,6 +981,7 @@
 		42C3737F2BC415AC00898990 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C3737E2BC415AC00898990 /* UIViewController+Extensions.swift */; };
 		42C60F892F0576CA0071A6F6 /* LightControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F882F0576CA0071A6F6 /* LightControlsView.swift */; };
 		42C60F8B2F057C060071A6F6 /* LightControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */; };
+		42C60F8D2F057DB70071A6F6 /* VerticalSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -2721,6 +2722,7 @@
 		42C373AF2BC536AA00898990 /* WatchApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WatchApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		42C60F882F0576CA0071A6F6 /* LightControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightControlsView.swift; sourceTree = "<group>"; };
 		42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightControlIntents.swift; sourceTree = "<group>"; };
+		42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalSlider.swift; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
@@ -5586,6 +5588,7 @@
 				42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */,
 				42C60F882F0576CA0071A6F6 /* LightControlsView.swift */,
 				42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */,
+				42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */,
 			);
 			path = EntityTile;
 			sourceTree = "<group>";
@@ -8982,6 +8985,7 @@
 				1178C4E524D5CEB200FDEC3E /* ConnectionURLView.swift in Sources */,
 				42F1DA6B2B4ED1BF002729BC /* CarPlayAreasZonesTemplate.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
+				42C60F8D2F057DB70071A6F6 /* VerticalSlider.swift in Sources */,
 				4263A6692EFB2F670089C338 /* ModernAssistBackgroundView.swift in Sources */,
 				42462E692D9ED75900ECC8A7 /* LocationPermissionView.swift in Sources */,
 				42D0AE452D88259000D9715A /* WidgetDocumentationLink.swift in Sources */,
