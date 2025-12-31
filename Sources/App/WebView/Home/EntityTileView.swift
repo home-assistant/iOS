@@ -108,10 +108,10 @@ struct EntityTileView: View {
             iconColor = .secondary
             return
         }
-        
+
         // Get current color_mode from entity attributes
         let currentColorMode = haEntity.attributes["color_mode"] as? String
-        
+
         // Determine which color mode to use
         let colorModeToUse: String?
         if let currentColorMode {
@@ -125,7 +125,7 @@ struct EntityTileView: View {
             // Both current and cached are nil, use nil
             colorModeToUse = nil
         }
-        
+
         // Check color_mode first if available to prioritize the correct attribute
         if let colorMode = colorModeToUse {
             switch colorMode {
