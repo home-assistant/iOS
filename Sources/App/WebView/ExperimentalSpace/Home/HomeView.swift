@@ -5,6 +5,7 @@ import SwiftUI
 @available(iOS 26.0, *)
 struct HomeView: View {
     @Namespace private var assist
+    @Namespace private var roomNameSpace
     private var assistAnimationSourceID = "assist"
     @StateObject private var viewModel: HomeViewModel
     @State private var showSettings = false
@@ -41,13 +42,12 @@ struct HomeView: View {
             AssistView.build(server: viewModel.server)
                 .navigationTransition(.zoom(sourceID: assistAnimationSourceID, in: assist))
         })
-        .sheet(item: Binding(
+        .fullScreenCover(item: Binding(
             get: { selectedRoom.map { RoomIdentifier(id: $0.id, name: $0.name) } },
             set: { selectedRoom = $0.map { ($0.id, $0.name) } }
         )) { room in
             RoomView(server: viewModel.server, roomId: room.id, roomName: room.name)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
+                .navigationTransition(.zoom(sourceID: selectedRoom?.id, in: roomNameSpace))
                 .onDisappear {
                     Task {
                         await viewModel.reloadAfterUnhide()
@@ -203,28 +203,31 @@ struct HomeView: View {
 
     // MARK: - Component Views
 
+    @ViewBuilder
     private func sectionHeader(_ title: String) -> some View {
-        Button {
-            // Find the section ID for this title
+        Group {
             if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
-                selectedRoom = (id: section.id, name: section.name)
-            }
-        } label: {
-            HStack {
-                Text(title)
-                    .font(.title2.bold())
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                Image(systemSymbol: .chevronRight)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                Spacer()
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, DesignSystem.Spaces.one)
+                Button {
+                    selectedRoom = (id: section.id, name: section.name)
+                } label: {
+                    HStack {
+                        Text(title)
+                            .font(.title2.bold())
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                        Image(systemSymbol: .chevronRight)
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, DesignSystem.Spaces.one)
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, DesignSystem.Spaces.one)
+                .matchedTransitionSource(id: section.id, in: roomNameSpace)
+            } else { EmptyView() }
         }
-        .buttonStyle(.plain)
-        .padding(.horizontal, DesignSystem.Spaces.one)
     }
 
     private func entityTilesGrid(for entities: [HAAppEntity]) -> some View {
