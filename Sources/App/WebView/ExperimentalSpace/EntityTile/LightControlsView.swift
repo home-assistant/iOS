@@ -15,6 +15,9 @@ struct LightControlsView: View {
         static let controlBarHeight: CGFloat = 56
         static let controlIconSize: CGFloat = 20
         static let cornerRadius: CGFloat = 28
+        static let maxColorPresets: Int = 7
+        static let colorPresetsRows: Int = 2
+        static let colorPresetsColumns: Int = 4
     }
 
     let server: Server
@@ -175,26 +178,27 @@ struct LightControlsView: View {
             Color(red: 1.00, green: 0.78, blue: 0.79),
         ]
 
-        // Combine recent colors with defaults to fill up to 7 spots
+        // Combine recent colors with defaults to fill up to max spots
         let recentColorsList = recentColors.map { $0.toColor() }
-        var displayColors = recentColorsList
+        var displayColors: [(color: Color, isRecent: Bool)] = recentColorsList.map { ($0, true) }
 
         // Fill remaining spots with default presets
-        if displayColors.count < 7 {
-            let remainingCount = 7 - displayColors.count
-            let additionalColors = Array(defaultPresets.prefix(remainingCount))
+        if displayColors.count < Constants.maxColorPresets {
+            let remainingCount = Constants.maxColorPresets - displayColors.count
+            let additionalColors = Array(defaultPresets.prefix(remainingCount)).map { ($0, false) }
             displayColors.append(contentsOf: additionalColors)
         }
 
         return VStack(alignment: .leading, spacing: Constants.swatchSpacing) {
-            // Two rows of swatches (4 per row)
-            ForEach(0 ..< 2) { row in
+            // Grid of swatches
+            ForEach(0 ..< Constants.colorPresetsRows) { row in
                 HStack(spacing: Constants.swatchSpacing) {
-                    ForEach(0 ..< 4) { col in
-                        let index = row * 4 + col
+                    ForEach(0 ..< Constants.colorPresetsColumns) { col in
+                        let index = row * Constants.colorPresetsColumns + col
                         if index < displayColors.count {
-                            swatch(color: displayColors[index])
-                        } else if index == 7 {
+                            let colorInfo = displayColors[index]
+                            swatch(color: colorInfo.color, shouldSaveToRecents: colorInfo.isRecent)
+                        } else if index == Constants.maxColorPresets {
                             // Last position: color picker
                             colorPickerSwatch
                         } else {
@@ -207,11 +211,11 @@ struct LightControlsView: View {
         .frame(maxWidth: .infinity, alignment: .center)
     }
 
-    private func swatch(color: Color) -> some View {
+    private func swatch(color: Color, shouldSaveToRecents: Bool) -> some View {
         Button {
             triggerHaptic += 1
             Task {
-                await updateColor(color, saveToRecents: true)
+                await updateColor(color, saveToRecents: shouldSaveToRecents)
             }
         } label: {
             Circle()
@@ -272,26 +276,37 @@ struct LightControlsView: View {
         let hsColor = haEntity.attributes["hs_color"] as? [Double]
 
         // Update icon color using the same logic as EntityTileView
-        iconColor = EntityIconColorProvider.iconColor(
+        let newIconColor = EntityIconColorProvider.iconColor(
             state: haEntity.state,
             colorMode: colorMode,
             rgbColor: rgbColor,
             hsColor: hsColor
         )
+        if !colorsAreEqual(newIconColor, iconColor) {
+            iconColor = newIconColor
+        }
 
-        // Update selected color for the UI controls
+        // Update selected color for the UI controls only if it changed
         if let rgbColor, rgbColor.count == 3 {
-            selectedColor = Color(
+            let newColor = Color(
                 red: Double(rgbColor[0]) / 255.0,
                 green: Double(rgbColor[1]) / 255.0,
                 blue: Double(rgbColor[2]) / 255.0
             )
+            if !colorsAreEqual(newColor, selectedColor) {
+                selectedColor = newColor
+            }
         } else if let hsColor, hsColor.count == 2 {
             let hue = hsColor[0] / 360.0
             let saturation = hsColor[1] / 100.0
-            selectedColor = Color(hue: hue, saturation: saturation, brightness: 1.0)
+            let newColor = Color(hue: hue, saturation: saturation, brightness: 1.0)
+            if !colorsAreEqual(newColor, selectedColor) {
+                selectedColor = newColor
+            }
         } else {
-            selectedColor = iconColor
+            if !colorsAreEqual(iconColor, selectedColor) {
+                selectedColor = iconColor
+            }
         }
     }
 
@@ -303,6 +318,17 @@ struct LightControlsView: View {
             })
         }
         return false
+    }
+
+    private func colorsAreEqual(_ lhs: Color, _ rhs: Color, tolerance: CGFloat = 0.01) -> Bool {
+        let l = UIColor(lhs)
+        let r = UIColor(rhs)
+        var lr: CGFloat = 0, lg: CGFloat = 0, lb: CGFloat = 0, la: CGFloat = 0
+        var rr: CGFloat = 0, rg: CGFloat = 0, rb: CGFloat = 0, ra: CGFloat = 0
+        l.getRed(&lr, green: &lg, blue: &lb, alpha: &la)
+        r.getRed(&rr, green: &rg, blue: &rb, alpha: &ra)
+        return abs(lr - rr) <= tolerance && abs(lg - rg) <= tolerance && abs(lb - rb) <= tolerance && abs(la - ra) <=
+            tolerance
     }
 
     // MARK: - Service Calls
@@ -326,6 +352,21 @@ struct LightControlsView: View {
     }
 
     private func updateBrightness(_ value: Double) async {
+        // If light is off and brightness is increased, turn it on
+        if !isOn, value > 0 {
+            let turnOnIntent = ToggleLightIntent()
+            turnOnIntent.light = createLightEntity()
+            turnOnIntent.turnOn = true
+
+            do {
+                let _ = try await turnOnIntent.perform()
+                isOn = true
+            } catch {
+                Current.Log.verbose("Failed to turn on light: \(error)")
+                return
+            }
+        }
+
         guard isOn else { return }
 
         let intent = SetLightBrightnessIntent()
@@ -342,6 +383,11 @@ struct LightControlsView: View {
 
     private func updateColor(_ color: Color, saveToRecents: Bool = false) async {
         guard isOn else { return }
+
+        // Avoid redundant API calls if color hasn't meaningfully changed
+        if colorsAreEqual(color, selectedColor) {
+            return
+        }
 
         let uiColor = UIColor(color)
         var red: CGFloat = 0
@@ -418,15 +464,20 @@ struct LightControlsView: View {
     private func saveColorToRecents(_ color: Color) async {
         let storedColor = StoredColor(from: color)
 
+        // If the most recent color matches, skip re-saving
+        if let first = recentColors.first, first.isEqual(to: storedColor) {
+            return
+        }
+
         // Remove duplicate if it exists
         var updatedColors = recentColors.filter { !$0.isEqual(to: storedColor) }
 
         // Add the new color to the front
         updatedColors.insert(storedColor, at: 0)
 
-        // Keep only the 7 most recent colors (leaving room for color picker)
-        if updatedColors.count > 7 {
-            updatedColors = Array(updatedColors.prefix(7))
+        // Keep only the most recent colors (leaving room for color picker)
+        if updatedColors.count > Constants.maxColorPresets {
+            updatedColors = Array(updatedColors.prefix(Constants.maxColorPresets))
         }
 
         recentColors = updatedColors
