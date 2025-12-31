@@ -171,6 +171,12 @@ struct HomeView: View {
                         Text(L10n.HomeView.Menu.allowMultipleSelection)
                     }
 
+                    Button {
+                        showReorder = true
+                    } label: {
+                        Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
+                    }
+
                     Divider()
 
                     ForEach(viewModel.orderedSectionsForMenu) { section in
@@ -195,12 +201,6 @@ struct HomeView: View {
         }
         ToolbarItem(placement: .primaryAction) {
             Menu {
-                Button {
-                    showReorder = true
-                } label: {
-                    Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
-                }
-
                 Button {
                     dismiss()
                 } label: {
