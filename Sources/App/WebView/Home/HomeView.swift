@@ -25,25 +25,24 @@ struct HomeView: View {
                     toolbarMenu
                 }
                 .background(ModernAssistBackgroundView(theme: .homeAssistant))
-                .sheet(isPresented: $showSettings) {
-                    SettingsView()
-                }
-                .sheet(isPresented: $showReorder) {
-                    HomeSectionsReorderView(
-                        sections: viewModel.groupedEntities.map { ($0.id, $0.name) },
-                        sectionOrder: $viewModel.sectionOrder,
-                        onDone: { viewModel.saveSectionOrder() }
-                    )
-                }
-                .fullScreenCover(isPresented: $showAssist, content: {
-                    AssistView.build(server: viewModel.server)
-                        .navigationTransition(.zoom(sourceID: assistAnimationSourceID, in: assist))
-                })
-                .task {
-                    await viewModel.loadEntities()
-                }
         }
-        .navigationViewStyle(.stack)
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
+        .sheet(isPresented: $showReorder) {
+            HomeSectionsReorderView(
+                sections: viewModel.groupedEntities.map { ($0.id, $0.name) },
+                sectionOrder: $viewModel.sectionOrder,
+                onDone: { viewModel.saveSectionOrder() }
+            )
+        }
+        .fullScreenCover(isPresented: $showAssist, content: {
+            AssistView.build(server: viewModel.server)
+                .navigationTransition(.zoom(sourceID: assistAnimationSourceID, in: assist))
+        })
+        .task {
+            await viewModel.loadEntities()
+        }
     }
 
     // MARK: - Content Views

@@ -9,7 +9,7 @@ struct HomeSectionsReorderView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(currentOrderedSections(), id: \.id) { item in
                     Text(item.name)
@@ -27,7 +27,6 @@ struct HomeSectionsReorderView: View {
                 }
             }
         }
-        .navigationViewStyle(.stack)
     }
 
     private func currentOrderedSections() -> [(id: String, name: String)] {
