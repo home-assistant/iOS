@@ -18,6 +18,14 @@ struct LightControlsView: View {
         static let maxColorPresets: Int = 8
         static let colorPresetsRows: Int = 2
         static let colorPresetsColumns: Int = 4
+        // Temperature constants (mireds)
+        static let minMireds: Double = 153 // ~6500K (cool white)
+        static let maxMireds: Double = 500 // ~2000K (warm white)
+    }
+
+    enum ColorMode {
+        case color
+        case temperature
     }
 
     let server: Server
@@ -30,6 +38,10 @@ struct LightControlsView: View {
     @State private var isOn: Bool = false
     @State private var triggerHaptic = 0
     @State private var iconColor: Color = .secondary
+    @State private var colorTemperature: Double = 250 // mireds
+    @State private var currentColorMode: ColorMode = .color
+    @State private var minMireds: Double = Constants.minMireds
+    @State private var maxMireds: Double = Constants.maxMireds
 
     // UI state
     @State private var showColorPresets: Bool = true
@@ -38,16 +50,27 @@ struct LightControlsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: DesignSystem.Spaces.four) {
+            VStack(spacing: DesignSystem.Spaces.two) {
                 header
                 brightnessSlider
                 controlBar
-                if showColorPresets {
+
+                // Mode toggle if light supports both color and temperature
+                if supportsColor(), supportsColorTemp() {
+                    modeToggle
+                }
+
+                // Show appropriate controls based on mode and support
+                if supportsColor(), currentColorMode == .color, showColorPresets {
                     HStack {
                         Spacer()
                         colorPresetsGrid
                         Spacer()
                     }
+                }
+
+                if supportsColorTemp(), currentColorMode == .temperature {
+                    temperatureSlider
                 }
             }
         }
@@ -136,6 +159,43 @@ struct LightControlsView: View {
         .transition(.scale.combined(with: .opacity))
     }
 
+    // MARK: - Mode Toggle
+
+    private var modeToggle: some View {
+        HStack(spacing: DesignSystem.Spaces.two) {
+            modeToggleButton(mode: .color, icon: "paintpalette.fill", label: "Color")
+            modeToggleButton(mode: .temperature, icon: "thermometer.medium", label: "Temperature")
+        }
+        .padding(.horizontal, DesignSystem.Spaces.two)
+    }
+
+    private func modeToggleButton(mode: ColorMode, icon: String, label: String) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                currentColorMode = mode
+            }
+            triggerHaptic += 1
+        } label: {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                Text(label)
+                    .font(.system(size: 15, weight: .medium))
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 44)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(
+                        currentColorMode == mode ? Color.accentColor
+                            .opacity(0.15) : Color(uiColor: .secondarySystemBackground)
+                    )
+            )
+            .foregroundStyle(currentColorMode == mode ? Color.accentColor : .primary)
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: - Control Bar
 
     private var controlBar: some View {
@@ -145,13 +205,70 @@ struct LightControlsView: View {
                 triggerHaptic += 1
                 Task { await toggleLight() }
             }
-            colorPickerSwatch
+
+            // Only show color picker in color mode and if light supports color
+            if currentColorMode == .color, supportsColor() {
+                colorPickerSwatch
+            }
+
             Spacer()
         }
         .frame(height: Constants.controlBarHeight)
         .frame(maxWidth: .infinity)
         .padding(.horizontal, DesignSystem.Spaces.two)
         .sensoryFeedback(.impact, trigger: triggerHaptic)
+    }
+
+    // MARK: - Temperature Slider
+
+    private var temperatureSlider: some View {
+        VStack(spacing: DesignSystem.Spaces.two) {
+            HStack {
+                Image(systemName: "sun.max.fill")
+                    .foregroundStyle(.orange)
+                    .font(.system(size: 20))
+
+                Slider(
+                    value: $colorTemperature,
+                    in: minMireds ... maxMireds,
+                    onEditingChanged: { isEditing in
+                        if !isEditing {
+                            Task {
+                                await updateColorTemperature(colorTemperature)
+                            }
+                        }
+                    }
+                )
+                .tint(temperatureGradient)
+
+                Image(systemName: "moon.fill")
+                    .foregroundStyle(.blue)
+                    .font(.system(size: 20))
+            }
+            .padding(.horizontal, DesignSystem.Spaces.four)
+
+            Text("\(kelvinFromMireds(colorTemperature))K")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, DesignSystem.Spaces.two)
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    private var temperatureGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color(red: 1.0, green: 0.7, blue: 0.4), // Warm
+                Color(red: 1.0, green: 0.9, blue: 0.8), // Neutral
+                Color(red: 0.7, green: 0.8, blue: 1.0), // Cool
+            ]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
+
+    private func kelvinFromMireds(_ mireds: Double) -> Int {
+        Int(1_000_000 / mireds)
     }
 
     private func controlIconButton(system: String, action: @escaping () -> Void) -> some View {
@@ -274,6 +391,37 @@ struct LightControlsView: View {
         let colorMode = haEntity.attributes["color_mode"] as? String
         let rgbColor = haEntity.attributes["rgb_color"] as? [Int]
         let hsColor = haEntity.attributes["hs_color"] as? [Double]
+        let colorTemp = haEntity.attributes["color_temp"] as? Int
+
+        // Update color temperature if available
+        if let colorTemp {
+            colorTemperature = Double(colorTemp)
+        }
+
+        // Update temperature range if provided by the entity
+        if let minMiredsValue = haEntity.attributes["min_mireds"] as? Int {
+            minMireds = Double(minMiredsValue)
+        }
+        if let maxMiredsValue = haEntity.attributes["max_mireds"] as? Int {
+            maxMireds = Double(maxMiredsValue)
+        }
+
+        // Determine current mode based on color_mode from server
+        // But also consider what the light actually supports
+        if let colorMode {
+            if colorMode == "color_temp", supportsColorTemp() {
+                currentColorMode = .temperature
+            } else if ["rgb", "rgbw", "rgbww", "hs", "xy"].contains(colorMode), supportsColor() {
+                currentColorMode = .color
+            }
+        } else {
+            // If no color_mode specified, default based on what's supported
+            if supportsColor() {
+                currentColorMode = .color
+            } else if supportsColorTemp() {
+                currentColorMode = .temperature
+            }
+        }
 
         // Update icon color using the same logic as EntityTileView
         let newIconColor = EntityIconColorProvider.iconColor(
@@ -316,6 +464,14 @@ struct LightControlsView: View {
             return supportedColorModes.contains(where: { mode in
                 ["rgb", "rgbw", "rgbww", "hs", "xy"].contains(mode)
             })
+        }
+        return false
+    }
+
+    private func supportsColorTemp() -> Bool {
+        guard let haEntity else { return false }
+        if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
+            return supportedColorModes.contains("color_temp")
         }
         return false
     }
@@ -406,6 +562,38 @@ struct LightControlsView: View {
             }
         } catch {
             Current.Log.verbose("Failed to update color: \(error)")
+        }
+    }
+
+    private func updateColorTemperature(_ mireds: Double) async {
+        let intent = SetLightColorTemperatureIntent()
+        intent.light = createLightEntity()
+        intent.colorTemp = Int(mireds)
+
+        do {
+            let _ = try await intent.perform()
+            colorTemperature = mireds
+
+            // Update icon color to approximate white tone
+            iconColor = colorFromTemperature(mireds)
+        } catch {
+            Current.Log.verbose("Failed to update color temperature: \(error)")
+        }
+    }
+
+    private func colorFromTemperature(_ mireds: Double) -> Color {
+        // Approximate color based on temperature
+        let kelvin = 1_000_000 / mireds
+
+        if kelvin < 3000 {
+            // Warm white (yellowish)
+            return Color(red: 1.0, green: 0.8, blue: 0.6)
+        } else if kelvin < 5000 {
+            // Neutral white
+            return Color(red: 1.0, green: 0.95, blue: 0.9)
+        } else {
+            // Cool white (bluish)
+            return Color(red: 0.9, green: 0.95, blue: 1.0)
         }
     }
 
@@ -537,9 +725,12 @@ struct LightControlsView: View {
             "friendly_name": "Living Room Light",
             "brightness": 200,
             "rgb_color": [255, 200, 100],
-            "supported_color_modes": ["rgb", "brightness"],
+            "supported_color_modes": ["rgb", "brightness", "color_temp"],
             "color_mode": "rgb",
             "area_id": "living_room",
+            "min_mireds": 153,
+            "max_mireds": 500,
+            "color_temp": 250,
         ],
         context: .init(id: "", userId: nil, parentId: nil)
     )
