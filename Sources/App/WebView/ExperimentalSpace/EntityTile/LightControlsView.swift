@@ -24,6 +24,7 @@ struct LightControlsView: View {
     @State private var selectedColor: Color = .white
     @State private var isOn: Bool = false
     @State private var triggerHaptic = 0
+    @State private var iconColor: Color = .secondary
 
     // UI state
     @State private var showColorPresets: Bool = true
@@ -49,7 +50,7 @@ struct LightControlsView: View {
 
     private var header: some View {
         VStack(spacing: 4) {
-            Text(isOn ? "On" : "Off")
+            Text(stateDescription)
                 .font(.system(size: 28, weight: .semibold))
                 .foregroundStyle(.primary)
                 .animation(.easeInOut, value: isOn)
@@ -62,10 +63,15 @@ struct LightControlsView: View {
         .frame(maxWidth: .infinity, alignment: .center)
     }
 
+    private var stateDescription: String {
+        guard let haEntity else { return "Off" }
+        return Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
+    }
+
     // MARK: - Bulb Preview
 
     private var bulbPreview: some View {
-        let displayColor = isOn ? selectedColor : Color(uiColor: .systemGray5)
+        let displayColor = isOn ? iconColor : Color(uiColor: .systemGray5)
         let brightnessOpacity = isOn ? max(0.15, brightness / 100.0) : 1.0
 
         return RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
@@ -79,11 +85,11 @@ struct LightControlsView: View {
                 VStack(spacing: 12) {
                     Image(systemName: isOn ? "lightbulb.fill" : "lightbulb")
                         .font(.system(size: 36))
-                        .foregroundStyle(isOn ? selectedColor : .secondary)
-                        .shadow(color: selectedColor.opacity(isOn ? 0.35 : 0), radius: 12, x: 0, y: 8)
+                        .foregroundStyle(isOn ? iconColor : .secondary)
+                        .shadow(color: iconColor.opacity(isOn ? 0.35 : 0), radius: 12, x: 0, y: 8)
                     // Optional: subtle brightness indicator
                     Capsule()
-                        .fill(selectedColor.opacity(isOn ? 0.35 : 0.15))
+                        .fill(iconColor.opacity(isOn ? 0.35 : 0.15))
                         .frame(width: 72, height: 6)
                         .opacity(brightnessOpacity)
                 }
@@ -94,7 +100,7 @@ struct LightControlsView: View {
             )
             .frame(maxWidth: .infinity)
             .padding(.vertical, DesignSystem.Spaces.two)
-            .animation(.easeInOut(duration: 0.2), value: selectedColor)
+            .animation(.easeInOut(duration: 0.2), value: iconColor)
             .animation(.easeInOut(duration: 0.2), value: isOn)
             .animation(.easeInOut(duration: 0.2), value: brightness)
     }
@@ -216,13 +222,14 @@ struct LightControlsView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - State Management (unchanged core logic)
+    // MARK: - State Management
 
     private func updateStateFromEntity() {
         guard let haEntity else {
             isOn = false
             brightness = 0
             selectedColor = .white
+            iconColor = .secondary
             return
         }
 
@@ -238,6 +245,15 @@ struct LightControlsView: View {
         let rgbColor = haEntity.attributes["rgb_color"] as? [Int]
         let hsColor = haEntity.attributes["hs_color"] as? [Double]
 
+        // Update icon color using the same logic as EntityTileView
+        iconColor = EntityIconColorProvider.iconColor(
+            state: haEntity.state,
+            colorMode: colorMode,
+            rgbColor: rgbColor,
+            hsColor: hsColor
+        )
+
+        // Update selected color for the UI controls
         if let rgbColor, rgbColor.count == 3 {
             selectedColor = Color(
                 red: Double(rgbColor[0]) / 255.0,
@@ -249,12 +265,7 @@ struct LightControlsView: View {
             let saturation = hsColor[1] / 100.0
             selectedColor = Color(hue: hue, saturation: saturation, brightness: 1.0)
         } else {
-            selectedColor = EntityIconColorProvider.iconColor(
-                state: haEntity.state,
-                colorMode: colorMode,
-                rgbColor: rgbColor,
-                hsColor: hsColor
-            )
+            selectedColor = iconColor
         }
     }
 
@@ -268,26 +279,64 @@ struct LightControlsView: View {
         return false
     }
 
-    // MARK: - Service Calls (same behavior)
+    // MARK: - Service Calls
 
     private func toggleLight() async {
+        await Current.connectivity.syncNetworkInformation()
+        guard let connection = Current.api(for: server)?.connection else {
+            return
+        }
+
         let newState = !isOn
-        let service = newState ? "turn_on" : "turn_off"
-        await callLightService(service: service, data: [:])
+        let service = newState ? Service.turnOn.rawValue : Service.turnOff.rawValue
+
+        let _ = await withCheckedContinuation { continuation in
+            connection.send(.callService(
+                domain: .init(stringLiteral: Domain.light.rawValue),
+                service: .init(stringLiteral: service),
+                data: [
+                    "entity_id": appEntity.entityId,
+                ]
+            )).promise.pipe { _ in
+                continuation.resume()
+            }
+        }
+
+        // Update local state
         isOn = newState
         if !newState { brightness = 0 }
     }
 
     private func updateBrightness(_ value: Double) async {
         guard isOn else { return }
+        await Current.connectivity.syncNetworkInformation()
+        guard let connection = Current.api(for: server)?.connection else {
+            return
+        }
+
         let hasBrightness = Int(value / 100.0 * 255.0)
-        await callLightService(service: "turn_on", data: [
-            "brightness": hasBrightness,
-        ])
+
+        let _ = await withCheckedContinuation { continuation in
+            connection.send(.callService(
+                domain: .init(stringLiteral: Domain.light.rawValue),
+                service: .init(stringLiteral: Service.turnOn.rawValue),
+                data: [
+                    "entity_id": appEntity.entityId,
+                    "brightness": hasBrightness,
+                ]
+            )).promise.pipe { _ in
+                continuation.resume()
+            }
+        }
     }
 
     private func updateColor(_ color: Color) async {
         guard isOn else { return }
+        await Current.connectivity.syncNetworkInformation()
+        guard let connection = Current.api(for: server)?.connection else {
+            return
+        }
+
         let uiColor = UIColor(color)
         var red: CGFloat = 0
         var green: CGFloat = 0
@@ -295,14 +344,23 @@ struct LightControlsView: View {
         var alpha: CGFloat = 0
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         let rgbColor = [Int(red * 255), Int(green * 255), Int(blue * 255)]
-        await callLightService(service: "turn_on", data: [
-            "rgb_color": rgbColor,
-        ])
-        selectedColor = color
-    }
 
-    private func callLightService(service: String, data: [String: Any]) async {
-        print("Calling service: light.\(service) for \(appEntity.entityId) with data: \(data)")
+        let _ = await withCheckedContinuation { continuation in
+            connection.send(.callService(
+                domain: .init(stringLiteral: Domain.light.rawValue),
+                service: .init(stringLiteral: Service.turnOn.rawValue),
+                data: [
+                    "entity_id": appEntity.entityId,
+                    "rgb_color": rgbColor,
+                ]
+            )).promise.pipe { _ in
+                continuation.resume()
+            }
+        }
+
+        // Update local state
+        selectedColor = color
+        iconColor = color
     }
 
     // MARK: - Helpers
