@@ -1402,3 +1402,5 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "home_view.menu.settings" = "Settings";
 "home_view.context_menu.hide" = "Hide";
 "yes_label" = "Yes";
+"home_sections_reorder_view.title" = "Reorder Rooms";
+"home_sections_reorder_view.done" = "Done";

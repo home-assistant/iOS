@@ -1338,6 +1338,13 @@ public enum L10n {
     }
   }
 
+  public enum HomeSectionsReorderView {
+    /// Done
+    public static var done: String { return L10n.tr("Localizable", "home_sections_reorder_view.done") }
+    /// Reorder Rooms
+    public static var title: String { return L10n.tr("Localizable", "home_sections_reorder_view.title") }
+  }
+
   public enum HomeView {
     public enum ContextMenu {
       /// Hide

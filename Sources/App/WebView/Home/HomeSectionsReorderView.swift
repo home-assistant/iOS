@@ -1,3 +1,4 @@
+import Shared
 import SwiftUI
 
 @available(iOS 26.0, *)
@@ -15,13 +16,11 @@ struct HomeSectionsReorderView: View {
                 }
                 .onMove(perform: move)
             }
-            .navigationTitle("Reorder Rooms")
+            .environment(\.editMode, .constant(.active))
+            .navigationTitle(L10n.HomeSectionsReorderView.title)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    EditButton()
-                }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
+                    Button(L10n.HomeSectionsReorderView.done) {
                         onDone()
                         dismiss()
                     }
