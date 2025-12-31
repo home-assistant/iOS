@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var showSettings = false
     @State private var showReorder = false
     @State private var showAssist = false
+    @State private var selectedRoom: (id: String, name: String)?
     @Environment(\.dismiss) private var dismiss
 
     init(server: Server) {
@@ -40,6 +41,19 @@ struct HomeView: View {
             AssistView.build(server: viewModel.server)
                 .navigationTransition(.zoom(sourceID: assistAnimationSourceID, in: assist))
         })
+        .sheet(item: Binding(
+            get: { selectedRoom.map { RoomIdentifier(id: $0.id, name: $0.name) } },
+            set: { selectedRoom = $0.map { ($0.id, $0.name) } }
+        )) { room in
+            RoomView(server: viewModel.server, roomId: room.id, roomName: room.name)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+                .onDisappear {
+                    Task {
+                        await viewModel.reloadAfterUnhide()
+                    }
+                }
+        }
         .task {
             await viewModel.loadEntities()
         }
@@ -220,10 +234,24 @@ struct HomeView: View {
     // MARK: - Component Views
 
     private func sectionHeader(_ title: String) -> some View {
-        Text(title)
-            .font(.title2.bold())
+        Button {
+            // Find the section ID for this title
+            if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
+                selectedRoom = (id: section.id, name: section.name)
+            }
+        } label: {
+            HStack {
+                Text(title)
+                    .font(.title2.bold())
+                Spacer()
+                Image(systemSymbol: .chevronRight)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, DesignSystem.Spaces.one)
+        }
+        .buttonStyle(.plain)
     }
 
     private func entityTilesGrid(for entities: [HAAppEntity]) -> some View {
@@ -256,4 +284,12 @@ struct HomeView: View {
 @available(iOS 26.0, *)
 #Preview {
     HomeView(server: ServerFixture.standard)
+}
+
+// MARK: - Supporting Types
+
+@available(iOS 26.0, *)
+private struct RoomIdentifier: Identifiable {
+    let id: String
+    let name: String
 }

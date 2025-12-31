@@ -306,6 +306,13 @@ final class HomeViewModel: ObservableObject {
         rebuildSections()
     }
 
+    func reloadAfterUnhide() async {
+        // Reload hidden entities from cache (in case they were changed in RoomView)
+        await loadHiddenEntitiesIfNeeded()
+        // Rebuild sections to reflect the changes
+        rebuildSections()
+    }
+
     private func rebuildSections() {
         // Rebuild sections to remove the hidden entity
         Task {

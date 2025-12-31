@@ -2337,6 +2337,23 @@ public enum L10n {
     }
   }
 
+  public enum RoomView {
+    public enum ContextMenu {
+      /// Unhide
+      public static var unhide: String { return L10n.tr("Localizable", "room_view.context_menu.unhide") }
+    }
+    public enum EmptyState {
+      /// No entities in this room
+      public static var noEntities: String { return L10n.tr("Localizable", "room_view.empty_state.no_entities") }
+    }
+    public enum Section {
+      /// Hidden
+      public static var hidden: String { return L10n.tr("Localizable", "room_view.section.hidden") }
+      /// Visible
+      public static var visible: String { return L10n.tr("Localizable", "room_view.section.visible") }
+    }
+  }
+
   public enum Sensors {
     public enum Active {
       public enum Setting {

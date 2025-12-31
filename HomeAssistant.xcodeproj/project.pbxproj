@@ -649,6 +649,8 @@
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
+		423622A32F0560A600391BD0 /* RoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423622A22F0560A600391BD0 /* RoomViewModel.swift */; };
+		423622A52F0560BA00391BD0 /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423622A42F0560BA00391BD0 /* RoomView.swift */; };
 		4237E6392E5333370023B673 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4237E6382E5333370023B673 /* ZIPFoundation */; };
 		42383F702D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
 		42383F712D9576F700C745F2 /* AppTriggerSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */; };
@@ -2241,6 +2243,8 @@
 		4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentHaptics.swift; sourceTree = "<group>"; };
 		42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistryListForDisplay.swift; sourceTree = "<group>"; };
 		4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.swift; sourceTree = "<group>"; };
+		423622A22F0560A600391BD0 /* RoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomViewModel.swift; sourceTree = "<group>"; };
+		423622A42F0560BA00391BD0 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
 		42383F6F2D9576F700C745F2 /* AppTriggerSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTriggerSource.swift; sourceTree = "<group>"; };
 		4238DCA32DD1F1E300126434 /* AppSessionValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionValues.swift; sourceTree = "<group>"; };
 		4238E8522EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSecurityLevelBlockView.swift; sourceTree = "<group>"; };
@@ -5858,6 +5862,8 @@
 				42F5C08C2F02D32F00C50310 /* ControlOpenExperimentalDashboardValueProvider.swift */,
 				42F5C08E2F02D33500C50310 /* ControlOpenExperimentalDashboard.swift */,
 				42F5C0902F02D34700C50310 /* OpenExperimentalDashboardIntent.swift */,
+				423622A22F0560A600391BD0 /* RoomViewModel.swift */,
+				423622A42F0560BA00391BD0 /* RoomView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -8758,6 +8764,7 @@
 				42F5C0952F02E5C100C50310 /* ControlOpenExperimentalDashboard.swift in Sources */,
 				3E4087ED2CE62B5A0085DF29 /* WidgetBasicViewProtocol.swift in Sources */,
 				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
+				423622A32F0560A600391BD0 /* RoomViewModel.swift in Sources */,
 				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */,
@@ -9047,6 +9054,7 @@
 				42B74A642D36B17000C37304 /* ReloadWidgetsAppIntent.swift in Sources */,
 				42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */,
 				42DC8B782E14027000D9999E /* SearchingServersAnimationView.swift in Sources */,
+				423622A52F0560BA00391BD0 /* RoomView.swift in Sources */,
 				42B980DE2DC3599300BC5C08 /* PrivacyView.swift in Sources */,
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
 				4238E8532EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift in Sources */,
