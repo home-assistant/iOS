@@ -29,6 +29,8 @@ struct LightControlsView: View {
 
     // UI state
     @State private var showColorPresets: Bool = true
+    @State private var recentColors: [StoredColor] = []
+    @State private var isUpdatingFromServer: Bool = false
 
     var body: some View {
         ScrollView {
@@ -37,12 +39,19 @@ struct LightControlsView: View {
                 brightnessSlider
                 controlBar
                 if showColorPresets {
-                    colorPresetsGrid
+                    HStack {
+                        Spacer()
+                        colorPresetsGrid
+                        Spacer()
+                    }
                 }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear { updateStateFromEntity() }
+        .onAppear {
+            updateStateFromEntity()
+            Task { await loadRecentColors() }
+        }
         .onChange(of: haEntity) { _, _ in updateStateFromEntity() }
     }
 
@@ -155,7 +164,8 @@ struct LightControlsView: View {
     // MARK: - Color Presets
 
     private var colorPresetsGrid: some View {
-        let presets: [Color] = [
+        // Default colors shown when no recent colors exist
+        let defaultPresets: [Color] = [
             Color(red: 1.00, green: 0.58, blue: 0.45),
             Color(red: 1.00, green: 0.75, blue: 0.47),
             Color(red: 1.00, green: 0.63, blue: 0.73),
@@ -165,14 +175,25 @@ struct LightControlsView: View {
             Color(red: 1.00, green: 0.78, blue: 0.79),
         ]
 
+        // Combine recent colors with defaults to fill up to 7 spots
+        let recentColorsList = recentColors.map { $0.toColor() }
+        var displayColors = recentColorsList
+
+        // Fill remaining spots with default presets
+        if displayColors.count < 7 {
+            let remainingCount = 7 - displayColors.count
+            let additionalColors = Array(defaultPresets.prefix(remainingCount))
+            displayColors.append(contentsOf: additionalColors)
+        }
+
         return VStack(alignment: .leading, spacing: Constants.swatchSpacing) {
             // Two rows of swatches (4 per row)
             ForEach(0 ..< 2) { row in
                 HStack(spacing: Constants.swatchSpacing) {
                     ForEach(0 ..< 4) { col in
                         let index = row * 4 + col
-                        if index < presets.count {
-                            swatch(color: presets[index])
+                        if index < displayColors.count {
+                            swatch(color: displayColors[index])
                         } else if index == 7 {
                             // Last position: color picker
                             colorPickerSwatch
@@ -189,7 +210,9 @@ struct LightControlsView: View {
     private func swatch(color: Color) -> some View {
         Button {
             triggerHaptic += 1
-            Task { await updateColor(color) }
+            Task {
+                await updateColor(color, saveToRecents: true)
+            }
         } label: {
             Circle()
                 .fill(color)
@@ -211,8 +234,13 @@ struct LightControlsView: View {
                 Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
             )
             .onChange(of: selectedColor) { _, newColor in
+                // Skip if we're updating from server to avoid feedback loop
+                guard !isUpdatingFromServer else { return }
+
                 triggerHaptic += 1
-                Task { await updateColor(newColor) }
+                Task {
+                    await updateColor(newColor, saveToRecents: true)
+                }
             }
     }
 
@@ -226,6 +254,10 @@ struct LightControlsView: View {
             iconColor = .secondary
             return
         }
+
+        // Set flag to prevent color picker onChange from firing
+        isUpdatingFromServer = true
+        defer { isUpdatingFromServer = false }
 
         isOn = haEntity.state == "on"
 
@@ -308,7 +340,7 @@ struct LightControlsView: View {
         }
     }
 
-    private func updateColor(_ color: Color) async {
+    private func updateColor(_ color: Color, saveToRecents: Bool = false) async {
         guard isOn else { return }
 
         let uiColor = UIColor(color)
@@ -328,6 +360,11 @@ struct LightControlsView: View {
             // Update local state
             selectedColor = color
             iconColor = color
+
+            // Only save to recents if explicitly requested (user interaction)
+            if saveToRecents {
+                await saveColorToRecents(color)
+            }
         } catch {
             Current.Log.verbose("Failed to update color: \(error)")
         }
@@ -351,6 +388,94 @@ struct LightControlsView: View {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
         return formatter.localizedString(for: date, relativeTo: Date())
+    }
+
+    // MARK: - Color Persistence
+
+    private var recentColorsCacheKey: String {
+        "light.recentColors.\(server.identifier.rawValue).\(appEntity.entityId)"
+    }
+
+    private func loadRecentColors() async {
+        do {
+            let colors: [StoredColor] = try await withCheckedThrowingContinuation { continuation in
+                Current.diskCache
+                    .value(for: recentColorsCacheKey)
+                    .done { (colors: [StoredColor]) in
+                        continuation.resume(returning: colors)
+                    }
+                    .catch { error in
+                        continuation.resume(throwing: error)
+                    }
+            }
+            recentColors = colors
+        } catch {
+            // No cached colors, use empty array (will show defaults)
+            recentColors = []
+        }
+    }
+
+    private func saveColorToRecents(_ color: Color) async {
+        let storedColor = StoredColor(from: color)
+
+        // Remove duplicate if it exists
+        var updatedColors = recentColors.filter { !$0.isEqual(to: storedColor) }
+
+        // Add the new color to the front
+        updatedColors.insert(storedColor, at: 0)
+
+        // Keep only the 7 most recent colors (leaving room for color picker)
+        if updatedColors.count > 7 {
+            updatedColors = Array(updatedColors.prefix(7))
+        }
+
+        recentColors = updatedColors
+
+        // Save to disk cache
+        Current.diskCache.set(updatedColors, for: recentColorsCacheKey).pipe { result in
+            if case let .rejected(error) = result {
+                Current.Log.error("Failed to save recent colors: \(error)")
+            }
+        }
+    }
+
+    // MARK: - Stored Color Model
+
+    struct StoredColor: Codable, Equatable {
+        let red: Double
+        let green: Double
+        let blue: Double
+
+        init(red: Double, green: Double, blue: Double) {
+            self.red = red
+            self.green = green
+            self.blue = blue
+        }
+
+        init(from color: Color) {
+            let uiColor = UIColor(color)
+            var r: CGFloat = 0
+            var g: CGFloat = 0
+            var b: CGFloat = 0
+            var a: CGFloat = 0
+            uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+
+            self.red = Double(r)
+            self.green = Double(g)
+            self.blue = Double(b)
+        }
+
+        func toColor() -> Color {
+            Color(red: red, green: green, blue: blue)
+        }
+
+        func isEqual(to other: StoredColor) -> Bool {
+            // Compare with a small tolerance to account for floating-point precision
+            let tolerance = 0.01
+            return abs(red - other.red) < tolerance &&
+                abs(green - other.green) < tolerance &&
+                abs(blue - other.blue) < tolerance
+        }
     }
 }
 
