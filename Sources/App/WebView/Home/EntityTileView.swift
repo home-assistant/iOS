@@ -96,7 +96,7 @@ struct EntityTileView: View {
                 triggerHaptic += 1
             }
         )
-        .sensoryFeedback(.success, trigger: triggerHaptic)
+        .sensoryFeedback(.impact, trigger: triggerHaptic)
     }
 
     private func updateIconColor() {
