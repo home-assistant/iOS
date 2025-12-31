@@ -19,8 +19,10 @@ struct EntityTileView: View {
     let appEntity: HAAppEntity
     let haEntity: HAEntity?
 
+    @Namespace private var namespace
     @State private var triggerHaptic = 0
     @State private var iconColor: Color = .secondary
+    @State private var showMoreInfoDialog = false
 
     init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
         self.server = server
@@ -29,41 +31,70 @@ struct EntityTileView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
-                iconView
-                VStack(alignment: .leading, spacing: Constants.textVStackSpacing) {
-                    Text(appEntity.name)
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color(uiColor: .label))
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-                    if let haEntity {
-                        Text(
-                            Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity
-                                .state
-                        )
-                        .font(.caption)
-                        .foregroundColor(Color(uiColor: .secondaryLabel))
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+        tileContent
+            .frame(height: Constants.tileHeight)
+            .frame(maxWidth: .infinity)
+            .contentShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+            .glassEffect(
+                .clear.interactive(),
+                in: RoundedRectangle(cornerRadius: Constants.cornerRadius, style: .continuous)
+            )
+            .onChange(of: haEntity) { _, _ in
+                updateIconColor()
             }
-            .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
+            .onAppear {
+                updateIconColor()
+            }
+            .matchedTransitionSource(id: appEntity.id, in: namespace)
+            .onTapGesture {
+                showMoreInfoDialog = true
+            }
+            .sheet(isPresented: $showMoreInfoDialog) {
+                EntityMoreInfoDialogView(
+                    server: server, appEntity: appEntity, haEntity: haEntity)
+                .navigationTransition(.zoom(sourceID: appEntity.entityId, in: namespace))
+            }
+    }
+    
+    private var tileContent: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
+            contentRow
+                .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
         }
-        .frame(height: Constants.tileHeight)
-        .frame(maxWidth: .infinity)
-        .glassEffect(
-            .clear.interactive(),
-            in: RoundedRectangle(cornerRadius: Constants.cornerRadius, style: .continuous)
+    }
+    
+    private var contentRow: some View {
+        HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
+            iconView
+            entityInfoStack
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+    
+    private var entityInfoStack: some View {
+        VStack(alignment: .leading, spacing: Constants.textVStackSpacing) {
+            entityNameText
+            if let haEntity {
+                entityStateText(for: haEntity)
+            }
+        }
+    }
+    
+    private var entityNameText: some View {
+        Text(appEntity.name)
+            .font(.footnote)
+            .fontWeight(.semibold)
+            .foregroundColor(Color(uiColor: .label))
+            .lineLimit(2)
+            .multilineTextAlignment(.leading)
+    }
+    
+    private func entityStateText(for haEntity: HAEntity) -> some View {
+        Text(
+            Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
         )
-        .onChange(of: haEntity) { _, _ in
-            updateIconColor()
-        }
-        .onAppear {
-            updateIconColor()
-        }
+        .font(.caption)
+        .foregroundColor(Color(uiColor: .secondaryLabel))
     }
 
     private var iconView: some View {

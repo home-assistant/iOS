@@ -925,6 +925,7 @@
 		42B000122EC5D6CD005FC67F /* OpenSettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */; };
 		42B129432F0565DE00B957AF /* EntityDisplayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B129422F0565DE00B957AF /* EntityDisplayViewModel.swift */; };
 		42B129452F0565E900B957AF /* EntityDisplayComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B129442F0565E900B957AF /* EntityDisplayComponents.swift */; };
+		42B129512F056DAC00B957AF /* EntityMoreInfoDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */; };
 		42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B19BD02D4A358B00B3262B /* DebugView.swift */; };
 		42B1A7432C11E65100904548 /* WatchAssistService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7422C11E65100904548 /* WatchAssistService.swift */; };
 		42B1A7452C1305C300904548 /* WatchCommunicatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */; };
@@ -2668,6 +2669,7 @@
 		42B000112EC5D6CD005FC67F /* OpenSettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSettingsDestination.swift; sourceTree = "<group>"; };
 		42B129422F0565DE00B957AF /* EntityDisplayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDisplayViewModel.swift; sourceTree = "<group>"; };
 		42B129442F0565E900B957AF /* EntityDisplayComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDisplayComponents.swift; sourceTree = "<group>"; };
+		42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityMoreInfoDialogView.swift; sourceTree = "<group>"; };
 		42B19BD02D4A358B00B3262B /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		42B1A7422C11E65100904548 /* WatchAssistService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAssistService.swift; sourceTree = "<group>"; };
 		42B1A7442C1305C300904548 /* WatchCommunicatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicatorService.swift; sourceTree = "<group>"; };
@@ -5577,6 +5579,7 @@
 			children = (
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
+				42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */,
 			);
 			path = EntityTile;
 			sourceTree = "<group>";
@@ -9013,6 +9016,7 @@
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
+				42B129512F056DAC00B957AF /* EntityMoreInfoDialogView.swift in Sources */,
 				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
 				42FCCFE32B9B1B610057783F /* BarcodeScannerCameraView.swift in Sources */,
 				42BF8DB42EC4E73700DCB7E7 /* ConnectionSettingsView.swift in Sources */,
