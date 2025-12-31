@@ -15,23 +15,23 @@ struct EntityMoreInfoDialogView: View {
         static let colorPickerStrokeWidth: CGFloat = 40
         static let brightnessIconSize: CGFloat = 20
     }
-    
+
     let server: Server
     let appEntity: HAAppEntity
     let haEntity: HAEntity?
     @Environment(\.dismiss) private var dismiss
-    
+
     @State private var brightness: Double = 0
     @State private var selectedColor: Color = .white
     @State private var isOn: Bool = false
     @State private var triggerHaptic = 0
-    
+
     init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
         self.server = server
         self.appEntity = appEntity
         self.haEntity = haEntity
     }
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -75,17 +75,17 @@ struct EntityMoreInfoDialogView: View {
     }
 
     // MARK: - Light Controls
-    
+
     @ViewBuilder
     private var lightControlsView: some View {
         VStack(spacing: DesignSystem.Spaces.three) {
             // On/Off Button
             toggleButton
-            
+
             // Brightness Control
             if isOn {
                 brightnessControl
-                
+
                 // Color Picker
                 if supportsColor() {
                     colorPickerView
@@ -93,7 +93,7 @@ struct EntityMoreInfoDialogView: View {
             }
         }
     }
-    
+
     private var toggleButton: some View {
         Button {
             triggerHaptic += 1
@@ -105,13 +105,13 @@ struct EntityMoreInfoDialogView: View {
                 Image(systemName: isOn ? "lightbulb.fill" : "lightbulb")
                     .font(.system(size: 22))
                     .foregroundStyle(isOn ? selectedColor : .secondary)
-                
+
                 Text(isOn ? "Turn Off" : "Turn On")
                     .font(DesignSystem.Font.headline)
                     .foregroundColor(Color(uiColor: .label))
-                
+
                 Spacer()
-                
+
                 Image(systemName: "power")
                     .font(.system(size: 18))
                     .foregroundStyle(.secondary)
@@ -127,27 +127,27 @@ struct EntityMoreInfoDialogView: View {
         .buttonStyle(.plain)
         .sensoryFeedback(.impact, trigger: triggerHaptic)
     }
-    
+
     private var brightnessControl: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             HStack {
                 Image(systemName: "sun.min.fill")
                     .font(.system(size: Constants.brightnessIconSize))
                     .foregroundStyle(.secondary)
-                
+
                 Text("Brightness")
                     .font(DesignSystem.Font.subheadline)
                     .foregroundColor(Color(uiColor: .secondaryLabel))
-                
+
                 Spacer()
-                
+
                 Text("\(Int(brightness))%")
                     .font(DesignSystem.Font.subheadline)
                     .foregroundColor(Color(uiColor: .label))
                     .fontWeight(.medium)
             }
-            
-            Slider(value: $brightness, in: 0...100, step: 1)
+
+            Slider(value: $brightness, in: 0 ... 100, step: 1)
                 .tint(selectedColor)
                 .onChange(of: brightness) { _, newValue in
                     Task {
@@ -161,13 +161,13 @@ struct EntityMoreInfoDialogView: View {
             in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
         )
     }
-    
+
     private var colorPickerView: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             Text("Color")
                 .font(DesignSystem.Font.subheadline)
                 .foregroundColor(Color(uiColor: .secondaryLabel))
-            
+
             ColorPicker("", selection: $selectedColor, supportsOpacity: false)
                 .labelsHidden()
                 .frame(maxWidth: .infinity)
@@ -184,9 +184,9 @@ struct EntityMoreInfoDialogView: View {
             in: RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two, style: .continuous)
         )
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func updateStateFromEntity() {
         guard let haEntity else {
             isOn = false
@@ -194,22 +194,22 @@ struct EntityMoreInfoDialogView: View {
             selectedColor = .white
             return
         }
-        
+
         // Update on/off state
         isOn = haEntity.state == "on"
-        
+
         // Update brightness (Home Assistant uses 0-255, we use 0-100)
         if let brightnessValue = haEntity.attributes["brightness"] as? Int {
             brightness = Double(brightnessValue) / 255.0 * 100.0
         } else {
             brightness = isOn ? 100 : 0
         }
-        
+
         // Update color
         let colorMode = haEntity.attributes["color_mode"] as? String
         let rgbColor = haEntity.attributes["rgb_color"] as? [Int]
         let hsColor = haEntity.attributes["hs_color"] as? [Double]
-        
+
         if let rgbColor, rgbColor.count == 3 {
             selectedColor = Color(
                 red: Double(rgbColor[0]) / 255.0,
@@ -229,96 +229,97 @@ struct EntityMoreInfoDialogView: View {
             )
         }
     }
-    
+
     private func supportsColor() -> Bool {
         guard let haEntity else { return false }
-        
+
         // Check if the light supports color
         if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
             return supportedColorModes.contains(where: { mode in
                 ["rgb", "rgbw", "rgbww", "hs", "xy"].contains(mode)
             })
         }
-        
+
         return false
     }
-    
+
     // MARK: - Service Calls
-    
+
     private func toggleLight() async {
         let newState = !isOn
         let service = newState ? "turn_on" : "turn_off"
-        
+
         await callLightService(service: service, data: [:])
-        
+
         // Optimistically update UI
         isOn = newState
         if !newState {
             brightness = 0
         }
     }
-    
+
     private func updateBrightness(_ value: Double) async {
         guard isOn else { return }
-        
+
         // Convert 0-100 to 0-255 for Home Assistant
         let hasBrightness = Int(value / 100.0 * 255.0)
-        
+
         await callLightService(service: "turn_on", data: [
-            "brightness": hasBrightness
+            "brightness": hasBrightness,
         ])
     }
-    
+
     private func updateColor(_ color: Color) async {
         guard isOn else { return }
-        
+
         // Convert SwiftUI Color to RGB values
         let uiColor = UIColor(color)
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
-        
+
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
+
         let rgbColor = [
             Int(red * 255),
             Int(green * 255),
-            Int(blue * 255)
+            Int(blue * 255),
         ]
-        
+
         await callLightService(service: "turn_on", data: [
-            "rgb_color": rgbColor
+            "rgb_color": rgbColor,
         ])
     }
-    
+
     private func callLightService(service: String, data: [String: Any]) async {
         // This is a placeholder for the actual service call implementation
         // You'll need to integrate with your existing HomeAssistantAPI or HAConnection
         // based on how the rest of your app handles service calls
-        
+
         // Example implementation pattern (adjust based on your actual API):
         /*
-        guard let api = Current.api(for: server) else { return }
-        
-        do {
-            _ = try await api.connection.send(
-                .callService(
-                    domain: .init(rawValue: "light"),
-                    service: .init(rawValue: service),
-                    data: ["entity_id": appEntity.entityId].merging(data) { _, new in new }
-                )
-            )
-        } catch {
-            print("Failed to call service: \(error)")
-        }
-        */
-        
+         guard let api = Current.api(for: server) else { return }
+
+         do {
+             _ = try await api.connection.send(
+                 .callService(
+                     domain: .init(rawValue: "light"),
+                     service: .init(rawValue: service),
+                     data: ["entity_id": appEntity.entityId].merging(data) { _, new in new }
+                 )
+             )
+         } catch {
+             print("Failed to call service: \(error)")
+         }
+         */
+
         print("Calling service: light.\(service) for \(appEntity.entityId) with data: \(data)")
     }
 }
 
 // MARK: - Preview
+
 @available(iOS 26.0, *)
 #Preview {
     @Previewable @State var haEntity: HAEntity? = try? HAEntity(
@@ -333,11 +334,11 @@ struct EntityMoreInfoDialogView: View {
             "rgb_color": [255, 200, 100],
             "supported_color_modes": ["rgb", "brightness"],
             "color_mode": "rgb",
-            "area_id": "living_room"
+            "area_id": "living_room",
         ],
         context: .init(id: "", userId: nil, parentId: nil)
     )
-    
+
     let appEntity = HAAppEntity(
         id: "test-light.living_room",
         entityId: "light.living_room",
@@ -347,7 +348,7 @@ struct EntityMoreInfoDialogView: View {
         icon: "mdi:lightbulb",
         rawDeviceClass: nil
     )
-    
+
     EntityMoreInfoDialogView(
         server: ServerFixture.standard,
         appEntity: appEntity,

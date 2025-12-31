@@ -51,18 +51,19 @@ struct EntityTileView: View {
             }
             .sheet(isPresented: $showMoreInfoDialog) {
                 EntityMoreInfoDialogView(
-                    server: server, appEntity: appEntity, haEntity: haEntity)
+                    server: server, appEntity: appEntity, haEntity: haEntity
+                )
                 .navigationTransition(.zoom(sourceID: appEntity.entityId, in: namespace))
             }
     }
-    
+
     private var tileContent: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
             contentRow
                 .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
         }
     }
-    
+
     private var contentRow: some View {
         HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
             iconView
@@ -70,7 +71,7 @@ struct EntityTileView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-    
+
     private var entityInfoStack: some View {
         VStack(alignment: .leading, spacing: Constants.textVStackSpacing) {
             entityNameText
@@ -79,7 +80,7 @@ struct EntityTileView: View {
             }
         }
     }
-    
+
     private var entityNameText: some View {
         Text(appEntity.name)
             .font(.footnote)
@@ -88,7 +89,7 @@ struct EntityTileView: View {
             .lineLimit(2)
             .multilineTextAlignment(.leading)
     }
-    
+
     private func entityStateText(for haEntity: HAEntity) -> some View {
         Text(
             Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
