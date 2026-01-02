@@ -18,6 +18,7 @@ struct LightControlsView: View {
         static let maxColorPresets: Int = 8
         static let colorPresetsRows: Int = 2
         static let colorPresetsColumns: Int = 4
+        static let maxTemperaturePresets: Int = 7
         // Temperature constants (mireds)
         static let minMireds: Double = 153 // ~6500K (cool white)
         static let maxMireds: Double = 500 // ~2000K (warm white)
@@ -46,6 +47,7 @@ struct LightControlsView: View {
     // UI state
     @State private var showColorPresets: Bool = true
     @State private var recentColors: [StoredColor] = []
+    @State private var recentTemperatures: [Double] = []
     @State private var isUpdatingFromServer: Bool = false
     @State private var hasInitialized: Bool = false
 
@@ -82,7 +84,10 @@ struct LightControlsView: View {
             pickerColor = selectedColor
             // Mark as initialized so future color changes trigger updates
             hasInitialized = true
-            Task { await loadRecentColors() }
+            Task {
+                await loadRecentColors()
+                await loadRecentTemperatures()
+            }
         }
         .onChange(of: haEntity) { _, _ in updateStateFromEntity() }
     }
@@ -220,6 +225,9 @@ struct LightControlsView: View {
 
     private var temperatureSlider: some View {
         VStack(spacing: DesignSystem.Spaces.two) {
+            // Temperature presets row
+            temperaturePresetsRow
+
             HStack {
                 Image(systemName: "sun.max.fill")
                     .foregroundStyle(.orange)
@@ -250,6 +258,62 @@ struct LightControlsView: View {
         }
         .padding(.vertical, DesignSystem.Spaces.two)
         .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    private var temperaturePresetsRow: some View {
+        let defaultTemperatures: [Double] = [
+            153, // ~6500K (cool/daylight)
+            192, // ~5200K
+            250, // ~4000K (neutral)
+            308, // ~3250K
+            370, // ~2700K (warm)
+            435, // ~2300K
+            500, // ~2000K (very warm)
+        ]
+
+        // Combine recent temperatures with defaults
+        var displayTemperatures: [Double] = recentTemperatures
+
+        // Fill remaining spots with defaults if needed
+        if displayTemperatures.count < Constants.maxTemperaturePresets {
+            let remainingCount = Constants.maxTemperaturePresets - displayTemperatures.count
+            let additionalTemps = Array(defaultTemperatures.prefix(remainingCount))
+            displayTemperatures.append(contentsOf: additionalTemps)
+        }
+
+        return HStack(spacing: Constants.swatchSpacing) {
+            ForEach(0 ..< min(displayTemperatures.count, Constants.maxTemperaturePresets), id: \.self) { index in
+                temperatureSwatch(mireds: displayTemperatures[index])
+            }
+        }
+        .padding(.horizontal, DesignSystem.Spaces.two)
+    }
+
+    private func temperatureSwatch(mireds: Double) -> some View {
+        let color = colorFromTemperature(mireds)
+        let kelvin = kelvinFromMireds(mireds)
+
+        return Button {
+            triggerHaptic += 1
+            Task {
+                await updateColorTemperature(mireds)
+            }
+        } label: {
+            VStack(spacing: 4) {
+                Circle()
+                    .fill(color)
+                    .overlay(
+                        Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+                    )
+                    .frame(width: Constants.swatchSize, height: Constants.swatchSize)
+                    .shadow(color: color.opacity(0.2), radius: 6, x: 0, y: 4)
+
+                Text("\(kelvin)K")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     private var temperatureGradient: LinearGradient {
@@ -317,7 +381,7 @@ struct LightControlsView: View {
                     ForEach(0 ..< Constants.colorPresetsColumns) { col in
                         let index = row * Constants.colorPresetsColumns + col
                         let totalSlots = Constants.colorPresetsRows * Constants.colorPresetsColumns
-                        
+
                         // Last slot (index 7) is the color picker
                         if index == totalSlots - 1 {
                             colorPickerSwatch
@@ -588,6 +652,9 @@ struct LightControlsView: View {
 
             // Update icon color to approximate white tone
             iconColor = colorFromTemperature(mireds)
+
+            // Save to recent temperatures
+            await saveTemperatureToRecents(mireds)
         } catch {
             Current.Log.verbose("Failed to update color temperature: \(error)")
         }
@@ -635,6 +702,10 @@ struct LightControlsView: View {
         "light.recentColors.\(server.identifier.rawValue).\(appEntity.entityId)"
     }
 
+    private var recentTemperaturesCacheKey: String {
+        "light.recentTemperatures.\(server.identifier.rawValue).\(appEntity.entityId)"
+    }
+
     private func loadRecentColors() async {
         do {
             let colors: [StoredColor] = try await withCheckedThrowingContinuation { continuation in
@@ -651,6 +722,25 @@ struct LightControlsView: View {
         } catch {
             // No cached colors, use empty array (will show defaults)
             recentColors = []
+        }
+    }
+
+    private func loadRecentTemperatures() async {
+        do {
+            let temperatures: [Double] = try await withCheckedThrowingContinuation { continuation in
+                Current.diskCache
+                    .value(for: recentTemperaturesCacheKey)
+                    .done { (temperatures: [Double]) in
+                        continuation.resume(returning: temperatures)
+                    }
+                    .catch { error in
+                        continuation.resume(throwing: error)
+                    }
+            }
+            recentTemperatures = temperatures
+        } catch {
+            // No cached temperatures, use empty array (will show defaults)
+            recentTemperatures = []
         }
     }
 
@@ -680,6 +770,33 @@ struct LightControlsView: View {
         Current.diskCache.set(updatedColors, for: recentColorsCacheKey).pipe { result in
             if case let .rejected(error) = result {
                 Current.Log.error("Failed to save recent colors: \(error)")
+            }
+        }
+    }
+
+    private func saveTemperatureToRecents(_ mireds: Double) async {
+        // If the most recent temperature is very similar (within 10 mireds), skip re-saving
+        if let first = recentTemperatures.first, abs(first - mireds) < 10 {
+            return
+        }
+
+        // Remove similar temperatures (within 10 mireds tolerance)
+        var updatedTemperatures = recentTemperatures.filter { abs($0 - mireds) >= 10 }
+
+        // Add the new temperature to the front
+        updatedTemperatures.insert(mireds, at: 0)
+
+        // Keep only the most recent temperatures
+        if updatedTemperatures.count > Constants.maxTemperaturePresets {
+            updatedTemperatures = Array(updatedTemperatures.prefix(Constants.maxTemperaturePresets))
+        }
+
+        recentTemperatures = updatedTemperatures
+
+        // Save to disk cache
+        Current.diskCache.set(updatedTemperatures, for: recentTemperaturesCacheKey).pipe { result in
+            if case let .rejected(error) = result {
+                Current.Log.error("Failed to save recent temperatures: \(error)")
             }
         }
     }
