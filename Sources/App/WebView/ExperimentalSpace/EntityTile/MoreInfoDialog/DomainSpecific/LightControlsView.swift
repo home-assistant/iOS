@@ -1,461 +1,88 @@
 import AppIntents
 import HAKit
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
-@available(iOS 26.0, *)
-struct LightControlsView: View {
-    enum Constants {
-        static let controlHeight: CGFloat = 56
-        static let brightnessIconSize: CGFloat = 20
-        static let bulbPreviewWidth: CGFloat = 180
-        static let bulbPreviewHeight: CGFloat = 360
-        static let swatchSize: CGFloat = 44
-        static let swatchSpacing: CGFloat = 12
-        static let controlBarHeight: CGFloat = 56
-        static let controlIconSize: CGFloat = 20
-        static let cornerRadius: CGFloat = 28
-        static let maxColorPresets: Int = 8
-        static let colorPresetsRows: Int = 2
-        static let colorPresetsColumns: Int = 4
-        static let maxTemperaturePresets: Int = 7
-        // Temperature constants (mireds)
-        static let minMireds: Double = 153 // ~6500K (cool white)
-        static let maxMireds: Double = 500 // ~2000K (warm white)
-    }
+// MARK: - View Model
 
+@available(iOS 26.0, *)
+@Observable
+final class LightControlsViewModel {
     enum ColorMode {
         case color
         case temperature
     }
 
-    let server: Server
-    let appEntity: HAAppEntity
-    let haEntity: HAEntity?
+    // MARK: - Published State
 
-    @State private var brightness: Double = 0
-    @State private var selectedColor: Color = .white
-    @State private var pickerColor: Color = .white
-    @State private var isOn: Bool = false
-    @State private var triggerHaptic = 0
-    @State private var iconColor: Color = .secondary
-    @State private var colorTemperature: Double = 250 // mireds
-    @State private var currentColorMode: ColorMode = .color
-    @State private var minMireds: Double = Constants.minMireds
-    @State private var maxMireds: Double = Constants.maxMireds
+    var brightness: Double = 0
+    var selectedColor: Color = .white
+    var pickerColor: Color = .white
+    var isOn: Bool = false
+    var iconColor: Color = .secondary
+    var colorTemperature: Double = 250 // mireds
+    var currentColorMode: ColorMode = .color
+    var minMireds: Double = LightControlsView.Constants.minMireds
+    var maxMireds: Double = LightControlsView.Constants.maxMireds
+    var recentColors: [StoredColor] = []
+    var recentTemperatures: [Double] = []
+    var hasInitialized: Bool = false
 
-    // UI state
-    @State private var showColorPresets: Bool = true
-    @State private var recentColors: [StoredColor] = []
-    @State private var recentTemperatures: [Double] = []
-    @State private var isUpdatingFromServer: Bool = false
-    @State private var hasInitialized: Bool = false
+    // MARK: - Dependencies
 
-    var body: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Spaces.two) {
-                header
-                brightnessSlider
-                controlBar
+    private let server: Server
+    private let appEntity: HAAppEntity
+    private var haEntity: HAEntity?
 
-                // Mode toggle if light supports both color and temperature
-                if supportsColor(), supportsColorTemp() {
-                    modeToggle
-                }
+    // MARK: - Initialization
 
-                // Show appropriate controls based on mode and support
-                if supportsColor(), currentColorMode == .color, showColorPresets {
-                    HStack {
-                        Spacer()
-                        colorPresetsGrid
-                        Spacer()
-                    }
-                }
-
-                if supportsColorTemp(), currentColorMode == .temperature {
-                    temperatureSlider
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear {
-            updateStateFromEntity()
-            // Initialize picker color once; it will not be updated by remote changes afterwards
-            pickerColor = selectedColor
-            // Mark as initialized so future color changes trigger updates
-            hasInitialized = true
-            Task {
-                await loadRecentColors()
-                await loadRecentTemperatures()
-            }
-        }
-        .onChange(of: haEntity) { _, _ in updateStateFromEntity() }
+    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+        self.server = server
+        self.appEntity = appEntity
+        self.haEntity = haEntity
     }
 
-    // MARK: - Header
+    // MARK: - Public Methods
 
-    private var header: some View {
-        VStack(spacing: DesignSystem.Spaces.one) {
-            Text(stateDescription)
-                .font(.system(size: 28, weight: .semibold))
-                .foregroundStyle(.primary)
-                .animation(.easeInOut, value: isOn)
-
-            Text("\(Int(brightness))%")
-                .font(.system(size: 17, weight: .regular))
-                .foregroundStyle(.secondary)
-                .animation(.easeInOut, value: brightness)
-        }
+    func updateEntity(_ haEntity: HAEntity?) {
+        self.haEntity = haEntity
+        updateStateFromEntity()
     }
 
-    private var stateDescription: String {
-        guard let haEntity else { return "Off" }
+    func initialize() {
+        updateStateFromEntity()
+        pickerColor = selectedColor
+        hasInitialized = true
+    }
+
+    func stateDescription() -> String {
+        guard let haEntity else { return CoreStrings.commonStateOff }
         return Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
-    }
-
-    // MARK: - Bulb Preview
-
-    private var bulbPreview: some View {
-        let displayColor = isOn ? iconColor : Color(uiColor: .systemGray5)
-        let brightnessOpacity = isOn ? max(0.15, brightness / 100.0) : 1.0
-
-        return RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
-            .fill(displayColor.opacity(isOn ? 0.25 : 1.0))
-            .overlay(
-                RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
-                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
-            )
-            .frame(width: Constants.bulbPreviewWidth, height: Constants.bulbPreviewHeight)
-            .overlay(
-                VStack(spacing: 12) {
-                    Image(systemName: isOn ? "lightbulb.fill" : "lightbulb")
-                        .font(.system(size: 36))
-                        .foregroundStyle(isOn ? iconColor : .secondary)
-                        .shadow(color: iconColor.opacity(isOn ? 0.35 : 0), radius: 12, x: 0, y: 8)
-                    // Optional: subtle brightness indicator
-                    Capsule()
-                        .fill(iconColor.opacity(isOn ? 0.35 : 0.15))
-                        .frame(width: 72, height: 6)
-                        .opacity(brightnessOpacity)
-                }
-            )
-            .glassEffect(
-                .clear,
-                in: RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
-            )
-            .padding(.vertical, DesignSystem.Spaces.two)
-            .animation(.easeInOut(duration: 0.2), value: iconColor)
-            .animation(.easeInOut(duration: 0.2), value: isOn)
-            .animation(.easeInOut(duration: 0.2), value: brightness)
-    }
-
-    // MARK: - Brightness Slider
-
-    private var brightnessSlider: some View {
-        BrightnessSlider(
-            brightness: $brightness,
-            color: iconColor
-        ) { isEditing in
-            if !isEditing {
-                // When user finishes dragging, update the light
-                Task {
-                    await updateBrightness(brightness)
-                }
-            }
-        }
-        .frame(height: Constants.bulbPreviewHeight)
-        .transition(.scale.combined(with: .opacity))
-    }
-
-    // MARK: - Mode Toggle
-
-    private var modeToggle: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            modeToggleButton(mode: .color, icon: "paintpalette.fill", label: "Color")
-            modeToggleButton(mode: .temperature, icon: "thermometer.medium", label: "Temperature")
-        }
-        .padding(.horizontal, DesignSystem.Spaces.two)
-    }
-
-    private func modeToggleButton(mode: ColorMode, icon: String, label: String) -> some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                currentColorMode = mode
-            }
-            triggerHaptic += 1
-        } label: {
-            HStack(spacing: DesignSystem.Spaces.one) {
-                Image(systemName: icon)
-                    .font(.system(size: 16, weight: .semibold))
-                Text(label)
-                    .font(.system(size: 15, weight: .medium))
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 44)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(
-                        currentColorMode == mode ? Color.accentColor
-                            .opacity(0.15) : Color(uiColor: .secondarySystemBackground)
-                    )
-            )
-            .foregroundStyle(currentColorMode == mode ? Color.accentColor : .primary)
-        }
-        .buttonStyle(.plain)
-    }
-
-    // MARK: - Control Bar
-
-    private var controlBar: some View {
-        HStack(spacing: DesignSystem.Spaces.one) {
-            Spacer()
-            controlIconButton(system: "power") {
-                triggerHaptic += 1
-                Task { await toggleLight() }
-            }
-            Spacer()
-        }
-        .frame(height: Constants.controlBarHeight)
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, DesignSystem.Spaces.two)
-        .sensoryFeedback(.impact, trigger: triggerHaptic)
-    }
-
-    // MARK: - Temperature Slider
-
-    private var temperatureSlider: some View {
-        VStack(spacing: DesignSystem.Spaces.two) {
-            // Temperature presets row
-            temperaturePresetsRow
-
-            HStack {
-                Image(systemName: "sun.max.fill")
-                    .foregroundStyle(.orange)
-                    .font(.system(size: 20))
-
-                Slider(
-                    value: $colorTemperature,
-                    in: minMireds ... maxMireds,
-                    onEditingChanged: { isEditing in
-                        if !isEditing {
-                            Task {
-                                await updateColorTemperature(colorTemperature)
-                            }
-                        }
-                    }
-                )
-                .tint(temperatureGradient)
-
-                Image(systemName: "moon.fill")
-                    .foregroundStyle(.blue)
-                    .font(.system(size: 20))
-            }
-            .padding(.horizontal, DesignSystem.Spaces.four)
-
-            Text("\(kelvinFromMireds(colorTemperature))K")
-                .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(.secondary)
-        }
-        .padding(.vertical, DesignSystem.Spaces.two)
-        .transition(.opacity.combined(with: .move(edge: .bottom)))
-    }
-
-    private var temperaturePresetsRow: some View {
-        let defaultTemperatures: [Double] = [
-            153, // ~6500K (cool/daylight)
-            192, // ~5200K
-            250, // ~4000K (neutral)
-            308, // ~3250K
-            370, // ~2700K (warm)
-            435, // ~2300K
-            500, // ~2000K (very warm)
-        ]
-
-        // Combine recent temperatures with defaults
-        var displayTemperatures: [Double] = recentTemperatures
-
-        // Fill remaining spots with defaults if needed
-        if displayTemperatures.count < Constants.maxTemperaturePresets {
-            let remainingCount = Constants.maxTemperaturePresets - displayTemperatures.count
-            let additionalTemps = Array(defaultTemperatures.prefix(remainingCount))
-            displayTemperatures.append(contentsOf: additionalTemps)
-        }
-
-        return HStack(spacing: Constants.swatchSpacing) {
-            ForEach(0 ..< min(displayTemperatures.count, Constants.maxTemperaturePresets), id: \.self) { index in
-                temperatureSwatch(mireds: displayTemperatures[index])
-            }
-        }
-        .padding(.horizontal, DesignSystem.Spaces.two)
-    }
-
-    private func temperatureSwatch(mireds: Double) -> some View {
-        let color = colorFromTemperature(mireds)
-        let kelvin = kelvinFromMireds(mireds)
-
-        return Button {
-            triggerHaptic += 1
-            Task {
-                await updateColorTemperature(mireds)
-            }
-        } label: {
-            VStack(spacing: 4) {
-                Circle()
-                    .fill(color)
-                    .overlay(
-                        Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
-                    )
-                    .frame(width: Constants.swatchSize, height: Constants.swatchSize)
-                    .shadow(color: color.opacity(0.2), radius: 6, x: 0, y: 4)
-
-                Text("\(kelvin)K")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var temperatureGradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 1.0, green: 0.7, blue: 0.4), // Warm
-                Color(red: 1.0, green: 0.9, blue: 0.8), // Neutral
-                Color(red: 0.7, green: 0.8, blue: 1.0), // Cool
-            ]),
-            startPoint: .leading,
-            endPoint: .trailing
-        )
-    }
-
-    private func kelvinFromMireds(_ mireds: Double) -> Int {
-        Int(1_000_000 / mireds)
-    }
-
-    private func controlIconButton(system: String, action: @escaping () -> Void) -> some View {
-        Button(action: {
-            action()
-        }) {
-            ZStack {
-                Circle()
-                    .fill(Color(uiColor: .secondarySystemBackground))
-                Image(systemName: system)
-                    .font(.system(size: Constants.controlIconSize, weight: .semibold))
-                    .foregroundStyle(.primary)
-            }
-            .frame(width: 60, height: 60)
-        }
-        .buttonStyle(.plain)
-    }
-
-    // MARK: - Color Presets
-
-    private var colorPresetsGrid: some View {
-        // Default colors shown when no recent colors exist (7 colors to leave room for picker)
-        let defaultPresets: [Color] = [
-            Color(red: 1.00, green: 0.58, blue: 0.45),
-            Color(red: 1.00, green: 0.75, blue: 0.47),
-            Color(red: 1.00, green: 0.63, blue: 0.73),
-            Color(red: 1.00, green: 0.84, blue: 0.73),
-            Color(red: 0.99, green: 0.59, blue: 0.51),
-            Color(red: 1.00, green: 0.83, blue: 0.66),
-            Color(red: 1.00, green: 0.78, blue: 0.79),
-        ]
-
-        // Combine recent colors with defaults to fill up to 7 spots (8th is color picker)
-        let maxPresetColors = Constants.maxColorPresets - 1 // Reserve last spot for picker
-        let recentColorsList = recentColors.map { $0.toColor() }
-        var displayColors: [(color: Color, isRecent: Bool)] = recentColorsList.map { ($0, true) }
-
-        // Fill remaining spots with default presets
-        if displayColors.count < maxPresetColors {
-            let remainingCount = maxPresetColors - displayColors.count
-            let additionalColors = Array(defaultPresets.prefix(remainingCount)).map { ($0, false) }
-            displayColors.append(contentsOf: additionalColors)
-        }
-
-        return VStack(alignment: .leading, spacing: Constants.swatchSpacing) {
-            // Grid of swatches
-            ForEach(0 ..< Constants.colorPresetsRows) { row in
-                HStack(spacing: Constants.swatchSpacing) {
-                    ForEach(0 ..< Constants.colorPresetsColumns) { col in
-                        let index = row * Constants.colorPresetsColumns + col
-                        let totalSlots = Constants.colorPresetsRows * Constants.colorPresetsColumns
-
-                        // Last slot (index 7) is the color picker
-                        if index == totalSlots - 1 {
-                            colorPickerSwatch
-                        } else if index < displayColors.count {
-                            let colorInfo = displayColors[index]
-                            swatch(color: colorInfo.color, shouldSaveToRecents: colorInfo.isRecent)
-                        } else {
-                            Spacer(minLength: Constants.swatchSize)
-                        }
-                    }
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private func swatch(color: Color, shouldSaveToRecents: Bool) -> some View {
-        Button {
-            triggerHaptic += 1
-            Task {
-                await updateColor(color, saveToRecents: shouldSaveToRecents)
-            }
-        } label: {
-            Circle()
-                .fill(color)
-                .overlay(
-                    Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
-                )
-                .frame(width: Constants.swatchSize, height: Constants.swatchSize)
-                .shadow(color: color.opacity(0.15), radius: 6, x: 0, y: 4)
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var colorPickerSwatch: some View {
-        ColorPicker("", selection: Binding(
-            get: { pickerColor },
-            set: { newColor in
-                // Only trigger update if we've finished initialization
-                guard hasInitialized else {
-                    pickerColor = newColor
-                    return
-                }
-
-                pickerColor = newColor
-                triggerHaptic += 1
-                Task {
-                    await updateColor(newColor, saveToRecents: true)
-                }
-            }
-        ))
-        .labelsHidden()
-        .frame(width: Constants.swatchSize, height: Constants.swatchSize)
-        .clipShape(Circle())
-        .overlay(
-            Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
-        )
     }
 
     // MARK: - State Management
 
-    private func updateStateFromEntity() {
+    func updateStateFromEntity() {
         guard let haEntity else {
-            isOn = false
-            brightness = 0
-            selectedColor = .white
-            iconColor = .secondary
+            resetToDefaultState()
             return
         }
 
-        // Set flag to prevent color picker onChange from firing
-        isUpdatingFromServer = true
-        defer { isUpdatingFromServer = false }
+        updateBasicState(from: haEntity)
+        updateTemperatureState(from: haEntity)
+        updateColorMode(from: haEntity)
+        updateColors(from: haEntity)
+    }
 
+    private func resetToDefaultState() {
+        isOn = false
+        brightness = 0
+        selectedColor = .white
+        iconColor = .secondary
+    }
+
+    private func updateBasicState(from haEntity: HAEntity) {
         isOn = haEntity.state == "on"
 
         if let brightnessValue = haEntity.attributes["brightness"] as? Int {
@@ -463,14 +90,11 @@ struct LightControlsView: View {
         } else {
             brightness = isOn ? 100 : 0
         }
+    }
 
-        let colorMode = haEntity.attributes["color_mode"] as? String
-        let rgbColor = haEntity.attributes["rgb_color"] as? [Int]
-        let hsColor = haEntity.attributes["hs_color"] as? [Double]
-        let colorTemp = haEntity.attributes["color_temp"] as? Int
-
+    private func updateTemperatureState(from haEntity: HAEntity) {
         // Update color temperature if available
-        if let colorTemp {
+        if let colorTemp = haEntity.attributes["color_temp"] as? Int {
             colorTemperature = Double(colorTemp)
         }
 
@@ -481,23 +105,27 @@ struct LightControlsView: View {
         if let maxMiredsValue = haEntity.attributes["max_mireds"] as? Int {
             maxMireds = Double(maxMiredsValue)
         }
+    }
+
+    private func updateColorMode(from haEntity: HAEntity) {
+        guard let colorMode = haEntity.attributes["color_mode"] as? String else {
+            // If no color_mode specified, default based on what's supported
+            currentColorMode = supportsColor() ? .color : (supportsColorTemp() ? .temperature : .color)
+            return
+        }
 
         // Determine current mode based on color_mode from server
-        // But also consider what the light actually supports
-        if let colorMode {
-            if colorMode == "color_temp", supportsColorTemp() {
-                currentColorMode = .temperature
-            } else if ["rgb", "rgbw", "rgbww", "hs", "xy"].contains(colorMode), supportsColor() {
-                currentColorMode = .color
-            }
-        } else {
-            // If no color_mode specified, default based on what's supported
-            if supportsColor() {
-                currentColorMode = .color
-            } else if supportsColorTemp() {
-                currentColorMode = .temperature
-            }
+        if colorMode == "color_temp", supportsColorTemp() {
+            currentColorMode = .temperature
+        } else if ["rgb", "rgbw", "rgbww", "hs", "xy"].contains(colorMode), supportsColor() {
+            currentColorMode = .color
         }
+    }
+
+    private func updateColors(from haEntity: HAEntity) {
+        let colorMode = haEntity.attributes["color_mode"] as? String
+        let rgbColor = haEntity.attributes["rgb_color"] as? [Int]
+        let hsColor = haEntity.attributes["hs_color"] as? [Double]
 
         // Update icon color using the same logic as EntityTileView
         let newIconColor = EntityIconColorProvider.iconColor(
@@ -511,6 +139,10 @@ struct LightControlsView: View {
         }
 
         // Update selected color for the UI controls only if it changed
+        updateSelectedColor(rgbColor: rgbColor, hsColor: hsColor, fallbackColor: newIconColor)
+    }
+
+    private func updateSelectedColor(rgbColor: [Int]?, hsColor: [Double]?, fallbackColor: Color) {
         if let rgbColor, rgbColor.count == 3 {
             let newColor = Color(
                 red: Double(rgbColor[0]) / 255.0,
@@ -528,13 +160,15 @@ struct LightControlsView: View {
                 selectedColor = newColor
             }
         } else {
-            if !colorsAreEqual(iconColor, selectedColor) {
-                selectedColor = iconColor
+            if !colorsAreEqual(fallbackColor, selectedColor) {
+                selectedColor = fallbackColor
             }
         }
     }
 
-    private func supportsColor() -> Bool {
+    // MARK: - Support Checks
+
+    func supportsColor() -> Bool {
         guard let haEntity else { return false }
         if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
             return supportedColorModes.contains(where: { mode in
@@ -544,7 +178,7 @@ struct LightControlsView: View {
         return false
     }
 
-    private func supportsColorTemp() -> Bool {
+    func supportsColorTemp() -> Bool {
         guard let haEntity else { return false }
         if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
             return supportedColorModes.contains("color_temp")
@@ -565,13 +199,13 @@ struct LightControlsView: View {
 
     // MARK: - Service Calls
 
-    private func toggleLight() async {
+    func toggleLight() async {
         let intent = ToggleLightIntent()
         intent.light = createLightEntity()
         intent.turnOn = !isOn
 
         do {
-            let _ = try await intent.perform()
+            _ = try await intent.perform()
             // Update local state
             isOn = !isOn
             if !isOn {
@@ -583,7 +217,7 @@ struct LightControlsView: View {
         }
     }
 
-    private func updateBrightness(_ value: Double) async {
+    func updateBrightness(_ value: Double) async {
         // If light is off and brightness is increased, turn it on
         if !isOn, value > 0 {
             let turnOnIntent = ToggleLightIntent()
@@ -591,7 +225,7 @@ struct LightControlsView: View {
             turnOnIntent.turnOn = true
 
             do {
-                let _ = try await turnOnIntent.perform()
+                _ = try await turnOnIntent.perform()
                 isOn = true
             } catch {
                 Current.Log.verbose("Failed to turn on light: \(error)")
@@ -606,14 +240,14 @@ struct LightControlsView: View {
         intent.brightness = Int(value / 100.0 * 255.0)
 
         do {
-            let _ = try await intent.perform()
+            _ = try await intent.perform()
             brightness = value
         } catch {
             Current.Log.verbose("Failed to update brightness: \(error)")
         }
     }
 
-    private func updateColor(_ color: Color, saveToRecents: Bool = false) async {
+    func updateColor(_ color: Color, saveToRecents: Bool = false) async {
         let uiColor = UIColor(color)
         var red: CGFloat = 0
         var green: CGFloat = 0
@@ -627,7 +261,7 @@ struct LightControlsView: View {
         intent.rgbColor = rgbColor
 
         do {
-            let _ = try await intent.perform()
+            _ = try await intent.perform()
             // Update local state
             selectedColor = color
             iconColor = color
@@ -641,13 +275,13 @@ struct LightControlsView: View {
         }
     }
 
-    private func updateColorTemperature(_ mireds: Double) async {
+    func updateColorTemperature(_ mireds: Double) async {
         let intent = SetLightColorTemperatureIntent()
         intent.light = createLightEntity()
         intent.colorTemp = Int(mireds)
 
         do {
-            let _ = try await intent.perform()
+            _ = try await intent.perform()
             colorTemperature = mireds
 
             // Update icon color to approximate white tone
@@ -660,7 +294,7 @@ struct LightControlsView: View {
         }
     }
 
-    private func colorFromTemperature(_ mireds: Double) -> Color {
+    func colorFromTemperature(_ mireds: Double) -> Color {
         // Approximate color based on temperature
         let kelvin = 1_000_000 / mireds
 
@@ -676,6 +310,10 @@ struct LightControlsView: View {
         }
     }
 
+    func kelvinFromMireds(_ mireds: Double) -> Int {
+        Int(1_000_000 / mireds)
+    }
+
     // MARK: - Intent Helpers
 
     private func createLightEntity() -> IntentLightEntity {
@@ -688,14 +326,6 @@ struct LightControlsView: View {
         )
     }
 
-    // MARK: - Helpers
-
-    private func relativeDateString(from date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        return formatter.localizedString(for: date, relativeTo: Date())
-    }
-
     // MARK: - Color Persistence
 
     private var recentColorsCacheKey: String {
@@ -706,7 +336,7 @@ struct LightControlsView: View {
         "light.recentTemperatures.\(server.identifier.rawValue).\(appEntity.entityId)"
     }
 
-    private func loadRecentColors() async {
+    func loadRecentColors() async {
         do {
             let colors: [StoredColor] = try await withCheckedThrowingContinuation { continuation in
                 Current.diskCache
@@ -725,7 +355,7 @@ struct LightControlsView: View {
         }
     }
 
-    private func loadRecentTemperatures() async {
+    func loadRecentTemperatures() async {
         do {
             let temperatures: [Double] = try await withCheckedThrowingContinuation { continuation in
                 Current.diskCache
@@ -759,7 +389,7 @@ struct LightControlsView: View {
         updatedColors.insert(storedColor, at: 0)
 
         // Keep only the most recent colors (7 colors, leaving room for color picker in 8th spot)
-        let maxRecentColors = Constants.maxColorPresets - 1
+        let maxRecentColors = LightControlsView.Constants.maxColorPresets - 1
         if updatedColors.count > maxRecentColors {
             updatedColors = Array(updatedColors.prefix(maxRecentColors))
         }
@@ -787,8 +417,8 @@ struct LightControlsView: View {
         updatedTemperatures.insert(mireds, at: 0)
 
         // Keep only the most recent temperatures
-        if updatedTemperatures.count > Constants.maxTemperaturePresets {
-            updatedTemperatures = Array(updatedTemperatures.prefix(Constants.maxTemperaturePresets))
+        if updatedTemperatures.count > LightControlsView.Constants.maxTemperaturePresets {
+            updatedTemperatures = Array(updatedTemperatures.prefix(LightControlsView.Constants.maxTemperaturePresets))
         }
 
         recentTemperatures = updatedTemperatures
@@ -838,6 +468,436 @@ struct LightControlsView: View {
                 abs(green - other.green) < tolerance &&
                 abs(blue - other.blue) < tolerance
         }
+    }
+}
+
+// MARK: - View
+
+@available(iOS 26.0, *)
+struct LightControlsView: View {
+    enum Constants {
+        static let controlHeight: CGFloat = 56
+        static let brightnessIconSize: CGFloat = 20
+        static let bulbPreviewWidth: CGFloat = 180
+        static let bulbPreviewHeight: CGFloat = 360
+        static let swatchSize: CGFloat = 44
+        static let swatchSpacing: CGFloat = 12
+        static let controlBarHeight: CGFloat = 56
+        static let controlIconSize: CGFloat = 20
+        static let cornerRadius: CGFloat = 28
+        static let maxColorPresets: Int = 8
+        static let colorPresetsRows: Int = 2
+        static let colorPresetsColumns: Int = 4
+        static let maxTemperaturePresets: Int = 7
+        // Temperature constants (mireds)
+        static let minMireds: Double = 153 // ~6500K (cool white)
+        static let maxMireds: Double = 500 // ~2000K (warm white)
+    }
+
+    let haEntity: HAEntity?
+
+    @State private var viewModel: LightControlsViewModel
+    @State private var triggerHaptic = 0
+    @State private var showColorPresets: Bool = true
+
+    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+        self.haEntity = haEntity
+        self._viewModel = State(initialValue: LightControlsViewModel(
+            server: server,
+            appEntity: appEntity,
+            haEntity: haEntity
+        ))
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: DesignSystem.Spaces.two) {
+                header
+                brightnessSlider
+                controlBar
+
+                // Mode toggle if light supports both color and temperature
+                if viewModel.supportsColor(), viewModel.supportsColorTemp() {
+                    modeToggle
+                }
+
+                // Show appropriate controls based on mode and support
+                if viewModel.supportsColor(), viewModel.currentColorMode == .color, showColorPresets {
+                    HStack {
+                        Spacer()
+                        colorPresetsGrid
+                        Spacer()
+                    }
+                }
+
+                if viewModel.supportsColorTemp(), viewModel.currentColorMode == .temperature {
+                    temperatureSlider
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            viewModel.initialize()
+            Task {
+                await viewModel.loadRecentColors()
+                await viewModel.loadRecentTemperatures()
+            }
+        }
+        .onChange(of: haEntity) { _, newValue in
+            viewModel.updateEntity(newValue)
+        }
+    }
+
+    // MARK: - Header
+
+    private var header: some View {
+        VStack(spacing: DesignSystem.Spaces.one) {
+            Text(viewModel.stateDescription())
+                .font(.system(size: 28, weight: .semibold))
+                .foregroundStyle(.primary)
+                .animation(.easeInOut, value: viewModel.isOn)
+
+            Text("\(Int(viewModel.brightness))%")
+                .font(.system(size: 17, weight: .regular))
+                .foregroundStyle(.secondary)
+                .animation(.easeInOut, value: viewModel.brightness)
+        }
+    }
+
+    private var stateDescription: String {
+        viewModel.stateDescription()
+    }
+
+    // MARK: - Bulb Preview
+
+    private var bulbPreview: some View {
+        let displayColor = viewModel.isOn ? viewModel.iconColor : Color(uiColor: .systemGray5)
+        let brightnessOpacity = viewModel.isOn ? max(0.15, viewModel.brightness / 100.0) : 1.0
+
+        return RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
+            .fill(displayColor.opacity(viewModel.isOn ? 0.25 : 1.0))
+            .overlay(
+                RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
+                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+            )
+            .frame(width: Constants.bulbPreviewWidth, height: Constants.bulbPreviewHeight)
+            .overlay(
+                VStack(spacing: 12) {
+                    Image(systemSymbol: viewModel.isOn ? .lightbulbFill : .lightbulb)
+                        .font(.system(size: 36))
+                        .foregroundStyle(viewModel.isOn ? viewModel.iconColor : .secondary)
+                        .shadow(color: viewModel.iconColor.opacity(viewModel.isOn ? 0.35 : 0), radius: 12, x: 0, y: 8)
+                    // Optional: subtle brightness indicator
+                    Capsule()
+                        .fill(viewModel.iconColor.opacity(viewModel.isOn ? 0.35 : 0.15))
+                        .frame(width: 72, height: 6)
+                        .opacity(brightnessOpacity)
+                }
+            )
+            .glassEffect(
+                .clear,
+                in: RoundedRectangle(cornerRadius: Constants.cornerRadius * 1.2, style: .continuous)
+            )
+            .padding(.vertical, DesignSystem.Spaces.two)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.iconColor)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.isOn)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.brightness)
+    }
+
+    // MARK: - Brightness Slider
+
+    private var brightnessSlider: some View {
+        BrightnessSlider(
+            brightness: $viewModel.brightness,
+            color: viewModel.iconColor
+        ) { isEditing in
+            if !isEditing {
+                // When user finishes dragging, update the light
+                Task {
+                    await viewModel.updateBrightness(viewModel.brightness)
+                }
+            }
+        }
+        .frame(height: Constants.bulbPreviewHeight)
+        .transition(.scale.combined(with: .opacity))
+    }
+
+    // MARK: - Mode Toggle
+
+    private var modeToggle: some View {
+        HStack(spacing: DesignSystem.Spaces.two) {
+            modeToggleButton(mode: .color, icon: .paintpaletteFill, label: "Color")
+            modeToggleButton(mode: .temperature, icon: .thermometerMedium, label: "Temperature")
+        }
+        .padding(.horizontal, DesignSystem.Spaces.two)
+    }
+
+    private func modeToggleButton(mode: LightControlsViewModel.ColorMode, icon: SFSymbol, label: String) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                viewModel.currentColorMode = mode
+            }
+            triggerHaptic += 1
+        } label: {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                Image(systemSymbol: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                Text(label)
+                    .font(.system(size: 15, weight: .medium))
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 44)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(
+                        viewModel.currentColorMode == mode ? Color.accentColor
+                            .opacity(0.15) : Color(uiColor: .secondarySystemBackground)
+                    )
+            )
+            .foregroundStyle(viewModel.currentColorMode == mode ? Color.accentColor : .primary)
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Control Bar
+
+    private var controlBar: some View {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            Spacer()
+            controlIconButton(symbol: .power) {
+                triggerHaptic += 1
+                Task { await viewModel.toggleLight() }
+            }
+            Spacer()
+        }
+        .frame(height: Constants.controlBarHeight)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, DesignSystem.Spaces.two)
+        .sensoryFeedback(.impact, trigger: triggerHaptic)
+    }
+
+    // MARK: - Temperature Slider
+
+    private var temperatureSlider: some View {
+        VStack(spacing: DesignSystem.Spaces.two) {
+            // Temperature presets row
+            temperaturePresetsRow
+
+            HStack {
+                Image(systemSymbol: .sunMaxFill)
+                    .foregroundStyle(.orange)
+                    .font(.system(size: 20))
+
+                Slider(
+                    value: $viewModel.colorTemperature,
+                    in: viewModel.minMireds ... viewModel.maxMireds,
+                    onEditingChanged: { isEditing in
+                        if !isEditing {
+                            Task {
+                                await viewModel.updateColorTemperature(viewModel.colorTemperature)
+                            }
+                        }
+                    }
+                )
+                .tint(temperatureGradient)
+
+                Image(systemSymbol: .moonFill)
+                    .foregroundStyle(.blue)
+                    .font(.system(size: 20))
+            }
+            .padding(.horizontal, DesignSystem.Spaces.four)
+
+            Text("\(viewModel.kelvinFromMireds(viewModel.colorTemperature))K")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, DesignSystem.Spaces.two)
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    private var temperaturePresetsRow: some View {
+        let defaultTemperatures: [Double] = [
+            153, // ~6500K (cool/daylight)
+            192, // ~5200K
+            250, // ~4000K (neutral)
+            308, // ~3250K
+            370, // ~2700K (warm)
+            435, // ~2300K
+            500, // ~2000K (very warm)
+        ]
+
+        // Combine recent temperatures with defaults
+        var displayTemperatures: [Double] = viewModel.recentTemperatures
+
+        // Fill remaining spots with defaults if needed
+        if displayTemperatures.count < Constants.maxTemperaturePresets {
+            let remainingCount = Constants.maxTemperaturePresets - displayTemperatures.count
+            let additionalTemps = Array(defaultTemperatures.prefix(remainingCount))
+            displayTemperatures.append(contentsOf: additionalTemps)
+        }
+
+        return HStack(spacing: Constants.swatchSpacing) {
+            ForEach(0 ..< min(displayTemperatures.count, Constants.maxTemperaturePresets), id: \.self) { index in
+                temperatureSwatch(mireds: displayTemperatures[index])
+            }
+        }
+        .padding(.horizontal, DesignSystem.Spaces.two)
+    }
+
+    private func temperatureSwatch(mireds: Double) -> some View {
+        let color = viewModel.colorFromTemperature(mireds)
+        let kelvin = viewModel.kelvinFromMireds(mireds)
+
+        return Button {
+            triggerHaptic += 1
+            Task {
+                await viewModel.updateColorTemperature(mireds)
+            }
+        } label: {
+            VStack(spacing: 4) {
+                Circle()
+                    .fill(color)
+                    .overlay(
+                        Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+                    )
+                    .frame(width: Constants.swatchSize, height: Constants.swatchSize)
+                    .shadow(color: color.opacity(0.2), radius: 6, x: 0, y: 4)
+
+                Text("\(kelvin)K")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var temperatureGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color(red: 1.0, green: 0.7, blue: 0.4), // Warm
+                Color(red: 1.0, green: 0.9, blue: 0.8), // Neutral
+                Color(red: 0.7, green: 0.8, blue: 1.0), // Cool
+            ]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
+
+    private func controlIconButton(symbol: SFSymbol, action: @escaping () -> Void) -> some View {
+        Button(action: {
+            action()
+        }) {
+            ZStack {
+                Circle()
+                    .fill(Color(uiColor: .secondarySystemBackground))
+                Image(systemSymbol: symbol)
+                    .font(.system(size: Constants.controlIconSize, weight: .semibold))
+                    .foregroundStyle(.primary)
+            }
+            .frame(width: 60, height: 60)
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Color Presets
+
+    private var colorPresetsGrid: some View {
+        // Default colors shown when no recent colors exist (7 colors to leave room for picker)
+        let defaultPresets: [Color] = [
+            Color(red: 1.00, green: 0.58, blue: 0.45),
+            Color(red: 1.00, green: 0.75, blue: 0.47),
+            Color(red: 1.00, green: 0.63, blue: 0.73),
+            Color(red: 1.00, green: 0.84, blue: 0.73),
+            Color(red: 0.99, green: 0.59, blue: 0.51),
+            Color(red: 1.00, green: 0.83, blue: 0.66),
+            Color(red: 1.00, green: 0.78, blue: 0.79),
+        ]
+
+        // Combine recent colors with defaults to fill up to 7 spots (8th is color picker)
+        let maxPresetColors = Constants.maxColorPresets - 1 // Reserve last spot for picker
+        let recentColorsList = viewModel.recentColors.map { $0.toColor() }
+        var displayColors: [(color: Color, isRecent: Bool)] = recentColorsList.map { ($0, true) }
+
+        // Fill remaining spots with default presets
+        if displayColors.count < maxPresetColors {
+            let remainingCount = maxPresetColors - displayColors.count
+            let additionalColors = Array(defaultPresets.prefix(remainingCount)).map { ($0, false) }
+            displayColors.append(contentsOf: additionalColors)
+        }
+
+        return VStack(alignment: .leading, spacing: Constants.swatchSpacing) {
+            // Grid of swatches
+            ForEach(0 ..< Constants.colorPresetsRows) { row in
+                HStack(spacing: Constants.swatchSpacing) {
+                    ForEach(0 ..< Constants.colorPresetsColumns) { col in
+                        let index = row * Constants.colorPresetsColumns + col
+                        let totalSlots = Constants.colorPresetsRows * Constants.colorPresetsColumns
+
+                        // Last slot (index 7) is the color picker
+                        if index == totalSlots - 1 {
+                            colorPickerSwatch
+                        } else if index < displayColors.count {
+                            let colorInfo = displayColors[index]
+                            swatch(color: colorInfo.color, shouldSaveToRecents: colorInfo.isRecent)
+                        } else {
+                            Spacer(minLength: Constants.swatchSize)
+                        }
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
+
+    private func swatch(color: Color, shouldSaveToRecents: Bool) -> some View {
+        Button {
+            triggerHaptic += 1
+            Task {
+                await viewModel.updateColor(color, saveToRecents: shouldSaveToRecents)
+            }
+        } label: {
+            Circle()
+                .fill(color)
+                .overlay(
+                    Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+                )
+                .frame(width: Constants.swatchSize, height: Constants.swatchSize)
+                .shadow(color: color.opacity(0.15), radius: 6, x: 0, y: 4)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var colorPickerSwatch: some View {
+        ColorPicker("", selection: Binding(
+            get: { viewModel.pickerColor },
+            set: { newColor in
+                // Only trigger update if we've finished initialization
+                guard viewModel.hasInitialized else {
+                    viewModel.pickerColor = newColor
+                    return
+                }
+
+                viewModel.pickerColor = newColor
+                triggerHaptic += 1
+                Task {
+                    await viewModel.updateColor(newColor, saveToRecents: true)
+                }
+            }
+        ))
+        .labelsHidden()
+        .frame(width: Constants.swatchSize, height: Constants.swatchSize)
+        .clipShape(Circle())
+        .overlay(
+            Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+        )
+    }
+
+    // MARK: - Helpers
+
+    private func relativeDateString(from date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }
 
