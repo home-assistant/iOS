@@ -25,6 +25,8 @@ struct EntityMoreInfoDialogView: View {
                     switch Domain(entityId: appEntity.entityId) {
                     case .light:
                         lightControlsView
+                    case .switch:
+                        switchControlsView
                     default:
                         Text("More controls coming soon")
                             .font(DesignSystem.Font.body)
@@ -78,12 +80,21 @@ struct EntityMoreInfoDialogView: View {
             haEntity: haEntity
         )
     }
+
+    @ViewBuilder
+    private var switchControlsView: some View {
+        SwitchControlsView(
+            server: server,
+            appEntity: appEntity,
+            haEntity: haEntity
+        )
+    }
 }
 
 // MARK: - Preview
 
 @available(iOS 26.0, *)
-#Preview {
+#Preview("Light Entity") {
     @Previewable @State var haEntity: HAEntity? = try? HAEntity(
         entityId: "light.living_room",
         domain: "light",
@@ -109,6 +120,38 @@ struct EntityMoreInfoDialogView: View {
         name: "Living Room Light",
         icon: "mdi:lightbulb",
         rawDeviceClass: nil
+    )
+
+    EntityMoreInfoDialogView(
+        server: ServerFixture.standard,
+        appEntity: appEntity,
+        haEntity: haEntity
+    )
+}
+
+@available(iOS 26.0, *)
+#Preview("Switch Entity") {
+    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+        entityId: "switch.living_room_fan",
+        domain: "switch",
+        state: "on",
+        lastChanged: Date().addingTimeInterval(-3600),
+        lastUpdated: Date(),
+        attributes: [
+            "friendly_name": "Living Room Fan",
+            "device_class": "outlet",
+        ],
+        context: .init(id: "", userId: nil, parentId: nil)
+    )
+
+    let appEntity = HAAppEntity(
+        id: "test-switch.living_room_fan",
+        entityId: "switch.living_room_fan",
+        serverId: "test-server",
+        domain: "switch",
+        name: "Living Room Fan",
+        icon: "mdi:fan",
+        rawDeviceClass: "outlet"
     )
 
     EntityMoreInfoDialogView(
