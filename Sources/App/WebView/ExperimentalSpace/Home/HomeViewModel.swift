@@ -44,11 +44,8 @@ final class HomeViewModel: ObservableObject {
             let loadedHiddenEntities = await EntityDisplayService.loadHiddenEntities(for: server)
             hiddenEntityIds = loadedHiddenEntities
 
-            async let sectionOrderLoad: Void = loadSectionOrderIfNeeded()
-            async let filterSettingsLoad: Void = loadFilterSettingsIfNeeded()
-
-            await sectionOrderLoad
-            await filterSettingsLoad
+            await loadSectionOrderIfNeeded()
+            await loadFilterSettingsIfNeeded()
 
             // Subscribe to entity changes first - sections will be built when data arrives
             subscribeToEntitiesChanges()
