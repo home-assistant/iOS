@@ -1,4 +1,36 @@
+import SFSafeSymbols
 import SwiftUI
+
+@available(iOS 26.0, *)
+/// Shape options for the vertical slider track
+enum VerticalSliderShape {
+    case capsule
+    case roundedRectangle(cornerRadius: CGFloat)
+    case rectangle
+
+    @ViewBuilder
+    func shape(_ content: some ShapeStyle) -> some View {
+        switch self {
+        case .capsule:
+            Capsule().fill(content)
+        case let .roundedRectangle(radius):
+            RoundedRectangle(cornerRadius: radius).fill(content)
+        case .rectangle:
+            Rectangle().fill(content)
+        }
+    }
+
+    func clipShape() -> AnyShape {
+        switch self {
+        case .capsule:
+            AnyShape(Capsule())
+        case let .roundedRectangle(radius):
+            AnyShape(RoundedRectangle(cornerRadius: radius))
+        case .rectangle:
+            AnyShape(Rectangle())
+        }
+    }
+}
 
 @available(iOS 26.0, *)
 /// A vertical slider control with customizable appearance
@@ -6,10 +38,12 @@ struct VerticalSlider: View {
     @Binding var value: Double
     let range: ClosedRange<Double>
     let step: Double?
-    let icon: String?
+    let icon: SFSymbol?
     let tint: Color
     let trackWidth: CGFloat
     let thumbSize: CGFloat
+    let showThumb: Bool
+    let shape: VerticalSliderShape
     let onEditingChanged: ((Bool) -> Void)?
 
     @State private var isDragging = false
@@ -19,10 +53,12 @@ struct VerticalSlider: View {
         value: Binding<Double>,
         in range: ClosedRange<Double> = 0 ... 100,
         step: Double? = nil,
-        icon: String? = nil,
+        icon: SFSymbol? = nil,
         tint: Color = .accentColor,
-        trackWidth: CGFloat = 44,
+        trackWidth: CGFloat = 84,
         thumbSize: CGFloat = 28,
+        showThumb: Bool = false,
+        shape: VerticalSliderShape = .capsule,
         onEditingChanged: ((Bool) -> Void)? = nil
     ) {
         self._value = value
@@ -32,30 +68,33 @@ struct VerticalSlider: View {
         self.tint = tint
         self.trackWidth = trackWidth
         self.thumbSize = thumbSize
+        self.showThumb = showThumb
+        self.shape = shape
         self.onEditingChanged = onEditingChanged
     }
 
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
-                // Background track
-                Capsule()
-                    .fill(Color(uiColor: .secondarySystemFill))
-                    .frame(width: trackWidth)
-
-                // Filled track
-                Capsule()
-                    .fill(tint.gradient)
-                    .frame(
-                        width: trackWidth,
-                        height: filledHeight(in: geometry.size.height)
-                    )
+                // Background track with filled track masked inside
+                Group {
+                    shape.shape(Color(uiColor: .secondarySystemFill))
+                }
+                .frame(width: trackWidth)
+                .overlay(alignment: .bottom) {
+                    // Filled track
+                    Group {
+                        shape.shape(tint.gradient)
+                    }
+                    .frame(height: filledHeight(in: geometry.size.height))
+                }
+                .clipShape(shape.clipShape())
 
                 // Icon at bottom (optional)
                 if let icon {
                     VStack {
                         Spacer()
-                        Image(systemName: icon)
+                        Image(systemSymbol: icon)
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundStyle(tint)
                             .padding(.bottom, 12)
@@ -63,11 +102,13 @@ struct VerticalSlider: View {
                 }
 
                 // Thumb
-                thumb
-                    .position(
-                        x: geometry.size.width / 2,
-                        y: thumbPosition(in: geometry.size.height)
-                    )
+                if showThumb {
+                    thumb
+                        .position(
+                            x: geometry.size.width / 2,
+                            y: thumbPosition(in: geometry.size.height)
+                        )
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .gesture(
@@ -148,65 +189,37 @@ struct VerticalSlider: View {
     }
 }
 
-// MARK: - Brightness Slider
-
-/// A specialized vertical slider for brightness control
-@available(iOS 26.0, *)
-struct BrightnessSlider: View {
-    @Binding var brightness: Double
-    let color: Color
-    let onEditingChanged: ((Bool) -> Void)?
-
-    init(
-        brightness: Binding<Double>,
-        color: Color = .yellow,
-        onEditingChanged: ((Bool) -> Void)? = nil
-    ) {
-        self._brightness = brightness
-        self.color = color
-        self.onEditingChanged = onEditingChanged
-    }
-
-    var body: some View {
-        VerticalSlider(
-            value: $brightness,
-            in: 0 ... 100,
-            step: 1,
-            icon: "sun.max.fill",
-            tint: color,
-            trackWidth: 44,
-            thumbSize: 28,
-            onEditingChanged: onEditingChanged
-        )
-    }
-}
-
 // MARK: - Preview
 
 @available(iOS 26.0, *)
 #Preview("Vertical Slider") {
     @Previewable @State var value: Double = 50
 
-    VStack(spacing: 40) {
-        HStack(spacing: 40) {
+    VStack {
+        HStack {
             VerticalSlider(
                 value: $value,
-                tint: .blue
+                tint: .blue,
+                shape: .capsule
             )
-            .frame(width: 60, height: 300)
+            .frame(height: 300)
 
             VerticalSlider(
                 value: $value,
-                icon: "speaker.wave.3.fill",
-                tint: .purple
+                icon: .speakerWave3,
+                tint: .purple,
+                shape: .roundedRectangle(cornerRadius: 12)
             )
-            .frame(width: 60, height: 300)
+            .frame(height: 300)
 
-            BrightnessSlider(
-                brightness: $value,
-                color: .orange
+            VerticalSlider(
+                value: $value,
+                icon: .speakerWave3,
+                tint: .green,
+                showThumb: false,
+                shape: .rectangle
             )
-            .frame(width: 60, height: 300)
+            .frame(height: 300)
         }
 
         Text("Value: \(Int(value))")
