@@ -24,17 +24,16 @@ struct LightControlsView: View {
         static let maxMireds: Double = 500 // ~2000K (warm white)
     }
 
-    let haEntity: HAEntity?
+    let haEntity: HAEntity
 
     @State private var viewModel: LightControlsViewModel
     @State private var triggerHaptic = 0
     @State private var showColorPresets: Bool = true
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.haEntity = haEntity
         self._viewModel = State(initialValue: LightControlsViewModel(
             server: server,
-            appEntity: appEntity,
             haEntity: haEntity
         ))
     }
@@ -472,7 +471,7 @@ struct LightControlsView: View {
 
 @available(iOS 26.0, *)
 #Preview("Light with Brightness Control") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    @Previewable @State var haEntity: HAEntity! = try? HAEntity(
         entityId: "light.living_room",
         domain: "light",
         state: "on",
@@ -504,7 +503,6 @@ struct LightControlsView: View {
 
     LightControlsView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
     .padding()
@@ -512,7 +510,7 @@ struct LightControlsView: View {
 
 @available(iOS 26.0, *)
 #Preview("Simple On/Off Light") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    @Previewable @State var haEntity: HAEntity! = try? HAEntity(
         entityId: "light.simple_bulb",
         domain: "light",
         state: "on",
@@ -539,7 +537,6 @@ struct LightControlsView: View {
 
     LightControlsView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
     .padding()

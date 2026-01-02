@@ -93,35 +93,4 @@ final class EntityDisplayService {
     func cancelSubscription() {
         entitiesSubscriptionToken?.cancel()
     }
-
-    // MARK: - Entity Filtering
-
-    static func fetchEntitiesWithCategories(serverId: String) throws -> Set<String> {
-        do {
-            let registryEntities = try Current.database().read { db in
-                try AppEntityRegistryListForDisplay
-                    .filter(
-                        Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId
-                    )
-                    .fetchAll(db)
-            }
-            // Return entity IDs that have a non-nil category (config/diagnostic entities)
-            return Set(registryEntities.filter { $0.registry.entityCategory != nil }.map(\.entityId))
-        } catch {
-            Current.Log.error("Failed to fetch entity registry for filtering: \(error.localizedDescription)")
-            return []
-        }
-    }
-
-    static func filterEntities(
-        _ entities: [HAAppEntity],
-        serverId: String,
-        excludingCategories categorizedEntities: Set<String>
-    ) -> [HAAppEntity] {
-        entities.filter {
-            $0.serverId == serverId &&
-                allowedDomains.map(\.rawValue).contains($0.domain) &&
-                !categorizedEntities.contains($0.entityId)
-        }
-    }
 }

@@ -21,7 +21,7 @@ final class HomeViewModel: ObservableObject {
     struct RoomSection: Identifiable, Equatable {
         let id: String
         let name: String
-        let entities: [HAAppEntity]
+        let entities: [HAEntity]
     }
 
     private let entityService = EntityDisplayService()
@@ -44,49 +44,29 @@ final class HomeViewModel: ObservableObject {
         await sectionOrderLoad
         await filterSettingsLoad
 
+        // Subscribe to entity changes first - sections will be built when data arrives
+        subscribeToEntitiesChanges()
+        isLoading = false
+    }
+
+    private func buildSectionsFromEntityStates() {
         do {
-            let sections = try await fetchAndGroupEntities()
-            groupedEntities = sections
-            isLoading = false
-            subscribeToEntitiesChanges()
+            let serverId = server.identifier.rawValue
+            let areas = try AppArea.fetchAreas(for: serverId)
+            let entityToAreaMap = createEntityToAreaMap(areas: areas)
+
+            // Filter entities by allowed domains
+            let allowedDomains = Set(EntityDisplayService.allowedDomains.map(\.rawValue))
+            let filteredEntities = entityStates.values.filter { entity in
+                allowedDomains.contains(entity.domain)
+            }
+
+            let roomGroups = groupEntitiesByArea(entities: Array(filteredEntities), entityToAreaMap: entityToAreaMap)
+            groupedEntities = buildSortedRoomSections(from: roomGroups)
         } catch {
-            Current.Log.error("Failed to load entities for HomeView: \(error.localizedDescription)")
-            errorMessage = "Failed to load entities: \(error.localizedDescription)"
-            isLoading = false
+            Current.Log.error("Failed to build sections from entity states: \(error.localizedDescription)")
+            errorMessage = "Failed to build sections: \(error.localizedDescription)"
         }
-    }
-
-    private func fetchAndGroupEntities() async throws -> [RoomSection] {
-        let serverId = server.identifier.rawValue
-        let allEntities = try HAAppEntity.config()
-
-        let entitiesWithCategories = try EntityDisplayService.fetchEntitiesWithCategories(serverId: serverId)
-        let serverEntities = EntityDisplayService.filterEntities(
-            allEntities,
-            serverId: serverId,
-            excludingCategories: entitiesWithCategories
-        )
-        let areas = try AppArea.fetchAreas(for: serverId)
-        let entityToAreaMap = createEntityToAreaMap(areas: areas)
-        let roomGroups = groupEntitiesByArea(entities: serverEntities, entityToAreaMap: entityToAreaMap)
-
-        return buildSortedRoomSections(from: roomGroups)
-    }
-
-    private func fetchEntitiesWithCategories(serverId: String) throws -> Set<String> {
-        try EntityDisplayService.fetchEntitiesWithCategories(serverId: serverId)
-    }
-
-    private func filterEntities(
-        _ entities: [HAAppEntity],
-        serverId: String,
-        excludingCategories categorizedEntities: Set<String>
-    ) -> [HAAppEntity] {
-        EntityDisplayService.filterEntities(
-            entities,
-            serverId: serverId,
-            excludingCategories: categorizedEntities
-        )
     }
 
     private func createEntityToAreaMap(areas: [AppArea]) -> [String: AppArea] {
@@ -100,10 +80,10 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func groupEntitiesByArea(
-        entities: [HAAppEntity],
+        entities: [HAEntity],
         entityToAreaMap: [String: AppArea]
-    ) -> [String: (area: AppArea, entities: [HAAppEntity])] {
-        var roomGroups: [String: (area: AppArea, entities: [HAAppEntity])] = [:]
+    ) -> [String: (area: AppArea, entities: [HAEntity])] {
+        var roomGroups: [String: (area: AppArea, entities: [HAEntity])] = [:]
 
         for entity in entities {
             guard let area = entityToAreaMap[entity.entityId] else {
@@ -122,16 +102,21 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func buildSortedRoomSections(
-        from roomGroups: [String: (area: AppArea, entities: [HAAppEntity])]
+        from roomGroups: [String: (area: AppArea, entities: [HAEntity])]
     ) -> [RoomSection] {
         let sortedGroups = roomGroups.sorted { $0.value.area.name < $1.value.area.name }
 
         return sortedGroups.map { key, value in
             let filteredEntities = value.entities.filter { !hiddenEntityIds.contains($0.entityId) }
+            let sortedEntities = filteredEntities.sorted {
+                let name1 = $0.attributes.friendlyName ?? $0.entityId
+                let name2 = $1.attributes.friendlyName ?? $1.entityId
+                return name1 < name2
+            }
             return RoomSection(
                 id: key,
                 name: value.area.name,
-                entities: filteredEntities.sorted { $0.name < $1.name }
+                entities: sortedEntities
             )
         }
     }
@@ -139,6 +124,7 @@ final class HomeViewModel: ObservableObject {
     private func subscribeToEntitiesChanges() {
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
             self?.entityStates = states
+            self?.buildSectionsFromEntityStates()
         }
     }
 
@@ -258,17 +244,8 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func rebuildSections() {
-        // Rebuild sections to remove the hidden entity
-        Task {
-            do {
-                let sections = try await fetchAndGroupEntities()
-                DispatchQueue.main.async { [weak self] in
-                    self?.groupedEntities = sections
-                }
-            } catch {
-                Current.Log.error("Failed to reload entities after hiding: \(error.localizedDescription)")
-            }
-        }
+        // Rebuild sections based on current entity states
+        buildSectionsFromEntityStates()
     }
 
     // MARK: - Filter Settings Persistence

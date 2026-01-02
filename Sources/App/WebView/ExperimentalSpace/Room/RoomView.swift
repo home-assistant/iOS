@@ -1,3 +1,4 @@
+import HAKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -96,11 +97,10 @@ struct RoomView: View {
             .padding(.vertical, DesignSystem.Spaces.one)
     }
 
-    private func entityTilesGrid(for entities: [HAAppEntity], isHidden: Bool = false) -> some View {
+    private func entityTilesGrid(for entities: [HAEntity], isHidden: Bool = false) -> some View {
         EntityDisplayComponents.entityTilesGrid(
             entities: entities,
             server: viewModel.server,
-            entityStates: viewModel.entityStates,
             isHidden: isHidden
         ) { entity in
             Group {

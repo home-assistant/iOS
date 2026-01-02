@@ -29,20 +29,18 @@ final class LightControlsViewModel {
     // MARK: - Dependencies
 
     private let server: Server
-    private let appEntity: HAAppEntity
-    private var haEntity: HAEntity?
+    private var haEntity: HAEntity
 
     // MARK: - Initialization
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.server = server
-        self.appEntity = appEntity
         self.haEntity = haEntity
     }
 
     // MARK: - Public Methods
 
-    func updateEntity(_ haEntity: HAEntity?) {
+    func updateEntity(_ haEntity: HAEntity) {
         self.haEntity = haEntity
         updateStateFromEntity()
     }
@@ -54,29 +52,16 @@ final class LightControlsViewModel {
     }
 
     func stateDescription() -> String {
-        guard let haEntity else { return CoreStrings.commonStateOff }
-        return Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
+        Domain(entityId: haEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
     }
 
     // MARK: - State Management
 
     func updateStateFromEntity() {
-        guard let haEntity else {
-            resetToDefaultState()
-            return
-        }
-
         updateBasicState(from: haEntity)
         updateTemperatureState(from: haEntity)
         updateColorMode(from: haEntity)
         updateColors(from: haEntity)
-    }
-
-    private func resetToDefaultState() {
-        isOn = false
-        brightness = 0
-        selectedColor = .white
-        iconColor = .secondary
     }
 
     private func updateBasicState(from haEntity: HAEntity) {
@@ -166,8 +151,6 @@ final class LightControlsViewModel {
     // MARK: - Support Checks
 
     func supportsBrightness() -> Bool {
-        guard let haEntity else { return false }
-
         // Check supported_color_modes for brightness-capable modes
         if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
             // All color modes except "onoff" support brightness
@@ -183,7 +166,6 @@ final class LightControlsViewModel {
     }
 
     func supportsColor() -> Bool {
-        guard let haEntity else { return false }
         if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
             return supportedColorModes.contains(where: { mode in
                 ["rgb", "rgbw", "rgbww", "hs", "xy"].contains(mode)
@@ -193,7 +175,6 @@ final class LightControlsViewModel {
     }
 
     func supportsColorTemp() -> Bool {
-        guard let haEntity else { return false }
         if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
             return supportedColorModes.contains("color_temp")
         }
@@ -332,22 +313,22 @@ final class LightControlsViewModel {
 
     private func createLightEntity() -> IntentLightEntity {
         IntentLightEntity(
-            id: appEntity.entityId,
-            entityId: appEntity.entityId,
+            id: haEntity.entityId,
+            entityId: haEntity.entityId,
             serverId: server.identifier.rawValue,
-            displayString: appEntity.name,
-            iconName: appEntity.icon ?? ""
+            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
+            iconName: haEntity.attributes.icon ?? ""
         )
     }
 
     // MARK: - Color Persistence
 
     private var recentColorsCacheKey: String {
-        "light.recentColors.\(server.identifier.rawValue).\(appEntity.entityId)"
+        "light.recentColors.\(server.identifier.rawValue).\(haEntity.entityId)"
     }
 
     private var recentTemperaturesCacheKey: String {
-        "light.recentTemperatures.\(server.identifier.rawValue).\(appEntity.entityId)"
+        "light.recentTemperatures.\(server.identifier.rawValue).\(haEntity.entityId)"
     }
 
     func loadRecentColors() async {

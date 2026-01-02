@@ -45,22 +45,20 @@ enum EntityDisplayComponents {
     // MARK: - Entity Tiles Grid
 
     static func entityTilesGrid(
-        entities: [HAAppEntity],
+        entities: [HAEntity],
         server: Server,
-        entityStates: [String: HAEntity],
         isHidden: Bool = false,
-        contextMenuContent: @escaping (HAAppEntity) -> some View
+        contextMenuContent: @escaping (HAEntity) -> some View
     ) -> some View {
         let columns = [
             GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
         ]
 
         return LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
-            ForEach(entities) { entity in
+            ForEach(entities, id: \.entityId) { entity in
                 EntityTileView(
                     server: server,
-                    appEntity: entity,
-                    haEntity: entityStates[entity.entityId]
+                    haEntity: entity
                 )
                 .contentShape(Rectangle())
                 .opacity(isHidden ? 0.6 : 1.0)

@@ -1,3 +1,4 @@
+import HAKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -230,11 +231,10 @@ struct HomeView: View {
         }
     }
 
-    private func entityTilesGrid(for entities: [HAAppEntity]) -> some View {
+    private func entityTilesGrid(for entities: [HAEntity]) -> some View {
         EntityDisplayComponents.entityTilesGrid(
             entities: entities,
-            server: viewModel.server,
-            entityStates: viewModel.entityStates
+            server: viewModel.server
         ) { entity in
             Button(role: .destructive) {
                 viewModel.hideEntity(entity.entityId)

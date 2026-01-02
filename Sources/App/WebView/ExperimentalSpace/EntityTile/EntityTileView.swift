@@ -16,17 +16,15 @@ struct EntityTileView: View {
     }
 
     let server: Server
-    let appEntity: HAAppEntity
-    let haEntity: HAEntity?
+    let haEntity: HAEntity
 
     @Namespace private var namespace
     @State private var triggerHaptic = 0
     @State private var iconColor: Color = .secondary
     @State private var showMoreInfoDialog = false
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.server = server
-        self.appEntity = appEntity
         self.haEntity = haEntity
     }
 
@@ -45,15 +43,15 @@ struct EntityTileView: View {
             .onAppear {
                 updateIconColor()
             }
-            .matchedTransitionSource(id: appEntity.id, in: namespace)
+            .matchedTransitionSource(id: haEntity.entityId, in: namespace)
             .onTapGesture {
                 showMoreInfoDialog = true
             }
             .fullScreenCover(isPresented: $showMoreInfoDialog) {
                 EntityMoreInfoDialogView(
-                    server: server, appEntity: appEntity, haEntity: haEntity
+                    server: server, haEntity: haEntity
                 )
-                .navigationTransition(.zoom(sourceID: appEntity.entityId, in: namespace))
+                .navigationTransition(.zoom(sourceID: haEntity.entityId, in: namespace))
             }
     }
 
@@ -75,14 +73,12 @@ struct EntityTileView: View {
     private var entityInfoStack: some View {
         VStack(alignment: .leading, spacing: Constants.textVStackSpacing) {
             entityNameText
-            if let haEntity {
-                entityStateText(for: haEntity)
-            }
+            entityStateText
         }
     }
 
     private var entityNameText: some View {
-        Text(appEntity.name)
+        Text(haEntity.attributes.friendlyName ?? haEntity.entityId)
             .font(.footnote)
             .fontWeight(.semibold)
             .foregroundColor(Color(uiColor: .label))
@@ -90,9 +86,9 @@ struct EntityTileView: View {
             .multilineTextAlignment(.leading)
     }
 
-    private func entityStateText(for haEntity: HAEntity) -> some View {
+    private var entityStateText: some View {
         Text(
-            Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
+            Domain(entityId: haEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
         )
         .font(.caption)
         .foregroundColor(Color(uiColor: .secondaryLabel))
@@ -100,18 +96,18 @@ struct EntityTileView: View {
 
     private var iconView: some View {
         let icon: MaterialDesignIcons
-        if let entityIcon = appEntity.icon {
+        if let entityIcon = haEntity.attributes.icon {
             icon = MaterialDesignIcons(serversideValueNamed: entityIcon)
-        } else if let domain = Domain(entityId: appEntity.entityId) {
-            let deviceClass = haEntity?.attributes["device_class"] as? String
-            let stateString = haEntity?.state
-            let domainState = Domain.State(rawValue: stateString ?? "") ?? .unknown
+        } else if let domain = Domain(entityId: haEntity.entityId) {
+            let deviceClass = haEntity.attributes["device_class"] as? String
+            let stateString = haEntity.state
+            let domainState = Domain.State(rawValue: stateString) ?? .unknown
             icon = domain.icon(deviceClass: deviceClass, state: domainState)
         } else {
             icon = .homeIcon
         }
 
-        return Button(intent: AppIntentProvider.intent(for: appEntity, server: server)) {
+        return Button(intent: AppIntentProvider.intent(for: haEntity, server: server)) {
             VStack {
                 Text(verbatim: icon.unicode)
                     .font(.custom(MaterialDesignIcons.familyName, size: Constants.iconFontSize))
@@ -132,11 +128,6 @@ struct EntityTileView: View {
     }
 
     private func updateIconColor() {
-        guard let haEntity else {
-            iconColor = .secondary
-            return
-        }
-
         let state = haEntity.state
         let colorMode = haEntity.attributes["color_mode"] as? String
         let rgbColor = haEntity.attributes["rgb_color"] as? [Int]

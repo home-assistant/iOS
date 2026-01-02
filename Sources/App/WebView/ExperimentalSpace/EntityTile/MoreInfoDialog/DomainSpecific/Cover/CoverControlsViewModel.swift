@@ -19,20 +19,18 @@ final class CoverControlsViewModel {
     // MARK: - Dependencies
 
     private let server: Server
-    private let appEntity: HAAppEntity
-    private var haEntity: HAEntity?
+    private var haEntity: HAEntity
 
     // MARK: - Initialization
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.server = server
-        self.appEntity = appEntity
         self.haEntity = haEntity
     }
 
     // MARK: - Public Methods
 
-    func updateEntity(_ haEntity: HAEntity?) {
+    func updateEntity(_ haEntity: HAEntity) {
         self.haEntity = haEntity
         updateStateFromEntity()
     }
@@ -42,14 +40,12 @@ final class CoverControlsViewModel {
     }
 
     func stateDescription() -> String {
-        guard let haEntity else { return CoreStrings.commonStateOff }
-
         // If we have a position, show it
         if let position = haEntity.attributes["current_position"] as? Int {
             return "\(position)%"
         }
 
-        return Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
+        return Domain(entityId: haEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
     }
 
     var coverIcon: SFSymbol {
@@ -78,16 +74,6 @@ final class CoverControlsViewModel {
     // MARK: - State Management
 
     func updateStateFromEntity() {
-        guard let haEntity else {
-            currentPosition = 0
-            deviceClass = .unknown
-            supportsTilt = false
-            currentTilt = 0
-            isOpening = false
-            isClosing = false
-            return
-        }
-
         // Get position (0-100)
         if let position = haEntity.attributes["current_position"] as? Int {
             currentPosition = Double(position)
@@ -111,7 +97,7 @@ final class CoverControlsViewModel {
         }
 
         // Get device class from appEntity (which properly parses it)
-        deviceClass = appEntity.deviceClass
+        deviceClass = DeviceClass(rawValue: haEntity.attributes["device_class"] as? String ?? "") ?? .unknown
 
         // Check if currently moving
         let state = haEntity.state
@@ -129,11 +115,11 @@ final class CoverControlsViewModel {
         defer { isUpdating = false }
 
         let intentCover = IntentCoverEntity(
-            id: "\(server.identifier.rawValue)-\(appEntity.entityId)",
-            entityId: appEntity.entityId,
+            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
+            entityId: haEntity.entityId,
             serverId: server.identifier.rawValue,
-            displayString: appEntity.name,
-            iconName: appEntity.icon ?? "blinds.vertical.open"
+            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
+            iconName: haEntity.attributes.icon ?? "blinds.vertical.open"
         )
 
         let intent = SetCoverPositionIntent()
@@ -144,7 +130,7 @@ final class CoverControlsViewModel {
             _ = try await intent.perform()
             // Optimistically update state
             currentPosition = position
-            Current.Log.info("Successfully set cover position for \(appEntity.entityId) to \(Int(position))%")
+            Current.Log.info("Successfully set cover position for \(haEntity.entityId) to \(Int(position))%")
         } catch {
             Current.Log.error("Failed to set cover position: \(error)")
         }
@@ -158,11 +144,11 @@ final class CoverControlsViewModel {
         defer { isUpdating = false }
 
         let intentCover = IntentCoverEntity(
-            id: "\(server.identifier.rawValue)-\(appEntity.entityId)",
-            entityId: appEntity.entityId,
+            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
+            entityId: haEntity.entityId,
             serverId: server.identifier.rawValue,
-            displayString: appEntity.name,
-            iconName: appEntity.icon ?? "blinds.vertical.open"
+            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
+            iconName: haEntity.attributes.icon ?? "blinds.vertical.open"
         )
 
         let intent = OpenCoverIntent()
@@ -173,7 +159,7 @@ final class CoverControlsViewModel {
             // Optimistically update state
             currentPosition = 100
             isOpening = true
-            Current.Log.info("Successfully opened cover \(appEntity.entityId)")
+            Current.Log.info("Successfully opened cover \(haEntity.entityId)")
         } catch {
             Current.Log.error("Failed to open cover: \(error)")
         }
@@ -187,11 +173,11 @@ final class CoverControlsViewModel {
         defer { isUpdating = false }
 
         let intentCover = IntentCoverEntity(
-            id: "\(server.identifier.rawValue)-\(appEntity.entityId)",
-            entityId: appEntity.entityId,
+            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
+            entityId: haEntity.entityId,
             serverId: server.identifier.rawValue,
-            displayString: appEntity.name,
-            iconName: appEntity.icon ?? "blinds.vertical.open"
+            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
+            iconName: haEntity.attributes.icon ?? "blinds.vertical.open"
         )
 
         let intent = CloseCoverIntent()
@@ -202,7 +188,7 @@ final class CoverControlsViewModel {
             // Optimistically update state
             currentPosition = 0
             isClosing = true
-            Current.Log.info("Successfully closed cover \(appEntity.entityId)")
+            Current.Log.info("Successfully closed cover \(haEntity.entityId)")
         } catch {
             Current.Log.error("Failed to close cover: \(error)")
         }
@@ -216,11 +202,11 @@ final class CoverControlsViewModel {
         defer { isUpdating = false }
 
         let intentCover = IntentCoverEntity(
-            id: "\(server.identifier.rawValue)-\(appEntity.entityId)",
-            entityId: appEntity.entityId,
+            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
+            entityId: haEntity.entityId,
             serverId: server.identifier.rawValue,
-            displayString: appEntity.name,
-            iconName: appEntity.icon ?? "blinds.vertical.open"
+            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
+            iconName: haEntity.attributes.icon ?? "blinds.vertical.open"
         )
 
         let intent = StopCoverIntent()
@@ -230,7 +216,7 @@ final class CoverControlsViewModel {
             _ = try await intent.perform()
             isOpening = false
             isClosing = false
-            Current.Log.info("Successfully stopped cover \(appEntity.entityId)")
+            Current.Log.info("Successfully stopped cover \(haEntity.entityId)")
         } catch {
             Current.Log.error("Failed to stop cover: \(error)")
         }

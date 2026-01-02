@@ -15,20 +15,18 @@ final class SwitchControlsViewModel {
     // MARK: - Dependencies
 
     private let server: Server
-    private let appEntity: HAAppEntity
-    private var haEntity: HAEntity?
+    private var haEntity: HAEntity
 
     // MARK: - Initialization
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.server = server
-        self.appEntity = appEntity
         self.haEntity = haEntity
     }
 
     // MARK: - Public Methods
 
-    func updateEntity(_ haEntity: HAEntity?) {
+    func updateEntity(_ haEntity: HAEntity) {
         self.haEntity = haEntity
         updateStateFromEntity()
     }
@@ -38,8 +36,7 @@ final class SwitchControlsViewModel {
     }
 
     func stateDescription() -> String {
-        guard let haEntity else { return CoreStrings.commonStateOff }
-        return Domain(entityId: appEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
+        Domain(entityId: haEntity.entityId)?.contextualStateDescription(for: haEntity) ?? haEntity.state
     }
 
     var switchIcon: SFSymbol {
@@ -62,12 +59,6 @@ final class SwitchControlsViewModel {
     // MARK: - State Management
 
     func updateStateFromEntity() {
-        guard let haEntity else {
-            isOn = false
-            deviceClass = nil
-            return
-        }
-
         isOn = haEntity.state == Domain.State.on.rawValue
         deviceClass = haEntity.attributes["device_class"] as? String
     }
@@ -83,11 +74,11 @@ final class SwitchControlsViewModel {
 
         // Create IntentSwitchEntity from appEntity
         let intentSwitch = IntentSwitchEntity(
-            id: "\(server.identifier.rawValue)-\(appEntity.entityId)",
-            entityId: appEntity.entityId,
+            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
+            entityId: haEntity.entityId,
             serverId: server.identifier.rawValue,
-            displayString: appEntity.name,
-            iconName: appEntity.icon ?? ""
+            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
+            iconName: haEntity.attributes.icon ?? ""
         )
 
         // Create and perform the toggle intent
@@ -99,9 +90,9 @@ final class SwitchControlsViewModel {
 
             // Optimistically update state
             isOn.toggle()
-            Current.Log.info("Successfully toggled switch \(appEntity.entityId)")
+            Current.Log.info("Successfully toggled switch \(haEntity.entityId)")
         } catch {
-            Current.Log.error("Failed to toggle switch \(appEntity.entityId): \(error)")
+            Current.Log.error("Failed to toggle switch \(haEntity.entityId): \(error)")
         }
     }
 }

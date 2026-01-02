@@ -8,7 +8,7 @@ import SwiftUI
 @Observable
 @MainActor
 final class RoomViewModel: ObservableObject {
-    var allEntities: [HAAppEntity] = []
+    var allEntities: [HAEntity] = []
     var isLoading = false
     var errorMessage: String?
     var server: Server
@@ -32,46 +32,46 @@ final class RoomViewModel: ObservableObject {
         // Load hidden entities first
         hiddenEntityIds = await EntityDisplayService.loadHiddenEntities(for: server)
 
-        do {
-            let entities = try await fetchAllEntitiesForRoom()
-            allEntities = entities.sorted { $0.name < $1.name }
-            isLoading = false
-            subscribeToEntitiesChanges()
-        } catch {
-            Current.Log.error("Failed to load entities for RoomView: \(error.localizedDescription)")
-            errorMessage = "Failed to load entities: \(error.localizedDescription)"
-            isLoading = false
-        }
+        // Subscribe to entity changes - entities will be populated when data arrives
+        subscribeToEntitiesChanges()
+        isLoading = false
     }
 
-    private func fetchAllEntitiesForRoom() async throws -> [HAAppEntity] {
-        let serverId = server.identifier.rawValue
+    private func buildEntitiesForRoom() {
+        do {
+            let serverId = server.identifier.rawValue
 
-        // Fetch ALL entities (including hidden) using .all
-        let allEntities = try HAAppEntity.config(include: [.all]) ?? []
+            // Fetch areas to determine which entities belong to this room
+            let areas = try AppArea.fetchAreas(for: serverId)
+            guard let targetArea = areas.first(where: { $0.id == roomId }) else {
+                allEntities = []
+                return
+            }
 
-        // Filter to this server and allowed domains
-        let serverEntities = allEntities.filter {
-            $0.serverId == serverId &&
-                EntityDisplayService.allowedDomains.map(\.rawValue).contains($0.domain)
+            let roomEntityIds = Set(targetArea.entities)
+
+            // Filter entities by allowed domains and room membership
+            let allowedDomains = Set(EntityDisplayService.allowedDomains.map(\.rawValue))
+            let filteredEntities = entityStates.values.filter { entity in
+                allowedDomains.contains(entity.domain) && roomEntityIds.contains(entity.entityId)
+            }
+
+            // Sort by friendly name
+            allEntities = filteredEntities.sorted {
+                let name1 = $0.attributes.friendlyName ?? $0.entityId
+                let name2 = $1.attributes.friendlyName ?? $1.entityId
+                return name1 < name2
+            }
+        } catch {
+            Current.Log.error("Failed to build entities for room: \(error.localizedDescription)")
+            errorMessage = "Failed to load entities: \(error.localizedDescription)"
         }
-
-        // Fetch areas to map entities to rooms
-        let areas = try AppArea.fetchAreas(for: serverId)
-        let targetArea = areas.first { $0.id == roomId }
-
-        guard let targetArea else {
-            return []
-        }
-
-        // Filter entities that belong to this room
-        let roomEntityIds = Set(targetArea.entities)
-        return serverEntities.filter { roomEntityIds.contains($0.entityId) }
     }
 
     private func subscribeToEntitiesChanges() {
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
             self?.entityStates = states
+            self?.buildEntitiesForRoom()
         }
     }
 

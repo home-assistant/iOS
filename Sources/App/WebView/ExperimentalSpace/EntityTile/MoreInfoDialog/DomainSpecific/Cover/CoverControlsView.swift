@@ -5,16 +5,15 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 struct CoverControlsView: View {
-    let haEntity: HAEntity?
+    let haEntity: HAEntity
 
     @State private var viewModel: CoverControlsViewModel
     @State private var localPosition: Double
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.haEntity = haEntity
         let vm = CoverControlsViewModel(
             server: server,
-            appEntity: appEntity,
             haEntity: haEntity
         )
         self._viewModel = State(initialValue: vm)
@@ -173,7 +172,8 @@ struct CoverControlsView: View {
 
 @available(iOS 26.0, *)
 #Preview("Cover Half Open") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    // swiftlint:disable:next force_try
+    let haEntity = try! HAEntity(
         entityId: "cover.living_room_blinds",
         domain: "cover",
         state: "open",
@@ -188,19 +188,8 @@ struct CoverControlsView: View {
         context: .init(id: "", userId: nil, parentId: nil)
     )
 
-    let appEntity = HAAppEntity(
-        id: "test-cover.living_room_blinds",
-        entityId: "cover.living_room_blinds",
-        serverId: "test-server",
-        domain: "cover",
-        name: "Living Room Blinds",
-        icon: "mdi:blinds",
-        rawDeviceClass: "blind"
-    )
-
     CoverControlsView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
     .padding()
@@ -208,7 +197,8 @@ struct CoverControlsView: View {
 
 @available(iOS 26.0, *)
 #Preview("Garage Door Open") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    // swiftlint:disable:next force_try
+    let haEntity = try! HAEntity(
         entityId: "cover.garage_door",
         domain: "cover",
         state: "open",
@@ -223,19 +213,8 @@ struct CoverControlsView: View {
         context: .init(id: "", userId: nil, parentId: nil)
     )
 
-    let appEntity = HAAppEntity(
-        id: "test-cover.garage_door",
-        entityId: "cover.garage_door",
-        serverId: "test-server",
-        domain: "cover",
-        name: "Garage Door",
-        icon: "mdi:garage",
-        rawDeviceClass: "garage"
-    )
-
     CoverControlsView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
     .padding()
@@ -243,7 +222,8 @@ struct CoverControlsView: View {
 
 @available(iOS 26.0, *)
 #Preview("Curtain Closing") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    // swiftlint:disable:next force_try
+    let haEntity = try! HAEntity(
         entityId: "cover.bedroom_curtain",
         domain: "cover",
         state: "closing",
@@ -258,19 +238,8 @@ struct CoverControlsView: View {
         context: .init(id: "", userId: nil, parentId: nil)
     )
 
-    let appEntity = HAAppEntity(
-        id: "test-cover.bedroom_curtain",
-        entityId: "cover.bedroom_curtain",
-        serverId: "test-server",
-        domain: "cover",
-        name: "Bedroom Curtain",
-        icon: "mdi:curtains",
-        rawDeviceClass: "curtain"
-    )
-
     CoverControlsView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
     .padding()

@@ -5,23 +5,21 @@ import SwiftUI
 @available(iOS 26.0, *)
 struct EntityMoreInfoDialogView: View {
     let server: Server
-    let appEntity: HAAppEntity
-    let haEntity: HAEntity?
+    let haEntity: HAEntity
     @Environment(\.dismiss) private var dismiss
 
     @State private var triggerHaptic = 0
     @State private var areaName: String = ""
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.server = server
-        self.appEntity = appEntity
         self.haEntity = haEntity
     }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: DesignSystem.Spaces.three) {
-                switch Domain(entityId: appEntity.entityId) {
+                switch Domain(entityId: haEntity.entityId) {
                 case .light:
                     lightControlsView
                 case .switch:
@@ -37,7 +35,7 @@ struct EntityMoreInfoDialogView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle(appEntity.name)
+            .navigationTitle(haEntity.attributes.friendlyName ?? haEntity.entityId)
             .navigationSubtitle(areaName)
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
@@ -59,14 +57,14 @@ struct EntityMoreInfoDialogView: View {
     private func loadAreaName() async {
         do {
             let areas = try AppArea.fetchAreas(
-                containingEntity: appEntity.entityId,
+                containingEntity: haEntity.entityId,
                 serverId: server.identifier.rawValue
             )
             if let area = areas.first {
                 areaName = area.name
             }
         } catch {
-            Current.Log.error("Failed to fetch area for entity \(appEntity.entityId): \(error.localizedDescription)")
+            Current.Log.error("Failed to fetch area for entity \(haEntity.entityId): \(error.localizedDescription)")
         }
     }
 
@@ -76,7 +74,6 @@ struct EntityMoreInfoDialogView: View {
     private var lightControlsView: some View {
         LightControlsView(
             server: server,
-            appEntity: appEntity,
             haEntity: haEntity
         )
     }
@@ -85,7 +82,6 @@ struct EntityMoreInfoDialogView: View {
     private var switchControlsView: some View {
         SwitchControlsView(
             server: server,
-            appEntity: appEntity,
             haEntity: haEntity
         )
     }
@@ -94,7 +90,6 @@ struct EntityMoreInfoDialogView: View {
     private var coverControlsView: some View {
         CoverControlsView(
             server: server,
-            appEntity: appEntity,
             haEntity: haEntity
         )
     }
@@ -104,7 +99,7 @@ struct EntityMoreInfoDialogView: View {
 
 @available(iOS 26.0, *)
 #Preview("Light Entity") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    @Previewable @State var haEntity: HAEntity! = try? HAEntity(
         entityId: "light.living_room",
         domain: "light",
         state: "on",
@@ -133,14 +128,13 @@ struct EntityMoreInfoDialogView: View {
 
     EntityMoreInfoDialogView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
 }
 
 @available(iOS 26.0, *)
 #Preview("Switch Entity") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    @Previewable @State var haEntity: HAEntity! = try? HAEntity(
         entityId: "switch.living_room_fan",
         domain: "switch",
         state: "on",
@@ -165,14 +159,13 @@ struct EntityMoreInfoDialogView: View {
 
     EntityMoreInfoDialogView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
 }
 
 @available(iOS 26.0, *)
 #Preview("Cover Entity") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    @Previewable @State var haEntity: HAEntity! = try? HAEntity(
         entityId: "cover.living_room_blinds",
         domain: "cover",
         state: "open",
@@ -199,7 +192,6 @@ struct EntityMoreInfoDialogView: View {
 
     EntityMoreInfoDialogView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
 }

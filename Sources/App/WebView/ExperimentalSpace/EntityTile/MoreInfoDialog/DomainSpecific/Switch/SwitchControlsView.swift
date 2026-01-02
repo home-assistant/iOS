@@ -5,15 +5,14 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 struct SwitchControlsView: View {
-    let haEntity: HAEntity?
+    let haEntity: HAEntity
 
     @State private var viewModel: SwitchControlsViewModel
 
-    init(server: Server, appEntity: HAAppEntity, haEntity: HAEntity?) {
+    init(server: Server, haEntity: HAEntity) {
         self.haEntity = haEntity
         self._viewModel = State(initialValue: SwitchControlsViewModel(
             server: server,
-            appEntity: appEntity,
             haEntity: haEntity
         ))
     }
@@ -79,7 +78,8 @@ struct SwitchControlsView: View {
 
 @available(iOS 26.0, *)
 #Preview("Switch On") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    // swiftlint:disable:next force_try
+    let haEntity = try! HAEntity(
         entityId: "switch.living_room_fan",
         domain: "switch",
         state: "on",
@@ -92,19 +92,8 @@ struct SwitchControlsView: View {
         context: .init(id: "", userId: nil, parentId: nil)
     )
 
-    let appEntity = HAAppEntity(
-        id: "test-switch.living_room_fan",
-        entityId: "switch.living_room_fan",
-        serverId: "test-server",
-        domain: "switch",
-        name: "Living Room Fan",
-        icon: "mdi:fan",
-        rawDeviceClass: "outlet"
-    )
-
     SwitchControlsView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
     .padding()
@@ -112,7 +101,8 @@ struct SwitchControlsView: View {
 
 @available(iOS 26.0, *)
 #Preview("Switch Off") {
-    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+    // swiftlint:disable:next force_try
+    let haEntity = try! HAEntity(
         entityId: "switch.living_room_fan",
         domain: "switch",
         state: "off",
@@ -125,19 +115,8 @@ struct SwitchControlsView: View {
         context: .init(id: "", userId: nil, parentId: nil)
     )
 
-    let appEntity = HAAppEntity(
-        id: "test-switch.living_room_fan",
-        entityId: "switch.living_room_fan",
-        serverId: "test-server",
-        domain: "switch",
-        name: "Living Room Fan",
-        icon: "mdi:fan",
-        rawDeviceClass: "outlet"
-    )
-
     SwitchControlsView(
         server: ServerFixture.standard,
-        appEntity: appEntity,
         haEntity: haEntity
     )
     .padding()
