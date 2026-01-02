@@ -48,6 +48,7 @@ struct HomeView: View {
             set: { selectedRoom = $0.map { ($0.id, $0.name) } }
         )) { room in
             RoomView(server: viewModel.server, roomId: room.id, roomName: room.name)
+                .environmentObject(viewModel)
                 .navigationTransition(.zoom(sourceID: selectedRoom?.id, in: roomNameSpace))
                 .onDisappear {
                     Task {
