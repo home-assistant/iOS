@@ -60,7 +60,8 @@ final class SwitchControlsViewModel {
 
     func updateStateFromEntity() {
         isOn = haEntity.state == Domain.State.on.rawValue
-        deviceClass = haEntity.attributes["device_class"] as? String
+        deviceClass = DeviceClassProvider.deviceClass(for: haEntity.entityId, serverId: server.identifier.rawValue)
+            .rawValue
     }
 
     // MARK: - Actions

@@ -97,7 +97,7 @@ final class CoverControlsViewModel {
         }
 
         // Get device class from appEntity (which properly parses it)
-        deviceClass = DeviceClass(rawValue: haEntity.attributes["device_class"] as? String ?? "") ?? .unknown
+        deviceClass = DeviceClassProvider.deviceClass(for: haEntity.entityId, serverId: server.identifier.rawValue)
 
         // Check if currently moving
         let state = haEntity.state

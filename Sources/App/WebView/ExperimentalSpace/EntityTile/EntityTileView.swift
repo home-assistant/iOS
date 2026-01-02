@@ -99,10 +99,13 @@ struct EntityTileView: View {
         if let entityIcon = haEntity.attributes.icon {
             icon = MaterialDesignIcons(serversideValueNamed: entityIcon)
         } else if let domain = Domain(entityId: haEntity.entityId) {
-            let deviceClass = haEntity.attributes["device_class"] as? String
+            let deviceClass = DeviceClassProvider.deviceClass(
+                for: haEntity.entityId,
+                serverId: server.identifier.rawValue
+            )
             let stateString = haEntity.state
             let domainState = Domain.State(rawValue: stateString) ?? .unknown
-            icon = domain.icon(deviceClass: deviceClass, state: domainState)
+            icon = domain.icon(deviceClass: deviceClass.rawValue, state: domainState)
         } else {
             icon = .homeIcon
         }
