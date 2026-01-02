@@ -647,7 +647,6 @@
 		423179812D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4231797F2D54FADD0037A8A4 /* AppIntentHaptics.swift */; };
 		42333ADB2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		42333ADC2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
-		42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42333ADA2D0B1771001E8408 /* EntityRegistryListForDisplay.swift */; };
 		423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */; };
 		423622A32F0560A600391BD0 /* RoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423622A22F0560A600391BD0 /* RoomViewModel.swift */; };
 		423622A52F0560BA00391BD0 /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423622A42F0560BA00391BD0 /* RoomView.swift */; };
@@ -9164,7 +9163,6 @@
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */,
-				42333ADD2D0B1771001E8408 /* EntityRegistryListForDisplay.swift in Sources */,
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,

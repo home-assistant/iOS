@@ -17,7 +17,8 @@ final class HomeViewModel: ObservableObject {
     var hiddenEntityIds: Set<String> = []
     var selectedSectionIds: Set<String> = []
     var allowMultipleSelection: Bool = false
-
+    private var appEntities: [HAAppEntity] = []
+    private var registryEntities: [AppEntityRegistryListForDisplay] = []
     struct RoomSection: Identifiable, Equatable {
         let id: String
         let name: String
@@ -34,19 +35,27 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        // Load hidden entities, section order, and filter settings BEFORE building sections
-        let loadedHiddenEntities = await EntityDisplayService.loadHiddenEntities(for: server)
-        hiddenEntityIds = loadedHiddenEntities
+        do {
+            // Does not include disabled and hidden entities, it will be used to filter HAEntity
+            appEntities = try HAAppEntity.config().filter({ $0.serverId == server.identifier.rawValue })
+            registryEntities = try AppEntityRegistryListForDisplay.config(serverId: server.identifier.rawValue)
 
-        async let sectionOrderLoad: Void = loadSectionOrderIfNeeded()
-        async let filterSettingsLoad: Void = loadFilterSettingsIfNeeded()
+            // Load hidden entities, section order, and filter settings BEFORE building sections
+            let loadedHiddenEntities = await EntityDisplayService.loadHiddenEntities(for: server)
+            hiddenEntityIds = loadedHiddenEntities
 
-        await sectionOrderLoad
-        await filterSettingsLoad
+            async let sectionOrderLoad: Void = loadSectionOrderIfNeeded()
+            async let filterSettingsLoad: Void = loadFilterSettingsIfNeeded()
 
-        // Subscribe to entity changes first - sections will be built when data arrives
-        subscribeToEntitiesChanges()
-        isLoading = false
+            await sectionOrderLoad
+            await filterSettingsLoad
+
+            // Subscribe to entity changes first - sections will be built when data arrives
+            subscribeToEntitiesChanges()
+            isLoading = false
+        } catch {
+            Current.Log.error("Failed to load entities for HomeViewModel: \(error.localizedDescription)")
+        }
     }
 
     private func buildSectionsFromEntityStates() {
@@ -109,9 +118,7 @@ final class HomeViewModel: ObservableObject {
         return sortedGroups.map { key, value in
             let filteredEntities = value.entities.filter { !hiddenEntityIds.contains($0.entityId) }
             let sortedEntities = filteredEntities.sorted {
-                let name1 = $0.attributes.friendlyName ?? $0.entityId
-                let name2 = $1.attributes.friendlyName ?? $1.entityId
-                return name1 < name2
+                $0.entityId < $1.entityId
             }
             return RoomSection(
                 id: key,
@@ -122,9 +129,26 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func subscribeToEntitiesChanges() {
+        let validAppEntityIds = Set(
+            appEntities
+                .filter { !$0.isHidden && !$0.isDisabled }
+                .map(\.entityId)
+        )
+
+        let invalidRegistryEntityIds = Set(
+            registryEntities
+                .filter { $0.registry.entityCategory != nil }
+                .map(\.entityId)
+        )
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
-            self?.entityStates = states
-            self?.buildSectionsFromEntityStates()
+            guard let self else { return }
+
+            entityStates = states.filter { entityId, _ in
+                validAppEntityIds.contains(entityId) &&
+                    !invalidRegistryEntityIds.contains(entityId)
+            }
+
+            buildSectionsFromEntityStates()
         }
     }
 
