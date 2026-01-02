@@ -158,7 +158,7 @@ struct LightControlsView: View {
                 }
             }
         }
-        .frame(width: 60, height: Constants.bulbPreviewHeight)
+        .frame(height: Constants.bulbPreviewHeight)
         .transition(.scale.combined(with: .opacity))
     }
 

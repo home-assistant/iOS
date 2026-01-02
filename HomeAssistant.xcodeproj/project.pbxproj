@@ -5587,9 +5587,7 @@
 			children = (
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
-				42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */,
-				42C60F882F0576CA0071A6F6 /* LightControlsView.swift */,
-				42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */,
+				42C60F902F07FB0F0071A6F6 /* MoreInfoDialog */,
 				42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */,
 				42C60F8E2F07F6360071A6F6 /* BrightnessSlider.swift */,
 			);
@@ -5751,6 +5749,24 @@
 				429764F52E93B21E004C26EE /* CircularGlassOrLegacyBackground.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		42C60F902F07FB0F0071A6F6 /* MoreInfoDialog */ = {
+			isa = PBXGroup;
+			children = (
+				42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */,
+				42C60F912F07FB1D0071A6F6 /* DomainSpecific */,
+			);
+			path = MoreInfoDialog;
+			sourceTree = "<group>";
+		};
+		42C60F912F07FB1D0071A6F6 /* DomainSpecific */ = {
+			isa = PBXGroup;
+			children = (
+				42C60F882F0576CA0071A6F6 /* LightControlsView.swift */,
+				42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */,
+			);
+			path = DomainSpecific;
 			sourceTree = "<group>";
 		};
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {
