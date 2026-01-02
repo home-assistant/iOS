@@ -47,6 +47,7 @@ struct LightControlsView: View {
     @State private var showColorPresets: Bool = true
     @State private var recentColors: [StoredColor] = []
     @State private var isUpdatingFromServer: Bool = false
+    @State private var hasInitialized: Bool = false
 
     var body: some View {
         ScrollView {
@@ -79,6 +80,8 @@ struct LightControlsView: View {
             updateStateFromEntity()
             // Initialize picker color once; it will not be updated by remote changes afterwards
             pickerColor = selectedColor
+            // Mark as initialized so future color changes trigger updates
+            hasInitialized = true
             Task { await loadRecentColors() }
         }
         .onChange(of: haEntity) { _, _ in updateStateFromEntity() }
@@ -350,19 +353,28 @@ struct LightControlsView: View {
     }
 
     private var colorPickerSwatch: some View {
-        ColorPicker("", selection: $pickerColor)
-            .labelsHidden()
-            .frame(width: Constants.swatchSize, height: Constants.swatchSize)
-            .clipShape(Circle())
-            .overlay(
-                Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
-            )
-            .onChange(of: pickerColor) { _, newColor in
+        ColorPicker("", selection: Binding(
+            get: { pickerColor },
+            set: { newColor in
+                // Only trigger update if we've finished initialization
+                guard hasInitialized else {
+                    pickerColor = newColor
+                    return
+                }
+
+                pickerColor = newColor
                 triggerHaptic += 1
                 Task {
                     await updateColor(newColor, saveToRecents: true)
                 }
             }
+        ))
+        .labelsHidden()
+        .frame(width: Constants.swatchSize, height: Constants.swatchSize)
+        .clipShape(Circle())
+        .overlay(
+            Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+        )
     }
 
     // MARK: - State Management

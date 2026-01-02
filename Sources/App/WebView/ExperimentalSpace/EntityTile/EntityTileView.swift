@@ -49,7 +49,7 @@ struct EntityTileView: View {
             .onTapGesture {
                 showMoreInfoDialog = true
             }
-            .sheet(isPresented: $showMoreInfoDialog) {
+            .fullScreenCover(isPresented: $showMoreInfoDialog) {
                 EntityMoreInfoDialogView(
                     server: server, appEntity: appEntity, haEntity: haEntity
                 )
