@@ -22,9 +22,10 @@ struct SwitchControlsView: View {
         VStack(spacing: DesignSystem.Spaces.four) {
             // Header with state
             header
-
+            Spacer()
             // Vertical switch control
             verticalSwitchControl
+            Spacer()
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, DesignSystem.Spaces.two)

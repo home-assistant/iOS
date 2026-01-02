@@ -8,7 +8,7 @@ struct VerticalToggleControl: View {
 
     struct Configuration {
         var trackWidth: CGFloat = 120
-        var trackHeight: CGFloat = 280
+        var trackHeight: CGFloat = 320
         var trackCornerRadius: CGFloat = 32
         var thumbSize: CGFloat = 100
         var thumbCornerRadius: CGFloat = 28

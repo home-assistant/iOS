@@ -25,7 +25,7 @@ struct CoverControlsView: View {
         VStack(spacing: DesignSystem.Spaces.four) {
             // Header with state
             header
-
+            Spacer()
             // Main vertical slider for position control
             HStack(spacing: DesignSystem.Spaces.three) {
                 Spacer()
@@ -61,7 +61,7 @@ struct CoverControlsView: View {
 
                 Spacer()
             }
-
+            Spacer()
             // Action buttons
             actionButtons
         }

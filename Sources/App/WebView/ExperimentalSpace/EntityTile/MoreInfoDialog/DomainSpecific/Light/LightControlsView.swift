@@ -40,35 +40,42 @@ struct LightControlsView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Spaces.two) {
-                header
+        Group {
+            if viewModel.supportsBrightness() {
+                ScrollView {
+                    VStack(spacing: DesignSystem.Spaces.two) {
+                        header
 
-                // Use different control based on brightness support
-                if viewModel.supportsBrightness() {
-                    brightnessSlider
-                    controlBar
-                } else {
-                    // Simple toggle for lights without brightness
-                    simpleToggleControl
-                }
+                        // Use different control based on brightness support
+                        brightnessSlider
+                        controlBar
 
-                // Mode toggle if light supports both color and temperature
-                if viewModel.supportsColor(), viewModel.supportsColorTemp() {
-                    modeToggle
-                }
+                        // Mode toggle if light supports both color and temperature
+                        if viewModel.supportsColor(), viewModel.supportsColorTemp() {
+                            modeToggle
+                        }
 
-                // Show appropriate controls based on mode and support
-                if viewModel.supportsColor(), viewModel.currentColorMode == .color, showColorPresets {
-                    HStack {
-                        Spacer()
-                        colorPresetsGrid
-                        Spacer()
+                        // Show appropriate controls based on mode and support
+                        if viewModel.supportsColor(), viewModel.currentColorMode == .color, showColorPresets {
+                            HStack {
+                                Spacer()
+                                colorPresetsGrid
+                                Spacer()
+                            }
+                        }
+
+                        if viewModel.supportsColorTemp(), viewModel.currentColorMode == .temperature {
+                            temperatureSlider
+                        }
                     }
                 }
-
-                if viewModel.supportsColorTemp(), viewModel.currentColorMode == .temperature {
-                    temperatureSlider
+            } else {
+                VStack {
+                    header
+                    Spacer()
+                    // Simple toggle for lights without brightness
+                    simpleToggleControl
+                    Spacer()
                 }
             }
         }

@@ -20,22 +20,20 @@ struct EntityMoreInfoDialogView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: DesignSystem.Spaces.three) {
-                    switch Domain(entityId: appEntity.entityId) {
-                    case .light:
-                        lightControlsView
-                    case .switch:
-                        switchControlsView
-                    case .cover:
-                        coverControlsView
-                    default:
-                        Text("More controls coming soon")
-                            .font(DesignSystem.Font.body)
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.vertical, DesignSystem.Spaces.four)
-                    }
+            VStack(spacing: DesignSystem.Spaces.three) {
+                switch Domain(entityId: appEntity.entityId) {
+                case .light:
+                    lightControlsView
+                case .switch:
+                    switchControlsView
+                case .cover:
+                    coverControlsView
+                default:
+                    Text("More controls coming soon")
+                        .font(DesignSystem.Font.body)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, DesignSystem.Spaces.four)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
