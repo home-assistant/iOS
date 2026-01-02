@@ -216,7 +216,7 @@ struct VerticalSlider: View {
                 value: $value,
                 icon: .speakerWave3,
                 tint: .green,
-                showThumb: false,
+                showThumb: true,
                 shape: .rectangle
             )
             .frame(height: 300)
