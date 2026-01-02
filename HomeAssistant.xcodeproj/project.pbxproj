@@ -991,6 +991,7 @@
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA92F0829B50071A6F6 /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA82F0829B50071A6F6 /* RoomView.swift */; };
+		42C60FAB2F082E630071A6F6 /* REORDER_FEATURE_SUMMARY.md in Resources */ = {isa = PBXBuildFile; fileRef = 42C60FAA2F082E630071A6F6 /* REORDER_FEATURE_SUMMARY.md */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -2741,6 +2742,7 @@
 		42C60FA32F08131B0071A6F6 /* CoverControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverControlIntents.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42C60FA82F0829B50071A6F6 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
+		42C60FAA2F082E630071A6F6 /* REORDER_FEATURE_SUMMARY.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = REORDER_FEATURE_SUMMARY.md; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
@@ -5594,6 +5596,7 @@
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
+				42C60FAA2F082E630071A6F6 /* REORDER_FEATURE_SUMMARY.md */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -7964,6 +7967,7 @@
 				B60616871D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav in Resources */,
 				B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */,
 				11F893B125C5F56700820C61 /* GoogleService-Info-Release.plist in Resources */,
+				42C60FAB2F082E630071A6F6 /* REORDER_FEATURE_SUMMARY.md in Resources */,
 				38A4EBA18ADEEE555AD14F52 /* Pods-iOS-App-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
