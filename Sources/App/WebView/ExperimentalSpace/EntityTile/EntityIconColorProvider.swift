@@ -55,6 +55,6 @@ enum EntityIconColorProvider {
             return Color(hue: hs[0] / 360.0, saturation: hs[1] / 100.0, brightness: 1.0)
         }
 
-        return .yellow
+        return .haPrimary
     }
 }
