@@ -983,6 +983,7 @@
 		42C60F8B2F057C060071A6F6 /* LightControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */; };
 		42C60F8D2F057DB70071A6F6 /* VerticalSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */; };
 		42C60F8F2F07F6360071A6F6 /* BrightnessSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F8E2F07F6360071A6F6 /* BrightnessSlider.swift */; };
+		42C60F932F0802A80071A6F6 /* LightControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F922F0802A80071A6F6 /* LightControlsViewModel.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -2725,6 +2726,7 @@
 		42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightControlIntents.swift; sourceTree = "<group>"; };
 		42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalSlider.swift; sourceTree = "<group>"; };
 		42C60F8E2F07F6360071A6F6 /* BrightnessSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessSlider.swift; sourceTree = "<group>"; };
+		42C60F922F0802A80071A6F6 /* LightControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightControlsViewModel.swift; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
@@ -5765,6 +5767,7 @@
 			children = (
 				42C60F882F0576CA0071A6F6 /* LightControlsView.swift */,
 				42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */,
+				42C60F922F0802A80071A6F6 /* LightControlsViewModel.swift */,
 			);
 			path = DomainSpecific;
 			sourceTree = "<group>";
@@ -9109,6 +9112,7 @@
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
+				42C60F932F0802A80071A6F6 /* LightControlsViewModel.swift in Sources */,
 				42AC94A52CF872520050A62C /* TileCardStyleModifier.swift in Sources */,
 				42DD84162B14D7AC00936F16 /* WebViewExternalBusMessage.swift in Sources */,
 				11EFCDD324F5F39100314D85 /* WebViewWindowController.swift in Sources */,
