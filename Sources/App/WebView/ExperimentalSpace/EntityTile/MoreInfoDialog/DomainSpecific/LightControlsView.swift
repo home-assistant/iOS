@@ -208,12 +208,6 @@ struct LightControlsView: View {
                 triggerHaptic += 1
                 Task { await toggleLight() }
             }
-
-            // Only show color picker in color mode and if light supports color
-            if currentColorMode == .color, supportsColor() {
-                colorPickerSwatch
-            }
-
             Spacer()
         }
         .frame(height: Constants.controlBarHeight)
@@ -293,7 +287,7 @@ struct LightControlsView: View {
     // MARK: - Color Presets
 
     private var colorPresetsGrid: some View {
-        // Default colors shown when no recent colors exist
+        // Default colors shown when no recent colors exist (7 colors to leave room for picker)
         let defaultPresets: [Color] = [
             Color(red: 1.00, green: 0.58, blue: 0.45),
             Color(red: 1.00, green: 0.75, blue: 0.47),
@@ -304,13 +298,14 @@ struct LightControlsView: View {
             Color(red: 1.00, green: 0.78, blue: 0.79),
         ]
 
-        // Combine recent colors with defaults to fill up to max spots
+        // Combine recent colors with defaults to fill up to 7 spots (8th is color picker)
+        let maxPresetColors = Constants.maxColorPresets - 1 // Reserve last spot for picker
         let recentColorsList = recentColors.map { $0.toColor() }
         var displayColors: [(color: Color, isRecent: Bool)] = recentColorsList.map { ($0, true) }
 
         // Fill remaining spots with default presets
-        if displayColors.count < Constants.maxColorPresets {
-            let remainingCount = Constants.maxColorPresets - displayColors.count
+        if displayColors.count < maxPresetColors {
+            let remainingCount = maxPresetColors - displayColors.count
             let additionalColors = Array(defaultPresets.prefix(remainingCount)).map { ($0, false) }
             displayColors.append(contentsOf: additionalColors)
         }
@@ -321,7 +316,12 @@ struct LightControlsView: View {
                 HStack(spacing: Constants.swatchSpacing) {
                     ForEach(0 ..< Constants.colorPresetsColumns) { col in
                         let index = row * Constants.colorPresetsColumns + col
-                        if index < displayColors.count {
+                        let totalSlots = Constants.colorPresetsRows * Constants.colorPresetsColumns
+                        
+                        // Last slot (index 7) is the color picker
+                        if index == totalSlots - 1 {
+                            colorPickerSwatch
+                        } else if index < displayColors.count {
                             let colorInfo = displayColors[index]
                             swatch(color: colorInfo.color, shouldSaveToRecents: colorInfo.isRecent)
                         } else {
@@ -668,9 +668,10 @@ struct LightControlsView: View {
         // Add the new color to the front
         updatedColors.insert(storedColor, at: 0)
 
-        // Keep only the most recent colors (leaving room for color picker)
-        if updatedColors.count > Constants.maxColorPresets {
-            updatedColors = Array(updatedColors.prefix(Constants.maxColorPresets))
+        // Keep only the most recent colors (7 colors, leaving room for color picker in 8th spot)
+        let maxRecentColors = Constants.maxColorPresets - 1
+        if updatedColors.count > maxRecentColors {
+            updatedColors = Array(updatedColors.prefix(maxRecentColors))
         }
 
         recentColors = updatedColors
