@@ -165,6 +165,23 @@ final class LightControlsViewModel {
 
     // MARK: - Support Checks
 
+    func supportsBrightness() -> Bool {
+        guard let haEntity else { return false }
+
+        // Check supported_color_modes for brightness-capable modes
+        if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {
+            // All color modes except "onoff" support brightness
+            return !supportedColorModes.isEmpty && !supportedColorModes.allSatisfy { $0 == "onoff" }
+        }
+
+        // Fallback: check if brightness attribute exists when light is on
+        if haEntity.state == "on", haEntity.attributes["brightness"] != nil {
+            return true
+        }
+
+        return false
+    }
+
     func supportsColor() -> Bool {
         guard let haEntity else { return false }
         if let supportedColorModes = haEntity.attributes["supported_color_modes"] as? [String] {

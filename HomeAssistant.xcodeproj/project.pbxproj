@@ -5597,6 +5597,7 @@
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
 				42C60F902F07FB0F0071A6F6 /* MoreInfoDialog */,
 				42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */,
+				42C60F9A2F080BBF0071A6F6 /* VerticalToggleControl.swift */,
 				42C60F8E2F07F6360071A6F6 /* BrightnessSlider.swift */,
 			);
 			path = EntityTile;
@@ -5792,7 +5793,6 @@
 			children = (
 				42C60F942F0803700071A6F6 /* SwitchControlsView.swift */,
 				42C60F962F08037C0071A6F6 /* SwitchControlsViewModel.swift */,
-				42C60F9A2F080BBF0071A6F6 /* VerticalToggleControl.swift */,
 			);
 			path = Switch;
 			sourceTree = "<group>";

@@ -43,8 +43,15 @@ struct LightControlsView: View {
         ScrollView {
             VStack(spacing: DesignSystem.Spaces.two) {
                 header
-                brightnessSlider
-                controlBar
+
+                // Use different control based on brightness support
+                if viewModel.supportsBrightness() {
+                    brightnessSlider
+                    controlBar
+                } else {
+                    // Simple toggle for lights without brightness
+                    simpleToggleControl
+                }
 
                 // Mode toggle if light supports both color and temperature
                 if viewModel.supportsColor(), viewModel.supportsColorTemp() {
@@ -87,10 +94,13 @@ struct LightControlsView: View {
                 .foregroundStyle(.primary)
                 .animation(.easeInOut, value: viewModel.isOn)
 
-            Text("\(Int(viewModel.brightness))%")
-                .font(.system(size: 17, weight: .regular))
-                .foregroundStyle(.secondary)
-                .animation(.easeInOut, value: viewModel.brightness)
+            // Only show brightness percentage if light supports brightness
+            if viewModel.supportsBrightness() {
+                Text("\(Int(viewModel.brightness))%")
+                    .font(.system(size: 17, weight: .regular))
+                    .foregroundStyle(.secondary)
+                    .animation(.easeInOut, value: viewModel.brightness)
+            }
         }
     }
 
@@ -148,6 +158,26 @@ struct LightControlsView: View {
                 }
             }
         }
+        .frame(height: Constants.bulbPreviewHeight)
+        .transition(.scale.combined(with: .opacity))
+    }
+
+    // MARK: - Simple Toggle Control
+
+    private var simpleToggleControl: some View {
+        VerticalToggleControl(
+            isOn: Binding(
+                get: { viewModel.isOn },
+                set: { _ in }
+            ),
+            icon: .lightbulbFill,
+            accentColor: viewModel.iconColor,
+            onToggle: {
+                Task {
+                    await viewModel.toggleLight()
+                }
+            }
+        )
         .frame(height: Constants.bulbPreviewHeight)
         .transition(.scale.combined(with: .opacity))
     }
@@ -434,7 +464,7 @@ struct LightControlsView: View {
 // MARK: - Preview
 
 @available(iOS 26.0, *)
-#Preview {
+#Preview("Light with Brightness Control") {
     @Previewable @State var haEntity: HAEntity? = try? HAEntity(
         entityId: "light.living_room",
         domain: "light",
@@ -462,6 +492,41 @@ struct LightControlsView: View {
         domain: "light",
         name: "Living Room Light",
         icon: "mdi:lightbulb",
+        rawDeviceClass: nil
+    )
+
+    LightControlsView(
+        server: ServerFixture.standard,
+        appEntity: appEntity,
+        haEntity: haEntity
+    )
+    .padding()
+}
+
+@available(iOS 26.0, *)
+#Preview("Simple On/Off Light") {
+    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+        entityId: "light.simple_bulb",
+        domain: "light",
+        state: "on",
+        lastChanged: Date(),
+        lastUpdated: Date(),
+        attributes: [
+            "friendly_name": "Simple Bulb",
+            "supported_color_modes": ["onoff"],
+            "color_mode": "onoff",
+            "area_id": "bedroom",
+        ],
+        context: .init(id: "", userId: nil, parentId: nil)
+    )
+
+    let appEntity = HAAppEntity(
+        id: "test-light.simple_bulb",
+        entityId: "light.simple_bulb",
+        serverId: "test-server",
+        domain: "light",
+        name: "Simple Bulb",
+        icon: "mdi:lightbulb-outline",
         rawDeviceClass: nil
     )
 
