@@ -33,6 +33,7 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlOpenSwitch.rawValue, "controlOpenSwitch")
         XCTAssertEqual(WidgetsKind.controlOpenSensor.rawValue, "controlOpenSensor")
         XCTAssertEqual(WidgetsKind.controlFan.rawValue, "controlFan")
-        XCTAssertEqual(WidgetsKind.allCases.count, 27)
+        XCTAssertEqual(WidgetsKind.controlOpenExperimentalDashboard.rawValue, "controlOpenExperimentalDashboard")
+        XCTAssertEqual(WidgetsKind.allCases.count, 28)
     }
 }

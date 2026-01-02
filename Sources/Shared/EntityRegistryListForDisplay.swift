@@ -26,8 +26,18 @@ public struct EntityRegistryListForDisplay: HADataDecodable {
 
 public struct AppEntityRegistryListForDisplay: Codable, FetchableRecord, PersistableRecord {
     /// serverId-entityId
-    let id: String
-    let serverId: String
-    let entityId: String
+    public let id: String
+    public let serverId: String
+    public let entityId: String
     public let registry: EntityRegistryListForDisplay.Entity
+
+    public static func config(serverId: String) throws -> [AppEntityRegistryListForDisplay] {
+        try Current.database().read { db in
+            try AppEntityRegistryListForDisplay
+                .filter(
+                    Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId
+                )
+                .fetchAll(db)
+        }
+    }
 }

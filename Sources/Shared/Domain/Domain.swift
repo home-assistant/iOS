@@ -66,6 +66,104 @@ public enum Domain: String, CaseIterable {
         return states
     }
 
+    public func contextualStateDescription(for entity: HAEntity) -> String {
+        let baseState = entity.localizedState.leadingCapitalized
+
+        // Add unit of measurement if available
+        if let unitOfMeasurement = entity.attributes.dictionary["unit_of_measurement"] {
+            return "\(baseState) \(unitOfMeasurement)"
+        }
+
+        guard let state = Domain.State(rawValue: entity.state) else {
+            return baseState
+        }
+
+        let deviceClass = entity.deviceClass
+
+        // Provide context-aware descriptions for binary sensors with device classes
+        if self == .binarySensor {
+            switch deviceClass {
+            case .door:
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentDoorStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentDoorStateOff
+            case .window:
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentWindowStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentWindowStateOff
+            case .garage:
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentGarageDoorStateOff
+            case .lock:
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentLockStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentLockStateOff
+            case .opening:
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentOpeningStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentOpeningStateOff
+            case .presence:
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentPresenceStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentPresenceStateOff
+            case .connectivity:
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentConnectivityStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentConnectivityStateOff
+            case .gate:
+                // Gate uses same open/closed as door
+                return state == .on ?
+                    CoreStrings.commonStateOpen :
+                    CoreStrings.commonStateClosed
+            case .shade:
+                return state == .on ?
+                    CoreStrings.componentCoverEntityComponentStateOpen :
+                    CoreStrings.componentCoverEntityComponentStateClosed
+            default:
+                // For other device classes without specific strings, use generic on/off
+                return state == .on ?
+                    CoreStrings.componentBinarySensorEntityComponentStateOn :
+                    CoreStrings.componentBinarySensorEntityComponentStateOff
+            }
+        }
+
+        // Provide context-aware descriptions for covers with device classes
+        if self == .cover {
+            switch state {
+            case .open:
+                return CoreStrings.componentCoverEntityComponentStateOpen
+            case .closed:
+                return CoreStrings.componentCoverEntityComponentStateClosed
+            case .opening, .closing:
+                // For transitioning states, use localized state
+                return baseState
+            default:
+                break
+            }
+        }
+
+        // Provide context for locks
+        if self == .lock {
+            switch state {
+            case .locked:
+                return CoreStrings.componentLockEntityComponentStateLocked
+            case .unlocked:
+                return CoreStrings.componentLockEntityComponentStateUnlocked
+            case .locking, .unlocking:
+                // For transitioning states, add ellipsis to show in progress
+                return baseState + "..."
+            case .jammed:
+                // For jammed state, add exclamation to show alert
+                return baseState + "!"
+            default:
+                break
+            }
+        }
+
+        return baseState
+    }
+
     public func icon(deviceClass: String? = nil, state: State? = nil) -> MaterialDesignIcons {
         let deviceClass = DeviceClass(rawValue: deviceClass ?? "")
         var image: MaterialDesignIcons = .bookmarkIcon

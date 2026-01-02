@@ -34,7 +34,7 @@ public struct AppArea: Codable, FetchableRecord, PersistableRecord {
         self.entities = entities
     }
 
-    public init(from area: HAAreaResponse, serverId: String, entities: Set<String>?) {
+    public init(from area: HAAreasRegistryResponse, serverId: String, entities: Set<String>?) {
         self.id = "\(serverId)-\(area.areaId)"
         self.serverId = serverId
         self.areaId = area.areaId

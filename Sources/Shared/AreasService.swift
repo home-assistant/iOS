@@ -2,9 +2,9 @@ import Foundation
 import HAKit
 
 public protocol AreasServiceProtocol {
-    var areas: [String: [HAAreaResponse]] { get }
+    var areas: [String: [HAAreasRegistryResponse]] { get }
     func fetchAreasAndItsEntities(for server: Server) async -> [String: Set<String>]
-    func area(for areaId: String, serverId: String) -> HAAreaResponse?
+    func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse?
 }
 
 final class AreasService: AreasServiceProtocol {
@@ -12,9 +12,9 @@ final class AreasService: AreasServiceProtocol {
 
     private var request: HACancellable?
     /// [ServerId: [HAAreaResponse]]
-    var areas: [String: [HAAreaResponse]] = [:]
+    var areas: [String: [HAAreasRegistryResponse]] = [:]
 
-    func area(for areaId: String, serverId: String) -> HAAreaResponse? {
+    func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse? {
         guard let areasForServer = areas[serverId] else {
             return nil
         }
@@ -29,15 +29,18 @@ final class AreasService: AreasServiceProtocol {
 
         request?.cancel()
         let areas = await withCheckedContinuation { continuation in
-            request = connection.send(HATypedRequest<[HAAreaResponse]>.fetchAreas(), completion: { result in
-                switch result {
-                case let .success(data):
-                    continuation.resume(returning: data)
-                case let .failure(error):
-                    Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
-                    continuation.resume(returning: [])
+            request = connection.send(
+                HATypedRequest<[HAAreasRegistryResponse]>.configAreasRegistry(),
+                completion: { result in
+                    switch result {
+                    case let .success(data):
+                        continuation.resume(returning: data)
+                    case let .failure(error):
+                        Current.Log.error(userInfo: ["Failed to retrieve areas": error.localizedDescription])
+                        continuation.resume(returning: [])
+                    }
                 }
-            })
+            )
         }
         self.areas[server.identifier.rawValue] = areas
         if areas.isEmpty {
@@ -45,6 +48,7 @@ final class AreasService: AreasServiceProtocol {
             return [:]
         } else {
             let entitiesForAreas = await fetchEntitiesForAreas(areas, server: server)
+            updatePropertiesInEntitiesDatabase(entitiesForAreas, serverId: server.identifier.rawValue)
             let deviceForAreas = await fetchDeviceForAreas(areas, entitiesWithAreas: entitiesForAreas, server: server)
             let allEntitiesPerArea = getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
@@ -55,7 +59,50 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func fetchEntitiesForAreas(_ areas: [HAAreaResponse], server: Server) async -> [HAEntityAreaResponse] {
+    /// Updates the `hiddenBy` and `disabledBy` properties for entities in the local database based on the registry
+    /// response.
+    ///
+    /// This method synchronizes the hidden and disabled states of entities from Home Assistant's entity registry
+    /// with the local database. It fetches all entities (including hidden and disabled ones) from the database,
+    /// matches them with the provided registry responses, and updates their `hiddenBy` and `disabledBy` properties
+    /// to reflect the current state from the server.
+    ///
+    /// - Parameters:
+    ///   - entitiesRegistryResponse: An array of entity registry responses from Home Assistant
+    ///     containing the current `hiddenBy` and `disabledBy` states for each entity.
+    ///   - serverId: The server identifier to filter entities by.
+    ///
+    /// - Note: This method includes hidden and disabled entities when fetching from the database to ensure
+    ///   all entities can have their states updated.
+    ///
+    /// - Important: If the database write operation fails, an error will be logged but the method
+    ///   will continue processing remaining entities.
+    private func updatePropertiesInEntitiesDatabase(
+        _ entitiesRegistryResponse: [HAEntityRegistryResponse],
+        serverId: String
+    ) {
+        do {
+            let entities = try HAAppEntity.config(include: [.all]).filter({ $0.serverId == serverId })
+
+            for entity in entities {
+                if let entityRegistry = entitiesRegistryResponse.first(where: { $0.entityId == entity.entityId }) {
+                    var updatedEntity = entity
+                    updatedEntity.hiddenBy = entityRegistry.hiddenBy
+                    updatedEntity.disabledBy = entityRegistry.disabledBy
+                    try Current.database().write { db in
+                        try updatedEntity.update(db)
+                    }
+                }
+            }
+        } catch {
+            Current.Log.error("Failed to update hiddenBy property in entities database: \(error.localizedDescription)")
+        }
+    }
+
+    private func fetchEntitiesForAreas(
+        _ areas: [HAAreasRegistryResponse],
+        server: Server
+    ) async -> [HAEntityRegistryResponse] {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch entities for areas")
             return []
@@ -64,7 +111,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let entitiesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HAEntityAreaResponse]>.fetchEntitiesWithAreas(),
+                HATypedRequest<[HAEntityRegistryResponse]>.configEntityRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
@@ -81,10 +128,10 @@ final class AreasService: AreasServiceProtocol {
     }
 
     private func fetchDeviceForAreas(
-        _ areas: [HAAreaResponse],
-        entitiesWithAreas: [HAEntityAreaResponse],
+        _ areas: [HAAreasRegistryResponse],
+        entitiesWithAreas: [HAEntityRegistryResponse],
         server: Server
-    ) async -> [HADeviceAreaResponse] {
+    ) async -> [HADevicesRegistryResponse] {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch devices for areas")
             return []
@@ -93,7 +140,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let devicesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HADeviceAreaResponse]>.fetchDevicesWithAreas(),
+                HATypedRequest<[HADevicesRegistryResponse]>.configDeviceRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
@@ -110,8 +157,8 @@ final class AreasService: AreasServiceProtocol {
     }
 
     private func getAllEntitiesFromArea(
-        devicesAndAreas: [HADeviceAreaResponse],
-        entitiesAndAreas: [HAEntityAreaResponse]
+        devicesAndAreas: [HADevicesRegistryResponse],
+        entitiesAndAreas: [HAEntityRegistryResponse]
     ) -> [String: Set<String>] {
         /// area_id : [device_id]
         var areasAndDevicesDict: [String: [String]] = [:]
@@ -174,8 +221,8 @@ final class AreasService: AreasServiceProtocol {
     #if DEBUG
     /// For testing purposes only
     public func testGetAllEntitiesFromArea(
-        devicesAndAreas: [HADeviceAreaResponse],
-        entitiesAndAreas: [HAEntityAreaResponse]
+        devicesAndAreas: [HADevicesRegistryResponse],
+        entitiesAndAreas: [HAEntityRegistryResponse]
     ) -> [String: Set<String>] {
         getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }

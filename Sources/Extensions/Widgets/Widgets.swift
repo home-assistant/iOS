@@ -72,6 +72,7 @@ struct WidgetsBundle18: WidgetBundle {
         ControlOpenLock()
         ControlOpenSensor()
         ControlOpenSwitch()
+        ControlOpenExperimentalDashboard()
 
         // Widgets
         WidgetCustom()

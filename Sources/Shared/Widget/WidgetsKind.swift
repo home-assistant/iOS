@@ -28,4 +28,5 @@ public enum WidgetsKind: String, CaseIterable {
     case controlOpenSwitch
     case controlOpenSensor
     case controlButton
+    case controlOpenExperimentalDashboard
 }
