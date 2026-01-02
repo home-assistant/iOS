@@ -987,6 +987,10 @@
 		42C60F952F0803700071A6F6 /* SwitchControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F942F0803700071A6F6 /* SwitchControlsView.swift */; };
 		42C60F972F08037C0071A6F6 /* SwitchControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F962F08037C0071A6F6 /* SwitchControlsViewModel.swift */; };
 		42C60F9B2F080BBF0071A6F6 /* VerticalToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F9A2F080BBF0071A6F6 /* VerticalToggleControl.swift */; };
+		42C60F9D2F080EE70071A6F6 /* CoverControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F9C2F080EE70071A6F6 /* CoverControlsViewModel.swift */; };
+		42C60F9F2F080F060071A6F6 /* CoverControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60F9E2F080F060071A6F6 /* CoverControlsView.swift */; };
+		42C60FA22F0811AE0071A6F6 /* SwitchControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA12F0811AE0071A6F6 /* SwitchControlIntents.swift */; };
+		42C60FA42F08131B0071A6F6 /* CoverControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA32F08131B0071A6F6 /* CoverControlIntents.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -2733,6 +2737,10 @@
 		42C60F942F0803700071A6F6 /* SwitchControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControlsView.swift; sourceTree = "<group>"; };
 		42C60F962F08037C0071A6F6 /* SwitchControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControlsViewModel.swift; sourceTree = "<group>"; };
 		42C60F9A2F080BBF0071A6F6 /* VerticalToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalToggleControl.swift; sourceTree = "<group>"; };
+		42C60F9C2F080EE70071A6F6 /* CoverControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverControlsViewModel.swift; sourceTree = "<group>"; };
+		42C60F9E2F080F060071A6F6 /* CoverControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverControlsView.swift; sourceTree = "<group>"; };
+		42C60FA12F0811AE0071A6F6 /* SwitchControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchControlIntents.swift; sourceTree = "<group>"; };
+		42C60FA32F08131B0071A6F6 /* CoverControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverControlIntents.swift; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
@@ -5772,6 +5780,7 @@
 		42C60F912F07FB1D0071A6F6 /* DomainSpecific */ = {
 			isa = PBXGroup;
 			children = (
+				42C60FA02F0810280071A6F6 /* Cover */,
 				42C60F992F080B640071A6F6 /* Switch */,
 				42C60F982F080B5C0071A6F6 /* Light */,
 			);
@@ -5793,8 +5802,19 @@
 			children = (
 				42C60F942F0803700071A6F6 /* SwitchControlsView.swift */,
 				42C60F962F08037C0071A6F6 /* SwitchControlsViewModel.swift */,
+				42C60FA12F0811AE0071A6F6 /* SwitchControlIntents.swift */,
 			);
 			path = Switch;
+			sourceTree = "<group>";
+		};
+		42C60FA02F0810280071A6F6 /* Cover */ = {
+			isa = PBXGroup;
+			children = (
+				42C60F9E2F080F060071A6F6 /* CoverControlsView.swift */,
+				42C60F9C2F080EE70071A6F6 /* CoverControlsViewModel.swift */,
+				42C60FA32F08131B0071A6F6 /* CoverControlIntents.swift */,
+			);
+			path = Cover;
 			sourceTree = "<group>";
 		};
 		42CA28AC2B101D320093B31A /* DesignSystem */ = {
@@ -8842,6 +8862,7 @@
 				11F3D74C2495377B00C05BBA /* SensorListView.swift in Sources */,
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */,
+				42C60F9D2F080EE70071A6F6 /* CoverControlsViewModel.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */,
 				426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
@@ -9016,6 +9037,7 @@
 				4238E8572EB0EA4A00BDF010 /* ConnectionSecurityLevelBlockViewModel.swift in Sources */,
 				42AAEE882EC4B9880049E1F3 /* URLOpener.swift in Sources */,
 				42DF7DE22EC53DBC003F3C4A /* HomeAssistantAccountRowView.swift in Sources */,
+				42C60FA42F08131B0071A6F6 /* CoverControlIntents.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				424DD05A2B3509170057E456 /* CarPlayQuickAccessTemplate.swift in Sources */,
 				429AFE5E2DB7DED300AF0836 /* GeneralSettingsTemplateEditor.swift in Sources */,
@@ -9083,6 +9105,7 @@
 				42BF8DB52EC4E73700DCB7E7 /* ConnectionSettingsViewModel.swift in Sources */,
 				4263A6672EFB29620089C338 /* IntentLightEntity.swift in Sources */,
 				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
+				42C60F9F2F080F060071A6F6 /* CoverControlsView.swift in Sources */,
 				428863552EF963FF00319CF4 /* CameraListView.swift in Sources */,
 				428863562EF963FF00319CF4 /* CameraListViewModel.swift in Sources */,
 				4289DDAA2C85AB4C003591C2 /* AssistAppIntent.swift in Sources */,
@@ -9091,6 +9114,7 @@
 				4280E06F2DC23B120004BE7D /* SensorListViewModel.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				42A47A852C45218D00C9B43D /* WebViewExternalMessageHandler.swift in Sources */,
+				42C60FA22F0811AE0071A6F6 /* SwitchControlIntents.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,

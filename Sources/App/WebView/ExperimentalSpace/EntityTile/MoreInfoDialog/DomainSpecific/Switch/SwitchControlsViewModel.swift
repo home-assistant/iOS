@@ -44,14 +44,15 @@ final class SwitchControlsViewModel {
 
     var switchIcon: SFSymbol {
         // Map device classes to appropriate icons
-        guard let deviceClass else {
+        guard let deviceClass,
+              let deviceClassEnum = DeviceClass(rawValue: deviceClass.lowercased()) else {
             return .powerCircle // Default switch icon
         }
 
-        switch deviceClass.lowercased() {
-        case "outlet":
+        switch deviceClassEnum {
+        case .outlet:
             return .powerCircle
-        case "switch":
+        case .switch:
             return .powerCircle
         default:
             return .powerCircle
@@ -80,28 +81,27 @@ final class SwitchControlsViewModel {
         isUpdating = true
         defer { isUpdating = false }
 
-        await Current.connectivity.syncNetworkInformation()
-        guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("Failed to get connection for switch \(appEntity.entityId)")
-            return
+        // Create IntentSwitchEntity from appEntity
+        let intentSwitch = IntentSwitchEntity(
+            id: "\(server.identifier.rawValue)-\(appEntity.entityId)",
+            entityId: appEntity.entityId,
+            serverId: server.identifier.rawValue,
+            displayString: appEntity.name,
+            iconName: appEntity.icon ?? ""
+        )
+
+        // Create and perform the toggle intent
+        let toggleIntent = ToggleSwitchIntent()
+        toggleIntent.switchEntity = intentSwitch
+
+        do {
+            _ = try await toggleIntent.perform()
+
+            // Optimistically update state
+            isOn.toggle()
+            Current.Log.info("Successfully toggled switch \(appEntity.entityId)")
+        } catch {
+            Current.Log.error("Failed to toggle switch \(appEntity.entityId): \(error)")
         }
-
-        let service = isOn ? Service.turnOff.rawValue : Service.turnOn.rawValue
-
-        _ = await withCheckedContinuation { continuation in
-            connection.send(.callService(
-                domain: .init(stringLiteral: Domain.switch.rawValue),
-                service: .init(stringLiteral: service),
-                data: [
-                    "entity_id": appEntity.entityId,
-                ]
-            )).promise.pipe { _ in
-                continuation.resume()
-            }
-        }
-
-        // Optimistically update state
-        isOn.toggle()
-        Current.Log.info("Successfully toggled switch \(appEntity.entityId)")
     }
 }

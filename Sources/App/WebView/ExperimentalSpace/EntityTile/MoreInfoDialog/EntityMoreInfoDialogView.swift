@@ -27,6 +27,8 @@ struct EntityMoreInfoDialogView: View {
                         lightControlsView
                     case .switch:
                         switchControlsView
+                    case .cover:
+                        coverControlsView
                     default:
                         Text("More controls coming soon")
                             .font(DesignSystem.Font.body)
@@ -84,6 +86,15 @@ struct EntityMoreInfoDialogView: View {
     @ViewBuilder
     private var switchControlsView: some View {
         SwitchControlsView(
+            server: server,
+            appEntity: appEntity,
+            haEntity: haEntity
+        )
+    }
+
+    @ViewBuilder
+    private var coverControlsView: some View {
+        CoverControlsView(
             server: server,
             appEntity: appEntity,
             haEntity: haEntity
@@ -152,6 +163,40 @@ struct EntityMoreInfoDialogView: View {
         name: "Living Room Fan",
         icon: "mdi:fan",
         rawDeviceClass: "outlet"
+    )
+
+    EntityMoreInfoDialogView(
+        server: ServerFixture.standard,
+        appEntity: appEntity,
+        haEntity: haEntity
+    )
+}
+
+@available(iOS 26.0, *)
+#Preview("Cover Entity") {
+    @Previewable @State var haEntity: HAEntity? = try? HAEntity(
+        entityId: "cover.living_room_blinds",
+        domain: "cover",
+        state: "open",
+        lastChanged: Date().addingTimeInterval(-1800),
+        lastUpdated: Date(),
+        attributes: [
+            "friendly_name": "Living Room Blinds",
+            "device_class": "blind",
+            "current_position": 65,
+            "supported_features": 15,
+        ],
+        context: .init(id: "", userId: nil, parentId: nil)
+    )
+
+    let appEntity = HAAppEntity(
+        id: "test-cover.living_room_blinds",
+        entityId: "cover.living_room_blinds",
+        serverId: "test-server",
+        domain: "cover",
+        name: "Living Room Blinds",
+        icon: "mdi:blinds",
+        rawDeviceClass: "blind"
     )
 
     EntityMoreInfoDialogView(

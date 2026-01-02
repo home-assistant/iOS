@@ -48,6 +48,7 @@ struct VerticalSlider: View {
 
     @State private var isDragging = false
     @State private var dragOffset: CGFloat = 0
+    @State private var animatedValue: Double = 0
 
     init(
         value: Binding<Double>,
@@ -86,7 +87,7 @@ struct VerticalSlider: View {
                     Group {
                         shape.shape(tint.gradient)
                     }
-                    .frame(height: filledHeight(in: geometry.size.height))
+                    .frame(height: filledHeight(in: geometry.size.height, value: animatedValue))
                 }
                 .clipShape(shape.clipShape())
 
@@ -106,11 +107,19 @@ struct VerticalSlider: View {
                     thumb
                         .position(
                             x: geometry.size.width / 2,
-                            y: thumbPosition(in: geometry.size.height)
+                            y: thumbPosition(in: geometry.size.height, value: animatedValue)
                         )
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                animatedValue = value
+            }
+            .onChange(of: value) { _, newValue in
+                withAnimation(isDragging ? .linear(duration: 0.05) : .smooth(duration: 0.3)) {
+                    animatedValue = newValue
+                }
+            }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { gesture in
@@ -161,19 +170,19 @@ struct VerticalSlider: View {
 
     // MARK: - Calculations
 
-    private func normalizedValue() -> Double {
-        (value - range.lowerBound) / (range.upperBound - range.lowerBound)
+    private func normalizedValue(_ val: Double) -> Double {
+        (val - range.lowerBound) / (range.upperBound - range.lowerBound)
     }
 
-    private func thumbPosition(in height: CGFloat) -> CGFloat {
-        let normalized = normalizedValue()
+    private func thumbPosition(in height: CGFloat, value: Double) -> CGFloat {
+        let normalized = normalizedValue(value)
         let availableHeight = height - thumbSize
         // Inverted: 0 is at bottom, 1 is at top
         return availableHeight - (CGFloat(normalized) * availableHeight) + (thumbSize / 2)
     }
 
-    private func filledHeight(in height: CGFloat) -> CGFloat {
-        let normalized = normalizedValue()
+    private func filledHeight(in height: CGFloat, value: Double) -> CGFloat {
+        let normalized = normalizedValue(value)
         return CGFloat(normalized) * height
     }
 
