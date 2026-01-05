@@ -16,6 +16,7 @@ struct HomeView: View {
     @State private var isReorderMode = false
     @State private var draggedEntity: String?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     init(server: Server) {
         _viewModel = StateObject(wrappedValue: HomeViewModel(server: server))
@@ -55,6 +56,24 @@ struct HomeView: View {
         }
         .task {
             await viewModel.loadEntities()
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            handleScenePhaseChange(oldPhase: oldPhase, newPhase: newPhase)
+        }
+    }
+
+    // MARK: - Lifecycle
+
+    private func handleScenePhaseChange(oldPhase: ScenePhase, newPhase: ScenePhase) {
+        switch newPhase {
+        case .active:
+            viewModel.handleAppDidBecomeActive()
+        case .background:
+            viewModel.handleAppDidEnterBackground()
+        case .inactive:
+            break
+        @unknown default:
+            break
         }
     }
 

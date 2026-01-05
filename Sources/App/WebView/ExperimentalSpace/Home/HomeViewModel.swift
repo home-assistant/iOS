@@ -29,6 +29,7 @@ final class HomeViewModel: ObservableObject {
 
     private let entityService = EntityDisplayService()
     private var configObservation: AnyDatabaseCancellable?
+    private var isSubscriptionActive = false
 
     init(server: Server) {
         self.server = server
@@ -40,20 +41,54 @@ final class HomeViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            observeConfigChanges()
             // Does not include disabled and hidden entities, it will be used to filter HAEntity
             appEntities = try HAAppEntity.config().filter({ $0.serverId == server.identifier.rawValue })
             registryEntities = try AppEntityRegistryListForDisplay.config(serverId: server.identifier.rawValue)
             // Subscribe to entity changes first - sections will be built when data arrives
-            subscribeToEntitiesChanges()
+            startSubscriptions()
             isLoading = false
         } catch {
             Current.Log.error("Failed to load entities for HomeViewModel: \(error.localizedDescription)")
         }
     }
 
-    private func observeConfigChanges() {
+    // MARK: - Lifecycle Management
+
+    /// Call this when the app enters foreground
+    func handleAppDidBecomeActive() {
+        Current.Log.info("HomeViewModel: App became active, starting subscriptions")
+        startSubscriptions()
+    }
+
+    /// Call this when the app enters background
+    func handleAppDidEnterBackground() {
+        Current.Log.info("HomeViewModel: App entered background, stopping subscriptions")
+        stopSubscriptions()
+    }
+
+    private func startSubscriptions() {
+        guard !isSubscriptionActive else {
+            Current.Log.info("HomeViewModel: Subscriptions already active, skipping")
+            return
+        }
+        observeConfigChanges()
+        subscribeToEntitiesChanges()
+        isSubscriptionActive = true
+    }
+
+    private func stopSubscriptions() {
+        guard isSubscriptionActive else {
+            Current.Log.info("HomeViewModel: Subscriptions already stopped, skipping")
+            return
+        }
+
+        entityService.cancelSubscription()
         configObservation?.cancel()
+        isSubscriptionActive = false
+    }
+
+    private func observeConfigChanges() {
+        // Don't cancel here as it will be managed by lifecycle methods
         let serverId = server.identifier.rawValue
         let observation = ValueObservation.tracking { db in
             try HomeViewConfiguration.fetchOne(db, key: serverId)
