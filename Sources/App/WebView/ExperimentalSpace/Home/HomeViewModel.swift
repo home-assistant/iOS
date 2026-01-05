@@ -29,6 +29,8 @@ final class HomeViewModel: ObservableObject {
 
     private let entityService = EntityDisplayService()
     private var configObservation: AnyDatabaseCancellable?
+    private var appEntitiesObservation: AnyDatabaseCancellable?
+    private var registryEntitiesObservation: AnyDatabaseCancellable?
     private var isSubscriptionActive = false
 
     init(server: Server) {
@@ -40,16 +42,9 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        do {
-            // Does not include disabled and hidden entities, it will be used to filter HAEntity
-            appEntities = try HAAppEntity.config().filter({ $0.serverId == server.identifier.rawValue })
-            registryEntities = try AppEntityRegistryListForDisplay.config(serverId: server.identifier.rawValue)
-            // Subscribe to entity changes first - sections will be built when data arrives
-            startSubscriptions()
-            isLoading = false
-        } catch {
-            Current.Log.error("Failed to load entities for HomeViewModel: \(error.localizedDescription)")
-        }
+        // Subscribe to entity changes - sections will be built when data arrives
+        startSubscriptions()
+        isLoading = false
     }
 
     // MARK: - Lifecycle Management
@@ -72,6 +67,8 @@ final class HomeViewModel: ObservableObject {
             return
         }
         observeConfigChanges()
+        observeAppEntitiesChanges()
+        observeRegistryEntitiesChanges()
         subscribeToEntitiesChanges()
         isSubscriptionActive = true
     }
@@ -84,6 +81,8 @@ final class HomeViewModel: ObservableObject {
 
         entityService.cancelSubscription()
         configObservation?.cancel()
+        appEntitiesObservation?.cancel()
+        registryEntitiesObservation?.cancel()
         isSubscriptionActive = false
     }
 
@@ -101,6 +100,50 @@ final class HomeViewModel: ObservableObject {
             onChange: { [weak self] config in
                 guard let self else { return }
                 configuration = config ?? .init(id: server.identifier.rawValue)
+            }
+        )
+    }
+
+    private func observeAppEntitiesChanges() {
+        let serverId = server.identifier.rawValue
+        let observation = ValueObservation.tracking { db in
+            try HAAppEntity
+                .filter(Column(DatabaseTables.AppEntity.hiddenBy.rawValue) == nil)
+                .filter(Column(DatabaseTables.AppEntity.disabledBy.rawValue) == nil)
+                .filter(Column("serverId") == serverId)
+                .fetchAll(db)
+        }
+        appEntitiesObservation = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("App entities observation failed with error: \(error)")
+            },
+            onChange: { [weak self] entities in
+                guard let self else { return }
+                appEntities = entities
+                // Rebuild subscription filters when app entities change
+                subscribeToEntitiesChanges()
+            }
+        )
+    }
+
+    private func observeRegistryEntitiesChanges() {
+        let serverId = server.identifier.rawValue
+        let observation = ValueObservation.tracking { db in
+            try AppEntityRegistryListForDisplay
+                .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        registryEntitiesObservation = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("Registry entities observation failed with error: \(error)")
+            },
+            onChange: { [weak self] entities in
+                guard let self else { return }
+                registryEntities = entities
+                // Rebuild subscription filters when registry entities change
+                subscribeToEntitiesChanges()
             }
         )
     }
