@@ -262,11 +262,3 @@ struct HomeView: View {
 #Preview {
     HomeView(server: ServerFixture.standard)
 }
-
-// MARK: - Supporting Types
-
-@available(iOS 26.0, *)
-private struct RoomIdentifier: Identifiable {
-    let id: String
-    let name: String
-}

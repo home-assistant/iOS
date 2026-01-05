@@ -843,6 +843,7 @@
 		4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */; };
 		4289FCAC2F0BEDD4005189AA /* EditModeIndicatorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */; };
 		4289FCAE2F0BEDD4005189AA /* EntityDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */; };
+		4289FCB12F0BFC07005189AA /* RoomIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCB02F0BFC07005189AA /* RoomIdentifier.swift */; };
 		428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
@@ -2447,6 +2448,7 @@
 		4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAppIntent.swift; sourceTree = "<group>"; };
 		4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeIndicatorModifier.swift; sourceTree = "<group>"; };
 		4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDropDelegate.swift; sourceTree = "<group>"; };
+		4289FCB02F0BFC07005189AA /* RoomIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomIdentifier.swift; sourceTree = "<group>"; };
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
@@ -5630,6 +5632,7 @@
 				42C60FAC2F0BEA630071A6F6 /* EditRoomEntitiesView.swift */,
 				4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */,
 				4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */,
+				4289FCB02F0BFC07005189AA /* RoomIdentifier.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -9145,6 +9148,7 @@
 				422F88142D4282CD00706A0A /* CustomWidgetToggleAppIntent.swift in Sources */,
 				423179802D54FADD0037A8A4 /* AppIntentHaptics.swift in Sources */,
 				42AF75A02DDB5C5B00ACDF45 /* WebViewEmptyStateView.swift in Sources */,
+				4289FCB12F0BFC07005189AA /* RoomIdentifier.swift in Sources */,
 				42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */,
 				4273C48F2C885FB00065A5B4 /* SFSymbolEntity.swift in Sources */,
 				116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */,
