@@ -13,7 +13,11 @@ final class HomeViewModel: ObservableObject {
     var errorMessage: String?
     var server: Server
     var entityStates: [String: HAEntity] = [:]
-    var configuration: HomeViewConfiguration
+    var configuration: HomeViewConfiguration {
+        didSet {
+            saveCachedData()
+        }
+    }
 
     private var appEntities: [HAAppEntity] = []
     private var registryEntities: [AppEntityRegistryListForDisplay] = []
@@ -24,6 +28,7 @@ final class HomeViewModel: ObservableObject {
     }
 
     private let entityService = EntityDisplayService()
+    private var configObservation: AnyDatabaseCancellable?
 
     init(server: Server) {
         self.server = server
@@ -35,8 +40,7 @@ final class HomeViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            configuration = try HomeViewConfiguration.configuration(for: server.identifier.rawValue) ??
-                HomeViewConfiguration(id: server.identifier.rawValue)
+            observeConfigChanges()
             // Does not include disabled and hidden entities, it will be used to filter HAEntity
             appEntities = try HAAppEntity.config().filter({ $0.serverId == server.identifier.rawValue })
             registryEntities = try AppEntityRegistryListForDisplay.config(serverId: server.identifier.rawValue)
@@ -45,6 +49,27 @@ final class HomeViewModel: ObservableObject {
             isLoading = false
         } catch {
             Current.Log.error("Failed to load entities for HomeViewModel: \(error.localizedDescription)")
+        }
+    }
+
+    private func observeConfigChanges() {
+        configObservation?.cancel()
+        do {
+            let observation = ValueObservation.tracking { db in
+                try HomeViewConfiguration.fetchOne(db, key: self.server.identifier.rawValue)
+            }
+            configObservation = observation.start(
+                in: Current.database(),
+                onError: { error in
+                    Current.Log.error("CarPlay config observation failed with error: \(error)")
+                },
+                onChange: { [weak self] config in
+                    guard let self else { return }
+                    configuration = config ?? .init(id: server.identifier.rawValue)
+                }
+            )
+        } catch {
+            Current.Log.error("Failed to observe Home view configuration changes: \(error.localizedDescription)")
         }
     }
 
