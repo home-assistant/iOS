@@ -64,6 +64,9 @@ struct RoomView: View {
         .sheet(isPresented: $showEditSheet) {
             editEntitiesSheet
         }
+        .onChange(of: viewModel.configuration, { _, _ in
+            updateCachedEntities()
+        })
         .task {
             updateCachedEntities()
         }

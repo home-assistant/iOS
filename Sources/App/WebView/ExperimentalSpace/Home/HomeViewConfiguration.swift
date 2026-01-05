@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 import Shared
 
-struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord {
+struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equatable {
     /// Server identifier (primary key)
     let id: String
     var sectionOrder: [String]
