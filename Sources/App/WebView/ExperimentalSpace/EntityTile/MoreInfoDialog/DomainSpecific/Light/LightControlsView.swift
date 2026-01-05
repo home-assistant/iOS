@@ -42,7 +42,7 @@ struct LightControlsView: View {
         Group {
             if viewModel.supportsBrightness() {
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spaces.two) {
+                    VStack(spacing: DesignSystem.Spaces.four) {
                         header
 
                         // Use different control based on brightness support
@@ -69,7 +69,7 @@ struct LightControlsView: View {
                     }
                 }
             } else {
-                VStack {
+                VStack(spacing: DesignSystem.Spaces.four) {
                     header
                     Spacer()
                     // Simple toggle for lights without brightness
@@ -79,6 +79,7 @@ struct LightControlsView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.vertical)
         .onAppear {
             viewModel.initialize()
             Task {
@@ -155,7 +156,7 @@ struct LightControlsView: View {
     private var brightnessSlider: some View {
         BrightnessSlider(
             brightness: $viewModel.brightness,
-            color: viewModel.iconColor
+            color: viewModel.iconColor,
         ) { isEditing in
             if !isEditing {
                 // When user finishes dragging, update the light

@@ -34,6 +34,7 @@ struct EntityMoreInfoDialogView: View {
                         .padding(.vertical, DesignSystem.Spaces.four)
                 }
             }
+            .scrollClipDisabled()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle(haEntity.attributes.friendlyName ?? haEntity.entityId)
             .navigationSubtitle(areaName)
@@ -50,6 +51,7 @@ struct EntityMoreInfoDialogView: View {
                 await loadAreaName()
             }
         }
+        .presentationBackground(Color(uiColor: .systemBackground).opacity(0.9))
     }
 
     // MARK: - Area Lookup

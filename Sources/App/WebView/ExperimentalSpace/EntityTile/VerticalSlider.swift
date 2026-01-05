@@ -56,7 +56,7 @@ struct VerticalSlider: View {
         step: Double? = nil,
         icon: SFSymbol? = nil,
         tint: Color = .accentColor,
-        trackWidth: CGFloat = 100,
+        trackWidth: CGFloat = 130,
         thumbSize: CGFloat = 28,
         showThumb: Bool = false,
         shape: VerticalSliderShape = .capsule,

@@ -24,6 +24,7 @@ struct BrightnessSlider: View {
             step: 1,
             icon: .sunMaxFill,
             tint: color,
+            shape: .roundedRectangle(cornerRadius: 26),
             onEditingChanged: onEditingChanged
         )
     }

@@ -5606,7 +5606,6 @@
 				42C60F902F07FB0F0071A6F6 /* MoreInfoDialog */,
 				42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */,
 				42C60F9A2F080BBF0071A6F6 /* VerticalToggleControl.swift */,
-				42C60F8E2F07F6360071A6F6 /* BrightnessSlider.swift */,
 			);
 			path = EntityTile;
 			sourceTree = "<group>";
@@ -5789,6 +5788,7 @@
 		42C60F982F080B5C0071A6F6 /* Light */ = {
 			isa = PBXGroup;
 			children = (
+				42C60F8E2F07F6360071A6F6 /* BrightnessSlider.swift */,
 				42C60F882F0576CA0071A6F6 /* LightControlsView.swift */,
 				42C60F8A2F057C060071A6F6 /* LightControlIntents.swift */,
 				42C60F922F0802A80071A6F6 /* LightControlsViewModel.swift */,
