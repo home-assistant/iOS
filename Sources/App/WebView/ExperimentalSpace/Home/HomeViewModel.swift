@@ -11,7 +11,7 @@ final class HomeViewModel: ObservableObject {
     struct RoomSection: Identifiable, Equatable {
         let id: String
         let name: String
-        let entityIds: [String]
+        let entityIds: Set<String>
     }
 
     var groupedEntities: [RoomSection] = []
@@ -25,28 +25,19 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    private var appEntities: [HAAppEntity]? {
+    var appEntities: [HAAppEntity]?
+    var registryEntities: [AppEntityRegistryListForDisplay]?
+    private var areas: [AppArea]? {
         didSet {
-            guard !(appEntities?.isEmpty ?? true) else { return }
-            scheduleBuildSections()
+            buildRoomsIfNeeded()
         }
     }
-
-    private var registryEntities: [AppEntityRegistryListForDisplay]? {
-        didSet {
-            guard !(registryEntities?.isEmpty ?? true) else { return }
-            scheduleBuildSections()
-        }
-    }
-
-    private var areas: [AppArea]?
-    private var entityToAreaMap: [String: AppArea] = [:]
-    private var buildSectionsTask: Task<Void, Never>?
 
     private let entityService = EntityDisplayService()
     private var configObservation: AnyDatabaseCancellable?
     private var appEntitiesObservation: AnyDatabaseCancellable?
     private var registryEntitiesObservation: AnyDatabaseCancellable?
+    private var areasObservation: AnyDatabaseCancellable?
     private var isSubscriptionActive = false
     private var saveTask: Task<Void, Never>?
 
@@ -86,6 +77,7 @@ final class HomeViewModel: ObservableObject {
         observeConfigChanges()
         observeAppEntitiesChanges()
         observeRegistryEntitiesChanges()
+        observeAreasChanges()
         subscribeToEntitiesChanges()
         isSubscriptionActive = true
     }
@@ -100,6 +92,7 @@ final class HomeViewModel: ObservableObject {
         configObservation?.cancel()
         appEntitiesObservation?.cancel()
         registryEntitiesObservation?.cancel()
+        areasObservation?.cancel()
         isSubscriptionActive = false
     }
 
@@ -161,97 +154,24 @@ final class HomeViewModel: ObservableObject {
         )
     }
 
-    /// Debounce buildSections calls to avoid rapid repeated executions
-    private func scheduleBuildSections() {
-        buildSectionsTask?.cancel()
-        buildSectionsTask = Task { @MainActor in
-            // Small delay to coalesce multiple rapid changes
-            try? await Task.sleep(for: .milliseconds(50))
-            guard !Task.isCancelled else { return }
-            await buildSections()
-        }
-    }
-
-    private func buildSections() async {
-        guard let appEntities, let registryEntities else {
-            // Not ready to render UI yet
-            return
-        }
-
+    private func observeAreasChanges() {
         let serverId = server.identifier.rawValue
-
-        // Step 1: Build invalid registry entity IDs set once
-        let invalidRegistryEntityIds = Set(
-            registryEntities
-                .lazy
-                .filter { $0.registry.entityCategory != nil }
-                .map(\.entityId)
+        let observation = ValueObservation.tracking { db in
+            try AppArea
+                .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
+                .order(Column(DatabaseTables.AppArea.name.rawValue))
+                .fetchAll(db)
+        }
+        areasObservation = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("Areas observation failed with error: \(error)")
+            },
+            onChange: { [weak self] areas in
+                guard let self else { return }
+                self.areas = areas
+            }
         )
-
-        // Step 2: Filter and map to entity IDs in a single pass
-        let validEntityIds = appEntities
-            .lazy
-            .filter { !$0.isHidden && !$0.isDisabled && !invalidRegistryEntityIds.contains($0.entityId) }
-            .map(\.entityId)
-
-        // Step 3: Load areas from database on background if needed (cache result)
-        if areas == nil || entityToAreaMap.isEmpty {
-            do {
-                let fetchedAreas = try await Task.detached {
-                    try AppArea.fetchAreas(for: serverId)
-                }.value
-
-                await MainActor.run {
-                    self.areas = fetchedAreas
-                    self.entityToAreaMap = Self.createEntityToAreaMap(areas: fetchedAreas)
-                }
-            } catch {
-                Current.Log.error("Failed to fetch areas: \(error.localizedDescription)")
-                errorMessage = "Failed to load areas: \(error.localizedDescription)"
-                return
-            }
-        }
-
-        // Step 4: Group entities by area efficiently
-        var roomGroups: [String: (area: AppArea, entityIds: [String])] = [:]
-
-        for entityId in validEntityIds {
-            guard let area = entityToAreaMap[entityId] else { continue }
-
-            if roomGroups[area.id] == nil {
-                roomGroups[area.id] = (area, [])
-            }
-            roomGroups[area.id]?.entityIds.append(entityId)
-        }
-
-        // Step 5: Build and sort sections
-        let hiddenIds = configuration.hiddenEntityIds
-        let sections = roomGroups
-            .sorted { $0.value.area.name < $1.value.area.name }
-            .map { key, value -> RoomSection in
-                let filteredEntityIds = value.entityIds.filter { !hiddenIds.contains($0) }
-                let sortedEntityIds = sortEntityIdsForRoom(filteredEntityIds, roomId: key)
-                return RoomSection(
-                    id: key,
-                    name: value.area.name,
-                    entityIds: sortedEntityIds
-                )
-            }
-
-        groupedEntities = sections
-    }
-
-    /// Static helper to create entity-to-area mapping
-    private static func createEntityToAreaMap(areas: [AppArea]) -> [String: AppArea] {
-        var entityToArea: [String: AppArea] = [:]
-        entityToArea.reserveCapacity(areas.reduce(0) { $0 + $1.entities.count })
-
-        for area in areas {
-            for entityId in area.entities {
-                entityToArea[entityId] = area
-            }
-        }
-        return entityToArea
     }
 
     /// Sort entity IDs for a specific room using saved order
@@ -273,6 +193,14 @@ final class HomeViewModel: ObservableObject {
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
             guard let self else { return }
             entityStates = states
+        }
+    }
+
+    private func buildRoomsIfNeeded() {
+        guard let areas else { return }
+
+        groupedEntities = areas.map {
+            RoomSection(id: $0.id, name: $0.name, entityIds: $0.entities)
         }
     }
 
@@ -345,7 +273,6 @@ final class HomeViewModel: ObservableObject {
             do {
                 try await Task.sleep(for: .seconds(1))
                 try configuration.save()
-                await buildSections()
             } catch is CancellationError {
                 // Task was cancelled, do nothing
             } catch {

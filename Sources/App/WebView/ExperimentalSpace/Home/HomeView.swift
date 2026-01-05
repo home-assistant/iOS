@@ -112,20 +112,22 @@ struct HomeView: View {
     }
 
     private var entitiesListView: some View {
-        ScrollView {
+        let filteredSections = viewModel.filteredSections(
+            sectionOrder: viewModel.configuration.sectionOrder,
+            visibleSectionIds: viewModel.configuration.visibleSectionIds
+        )
+
+        return ScrollView {
             LazyVStack(
                 alignment: .leading,
                 spacing: DesignSystem.Spaces.three
             ) {
-                ForEach(viewModel.filteredSections(
-                    sectionOrder: viewModel.configuration.sectionOrder,
-                    visibleSectionIds: viewModel.configuration.visibleSectionIds
-                )) { section in
+                ForEach(filteredSections) { section in
+                    let visibleEntities = visibleEntitiesForSection(section)
+
                     Section {
                         entityTilesGrid(
-                            for: section.entityIds.compactMap {
-                                viewModel.entityStates[$0]
-                            },
+                            for: visibleEntities,
                             section: section
                         )
                     } header: {
@@ -136,6 +138,28 @@ struct HomeView: View {
             .padding()
         }
         .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    private func visibleEntitiesForSection(_ section: HomeViewModel.RoomSection) -> [HAEntity] {
+        let filteredEntityIds = section.entityIds.filter { entityId in
+            guard let appEntity = viewModel.appEntities?.first(where: { $0.entityId == entityId }) else {
+                return false
+            }
+            return !appEntity.isHidden && !appEntity.isDisabled
+        }.filter { entityId in
+            !viewModel.configuration.hiddenEntityIds.contains(entityId)
+        }.filter { entityId in
+            guard let registry = viewModel.registryEntities?.first(where: { registry in
+                registry.entityId == entityId
+            }) else {
+                return true
+            }
+            return registry.registry.entityCategory == nil
+        }
+
+        return filteredEntityIds.compactMap { entityId in
+            viewModel.entityStates[entityId]
+        }
     }
 
     // MARK: - Toolbar
