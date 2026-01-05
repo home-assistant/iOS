@@ -29,18 +29,14 @@ struct RoomView: View {
                 .toolbar {
                     if isReorderMode {
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button {
+                            EntityDisplayComponents.reorderModeDoneButton {
                                 withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                                     isReorderMode = false
                                 }
                                 // Save when exiting reorder mode
                                 let currentOrder = cachedVisibleEntities.map(\.entityId)
                                 viewModel.saveEntityOrder(for: roomId, order: currentOrder)
-                            } label: {
-                                Text("Done")
-                                    .fontWeight(.semibold)
                             }
-                            .buttonStyle(.borderedProminent)
                         }
                     } else {
                         ToolbarItem(placement: .topBarTrailing) {
@@ -186,84 +182,38 @@ struct RoomView: View {
 
     @ViewBuilder
     private func sectionHeader(_ title: String) -> some View {
-        HStack {
-            Text(title)
-                .font(.title2.bold())
-                .lineLimit(1)
-                .truncationMode(.middle)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, DesignSystem.Spaces.one)
-        .padding(.horizontal, DesignSystem.Spaces.one)
+        EntityDisplayComponents.sectionHeader(title, showChevron: false)
     }
 
     @ViewBuilder
     private func entityTilesGrid(for entities: [HAEntity], isHidden: Bool) -> some View {
-        if isReorderMode, !isHidden {
-            reorderableEntityTilesGrid(for: entities)
-        } else {
-            EntityDisplayComponents.entityTilesGrid(
-                entities: entities,
-                server: server,
-                isHidden: isHidden
-            ) { entity in
-                Group {
-                    if !isReorderMode {
-                        if isHidden {
-                            Button {
-                                viewModel.unhideEntity(entity.entityId)
-                            } label: {
-                                Label(L10n.RoomView.ContextMenu.unhide, systemSymbol: .eye)
-                            }
-                        } else {
-                            Button {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                    isReorderMode = true
-                                }
-                            } label: {
-                                Label("Enter edit mode", systemSymbol: .arrowUpArrowDownCircle)
-                            }
+        EntityDisplayComponents.conditionalEntityGrid(
+            entities: entities,
+            server: server,
+            isReorderMode: isReorderMode,
+            isHidden: isHidden,
+            draggedEntity: $draggedEntity,
+            roomId: roomId,
+            viewModel: viewModel
+        ) { entity in
+            Group {
+                if !isReorderMode {
+                    if isHidden {
+                        Button {
+                            viewModel.unhideEntity(entity.entityId)
+                        } label: {
+                            Label(L10n.RoomView.ContextMenu.unhide, systemSymbol: .eye)
+                        }
+                    } else {
+                        EntityDisplayComponents.enterEditModeButton(isReorderMode: $isReorderMode)
 
-                            Button(role: .destructive) {
-                                viewModel.hideEntity(entity.entityId)
-                            } label: {
-                                Label("Hide", systemSymbol: .eyeSlash)
-                            }
+                        Button(role: .destructive) {
+                            viewModel.hideEntity(entity.entityId)
+                        } label: {
+                            Label("Hide", systemSymbol: .eyeSlash)
                         }
                     }
                 }
-            }
-        }
-    }
-
-    // MARK: - Reorderable Grid
-
-    @ViewBuilder
-    private func reorderableEntityTilesGrid(for entities: [HAEntity]) -> some View {
-        let columns = [
-            GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
-        ]
-
-        LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
-            ForEach(entities, id: \.entityId) { entity in
-                EntityTileView(
-                    server: server,
-                    haEntity: entity
-                )
-                .contentShape(Rectangle())
-                .modifier(EditModeIndicatorModifier(isEditing: true, isDragging: draggedEntity == entity.entityId))
-                .onDrag {
-                    draggedEntity = entity.entityId
-                    return NSItemProvider(object: entity.entityId as NSString)
-                }
-                .onDrop(of: [.text], delegate: EntityDropDelegate(
-                    entity: entity,
-                    entities: entities,
-                    draggedEntity: $draggedEntity,
-                    roomId: roomId,
-                    viewModel: viewModel
-                ))
             }
         }
     }

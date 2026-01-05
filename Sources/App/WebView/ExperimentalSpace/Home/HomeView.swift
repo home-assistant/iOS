@@ -122,15 +122,11 @@ struct HomeView: View {
         // Done button when in reorder mode
         if isReorderMode {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
+                EntityDisplayComponents.reorderModeDoneButton {
                     withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                         isReorderMode = false
                     }
-                } label: {
-                    Text("Done")
-                        .fontWeight(.semibold)
                 }
-                .buttonStyle(.borderedProminent)
             }
         } else {
             // Normal toolbar items
@@ -227,86 +223,36 @@ struct HomeView: View {
     private func sectionHeader(_ title: String, section: HomeViewModel.RoomSection) -> some View {
         Group {
             if let foundSection = viewModel.groupedEntities.first(where: { $0.name == title }) {
-                Button {
-                    selectedRoom = (id: foundSection.id, name: foundSection.name)
-                } label: {
-                    HStack {
-                        Text(title)
-                            .font(.title2.bold())
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                        Image(systemSymbol: .chevronRight)
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                        Spacer()
+                EntityDisplayComponents.sectionHeader(
+                    title,
+                    showChevron: true,
+                    action: {
+                        selectedRoom = (id: foundSection.id, name: foundSection.name)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, DesignSystem.Spaces.one)
-                }
-                .buttonStyle(.plain)
+                )
                 .disabled(isReorderMode)
-                .padding(.horizontal, DesignSystem.Spaces.one)
                 .matchedTransitionSource(id: foundSection.id, in: roomNameSpace)
             } else { EmptyView() }
         }
     }
 
     private func entityTilesGrid(for entities: [HAEntity], section: HomeViewModel.RoomSection) -> some View {
-        Group {
-            if isReorderMode {
-                reorderableEntityTilesGrid(for: entities, roomId: section.id)
-            } else {
-                EntityDisplayComponents.entityTilesGrid(
-                    entities: entities,
-                    server: viewModel.server
-                ) { entity in
-                    Group {
-                        Button {
-                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                isReorderMode = true
-                            }
-                        } label: {
-                            Label("Enter edit mode", systemSymbol: .arrowUpArrowDownCircle)
-                        }
+        EntityDisplayComponents.conditionalEntityGrid(
+            entities: entities,
+            server: viewModel.server,
+            isReorderMode: isReorderMode,
+            draggedEntity: $draggedEntity,
+            roomId: section.id,
+            viewModel: viewModel
+        ) { entity in
+            Group {
+                EntityDisplayComponents.enterEditModeButton(isReorderMode: $isReorderMode)
 
-                        Button(role: .destructive) {
-                            viewModel.hideEntity(entity.entityId)
-                        } label: {
-                            Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
-                        }
-                    }
+                Button(role: .destructive) {
+                    viewModel.hideEntity(entity.entityId)
+                } label: {
+                    Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
                 }
-            }
-        }
-    }
-
-    // MARK: - Reorderable Grid
-
-    @ViewBuilder
-    private func reorderableEntityTilesGrid(for entities: [HAEntity], roomId: String) -> some View {
-        let columns = [
-            GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
-        ]
-
-        LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
-            ForEach(entities, id: \.entityId) { entity in
-                EntityTileView(
-                    server: viewModel.server,
-                    haEntity: entity
-                )
-                .contentShape(Rectangle())
-                .modifier(EditModeIndicatorModifier(isEditing: true, isDragging: draggedEntity == entity.entityId))
-                .onDrag {
-                    draggedEntity = entity.entityId
-                    return NSItemProvider(object: entity.entityId as NSString)
-                }
-                .onDrop(of: [.text], delegate: EntityDropDelegate(
-                    entity: entity,
-                    entities: entities,
-                    draggedEntity: $draggedEntity,
-                    roomId: roomId,
-                    viewModel: viewModel
-                ))
             }
         }
     }
