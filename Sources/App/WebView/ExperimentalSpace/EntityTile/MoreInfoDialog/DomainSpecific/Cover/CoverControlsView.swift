@@ -12,12 +12,12 @@ struct CoverControlsView: View {
 
     init(server: Server, haEntity: HAEntity) {
         self.haEntity = haEntity
-        let vm = CoverControlsViewModel(
+        let viewModel = CoverControlsViewModel(
             server: server,
             haEntity: haEntity
         )
-        self._viewModel = State(initialValue: vm)
-        self._localPosition = State(initialValue: vm.currentPosition)
+        self._viewModel = State(initialValue: viewModel)
+        self._localPosition = State(initialValue: viewModel.currentPosition)
     }
 
     var body: some View {
@@ -36,11 +36,9 @@ struct CoverControlsView: View {
                         in: 0 ... 100,
                         step: 1,
                         icon: viewModel.coverIcon,
-                        tint: .blue,
-                        trackWidth: 120,
-                        thumbSize: 32,
+                        tint: .purple,
                         showThumb: false,
-                        shape: .capsule,
+                        isInverted: true,
                         onEditingChanged: { isEditing in
                             if !isEditing {
                                 // User finished dragging, send the position
@@ -52,10 +50,6 @@ struct CoverControlsView: View {
                     )
                     .frame(height: 400)
                     .disabled(viewModel.isUpdating)
-
-                    Text("\(Int(localPosition))%")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()

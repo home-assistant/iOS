@@ -44,6 +44,7 @@ struct VerticalSlider: View {
     let thumbSize: CGFloat
     let showThumb: Bool
     let shape: VerticalSliderShape
+    let isInverted: Bool
     let onEditingChanged: ((Bool) -> Void)?
 
     @State private var isDragging = false
@@ -60,6 +61,7 @@ struct VerticalSlider: View {
         thumbSize: CGFloat = 28,
         showThumb: Bool = false,
         shape: VerticalSliderShape = .roundedRectangle(cornerRadius: 26),
+        isInverted: Bool = false,
         onEditingChanged: ((Bool) -> Void)? = nil
     ) {
         self._value = value
@@ -71,18 +73,19 @@ struct VerticalSlider: View {
         self.thumbSize = thumbSize
         self.showThumb = showThumb
         self.shape = shape
+        self.isInverted = isInverted
         self.onEditingChanged = onEditingChanged
     }
 
     var body: some View {
         GeometryReader { geometry in
-            ZStack(alignment: .bottom) {
+            ZStack(alignment: isInverted ? .top : .bottom) {
                 // Background track with filled track masked inside
                 Group {
                     shape.shape(Color(uiColor: .secondarySystemFill))
                 }
                 .frame(width: trackWidth)
-                .overlay(alignment: .bottom) {
+                .overlay(alignment: isInverted ? .top : .bottom) {
                     // Filled track
                     Group {
                         shape.shape(tint.gradient)
@@ -177,8 +180,14 @@ struct VerticalSlider: View {
     private func thumbPosition(in height: CGFloat, value: Double) -> CGFloat {
         let normalized = normalizedValue(value)
         let availableHeight = height - thumbSize
-        // Inverted: 0 is at bottom, 1 is at top
-        return availableHeight - (CGFloat(normalized) * availableHeight) + (thumbSize / 2)
+
+        if isInverted {
+            // Inverted: 0 is at top, 1 is at bottom
+            return (CGFloat(normalized) * availableHeight) + (thumbSize / 2)
+        } else {
+            // Normal: 0 is at bottom, 1 is at top
+            return availableHeight - (CGFloat(normalized) * availableHeight) + (thumbSize / 2)
+        }
     }
 
     private func filledHeight(in height: CGFloat, value: Double) -> CGFloat {
@@ -190,8 +199,15 @@ struct VerticalSlider: View {
         let availableHeight = height - thumbSize
         let clampedY = max(thumbSize / 2, min(height - thumbSize / 2, yPosition))
 
-        // Inverted calculation: top is max, bottom is min
-        let normalized = 1.0 - Double((clampedY - thumbSize / 2) / availableHeight)
+        let normalized: Double
+        if isInverted {
+            // Inverted: top is min, bottom is max
+            normalized = Double((clampedY - thumbSize / 2) / availableHeight)
+        } else {
+            // Normal: top is max, bottom is min
+            normalized = 1.0 - Double((clampedY - thumbSize / 2) / availableHeight)
+        }
+
         let newValue = range.lowerBound + (normalized * (range.upperBound - range.lowerBound))
 
         return max(range.lowerBound, min(range.upperBound, newValue))
@@ -205,34 +221,51 @@ struct VerticalSlider: View {
     @Previewable @State var value: Double = 50
 
     VStack {
-        HStack {
-            VerticalSlider(
-                value: $value,
-                tint: .blue,
-                shape: .capsule
-            )
-            .frame(height: 300)
+        ScrollView(.horizontal) {
+            HStack {
+                Group {
+                    VerticalSlider(
+                        value: $value,
+                        tint: .blue,
+                        shape: .capsule
+                    )
 
-            VerticalSlider(
-                value: $value,
-                icon: .speakerWave3,
-                tint: .purple,
-                shape: .roundedRectangle(cornerRadius: 12)
-            )
-            .frame(height: 300)
+                    VerticalSlider(
+                        value: $value,
+                        icon: .speakerWave3,
+                        tint: .purple,
+                        shape: .roundedRectangle(cornerRadius: 12)
+                    )
 
-            VerticalSlider(
-                value: $value,
-                icon: .speakerWave3,
-                tint: .green,
-                showThumb: true,
-                shape: .rectangle
-            )
-            .frame(height: 300)
+                    VerticalSlider(
+                        value: $value,
+                        icon: .speakerWave3,
+                        tint: .green,
+                        showThumb: true,
+                        shape: .rectangle
+                    )
+
+                    // Inverted slider
+                    VerticalSlider(
+                        value: $value,
+                        tint: .orange,
+                        showThumb: true,
+                        shape: .capsule,
+                        isInverted: true
+                    )
+                }
+                .frame(height: 300)
+                .frame(width: 130)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         Text("Value: \(Int(value))")
             .font(.headline)
+
+        Text("Inverted slider has 0% at top, 100% at bottom")
+            .font(.caption)
+            .foregroundStyle(.secondary)
     }
     .padding()
 }
