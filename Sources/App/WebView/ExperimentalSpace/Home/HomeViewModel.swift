@@ -28,16 +28,20 @@ final class HomeViewModel: ObservableObject {
     private var appEntities: [HAAppEntity]? {
         didSet {
             guard !(appEntities?.isEmpty ?? true) else { return }
-            buildSections()
+            scheduleBuildSections()
         }
     }
 
     private var registryEntities: [AppEntityRegistryListForDisplay]? {
         didSet {
             guard !(registryEntities?.isEmpty ?? true) else { return }
-            buildSections()
+            scheduleBuildSections()
         }
     }
+
+    private var areas: [AppArea]?
+    private var entityToAreaMap: [String: AppArea] = [:]
+    private var buildSectionsTask: Task<Void, Never>?
 
     private let entityService = EntityDisplayService()
     private var configObservation: AnyDatabaseCancellable?
@@ -157,85 +161,97 @@ final class HomeViewModel: ObservableObject {
         )
     }
 
-    private func buildSections() {
+    /// Debounce buildSections calls to avoid rapid repeated executions
+    private func scheduleBuildSections() {
+        buildSectionsTask?.cancel()
+        buildSectionsTask = Task { @MainActor in
+            // Small delay to coalesce multiple rapid changes
+            try? await Task.sleep(for: .milliseconds(50))
+            guard !Task.isCancelled else { return }
+            await buildSections()
+        }
+    }
+
+    private func buildSections() async {
         guard let appEntities, let registryEntities else {
             // Not ready to render UI yet
             return
         }
-        let serverId = server.identifier.rawValue
-        // Filter by valid app entities (not hidden/disabled)
-        let validAppEntities = appEntities.filter { !$0.isHidden && !$0.isDisabled }
 
-        // Filter by registry entities (exclude those with entity category)
+        let serverId = server.identifier.rawValue
+
+        // Step 1: Build invalid registry entity IDs set once
         let invalidRegistryEntityIds = Set(
             registryEntities
+                .lazy
                 .filter { $0.registry.entityCategory != nil }
                 .map(\.entityId)
         )
 
-        // Filter out entities that have an entity category
-        let filteredAppEntities = validAppEntities.filter { !invalidRegistryEntityIds.contains($0.entityId) }
+        // Step 2: Filter and map to entity IDs in a single pass
+        let validEntityIds = appEntities
+            .lazy
+            .filter { !$0.isHidden && !$0.isDisabled && !invalidRegistryEntityIds.contains($0.entityId) }
+            .map(\.entityId)
 
-        do {
-            let areas = try AppArea.fetchAreas(for: serverId)
-            let entityToAreaMap = createEntityToAreaMap(areas: areas)
-            let roomGroups = groupEntitiesByArea(
-                entityIds: filteredAppEntities.map(\.entityId),
-                entityToAreaMap: entityToAreaMap
-            )
-            groupedEntities = buildSortedRoomSections(from: roomGroups)
-        } catch {
-            Current.Log.error("Failed to build sections from entity states: \(error.localizedDescription)")
-            errorMessage = "Failed to build sections: \(error.localizedDescription)"
+        // Step 3: Load areas from database on background if needed (cache result)
+        if areas == nil || entityToAreaMap.isEmpty {
+            do {
+                let fetchedAreas = try await Task.detached {
+                    try AppArea.fetchAreas(for: serverId)
+                }.value
+
+                await MainActor.run {
+                    self.areas = fetchedAreas
+                    self.entityToAreaMap = Self.createEntityToAreaMap(areas: fetchedAreas)
+                }
+            } catch {
+                Current.Log.error("Failed to fetch areas: \(error.localizedDescription)")
+                errorMessage = "Failed to load areas: \(error.localizedDescription)"
+                return
+            }
         }
+
+        // Step 4: Group entities by area efficiently
+        var roomGroups: [String: (area: AppArea, entityIds: [String])] = [:]
+
+        for entityId in validEntityIds {
+            guard let area = entityToAreaMap[entityId] else { continue }
+
+            if roomGroups[area.id] == nil {
+                roomGroups[area.id] = (area, [])
+            }
+            roomGroups[area.id]?.entityIds.append(entityId)
+        }
+
+        // Step 5: Build and sort sections
+        let hiddenIds = configuration.hiddenEntityIds
+        let sections = roomGroups
+            .sorted { $0.value.area.name < $1.value.area.name }
+            .map { key, value -> RoomSection in
+                let filteredEntityIds = value.entityIds.filter { !hiddenIds.contains($0) }
+                let sortedEntityIds = sortEntityIdsForRoom(filteredEntityIds, roomId: key)
+                return RoomSection(
+                    id: key,
+                    name: value.area.name,
+                    entityIds: sortedEntityIds
+                )
+            }
+
+        groupedEntities = sections
     }
 
-    private func createEntityToAreaMap(areas: [AppArea]) -> [String: AppArea] {
+    /// Static helper to create entity-to-area mapping
+    private static func createEntityToAreaMap(areas: [AppArea]) -> [String: AppArea] {
         var entityToArea: [String: AppArea] = [:]
+        entityToArea.reserveCapacity(areas.reduce(0) { $0 + $1.entities.count })
+
         for area in areas {
             for entityId in area.entities {
                 entityToArea[entityId] = area
             }
         }
         return entityToArea
-    }
-
-    private func groupEntitiesByArea(
-        entityIds: [String],
-        entityToAreaMap: [String: AppArea]
-    ) -> [String: (area: AppArea, entityIds: [String])] {
-        var roomGroups: [String: (area: AppArea, entityIds: [String])] = [:]
-
-        for entityId in entityIds {
-            guard let area = entityToAreaMap[entityId] else {
-                // Entities without an area are skipped
-                continue
-            }
-
-            let key = area.id
-            if roomGroups[key] == nil {
-                roomGroups[key] = (area, [])
-            }
-            roomGroups[key]?.entityIds.append(entityId)
-        }
-
-        return roomGroups
-    }
-
-    private func buildSortedRoomSections(
-        from roomGroups: [String: (area: AppArea, entityIds: [String])]
-    ) -> [RoomSection] {
-        let sortedGroups = roomGroups.sorted { $0.value.area.name < $1.value.area.name }
-
-        return sortedGroups.map { key, value in
-            let filteredEntityIds = value.entityIds.filter { !configuration.hiddenEntityIds.contains($0) }
-            let sortedEntityIds = sortEntityIdsForRoom(filteredEntityIds, roomId: key)
-            return RoomSection(
-                id: key,
-                name: value.area.name,
-                entityIds: sortedEntityIds
-            )
-        }
     }
 
     /// Sort entity IDs for a specific room using saved order
@@ -329,7 +345,7 @@ final class HomeViewModel: ObservableObject {
             do {
                 try await Task.sleep(for: .seconds(1))
                 try configuration.save()
-                buildSections()
+                await buildSections()
             } catch is CancellationError {
                 // Task was cancelled, do nothing
             } catch {
