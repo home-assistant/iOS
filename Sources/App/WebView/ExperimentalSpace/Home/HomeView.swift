@@ -57,9 +57,10 @@ struct HomeView: View {
             get: { selectedRoom.map { RoomIdentifier(id: $0.id, name: $0.name) } },
             set: { selectedRoom = $0.map { ($0.id, $0.name) } }
         )) { room in
-            RoomView(server: viewModel.server, roomId: room.id, roomName: room.name)
-                .environmentObject(viewModel)
-                .navigationTransition(.zoom(sourceID: selectedRoom?.id, in: roomNameSpace))
+            if let section = viewModel.groupedEntities.first(where: { $0.id == room.id }) {
+                RoomView(section: section, viewModel: viewModel)
+                    .navigationTransition(.zoom(sourceID: selectedRoom?.id, in: roomNameSpace))
+            }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             handleScenePhaseChange(oldPhase: oldPhase, newPhase: newPhase)

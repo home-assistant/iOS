@@ -5,26 +5,19 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 struct RoomView: View {
-    let server: Server
-    let roomId: String
-    let roomName: String
+    let section: HomeViewModel.RoomSection
+    @ObservedObject var viewModel: HomeViewModel
 
-    @EnvironmentObject private var viewModel: HomeViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showHidden = false
     @State private var showEditSheet = false
     @State private var isReorderMode = false
     @State private var draggedEntity: String?
 
-    // Cache the computed entities to avoid recomputation
-    @State private var cachedVisibleEntities: [HAEntity] = []
-    @State private var cachedHiddenEntities: [HAEntity] = []
-    @State private var lastUpdateHash: Int = 0
-
     var body: some View {
         NavigationStack {
             contentView
-                .navigationTitle(roomName)
+                .navigationTitle(section.name)
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     if isReorderMode {
@@ -34,8 +27,8 @@ struct RoomView: View {
                                     isReorderMode = false
                                 }
                                 // Save when exiting reorder mode
-                                let currentOrder = cachedVisibleEntities.map(\.entityId)
-                                viewModel.saveEntityOrder(for: roomId, order: currentOrder)
+                                let currentOrder = visibleEntities.map(\.entityId)
+                                viewModel.saveEntityOrder(for: section.id, order: currentOrder)
                             }
                         }
                     } else {
@@ -64,12 +57,6 @@ struct RoomView: View {
         .sheet(isPresented: $showEditSheet) {
             editEntitiesSheet
         }
-        .onChange(of: viewModel.configuration, { _, _ in
-            updateCachedEntities()
-        })
-        .task {
-            updateCachedEntities()
-        }
     }
 
     // MARK: - Content View
@@ -81,12 +68,12 @@ struct RoomView: View {
                 spacing: DesignSystem.Spaces.three
             ) {
                 // Visible Entities Section
-                if !cachedVisibleEntities.isEmpty {
-                    entityTilesGrid(for: cachedVisibleEntities, isHidden: false)
+                if !visibleEntities.isEmpty {
+                    entityTilesGrid(for: visibleEntities, isHidden: false)
                 }
 
                 // Show/Hide Hidden Entities Button
-                if !cachedHiddenEntities.isEmpty {
+                if !hiddenEntities.isEmpty {
                     Button {
                         withAnimation(DesignSystem.Animation.default) {
                             showHidden.toggle()
@@ -109,16 +96,16 @@ struct RoomView: View {
                 }
 
                 // Hidden Entities Section
-                if showHidden, !cachedHiddenEntities.isEmpty {
+                if showHidden, !hiddenEntities.isEmpty {
                     Section {
-                        entityTilesGrid(for: cachedHiddenEntities, isHidden: true)
+                        entityTilesGrid(for: hiddenEntities, isHidden: true)
                     } header: {
                         sectionHeader(L10n.RoomView.Section.hidden)
                     }
                 }
 
                 // Empty State
-                if cachedVisibleEntities.isEmpty, cachedHiddenEntities.isEmpty {
+                if visibleEntities.isEmpty, hiddenEntities.isEmpty {
                     EntityDisplayComponents.emptyStateView(message: L10n.RoomView.EmptyState.noEntities)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(.top, DesignSystem.Spaces.six)
@@ -130,45 +117,68 @@ struct RoomView: View {
 
     // MARK: - Computed Properties
 
-    private var currentRoomSection: HomeViewModel.RoomSection? {
-        // Use the pre-computed room section from HomeViewModel
-        viewModel.groupedEntities.first(where: { $0.id == roomId })
+    /// Get visible entities for this section using the same logic as HomeView
+    private var visibleEntities: [HAEntity] {
+        // Create lookup dictionaries once to avoid O(n) searches for each entity
+        let appEntitiesDict = Dictionary(
+            uniqueKeysWithValues: (viewModel.appEntities ?? []).map { ($0.entityId, $0) }
+        )
+        let registryDict = Dictionary(
+            uniqueKeysWithValues: (viewModel.registryEntities ?? []).map { ($0.entityId, $0) }
+        )
+        let hiddenEntityIdsSet = Set(viewModel.configuration.hiddenEntityIds)
+
+        // Single pass filter with early returns
+        let filteredEntityIds = section.entityIds.filter { entityId in
+            // Check hidden first (fastest check)
+            guard !hiddenEntityIdsSet.contains(entityId) else { return false }
+
+            // Check app entity state
+            guard let appEntity = appEntitiesDict[entityId] else { return false }
+            guard !appEntity.isHidden, !appEntity.isDisabled else { return false }
+
+            // Check registry category
+            if let registry = registryDict[entityId] {
+                guard registry.registry.entityCategory == nil else { return false }
+            }
+
+            return true
+        }
+
+        // Get entities from filtered IDs
+        let entities = filteredEntityIds.compactMap { entityId in
+            viewModel.entityStates[entityId]
+        }
+
+        // Sort using the configuration's entity order for this room
+        let savedOrder = viewModel.configuration.entityOrderByRoom[section.id] ?? []
+
+        if savedOrder.isEmpty {
+            // No custom order, sort alphabetically by entity ID
+            return entities.sorted { e1, e2 in
+                e1.entityId < e2.entityId
+            }
+        } else {
+            // Sort by saved order, with unordered items at the end (alphabetically)
+            let orderIndex = Dictionary(uniqueKeysWithValues: savedOrder.enumerated().map { ($1, $0) })
+            return entities.sorted { e1, e2 in
+                let i1 = orderIndex[e1.entityId] ?? Int.max
+                let i2 = orderIndex[e2.entityId] ?? Int.max
+                if i1 == i2 {
+                    return e1.entityId < e2.entityId
+                }
+                return i1 < i2
+            }
+        }
     }
 
-    // MARK: - Helper Methods
+    /// Get hidden entities for this section
+    private var hiddenEntities: [HAEntity] {
+        let hiddenEntityIdsSet = Set(viewModel.configuration.hiddenEntityIds)
 
-    /// Update cached entities - only called when data changes
-    private func updateCachedEntities() {
-        // Get entities directly from the pre-computed room section
-        guard let roomSection = currentRoomSection else {
-            cachedVisibleEntities = []
-            cachedHiddenEntities = []
-            return
-        }
-
-        // Visible entities are already filtered and sorted by HomeViewModel
-        cachedVisibleEntities = roomSection.entityIds.compactMap {
-            viewModel.entityStates[$0]
-        }
-
-        // Hidden entities: get all entity IDs from the room section's area
-        // and filter for those that are hidden
-        let allRoomEntityIds: Set<String>
-        do {
-            let areas = try AppArea.fetchAreas(for: viewModel.server.identifier.rawValue)
-            if let area = areas.first(where: { $0.id == roomId }) {
-                allRoomEntityIds = area.entities
-            } else {
-                allRoomEntityIds = []
-            }
-        } catch {
-            Current.Log.error("Failed to fetch area entities: \(error.localizedDescription)")
-            allRoomEntityIds = []
-        }
-
-        cachedHiddenEntities = allRoomEntityIds
+        return section.entityIds
+            .filter { hiddenEntityIdsSet.contains($0) }
             .compactMap { viewModel.entityStates[$0] }
-            .filter { viewModel.configuration.hiddenEntityIds.contains($0.entityId) }
             .sorted { $0.entityId < $1.entityId }
     }
 
@@ -183,11 +193,11 @@ struct RoomView: View {
     private func entityTilesGrid(for entities: [HAEntity], isHidden: Bool) -> some View {
         EntityDisplayComponents.conditionalEntityGrid(
             entities: entities,
-            server: server,
+            server: viewModel.server,
             isReorderMode: isReorderMode,
             isHidden: isHidden,
             draggedEntity: $draggedEntity,
-            roomId: roomId,
+            roomId: section.id,
             viewModel: viewModel
         ) { entity in
             Group {
@@ -216,8 +226,8 @@ struct RoomView: View {
 
     private var editEntitiesSheet: some View {
         EditRoomEntitiesView(
-            visibleEntities: cachedVisibleEntities,
-            hiddenEntities: cachedHiddenEntities,
+            visibleEntities: visibleEntities,
+            hiddenEntities: hiddenEntities,
             onHideEntity: { entityId in
                 viewModel.hideEntity(entityId)
             },
@@ -225,7 +235,7 @@ struct RoomView: View {
                 viewModel.unhideEntity(entityId)
             },
             onReorderEntities: { newOrder in
-                viewModel.saveEntityOrder(for: roomId, order: newOrder)
+                viewModel.saveEntityOrder(for: section.id, order: newOrder)
             },
             onDismiss: {
                 showEditSheet = false
@@ -236,10 +246,10 @@ struct RoomView: View {
 
 @available(iOS 26.0, *)
 #Preview {
-    RoomView(
-        server: ServerFixture.standard,
-        roomId: "room_1",
-        roomName: "Living Room"
-    )
-    .environmentObject(HomeViewModel(server: ServerFixture.standard))
+    if let section = HomeViewModel(server: ServerFixture.standard).groupedEntities.first {
+        RoomView(
+            section: section,
+            viewModel: HomeViewModel(server: ServerFixture.standard)
+        )
+    }
 }
