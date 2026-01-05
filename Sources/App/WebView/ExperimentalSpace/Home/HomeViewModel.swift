@@ -8,6 +8,12 @@ import SwiftUI
 @Observable
 @MainActor
 final class HomeViewModel: ObservableObject {
+    struct RoomSection: Identifiable, Equatable {
+        let id: String
+        let name: String
+        let entities: [HAEntity]
+    }
+
     var groupedEntities: [RoomSection] = []
     var isLoading = false
     var errorMessage: String?
@@ -19,12 +25,16 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    private var appEntities: [HAAppEntity] = []
-    private var registryEntities: [AppEntityRegistryListForDisplay] = []
-    struct RoomSection: Identifiable, Equatable {
-        let id: String
-        let name: String
-        let entities: [HAEntity]
+    private var appEntities: [HAAppEntity]? {
+        didSet {
+            buildSectionsFromEntityStates()
+        }
+    }
+
+    private var registryEntities: [AppEntityRegistryListForDisplay]? {
+        didSet {
+            buildSectionsFromEntityStates()
+        }
     }
 
     private let entityService = EntityDisplayService()
@@ -121,8 +131,6 @@ final class HomeViewModel: ObservableObject {
             onChange: { [weak self] entities in
                 guard let self else { return }
                 appEntities = entities
-                // Rebuild subscription filters when app entities change
-                subscribeToEntitiesChanges()
             }
         )
     }
@@ -142,8 +150,6 @@ final class HomeViewModel: ObservableObject {
             onChange: { [weak self] entities in
                 guard let self else { return }
                 registryEntities = entities
-                // Rebuild subscription filters when registry entities change
-                subscribeToEntitiesChanges()
             }
         )
     }
@@ -153,11 +159,30 @@ final class HomeViewModel: ObservableObject {
             let serverId = server.identifier.rawValue
             let areas = try AppArea.fetchAreas(for: serverId)
             let entityToAreaMap = createEntityToAreaMap(areas: areas)
+            guard let appEntities, let registryEntities else {
+                // Not ready to render UI yet
+                return
+            }
+            // Filter by valid app entities (not hidden/disabled)
+            let validAppEntityIds = Set(
+                appEntities
+                    .filter { !$0.isHidden && !$0.isDisabled }
+                    .map(\.entityId)
+            )
 
-            // Filter entities by allowed domains
+            // Filter by registry entities (exclude those with entity category)
+            let invalidRegistryEntityIds = Set(
+                registryEntities
+                    .filter { $0.registry.entityCategory != nil }
+                    .map(\.entityId)
+            )
+
+            // Filter entities by allowed domains and app/registry rules
             let allowedDomains = Set(EntityDisplayService.allowedDomains.map(\.rawValue))
             let filteredEntities = entityStates.values.filter { entity in
-                allowedDomains.contains(entity.domain)
+                allowedDomains.contains(entity.domain) &&
+                    validAppEntityIds.contains(entity.entityId) &&
+                    !invalidRegistryEntityIds.contains(entity.entityId)
             }
 
             let roomGroups = groupEntitiesByArea(entities: Array(filteredEntities), entityToAreaMap: entityToAreaMap)
@@ -232,24 +257,10 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func subscribeToEntitiesChanges() {
-        let validAppEntityIds = Set(
-            appEntities
-                .filter { !$0.isHidden && !$0.isDisabled }
-                .map(\.entityId)
-        )
-
-        let invalidRegistryEntityIds = Set(
-            registryEntities
-                .filter { $0.registry.entityCategory != nil }
-                .map(\.entityId)
-        )
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
             guard let self else { return }
 
-            entityStates = states.filter { entityId, _ in
-                validAppEntityIds.contains(entityId) &&
-                    !invalidRegistryEntityIds.contains(entityId)
-            }
+            entityStates = states
 
             buildSectionsFromEntityStates()
         }
@@ -318,35 +329,20 @@ final class HomeViewModel: ObservableObject {
     private func saveCachedData() {
         do {
             try configuration.save()
+            rebuildSections()
         } catch {
             Current.Log.error("Failed to save Home view configuration: \(error.localizedDescription)")
         }
-    }
-
-    // MARK: - Section Order
-
-    func saveSectionOrder() {
-        saveCachedData()
-    }
-
-    // MARK: - Filter Settings
-
-    func saveFilterSettings() {
-        saveCachedData()
     }
 
     // MARK: - Hidden Entities
 
     func hideEntity(_ entityId: String) {
         configuration.hiddenEntityIds.insert(entityId)
-        saveCachedData()
-        rebuildSections()
     }
 
     func unhideEntity(_ entityId: String) {
         configuration.hiddenEntityIds.remove(entityId)
-        saveCachedData()
-        rebuildSections()
     }
 
     private func rebuildSections() {
@@ -358,8 +354,6 @@ final class HomeViewModel: ObservableObject {
 
     func saveEntityOrder(for roomId: String, order: [String]) {
         configuration.entityOrderByRoom[roomId] = order
-        saveCachedData()
-        rebuildSections()
     }
 
     func getEntityOrder(for roomId: String) -> [String] {

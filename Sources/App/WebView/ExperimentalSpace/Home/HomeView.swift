@@ -32,6 +32,11 @@ struct HomeView: View {
                 }
                 .background(ModernAssistBackgroundView(theme: .homeAssistant))
         }
+        .onAppear {
+            Task {
+                await viewModel.loadEntities()
+            }
+        }
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
@@ -39,7 +44,9 @@ struct HomeView: View {
             HomeSectionsReorderView(
                 sections: viewModel.groupedEntities.map { ($0.id, $0.name) },
                 sectionOrder: $viewModel.configuration.sectionOrder,
-                onDone: { viewModel.saveSectionOrder() }
+                onDone: {
+                    /* no-op */
+                }
             )
         }
         .fullScreenCover(isPresented: $showAssist, content: {
@@ -53,9 +60,6 @@ struct HomeView: View {
             RoomView(server: viewModel.server, roomId: room.id, roomName: room.name)
                 .environmentObject(viewModel)
                 .navigationTransition(.zoom(sourceID: selectedRoom?.id, in: roomNameSpace))
-        }
-        .task {
-            await viewModel.loadEntities()
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             handleScenePhaseChange(oldPhase: oldPhase, newPhase: newPhase)
@@ -133,100 +137,135 @@ struct HomeView: View {
 
     @ToolbarContentBuilder
     private var toolbarMenu: some ToolbarContent {
-        // Done button when in reorder mode
         if isReorderMode {
-            ToolbarItem(placement: .topBarTrailing) {
-                EntityDisplayComponents.reorderModeDoneButton {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        isReorderMode = false
-                    }
-                }
-            }
+            reorderModeToolbar
         } else {
-            // Normal toolbar items
-            ToolbarItem(placement: .topBarTrailing) {
+            normalModeToolbar
+        }
+    }
+
+    private var reorderModeToolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            EntityDisplayComponents.reorderModeDoneButton {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                    isReorderMode = false
+                }
+            }
+        }
+    }
+
+    private var normalModeToolbar: some ToolbarContent {
+        Group {
+            assistButton
+            filterMenu
+            moreMenu
+        }
+    }
+
+    private var assistButton: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                showAssist = true
+            } label: {
+                Image(.messageProcessingOutline)
+            }
+            .buttonStyle(.glassProminent)
+            .tint(.haPrimary)
+            .matchedTransitionSource(id: assistAnimationSourceID, in: assist)
+        }
+    }
+
+    private var filterMenu: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                if viewModel.groupedEntities.isEmpty {
+                    Text(L10n.HomeView.Menu.noSectionsAvailable)
+                        .foregroundColor(.secondary)
+                } else {
+                    filterMenuContent
+                }
+            } label: {
+                Image(systemSymbol: .line3HorizontalDecrease)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var filterMenuContent: some View {
+        showAllButton
+        allowMultipleSelectionButton
+        reorderButton
+
+        Divider()
+
+        sectionFilterButtons
+    }
+
+    private var showAllButton: some View {
+        Button {
+            if !viewModel.configuration.visibleSectionIds.isEmpty {
+                viewModel.configuration.visibleSectionIds.removeAll()
+            }
+        } label: {
+            Label(
+                L10n.HomeView.Menu.showAll,
+                systemSymbol: viewModel.configuration.visibleSectionIds.isEmpty ? .checkmark : .circle
+            )
+        }
+    }
+
+    private var allowMultipleSelectionButton: some View {
+        Button {
+            viewModel.configuration.allowMultipleSelection.toggle()
+        } label: {
+            Label(
+                L10n.HomeView.Menu.allowMultipleSelection,
+                systemSymbol: viewModel.configuration.allowMultipleSelection ? .checkmark : .circle
+            )
+        }
+    }
+
+    private var reorderButton: some View {
+        Button {
+            showReorder = true
+        } label: {
+            Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
+        }
+    }
+
+    private var sectionFilterButtons: some View {
+        ForEach(viewModel.orderedSectionsForMenu) { section in
+            Button {
+                viewModel.configuration.visibleSectionIds = viewModel.toggledSelection(
+                    for: section.id,
+                    current: viewModel.configuration.visibleSectionIds,
+                    allowMultipleSelection: viewModel.configuration.allowMultipleSelection
+                )
+            } label: {
+                Label(
+                    section.name,
+                    systemSymbol: viewModel.configuration.visibleSectionIds.contains(section.id) ? .checkmark : .circle
+                )
+            }
+        }
+    }
+
+    private var moreMenu: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Menu {
                 Button {
-                    showAssist = true
+                    dismiss()
                 } label: {
-                    Image(.messageProcessingOutline)
+                    Label(L10n.HomeView.Menu.openWebUi, systemSymbol: .safari)
                 }
-                .buttonStyle(.glassProminent)
-                .tint(.haPrimary)
-                .matchedTransitionSource(id: assistAnimationSourceID, in: assist)
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    if viewModel.groupedEntities.isEmpty {
-                        Text(L10n.HomeView.Menu.noSectionsAvailable)
-                            .foregroundColor(.secondary)
-                    } else {
-                        Toggle(isOn: Binding(
-                            get: { viewModel.configuration.visibleSectionIds.isEmpty },
-                            set: { isOn in
-                                if isOn {
-                                    // Turning 'Show All' on clears filters
-                                    viewModel.configuration.visibleSectionIds.removeAll()
-                                    viewModel.saveFilterSettings()
-                                }
-                            }
-                        )) {
-                            Text(L10n.HomeView.Menu.showAll)
-                        }
 
-                        Toggle(isOn: Binding(
-                            get: { viewModel.configuration.allowMultipleSelection },
-                            set: { isOn in
-                                viewModel.configuration.allowMultipleSelection = isOn
-                                viewModel.saveFilterSettings()
-                            }
-                        )) {
-                            Text(L10n.HomeView.Menu.allowMultipleSelection)
-                        }
-
-                        Button {
-                            showReorder = true
-                        } label: {
-                            Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
-                        }
-
-                        Divider()
-
-                        ForEach(viewModel.orderedSectionsForMenu) { section in
-                            Toggle(isOn: Binding(
-                                get: { viewModel.configuration.visibleSectionIds.contains(section.id) },
-                                set: { _ in
-                                    viewModel.configuration.visibleSectionIds = viewModel.toggledSelection(
-                                        for: section.id,
-                                        current: viewModel.configuration.visibleSectionIds,
-                                        allowMultipleSelection: viewModel.configuration.allowMultipleSelection
-                                    )
-                                    viewModel.saveFilterSettings()
-                                }
-                            )) {
-                                Text(section.name)
-                            }
-                        }
-                    }
+                Button {
+                    showSettings = true
                 } label: {
-                    Image(systemSymbol: .line3HorizontalDecrease)
+                    Label(L10n.HomeView.Menu.settings, systemSymbol: .gearshape)
                 }
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Menu {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Label(L10n.HomeView.Menu.openWebUi, systemSymbol: .safari)
-                    }
-
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Label(L10n.HomeView.Menu.settings, systemSymbol: .gearshape)
-                    }
-                } label: {
-                    Image(systemSymbol: .ellipsis)
-                }
+            } label: {
+                Image(systemSymbol: .ellipsis)
             }
         }
     }
