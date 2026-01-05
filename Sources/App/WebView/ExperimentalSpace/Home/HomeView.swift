@@ -12,6 +12,7 @@ struct HomeView: View {
     @State private var showSettings = false
     @State private var showReorder = false
     @State private var showAssist = false
+    @State private var showCustomize = false
     @State private var selectedRoom: (id: String, name: String)?
     @State private var isReorderMode = false
     @State private var draggedEntity: String?
@@ -48,6 +49,9 @@ struct HomeView: View {
                     /* no-op */
                 }
             )
+        }
+        .sheet(isPresented: $showCustomize) {
+            HomeViewCustomizationView(viewModel: viewModel)
         }
         .fullScreenCover(isPresented: $showAssist, content: {
             AssistView.build(server: viewModel.server)
@@ -325,6 +329,11 @@ struct HomeView: View {
                     dismiss()
                 } label: {
                     Label(L10n.HomeView.Menu.openWebUi, systemSymbol: .safari)
+                }
+                Button {
+                    showCustomize = true
+                } label: {
+                    Label(L10n.HomeView.Menu.customize, systemSymbol: .circleLefthalfFilledRighthalfStripedHorizontal)
                 }
 
                 Button {

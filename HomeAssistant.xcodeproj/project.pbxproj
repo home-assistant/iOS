@@ -565,6 +565,7 @@
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */; };
 		420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */; };
+		420C91502F0C6CAC005D04A6 /* HomeViewCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */; };
 		420CFC642D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
 		420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
 		420CFC682D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */; };
@@ -2212,6 +2213,7 @@
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
+		420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCustomizationView.swift; sourceTree = "<group>"; };
 		420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAppEntityTable.swift; sourceTree = "<group>"; };
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
@@ -5617,6 +5619,7 @@
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
 				4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */,
+				420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -9057,6 +9060,7 @@
 				42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */,
 				42B94BDF2B9606CD00DEE060 /* AssistView.swift in Sources */,
 				1185DF94271FBA6100ED7D9A /* OnboardingAuthDetails.swift in Sources */,
+				420C91502F0C6CAC005D04A6 /* HomeViewCustomizationView.swift in Sources */,
 				4273C48B2C8858470065A5B4 /* ControlOpenPageValueProvider.swift in Sources */,
 				427FEE072D9C03DE0047C00C /* OnboardingScanningInstanceRow.swift in Sources */,
 				420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */,

@@ -1399,6 +1399,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "home_view.menu.allow_multiple_selection" = "Allow multiple selection";
 "home_view.menu.reorder" = "Reorder";
 "home_view.menu.open_web_ui" = "Open web UI";
+"home_view.menu.customize" = "Customize";
 "home_view.menu.settings" = "Settings";
 "home_view.context_menu.hide" = "Hide";
 "yes_label" = "Yes";

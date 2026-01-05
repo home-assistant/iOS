@@ -219,7 +219,7 @@ class IncomingURLHandler {
                 }
             case .experimentalDashboard:
                 // homeassistant://experimental-dashboard/{serverId}
-                let serverId = url.queryItems?["serverId"] ?? ""
+                let serverId = url.queryItems?["serverId"] ?? Current.servers.all.first?.identifier.rawValue ?? ""
 
                 guard let server = Current.servers.all.first(where: { server in
                     server.identifier.rawValue == serverId

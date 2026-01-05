@@ -1357,6 +1357,8 @@ public enum L10n {
     public enum Menu {
       /// Allow multiple selection
       public static var allowMultipleSelection: String { return L10n.tr("Localizable", "home_view.menu.allow_multiple_selection") }
+      /// Customize
+      public static var customize: String { return L10n.tr("Localizable", "home_view.menu.customize") }
       /// No sections available
       public static var noSectionsAvailable: String { return L10n.tr("Localizable", "home_view.menu.no_sections_available") }
       /// Open web UI
