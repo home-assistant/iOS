@@ -255,12 +255,11 @@ struct HomeView: View {
 
     @ViewBuilder
     private var filterMenuContent: some View {
+        reorderButton
+        Divider()
         showAllButton
         allowMultipleSelectionButton
-        reorderButton
-
         Divider()
-
         sectionFilterButtons
     }
 
@@ -305,10 +304,16 @@ struct HomeView: View {
                     allowMultipleSelection: viewModel.configuration.allowMultipleSelection
                 )
             } label: {
-                Label(
-                    section.name,
-                    systemSymbol: viewModel.configuration.visibleSectionIds.contains(section.id) ? .checkmark : .circle
-                )
+                if viewModel.configuration.allowMultipleSelection || viewModel.configuration.visibleSectionIds
+                    .contains(section.id) {
+                    Label(
+                        section.name,
+                        systemSymbol: viewModel.configuration.visibleSectionIds
+                            .contains(section.id) ? .checkmark : .circle
+                    )
+                } else {
+                    Text(section.name)
+                }
             }
         }
     }
