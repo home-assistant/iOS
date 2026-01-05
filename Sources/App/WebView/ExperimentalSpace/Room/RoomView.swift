@@ -285,67 +285,23 @@ struct RoomView: View {
     // MARK: - Edit Sheet
 
     private var editEntitiesSheet: some View {
-        NavigationStack {
-            List {
-                if !cachedVisibleEntities.isEmpty {
-                    Section {
-                        ForEach(cachedVisibleEntities, id: \.entityId) { entity in
-                            entityRow(entity: entity, isHidden: false)
-                        }
-                    } header: {
-                        Text("Visible Entities")
-                    }
-                }
-
-                if !cachedHiddenEntities.isEmpty {
-                    Section {
-                        ForEach(cachedHiddenEntities, id: \.entityId) { entity in
-                            entityRow(entity: entity, isHidden: true)
-                        }
-                    } header: {
-                        Text("Hidden Entities")
-                    }
-                }
+        EditRoomEntitiesView(
+            visibleEntities: cachedVisibleEntities,
+            hiddenEntities: cachedHiddenEntities,
+            onHideEntity: { entityId in
+                viewModel.hideEntity(entityId)
+            },
+            onUnhideEntity: { entityId in
+                viewModel.unhideEntity(entityId)
+            },
+            onReorderEntities: { newOrder in
+                entityOrder = newOrder
+                saveEntityOrder()
+            },
+            onDismiss: {
+                showEditSheet = false
             }
-            .navigationTitle("Edit Entities")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        showEditSheet = false
-                    }
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func entityRow(entity: HAEntity, isHidden: Bool) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                Text(entity.attributes.friendlyName ?? entity.entityId)
-                    .font(.body)
-                Text(entity.entityId)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-
-            Button {
-                if isHidden {
-                    viewModel.unhideEntity(entity.entityId)
-                } else {
-                    viewModel.hideEntity(entity.entityId)
-                }
-            } label: {
-                Image(systemSymbol: isHidden ? .eye : .eyeSlash)
-                    .foregroundStyle(isHidden ? .blue : .secondary)
-                    .font(.title3)
-            }
-            .buttonStyle(.plain)
-        }
-        .opacity(isHidden ? 0.6 : 1.0)
+        )
     }
 
     // MARK: - Entity Order Persistence

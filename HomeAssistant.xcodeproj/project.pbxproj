@@ -991,6 +991,7 @@
 		42C60FA62F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA72F081DA90071A6F6 /* DeviceClassProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */; };
 		42C60FA92F0829B50071A6F6 /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FA82F0829B50071A6F6 /* RoomView.swift */; };
+		42C60FAD2F0BEA630071A6F6 /* EditRoomEntitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C60FAC2F0BEA630071A6F6 /* EditRoomEntitiesView.swift */; };
 		42CB330D2DAE4FD800491DCE /* ServerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330C2DAE4FD800491DCE /* ServerSelectView.swift */; };
 		42CB330F2DAE530400491DCE /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB330E2DAE530400491DCE /* SettingsButton.swift */; };
 		42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FA52B45D1E900C707F9 /* CoreStrings.swift */; };
@@ -2741,6 +2742,7 @@
 		42C60FA32F08131B0071A6F6 /* CoverControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverControlIntents.swift; sourceTree = "<group>"; };
 		42C60FA52F081DA90071A6F6 /* DeviceClassProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClassProvider.swift; sourceTree = "<group>"; };
 		42C60FA82F0829B50071A6F6 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
+		42C60FAC2F0BEA630071A6F6 /* EditRoomEntitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRoomEntitiesView.swift; sourceTree = "<group>"; };
 		42CA28AD2B101D4D0093B31A /* HACornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HACornerRadius.swift; sourceTree = "<group>"; };
 		42CA28AF2B101D6B0093B31A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		42CA28B52B1022680093B31A /* HAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButton.swift; sourceTree = "<group>"; };
@@ -5614,6 +5616,7 @@
 			isa = PBXGroup;
 			children = (
 				42C60FA82F0829B50071A6F6 /* RoomView.swift */,
+				42C60FAC2F0BEA630071A6F6 /* EditRoomEntitiesView.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -8868,6 +8871,7 @@
 				426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */,
 				426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
 				426AB2362EF2A7D400FD5D46 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
+				42C60FAD2F0BEA630071A6F6 /* EditRoomEntitiesView.swift in Sources */,
 				426AB2372EF2A7D400FD5D46 /* ControlOpenCamera.swift in Sources */,
 				426AB2382EF2A7D400FD5D46 /* ControlOpenLockValueProvider.swift in Sources */,
 				426AB2392EF2A7D400FD5D46 /* ControlOpenLightValueProvider.swift in Sources */,
