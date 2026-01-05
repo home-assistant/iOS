@@ -147,7 +147,9 @@ struct RoomView: View {
         }
 
         // Visible entities are already filtered and sorted by HomeViewModel
-        cachedVisibleEntities = roomSection.entities
+        cachedVisibleEntities = roomSection.entityIds.compactMap {
+            viewModel.entityStates[$0]
+        }
 
         // Hidden entities: get all entity IDs from the room section's area
         // and filter for those that are hidden

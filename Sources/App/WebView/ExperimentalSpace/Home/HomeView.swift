@@ -122,7 +122,12 @@ struct HomeView: View {
                     visibleSectionIds: viewModel.configuration.visibleSectionIds
                 )) { section in
                     Section {
-                        entityTilesGrid(for: section.entities, section: section)
+                        entityTilesGrid(
+                            for: section.entityIds.compactMap {
+                                viewModel.entityStates[$0]
+                            },
+                            section: section
+                        )
                     } header: {
                         sectionHeader(section.name, section: section)
                     }

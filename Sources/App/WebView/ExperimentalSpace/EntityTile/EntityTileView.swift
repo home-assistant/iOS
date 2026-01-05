@@ -32,10 +32,12 @@ struct EntityTileView: View {
         tileContent
             .frame(height: Constants.tileHeight)
             .frame(maxWidth: .infinity)
+            .background(.tileBackground)
             .contentShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-            .glassEffect(
-                .clear.interactive(),
-                in: RoundedRectangle(cornerRadius: Constants.cornerRadius, style: .continuous)
+            .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .stroke(.tileBorder, lineWidth: Constants.borderLineWidth)
             )
             .onChange(of: haEntity) { _, _ in
                 updateIconColor()

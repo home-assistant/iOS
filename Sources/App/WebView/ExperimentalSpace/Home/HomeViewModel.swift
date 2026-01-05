@@ -11,7 +11,7 @@ final class HomeViewModel: ObservableObject {
     struct RoomSection: Identifiable, Equatable {
         let id: String
         let name: String
-        let entities: [HAEntity]
+        let entityIds: [String]
     }
 
     var groupedEntities: [RoomSection] = []
@@ -28,14 +28,14 @@ final class HomeViewModel: ObservableObject {
     private var appEntities: [HAAppEntity]? {
         didSet {
             guard !(appEntities?.isEmpty ?? true) else { return }
-            buildSectionsFromEntityStates()
+            buildSections()
         }
     }
 
     private var registryEntities: [AppEntityRegistryListForDisplay]? {
         didSet {
             guard !(registryEntities?.isEmpty ?? true) else { return }
-            buildSectionsFromEntityStates()
+            buildSections()
         }
     }
 
@@ -157,38 +157,32 @@ final class HomeViewModel: ObservableObject {
         )
     }
 
-    private func buildSectionsFromEntityStates() {
+    private func buildSections() {
+        guard let appEntities, let registryEntities else {
+            // Not ready to render UI yet
+            return
+        }
+        let serverId = server.identifier.rawValue
+        // Filter by valid app entities (not hidden/disabled)
+        let validAppEntities = appEntities.filter { !$0.isHidden && !$0.isDisabled }
+
+        // Filter by registry entities (exclude those with entity category)
+        let invalidRegistryEntityIds = Set(
+            registryEntities
+                .filter { $0.registry.entityCategory != nil }
+                .map(\.entityId)
+        )
+
+        // Filter out entities that have an entity category
+        let filteredAppEntities = validAppEntities.filter { !invalidRegistryEntityIds.contains($0.entityId) }
+
         do {
-            let serverId = server.identifier.rawValue
             let areas = try AppArea.fetchAreas(for: serverId)
             let entityToAreaMap = createEntityToAreaMap(areas: areas)
-            guard let appEntities, let registryEntities else {
-                // Not ready to render UI yet
-                return
-            }
-            // Filter by valid app entities (not hidden/disabled)
-            let validAppEntityIds = Set(
-                appEntities
-                    .filter { !$0.isHidden && !$0.isDisabled }
-                    .map(\.entityId)
+            let roomGroups = groupEntitiesByArea(
+                entityIds: filteredAppEntities.map(\.entityId),
+                entityToAreaMap: entityToAreaMap
             )
-
-            // Filter by registry entities (exclude those with entity category)
-            let invalidRegistryEntityIds = Set(
-                registryEntities
-                    .filter { $0.registry.entityCategory != nil }
-                    .map(\.entityId)
-            )
-
-            // Filter entities by allowed domains and app/registry rules
-            let allowedDomains = Set(EntityDisplayService.allowedDomains.map(\.rawValue))
-            let filteredEntities = entityStates.values.filter { entity in
-                allowedDomains.contains(entity.domain) &&
-                    validAppEntityIds.contains(entity.entityId) &&
-                    !invalidRegistryEntityIds.contains(entity.entityId)
-            }
-
-            let roomGroups = groupEntitiesByArea(entities: Array(filteredEntities), entityToAreaMap: entityToAreaMap)
             groupedEntities = buildSortedRoomSections(from: roomGroups)
         } catch {
             Current.Log.error("Failed to build sections from entity states: \(error.localizedDescription)")
@@ -207,13 +201,13 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func groupEntitiesByArea(
-        entities: [HAEntity],
+        entityIds: [String],
         entityToAreaMap: [String: AppArea]
-    ) -> [String: (area: AppArea, entities: [HAEntity])] {
-        var roomGroups: [String: (area: AppArea, entities: [HAEntity])] = [:]
+    ) -> [String: (area: AppArea, entityIds: [String])] {
+        var roomGroups: [String: (area: AppArea, entityIds: [String])] = [:]
 
-        for entity in entities {
-            guard let area = entityToAreaMap[entity.entityId] else {
+        for entityId in entityIds {
+            guard let area = entityToAreaMap[entityId] else {
                 // Entities without an area are skipped
                 continue
             }
@@ -222,40 +216,40 @@ final class HomeViewModel: ObservableObject {
             if roomGroups[key] == nil {
                 roomGroups[key] = (area, [])
             }
-            roomGroups[key]?.entities.append(entity)
+            roomGroups[key]?.entityIds.append(entityId)
         }
 
         return roomGroups
     }
 
     private func buildSortedRoomSections(
-        from roomGroups: [String: (area: AppArea, entities: [HAEntity])]
+        from roomGroups: [String: (area: AppArea, entityIds: [String])]
     ) -> [RoomSection] {
         let sortedGroups = roomGroups.sorted { $0.value.area.name < $1.value.area.name }
 
         return sortedGroups.map { key, value in
-            let filteredEntities = value.entities.filter { !configuration.hiddenEntityIds.contains($0.entityId) }
-            let sortedEntities = sortEntitiesForRoom(filteredEntities, roomId: key)
+            let filteredEntityIds = value.entityIds.filter { !configuration.hiddenEntityIds.contains($0) }
+            let sortedEntityIds = sortEntityIdsForRoom(filteredEntityIds, roomId: key)
             return RoomSection(
                 id: key,
                 name: value.area.name,
-                entities: sortedEntities
+                entityIds: sortedEntityIds
             )
         }
     }
 
-    /// Sort entities for a specific room using saved order
-    private func sortEntitiesForRoom(_ entities: [HAEntity], roomId: String) -> [HAEntity] {
+    /// Sort entity IDs for a specific room using saved order
+    private func sortEntityIdsForRoom(_ entityIds: [String], roomId: String) -> [String] {
         guard let order = configuration.entityOrderByRoom[roomId], !order.isEmpty else {
             // No custom order, sort alphabetically by entity ID
-            return entities.sorted { $0.entityId < $1.entityId }
+            return entityIds.sorted()
         }
 
         let orderIndex = Dictionary(uniqueKeysWithValues: order.enumerated().map { ($1, $0) })
-        return entities.sorted { a, b in
-            let ia = orderIndex[a.entityId] ?? Int.max
-            let ib = orderIndex[b.entityId] ?? Int.max
-            return ia == ib ? a.entityId < b.entityId : ia < ib
+        return entityIds.sorted { a, b in
+            let ia = orderIndex[a] ?? Int.max
+            let ib = orderIndex[b] ?? Int.max
+            return ia == ib ? a < b : ia < ib
         }
     }
 
@@ -263,7 +257,6 @@ final class HomeViewModel: ObservableObject {
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
             guard let self else { return }
             entityStates = states
-            buildSectionsFromEntityStates()
         }
     }
 
@@ -336,7 +329,7 @@ final class HomeViewModel: ObservableObject {
             do {
                 try await Task.sleep(for: .seconds(1))
                 try configuration.save()
-                buildSectionsFromEntityStates()
+                buildSections()
             } catch is CancellationError {
                 // Task was cancelled, do nothing
             } catch {
