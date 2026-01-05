@@ -54,23 +54,20 @@ final class HomeViewModel: ObservableObject {
 
     private func observeConfigChanges() {
         configObservation?.cancel()
-        do {
-            let observation = ValueObservation.tracking { db in
-                try HomeViewConfiguration.fetchOne(db, key: self.server.identifier.rawValue)
-            }
-            configObservation = observation.start(
-                in: Current.database(),
-                onError: { error in
-                    Current.Log.error("CarPlay config observation failed with error: \(error)")
-                },
-                onChange: { [weak self] config in
-                    guard let self else { return }
-                    configuration = config ?? .init(id: server.identifier.rawValue)
-                }
-            )
-        } catch {
-            Current.Log.error("Failed to observe Home view configuration changes: \(error.localizedDescription)")
+        let serverId = server.identifier.rawValue
+        let observation = ValueObservation.tracking { db in
+            try HomeViewConfiguration.fetchOne(db, key: serverId)
         }
+        configObservation = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("Home view config observation failed with error: \(error)")
+            },
+            onChange: { [weak self] config in
+                guard let self else { return }
+                configuration = config ?? .init(id: server.identifier.rawValue)
+            }
+        )
     }
 
     private func buildSectionsFromEntityStates() {
