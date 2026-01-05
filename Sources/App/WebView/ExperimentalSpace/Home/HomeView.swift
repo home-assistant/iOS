@@ -141,24 +141,56 @@ struct HomeView: View {
     }
 
     private func visibleEntitiesForSection(_ section: HomeViewModel.RoomSection) -> [HAEntity] {
+        // Create lookup dictionaries once to avoid O(n) searches for each entity
+        let appEntitiesDict = Dictionary(
+            uniqueKeysWithValues: (viewModel.appEntities ?? []).map { ($0.entityId, $0) }
+        )
+        let registryDict = Dictionary(
+            uniqueKeysWithValues: (viewModel.registryEntities ?? []).map { ($0.entityId, $0) }
+        )
+        let hiddenEntityIdsSet = Set(viewModel.configuration.hiddenEntityIds)
+
+        // Single pass filter with early returns
         let filteredEntityIds = section.entityIds.filter { entityId in
-            guard let appEntity = viewModel.appEntities?.first(where: { $0.entityId == entityId }) else {
-                return false
+            // Check hidden first (fastest check)
+            guard !hiddenEntityIdsSet.contains(entityId) else { return false }
+
+            // Check app entity state
+            guard let appEntity = appEntitiesDict[entityId] else { return false }
+            guard !appEntity.isHidden, !appEntity.isDisabled else { return false }
+
+            // Check registry category
+            if let registry = registryDict[entityId] {
+                guard registry.registry.entityCategory == nil else { return false }
             }
-            return !appEntity.isHidden && !appEntity.isDisabled
-        }.filter { entityId in
-            !viewModel.configuration.hiddenEntityIds.contains(entityId)
-        }.filter { entityId in
-            guard let registry = viewModel.registryEntities?.first(where: { registry in
-                registry.entityId == entityId
-            }) else {
-                return true
-            }
-            return registry.registry.entityCategory == nil
+
+            return true
         }
 
-        return filteredEntityIds.compactMap { entityId in
+        // Get entities from filtered IDs
+        let entities = filteredEntityIds.compactMap { entityId in
             viewModel.entityStates[entityId]
+        }
+
+        // Sort using the configuration's entity order for this room
+        let savedOrder = viewModel.configuration.entityOrderByRoom[section.id] ?? []
+
+        if savedOrder.isEmpty {
+            // No custom order, sort alphabetically by entity ID
+            return entities.sorted { e1, e2 in
+                e1.entityId < e2.entityId
+            }
+        } else {
+            // Sort by saved order, with unordered items at the end (alphabetically)
+            let orderIndex = Dictionary(uniqueKeysWithValues: savedOrder.enumerated().map { ($1, $0) })
+            return entities.sorted { e1, e2 in
+                let i1 = orderIndex[e1.entityId] ?? Int.max
+                let i2 = orderIndex[e2.entityId] ?? Int.max
+                if i1 == i2 {
+                    return e1.entityId < e2.entityId
+                }
+                return i1 < i2
+            }
         }
     }
 
