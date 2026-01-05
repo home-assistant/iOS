@@ -77,7 +77,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     private func updateEntitiesRegistryListForDisplay(server: Server) -> HACancellable? {
         Current.api(for: server)?.connection.send(
-            HATypedRequest<EntityRegistryListForDisplay>.fetchEntityRegistryListForDisplay(),
+            HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay(),
             completion: { [weak self] result in
                 switch result {
                 case let .success(response):
@@ -112,7 +112,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     private func saveAreasToDatabase(
-        areas: [HAAreaResponse],
+        areas: [HAAreasRegistryResponse],
         areasAndEntities: [String: Set<String>],
         serverId: String
     ) async {
