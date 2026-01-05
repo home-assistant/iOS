@@ -57,9 +57,9 @@ struct HomeView: View {
             get: { selectedRoom.map { RoomIdentifier(id: $0.id, name: $0.name) } },
             set: { selectedRoom = $0.map { ($0.id, $0.name) } }
         )) { room in
-            if let section = viewModel.groupedEntities.first(where: { $0.id == room.id }) {
+            if let section = viewModel.groupedEntities.first(where: { $0.id == room.id }), let selectedRoom {
                 RoomView(section: section, viewModel: viewModel)
-                    .navigationTransition(.zoom(sourceID: selectedRoom?.id, in: roomNameSpace))
+                    .navigationTransition(.zoom(sourceID: selectedRoom.id, in: roomNameSpace))
             }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
@@ -337,16 +337,16 @@ struct HomeView: View {
     @ViewBuilder
     private func sectionHeader(_ title: String, section: HomeViewModel.RoomSection) -> some View {
         Group {
-            if let foundSection = viewModel.groupedEntities.first(where: { $0.name == title }) {
+            if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
                 EntityDisplayComponents.sectionHeader(
                     title,
                     showChevron: true,
                     action: {
-                        selectedRoom = (id: foundSection.id, name: foundSection.name)
+                        selectedRoom = (id: section.id, name: section.name)
                     }
                 )
                 .disabled(isReorderMode)
-                .matchedTransitionSource(id: foundSection.id, in: roomNameSpace)
+                .matchedTransitionSource(id: section.id, in: roomNameSpace)
             } else { EmptyView() }
         }
     }
