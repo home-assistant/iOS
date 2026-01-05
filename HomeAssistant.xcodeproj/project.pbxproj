@@ -841,6 +841,8 @@
 		4289DDB12C85D629003591C2 /* ControlScenesValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */; };
 		4289DDB32C85D6B3003591C2 /* IntentSceneEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */; };
 		4289DDB52C85D7B8003591C2 /* SceneAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */; };
+		4289FCAC2F0BEDD4005189AA /* EditModeIndicatorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */; };
+		4289FCAE2F0BEDD4005189AA /* EntityDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */; };
 		428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
@@ -2443,6 +2445,8 @@
 		4289DDB02C85D629003591C2 /* ControlScenesValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlScenesValueProvider.swift; sourceTree = "<group>"; };
 		4289DDB22C85D6B3003591C2 /* IntentSceneEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSceneEntity.swift; sourceTree = "<group>"; };
 		4289DDB42C85D7B8003591C2 /* SceneAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAppIntent.swift; sourceTree = "<group>"; };
+		4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeIndicatorModifier.swift; sourceTree = "<group>"; };
+		4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDropDelegate.swift; sourceTree = "<group>"; };
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
@@ -5617,6 +5621,8 @@
 			children = (
 				42C60FA82F0829B50071A6F6 /* RoomView.swift */,
 				42C60FAC2F0BEA630071A6F6 /* EditRoomEntitiesView.swift */,
+				4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */,
+				4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -9087,6 +9093,7 @@
 				420160612E79ACAC00F68044 /* LocalAccessPermissionView.swift in Sources */,
 				42790C442C48077200E31B38 /* ImprovSuccessView.swift in Sources */,
 				429AFE5C2DB7BE4000AF0836 /* GeneralSettingsView.swift in Sources */,
+				4289FCAE2F0BEDD4005189AA /* EntityDropDelegate.swift in Sources */,
 				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
 				3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
@@ -9151,6 +9158,7 @@
 				427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
 				42C60F8B2F057C060071A6F6 /* LightControlIntents.swift in Sources */,
+				4289FCAC2F0BEDD4005189AA /* EditModeIndicatorModifier.swift in Sources */,
 				4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */,
 				42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
