@@ -17,6 +17,7 @@ final class HomeViewModel: ObservableObject {
     var hiddenEntityIds: Set<String> = []
     var selectedSectionIds: Set<String> = []
     var allowMultipleSelection: Bool = false
+    var entityOrderByRoom: [String: [String]] = [:] // roomId -> [entityId]
     private var appEntities: [HAAppEntity] = []
     private var registryEntities: [AppEntityRegistryListForDisplay] = []
     struct RoomSection: Identifiable, Equatable {
@@ -46,6 +47,7 @@ final class HomeViewModel: ObservableObject {
 
             await loadSectionOrderIfNeeded()
             await loadFilterSettingsIfNeeded()
+            await loadEntityOrdersIfNeeded()
 
             // Subscribe to entity changes first - sections will be built when data arrives
             subscribeToEntitiesChanges()
@@ -114,14 +116,27 @@ final class HomeViewModel: ObservableObject {
 
         return sortedGroups.map { key, value in
             let filteredEntities = value.entities.filter { !hiddenEntityIds.contains($0.entityId) }
-            let sortedEntities = filteredEntities.sorted {
-                $0.entityId < $1.entityId
-            }
+            let sortedEntities = sortEntitiesForRoom(filteredEntities, roomId: key)
             return RoomSection(
                 id: key,
                 name: value.area.name,
                 entities: sortedEntities
             )
+        }
+    }
+
+    /// Sort entities for a specific room using saved order
+    private func sortEntitiesForRoom(_ entities: [HAEntity], roomId: String) -> [HAEntity] {
+        guard let order = entityOrderByRoom[roomId], !order.isEmpty else {
+            // No custom order, sort alphabetically by entity ID
+            return entities.sorted { $0.entityId < $1.entityId }
+        }
+
+        let orderIndex = Dictionary(uniqueKeysWithValues: order.enumerated().map { ($1, $0) })
+        return entities.sorted { a, b in
+            let ia = orderIndex[a.entityId] ?? Int.max
+            let ib = orderIndex[b.entityId] ?? Int.max
+            return ia == ib ? a.entityId < b.entityId : ia < ib
         }
     }
 
@@ -311,5 +326,45 @@ final class HomeViewModel: ObservableObject {
     struct FilterSettings: Codable {
         let selectedSectionIds: Set<String>
         let allowMultipleSelection: Bool
+    }
+
+    // MARK: - Entity Order Persistence (Per Room)
+
+    private var entityOrderCacheKey: String {
+        "home.entityOrders." + server.identifier.rawValue
+    }
+
+    private func loadEntityOrdersIfNeeded() async {
+        do {
+            let orders: [String: [String]] = try await withCheckedThrowingContinuation { continuation in
+                Current.diskCache
+                    .value(for: entityOrderCacheKey)
+                    .done { (orders: [String: [String]]) in
+                        continuation.resume(returning: orders)
+                    }
+                    .catch { error in
+                        continuation.resume(throwing: error)
+                    }
+            }
+            entityOrderByRoom = orders
+        } catch {
+            // No cached orders, use empty dictionary
+            entityOrderByRoom = [:]
+        }
+    }
+
+    func saveEntityOrder(for roomId: String, order: [String]) {
+        entityOrderByRoom[roomId] = order
+        Current.diskCache.set(entityOrderByRoom, for: entityOrderCacheKey).pipe { result in
+            if case let .rejected(error) = result {
+                Current.Log.error("Failed to save entity orders: \(error)")
+            }
+        }
+        // Rebuild sections to reflect new order
+        rebuildSections()
+    }
+
+    func getEntityOrder(for roomId: String) -> [String] {
+        entityOrderByRoom[roomId] ?? []
     }
 }

@@ -14,7 +14,6 @@ struct RoomView: View {
     @State private var showHidden = false
     @State private var showEditSheet = false
     @State private var isReorderMode = false
-    @State private var entityOrder: [String] = []
     @State private var draggedEntity: String?
 
     // Cache the computed entities to avoid recomputation
@@ -34,7 +33,9 @@ struct RoomView: View {
                                 withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                                     isReorderMode = false
                                 }
-                                saveEntityOrder()
+                                // Save when exiting reorder mode
+                                let currentOrder = cachedVisibleEntities.map(\.entityId)
+                                viewModel.saveEntityOrder(for: roomId, order: currentOrder)
                             } label: {
                                 Text("Done")
                                     .fontWeight(.semibold)
@@ -66,9 +67,6 @@ struct RoomView: View {
         .animation(DesignSystem.Animation.default, value: showHidden)
         .sheet(isPresented: $showEditSheet) {
             editEntitiesSheet
-        }
-        .task {
-            await loadEntityOrder()
         }
         .task(id: computeUpdateHash()) {
             // Update cached entities when data changes
@@ -147,7 +145,7 @@ struct RoomView: View {
         hasher.combine(roomId)
         hasher.combine(viewModel.entityStates.count)
         hasher.combine(viewModel.hiddenEntityIds.count)
-        hasher.combine(entityOrder)
+        hasher.combine(viewModel.getEntityOrder(for: roomId))
         return hasher.finalize()
     }
 
@@ -160,21 +158,8 @@ struct RoomView: View {
             return
         }
 
-        // Visible entities are already filtered by HomeViewModel (non-hidden)
-        let visible = roomSection.entities
-
-        // Apply custom ordering if available
-        if entityOrder.isEmpty {
-            cachedVisibleEntities = visible
-        } else {
-            // Create order lookup once
-            let orderIndex = Dictionary(uniqueKeysWithValues: entityOrder.enumerated().map { ($1, $0) })
-            cachedVisibleEntities = visible.sorted { a, b in
-                let ia = orderIndex[a.entityId] ?? Int.max
-                let ib = orderIndex[b.entityId] ?? Int.max
-                return ia == ib ? a.entityId < b.entityId : ia < ib
-            }
-        }
+        // Visible entities are already filtered and sorted by HomeViewModel
+        cachedVisibleEntities = roomSection.entities
 
         // Hidden entities: get all entity IDs from the room section's area
         // and filter for those that are hidden
@@ -276,7 +261,8 @@ struct RoomView: View {
                     entity: entity,
                     entities: entities,
                     draggedEntity: $draggedEntity,
-                    entityOrder: $entityOrder
+                    roomId: roomId,
+                    viewModel: viewModel
                 ))
             }
         }
@@ -295,46 +281,12 @@ struct RoomView: View {
                 viewModel.unhideEntity(entityId)
             },
             onReorderEntities: { newOrder in
-                entityOrder = newOrder
-                saveEntityOrder()
+                viewModel.saveEntityOrder(for: roomId, order: newOrder)
             },
             onDismiss: {
                 showEditSheet = false
             }
         )
-    }
-
-    // MARK: - Entity Order Persistence
-
-    private var entityOrderCacheKey: String {
-        "room.entityOrder.\(server.identifier.rawValue).\(roomId)"
-    }
-
-    private func loadEntityOrder() async {
-        do {
-            let order: [String] = try await withCheckedThrowingContinuation { continuation in
-                Current.diskCache
-                    .value(for: entityOrderCacheKey)
-                    .done { (order: [String]) in
-                        continuation.resume(returning: order)
-                    }
-                    .catch { error in
-                        continuation.resume(throwing: error)
-                    }
-            }
-            entityOrder = order
-        } catch {
-            // If no cached order exists, use entity IDs from visible entities
-            entityOrder = cachedVisibleEntities.map(\.entityId)
-        }
-    }
-
-    private func saveEntityOrder() {
-        Current.diskCache.set(entityOrder, for: entityOrderCacheKey).pipe { result in
-            if case let .rejected(error) = result {
-                Current.Log.error("Failed to save entity order: \(error)")
-            }
-        }
     }
 }
 
@@ -345,7 +297,8 @@ private struct EntityDropDelegate: DropDelegate {
     let entity: HAEntity
     let entities: [HAEntity]
     @Binding var draggedEntity: String?
-    @Binding var entityOrder: [String]
+    let roomId: String
+    let viewModel: HomeViewModel
 
     func performDrop(info: DropInfo) -> Bool {
         draggedEntity = nil
@@ -361,20 +314,23 @@ private struct EntityDropDelegate: DropDelegate {
 
         guard let from, let to else { return }
 
-        if entityOrder.isEmpty {
+        var currentOrder = viewModel.getEntityOrder(for: roomId)
+
+        if currentOrder.isEmpty {
             // Initialize order if empty
-            entityOrder = entities.map(\.entityId)
+            currentOrder = entities.map(\.entityId)
         }
 
         // Find indices in the order array
-        guard let fromIndex = entityOrder.firstIndex(of: draggedEntity),
-              let toIndex = entityOrder.firstIndex(of: entity.entityId) else { return }
+        guard let fromIndex = currentOrder.firstIndex(of: draggedEntity),
+              let toIndex = currentOrder.firstIndex(of: entity.entityId) else { return }
 
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            entityOrder.move(
+            currentOrder.move(
                 fromOffsets: IndexSet(integer: fromIndex),
                 toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex
             )
+            viewModel.saveEntityOrder(for: roomId, order: currentOrder)
         }
     }
 }
