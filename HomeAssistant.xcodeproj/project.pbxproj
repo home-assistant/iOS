@@ -5108,6 +5108,15 @@
 			path = Control;
 			sourceTree = "<group>";
 		};
+		4289FCAF2F0BEFC2005189AA /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */,
+				42C60F9A2F080BBF0071A6F6 /* VerticalToggleControl.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		42905D812E1297BC00250728 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -5610,8 +5619,6 @@
 				42DFE87C2EFB128B0058DADB /* EntityTileView.swift */,
 				4236229F2F05587800391BD0 /* EntityIconColorProvider.swift */,
 				42C60F902F07FB0F0071A6F6 /* MoreInfoDialog */,
-				42C60F8C2F057DB70071A6F6 /* VerticalSlider.swift */,
-				42C60F9A2F080BBF0071A6F6 /* VerticalToggleControl.swift */,
 			);
 			path = EntityTile;
 			sourceTree = "<group>";
@@ -5981,6 +5988,7 @@
 		42DFE8792EFB08C80058DADB /* ExperimentalSpace */ = {
 			isa = PBXGroup;
 			children = (
+				4289FCAF2F0BEFC2005189AA /* Components */,
 				42B1294F2F05685C00B957AF /* Shared */,
 				42B1294C2F05682F00B957AF /* Home */,
 				42B1294E2F05684B00B957AF /* Room */,

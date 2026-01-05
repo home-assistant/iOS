@@ -59,7 +59,7 @@ struct VerticalSlider: View {
         trackWidth: CGFloat = 130,
         thumbSize: CGFloat = 28,
         showThumb: Bool = false,
-        shape: VerticalSliderShape = .capsule,
+        shape: VerticalSliderShape = .roundedRectangle(cornerRadius: 26),
         onEditingChanged: ((Bool) -> Void)? = nil
     ) {
         self._value = value
