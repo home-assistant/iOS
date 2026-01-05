@@ -37,7 +37,7 @@ struct HomeView: View {
         .sheet(isPresented: $showReorder) {
             HomeSectionsReorderView(
                 sections: viewModel.groupedEntities.map { ($0.id, $0.name) },
-                sectionOrder: $viewModel.sectionOrder,
+                sectionOrder: $viewModel.configuration.sectionOrder,
                 onDone: { viewModel.saveSectionOrder() }
             )
         }
@@ -52,11 +52,6 @@ struct HomeView: View {
             RoomView(server: viewModel.server, roomId: room.id, roomName: room.name)
                 .environmentObject(viewModel)
                 .navigationTransition(.zoom(sourceID: selectedRoom?.id, in: roomNameSpace))
-                .onDisappear {
-                    Task {
-                        await viewModel.reloadAfterUnhide()
-                    }
-                }
         }
         .task {
             await viewModel.loadEntities()
@@ -72,8 +67,8 @@ struct HomeView: View {
             } else if let errorMessage = viewModel.errorMessage {
                 EntityDisplayComponents.errorView(errorMessage)
             } else if viewModel.filteredSections(
-                sectionOrder: viewModel.sectionOrder,
-                selectedSectionIds: viewModel.selectedSectionIds
+                sectionOrder: viewModel.configuration.sectionOrder,
+                visibleSectionIds: viewModel.configuration.visibleSectionIds
             ).isEmpty {
                 EntityDisplayComponents.emptyStateView(message: L10n.HomeView.EmptyState.noEntities)
             } else {
@@ -86,8 +81,8 @@ struct HomeView: View {
             DesignSystem.Animation.default,
             value: viewModel
                 .filteredSections(
-                    sectionOrder: viewModel.sectionOrder,
-                    selectedSectionIds: viewModel.selectedSectionIds
+                    sectionOrder: viewModel.configuration.sectionOrder,
+                    visibleSectionIds: viewModel.configuration.visibleSectionIds
                 ).isEmpty
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -100,8 +95,8 @@ struct HomeView: View {
                 spacing: DesignSystem.Spaces.three
             ) {
                 ForEach(viewModel.filteredSections(
-                    sectionOrder: viewModel.sectionOrder,
-                    selectedSectionIds: viewModel.selectedSectionIds
+                    sectionOrder: viewModel.configuration.sectionOrder,
+                    visibleSectionIds: viewModel.configuration.visibleSectionIds
                 )) { section in
                     Section {
                         entityTilesGrid(for: section.entities, section: section)
@@ -147,11 +142,11 @@ struct HomeView: View {
                             .foregroundColor(.secondary)
                     } else {
                         Toggle(isOn: Binding(
-                            get: { viewModel.selectedSectionIds.isEmpty },
+                            get: { viewModel.configuration.visibleSectionIds.isEmpty },
                             set: { isOn in
                                 if isOn {
                                     // Turning 'Show All' on clears filters
-                                    viewModel.selectedSectionIds.removeAll()
+                                    viewModel.configuration.visibleSectionIds.removeAll()
                                     viewModel.saveFilterSettings()
                                 }
                             }
@@ -160,9 +155,9 @@ struct HomeView: View {
                         }
 
                         Toggle(isOn: Binding(
-                            get: { viewModel.allowMultipleSelection },
+                            get: { viewModel.configuration.allowMultipleSelection },
                             set: { isOn in
-                                viewModel.allowMultipleSelection = isOn
+                                viewModel.configuration.allowMultipleSelection = isOn
                                 viewModel.saveFilterSettings()
                             }
                         )) {
@@ -179,12 +174,12 @@ struct HomeView: View {
 
                         ForEach(viewModel.orderedSectionsForMenu) { section in
                             Toggle(isOn: Binding(
-                                get: { viewModel.selectedSectionIds.contains(section.id) },
+                                get: { viewModel.configuration.visibleSectionIds.contains(section.id) },
                                 set: { _ in
-                                    viewModel.selectedSectionIds = viewModel.toggledSelection(
+                                    viewModel.configuration.visibleSectionIds = viewModel.toggledSelection(
                                         for: section.id,
-                                        current: viewModel.selectedSectionIds,
-                                        allowMultipleSelection: viewModel.allowMultipleSelection
+                                        current: viewModel.configuration.visibleSectionIds,
+                                        allowMultipleSelection: viewModel.configuration.allowMultipleSelection
                                     )
                                     viewModel.saveFilterSettings()
                                 }

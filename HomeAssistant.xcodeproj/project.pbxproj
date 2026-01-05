@@ -844,6 +844,9 @@
 		4289FCAC2F0BEDD4005189AA /* EditModeIndicatorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */; };
 		4289FCAE2F0BEDD4005189AA /* EntityDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */; };
 		4289FCB12F0BFC07005189AA /* RoomIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCB02F0BFC07005189AA /* RoomIdentifier.swift */; };
+		4289FCB92F0BFF50005189AA /* HomeViewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */; };
+		4289FCBC2F0C0168005189AA /* HomeViewConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */; };
+		4289FCBD2F0C0168005189AA /* HomeViewConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */; };
 		428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
@@ -2449,6 +2452,8 @@
 		4289FCAB2F0BEDD4005189AA /* EditModeIndicatorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeIndicatorModifier.swift; sourceTree = "<group>"; };
 		4289FCAD2F0BEDD4005189AA /* EntityDropDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDropDelegate.swift; sourceTree = "<group>"; };
 		4289FCB02F0BFC07005189AA /* RoomIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomIdentifier.swift; sourceTree = "<group>"; };
+		4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewConfiguration.swift; sourceTree = "<group>"; };
+		4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewConfigurationTable.swift; sourceTree = "<group>"; };
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
@@ -5611,6 +5616,7 @@
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
+				4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -6781,6 +6787,7 @@
 				4239D1802C4FFB75003497FC /* WatchUserDefaults.swift */,
 				427A7CD82EBDFB1700D17841 /* AppArea.swift */,
 				427A7CDB2EBDFB1D00D17841 /* AppAreaTable.swift */,
+				4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */,
 				427A7CDE2EBDFB4200D17841 /* AppArea+Queries.swift */,
 			);
 			path = Environment;
@@ -9119,6 +9126,7 @@
 				428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
+				4289FCB92F0BFF50005189AA /* HomeViewConfiguration.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
 				42B129512F056DAC00B957AF /* EntityMoreInfoDialogView.swift in Sources */,
 				42266B112B740E4C00E94A71 /* BarcodeScannerView.swift in Sources */,
@@ -9365,6 +9373,7 @@
 				1182620224F9C3F7000795C6 /* HACoreBlahObject.swift in Sources */,
 				B6872E672226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				11482AD72505CB6E00C48C58 /* HACoreAudioObjectDevice.swift in Sources */,
+				4289FCBD2F0C0168005189AA /* HomeViewConfigurationTable.swift in Sources */,
 				11F8A53F25A6ADA400BF1D97 /* Reachability+NetworkType.swift in Sources */,
 				110ED59025A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				428EDB682DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */,
@@ -9624,6 +9633,7 @@
 				118BDA8825A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				425762732E71A8B800AE5083 /* ModalCloseButton.swift in Sources */,
 				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
+				4289FCBC2F0C0168005189AA /* HomeViewConfigurationTable.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				42CE8FB22B46C46E00C707F9 /* Domain.swift in Sources */,
 				420CFC702D3F9C86009A94F3 /* AssistPipelinesTable.swift in Sources */,

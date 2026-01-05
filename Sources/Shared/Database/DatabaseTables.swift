@@ -9,6 +9,7 @@ public enum GRDBDatabaseTable: String {
     case appPanel
     case customWidget
     case appArea
+    case homeViewConfiguration
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -85,5 +86,15 @@ public enum DatabaseTables {
         case picture
         case icon
         case entities
+    }
+
+    // Home View Configuration (per server)
+    public enum HomeViewConfiguration: String {
+        case id
+        case sectionOrder
+        case visibleSectionIds
+        case allowMultipleSelection
+        case entityOrderByRoom
+        case hiddenEntityIds
     }
 }

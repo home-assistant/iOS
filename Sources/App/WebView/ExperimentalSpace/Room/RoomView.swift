@@ -64,8 +64,7 @@ struct RoomView: View {
         .sheet(isPresented: $showEditSheet) {
             editEntitiesSheet
         }
-        .task(id: computeUpdateHash()) {
-            // Update cached entities when data changes
+        .task {
             updateCachedEntities()
         }
     }
@@ -135,16 +134,6 @@ struct RoomView: View {
 
     // MARK: - Helper Methods
 
-    /// Compute a hash to detect when data needs updating
-    private func computeUpdateHash() -> Int {
-        var hasher = Hasher()
-        hasher.combine(roomId)
-        hasher.combine(viewModel.entityStates.count)
-        hasher.combine(viewModel.hiddenEntityIds.count)
-        hasher.combine(viewModel.getEntityOrder(for: roomId))
-        return hasher.finalize()
-    }
-
     /// Update cached entities - only called when data changes
     private func updateCachedEntities() {
         // Get entities directly from the pre-computed room section
@@ -174,7 +163,7 @@ struct RoomView: View {
 
         cachedHiddenEntities = allRoomEntityIds
             .compactMap { viewModel.entityStates[$0] }
-            .filter { viewModel.hiddenEntityIds.contains($0.entityId) }
+            .filter { viewModel.configuration.hiddenEntityIds.contains($0.entityId) }
             .sorted { $0.entityId < $1.entityId }
     }
 

@@ -13,11 +13,8 @@ final class HomeViewModel: ObservableObject {
     var errorMessage: String?
     var server: Server
     var entityStates: [String: HAEntity] = [:]
-    var sectionOrder: [String] = []
-    var hiddenEntityIds: Set<String> = []
-    var selectedSectionIds: Set<String> = []
-    var allowMultipleSelection: Bool = false
-    var entityOrderByRoom: [String: [String]] = [:] // roomId -> [entityId]
+    var configuration: HomeViewConfiguration
+
     private var appEntities: [HAAppEntity] = []
     private var registryEntities: [AppEntityRegistryListForDisplay] = []
     struct RoomSection: Identifiable, Equatable {
@@ -30,6 +27,7 @@ final class HomeViewModel: ObservableObject {
 
     init(server: Server) {
         self.server = server
+        self.configuration = HomeViewConfiguration(id: server.identifier.rawValue)
     }
 
     func loadEntities() async {
@@ -37,18 +35,11 @@ final class HomeViewModel: ObservableObject {
         errorMessage = nil
 
         do {
+            configuration = try HomeViewConfiguration.configuration(for: server.identifier.rawValue) ??
+                HomeViewConfiguration(id: server.identifier.rawValue)
             // Does not include disabled and hidden entities, it will be used to filter HAEntity
             appEntities = try HAAppEntity.config().filter({ $0.serverId == server.identifier.rawValue })
             registryEntities = try AppEntityRegistryListForDisplay.config(serverId: server.identifier.rawValue)
-
-            // Load hidden entities, section order, and filter settings BEFORE building sections
-            let loadedHiddenEntities = await EntityDisplayService.loadHiddenEntities(for: server)
-            hiddenEntityIds = loadedHiddenEntities
-
-            await loadSectionOrderIfNeeded()
-            await loadFilterSettingsIfNeeded()
-            await loadEntityOrdersIfNeeded()
-
             // Subscribe to entity changes first - sections will be built when data arrives
             subscribeToEntitiesChanges()
             isLoading = false
@@ -115,7 +106,7 @@ final class HomeViewModel: ObservableObject {
         let sortedGroups = roomGroups.sorted { $0.value.area.name < $1.value.area.name }
 
         return sortedGroups.map { key, value in
-            let filteredEntities = value.entities.filter { !hiddenEntityIds.contains($0.entityId) }
+            let filteredEntities = value.entities.filter { !configuration.hiddenEntityIds.contains($0.entityId) }
             let sortedEntities = sortEntitiesForRoom(filteredEntities, roomId: key)
             return RoomSection(
                 id: key,
@@ -127,7 +118,7 @@ final class HomeViewModel: ObservableObject {
 
     /// Sort entities for a specific room using saved order
     private func sortEntitiesForRoom(_ entities: [HAEntity], roomId: String) -> [HAEntity] {
-        guard let order = entityOrderByRoom[roomId], !order.isEmpty else {
+        guard let order = configuration.entityOrderByRoom[roomId], !order.isEmpty else {
             // No custom order, sort alphabetically by entity ID
             return entities.sorted { $0.entityId < $1.entityId }
         }
@@ -164,7 +155,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    func filteredSections(sectionOrder: [String], selectedSectionIds: Set<String>) -> [RoomSection] {
+    func filteredSections(sectionOrder: [String], visibleSectionIds: Set<String>) -> [RoomSection] {
         // Apply saved ordering
         let orderedSections: [RoomSection]
         if sectionOrder.isEmpty {
@@ -179,19 +170,19 @@ final class HomeViewModel: ObservableObject {
             }
         }
         // If no sections are selected, show all
-        guard !selectedSectionIds.isEmpty else {
+        guard !visibleSectionIds.isEmpty else {
             return orderedSections
         }
         // Otherwise, filter to only selected sections
-        return orderedSections.filter { selectedSectionIds.contains($0.id) }
+        return orderedSections.filter { visibleSectionIds.contains($0.id) }
     }
 
     var orderedSectionsForMenu: [RoomSection] {
         // Use the same ordering logic as filteredSections, but show ALL sections (no filtering)
-        if sectionOrder.isEmpty {
+        if configuration.sectionOrder.isEmpty {
             return groupedEntities
         } else {
-            let orderIndex = Dictionary(uniqueKeysWithValues: sectionOrder.enumerated().map { ($1, $0) })
+            let orderIndex = Dictionary(uniqueKeysWithValues: configuration.sectionOrder.enumerated().map { ($1, $0) })
             return groupedEntities.sorted { a, b in
                 let ia = orderIndex[a.id] ?? Int.max
                 let ib = orderIndex[b.id] ?? Int.max
@@ -223,59 +214,38 @@ final class HomeViewModel: ObservableObject {
         return updated
     }
 
-    // MARK: - Section Order Persistence
-
-    private var sectionOrderCacheKey: String {
-        // Use a server-specific key; prefer a stable identifier if available
-        "home.sections.order." + server.identifier.rawValue
-    }
-
-    private func loadSectionOrderIfNeeded() async {
+    /// Save all current state to database
+    private func saveCachedData() {
         do {
-            let order: [String] = try await withCheckedThrowingContinuation { continuation in
-                Current.diskCache
-                    .value(for: sectionOrderCacheKey)
-                    .done { (order: [String]) in
-                        continuation.resume(returning: order)
-                    }
-                    .catch { error in
-                        continuation.resume(throwing: error)
-                    }
-            }
-            sectionOrder = order
+            try configuration.save()
         } catch {
-            // If no cached order exists, use default (entity IDs)
-            sectionOrder = groupedEntities.map(\.id)
+            Current.Log.error("Failed to save Home view configuration: \(error.localizedDescription)")
         }
     }
+
+    // MARK: - Section Order
 
     func saveSectionOrder() {
-        Current.diskCache.set(sectionOrder, for: sectionOrderCacheKey).pipe { result in
-            if case let .rejected(error) = result {
-                Current.Log.error("Failed to save sections order: \(error)")
-            }
-        }
+        saveCachedData()
+    }
+
+    // MARK: - Filter Settings
+
+    func saveFilterSettings() {
+        saveCachedData()
     }
 
     // MARK: - Hidden Entities
 
     func hideEntity(_ entityId: String) {
-        hiddenEntityIds.insert(entityId)
-        EntityDisplayService.saveHiddenEntities(hiddenEntityIds, for: server)
+        configuration.hiddenEntityIds.insert(entityId)
+        saveCachedData()
         rebuildSections()
     }
 
     func unhideEntity(_ entityId: String) {
-        hiddenEntityIds.remove(entityId)
-        EntityDisplayService.saveHiddenEntities(hiddenEntityIds, for: server)
-        // Rebuild sections to show the entity again
-        rebuildSections()
-    }
-
-    func reloadAfterUnhide() async {
-        // Reload hidden entities from cache (in case they were changed in RoomView)
-        hiddenEntityIds = await EntityDisplayService.loadHiddenEntities(for: server)
-        // Rebuild sections to reflect the changes
+        configuration.hiddenEntityIds.remove(entityId)
+        saveCachedData()
         rebuildSections()
     }
 
@@ -284,87 +254,15 @@ final class HomeViewModel: ObservableObject {
         buildSectionsFromEntityStates()
     }
 
-    // MARK: - Filter Settings Persistence
-
-    private var filterSettingsCacheKey: String {
-        "home.filterSettings." + server.identifier.rawValue
-    }
-
-    private func loadFilterSettingsIfNeeded() async {
-        do {
-            let settings: FilterSettings = try await withCheckedThrowingContinuation { continuation in
-                Current.diskCache
-                    .value(for: filterSettingsCacheKey)
-                    .done { (settings: FilterSettings) in
-                        continuation.resume(returning: settings)
-                    }
-                    .catch { error in
-                        continuation.resume(throwing: error)
-                    }
-            }
-            selectedSectionIds = settings.selectedSectionIds
-            allowMultipleSelection = settings.allowMultipleSelection
-        } catch {
-            // No filter settings cached, use defaults
-            selectedSectionIds = []
-            allowMultipleSelection = false
-        }
-    }
-
-    func saveFilterSettings() {
-        let settings = FilterSettings(
-            selectedSectionIds: selectedSectionIds,
-            allowMultipleSelection: allowMultipleSelection
-        )
-        Current.diskCache.set(settings, for: filterSettingsCacheKey).pipe { result in
-            if case let .rejected(error) = result {
-                Current.Log.error("Failed to save filter settings: \(error)")
-            }
-        }
-    }
-
-    struct FilterSettings: Codable {
-        let selectedSectionIds: Set<String>
-        let allowMultipleSelection: Bool
-    }
-
-    // MARK: - Entity Order Persistence (Per Room)
-
-    private var entityOrderCacheKey: String {
-        "home.entityOrders." + server.identifier.rawValue
-    }
-
-    private func loadEntityOrdersIfNeeded() async {
-        do {
-            let orders: [String: [String]] = try await withCheckedThrowingContinuation { continuation in
-                Current.diskCache
-                    .value(for: entityOrderCacheKey)
-                    .done { (orders: [String: [String]]) in
-                        continuation.resume(returning: orders)
-                    }
-                    .catch { error in
-                        continuation.resume(throwing: error)
-                    }
-            }
-            entityOrderByRoom = orders
-        } catch {
-            // No cached orders, use empty dictionary
-            entityOrderByRoom = [:]
-        }
-    }
+    // MARK: - Entity Order (Per Room)
 
     func saveEntityOrder(for roomId: String, order: [String]) {
-        entityOrderByRoom[roomId] = order
-        Current.diskCache.set(entityOrderByRoom, for: entityOrderCacheKey).pipe { result in
-            if case let .rejected(error) = result {
-                Current.Log.error("Failed to save entity orders: \(error)")
-            }
-        }
-        // Rebuild sections to reflect new order
+        configuration.entityOrderByRoom[roomId] = order
+        saveCachedData()
         rebuildSections()
     }
 
     func getEntityOrder(for roomId: String) -> [String] {
-        entityOrderByRoom[roomId] ?? []
+        configuration.entityOrderByRoom[roomId] ?? []
     }
 }
