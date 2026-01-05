@@ -42,6 +42,7 @@ final class HomeViewModel: ObservableObject {
     private var appEntitiesObservation: AnyDatabaseCancellable?
     private var registryEntitiesObservation: AnyDatabaseCancellable?
     private var isSubscriptionActive = false
+    private var saveTask: Task<Void, Never>?
 
     init(server: Server) {
         self.server = server
@@ -259,9 +260,7 @@ final class HomeViewModel: ObservableObject {
     private func subscribeToEntitiesChanges() {
         entityService.subscribeToEntitiesChanges(server: server) { [weak self] states in
             guard let self else { return }
-
             entityStates = states
-
             buildSectionsFromEntityStates()
         }
     }
@@ -325,13 +324,22 @@ final class HomeViewModel: ObservableObject {
         return updated
     }
 
-    /// Save all current state to database
+    /// Save all current state to database with debouncing
     private func saveCachedData() {
-        do {
-            try configuration.save()
-            rebuildSections()
-        } catch {
-            Current.Log.error("Failed to save Home view configuration: \(error.localizedDescription)")
+        // Cancel any pending save task
+        saveTask?.cancel()
+
+        // Schedule a new save after 1 second
+        saveTask = Task { @MainActor in
+            do {
+                try await Task.sleep(for: .seconds(1))
+                try configuration.save()
+                buildSectionsFromEntityStates()
+            } catch is CancellationError {
+                // Task was cancelled, do nothing
+            } catch {
+                Current.Log.error("Failed to save Home view configuration: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -343,11 +351,6 @@ final class HomeViewModel: ObservableObject {
 
     func unhideEntity(_ entityId: String) {
         configuration.hiddenEntityIds.remove(entityId)
-    }
-
-    private func rebuildSections() {
-        // Rebuild sections based on current entity states
-        buildSectionsFromEntityStates()
     }
 
     // MARK: - Entity Order (Per Room)
