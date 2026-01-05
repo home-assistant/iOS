@@ -17,6 +17,11 @@ struct RoomView: View {
     @State private var entityOrder: [String] = []
     @State private var draggedEntity: String?
 
+    // Cache the computed entities to avoid recomputation
+    @State private var cachedVisibleEntities: [HAEntity] = []
+    @State private var cachedHiddenEntities: [HAEntity] = []
+    @State private var lastUpdateHash: Int = 0
+
     var body: some View {
         NavigationStack {
             contentView
@@ -65,6 +70,10 @@ struct RoomView: View {
         .task {
             await loadEntityOrder()
         }
+        .task(id: computeUpdateHash()) {
+            // Update cached entities when data changes
+            updateCachedEntities()
+        }
     }
 
     // MARK: - Content View
@@ -76,12 +85,12 @@ struct RoomView: View {
                 spacing: DesignSystem.Spaces.three
             ) {
                 // Visible Entities Section
-                if !visibleEntities.isEmpty {
-                    entityTilesGrid(for: visibleEntities, isHidden: false)
+                if !cachedVisibleEntities.isEmpty {
+                    entityTilesGrid(for: cachedVisibleEntities, isHidden: false)
                 }
 
                 // Show/Hide Hidden Entities Button
-                if !hiddenEntities.isEmpty {
+                if !cachedHiddenEntities.isEmpty {
                     Button {
                         withAnimation(DesignSystem.Animation.default) {
                             showHidden.toggle()
@@ -104,16 +113,16 @@ struct RoomView: View {
                 }
 
                 // Hidden Entities Section
-                if showHidden, !hiddenEntities.isEmpty {
+                if showHidden, !cachedHiddenEntities.isEmpty {
                     Section {
-                        entityTilesGrid(for: hiddenEntities, isHidden: true)
+                        entityTilesGrid(for: cachedHiddenEntities, isHidden: true)
                     } header: {
                         sectionHeader(L10n.RoomView.Section.hidden)
                     }
                 }
 
                 // Empty State
-                if visibleEntities.isEmpty, hiddenEntities.isEmpty {
+                if cachedVisibleEntities.isEmpty, cachedHiddenEntities.isEmpty {
                     EntityDisplayComponents.emptyStateView(message: L10n.RoomView.EmptyState.noEntities)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(.top, DesignSystem.Spaces.six)
@@ -126,53 +135,66 @@ struct RoomView: View {
     // MARK: - Computed Properties
 
     private var currentRoomSection: HomeViewModel.RoomSection? {
+        // Use the pre-computed room section from HomeViewModel
         viewModel.groupedEntities.first(where: { $0.id == roomId })
     }
 
-    private var roomEntityIds: Set<String> {
-        // Get area entity IDs directly from the database
-        do {
-            let areas = try AppArea.fetchAreas(for: viewModel.server.identifier.rawValue)
-            if let area = areas.first(where: { $0.id == roomId }) {
-                return area.entities
-            }
-        } catch {
-            Current.Log.error("Failed to fetch area entities: \(error.localizedDescription)")
-        }
-        return []
+    // MARK: - Helper Methods
+
+    /// Compute a hash to detect when data needs updating
+    private func computeUpdateHash() -> Int {
+        var hasher = Hasher()
+        hasher.combine(roomId)
+        hasher.combine(viewModel.entityStates.count)
+        hasher.combine(viewModel.hiddenEntityIds.count)
+        hasher.combine(entityOrder)
+        return hasher.finalize()
     }
 
-    private var allRoomEntities: [HAEntity] {
-        // Get all entities from entity states that belong to this room
-        viewModel.entityStates.values.filter { entity in
-            roomEntityIds.contains(entity.entityId)
+    /// Update cached entities - only called when data changes
+    private func updateCachedEntities() {
+        // Get entities directly from the pre-computed room section
+        guard let roomSection = currentRoomSection else {
+            cachedVisibleEntities = []
+            cachedHiddenEntities = []
+            return
         }
-    }
 
-    private var visibleEntities: [HAEntity] {
-        let filtered = allRoomEntities.filter { entity in
-            !viewModel.hiddenEntityIds.contains(entity.entityId)
-        }
+        // Visible entities are already filtered by HomeViewModel (non-hidden)
+        let visible = roomSection.entities
 
         // Apply custom ordering if available
         if entityOrder.isEmpty {
-            return filtered.sorted { $0.entityId < $1.entityId }
+            cachedVisibleEntities = visible
         } else {
+            // Create order lookup once
             let orderIndex = Dictionary(uniqueKeysWithValues: entityOrder.enumerated().map { ($1, $0) })
-            return filtered.sorted { a, b in
+            cachedVisibleEntities = visible.sorted { a, b in
                 let ia = orderIndex[a.entityId] ?? Int.max
                 let ib = orderIndex[b.entityId] ?? Int.max
-                if ia == ib { return a.entityId < b.entityId }
-                return ia < ib
+                return ia == ib ? a.entityId < b.entityId : ia < ib
             }
         }
-    }
 
-    private var hiddenEntities: [HAEntity] {
-        allRoomEntities.filter { entity in
-            viewModel.hiddenEntityIds.contains(entity.entityId)
+        // Hidden entities: get all entity IDs from the room section's area
+        // and filter for those that are hidden
+        let allRoomEntityIds: Set<String>
+        do {
+            let areas = try AppArea.fetchAreas(for: viewModel.server.identifier.rawValue)
+            if let area = areas.first(where: { $0.id == roomId }) {
+                allRoomEntityIds = area.entities
+            } else {
+                allRoomEntityIds = []
+            }
+        } catch {
+            Current.Log.error("Failed to fetch area entities: \(error.localizedDescription)")
+            allRoomEntityIds = []
         }
-        .sorted { $0.entityId < $1.entityId }
+
+        cachedHiddenEntities = allRoomEntityIds
+            .compactMap { viewModel.entityStates[$0] }
+            .filter { viewModel.hiddenEntityIds.contains($0.entityId) }
+            .sorted { $0.entityId < $1.entityId }
     }
 
     // MARK: - Component Views
@@ -265,9 +287,9 @@ struct RoomView: View {
     private var editEntitiesSheet: some View {
         NavigationStack {
             List {
-                if !visibleEntities.isEmpty {
+                if !cachedVisibleEntities.isEmpty {
                     Section {
-                        ForEach(visibleEntities, id: \.entityId) { entity in
+                        ForEach(cachedVisibleEntities, id: \.entityId) { entity in
                             entityRow(entity: entity, isHidden: false)
                         }
                     } header: {
@@ -275,9 +297,9 @@ struct RoomView: View {
                     }
                 }
 
-                if !hiddenEntities.isEmpty {
+                if !cachedHiddenEntities.isEmpty {
                     Section {
-                        ForEach(hiddenEntities, id: \.entityId) { entity in
+                        ForEach(cachedHiddenEntities, id: \.entityId) { entity in
                             entityRow(entity: entity, isHidden: true)
                         }
                     } header: {
@@ -347,7 +369,7 @@ struct RoomView: View {
             entityOrder = order
         } catch {
             // If no cached order exists, use entity IDs from visible entities
-            entityOrder = visibleEntities.map(\.entityId)
+            entityOrder = cachedVisibleEntities.map(\.entityId)
         }
     }
 
