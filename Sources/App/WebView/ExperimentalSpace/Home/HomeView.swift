@@ -30,7 +30,8 @@ struct HomeView: View {
                 .toolbar {
                     toolbarMenu
                 }
-                .background(ModernAssistBackgroundView(theme: .homeAssistant))
+//                .background(ModernAssistBackgroundView(theme: .homeAssistant))
+                .background(Color.secondaryBackground)
         }
         .onAppear {
             Task {
