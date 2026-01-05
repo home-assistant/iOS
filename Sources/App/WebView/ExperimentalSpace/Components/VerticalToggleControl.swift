@@ -1,4 +1,5 @@
 import SFSafeSymbols
+import Shared
 import SwiftUI
 
 /// A reusable vertical toggle control with a draggable thumb and glass effect
@@ -10,10 +11,10 @@ struct VerticalToggleControl: View {
         var trackWidth: CGFloat = 120
         var trackHeight: CGFloat = 320
         var trackCornerRadius: CGFloat = 32
-        var thumbSize: CGFloat = 100
-        var thumbCornerRadius: CGFloat = 28
-        var iconSize: CGFloat = 44
-        var thumbPadding: CGFloat = 20
+        var thumbHeight: CGFloat = 140
+        var iconSize: CGFloat = 32
+        var iconOpacity: CGFloat = 0.8
+        var thumbPadding: CGFloat = DesignSystem.Spaces.one
         var minimumDragDistance: CGFloat = 10
         var toggleThreshold: CGFloat = 30
 
@@ -67,14 +68,6 @@ struct VerticalToggleControl: View {
             RoundedRectangle(cornerRadius: configuration.trackCornerRadius, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemFill))
                 .frame(width: configuration.trackWidth, height: configuration.trackHeight)
-                .glassEffect(
-                    .clear,
-                    in: RoundedRectangle(cornerRadius: configuration.trackCornerRadius, style: .continuous)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: configuration.trackCornerRadius, style: .continuous)
-                        .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
-                )
 
             // Animated thumb
             thumb
@@ -88,7 +81,7 @@ struct VerticalToggleControl: View {
                             }
                             // Clamp drag offset to track bounds
                             let availableTravel = configuration.trackHeight - configuration
-                                .thumbSize - (configuration.thumbPadding * 2)
+                                .thumbHeight - (configuration.thumbPadding * 2)
                             let maxOffset = availableTravel / 2
                             dragOffset = min(max(gesture.translation.height, -maxOffset), maxOffset)
                         }
@@ -124,27 +117,28 @@ struct VerticalToggleControl: View {
     // MARK: - Thumb
 
     private var thumb: some View {
-        RoundedRectangle(cornerRadius: configuration.thumbCornerRadius, style: .continuous)
-            .fill(isOn ? accentColor : Color(uiColor: .systemBackground))
-            .frame(width: configuration.thumbSize, height: configuration.thumbSize)
-            .shadow(
-                color: isOn ? accentColor.opacity(0.4) : Color.black.opacity(0.15),
-                radius: isOn ? 12 : 8,
-                x: 0,
-                y: isOn ? 6 : 4
-            )
-            .overlay(
-                Image(systemSymbol: icon)
-                    .font(.system(size: configuration.iconSize, weight: .semibold))
-                    .foregroundStyle(isOn ? .white : accentColor)
-            )
-            .scaleEffect(isDragging ? 0.95 : 1.0)
+        RoundedRectangle(
+            cornerRadius: configuration.trackCornerRadius - (configuration.thumbPadding / 2),
+            style: .continuous
+        )
+        .fill(isOn ? accentColor : Color(uiColor: .systemBackground))
+        .frame(
+            width: configuration.trackWidth - (configuration.thumbPadding * 2),
+            height: configuration.thumbHeight
+        )
+        .overlay(
+            Image(systemSymbol: icon)
+                .font(.system(size: configuration.iconSize, weight: .semibold))
+                .foregroundStyle(isOn ? .white : accentColor)
+                .opacity(configuration.iconOpacity)
+        )
+        .scaleEffect(isDragging ? 0.95 : 1.0)
     }
 
     // MARK: - Computed Properties
 
     private var thumbOffset: CGFloat {
-        let availableTravel = configuration.trackHeight - configuration.thumbSize - (configuration.thumbPadding * 2)
+        let availableTravel = configuration.trackHeight - configuration.thumbHeight - (configuration.thumbPadding * 2)
         let baseOffset = isOn ? -(availableTravel / 2) : (availableTravel / 2)
 
         // Add drag offset when dragging

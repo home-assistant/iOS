@@ -24,6 +24,8 @@ struct SwitchControlsView: View {
             Spacer()
             // Vertical switch control
             verticalSwitchControl
+            // Toggle button
+            toggleButton
             Spacer()
         }
         .frame(maxWidth: .infinity)
@@ -71,6 +73,24 @@ struct SwitchControlsView: View {
             icon: viewModel.switchIcon,
             isDisabled: viewModel.isUpdating
         )
+    }
+
+    // MARK: - Toggle Button
+
+    private var toggleButton: some View {
+        Button {
+            Task {
+                await viewModel.toggleSwitch()
+            }
+        } label: {
+            Image(systemSymbol: .power)
+                .font(.system(size: 24, weight: .semibold))
+                .frame(width: 60, height: 60)
+        }
+        .buttonStyle(.borderedProminent)
+        .clipShape(Circle())
+        .disabled(viewModel.isUpdating)
+        .animation(.easeInOut, value: viewModel.isOn)
     }
 }
 
