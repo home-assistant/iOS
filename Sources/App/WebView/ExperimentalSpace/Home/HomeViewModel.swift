@@ -27,12 +27,14 @@ final class HomeViewModel: ObservableObject {
 
     private var appEntities: [HAAppEntity]? {
         didSet {
+            guard !(appEntities?.isEmpty ?? true) else { return }
             buildSectionsFromEntityStates()
         }
     }
 
     private var registryEntities: [AppEntityRegistryListForDisplay]? {
         didSet {
+            guard !(registryEntities?.isEmpty ?? true) else { return }
             buildSectionsFromEntityStates()
         }
     }
