@@ -13,6 +13,8 @@ struct HomeView: View {
     @State private var showReorder = false
     @State private var showAssist = false
     @State private var selectedRoom: (id: String, name: String)?
+    @State private var isReorderMode = false
+    @State private var draggedEntity: String?
     @Environment(\.dismiss) private var dismiss
 
     init(server: Server) {
@@ -102,9 +104,9 @@ struct HomeView: View {
                     selectedSectionIds: viewModel.selectedSectionIds
                 )) { section in
                     Section {
-                        entityTilesGrid(for: section.entities)
+                        entityTilesGrid(for: section.entities, section: section)
                     } header: {
-                        sectionHeader(section.name)
+                        sectionHeader(section.name, section: section)
                     }
                 }
             }
@@ -117,88 +119,104 @@ struct HomeView: View {
 
     @ToolbarContentBuilder
     private var toolbarMenu: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button {
-                showAssist = true
-            } label: {
-                Image(.messageProcessingOutline)
+        // Done button when in reorder mode
+        if isReorderMode {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                        isReorderMode = false
+                    }
+                } label: {
+                    Text("Done")
+                        .fontWeight(.semibold)
+                }
+                .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.glassProminent)
-            .tint(.haPrimary)
-            .matchedTransitionSource(id: assistAnimationSourceID, in: assist)
-        }
-        ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                if viewModel.groupedEntities.isEmpty {
-                    Text(L10n.HomeView.Menu.noSectionsAvailable)
-                        .foregroundColor(.secondary)
-                } else {
-                    Toggle(isOn: Binding(
-                        get: { viewModel.selectedSectionIds.isEmpty },
-                        set: { isOn in
-                            if isOn {
-                                // Turning 'Show All' on clears filters
-                                viewModel.selectedSectionIds.removeAll()
-                                viewModel.saveFilterSettings()
-                            }
-                        }
-                    )) {
-                        Text(L10n.HomeView.Menu.showAll)
-                    }
-
-                    Toggle(isOn: Binding(
-                        get: { viewModel.allowMultipleSelection },
-                        set: { isOn in
-                            viewModel.allowMultipleSelection = isOn
-                            viewModel.saveFilterSettings()
-                        }
-                    )) {
-                        Text(L10n.HomeView.Menu.allowMultipleSelection)
-                    }
-
-                    Button {
-                        showReorder = true
-                    } label: {
-                        Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
-                    }
-
-                    Divider()
-
-                    ForEach(viewModel.orderedSectionsForMenu) { section in
+        } else {
+            // Normal toolbar items
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showAssist = true
+                } label: {
+                    Image(.messageProcessingOutline)
+                }
+                .buttonStyle(.glassProminent)
+                .tint(.haPrimary)
+                .matchedTransitionSource(id: assistAnimationSourceID, in: assist)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    if viewModel.groupedEntities.isEmpty {
+                        Text(L10n.HomeView.Menu.noSectionsAvailable)
+                            .foregroundColor(.secondary)
+                    } else {
                         Toggle(isOn: Binding(
-                            get: { viewModel.selectedSectionIds.contains(section.id) },
-                            set: { _ in
-                                viewModel.selectedSectionIds = viewModel.toggledSelection(
-                                    for: section.id,
-                                    current: viewModel.selectedSectionIds,
-                                    allowMultipleSelection: viewModel.allowMultipleSelection
-                                )
+                            get: { viewModel.selectedSectionIds.isEmpty },
+                            set: { isOn in
+                                if isOn {
+                                    // Turning 'Show All' on clears filters
+                                    viewModel.selectedSectionIds.removeAll()
+                                    viewModel.saveFilterSettings()
+                                }
+                            }
+                        )) {
+                            Text(L10n.HomeView.Menu.showAll)
+                        }
+
+                        Toggle(isOn: Binding(
+                            get: { viewModel.allowMultipleSelection },
+                            set: { isOn in
+                                viewModel.allowMultipleSelection = isOn
                                 viewModel.saveFilterSettings()
                             }
                         )) {
-                            Text(section.name)
+                            Text(L10n.HomeView.Menu.allowMultipleSelection)
+                        }
+
+                        Button {
+                            showReorder = true
+                        } label: {
+                            Label(L10n.HomeView.Menu.reorder, systemSymbol: .listDash)
+                        }
+
+                        Divider()
+
+                        ForEach(viewModel.orderedSectionsForMenu) { section in
+                            Toggle(isOn: Binding(
+                                get: { viewModel.selectedSectionIds.contains(section.id) },
+                                set: { _ in
+                                    viewModel.selectedSectionIds = viewModel.toggledSelection(
+                                        for: section.id,
+                                        current: viewModel.selectedSectionIds,
+                                        allowMultipleSelection: viewModel.allowMultipleSelection
+                                    )
+                                    viewModel.saveFilterSettings()
+                                }
+                            )) {
+                                Text(section.name)
+                            }
                         }
                     }
+                } label: {
+                    Image(systemSymbol: .line3HorizontalDecrease)
                 }
-            } label: {
-                Image(systemSymbol: .line3HorizontalDecrease)
             }
-        }
-        ToolbarItem(placement: .primaryAction) {
-            Menu {
-                Button {
-                    dismiss()
-                } label: {
-                    Label(L10n.HomeView.Menu.openWebUi, systemSymbol: .safari)
-                }
+            ToolbarItem(placement: .primaryAction) {
+                Menu {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Label(L10n.HomeView.Menu.openWebUi, systemSymbol: .safari)
+                    }
 
-                Button {
-                    showSettings = true
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Label(L10n.HomeView.Menu.settings, systemSymbol: .gearshape)
+                    }
                 } label: {
-                    Label(L10n.HomeView.Menu.settings, systemSymbol: .gearshape)
+                    Image(systemSymbol: .ellipsis)
                 }
-            } label: {
-                Image(systemSymbol: .ellipsis)
             }
         }
     }
@@ -206,11 +224,11 @@ struct HomeView: View {
     // MARK: - Component Views
 
     @ViewBuilder
-    private func sectionHeader(_ title: String) -> some View {
+    private func sectionHeader(_ title: String, section: HomeViewModel.RoomSection) -> some View {
         Group {
-            if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
+            if let foundSection = viewModel.groupedEntities.first(where: { $0.name == title }) {
                 Button {
-                    selectedRoom = (id: section.id, name: section.name)
+                    selectedRoom = (id: foundSection.id, name: foundSection.name)
                 } label: {
                     HStack {
                         Text(title)
@@ -226,21 +244,69 @@ struct HomeView: View {
                     .padding(.top, DesignSystem.Spaces.one)
                 }
                 .buttonStyle(.plain)
+                .disabled(isReorderMode)
                 .padding(.horizontal, DesignSystem.Spaces.one)
-                .matchedTransitionSource(id: section.id, in: roomNameSpace)
+                .matchedTransitionSource(id: foundSection.id, in: roomNameSpace)
             } else { EmptyView() }
         }
     }
 
-    private func entityTilesGrid(for entities: [HAEntity]) -> some View {
-        EntityDisplayComponents.entityTilesGrid(
-            entities: entities,
-            server: viewModel.server
-        ) { entity in
-            Button(role: .destructive) {
-                viewModel.hideEntity(entity.entityId)
-            } label: {
-                Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
+    private func entityTilesGrid(for entities: [HAEntity], section: HomeViewModel.RoomSection) -> some View {
+        Group {
+            if isReorderMode {
+                reorderableEntityTilesGrid(for: entities, roomId: section.id)
+            } else {
+                EntityDisplayComponents.entityTilesGrid(
+                    entities: entities,
+                    server: viewModel.server
+                ) { entity in
+                    Group {
+                        Button {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                isReorderMode = true
+                            }
+                        } label: {
+                            Label("Enter edit mode", systemSymbol: .arrowUpArrowDownCircle)
+                        }
+
+                        Button(role: .destructive) {
+                            viewModel.hideEntity(entity.entityId)
+                        } label: {
+                            Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Reorderable Grid
+
+    @ViewBuilder
+    private func reorderableEntityTilesGrid(for entities: [HAEntity], roomId: String) -> some View {
+        let columns = [
+            GridItem(.adaptive(minimum: 150, maximum: 250), spacing: DesignSystem.Spaces.oneAndHalf),
+        ]
+
+        LazyVGrid(columns: columns, spacing: DesignSystem.Spaces.oneAndHalf) {
+            ForEach(entities, id: \.entityId) { entity in
+                EntityTileView(
+                    server: viewModel.server,
+                    haEntity: entity
+                )
+                .contentShape(Rectangle())
+                .modifier(EditModeIndicatorModifier(isEditing: true, isDragging: draggedEntity == entity.entityId))
+                .onDrag {
+                    draggedEntity = entity.entityId
+                    return NSItemProvider(object: entity.entityId as NSString)
+                }
+                .onDrop(of: [.text], delegate: EntityDropDelegate(
+                    entity: entity,
+                    entities: entities,
+                    draggedEntity: $draggedEntity,
+                    roomId: roomId,
+                    viewModel: viewModel
+                ))
             }
         }
     }
