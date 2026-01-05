@@ -30,7 +30,6 @@ struct HomeView: View {
                 .toolbar {
                     toolbarMenu
                 }
-//                .background(ModernAssistBackgroundView(theme: .homeAssistant))
                 .background(Color.secondaryBackground)
         }
         .onAppear {
@@ -126,14 +125,15 @@ struct HomeView: View {
             ) {
                 ForEach(filteredSections) { section in
                     let visibleEntities = visibleEntitiesForSection(section)
-
-                    Section {
-                        entityTilesGrid(
-                            for: visibleEntities,
-                            section: section
-                        )
-                    } header: {
-                        sectionHeader(section.name, section: section)
+                    if !visibleEntities.isEmpty || viewModel.configuration.visibleSectionIds.contains(section.id) {
+                        Section {
+                            entityTilesGrid(
+                                for: visibleEntities,
+                                section: section
+                            )
+                        } header: {
+                            sectionHeader(section.name, section: section)
+                        }
                     }
                 }
             }

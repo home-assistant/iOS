@@ -49,11 +49,6 @@ struct LightControlsView: View {
                         brightnessSlider
                         controlBar
 
-                        // Mode toggle if light supports both color and temperature
-                        if viewModel.supportsColor(), viewModel.supportsColorTemp() {
-                            modeToggle
-                        }
-
                         // Show appropriate controls based on mode and support
                         if viewModel.supportsColor(), viewModel.currentColorMode == .color, showColorPresets {
                             HStack {
@@ -189,43 +184,6 @@ struct LightControlsView: View {
         .transition(.scale.combined(with: .opacity))
     }
 
-    // MARK: - Mode Toggle
-
-    private var modeToggle: some View {
-        HStack(spacing: DesignSystem.Spaces.two) {
-            modeToggleButton(mode: .color, icon: .paintpaletteFill, label: "Color")
-            modeToggleButton(mode: .temperature, icon: .thermometerMedium, label: "Temperature")
-        }
-        .padding(.horizontal, DesignSystem.Spaces.two)
-    }
-
-    private func modeToggleButton(mode: LightControlsViewModel.ColorMode, icon: SFSymbol, label: String) -> some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                viewModel.currentColorMode = mode
-            }
-            triggerHaptic += 1
-        } label: {
-            HStack(spacing: DesignSystem.Spaces.one) {
-                Image(systemSymbol: icon)
-                    .font(.system(size: 16, weight: .semibold))
-                Text(label)
-                    .font(.system(size: 15, weight: .medium))
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 44)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(
-                        viewModel.currentColorMode == mode ? Color.accentColor
-                            .opacity(0.15) : Color(uiColor: .secondarySystemBackground)
-                    )
-            )
-            .foregroundStyle(viewModel.currentColorMode == mode ? Color.accentColor : .primary)
-        }
-        .buttonStyle(.plain)
-    }
-
     // MARK: - Control Bar
 
     private var controlBar: some View {
@@ -235,6 +193,24 @@ struct LightControlsView: View {
                 triggerHaptic += 1
                 Task { await viewModel.toggleLight() }
             }
+
+            // Show mode toggle buttons if light supports both color and temperature
+            if viewModel.supportsColor(), viewModel.supportsColorTemp() {
+                controlIconButton(symbol: .paintpaletteFill, isSelected: viewModel.currentColorMode == .color) {
+                    triggerHaptic += 1
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        viewModel.currentColorMode = .color
+                    }
+                }
+
+                controlIconButton(symbol: .thermometerMedium, isSelected: viewModel.currentColorMode == .temperature) {
+                    triggerHaptic += 1
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        viewModel.currentColorMode = .temperature
+                    }
+                }
+            }
+
             Spacer()
         }
         .frame(height: Constants.controlBarHeight)
@@ -350,16 +326,20 @@ struct LightControlsView: View {
         )
     }
 
-    private func controlIconButton(symbol: SFSymbol, action: @escaping () -> Void) -> some View {
+    private func controlIconButton(
+        symbol: SFSymbol,
+        isSelected: Bool = false,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: {
             action()
         }) {
             ZStack {
                 Circle()
-                    .fill(Color(uiColor: .secondarySystemBackground))
+                    .fill(isSelected ? Color.accentColor.opacity(0.2) : Color(uiColor: .secondarySystemBackground))
                 Image(systemSymbol: symbol)
                     .font(.system(size: Constants.controlIconSize, weight: .semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(isSelected ? Color.accentColor : .primary)
             }
             .frame(width: 60, height: 60)
         }

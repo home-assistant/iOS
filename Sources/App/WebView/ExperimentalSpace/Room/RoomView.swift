@@ -51,7 +51,7 @@ struct RoomView: View {
                         }
                     }
                 }
-                .background(ModernAssistBackgroundView(theme: .homeAssistant))
+                .background(Color.secondaryBackground)
         }
         .animation(DesignSystem.Animation.default, value: showHidden)
         .sheet(isPresented: $showEditSheet) {
