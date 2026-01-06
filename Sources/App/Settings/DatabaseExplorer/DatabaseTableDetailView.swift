@@ -141,15 +141,30 @@ final class DatabaseTableDetailViewModel: ObservableObject {
         do {
             let database = Current.database()
 
+            // Validate table name exists in the database to prevent SQL injection
+            let tableExists = try database.read { db in
+                try String.fetchOne(
+                    db,
+                    sql: "SELECT name FROM sqlite_master WHERE type='table' AND name = ?",
+                    arguments: [tableName]
+                ) != nil
+            }
+
+            guard tableExists else {
+                Current.Log.error("Table '\(tableName)' not found in database")
+                return
+            }
+
             // Check if table has serverId column
             let columns = try database.read { db in
                 try db.columns(in: tableName).map(\.name)
             }
             hasServerIdColumn = columns.contains("serverId")
 
-            // Fetch all rows
+            // Fetch all rows using quoted identifier to prevent SQL injection
             rows = try database.read { db in
-                let cursor = try Row.fetchCursor(db, sql: "SELECT * FROM \(tableName)")
+                let quotedTableName = "\"\(tableName.replacingOccurrences(of: "\"", with: "\"\""))\""
+                let cursor = try Row.fetchCursor(db, sql: "SELECT * FROM \(quotedTableName)")
                 var result: [[String: String]] = []
                 while let row = try cursor.next() {
                     var dict: [String: String] = [:]
