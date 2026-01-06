@@ -1230,7 +1230,6 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "watch.labels.complication_text_areas.row3_column2.label" = "第3行，第2列";
 "watch.labels.complication_text_areas.trailing.description" = "显示在仪表后缘的文本。";
 "watch.labels.complication_text_areas.trailing.label" = "结尾";
-"watch.labels.no_action" = "未配置动作。请在手机上配置动作以消除此消息。";
 "watch.labels.no_config" = "没有可用的手表配置，请打开 iOS 应用并在配套应用中创建您的配置。";
 "watch.labels.selected_pipeline.title" = "管道";
 "watch.placeholder_complication_name" = "占位符";

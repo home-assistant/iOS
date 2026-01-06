@@ -1231,7 +1231,6 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.labels.complication_text_areas.row3_column2.label" = "Řádek 3, Sloupec 2";
 "watch.labels.complication_text_areas.trailing.description" = "Text, který se má zobrazit na konci ručičkového ukazatele.";
 "watch.labels.complication_text_areas.trailing.label" = "Konec";
-"watch.labels.no_action" = "Nejsou nastaveny žádné akce. Aby se tato zpráva nezobrazovala, musíte nastavit v telefonu nějaké akce.";
 "watch.labels.no_config" = "Není k dispozici žádné nastavení hodinek. Otevřete aplikaci pro iOS a vytvořte nastavení v doprovodné aplikaci.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Zástupný symbol";

@@ -1230,7 +1230,6 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "watch.labels.complication_text_areas.row3_column2.label" = "Rad 3, kolumn 2";
 "watch.labels.complication_text_areas.trailing.description" = "Texten som ska visas på mätarens bakre kant.";
 "watch.labels.complication_text_areas.trailing.label" = "Efterföljande";
-"watch.labels.no_action" = "Inga åtgärder konfigurerade. Konfigurera åtgärder på telefonen för att avfärda detta meddelande.";
 "watch.labels.no_config" = "Ingen klockkonfiguration tillgänglig, öppna iOS-appen och skapa din konfiguration under inställningarna för Companion-appen.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platshållare";
