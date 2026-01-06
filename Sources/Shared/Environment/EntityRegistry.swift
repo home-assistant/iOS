@@ -198,7 +198,10 @@ public struct AppEntityRegistry: Codable, FetchableRecord, PersistableRecord {
         self.hasEntityName = registry.hasEntityName
     }
 
-    // Computed helpers (same as EntityRegistryEntry)
+    public var id: String {
+        "\(serverId)-\(uniqueId)"
+    }
+
     public var displayName: String {
         name ?? originalName ?? entityId ?? "-"
     }
