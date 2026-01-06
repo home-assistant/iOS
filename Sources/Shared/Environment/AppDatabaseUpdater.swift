@@ -48,15 +48,22 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
 
-        updateTask = Task {
-            await withTaskGroup(of: Void.self) { group in
-                for server in Current.servers.all {
-                    guard server.info.connection.activeURL() != nil else { continue }
-
-                    group.addTask {
-                        await self.updateServer(server: server)
-                    }
+        updateTask = Task { [weak self] in
+            for server in Current.servers.all {
+                guard let self else {
+                    break
                 }
+
+                guard server.info.connection.activeURL() != nil else {
+                    continue
+                }
+                // Check if task was cancelled before processing next server
+                if Task.isCancelled {
+                    Current.Log.verbose("Update task cancelled")
+                    break
+                }
+
+                await updateServer(server: server)
             }
         }
 
