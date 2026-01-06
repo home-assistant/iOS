@@ -52,7 +52,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                 // Track disconnected state for reconnection logic
                 switch state {
                 case .unavailable:
-                    if !disconnectedServers.contains(server.identifier) {
+                    let wasDisconnected = disconnectedServers.contains(server.identifier)
+                    if !wasDisconnected {
                         Current.Log.info("Server \(server.identifier.rawValue) local push became unavailable")
                         Current.Log
                             .verbose(
@@ -60,10 +61,16 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
                             )
                         disconnectedServers.insert(server.identifier)
                         Current.Log.verbose("Disconnected servers after insert: \(disconnectedServers.map(\.rawValue))")
-                        scheduleReconnection()
                     } else {
                         Current.Log.verbose("Server \(server.identifier.rawValue) already in disconnected set")
                     }
+                    // Always attempt to schedule reconnection for unavailable servers.
+                    // scheduleReconnectionIfNeeded() is idempotent and will only schedule if:
+                    // 1. No timer is already active (prevents duplicate timers)
+                    // 2. There are disconnected servers needing reconnection
+                    // This ensures both initial disconnections and failed reconnection attempts
+                    // properly schedule the next attempt with appropriate backoff.
+                    scheduleReconnectionIfNeeded()
                 case .available, .establishing:
                     if disconnectedServers.contains(server.identifier) {
                         Current.Log.info("Server \(server.identifier.rawValue) local push reconnected successfully")
@@ -159,15 +166,28 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     // MARK: - Reconnection Logic
 
-    /// Schedules a reconnection attempt with gradual backoff
-    private func scheduleReconnection() {
+    /// Schedules a reconnection attempt with gradual backoff if one is not already scheduled.
+    /// This method is idempotent and safe to call multiple times - it will only schedule a new
+    /// timer if one is not already active. This prevents rapid successive reconnection attempts
+    /// and ensures proper backoff timing.
+    private func scheduleReconnectionIfNeeded() {
         Current.Log
             .verbose(
-                "scheduleReconnection called. Current attempt: \(reconnectionAttempt), timer active: \(reconnectionTimer != nil)"
+                "scheduleReconnectionIfNeeded called. Current attempt: \(reconnectionAttempt), timer active: \(reconnectionTimer != nil), disconnected servers: \(disconnectedServers.count)"
             )
 
-        // Cancel any existing timer
-        reconnectionTimer?.invalidate()
+        // If a timer is already active, don't schedule a new one
+        // This ensures we maintain proper backoff timing and don't reset the timer
+        guard reconnectionTimer == nil else {
+            Current.Log.verbose("Reconnection timer already active, skipping scheduling")
+            return
+        }
+
+        // If there are no disconnected servers, don't schedule a reconnection
+        guard !disconnectedServers.isEmpty else {
+            Current.Log.verbose("No disconnected servers, skipping reconnection scheduling")
+            return
+        }
 
         // Determine the delay based on the current attempt
         let delayIndex = min(reconnectionAttempt, reconnectionDelays.count - 1)
@@ -193,6 +213,11 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
 
     /// Attempts to reconnect by reloading managers
     private func attemptReconnection() {
+        // Clear the timer reference first since it has now fired.
+        // This allows scheduleReconnectionIfNeeded() to schedule a new timer
+        // if this reconnection attempt fails.
+        reconnectionTimer = nil
+
         reconnectionAttempt += 1
         Current.Log
             .info(
@@ -209,8 +234,8 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         reloadManagersAfterSave()
 
         Current.Log.verbose("reloadManagersAfterSave() called, waiting for state change to determine next action")
-        // If still unavailable after this attempt, schedule the next one
-        // This will be triggered by the state didSet when the connection fails
+        // If still unavailable after this attempt, the status observer will trigger
+        // and scheduleReconnectionIfNeeded() will schedule the next attempt with proper backoff
     }
 
     /// Cancels any pending reconnection timer and resets the attempt counter
