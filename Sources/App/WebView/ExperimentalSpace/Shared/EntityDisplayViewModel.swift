@@ -30,38 +30,6 @@ final class EntityDisplayService {
 
     private var entitiesSubscriptionToken: HACancellable?
 
-    // MARK: - Hidden Entities Management
-
-    static func hiddenEntitiesCacheKey(for server: Server) -> String {
-        "home.hiddenEntities." + server.identifier.rawValue
-    }
-
-    static func loadHiddenEntities(for server: Server) async -> Set<String> {
-        do {
-            let hidden: Set<String> = try await withCheckedThrowingContinuation { continuation in
-                Current.diskCache
-                    .value(for: hiddenEntitiesCacheKey(for: server))
-                    .done { (hidden: Set<String>) in
-                        continuation.resume(returning: hidden)
-                    }
-                    .catch { error in
-                        continuation.resume(throwing: error)
-                    }
-            }
-            return hidden
-        } catch {
-            return []
-        }
-    }
-
-    static func saveHiddenEntities(_ hiddenEntityIds: Set<String>, for server: Server) {
-        Current.diskCache.set(hiddenEntityIds, for: hiddenEntitiesCacheKey(for: server)).pipe { result in
-            if case let .rejected(error) = result {
-                Current.Log.error("Failed to save hidden entities: \(error)")
-            }
-        }
-    }
-
     // MARK: - Entity Subscription
 
     func subscribeToEntitiesChanges(
