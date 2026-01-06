@@ -566,6 +566,8 @@
 		420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */; };
 		420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */; };
 		420C91502F0C6CAC005D04A6 /* HomeViewCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */; };
+		420C91522F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
+		420C91532F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
 		420CFC642D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
 		420CFC652D3F9C2C009A94F3 /* HAppEntityTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */; };
 		420CFC682D3F9C40009A94F3 /* WatchConfigTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */; };
@@ -1152,6 +1154,10 @@
 		42FCD0152B9B29740057783F /* ThreadCredentialsManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */; };
 		42FDA9362DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
 		42FDA9372DAFEA4E00111F22 /* DeviceClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */; };
+		42FDCA272F0C7EB900C92958 /* EntityRegistry.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */; };
+		42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 42FDCA252F0C7BFA00C92958 /* entityregistry.json */; };
+		42FDCA2A2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
+		42FDCA2B2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */; };
 		465BC1EE2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */; };
 		4697F4BF2D8A3F7500C5C467 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4697F4BE2D8A3F7500C5C467 /* XCTest.framework */; platformFilter = ios; };
 		4697F4C12D8A416400C5C467 /* SharedTesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C62B882D8A3687002C0001 /* SharedTesting.framework */; };
@@ -2214,6 +2220,8 @@
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
 		420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCustomizationView.swift; sourceTree = "<group>"; };
+		420C91512F0C7988005D04A6 /* EntityRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.swift; sourceTree = "<group>"; };
+		420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.test.swift; sourceTree = "<group>"; };
 		420CFC632D3F9C2C009A94F3 /* HAppEntityTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAppEntityTable.swift; sourceTree = "<group>"; };
 		420CFC672D3F9C40009A94F3 /* WatchConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConfigTable.swift; sourceTree = "<group>"; };
 		420CFC6B2D3F9C6E009A94F3 /* CarPlayConfigTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayConfigTable.swift; sourceTree = "<group>"; };
@@ -2884,6 +2892,8 @@
 		42FCD00F2B9B29740057783F /* ThreadCredentialDetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialDetailsView.swift; sourceTree = "<group>"; };
 		42FCD0112B9B29740057783F /* ThreadCredentialsManagementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCredentialsManagementView.swift; sourceTree = "<group>"; };
 		42FDA9352DAFEA4E00111F22 /* DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceClass.swift; sourceTree = "<group>"; };
+		42FDCA252F0C7BFA00C92958 /* entityregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = entityregistry.json; sourceTree = "<group>"; };
+		42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntityRegistryTable.swift; sourceTree = "<group>"; };
 		465BC1ED2D8DB87A00A30A60 /* LocationHistoryEntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistoryEntryListItemView.swift; sourceTree = "<group>"; };
 		4697F4BE2D8A3F7500C5C467 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		46BA6A4D2D734EAE002C2262 /* SnapshotTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingHelper.swift; sourceTree = "<group>"; };
@@ -4535,12 +4545,22 @@
 			path = ClientEventsLogView;
 			sourceTree = "<group>";
 		};
+		420C915B2F0C7AF4005D04A6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */,
+				42FDCA252F0C7BFA00C92958 /* entityregistry.json */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		420CFC612D3F9C15009A94F3 /* Database */ = {
 			isa = PBXGroup;
 			children = (
 				420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */,
 				420CFC622D3F9C1F009A94F3 /* Tables */,
 				4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */,
+				42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -6771,6 +6791,7 @@
 				D00302BD20D4BEDB004C2CA9 /* Environment.swift */,
 				420A80952E9CF98C00D30A6B /* ImpactFeedbackGeneratorProtocol.swift */,
 				4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */,
+				420C91512F0C7988005D04A6 /* EntityRegistry.swift */,
 				D03D893A20E0B2E300D4F28D /* AppConstants.swift */,
 				1101568624D7712F009424C9 /* TagManagerProtocol.swift */,
 				11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */,
@@ -6883,6 +6904,7 @@
 		D03D894320E0BC1800D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				420C915B2F0C7AF4005D04A6 /* Models */,
 				42ACC2A62E9F9B1E0045A3FD /* Extensions */,
 				428626002DA5CC8400D58D13 /* DesignSystem */,
 				118511C024B25BDC00D18F60 /* Webhook */,
@@ -8090,6 +8112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */,
+				42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9339,6 +9362,7 @@
 				118BDA8925A6DBBA00731016 /* FrontmostAppSensor.swift in Sources */,
 				421326A82C0FC81800C7D059 /* View+ConditionalModifier.swift in Sources */,
 				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
+				42FDCA2A2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */,
 				427E92BF2D65E43A0001566B /* WidgetInteractionType.swift in Sources */,
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				115560E927011E3300A8F818 /* HAPanel.swift in Sources */,
@@ -9541,6 +9565,7 @@
 				11B38EF2275C54A300205C7B /* CallServiceIntentHandler.swift in Sources */,
 				42D3E4C02C5D321C00444BE6 /* NotificationIdentifier.swift in Sources */,
 				4254C4CB2D103ABB00245021 /* ExternalLink.swift in Sources */,
+				420C91532F0C7988005D04A6 /* EntityRegistry.swift in Sources */,
 				42CE8FB12B46C3DA00C707F9 /* CoreStrings+Values.swift in Sources */,
 				429C82892DCCDB0F007B03AF /* HAProgressView.swift in Sources */,
 				4239D1832C4FFCCE003497FC /* WatchUserDefaults.swift in Sources */,
@@ -9664,6 +9689,7 @@
 				1117FB4C250C5F7C00895C13 /* DeviceBattery.swift in Sources */,
 				11F855DA24DF6C7A0018013E /* IconDrawable.swift in Sources */,
 				42070EF02BAC52630031E96F /* AssistRequests.swift in Sources */,
+				420C91522F0C7988005D04A6 /* EntityRegistry.swift in Sources */,
 				42CE8FA92B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */,
 				11AF4D1F249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
@@ -9724,6 +9750,7 @@
 				42B74A5D2D36A47E00C37304 /* CloseButton.swift in Sources */,
 				399792712B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
+				42FDCA2B2F0C88A100C92958 /* AppEntityRegistryTable.swift in Sources */,
 				11CFD784273662DF0082D557 /* Server.swift in Sources */,
 				42905D852E12B00900250728 /* DesignSystem.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
@@ -9917,6 +9944,7 @@
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
 				11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */,
 				11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */,
+				42FDCA272F0C7EB900C92958 /* EntityRegistry.test.swift in Sources */,
 				11B7DC1F266C5D3E0090BD3B /* LocalPushManager.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,

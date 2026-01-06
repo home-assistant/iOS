@@ -78,7 +78,7 @@ final class AreasService: AreasServiceProtocol {
     /// - Important: If the database write operation fails, an error will be logged but the method
     ///   will continue processing remaining entities.
     private func updatePropertiesInEntitiesDatabase(
-        _ entitiesRegistryResponse: [HAEntityRegistryResponse],
+        _ entitiesRegistryResponse: [EntityRegistryEntry],
         serverId: String
     ) {
         do {
@@ -102,7 +102,7 @@ final class AreasService: AreasServiceProtocol {
     private func fetchEntitiesForAreas(
         _ areas: [HAAreasRegistryResponse],
         server: Server
-    ) async -> [HAEntityRegistryResponse] {
+    ) async -> [EntityRegistryEntry] {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch entities for areas")
             return []
@@ -111,7 +111,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let entitiesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HAEntityRegistryResponse]>.configEntityRegistryList(),
+                HATypedRequest<[EntityRegistryEntry]>.configEntityRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
@@ -129,7 +129,7 @@ final class AreasService: AreasServiceProtocol {
 
     private func fetchDeviceForAreas(
         _ areas: [HAAreasRegistryResponse],
-        entitiesWithAreas: [HAEntityRegistryResponse],
+        entitiesWithAreas: [EntityRegistryEntry],
         server: Server
     ) async -> [HADevicesRegistryResponse] {
         guard let connection = Current.api(for: server)?.connection else {
@@ -158,7 +158,7 @@ final class AreasService: AreasServiceProtocol {
 
     private func getAllEntitiesFromArea(
         devicesAndAreas: [HADevicesRegistryResponse],
-        entitiesAndAreas: [HAEntityRegistryResponse]
+        entitiesAndAreas: [EntityRegistryEntry]
     ) -> [String: Set<String>] {
         /// area_id : [device_id]
         var areasAndDevicesDict: [String: [String]] = [:]
@@ -222,7 +222,7 @@ final class AreasService: AreasServiceProtocol {
     /// For testing purposes only
     public func testGetAllEntitiesFromArea(
         devicesAndAreas: [HADevicesRegistryResponse],
-        entitiesAndAreas: [HAEntityRegistryResponse]
+        entitiesAndAreas: [EntityRegistryEntry]
     ) -> [String: Set<String>] {
         getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }

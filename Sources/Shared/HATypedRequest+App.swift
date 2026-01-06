@@ -115,8 +115,8 @@ public extension HATypedRequest {
         ))
     }
 
-    static func configEntityRegistryList() -> HATypedRequest<[HAEntityRegistryResponse]> {
-        HATypedRequest<[HAEntityRegistryResponse]>(request: .init(
+    static func configEntityRegistryList() -> HATypedRequest<[EntityRegistryEntry]> {
+        HATypedRequest<[EntityRegistryEntry]>(request: .init(
             type: "config/entity_registry/list"
         ))
     }

@@ -9,6 +9,10 @@ public protocol AppDatabaseUpdaterProtocol {
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
+    enum UpdateError: Error {
+        case noAPI
+    }
+
     static var shared = AppDatabaseUpdater()
 
     private var requestTokens: [HACancellable?] = []
@@ -41,16 +45,19 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         for server in Current.servers.all {
             guard server.info.connection.activeURL() != nil else { continue }
-            // Cache entities
+            // Entities (fetch_states)
             let entitiesDatabaseToken = updateEntitiesDatabase(server: server)
             requestTokens.append(entitiesDatabaseToken)
 
-            // Cache entities registry list for display
+            // Entities registry list for display
             let entitiesRegistryToken = updateEntitiesRegistryListForDisplay(server: server)
             requestTokens.append(entitiesRegistryToken)
 
-            // Cache areas with their entities
+            // Areas with their entities
             await updateAreasDatabase(server: server)
+
+            // Entities registry
+            await updateEntitiesRegistry(server: server)
         }
     }
 
@@ -73,6 +80,33 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 }
             }
         )
+    }
+
+    private func updateEntitiesRegistry(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(.configEntityRegistryList()) { [weak self] result in
+                switch result {
+                case let .success(registryEntries):
+                    Current.Log.verbose("Successfully fetched entity registry for server \(server.info.name)")
+                    self?.saveEntityRegistry(registryEntries, serverId: server.identifier.rawValue)
+                case let .failure(error):
+                    Current.Log.error("Failed to fetch entity registry: \(error)")
+                    Current.clientEventStore.addEvent(.init(
+                        text: "Failed to fetch entity registry on server \(server.info.name)",
+                        type: .networkRequest,
+                        payload: [
+                            "error": error.localizedDescription,
+                        ]
+                    ))
+                }
+                continuation.resume()
+            }
+        }
     }
 
     private func updateEntitiesRegistryListForDisplay(server: Server) -> HACancellable? {
@@ -177,6 +211,39 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 .error("Failed to save EntityRegistryListForDisplay in database, error: \(error.localizedDescription)")
             Current.clientEventStore.addEvent(.init(
                 text: "Failed to save EntityRegistryListForDisplay in database, error on serverId \(serverId)",
+                type: .database,
+                payload: [
+                    "error": error.localizedDescription,
+                ]
+            ))
+        }
+    }
+
+    private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) {
+        let appEntityRegistries = registryEntries.map { entry in
+            AppEntityRegistry(serverId: serverId, registry: entry)
+        }
+
+        do {
+            try Current.database().write { db in
+                // Delete existing registry entries for this server
+                try AppEntityRegistry
+                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                    .deleteAll(db)
+
+                // Insert new registry entries
+                for registry in appEntityRegistries {
+                    try registry.save(db)
+                }
+            }
+            Current.Log
+                .verbose(
+                    "Successfully saved \(appEntityRegistries.count) entity registry entries for server \(serverId)"
+                )
+        } catch {
+            Current.Log.error("Failed to save entity registry in database, error: \(error.localizedDescription)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to save entity registry in database, error on serverId \(serverId)",
                 type: .database,
                 payload: [
                     "error": error.localizedDescription,
