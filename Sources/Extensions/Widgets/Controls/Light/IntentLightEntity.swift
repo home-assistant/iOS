@@ -100,8 +100,8 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
-                    areaName: areasMap[entity.entityId]?.name ?? "",
-                    deviceName: deviceMap[entity.entityId]?.name ?? "",
+                    areaName: areasMap[entity.entityId]?.name,
+                    deviceName: deviceMap[entity.entityId]?.name,
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.lightbulbFill.rawValue
                 )
