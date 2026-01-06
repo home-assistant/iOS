@@ -15,8 +15,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     static var shared = AppDatabaseUpdater()
 
-    private var requestTokens: [HACancellable?] = []
     private var lastUpdate: Date?
+    private var updateTask: Task<Void, Never>?
 
     init() {
         NotificationCenter.default.addObserver(
@@ -27,12 +27,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         )
     }
 
+    @objc private func enterBackground() {
+        stop()
+    }
+
     func stop() {
-        cancelOnGoingRequests()
+        updateTask?.cancel()
+        updateTask = nil
     }
 
     func update() async {
-        cancelOnGoingRequests()
+        stop()
 
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -120 {
             Current.Log.verbose("Skipping database update, last update was \(lastUpdate)")
@@ -43,33 +48,48 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
 
-        for server in Current.servers.all {
-            guard server.info.connection.activeURL() != nil else { continue }
-            // Entities (fetch_states)
-            let entitiesDatabaseToken = updateEntitiesDatabase(server: server)
-            requestTokens.append(entitiesDatabaseToken)
+        updateTask = Task {
+            await withTaskGroup(of: Void.self) { group in
+                for server in Current.servers.all {
+                    guard server.info.connection.activeURL() != nil else { continue }
 
-            // Entities registry list for display
-            let entitiesRegistryToken = updateEntitiesRegistryListForDisplay(server: server)
-            requestTokens.append(entitiesRegistryToken)
-
-            // Entities registry
-            await updateEntitiesRegistry(server: server)
-
-            // Devices registry
-            await updateDevicesRegistry(server: server)
-
-            // Areas with their entities
-            // IMPORTANT: This must be executed after entities and device registry
-            // since we rely on that data to map entities to areas
-            await updateAreasDatabase(server: server)
+                    group.addTask {
+                        await self.updateServer(server: server)
+                    }
+                }
+            }
         }
+
+        await updateTask?.value
     }
 
-    private func updateEntitiesDatabase(server: Server) -> HACancellable? {
-        Current.api(for: server)?.connection.send(
-            HATypedRequest<[HAEntity]>.fetchStates(),
-            completion: { result in
+    private func updateServer(server: Server) async {
+        // Entities (fetch_states)
+        await updateEntitiesDatabase(server: server)
+
+        // Entities registry list for display
+        await updateEntitiesRegistryListForDisplay(server: server)
+
+        // Entities registry
+        await updateEntitiesRegistry(server: server)
+
+        // Devices registry
+        await updateDevicesRegistry(server: server)
+
+        // Areas with their entities
+        // IMPORTANT: This must be executed after entities and device registry
+        // since we rely on that data to map entities to areas
+        await updateAreasDatabase(server: server)
+    }
+
+    private func updateEntitiesDatabase(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { result in
                 switch result {
                 case let .success(entities):
                     Current.appEntitiesModel().updateModel(Set(entities), server: server)
@@ -83,8 +103,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         ]
                     ))
                 }
+                continuation.resume()
             }
-        )
+        }
     }
 
     private func updateEntitiesRegistry(server: Server) async {
@@ -141,10 +162,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    private func updateEntitiesRegistryListForDisplay(server: Server) -> HACancellable? {
-        Current.api(for: server)?.connection.send(
-            HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay(),
-            completion: { [weak self] result in
+    private func updateEntitiesRegistryListForDisplay(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(
+                HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay()
+            ) { [weak self] result in
                 switch result {
                 case let .success(response):
                     self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
@@ -158,8 +185,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         ]
                     ))
                 }
+                continuation.resume()
             }
-        )
+        }
     }
 
     private func updateAreasDatabase(server: Server) async {
@@ -214,10 +242,6 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             ))
             assertionFailure("Failed to save areas in database: \(error)")
         }
-    }
-
-    @objc private func enterBackground() {
-        cancelOnGoingRequests()
     }
 
     private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) {
@@ -319,10 +343,5 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             ))
             assertionFailure("Failed to save device registry in database: \(error)")
         }
-    }
-
-    private func cancelOnGoingRequests() {
-        requestTokens.forEach { $0?.cancel() }
-        requestTokens = []
     }
 }
