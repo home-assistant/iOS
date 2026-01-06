@@ -235,8 +235,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
                 if !areaIdsToDelete.isEmpty {
                     try AppArea
-                        .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
-                        .filter(areaIdsToDelete.contains(Column(DatabaseTables.AppArea.areaId.rawValue)))
+                        .filter(areaIdsToDelete.contains(Column(DatabaseTables.AppArea.id.rawValue)))
                         .deleteAll(db)
                 }
             }
@@ -313,7 +312,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         do {
             try Current.database().write { db in
                 // Get existing unique IDs for this server
-                let existingUniqueIds = try AppEntityRegistry
+                let existingIds = try AppEntityRegistry
                     .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
                     .fetchAll(db)
                     .map(\.id)
@@ -324,13 +323,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 }
 
                 // Delete registry entries that no longer exist
-                let newUniqueIds = appEntityRegistries.map(\.id)
-                let uniqueIdsToDelete = existingUniqueIds.filter { !newUniqueIds.contains($0) }
+                let newIds = appEntityRegistries.map(\.id)
+                let idsToDelete = existingIds.filter { !newIds.contains($0) }
 
-                if !uniqueIdsToDelete.isEmpty {
+                if !idsToDelete.isEmpty {
                     try AppEntityRegistry
-                        .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                        .filter(uniqueIdsToDelete.contains(Column(DatabaseTables.EntityRegistry.uniqueId.rawValue)))
+                        .filter(idsToDelete.contains(Column(DatabaseTables.EntityRegistry.id.rawValue)))
                         .deleteAll(db)
                 }
             }
@@ -359,7 +357,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         do {
             try Current.database().write { db in
                 // Get existing device IDs for this server
-                let existingDeviceIds = try AppDeviceRegistry
+                let existingIds = try AppDeviceRegistry
                     .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
                     .fetchAll(db)
                     .map(\.id)
@@ -370,13 +368,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 }
 
                 // Delete registry entries that no longer exist
-                let newDeviceIds = appDeviceRegistries.map(\.id)
-                let deviceIdsToDelete = existingDeviceIds.filter { !newDeviceIds.contains($0) }
+                let newIds = appDeviceRegistries.map(\.id)
+                let idsToDelete = existingIds.filter { !newIds.contains($0) }
 
-                if !deviceIdsToDelete.isEmpty {
+                if !idsToDelete.isEmpty {
                     try AppDeviceRegistry
-                        .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
-                        .filter(deviceIdsToDelete.contains(Column(DatabaseTables.DeviceRegistry.deviceId.rawValue)))
+                        .filter(idsToDelete.contains(Column(DatabaseTables.DeviceRegistry.id.rawValue)))
                         .deleteAll(db)
                 }
             }
