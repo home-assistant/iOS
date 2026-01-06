@@ -4,15 +4,11 @@ import GRDB
 final class AppDeviceRegistryTable: DatabaseTableProtocol {
     func createIfNeeded(database: DatabaseQueue) throws {
         let shouldCreateTable = try database.read { db in
-            try !db.tableExists(GRDBDatabaseTable.appDeviceRegistry.rawValue)
+            try !db.tableExists(GRDBDatabaseTable.deviceRegistry.rawValue)
         }
         if shouldCreateTable {
             try database.write { db in
-                try db.create(table: GRDBDatabaseTable.appDeviceRegistry.rawValue) { t in
-                    t.uniqueKey([
-                        DatabaseTables.DeviceRegistry.serverId.rawValue,
-                        DatabaseTables.DeviceRegistry.deviceId.rawValue,
-                    ])
+                try db.create(table: GRDBDatabaseTable.deviceRegistry.rawValue) { t in
                     // Core identifiers
                     t.column(DatabaseTables.DeviceRegistry.serverId.rawValue, .text).notNull().indexed()
                     t.column(DatabaseTables.DeviceRegistry.deviceId.rawValue, .text).notNull().indexed()
@@ -51,6 +47,12 @@ final class AppDeviceRegistryTable: DatabaseTableProtocol {
                     // Relationships
                     t.column(DatabaseTables.DeviceRegistry.primaryConfigEntry.rawValue, .text)
                     t.column(DatabaseTables.DeviceRegistry.viaDeviceID.rawValue, .text)
+
+                    // ID
+                    t.uniqueKey([
+                        DatabaseTables.DeviceRegistry.serverId.rawValue,
+                        DatabaseTables.DeviceRegistry.deviceId.rawValue,
+                    ])
                 }
             }
         }
