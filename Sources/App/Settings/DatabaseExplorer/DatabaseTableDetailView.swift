@@ -161,10 +161,11 @@ final class DatabaseTableDetailViewModel: ObservableObject {
             }
             hasServerIdColumn = columns.contains("serverId")
 
-            // Fetch all rows using quoted identifier to prevent SQL injection
+            // Fetch rows with a limit to prevent memory issues on large tables
+            // Table name is already validated to exist above via parameterized query
             rows = try database.read { db in
                 let quotedTableName = "\"\(tableName.replacingOccurrences(of: "\"", with: "\"\""))\""
-                let cursor = try Row.fetchCursor(db, sql: "SELECT * FROM \(quotedTableName)")
+                let cursor = try Row.fetchCursor(db, sql: "SELECT * FROM \(quotedTableName) LIMIT 1000")
                 var result: [[String: String]] = []
                 while let row = try cursor.next() {
                     var dict: [String: String] = [:]
