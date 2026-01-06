@@ -4,23 +4,15 @@ import GRDB
 final class AppEntityRegistryTable: DatabaseTableProtocol {
     func createIfNeeded(database: DatabaseQueue) throws {
         let shouldCreateTable = try database.read { db in
-            try !db.tableExists(GRDBDatabaseTable.appEntityRegistry.rawValue)
+            try !db.tableExists(GRDBDatabaseTable.entityRegistry.rawValue)
         }
         if shouldCreateTable {
             try database.write { db in
-                try db.create(table: GRDBDatabaseTable.appEntityRegistry.rawValue) { t in
-                    // Primary key (composite of serverId-uniqueId)
-                    t.column(DatabaseTables.EntityRegistry.id.rawValue, .text).primaryKey().notNull()
-
+                try db.create(table: GRDBDatabaseTable.entityRegistry.rawValue) { t in
                     // Core identifiers
                     t.column(DatabaseTables.EntityRegistry.serverId.rawValue, .text).notNull().indexed()
                     t.column(DatabaseTables.EntityRegistry.uniqueId.rawValue, .text).notNull().indexed()
 
-                    // Ensure the combination is unique
-                    t.uniqueKey([
-                        DatabaseTables.EntityRegistry.serverId.rawValue,
-                        DatabaseTables.EntityRegistry.uniqueId.rawValue,
-                    ])
                     t.column(DatabaseTables.EntityRegistry.entityId.rawValue, .text).indexed()
                     t.column(DatabaseTables.EntityRegistry.platform.rawValue, .text)
                     t.column(DatabaseTables.EntityRegistry.configEntryId.rawValue, .text)
@@ -51,6 +43,12 @@ final class AppEntityRegistryTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.EntityRegistry.options.rawValue, .jsonText)
                     t.column(DatabaseTables.EntityRegistry.translationKey.rawValue, .text)
                     t.column(DatabaseTables.EntityRegistry.hasEntityName.rawValue, .boolean)
+
+                    // ID
+                    t.uniqueKey([
+                        DatabaseTables.EntityRegistry.serverId.rawValue,
+                        DatabaseTables.EntityRegistry.uniqueId.rawValue,
+                    ])
                 }
             }
         }

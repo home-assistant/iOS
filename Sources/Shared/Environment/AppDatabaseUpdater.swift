@@ -212,6 +212,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
+            assertionFailure("Failed to save areas in database: \(error)")
         }
     }
 
@@ -248,6 +249,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
+            assertionFailure("Failed to save EntityRegistryListForDisplay in database: \(error)")
         }
     }
 
@@ -281,6 +283,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
+            assertionFailure("Failed to save entity registry in database: \(error)")
         }
     }
 
@@ -314,6 +317,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
+            assertionFailure("Failed to save device registry in database: \(error)")
         }
     }
 
