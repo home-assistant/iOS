@@ -14,11 +14,34 @@ struct HAAppEntityAppIntentEntity: AppEntity {
     var entityId: String
     var serverId: String
     var serverName: String
+    var areaName: String?
+    var deviceName: String?
     var displayString: String
     var iconName: String
-    var area: String?
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(displayString)", subtitle: "\(area ?? entityId)")
+        DisplayRepresentation(
+            title: "\(displayString)",
+            subtitle: .init(stringLiteral: subtitle)
+        )
+    }
+
+    private var subtitle: String {
+        var subtitle = ""
+        if let areaName {
+            subtitle += areaName
+        }
+
+        if let deviceName,
+           deviceName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != displayString.lowercased()
+           .trimmingCharacters(in: .whitespacesAndNewlines) {
+            if subtitle.isEmpty {
+                subtitle += deviceName
+            } else {
+                subtitle += " → \(deviceName)"
+            }
+        }
+
+        return subtitle
     }
 
     init(
@@ -26,17 +49,19 @@ struct HAAppEntityAppIntentEntity: AppEntity {
         entityId: String,
         serverId: String,
         serverName: String,
+        areaName: String? = nil,
+        deviceName: String? = nil,
         displayString: String,
-        iconName: String,
-        area: String? = nil
+        iconName: String
     ) {
         self.id = id
         self.entityId = entityId
         self.serverId = serverId
         self.serverName = serverName
+        self.areaName = areaName
+        self.deviceName = deviceName
         self.displayString = displayString
         self.iconName = iconName
-        self.area = area
     }
 }
 
@@ -47,27 +72,10 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<HAAppEntityAppIntentEntity> {
-        .init(sections: getEntities().map { (key: Server, value: [HAAppEntityAppIntentEntity]) in
+        .init(sections: getEntities(matching: string).map { (key: Server, value: [HAAppEntityAppIntentEntity]) in
             .init(
                 .init(stringLiteral: key.info.name),
-                items: value.filter({ entity in
-                    let matchDisplayString = entity.displayString.range(
-                        of: string,
-                        options: [.caseInsensitive, .diacriticInsensitive]
-                    ) != nil
-                    let matchEntityId = entity.entityId.range(
-                        of: string,
-                        options: [.caseInsensitive, .diacriticInsensitive]
-                    ) != nil
-                    let matchAreaName = {
-                        if let area = entity.area {
-                            return area.range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-                        } else {
-                            return false
-                        }
-                    }()
-                    return matchDisplayString || matchEntityId || matchAreaName
-                })
+                items: value
             )
         })
     }
@@ -83,31 +91,19 @@ struct HAAppEntityAppIntentEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: []).getEntities(matching: string)
 
         for (server, values) in entities {
-            // Fetch all areas for this server once and create a lookup map
-            let areas: [AppArea]
-            do {
-                areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
-            } catch {
-                Current.Log.error("Failed to fetch areas for entity query: \(error.localizedDescription)")
-                areas = []
-            }
-            var entityToAreaMap: [String: String] = [:]
-            for area in areas {
-                for entityId in area.entities {
-                    entityToAreaMap[entityId] = area.name
-                }
-            }
+            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let areasMap = values.areasMap(for: server.identifier.rawValue)
 
             allEntities.append((server, values.map({ entity in
-                let area = entityToAreaMap[entity.entityId]
-                return HAAppEntityAppIntentEntity(
+                HAAppEntityAppIntentEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     serverName: server.info.name,
+                    areaName: areasMap[entity.entityId]?.name ?? "",
+                    deviceName: deviceMap[entity.entityId]?.name ?? "",
                     displayString: entity.name,
-                    iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue,
-                    area: area
+                    iconName: entity.icon ?? SFSymbol.applescriptFill.rawValue
                 )
             })))
         }

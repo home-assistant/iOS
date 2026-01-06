@@ -70,21 +70,8 @@ public final class ControlEntityProvider {
                     }
                 }
                 if let string {
-                    // Fetch all areas for this server once and create a lookup map
-                    let areas: [AppArea]
-                    do {
-                        areas = try AppArea.fetchAreas(for: server.identifier.rawValue)
-                    } catch {
-                        Current.Log.error("Failed to fetch areas for entity filtering: \(error.localizedDescription)")
-                        areas = []
-                    }
-                    var entityToAreaMap: [String: String] = [:]
-                    for area in areas {
-                        for entityId in area.entities {
-                            entityToAreaMap[entityId] = area.name
-                        }
-                    }
-
+                    let deviceMap = entities.devicesMap(for: server.identifier.rawValue)
+                    let areasMap = entities.areasMap(for: server.identifier.rawValue)
                     entities = entities.filter({ entity in
                         let matchName = entity.name.range(
                             of: string,
@@ -94,14 +81,23 @@ public final class ControlEntityProvider {
                             of: string,
                             options: [.caseInsensitive, .diacriticInsensitive]
                         ) != nil
-                        let matchAreaName = {
-                            if let area = entityToAreaMap[entity.entityId] {
-                                return area.range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+                        let matchDeviceName = {
+                            if let deviceName = deviceMap[entity.entityId]?.name {
+                                return deviceName
+                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
                             } else {
                                 return false
                             }
                         }()
-                        return matchName || matchEntityId || matchAreaName
+                        let matchAreaName = {
+                            if let areaName = areasMap[entity.entityId]?.name {
+                                return areaName
+                                    .range(of: string, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+                            } else {
+                                return false
+                            }
+                        }()
+                        return matchName || matchEntityId || matchDeviceName || matchAreaName
                     })
                 }
                 entitiesPerServer.append((server, entities))

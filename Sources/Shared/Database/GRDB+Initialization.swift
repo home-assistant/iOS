@@ -49,6 +49,8 @@ public extension DatabaseQueue {
             CarPlayConfigTable(),
             AssistPipelinesTable(),
             AppEntityRegistryListForDisplayTable(),
+            AppEntityRegistryTable(),
+            AppDeviceRegistryTable(),
             AppPanelTable(),
             CustomWidgetTable(),
             AppAreaTable(),
