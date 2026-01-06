@@ -860,7 +860,8 @@
 		428DBFFC2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */; };
 		428DBFFE2F0C95D8003B08D5 /* DeviceRegistry.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */; };
 		428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 428DC0012F0C961E003B08D5 /* deviceregistry.json */; };
-		428DC0082F0CA2E7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
+		428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
+		428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
@@ -8977,7 +8978,6 @@
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				4263A6662EFB291D0089C338 /* LightIntent.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
-				428DC0082F0CA2E7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
@@ -9396,6 +9396,7 @@
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
+				428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				11B38EF0275C54A300205C7B /* FireEventIntentHandler.swift in Sources */,
 				1120C5852749C6350046C38B /* ServerProviding.swift in Sources */,
 				429821192CD0DEE2005ECD39 /* HAButtonStyles.swift in Sources */,
@@ -9737,6 +9738,7 @@
 				428EDB692DAFD9B900A271A1 /* HAEntity+DeviceClass.swift in Sources */,
 				11B38EEA275C54A200205C7B /* PickAServerError.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
+				428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				420F53EA2C4E9D54003C8415 /* WidgetsKind.swift in Sources */,
 				11EE9B4924C5116F00404AF8 /* LegacyModelManager.swift in Sources */,

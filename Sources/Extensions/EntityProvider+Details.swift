@@ -1,8 +1,7 @@
 import Foundation
 import GRDB
-import Shared
 
-extension HAAppEntity {
+public extension HAAppEntity {
     var area: AppArea? {
         do {
             let areas = try Current.database().read { _ in
@@ -41,15 +40,13 @@ extension HAAppEntity {
     }
 }
 
-extension [HAAppEntity] {
+public extension [HAAppEntity] {
     /// Creates a mapping from entity IDs to their associated areas for a given server.
     /// - Parameter serverId: The server identifier to filter areas by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppArea` objects.
     func areasMap(for serverId: String) -> [String: AppArea] {
         do {
-            let areas = try Current.database().read { _ in
-                try AppArea.fetchAreas(for: serverId)
-            }
+            let areas = try AppArea.fetchAreas(for: serverId)
 
             var entityToAreaMap: [String: AppArea] = [:]
 
