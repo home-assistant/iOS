@@ -48,6 +48,18 @@ final class FanControlsViewModel {
         isOn ? .fanFill : .fan
     }
 
+    // MARK: - Helper Methods
+
+    private func createIntentFanEntity() -> IntentFanEntity {
+        IntentFanEntity(
+            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
+            entityId: haEntity.entityId,
+            serverId: server.identifier.rawValue,
+            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
+            iconName: haEntity.attributes.icon ?? SFSymbol.fan.rawValue
+        )
+    }
+
     // MARK: - State Management
 
     func updateStateFromEntity() {
@@ -93,18 +105,9 @@ final class FanControlsViewModel {
         isUpdating = true
         defer { isUpdating = false }
 
-        // Create IntentFanEntity from haEntity
-        let intentFan = IntentFanEntity(
-            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
-            entityId: haEntity.entityId,
-            serverId: server.identifier.rawValue,
-            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
-            iconName: haEntity.attributes.icon ?? SFSymbol.fan.rawValue
-        )
-
         // Create and perform the toggle intent
         let toggleIntent = ToggleFanIntent()
-        toggleIntent.fan = intentFan
+        toggleIntent.fan = createIntentFanEntity()
         toggleIntent.turnOn = !isOn
 
         do {
@@ -126,18 +129,9 @@ final class FanControlsViewModel {
         isUpdating = true
         defer { isUpdating = false }
 
-        // Create IntentFanEntity from haEntity
-        let intentFan = IntentFanEntity(
-            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
-            entityId: haEntity.entityId,
-            serverId: server.identifier.rawValue,
-            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
-            iconName: haEntity.attributes.icon ?? SFSymbol.fan.rawValue
-        )
-
         // Create and perform the set speed intent
         let setSpeedIntent = SetFanSpeedIntent()
-        setSpeedIntent.fan = intentFan
+        setSpeedIntent.fan = createIntentFanEntity()
         setSpeedIntent.percentage = Int(newSpeed)
 
         do {
@@ -165,18 +159,9 @@ final class FanControlsViewModel {
 
         let newOscillating = !oscillating
 
-        // Create IntentFanEntity from haEntity
-        let intentFan = IntentFanEntity(
-            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
-            entityId: haEntity.entityId,
-            serverId: server.identifier.rawValue,
-            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
-            iconName: haEntity.attributes.icon ?? SFSymbol.fan.rawValue
-        )
-
         // Create and perform the oscillation intent
         let oscillationIntent = ToggleFanOscillationIntent()
-        oscillationIntent.fan = intentFan
+        oscillationIntent.fan = createIntentFanEntity()
         oscillationIntent.oscillating = newOscillating
 
         do {
@@ -200,18 +185,9 @@ final class FanControlsViewModel {
 
         let newDirection = direction == "forward" ? "reverse" : "forward"
 
-        // Create IntentFanEntity from haEntity
-        let intentFan = IntentFanEntity(
-            id: "\(server.identifier.rawValue)-\(haEntity.entityId)",
-            entityId: haEntity.entityId,
-            serverId: server.identifier.rawValue,
-            displayString: haEntity.attributes.friendlyName ?? haEntity.entityId,
-            iconName: haEntity.attributes.icon ?? SFSymbol.fan.rawValue
-        )
-
         // Create and perform the set direction intent
         let directionIntent = SetFanDirectionIntent()
-        directionIntent.fan = intentFan
+        directionIntent.fan = createIntentFanEntity()
         directionIntent.direction = newDirection
 
         do {
