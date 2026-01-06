@@ -21,25 +21,40 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
             ControlEntityProvider.States.opening.rawValue,
         ].contains(state)
         let icon = isOpen ? configuration.openIcon : configuration.closedIcon
-        return item(entity: configuration.entity, value: isOpen, iconName: icon)
+        return item(entity: configuration.entity, value: isOpen, iconName: icon, displayText: configuration.displayText)
     }
 
     func placeholder(for configuration: ControlCoverConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.openIcon)
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.openIcon,
+            displayText: configuration.displayText
+        )
     }
 
     func previewValue(configuration: ControlCoverConfiguration) -> ControlEntityItem {
-        item(entity: configuration.entity, value: nil, iconName: configuration.openIcon)
+        item(
+            entity: configuration.entity,
+            value: nil,
+            iconName: configuration.openIcon,
+            displayText: configuration.displayText
+        )
     }
 
-    private func item(entity: IntentCoverEntity?, value: Bool?, iconName: SFSymbolEntity?) -> ControlEntityItem {
+    private func item(
+        entity: IntentCoverEntity?,
+        value: Bool?,
+        iconName: SFSymbolEntity?,
+        displayText: String?
+    ) -> ControlEntityItem {
         let placeholder = placeholder(value: value)
         if let entity {
             return .init(
                 id: entity.id,
                 entityId: entity.entityId,
                 serverId: entity.serverId,
-                name: entity.displayString,
+                name: displayText ?? entity.displayString,
                 icon: iconName ?? .init(id: placeholder.iconName),
                 value: value ?? false
             )
@@ -48,7 +63,7 @@ struct ControlCoverValueProvider: AppIntentControlValueProvider {
                 id: placeholder.id,
                 entityId: placeholder.entityId,
                 serverId: placeholder.serverId,
-                name: placeholder.displayString,
+                name: displayText ?? placeholder.displayString,
                 icon: .init(id: placeholder.iconName),
                 value: false
             )
@@ -87,4 +102,8 @@ struct ControlCoverConfiguration: ControlConfigurationIntent {
         default: SFSymbolEntity(id: SFSymbol.curtainsClosed.rawValue)
     )
     var closedIcon: SFSymbolEntity?
+    @Parameter(
+        title: .init("app_intents.display_text.title", defaultValue: "Display Text")
+    )
+    var displayText: String?
 }

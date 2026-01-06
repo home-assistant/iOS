@@ -51,6 +51,10 @@ public extension HAEntity {
                 image = .accountIcon
             case .camera:
                 image = .cameraIcon
+            case .fan:
+                image = .fanIcon
+            case .automation:
+                image = .homeAutomationIcon
             }
         }
 
@@ -63,8 +67,11 @@ public extension HAEntity {
                 tint = .lightGray
             }
         }
-
+        #if os(iOS)
         return image.carPlayIcon(color: tint)
+        #else
+        return image.image(ofSize: .init(width: 50, height: 50), color: nil)
+        #endif
     }
 
     /// Returns the appropriate icon for the entity based on its state, without applying color
@@ -105,6 +112,10 @@ public extension HAEntity {
                 image = .accountIcon
             case .camera:
                 image = .cameraIcon
+            case .fan:
+                image = .fanIcon
+            case .automation:
+                image = .homeAutomationIcon
             }
         }
 

@@ -33,8 +33,7 @@ struct AssistAppIntent: AppIntent {
                     webViewController.webViewExternalMessageHandler.showAssist(
                         server: server,
                         pipeline: pipeline.id,
-                        autoStartRecording: withVoice,
-                        animated: false
+                        autoStartRecording: withVoice
                     )
                 }
         }

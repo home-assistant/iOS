@@ -147,6 +147,24 @@ public enum AppConstants {
         )
     }
 
+    public static func openCameraListDeeplinkURL(serverId: String? = nil) -> URL? {
+        var urlString = "\(AppConstants.deeplinkURL.absoluteString)camera/?"
+        if let serverId {
+            urlString += "serverId=\(serverId)&"
+        }
+        urlString += "\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+        return URL(string: urlString)
+    }
+
+    public static func openExperimentalDashboardDeeplinkURL(serverId: String? = nil) -> URL? {
+        var urlString = "\(AppConstants.deeplinkURL.absoluteString)experimental-dashboard/?"
+        if let serverId {
+            urlString += "serverId=\(serverId)&"
+        }
+        urlString += "\(AppConstants.QueryItems.isComingFromAppIntent.rawValue)=true"
+        return URL(string: urlString)
+    }
+
     public static func assistDeeplinkURL(serverId: String, pipelineId: String, startListening: Bool) -> URL? {
         URL(
             string: "\(AppConstants.deeplinkURL.absoluteString)assist?serverId=\(serverId)&pipelineId=\(pipelineId)&startListening=\(startListening)"

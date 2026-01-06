@@ -17,7 +17,7 @@ struct ControlOpenCoverEntity: ControlWidget {
                 return intent
             }()) {
                 // ControlWidget can only display SF Symbol
-                Label(template.entity.displayString, systemImage: template.icon.id)
+                Label(template.displayText ?? template.entity.displayString, systemImage: template.icon.id)
             }
         }
         .displayName(.init(stringLiteral: L10n.Widgets.Controls.OpenCover.Configuration.title))

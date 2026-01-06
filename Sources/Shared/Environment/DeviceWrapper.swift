@@ -68,7 +68,10 @@ public class DeviceWrapper {
     }
 
     public lazy var inspecificModel: () -> String = {
-        #if os(iOS)
+        #if targetEnvironment(macCatalyst)
+        // UIDevice returns 'iPad' on Mac, so we hard-code it
+        return "Mac"
+        #elseif os(iOS)
         return UIDevice.current.model
         #elseif os(watchOS)
         return WKInterfaceDevice.current().model

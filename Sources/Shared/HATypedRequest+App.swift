@@ -48,6 +48,21 @@ public extension HATypedRequest {
         ))
     }
 
+    static func trigger(
+        entityId: String
+    ) -> HATypedRequest<HAResponseVoid> {
+        HATypedRequest<HAResponseVoid>(request: .init(
+            type: "call_service",
+            data: [
+                "domain": Domain.automation.rawValue,
+                "service": Service.trigger.rawValue,
+                "target": [
+                    "entity_id": entityId,
+                ],
+            ]
+        ))
+    }
+
     static func pressButton(
         domain: Domain,
         entityId: String
@@ -94,20 +109,20 @@ public extension HATypedRequest {
         ))
     }
 
-    static func fetchAreas() -> HATypedRequest<[HAAreaResponse]> {
-        HATypedRequest<[HAAreaResponse]>(request: .init(
+    static func configAreasRegistry() -> HATypedRequest<[HAAreasRegistryResponse]> {
+        HATypedRequest<[HAAreasRegistryResponse]>(request: .init(
             type: "config/area_registry/list"
         ))
     }
 
-    static func fetchEntitiesWithAreas() -> HATypedRequest<[HAEntityAreaResponse]> {
-        HATypedRequest<[HAEntityAreaResponse]>(request: .init(
+    static func configEntityRegistryList() -> HATypedRequest<[EntityRegistryEntry]> {
+        HATypedRequest<[EntityRegistryEntry]>(request: .init(
             type: "config/entity_registry/list"
         ))
     }
 
-    static func fetchDevicesWithAreas() -> HATypedRequest<[HADeviceAreaResponse]> {
-        HATypedRequest<[HADeviceAreaResponse]>(request: .init(
+    static func configDeviceRegistryList() -> HATypedRequest<[DeviceRegistryEntry]> {
+        HATypedRequest<[DeviceRegistryEntry]>(request: .init(
             type: "config/device_registry/list"
         ))
     }
@@ -118,7 +133,7 @@ public extension HATypedRequest {
         ))
     }
 
-    static func fetchEntityRegistryListForDisplay() -> HATypedRequest<EntityRegistryListForDisplay> {
+    static func configEntityRegistryListForDisplay() -> HATypedRequest<EntityRegistryListForDisplay> {
         HATypedRequest<EntityRegistryListForDisplay>(request: .init(
             type: .webSocket("config/entity_registry/list_for_display")
         ))
