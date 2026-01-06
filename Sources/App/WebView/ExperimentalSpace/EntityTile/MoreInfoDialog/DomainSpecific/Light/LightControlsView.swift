@@ -173,7 +173,7 @@ struct LightControlsView: View {
                 set: { _ in }
             ),
             icon: .lightbulbFill,
-            accentColor: viewModel.iconColor,
+            accentColor: .Domain.light,
             onToggle: {
                 Task {
                     await viewModel.toggleLight()

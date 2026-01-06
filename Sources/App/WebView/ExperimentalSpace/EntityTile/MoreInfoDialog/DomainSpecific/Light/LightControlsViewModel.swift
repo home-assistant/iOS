@@ -111,6 +111,7 @@ final class LightControlsViewModel {
 
         // Update icon color using the same logic as EntityTileView
         let newIconColor = EntityIconColorProvider.iconColor(
+            domain: Domain(entityId: haEntity.entityId) ?? .switch,
             state: haEntity.state,
             colorMode: colorMode,
             rgbColor: rgbColor,

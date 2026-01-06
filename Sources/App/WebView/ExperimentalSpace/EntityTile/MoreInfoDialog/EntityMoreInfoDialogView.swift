@@ -26,6 +26,8 @@ struct EntityMoreInfoDialogView: View {
                     switchControlsView
                 case .cover:
                     coverControlsView
+                case .fan:
+                    fanControlsView
                 default:
                     Text("More controls coming soon")
                         .font(DesignSystem.Font.body)
@@ -91,6 +93,14 @@ struct EntityMoreInfoDialogView: View {
     @ViewBuilder
     private var coverControlsView: some View {
         CoverControlsView(
+            server: server,
+            haEntity: haEntity
+        )
+    }
+
+    @ViewBuilder
+    private var fanControlsView: some View {
+        FanControlsView(
             server: server,
             haEntity: haEntity
         )
@@ -190,6 +200,39 @@ struct EntityMoreInfoDialogView: View {
         name: "Living Room Blinds",
         icon: "mdi:blinds",
         rawDeviceClass: "blind"
+    )
+
+    EntityMoreInfoDialogView(
+        server: ServerFixture.standard,
+        haEntity: haEntity
+    )
+}
+
+@available(iOS 26.0, *)
+#Preview("Fan Entity") {
+    @Previewable @State var haEntity: HAEntity! = try? HAEntity(
+        entityId: "fan.living_room_fan",
+        domain: "fan",
+        state: "on",
+        lastChanged: Date().addingTimeInterval(-3600),
+        lastUpdated: Date(),
+        attributes: [
+            "friendly_name": "Living Room Fan",
+            "percentage": 75,
+            "oscillating": true,
+            "direction": "forward",
+        ],
+        context: .init(id: "", userId: nil, parentId: nil)
+    )
+
+    let appEntity = HAAppEntity(
+        id: "test-fan.living_room_fan",
+        entityId: "fan.living_room_fan",
+        serverId: "test-server",
+        domain: "fan",
+        name: "Living Room Fan",
+        icon: "mdi:fan",
+        rawDeviceClass: nil
     )
 
     EntityMoreInfoDialogView(
