@@ -4,21 +4,21 @@ import Testing
 
 // MARK: - Test Helpers
 
-extension DeviceRegistryEntry {
+extension AppDeviceRegistry {
     static func makeTest(
         areaId: String?,
         deviceId: String,
-        configEntries: [String] = [],
-        connections: [AnyCodable] = [],
-        identifiers: [[String]] = [],
+        serverId: String = "test-server",
+        configEntries: [String]? = [],
+        identifiers: [[String]]? = [],
         name: String? = nil
-    ) -> DeviceRegistryEntry {
-        DeviceRegistryEntry(
+    ) -> AppDeviceRegistry {
+        let entry = DeviceRegistryEntry(
             areaId: areaId,
             configurationURL: nil,
             configEntries: configEntries,
             configEntriesSubentries: [:],
-            connections: connections,
+            connections: nil,
             createdAt: 0.0,
             disabledBy: nil,
             entryType: "service",
@@ -37,19 +37,21 @@ extension DeviceRegistryEntry {
             swVersion: nil,
             viaDeviceID: nil
         )
+        return AppDeviceRegistry(serverId: serverId, registry: entry)
     }
 }
 
-extension EntityRegistryEntry {
+extension AppEntityRegistry {
     static func makeTest(
         areaId: String?,
         entityId: String?,
         deviceId: String?,
         hiddenBy: String?,
         disabledBy: String?,
+        serverId: String = "test-server",
         uniqueId: String? = nil
-    ) -> EntityRegistryEntry {
-        EntityRegistryEntry(
+    ) -> AppEntityRegistry {
+        let entry = EntityRegistryEntry(
             uniqueId: uniqueId ?? UUID().uuidString,
             entityId: entityId,
             platform: nil,
@@ -74,6 +76,7 @@ extension EntityRegistryEntry {
             translationKey: nil,
             hasEntityName: nil
         )
+        return AppEntityRegistry(serverId: serverId, registry: entry)
     }
 }
 

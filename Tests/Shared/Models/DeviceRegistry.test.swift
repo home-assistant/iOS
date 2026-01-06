@@ -30,12 +30,12 @@ struct DeviceRegistryTests {
         #expect(firstEntry.configEntries == ["27f48e744a782b41f674111ff39e84e5"])
 
         // Validate config_entries_subentries structure
-        #expect(firstEntry.configEntriesSubentries.keys.contains("27f48e744a782b41f674111ff39e84e5"))
-        if let subentries = firstEntry.configEntriesSubentries["27f48e744a782b41f674111ff39e84e5"] {
+        #expect(firstEntry.configEntriesSubentries!.keys.contains("27f48e744a782b41f674111ff39e84e5"))
+        if let subentries = firstEntry.configEntriesSubentries!["27f48e744a782b41f674111ff39e84e5"] {
             #expect(subentries == [nil])
         }
 
-        #expect(firstEntry.connections.isEmpty)
+        #expect(firstEntry.connections!.isEmpty)
         #expect(firstEntry.createdAt == 0.0)
         #expect(firstEntry.disabledBy == nil)
         #expect(firstEntry.entryType == "service")
