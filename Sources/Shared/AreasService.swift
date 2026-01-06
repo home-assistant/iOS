@@ -47,9 +47,10 @@ final class AreasService: AreasServiceProtocol {
             Current.Log.verbose("No areas found on the server.")
             return [:]
         } else {
-            let entitiesForAreas = await fetchEntitiesForAreas(areas, server: server)
+            // Read entity and device registries from database instead of making API calls
+            let entitiesForAreas = fetchEntitiesFromDatabase(serverId: server.identifier.rawValue)
             updatePropertiesInEntitiesDatabase(entitiesForAreas, serverId: server.identifier.rawValue)
-            let deviceForAreas = await fetchDeviceForAreas(areas, entitiesWithAreas: entitiesForAreas, server: server)
+            let deviceForAreas = fetchDevicesFromDatabase(serverId: server.identifier.rawValue)
             let allEntitiesPerArea = getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
                 entitiesAndAreas: entitiesForAreas
@@ -68,7 +69,7 @@ final class AreasService: AreasServiceProtocol {
     /// to reflect the current state from the server.
     ///
     /// - Parameters:
-    ///   - entitiesRegistryResponse: An array of entity registry responses from Home Assistant
+    ///   - entitiesRegistryResponse: An array of entity registry entries from the database
     ///     containing the current `hiddenBy` and `disabledBy` states for each entity.
     ///   - serverId: The server identifier to filter entities by.
     ///
@@ -78,7 +79,7 @@ final class AreasService: AreasServiceProtocol {
     /// - Important: If the database write operation fails, an error will be logged but the method
     ///   will continue processing remaining entities.
     private func updatePropertiesInEntitiesDatabase(
-        _ entitiesRegistryResponse: [EntityRegistryEntry],
+        _ entitiesRegistryResponse: [AppEntityRegistry],
         serverId: String
     ) {
         do {
@@ -99,73 +100,34 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func fetchEntitiesForAreas(
-        _ areas: [HAAreasRegistryResponse],
-        server: Server
-    ) async -> [EntityRegistryEntry] {
-        guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available to fetch entities for areas")
+    private func fetchEntitiesFromDatabase(serverId: String) -> [AppEntityRegistry] {
+        do {
+            return try AppEntityRegistry.config(serverId: serverId)
+        } catch {
+            Current.Log.error("Failed to fetch entities from database: \(error.localizedDescription)")
             return []
         }
-
-        request?.cancel()
-        let entitiesForAreas = await withCheckedContinuation { continuation in
-            request = connection.send(
-                HATypedRequest<[EntityRegistryEntry]>.configEntityRegistryList(),
-                completion: { result in
-                    switch result {
-                    case let .success(data):
-                        continuation.resume(returning: data)
-                    case let .failure(error):
-                        Current.Log
-                            .error(userInfo: ["Failed to retrieve areas and entities": error.localizedDescription])
-                        continuation.resume(returning: [])
-                    }
-                }
-            )
-        }
-        return entitiesForAreas
     }
 
-    private func fetchDeviceForAreas(
-        _ areas: [HAAreasRegistryResponse],
-        entitiesWithAreas: [EntityRegistryEntry],
-        server: Server
-    ) async -> [DeviceRegistryEntry] {
-        guard let connection = Current.api(for: server)?.connection else {
-            Current.Log.error("No API available to fetch devices for areas")
+    private func fetchDevicesFromDatabase(serverId: String) -> [AppDeviceRegistry] {
+        do {
+            return try AppDeviceRegistry.config(serverId: serverId)
+        } catch {
+            Current.Log.error("Failed to fetch devices from database: \(error.localizedDescription)")
             return []
         }
-
-        request?.cancel()
-        let devicesForAreas = await withCheckedContinuation { continuation in
-            request = connection.send(
-                HATypedRequest<[DeviceRegistryEntry]>.configDeviceRegistryList(),
-                completion: { result in
-                    switch result {
-                    case let .success(data):
-                        continuation.resume(returning: data)
-                    case let .failure(error):
-                        Current.Log
-                            .error(userInfo: ["Failed to retrieve areas and devices": error.localizedDescription])
-                        continuation.resume(returning: [])
-                    }
-                }
-            )
-        }
-        return devicesForAreas
     }
 
     private func getAllEntitiesFromArea(
-        devicesAndAreas: [DeviceRegistryEntry],
-        entitiesAndAreas: [EntityRegistryEntry]
+        devicesAndAreas: [AppDeviceRegistry],
+        entitiesAndAreas: [AppEntityRegistry]
     ) -> [String: Set<String>] {
         /// area_id : [device_id]
         var areasAndDevicesDict: [String: [String]] = [:]
 
         // Get all devices from an area
         for device in devicesAndAreas {
-            let deviceId = device.id
+            let deviceId = device.deviceId
             if let areaId = device.areaId {
                 if var deviceIds = areasAndDevicesDict[areaId] {
                     deviceIds.append(deviceId)
@@ -222,8 +184,8 @@ final class AreasService: AreasServiceProtocol {
     #if DEBUG
     /// For testing purposes only
     public func testGetAllEntitiesFromArea(
-        devicesAndAreas: [DeviceRegistryEntry],
-        entitiesAndAreas: [EntityRegistryEntry]
+        devicesAndAreas: [AppDeviceRegistry],
+        entitiesAndAreas: [AppEntityRegistry]
     ) -> [String: Set<String>] {
         getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }

@@ -53,14 +53,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             let entitiesRegistryToken = updateEntitiesRegistryListForDisplay(server: server)
             requestTokens.append(entitiesRegistryToken)
 
-            // Areas with their entities
-            await updateAreasDatabase(server: server)
-
             // Entities registry
             await updateEntitiesRegistry(server: server)
 
             // Devices registry
             await updateDevicesRegistry(server: server)
+
+            // Areas with their entities
+            // IMPORTANT: This must be executed after entities and device registry
+            // since we rely on that data to map entities to areas
+            await updateAreasDatabase(server: server)
         }
     }
 
