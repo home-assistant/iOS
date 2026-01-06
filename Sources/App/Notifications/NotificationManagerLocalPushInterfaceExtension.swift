@@ -576,3 +576,47 @@ extension NotificationManagerLocalPushInterfaceExtension {
         }
     }
 }
+
+// MARK: - Testing Support
+
+#if DEBUG
+extension NotificationManagerLocalPushInterfaceExtension {
+    /// Test-only access to reconnection state for verification
+    var testReconnectionAttempt: Int {
+        reconnectionAttempt
+    }
+
+    /// Test-only access to check if reconnection timer is active
+    var testHasActiveReconnectionTimer: Bool {
+        reconnectionTimer != nil
+    }
+
+    /// Test-only access to disconnected servers set
+    var testDisconnectedServers: Set<Identifier<Server>> {
+        disconnectedServers
+    }
+
+    /// Test-only access to reconnection delays for verification
+    var testReconnectionDelays: [TimeInterval] {
+        reconnectionDelays
+    }
+
+    /// Test-only method to manually trigger reconnection scheduling
+    /// This allows tests to verify the reconnection flow without waiting for real disconnections
+    func testScheduleReconnection() {
+        scheduleReconnection()
+    }
+
+    /// Test-only method to manually trigger reconnection attempt
+    /// This allows tests to verify the attempt counter increment and reload logic
+    func testAttemptReconnection() {
+        attemptReconnection()
+    }
+
+    /// Test-only method to manually cancel reconnection
+    /// This allows tests to verify cleanup logic
+    func testCancelReconnection() {
+        cancelReconnection()
+    }
+}
+#endif
