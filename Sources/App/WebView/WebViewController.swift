@@ -1374,7 +1374,7 @@ extension WebViewController {
             preferredStyle: .alert
         )
         alert.addAction(.init(title: L10n.okLabel, style: .default))
-        
+
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             if presentedViewController != nil {
