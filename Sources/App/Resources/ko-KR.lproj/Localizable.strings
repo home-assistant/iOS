@@ -1231,7 +1231,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "행 3, 열 2";
 "watch.labels.complication_text_areas.trailing.description" = "게이지의 후행 가장자리에 표시할 텍스트입니다.";
 "watch.labels.complication_text_areas.trailing.label" = "후행";
-"watch.labels.no_action" = "구성된 작업이 없습니다. 휴대폰에서 이 메시지를 무시하도록 작업을 구성하세요.";
 "watch.labels.no_config" = "사용할 수 있는 시계 구성이 없으면 iOS 앱을 열고 컴패니언 앱 설정에서 구성을 만듭니다.";
 "watch.labels.selected_pipeline.title" = "파이프라인";
 "watch.placeholder_complication_name" = "자리 표시자";

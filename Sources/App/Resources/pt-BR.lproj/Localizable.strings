@@ -1231,7 +1231,6 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "watch.labels.complication_text_areas.row3_column2.label" = "Linha 3, Coluna 2";
 "watch.labels.complication_text_areas.trailing.description" = "O texto a ser exibido na borda do medidor.";
 "watch.labels.complication_text_areas.trailing.label" = "Seguindo";
-"watch.labels.no_action" = "Nenhuma ação configurada. Configure ações em seu telefone para dispensar esta mensagem.";
 "watch.labels.no_config" = "Nenhuma configuração de relógio disponível, abra o aplicativo iOS e crie sua configuração nas configurações do aplicativo complementar.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Espaço reservado";

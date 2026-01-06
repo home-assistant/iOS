@@ -218,7 +218,6 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             var element = findElementInShadowDOM('\(elementId)');
 
             if (element) {
-                element.click();
                 element.focus();
                 return 'Element found and focused: ' + elementId;
             } else {

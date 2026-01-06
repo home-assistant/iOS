@@ -1231,7 +1231,6 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "watch.labels.complication_text_areas.row3_column2.label" = "Satır 3, Sütun 2";
 "watch.labels.complication_text_areas.trailing.description" = "Göstergenin arka kenarında görüntülenecek metin.";
 "watch.labels.complication_text_areas.trailing.label" = "Izleyen";
-"watch.labels.no_action" = "Yapılandırılan eylem yok. Bu mesajı kapatmak için telefonunuzda eylemleri yapılandırın.";
 "watch.labels.no_config" = "Saat yapılandırması mevcut değil. iOS uygulamasını açın ve tamamlayıcı uygulama ayarları altında yapılandırmanızı oluşturun.";
 "watch.labels.selected_pipeline.title" = "İşlem hattı";
 "watch.placeholder_complication_name" = "Yer tutucu";

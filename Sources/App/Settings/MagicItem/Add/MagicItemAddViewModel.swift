@@ -55,16 +55,22 @@ final class MagicItemAddViewModel: ObservableObject {
     }
 
     func subtitleForEntity(entity: HAAppEntity, serverId: String) -> String {
-        // Fetch area from database based on entity
-        do {
-            let areas = try AppArea.fetchAreas(containingEntity: entity.entityId, serverId: serverId)
-            if let area = areas.first {
-                return area.name
-            }
-        } catch {
-            Current.Log.error("Failed to fetch area for entity from database: \(error.localizedDescription)")
+        var subtitle = ""
+        if let areaName = entity.area?.name, !areaName.isEmpty {
+            subtitle = areaName
         }
-        return entity.entityId
+        if let deviceName = entity.device?.name,
+           !deviceName.isEmpty,
+           deviceName.range(of: entity.name, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
+            if !subtitle.isEmpty {
+                subtitle += " • "
+            }
+            subtitle += deviceName
+        }
+        if subtitle.isEmpty {
+            subtitle = entity.entityId
+        }
+        return subtitle
     }
 
     @MainActor

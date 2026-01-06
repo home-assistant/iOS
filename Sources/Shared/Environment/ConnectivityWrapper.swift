@@ -139,6 +139,7 @@ public class ConnectivityWrapper {
         syncNetworkInformation()
     }
 
+    // TODO: Refactor SSID retrieval to be async instead of hacking around with completion handlers
     public func syncNetworkInformation(completion: (() -> Void)? = nil) {
         #if targetEnvironment(macCatalyst)
         // macOS uses macBridge to retrieve network information
