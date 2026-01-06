@@ -7,6 +7,14 @@ struct AssistView: View {
     @StateObject private var viewModel: AssistViewModel
     @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
+    @State private var showSettings = false
+//    @AppStorage("enableAssistOnDeviceSTT") private var enableOnDeviceSTT = false
+    @AppStorage("enableAssistModernUI") private var enableModernUI = false
+    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
+
+    private var selectedTheme: ModernAssistTheme {
+        ModernAssistTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant
+    }
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
@@ -17,36 +25,26 @@ struct AssistView: View {
 
     private let showCloseButton: Bool
 
+    private var shouldUseModernUI: Bool {
+        if #available(iOS 26.0, *) {
+            return !Current.isCatalyst && enableModernUI
+        }
+        return false
+    }
+
     init(viewModel: AssistViewModel, showCloseButton: Bool = true) {
         self._viewModel = .init(wrappedValue: viewModel)
         self.showCloseButton = showCloseButton
     }
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: .zero) {
-                if !Current.isCatalyst {
-                    pipelinesPicker
-                }
-                chatList
-            }
-            .navigationTitle("Assist")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if showCloseButton {
-                        closeButton
-                    }
-                }
-
-                #if targetEnvironment(macCatalyst)
-                ToolbarItem(placement: .topBarTrailing) {
-                    macPicker
-                }
-                #endif
+        Group {
+            if #available(iOS 26.0, *), shouldUseModernUI {
+                modernUI
+            } else {
+                classicUI
             }
         }
-        .navigationViewStyle(.stack)
         .onAppear {
             assistSession.inProgress = true
             viewModel.initialRoutine()
@@ -69,6 +67,89 @@ struct AssistView: View {
         }
     }
 
+    private var classicUI: some View {
+        NavigationView {
+            VStack(spacing: .zero) {
+                if !Current.isCatalyst {
+                    pipelinesPicker
+                }
+                chatList
+            }
+            .navigationTitle("Assist")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if showCloseButton {
+                        closeButton
+                    }
+                }
+
+                #if !targetEnvironment(macCatalyst)
+                ToolbarItem(placement: .topBarTrailing) {
+                    if #available(iOS 26.0, *) {
+                        settingsButton
+                    }
+                }
+                #endif
+
+                #if targetEnvironment(macCatalyst)
+                ToolbarItem(placement: .topBarTrailing) {
+                    macPicker
+                }
+                #endif
+            }
+            .sheet(isPresented: $showSettings) {
+                if #available(iOS 26.0, *) {
+                    AssistSettingsView()
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+
+    @available(iOS 26.0, *)
+    private var modernUI: some View {
+        ModernAssistView(
+            messages: $viewModel.chatItems,
+            inputText: $viewModel.inputText,
+            isRecording: $viewModel.isRecording,
+            selectedTheme: .init(
+                get: { selectedTheme },
+                set: { selectedThemeRawValue = $0.rawValue }
+            ),
+            selectedPipeline: .init(
+                get: {
+                    viewModel.pipelines.first(where: { $0.id == viewModel.preferredPipelineId })?.name ?? ""
+                },
+                set: { newValue in
+                    if let pipeline = viewModel.pipelines.first(where: { $0.name == newValue }) {
+                        viewModel.preferredPipelineId = pipeline.id
+                    }
+                }
+            ),
+            pipelines: viewModel.pipelines.map(\.name),
+            onClose: {
+                dismiss()
+            },
+            onSettings: {
+                showSettings = true
+            },
+            onSendMessage: {
+                viewModel.assistWithText()
+            },
+            onStartRecording: {
+                isFirstResponder = false
+                viewModel.assistWithAudio()
+            },
+            onStopRecording: {
+                viewModel.stopStreaming()
+            }
+        )
+        .sheet(isPresented: $showSettings) {
+            AssistSettingsView()
+        }
+    }
+
     private var closeButton: some View {
         Button {
             dismiss()
@@ -78,6 +159,16 @@ struct AssistView: View {
         .buttonStyle(.plain)
         .tint(Color(uiColor: .label))
         .keyboardShortcut(.cancelAction)
+    }
+
+    private var settingsButton: some View {
+        Button {
+            showSettings = true
+        } label: {
+            Image(systemSymbol: .gearshape)
+        }
+        .buttonStyle(.plain)
+        .tint(Color(uiColor: .label))
     }
 
     private var pipelinesPicker: some View {
@@ -115,7 +206,7 @@ struct AssistView: View {
         VStack {
             if item.itemType == .typing {
                 AssistTypingIndicator()
-                    .padding(.vertical, Spaces.half)
+                    .padding(.vertical, DesignSystem.Spaces.half)
             } else {
                 Text(item.markdown)
             }
@@ -242,6 +333,7 @@ struct AssistView: View {
     private func assistMicButtonAction() {
         feedbackGenerator.notificationOccurred(.success)
         isFirstResponder = false
+
         viewModel.assistWithAudio()
     }
 
