@@ -6,7 +6,7 @@ import PromiseKit
 @testable import Shared
 import XCTest
 
-class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
+final class NotificationManagerLocalPushInterfaceExtensionTests: XCTestCase {
     private var interface: NotificationManagerLocalPushInterfaceExtension!
     private var fakeServers: FakeServerManager!
 
