@@ -71,6 +71,7 @@ struct SwitchControlsView: View {
                 }
             ),
             icon: viewModel.switchIcon,
+            accentColor: .Domain.switch,
             isDisabled: viewModel.isUpdating
         )
     }

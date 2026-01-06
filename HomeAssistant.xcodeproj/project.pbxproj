@@ -862,6 +862,9 @@
 		428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 428DC0012F0C961E003B08D5 /* deviceregistry.json */; };
 		428DC00A2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
 		428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
+		428DC00D2F0D8BD5003B08D5 /* FanControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00C2F0D8BD5003B08D5 /* FanControlsViewModel.swift */; };
+		428DC00F2F0D8BF5003B08D5 /* FanControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */; };
+		428DC0112F0D8C96003B08D5 /* FanControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
@@ -2479,6 +2482,9 @@
 		428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRegistry.test.swift; sourceTree = "<group>"; };
 		428DC0012F0C961E003B08D5 /* deviceregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = deviceregistry.json; sourceTree = "<group>"; };
 		428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityProvider+Details.swift"; sourceTree = "<group>"; };
+		428DC00C2F0D8BD5003B08D5 /* FanControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsViewModel.swift; sourceTree = "<group>"; };
+		428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsView.swift; sourceTree = "<group>"; };
+		428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlIntents.swift; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
@@ -5163,6 +5169,16 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		428DC0122F0D8E25003B08D5 /* Fan */ = {
+			isa = PBXGroup;
+			children = (
+				428DC00C2F0D8BD5003B08D5 /* FanControlsViewModel.swift */,
+				428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */,
+				428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */,
+			);
+			path = Fan;
+			sourceTree = "<group>";
+		};
 		42905D812E1297BC00250728 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -5843,6 +5859,7 @@
 		42C60F912F07FB1D0071A6F6 /* DomainSpecific */ = {
 			isa = PBXGroup;
 			children = (
+				428DC0122F0D8E25003B08D5 /* Fan */,
 				42C60FA02F0810280071A6F6 /* Cover */,
 				42C60F992F080B640071A6F6 /* Switch */,
 				42C60F982F080B5C0071A6F6 /* Light */,
@@ -8925,6 +8942,7 @@
 				1112AE9B25F71775007A541A /* LocationHistoryListView.swift in Sources */,
 				426EE49B2CA4194E00A5EF4F /* OnboardingWelcomeView.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
+				428DC0112F0D8C96003B08D5 /* FanControlIntents.swift in Sources */,
 				42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				427FEE562D9D39A50047C00C /* OnboardingNavigationView.swift in Sources */,
@@ -8960,6 +8978,7 @@
 				422F88172D428E8300706A0A /* CustomWidgetActivateAppIntent.swift in Sources */,
 				39A32EE22C0E384E00985722 /* UIImage+scaledToSize.swift in Sources */,
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
+				428DC00D2F0D8BD5003B08D5 /* FanControlsViewModel.swift in Sources */,
 				420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */,
@@ -9172,6 +9191,7 @@
 				428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
+				428DC00F2F0D8BF5003B08D5 /* FanControlsView.swift in Sources */,
 				4289FCB92F0BFF50005189AA /* HomeViewConfiguration.swift in Sources */,
 				425573D12B5576E600145217 /* CarPlayDomainsListTemplate+Build.swift in Sources */,
 				42B129512F056DAC00B957AF /* EntityMoreInfoDialogView.swift in Sources */,

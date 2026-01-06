@@ -36,7 +36,7 @@ struct CoverControlsView: View {
                         in: 0 ... 100,
                         step: 1,
                         icon: viewModel.coverIcon,
-                        tint: .purple,
+                        tint: .Domain.cover,
                         showThumb: false,
                         isInverted: true,
                         onEditingChanged: { isEditing in
