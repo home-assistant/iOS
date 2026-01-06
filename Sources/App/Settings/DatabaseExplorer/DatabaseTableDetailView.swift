@@ -68,7 +68,7 @@ struct DatabaseTableDetailView: View {
             }
             .modify { view in
                 if #available(iOS 17.0, *) {
-                    view.listSectionSpacing(Spaces.one)
+                    view.listSectionSpacing(DesignSystem.Spaces.one)
                 } else {
                     view
                 }
@@ -80,7 +80,7 @@ struct DatabaseTableDetailView: View {
         NavigationLink {
             DatabaseRowDetailView(row: row)
         } label: {
-            VStack(alignment: .leading, spacing: Spaces.half) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                 ForEach(row.keys.sorted().prefix(3), id: \.self) { key in
                     HStack {
                         Text(key)
@@ -191,7 +191,7 @@ struct DatabaseRowDetailView: View {
     var body: some View {
         List {
             ForEach(row.keys.sorted(), id: \.self) { key in
-                VStack(alignment: .leading, spacing: Spaces.half) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                     Text(key)
                         .font(.caption)
                         .foregroundColor(.secondary)

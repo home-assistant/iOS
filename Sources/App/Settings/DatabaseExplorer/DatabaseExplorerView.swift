@@ -12,7 +12,7 @@ struct DatabaseExplorerView: View {
                 NavigationLink {
                     DatabaseTableDetailView(tableName: table)
                 } label: {
-                    HStack(spacing: Spaces.two) {
+                    HStack(spacing: DesignSystem.Spaces.two) {
                         Image(systemSymbol: .tablecells)
                             .foregroundStyle(Color.haPrimary)
                         Text(table)
