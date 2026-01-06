@@ -53,7 +53,7 @@ struct EntityMoreInfoDialogView: View {
                 await loadAreaName()
             }
         }
-        .presentationBackground(Color(uiColor: .systemBackground).opacity(0.9))
+        .presentationBackground(Color.clear)
     }
 
     // MARK: - Area Lookup
