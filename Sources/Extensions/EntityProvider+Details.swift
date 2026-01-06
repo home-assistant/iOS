@@ -4,9 +4,7 @@ import GRDB
 public extension HAAppEntity {
     var area: AppArea? {
         do {
-            let areas = try Current.database().read { _ in
-                try AppArea.fetchAreas(for: serverId)
-            }
+            let areas = try AppArea.fetchAreas(for: serverId)
 
             return areas.first { area in
                 area.entities.contains(entityId)

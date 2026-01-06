@@ -15,7 +15,7 @@ final class EntityPickerViewModel: ObservableObject {
 
     func fetchEntities() {
         do {
-            var newEntities = try HAAppEntity.config() ?? []
+            var newEntities = try HAAppEntity.config()
             if let domainFilter {
                 newEntities = newEntities.filter({ entity in
                     entity.domain == domainFilter.rawValue
