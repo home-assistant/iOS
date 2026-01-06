@@ -10,8 +10,12 @@ enum EntityIconColorProvider {
         rgbColor: [Int]?,
         hsColor: [Double]?
     ) -> Color {
-        guard state == Domain.State.on.rawValue else {
-            return .secondary
+        guard Domain.activeStates.map(\.rawValue).contains(state) else {
+            if Domain.problemStates.map(\.rawValue).contains(state) {
+                return .red
+            } else {
+                return .secondary
+            }
         }
 
         // Check color_mode first if available to prioritize the correct attribute
