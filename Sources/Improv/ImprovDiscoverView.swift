@@ -170,7 +170,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         Task { @MainActor in
             let networkInfo = await Current.connectivity.currentNetworkInfo()
             if let networkSSID = networkInfo.ssid {
-                self.ssid = networkSSID
+                ssid = networkSSID
             }
         }
         showWifiAlert = true

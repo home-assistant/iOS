@@ -181,7 +181,9 @@ public class ConnectivityWrapper {
                 #endif
                 let bssid = hotspotNetwork?.bssid
                 Current.Log
-                    .verbose("Fetched network info - SSID: \(String(describing: ssid)), BSSID: \(String(describing: bssid))")
+                    .verbose(
+                        "Fetched network info - SSID: \(String(describing: ssid)), BSSID: \(String(describing: bssid))"
+                    )
                 continuation.resume(returning: NetworkInfo(ssid: ssid, bssid: bssid))
             }
         }
