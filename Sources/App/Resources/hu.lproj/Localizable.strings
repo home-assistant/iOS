@@ -81,6 +81,8 @@
 "app_intents.lights.on_state_icon.title" = "Bekapcsolt állapot ikonja";
 "app_intents.notify_when_run.description" = "Értesítést jelenít meg a végrehajtás után";
 "app_intents.notify_when_run.title" = "Értesítés futtatáskor";
+"app_intents.open_experimental_dashboard.description" = "Opens the experimental dashboard";
+"app_intents.open_experimental_dashboard.title" = "Open Experimental Dashboard";
 "app_intents.open_state_icon.title" = "Nyitott állapot ikonja";
 "app_intents.perform_action.action_parameter_configuration" = "Melyik művelet?";
 "app_intents.perform_action.action_parameter_confirmation" = "Csak megerősítésképp, ezt szeretné: ‘%@’?";
@@ -104,6 +106,7 @@
 "app_intents.scripts.show_confirmation_dialog.description" = "Megerősítő értesítést jelenít meg a végrehajtás után";
 "app_intents.scripts.show_confirmation_dialog.title" = "Megerősítő értesítés";
 "app_intents.scripts.success_message.content" = "A(z) \"%@\" szkript végrehajtása megtörtént.";
+"app_intents.server.title" = "Server";
 "app_intents.show_confirmation_dialog.description" = "Megerősítő értesítést jelenít meg a végrehajtás után";
 "app_intents.show_confirmation_dialog.title" = "Megerősítő értesítés";
 "app_intents.state.target" = "Célállapot";
@@ -338,6 +341,18 @@
 "ha_api.api_error.unknown" = "Ismeretlen hiba történt.";
 "ha_api.api_error.update_not_possible" = "A műveletet nem lehetett végrehajtani.";
 "help_label" = "Súgó";
+"home_sections_reorder_view.done" = "Done";
+"home_sections_reorder_view.title" = "Reorder Rooms";
+"home_view.context_menu.hide" = "Hide";
+"home_view.empty_state.no_entities" = "No entities found";
+"home_view.menu.allow_multiple_selection" = "Allow multiple selection";
+"home_view.menu.customize" = "Customize";
+"home_view.menu.no_sections_available" = "No sections available";
+"home_view.menu.open_web_ui" = "Open web UI";
+"home_view.menu.reorder" = "Reorder";
+"home_view.menu.settings" = "Settings";
+"home_view.menu.show_all" = "Show All";
+"home_view.navigation.subtitle.experimental" = "Experimental feature";
 "improv.button.continue" = "Folytatás";
 "improv.connection_state.authorized" = "Wi-Fi beállítása";
 "improv.connection_state.provisioning" = "Csatlakozás Wi-Fi-hez";
@@ -452,6 +467,7 @@ A címkék minden olyan eszközön működnek, amelyre telepítve van a Home Ass
 "nfc.write.manual_input.title" = "Milyen azonosítója van a címkének?";
 "nfc.write.start_message" = "Tartsa a(z) %@-t egy írható NFC-címke közelében.";
 "nfc.write.success_message" = "Címke megírva!";
+"no_area" = "Not in a room";
 "no_label" = "Nem";
 "notification_service.failed_to_load" = "Nem sikerült betölteni a mellékletet";
 "notification_service.loading_dynamic_actions" = "Műveletek betöltése…";
@@ -619,6 +635,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "privacyLabel" = "Adatvédelem";
 "requires_version" = "%@ vagy újabb szükséges.";
 "retry_label" = "Újra";
+"room_view.context_menu.unhide" = "Unhide";
+"room_view.empty_state.no_entities" = "No entities in this room";
+"room_view.section.hidden" = "Hidden";
+"room_view.section.visible" = "Visible";
 "save_label" = "Mentés";
 "sensors.active.setting.time_until_idle" = "Idő üresjáratig";
 "sensors.geocoded_location.setting.use_zones" = "Zónanév használata";
@@ -1290,6 +1310,9 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";
 "widgets.controls.open_entity.configuration.parameter.entity" = "Entitás";
 "widgets.controls.open_entity.configuration.title" = "Entitás megnyitása";
+"widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Open Experimental Dashboard";
+"widgets.controls.open_experimental_dashboard.description" = "Opens the experimental dashboard for the selected server";
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Input Boolean";
 "widgets.controls.open_input_boolean.configuration.title" = "Open Input Boolean";
 "widgets.controls.open_input_boolean.description" = "Opens the selected input boolean entity inside the app";
