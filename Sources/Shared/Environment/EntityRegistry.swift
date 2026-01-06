@@ -62,18 +62,18 @@ public struct EntityRegistryEntry: Codable, HADataDecodable {
     }
 
     // Computed helpers
-    var displayName: String {
+    public var displayName: String {
         name ?? originalName ?? entityId ?? "-"
     }
 
-    var displayIcon: String? {
+    public var displayIcon: String? {
         icon ?? originalIcon
     }
 
-    var isDisabled: Bool { disabledBy != nil }
-    var isHidden: Bool { hiddenBy != nil }
-    var isConfiguration: Bool { entityCategory == "config" }
-    var isDiagnostic: Bool { entityCategory == "diagnostic" }
+    public var isDisabled: Bool { disabledBy != nil }
+    public var isHidden: Bool { hiddenBy != nil }
+    public var isConfiguration: Bool { entityCategory == "config" }
+    public var isDiagnostic: Bool { entityCategory == "diagnostic" }
 }
 
 // MARK: - Database Model
