@@ -109,6 +109,15 @@ struct DebugView: View {
                         title: L10n.Settings.LocationHistory.title
                     )
                 }
+
+                NavigationLink {
+                    DatabaseExplorerView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .tablecells),
+                        title: L10n.Settings.DatabaseExplorer.title
+                    )
+                }
             }
 
             criticalSection
