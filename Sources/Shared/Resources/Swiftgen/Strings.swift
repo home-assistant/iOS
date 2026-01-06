@@ -2579,6 +2579,18 @@ public enum L10n {
         }
       }
     }
+    public enum DatabaseExplorer {
+      /// +%li more fields
+      public static func moreFields(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "settings.database_explorer.more_fields", p1)
+      }
+      /// No entries found
+      public static var noEntries: String { return L10n.tr("Localizable", "settings.database_explorer.no_entries") }
+      /// Row Details
+      public static var rowDetail: String { return L10n.tr("Localizable", "settings.database_explorer.row_detail") }
+      /// Database Explorer
+      public static var title: String { return L10n.tr("Localizable", "settings.database_explorer.title") }
+    }
     public enum Debugging {
       /// Debugging
       public static var title: String { return L10n.tr("Localizable", "settings.debugging.title") }

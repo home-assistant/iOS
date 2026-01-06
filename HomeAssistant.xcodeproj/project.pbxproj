@@ -565,6 +565,8 @@
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */; };
 		420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */; };
+		420DBEXP2F10000000000001 /* DatabaseExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */; };
+		420DBEXP2F10000000000003 /* DatabaseTableDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */; };
 		420C91502F0C6CAC005D04A6 /* HomeViewCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */; };
 		420C91522F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
 		420C91532F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
@@ -2231,6 +2233,8 @@
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
+		420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseExplorerView.swift; sourceTree = "<group>"; };
+		420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTableDetailView.swift; sourceTree = "<group>"; };
 		420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCustomizationView.swift; sourceTree = "<group>"; };
 		420C91512F0C7988005D04A6 /* EntityRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.swift; sourceTree = "<group>"; };
 		420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.test.swift; sourceTree = "<group>"; };
@@ -4567,6 +4571,15 @@
 			path = ClientEventsLogView;
 			sourceTree = "<group>";
 		};
+		420DBEXP2F10000000000005 /* DatabaseExplorer */ = {
+			isa = PBXGroup;
+			children = (
+				420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */,
+				420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */,
+			);
+			path = DatabaseExplorer;
+			sourceTree = "<group>";
+		};
 		420C915B2F0C7AF4005D04A6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -6658,6 +6671,7 @@
 				1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */,
 				42B19BD02D4A358B00B3262B /* DebugView.swift */,
 				420C1BB32CF7DBF300AF22E7 /* ClientEventsLogView */,
+				420DBEXP2F10000000000005 /* DatabaseExplorer */,
 				119DE9552633A8C40099F7D8 /* SettingsRootDataSource.swift */,
 			);
 			path = Settings;
@@ -8983,6 +8997,8 @@
 				425573CC2B5574AD00145217 /* CarPlayAreasZonesTemplate+Build.swift in Sources */,
 				428DC00D2F0D8BD5003B08D5 /* FanControlsViewModel.swift in Sources */,
 				420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */,
+				420DBEXP2F10000000000001 /* DatabaseExplorerView.swift in Sources */,
+				420DBEXP2F10000000000003 /* DatabaseTableDetailView.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				42E6C08C2CE4F7A8007CA622 /* DownloadManagerViewModel.swift in Sources */,
 				421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */,
