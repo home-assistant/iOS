@@ -6,8 +6,8 @@ public enum GRDBDatabaseTable: String {
     case assistPipelines
     case carPlayConfig
     case appEntityRegistryListForDisplay
-    case appEntityRegistry
-    case appDeviceRegistry
+    case entityRegistry
+    case deviceRegistry
     case appPanel
     case customWidget
     case appArea

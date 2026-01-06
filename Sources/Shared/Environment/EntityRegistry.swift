@@ -132,6 +132,8 @@ public struct EntityRegistryEntry: Codable, HADataDecodable {
 // MARK: - Database Model
 
 public struct AppEntityRegistry: Codable, FetchableRecord, PersistableRecord {
+    public static var databaseTableName: String = GRDBDatabaseTable.entityRegistry.rawValue
+
     public let serverId: String
 
     // All EntityRegistryEntry fields
@@ -194,10 +196,6 @@ public struct AppEntityRegistry: Codable, FetchableRecord, PersistableRecord {
         self.options = registry.options
         self.translationKey = registry.translationKey
         self.hasEntityName = registry.hasEntityName
-    }
-
-    public var id: String {
-        "\(serverId)-\(uniqueId)"
     }
 
     // Computed helpers (same as EntityRegistryEntry)
