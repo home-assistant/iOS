@@ -206,7 +206,7 @@ final class NotificationManagerLocalPushInterfaceExtension: NSObject, Notificati
         // This allows scheduleReconnectionIfNeeded() to schedule a new timer
         // if this reconnection attempt fails.
         reconnectionTimer = nil
-        
+
         reconnectionAttempt += 1
         Current.Log
             .info(
