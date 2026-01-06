@@ -50,8 +50,13 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         updateTask = Task { [weak self] in
             for server in Current.servers.all {
-                guard let self, server.info.connection.activeURL() != nil else { continue }
+                guard let self else {
+                    break
+                }
 
+                guard server.info.connection.activeURL() != nil else {
+                    continue
+                }
                 // Check if task was cancelled before processing next server
                 if Task.isCancelled {
                     Current.Log.verbose("Update task cancelled")
