@@ -9,6 +9,10 @@ public protocol AppDatabaseUpdaterProtocol {
 }
 
 final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
+    enum UpdateError: Error {
+        case noAPI
+    }
+
     static var shared = AppDatabaseUpdater()
 
     private var requestTokens: [HACancellable?] = []
@@ -30,7 +34,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     func update() async {
         cancelOnGoingRequests()
 
-        if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
+        if let lastUpdate, lastUpdate.timeIntervalSinceNow > -120 {
             Current.Log.verbose("Skipping database update, last update was \(lastUpdate)")
             return
         } else {
@@ -41,15 +45,23 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         for server in Current.servers.all {
             guard server.info.connection.activeURL() != nil else { continue }
-            // Cache entities
+            // Entities (fetch_states)
             let entitiesDatabaseToken = updateEntitiesDatabase(server: server)
             requestTokens.append(entitiesDatabaseToken)
 
-            // Cache entities registry list for display
+            // Entities registry list for display
             let entitiesRegistryToken = updateEntitiesRegistryListForDisplay(server: server)
             requestTokens.append(entitiesRegistryToken)
 
-            // Cache areas with their entities
+            // Entities registry
+            await updateEntitiesRegistry(server: server)
+
+            // Devices registry
+            await updateDevicesRegistry(server: server)
+
+            // Areas with their entities
+            // IMPORTANT: This must be executed after entities and device registry
+            // since we rely on that data to map entities to areas
             await updateAreasDatabase(server: server)
         }
     }
@@ -75,9 +87,63 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         )
     }
 
+    private func updateEntitiesRegistry(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(.configEntityRegistryList()) { [weak self] result in
+                switch result {
+                case let .success(registryEntries):
+                    Current.Log.verbose("Successfully fetched entity registry for server \(server.info.name)")
+                    self?.saveEntityRegistry(registryEntries, serverId: server.identifier.rawValue)
+                case let .failure(error):
+                    Current.Log.error("Failed to fetch entity registry: \(error)")
+                    Current.clientEventStore.addEvent(.init(
+                        text: "Failed to fetch entity registry on server \(server.info.name)",
+                        type: .networkRequest,
+                        payload: [
+                            "error": error.localizedDescription,
+                        ]
+                    ))
+                }
+                continuation.resume()
+            }
+        }
+    }
+
+    private func updateDevicesRegistry(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(.configDeviceRegistryList()) { [weak self] result in
+                switch result {
+                case let .success(registryEntries):
+                    Current.Log.verbose("Successfully fetched device registry for server \(server.info.name)")
+                    self?.saveDeviceRegistry(registryEntries, serverId: server.identifier.rawValue)
+                case let .failure(error):
+                    Current.Log.error("Failed to fetch device registry: \(error)")
+                    Current.clientEventStore.addEvent(.init(
+                        text: "Failed to fetch device registry on server \(server.info.name)",
+                        type: .networkRequest,
+                        payload: [
+                            "error": error.localizedDescription,
+                        ]
+                    ))
+                }
+                continuation.resume()
+            }
+        }
+    }
+
     private func updateEntitiesRegistryListForDisplay(server: Server) -> HACancellable? {
         Current.api(for: server)?.connection.send(
-            HATypedRequest<EntityRegistryListForDisplay>.fetchEntityRegistryListForDisplay(),
+            HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay(),
             completion: { [weak self] result in
                 switch result {
                 case let .success(response):
@@ -112,7 +178,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     private func saveAreasToDatabase(
-        areas: [HAAreaResponse],
+        areas: [HAAreasRegistryResponse],
         areasAndEntities: [String: Set<String>],
         serverId: String
     ) async {
@@ -146,6 +212,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
+            assertionFailure("Failed to save areas in database: \(error)")
         }
     }
 
@@ -182,6 +249,75 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
+            assertionFailure("Failed to save EntityRegistryListForDisplay in database: \(error)")
+        }
+    }
+
+    private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) {
+        let appEntityRegistries = registryEntries.map { entry in
+            AppEntityRegistry(serverId: serverId, registry: entry)
+        }
+
+        do {
+            try Current.database().write { db in
+                // Delete existing registry entries for this server
+                try AppEntityRegistry
+                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                    .deleteAll(db)
+
+                // Insert new registry entries
+                for registry in appEntityRegistries {
+                    try registry.save(db)
+                }
+            }
+            Current.Log
+                .verbose(
+                    "Successfully saved \(appEntityRegistries.count) entity registry entries for server \(serverId)"
+                )
+        } catch {
+            Current.Log.error("Failed to save entity registry in database, error: \(error.localizedDescription)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to save entity registry in database, error on serverId \(serverId)",
+                type: .database,
+                payload: [
+                    "error": error.localizedDescription,
+                ]
+            ))
+            assertionFailure("Failed to save entity registry in database: \(error)")
+        }
+    }
+
+    private func saveDeviceRegistry(_ registryEntries: [DeviceRegistryEntry], serverId: String) {
+        let appDeviceRegistries = registryEntries.map { entry in
+            AppDeviceRegistry(serverId: serverId, registry: entry)
+        }
+
+        do {
+            try Current.database().write { db in
+                // Delete existing registry entries for this server
+                try AppDeviceRegistry
+                    .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                    .deleteAll(db)
+
+                // Insert new registry entries
+                for registry in appDeviceRegistries {
+                    try registry.save(db)
+                }
+            }
+            Current.Log
+                .verbose(
+                    "Successfully saved \(appDeviceRegistries.count) device registry entries for server \(serverId)"
+                )
+        } catch {
+            Current.Log.error("Failed to save device registry in database, error: \(error.localizedDescription)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to save device registry in database, error on serverId \(serverId)",
+                type: .database,
+                payload: [
+                    "error": error.localizedDescription,
+                ]
+            ))
+            assertionFailure("Failed to save device registry in database: \(error)")
         }
     }
 
