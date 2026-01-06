@@ -81,6 +81,8 @@
 "app_intents.lights.on_state_icon.title" = "Ikon untuk status nyala";
 "app_intents.notify_when_run.description" = "Menampilkan notifikasi setelah dieksekusi";
 "app_intents.notify_when_run.title" = "Beri tahu saat dijalankan";
+"app_intents.open_experimental_dashboard.description" = "Opens the experimental dashboard";
+"app_intents.open_experimental_dashboard.title" = "Open Experimental Dashboard";
 "app_intents.open_state_icon.title" = "Ikon untuk status terbuka";
 "app_intents.perform_action.action_parameter_configuration" = "Aksi yang mana?";
 "app_intents.perform_action.action_parameter_confirmation" = "Sekadar konfirmasi, Anda menginginkan '%@'?";
@@ -104,6 +106,7 @@
 "app_intents.scripts.show_confirmation_dialog.description" = "Menampilkan notifikasi konfirmasi setelah dieksekusi";
 "app_intents.scripts.show_confirmation_dialog.title" = "Notifikasi konfirmasi";
 "app_intents.scripts.success_message.content" = "Skrip \"%@\" dieksekusi.";
+"app_intents.server.title" = "Server";
 "app_intents.show_confirmation_dialog.description" = "Menampilkan notifikasi konfirmasi setelah dieksekusi";
 "app_intents.show_confirmation_dialog.title" = "Notifikasi konfirmasi";
 "app_intents.state.target" = "Status target";
@@ -338,6 +341,18 @@
 "ha_api.api_error.unknown" = "Terjadi kesalahan yang tidak diketahui.";
 "ha_api.api_error.update_not_possible" = "Operasi tidak dapat dilakukan.";
 "help_label" = "Bantuan";
+"home_sections_reorder_view.done" = "Done";
+"home_sections_reorder_view.title" = "Reorder Rooms";
+"home_view.context_menu.hide" = "Hide";
+"home_view.empty_state.no_entities" = "No entities found";
+"home_view.menu.allow_multiple_selection" = "Allow multiple selection";
+"home_view.menu.customize" = "Customize";
+"home_view.menu.no_sections_available" = "No sections available";
+"home_view.menu.open_web_ui" = "Open web UI";
+"home_view.menu.reorder" = "Reorder";
+"home_view.menu.settings" = "Settings";
+"home_view.menu.show_all" = "Show All";
+"home_view.navigation.subtitle.experimental" = "Experimental feature";
 "improv.button.continue" = "Lanjutkan";
 "improv.connection_state.authorized" = "Menyiapkan Wi-Fi";
 "improv.connection_state.provisioning" = "Menghubungkan ke Wi-Fi";
@@ -452,6 +467,7 @@ Tag akan berfungsi di semua perangkat apa yang dipasangi Home Assistant, yang me
 "nfc.write.manual_input.title" = "Apa pengenal untuk tag tersebut?";
 "nfc.write.start_message" = "Dekatkan %@ ke tag NFC yang dapat ditulisi";
 "nfc.write.success_message" = "Tag Ditulis!";
+"no_area" = "Not in a room";
 "no_label" = "Tidak";
 "notification_service.failed_to_load" = "Gagal memuat lampiran";
 "notification_service.loading_dynamic_actions" = "Memuat Tindakan…";
@@ -618,6 +634,10 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "privacyLabel" = "Privasi";
 "requires_version" = "Membutuhkan %@ atau lebih baru.";
 "retry_label" = "Coba Lagi";
+"room_view.context_menu.unhide" = "Unhide";
+"room_view.empty_state.no_entities" = "No entities in this room";
+"room_view.section.hidden" = "Hidden";
+"room_view.section.visible" = "Visible";
 "save_label" = "Simpan";
 "sensors.active.setting.time_until_idle" = "Waktu Hingga Menganggur";
 "sensors.geocoded_location.setting.use_zones" = "Gunakan Nama Zona";
@@ -1289,6 +1309,9 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "widgets.controls.open_cover.description" = "Opens the selected cover entity inside the app";
 "widgets.controls.open_entity.configuration.parameter.entity" = "Entitas";
 "widgets.controls.open_entity.configuration.title" = "Buka Entitas";
+"widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Open Experimental Dashboard";
+"widgets.controls.open_experimental_dashboard.description" = "Opens the experimental dashboard for the selected server";
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Input Boolean";
 "widgets.controls.open_input_boolean.configuration.title" = "Open Input Boolean";
 "widgets.controls.open_input_boolean.description" = "Opens the selected input boolean entity inside the app";

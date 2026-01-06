@@ -81,6 +81,8 @@
 "app_intents.lights.on_state_icon.title" = "Ikona pro zapnutý stav";
 "app_intents.notify_when_run.description" = "Zobrazí oznámení po provedení.";
 "app_intents.notify_when_run.title" = "Oznámit při spuštění";
+"app_intents.open_experimental_dashboard.description" = "Otevře experimentální ovládací panel.";
+"app_intents.open_experimental_dashboard.title" = "Otevřít experimentální ovládcí panel";
 "app_intents.open_state_icon.title" = "Ikona pro otevřený stav";
 "app_intents.perform_action.action_parameter_configuration" = "Která akce?";
 "app_intents.perform_action.action_parameter_confirmation" = "Jen pro potvrzení, chtěli jste \"%@\"?";
@@ -104,6 +106,7 @@
 "app_intents.scripts.show_confirmation_dialog.description" = "Po provedení zobrazí potvrzovací oznámení.";
 "app_intents.scripts.show_confirmation_dialog.title" = "Potvrzovací oznámení";
 "app_intents.scripts.success_message.content" = "Skript \"%@\" byl spuštěn.";
+"app_intents.server.title" = "Server";
 "app_intents.show_confirmation_dialog.description" = "Po provedení zobrazí potvrzovací oznámení.";
 "app_intents.show_confirmation_dialog.title" = "Potvrzovací oznámení";
 "app_intents.state.target" = "Cílový stav";
@@ -338,6 +341,18 @@
 "ha_api.api_error.unknown" = "Nastala neznámá chyba.";
 "ha_api.api_error.update_not_possible" = "Operaci nelze provést.";
 "help_label" = "Nápověda";
+"home_sections_reorder_view.done" = "Hotovo";
+"home_sections_reorder_view.title" = "Přeuspořádat místnosti";
+"home_view.context_menu.hide" = "Skrýt";
+"home_view.empty_state.no_entities" = "Nebyly nalezeny žádné entity";
+"home_view.menu.allow_multiple_selection" = "Povolit vícenásobný výběr";
+"home_view.menu.customize" = "Přizpůsobit";
+"home_view.menu.no_sections_available" = "Nejsou dostupné žádné sekce";
+"home_view.menu.open_web_ui" = "Otevřít webové rozhraní";
+"home_view.menu.reorder" = "Přeuspořádat";
+"home_view.menu.settings" = "Nastavení";
+"home_view.menu.show_all" = "Zobrazit vše";
+"home_view.navigation.subtitle.experimental" = "Experimentální funkce";
 "improv.button.continue" = "Pokračovat";
 "improv.connection_state.authorized" = "Nastavování Wi-Fi";
 "improv.connection_state.provisioning" = "Připojování k Wi-Fi";
@@ -452,6 +467,7 @@
 "nfc.write.manual_input.title" = "Jaký bude identifikátor štítku?";
 "nfc.write.start_message" = "Podržte %@ poblíž zapisovatelného NFC štítku";
 "nfc.write.success_message" = "Štítek zapsán!";
+"no_area" = "Není v místnosti";
 "no_label" = "Ne";
 "notification_service.failed_to_load" = "Načtení přílohy se nezdařilo";
 "notification_service.loading_dynamic_actions" = "Načítání akcí...";
@@ -619,6 +635,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "privacyLabel" = "Soukromí";
 "requires_version" = "Vyžaduje %@ nebo novější.";
 "retry_label" = "Opakovat";
+"room_view.context_menu.unhide" = "Unhide";
+"room_view.empty_state.no_entities" = "No entities in this room";
+"room_view.section.hidden" = "Hidden";
+"room_view.section.visible" = "Visible";
 "save_label" = "Uložit";
 "sensors.active.setting.time_until_idle" = "Čas do nečinnosti";
 "sensors.geocoded_location.setting.use_zones" = "Použít název zóny";
@@ -1290,6 +1310,9 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.controls.open_cover.description" = "Otevře vybranou entitu krytu v aplikaci";
 "widgets.controls.open_entity.configuration.parameter.entity" = "Entita";
 "widgets.controls.open_entity.configuration.title" = "Otevřít entitu";
+"widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Open Experimental Dashboard";
+"widgets.controls.open_experimental_dashboard.description" = "Opens the experimental dashboard for the selected server";
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Přepínač vstupu";
 "widgets.controls.open_input_boolean.configuration.title" = "Otevřít přepínač vstupu";
 "widgets.controls.open_input_boolean.description" = "Otevře vybraný přepínač vstupu v aplikaci";
