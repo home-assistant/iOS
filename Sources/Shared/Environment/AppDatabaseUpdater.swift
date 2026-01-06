@@ -34,7 +34,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     func update() async {
         cancelOnGoingRequests()
 
-        if let lastUpdate, lastUpdate.timeIntervalSinceNow > -5 {
+        if let lastUpdate, lastUpdate.timeIntervalSinceNow > -120 {
             Current.Log.verbose("Skipping database update, last update was \(lastUpdate)")
             return
         } else {

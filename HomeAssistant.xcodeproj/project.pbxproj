@@ -860,6 +860,7 @@
 		428DBFFC2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */; };
 		428DBFFE2F0C95D8003B08D5 /* DeviceRegistry.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */; };
 		428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 428DC0012F0C961E003B08D5 /* deviceregistry.json */; };
+		428DC0082F0CA2E7003B08D5 /* EntityProvider+Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
@@ -2476,6 +2477,7 @@
 		428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDeviceRegistryTable.swift; sourceTree = "<group>"; };
 		428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRegistry.test.swift; sourceTree = "<group>"; };
 		428DC0012F0C961E003B08D5 /* deviceregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = deviceregistry.json; sourceTree = "<group>"; };
+		428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityProvider+Details.swift"; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
@@ -3563,6 +3565,7 @@
 				1155DD07250F4100003405C0 /* Share */,
 				B6CC5D922159D10E00833E5D /* Watch */,
 				1171506E24DFCDE60065E874 /* Widgets */,
+				428DC0032F0CA1D8003B08D5 /* EntityProvider+Details.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -8974,6 +8977,7 @@
 				420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */,
 				4263A6662EFB291D0089C338 /* LightIntent.swift in Sources */,
 				11195F71267EFE2C003DF674 /* NotificationManagerLocalPushInterfaceUnsupported.swift in Sources */,
+				428DC0082F0CA2E7003B08D5 /* EntityProvider+Details.swift in Sources */,
 				428CB3372CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */,
 				424627332C98D8E900EF7B43 /* WidgetBasicViewTintedWrapper.swift in Sources */,
 				4285C5532D35658000DADE45 /* TileCard.swift in Sources */,
