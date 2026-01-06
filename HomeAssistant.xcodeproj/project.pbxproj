@@ -854,6 +854,12 @@
 		428CB3382CF7FC0800F1320E /* WidgetFamilySizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */; };
 		428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
 		428D31A62D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */; };
+		428DBFF82F0C9009003B08D5 /* DeviceRegistryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFF72F0C9009003B08D5 /* DeviceRegistryEntry.swift */; };
+		428DBFF92F0C9009003B08D5 /* DeviceRegistryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFF72F0C9009003B08D5 /* DeviceRegistryEntry.swift */; };
+		428DBFFB2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */; };
+		428DBFFC2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */; };
+		428DBFFE2F0C95D8003B08D5 /* DeviceRegistry.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */; };
+		428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */ = {isa = PBXBuildFile; fileRef = 428DC0012F0C961E003B08D5 /* deviceregistry.json */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
@@ -2466,6 +2472,10 @@
 		4289FCBA2F0C0143005189AA /* HomeViewConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewConfigurationTable.swift; sourceTree = "<group>"; };
 		428CB3362CF7FC0800F1320E /* WidgetFamilySizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilySizes.swift; sourceTree = "<group>"; };
 		428D31A42D0B33AF0025B1D7 /* WidgetSensorsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsConfig.swift; sourceTree = "<group>"; };
+		428DBFF72F0C9009003B08D5 /* DeviceRegistryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRegistryEntry.swift; sourceTree = "<group>"; };
+		428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDeviceRegistryTable.swift; sourceTree = "<group>"; };
+		428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRegistry.test.swift; sourceTree = "<group>"; };
+		428DC0012F0C961E003B08D5 /* deviceregistry.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = deviceregistry.json; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
@@ -4550,6 +4560,8 @@
 			children = (
 				420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */,
 				42FDCA252F0C7BFA00C92958 /* entityregistry.json */,
+				428DBFFD2F0C95D8003B08D5 /* DeviceRegistry.test.swift */,
+				428DC0012F0C961E003B08D5 /* deviceregistry.json */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -4561,6 +4573,7 @@
 				420CFC622D3F9C1F009A94F3 /* Tables */,
 				4297ADA62C89C74A00790812 /* GRDB+Initialization.swift */,
 				42FDCA292F0C88A100C92958 /* AppEntityRegistryTable.swift */,
+				428DBFFA2F0C9141003B08D5 /* AppDeviceRegistryTable.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -6792,6 +6805,7 @@
 				420A80952E9CF98C00D30A6B /* ImpactFeedbackGeneratorProtocol.swift */,
 				4221ED332D009BD000BAE3EB /* AppDatabaseUpdater.swift */,
 				420C91512F0C7988005D04A6 /* EntityRegistry.swift */,
+				428DBFF72F0C9009003B08D5 /* DeviceRegistryEntry.swift */,
 				D03D893A20E0B2E300D4F28D /* AppConstants.swift */,
 				1101568624D7712F009424C9 /* TagManagerProtocol.swift */,
 				11C8E8AB24F36535003E7F89 /* DeviceWrapper.swift */,
@@ -8112,6 +8126,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C10D762EFE08D347D0538339 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist in Resources */,
+				428DC0022F0C961E003B08D5 /* deviceregistry.json in Resources */,
 				42FDCA282F0C7EC200C92958 /* entityregistry.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -9474,6 +9489,7 @@
 				4251AABE2C6CE242004CCC9D /* MagicItemProvider.swift in Sources */,
 				42D3E4BE2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */,
 				420AE9E12CA559FE0020E9CB /* Color+hex.swift in Sources */,
+				428DBFFC2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */,
 				42D3E49D2C5BB88F00444BE6 /* WatchBatterySensor.swift in Sources */,
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
@@ -9577,6 +9593,7 @@
 				420CFC6D2D3F9C6E009A94F3 /* CarPlayConfigTable.swift in Sources */,
 				11EE9B4F24C6089800404AF8 /* RealmPersistable.swift in Sources */,
 				11358AED24FC9F300074C4E2 /* ActiveSensor.swift in Sources */,
+				428DBFF82F0C9009003B08D5 /* DeviceRegistryEntry.swift in Sources */,
 				B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */,
 				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
 				1148A45124E9AF9200345050 /* MDIMigration.swift in Sources */,
@@ -9841,6 +9858,7 @@
 				427A7CD92EBDFB1700D17841 /* AppArea.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,
 				1121CD4C271295AD0071C2AA /* Style.swift in Sources */,
+				428DBFFB2F0C9141003B08D5 /* AppDeviceRegistryTable.swift in Sources */,
 				116570772702B0F6003906A7 /* DiskCache.swift in Sources */,
 				11657050270188E4003906A7 /* URLComponents+WidgetAuthenticity.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
@@ -9894,6 +9912,7 @@
 				42D3E4BD2C5D31E000444BE6 /* LocalNotificationDispatcher.swift in Sources */,
 				110ED58F25A6743900489AF7 /* ConnectivityWrapper.swift in Sources */,
 				116740732519907400F51626 /* MacBridgeProtocol.swift in Sources */,
+				428DBFF92F0C9009003B08D5 /* DeviceRegistryEntry.swift in Sources */,
 				42DEDA9A2C5B926400E9D29D /* AppVersionSensor.swift in Sources */,
 				11F2F24125871CAF00F61F7C /* NotificationAttachmentParser.swift in Sources */,
 				427647252C8F38590027B21F /* HAAreasRegistryResponse.swift in Sources */,
@@ -9971,6 +9990,7 @@
 				11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */,
 				11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */,
 				11F2F2092586FB0C00F61F7C /* NotificationAttachmentManager.test.swift in Sources */,
+				428DBFFE2F0C95D8003B08D5 /* DeviceRegistry.test.swift in Sources */,
 				11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */,
 				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
 				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,

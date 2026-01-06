@@ -121,8 +121,8 @@ public extension HATypedRequest {
         ))
     }
 
-    static func configDeviceRegistryList() -> HATypedRequest<[HADevicesRegistryResponse]> {
-        HATypedRequest<[HADevicesRegistryResponse]>(request: .init(
+    static func configDeviceRegistryList() -> HATypedRequest<[DeviceRegistryEntry]> {
+        HATypedRequest<[DeviceRegistryEntry]>(request: .init(
             type: "config/device_registry/list"
         ))
     }

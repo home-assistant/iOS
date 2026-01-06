@@ -58,6 +58,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
             // Entities registry
             await updateEntitiesRegistry(server: server)
+
+            // Devices registry
+            await updateDevicesRegistry(server: server)
         }
     }
 
@@ -98,6 +101,33 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     Current.Log.error("Failed to fetch entity registry: \(error)")
                     Current.clientEventStore.addEvent(.init(
                         text: "Failed to fetch entity registry on server \(server.info.name)",
+                        type: .networkRequest,
+                        payload: [
+                            "error": error.localizedDescription,
+                        ]
+                    ))
+                }
+                continuation.resume()
+            }
+        }
+    }
+
+    private func updateDevicesRegistry(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(.configDeviceRegistryList()) { [weak self] result in
+                switch result {
+                case let .success(registryEntries):
+                    Current.Log.verbose("Successfully fetched device registry for server \(server.info.name)")
+                    self?.saveDeviceRegistry(registryEntries, serverId: server.identifier.rawValue)
+                case let .failure(error):
+                    Current.Log.error("Failed to fetch device registry: \(error)")
+                    Current.clientEventStore.addEvent(.init(
+                        text: "Failed to fetch device registry on server \(server.info.name)",
                         type: .networkRequest,
                         payload: [
                             "error": error.localizedDescription,
@@ -244,6 +274,39 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             Current.Log.error("Failed to save entity registry in database, error: \(error.localizedDescription)")
             Current.clientEventStore.addEvent(.init(
                 text: "Failed to save entity registry in database, error on serverId \(serverId)",
+                type: .database,
+                payload: [
+                    "error": error.localizedDescription,
+                ]
+            ))
+        }
+    }
+
+    private func saveDeviceRegistry(_ registryEntries: [DeviceRegistryEntry], serverId: String) {
+        let appDeviceRegistries = registryEntries.map { entry in
+            AppDeviceRegistry(serverId: serverId, registry: entry)
+        }
+
+        do {
+            try Current.database().write { db in
+                // Delete existing registry entries for this server
+                try AppDeviceRegistry
+                    .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                    .deleteAll(db)
+
+                // Insert new registry entries
+                for registry in appDeviceRegistries {
+                    try registry.save(db)
+                }
+            }
+            Current.Log
+                .verbose(
+                    "Successfully saved \(appDeviceRegistries.count) device registry entries for server \(serverId)"
+                )
+        } catch {
+            Current.Log.error("Failed to save device registry in database, error: \(error.localizedDescription)")
+            Current.clientEventStore.addEvent(.init(
+                text: "Failed to save device registry in database, error on serverId \(serverId)",
                 type: .database,
                 payload: [
                     "error": error.localizedDescription,

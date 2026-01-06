@@ -50,6 +50,7 @@ public extension DatabaseQueue {
             AssistPipelinesTable(),
             AppEntityRegistryListForDisplayTable(),
             AppEntityRegistryTable(),
+            AppDeviceRegistryTable(),
             AppPanelTable(),
             CustomWidgetTable(),
             AppAreaTable(),

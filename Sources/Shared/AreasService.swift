@@ -11,7 +11,7 @@ final class AreasService: AreasServiceProtocol {
     static var shared: AreasServiceProtocol = AreasService()
 
     private var request: HACancellable?
-    /// [ServerId: [HAAreaResponse]]
+    /// [ServerId: [HAAreasRegistryResponse]]
     var areas: [String: [HAAreasRegistryResponse]] = [:]
 
     func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse? {
@@ -131,7 +131,7 @@ final class AreasService: AreasServiceProtocol {
         _ areas: [HAAreasRegistryResponse],
         entitiesWithAreas: [EntityRegistryEntry],
         server: Server
-    ) async -> [HADevicesRegistryResponse] {
+    ) async -> [DeviceRegistryEntry] {
         guard let connection = Current.api(for: server)?.connection else {
             Current.Log.error("No API available to fetch devices for areas")
             return []
@@ -140,7 +140,7 @@ final class AreasService: AreasServiceProtocol {
         request?.cancel()
         let devicesForAreas = await withCheckedContinuation { continuation in
             request = connection.send(
-                HATypedRequest<[HADevicesRegistryResponse]>.configDeviceRegistryList(),
+                HATypedRequest<[DeviceRegistryEntry]>.configDeviceRegistryList(),
                 completion: { result in
                     switch result {
                     case let .success(data):
@@ -157,7 +157,7 @@ final class AreasService: AreasServiceProtocol {
     }
 
     private func getAllEntitiesFromArea(
-        devicesAndAreas: [HADevicesRegistryResponse],
+        devicesAndAreas: [DeviceRegistryEntry],
         entitiesAndAreas: [EntityRegistryEntry]
     ) -> [String: Set<String>] {
         /// area_id : [device_id]
@@ -165,7 +165,8 @@ final class AreasService: AreasServiceProtocol {
 
         // Get all devices from an area
         for device in devicesAndAreas {
-            if let areaId = device.areaId, let deviceId = device.deviceId {
+            let deviceId = device.id
+            if let areaId = device.areaId {
                 if var deviceIds = areasAndDevicesDict[areaId] {
                     deviceIds.append(deviceId)
                     areasAndDevicesDict[areaId] = deviceIds
@@ -221,7 +222,7 @@ final class AreasService: AreasServiceProtocol {
     #if DEBUG
     /// For testing purposes only
     public func testGetAllEntitiesFromArea(
-        devicesAndAreas: [HADevicesRegistryResponse],
+        devicesAndAreas: [DeviceRegistryEntry],
         entitiesAndAreas: [EntityRegistryEntry]
     ) -> [String: Set<String>] {
         getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)

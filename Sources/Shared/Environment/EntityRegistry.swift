@@ -74,6 +74,59 @@ public struct EntityRegistryEntry: Codable, HADataDecodable {
     var isHidden: Bool { hiddenBy != nil }
     var isConfiguration: Bool { entityCategory == "config" }
     var isDiagnostic: Bool { entityCategory == "diagnostic" }
+
+    #if DEBUG
+    // Test-only initializer
+    public init(
+        uniqueId: String,
+        entityId: String?,
+        platform: String?,
+        configEntryId: String?,
+        deviceId: String?,
+        areaId: String?,
+        disabledBy: String?,
+        hiddenBy: String?,
+        entityCategory: String?,
+        name: String?,
+        originalName: String?,
+        icon: String?,
+        originalIcon: String?,
+        aliases: [String]?,
+        labels: [String]?,
+        deviceClass: String?,
+        originalDeviceClass: String?,
+        capabilities: [String: AnyCodable?]?,
+        supportedFeatures: Int?,
+        unitOfMeasurement: String?,
+        options: [String: [String: AnyCodable?]]?,
+        translationKey: String?,
+        hasEntityName: Bool?
+    ) {
+        self.uniqueId = uniqueId
+        self.entityId = entityId
+        self.platform = platform
+        self.configEntryId = configEntryId
+        self.deviceId = deviceId
+        self.areaId = areaId
+        self.disabledBy = disabledBy
+        self.hiddenBy = hiddenBy
+        self.entityCategory = entityCategory
+        self.name = name
+        self.originalName = originalName
+        self.icon = icon
+        self.originalIcon = originalIcon
+        self.aliases = aliases
+        self.labels = labels
+        self.deviceClass = deviceClass
+        self.originalDeviceClass = originalDeviceClass
+        self.capabilities = capabilities
+        self.supportedFeatures = supportedFeatures
+        self.unitOfMeasurement = unitOfMeasurement
+        self.options = options
+        self.translationKey = translationKey
+        self.hasEntityName = hasEntityName
+    }
+    #endif
 }
 
 // MARK: - Database Model

@@ -33,20 +33,3 @@ public struct HAAreasRegistryResponse: HADataDecodable {
         self.icon = icon
     }
 }
-
-public struct HADevicesRegistryResponse: HADataDecodable {
-    public let areaId: String?
-    public let deviceId: String?
-
-    public init(data: HAData) throws {
-        self.init(
-            areaId: try? data.decode("area_id"),
-            deviceId: try? data.decode("id")
-        )
-    }
-
-    public init(areaId: String?, deviceId: String?) {
-        self.areaId = areaId
-        self.deviceId = deviceId
-    }
-}
