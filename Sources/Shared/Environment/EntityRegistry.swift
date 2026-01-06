@@ -199,7 +199,7 @@ public struct AppEntityRegistry: Codable, FetchableRecord, PersistableRecord {
     }
 
     public var id: String {
-        "\(serverId)-\(deviceId)"
+        "\(serverId)-\(uniqueId)"
     }
 
     public var displayName: String {
