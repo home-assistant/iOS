@@ -220,14 +220,24 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await Current.database().write { db in
-                // Delete existing areas for this server
-                try AppArea
-                    .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
-                    .deleteAll(db)
 
-                // Insert new areas
+                let existingAreaIds = try AppArea.filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
+                    .fetchAll(db).map(\.id)
+
+                // Insert or update new areas
                 for area in appAreas {
-                    try area.save(db)
+                    try area.save(db, onConflict: .replace)
+                }
+
+                // Delete areas that no longer exist
+                let newAreaIds = areas.map { "\(serverId)-\($0.areaId)" }
+                let areaIdsToDelete = existingAreaIds.filter { !newAreaIds.contains($0) }
+
+                if !areaIdsToDelete.isEmpty {
+                    try AppArea
+                        .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
+                        .filter(areaIdsToDelete.contains(Column(DatabaseTables.AppArea.areaId.rawValue)))
+                        .deleteAll(db)
                 }
             }
             Current.Log.verbose("Successfully saved \(appAreas.count) areas for server \(serverId)")
@@ -256,11 +266,29 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             }
         do {
             try Current.database().write { db in
-                try AppEntityRegistryListForDisplay
+                // Get existing IDs for this server
+                let existingIds = try AppEntityRegistryListForDisplay
                     .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
-                    .deleteAll(db)
+                    .fetchAll(db)
+                    .map(\.id)
+
+                // Insert or update new records
                 for record in entitiesListForDisplay {
-                    try record.save(db)
+                    try record.save(db, onConflict: .replace)
+                }
+
+                // Delete records that no longer exist
+                let newIds = entitiesListForDisplay.map(\.id)
+                let idsToDelete = existingIds.filter { !newIds.contains($0) }
+
+                if !idsToDelete.isEmpty {
+                    try AppEntityRegistryListForDisplay
+                        .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
+                        .filter(
+                            idsToDelete
+                                .contains(Column(DatabaseTables.AppEntityRegistryListForDisplay.id.rawValue))
+                        )
+                        .deleteAll(db)
                 }
             }
         } catch {
@@ -284,14 +312,26 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try Current.database().write { db in
-                // Delete existing registry entries for this server
-                try AppEntityRegistry
+                // Get existing unique IDs for this server
+                let existingUniqueIds = try AppEntityRegistry
                     .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .deleteAll(db)
+                    .fetchAll(db)
+                    .map(\.id)
 
-                // Insert new registry entries
+                // Insert or update new registry entries
                 for registry in appEntityRegistries {
-                    try registry.save(db)
+                    try registry.save(db, onConflict: .replace)
+                }
+
+                // Delete registry entries that no longer exist
+                let newUniqueIds = appEntityRegistries.map(\.id)
+                let uniqueIdsToDelete = existingUniqueIds.filter { !newUniqueIds.contains($0) }
+
+                if !uniqueIdsToDelete.isEmpty {
+                    try AppEntityRegistry
+                        .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                        .filter(uniqueIdsToDelete.contains(Column(DatabaseTables.EntityRegistry.uniqueId.rawValue)))
+                        .deleteAll(db)
                 }
             }
             Current.Log
@@ -318,14 +358,26 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try Current.database().write { db in
-                // Delete existing registry entries for this server
-                try AppDeviceRegistry
+                // Get existing device IDs for this server
+                let existingDeviceIds = try AppDeviceRegistry
                     .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
-                    .deleteAll(db)
+                    .fetchAll(db)
+                    .map(\.id)
 
-                // Insert new registry entries
+                // Insert or update new registry entries
                 for registry in appDeviceRegistries {
-                    try registry.save(db)
+                    try registry.save(db, onConflict: .replace)
+                }
+
+                // Delete registry entries that no longer exist
+                let newDeviceIds = appDeviceRegistries.map(\.id)
+                let deviceIdsToDelete = existingDeviceIds.filter { !newDeviceIds.contains($0) }
+
+                if !deviceIdsToDelete.isEmpty {
+                    try AppDeviceRegistry
+                        .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                        .filter(deviceIdsToDelete.contains(Column(DatabaseTables.DeviceRegistry.deviceId.rawValue)))
+                        .deleteAll(db)
                 }
             }
             Current.Log
