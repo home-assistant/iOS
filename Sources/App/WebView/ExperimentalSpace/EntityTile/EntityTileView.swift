@@ -139,6 +139,7 @@ struct EntityTileView: View {
         let hsColor = haEntity.attributes["hs_color"] as? [Double]
 
         iconColor = EntityIconColorProvider.iconColor(
+            domain: Domain(entityId: haEntity.entityId) ?? .switch,
             state: state,
             colorMode: colorMode,
             rgbColor: rgbColor,

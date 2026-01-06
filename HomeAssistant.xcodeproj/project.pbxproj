@@ -865,6 +865,7 @@
 		428DC00D2F0D8BD5003B08D5 /* FanControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00C2F0D8BD5003B08D5 /* FanControlsViewModel.swift */; };
 		428DC00F2F0D8BF5003B08D5 /* FanControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */; };
 		428DC0112F0D8C96003B08D5 /* FanControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */; };
+		428DC0142F0D921F003B08D5 /* Domain+AccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
@@ -2485,6 +2486,7 @@
 		428DC00C2F0D8BD5003B08D5 /* FanControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsViewModel.swift; sourceTree = "<group>"; };
 		428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsView.swift; sourceTree = "<group>"; };
 		428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlIntents.swift; sourceTree = "<group>"; };
+		428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Domain+AccentColor.swift"; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
@@ -5669,6 +5671,7 @@
 			isa = PBXGroup;
 			children = (
 				42DFE8772EFB08C80058DADB /* HomeView.swift */,
+				428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */,
 				42DFE8782EFB08C80058DADB /* HomeViewModel.swift */,
 				42F5C0822F02B6DB00C50310 /* HomeSectionsReorderView.swift */,
 				4289FCB82F0BFF50005189AA /* HomeViewConfiguration.swift */,
@@ -9213,6 +9216,7 @@
 				42C60FA22F0811AE0071A6F6 /* SwitchControlIntents.swift in Sources */,
 				42B19BD12D4A358B00B3262B /* DebugView.swift in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
+				428DC0142F0D921F003B08D5 /* Domain+AccentColor.swift in Sources */,
 				1164DA3225FBF5D600515E8A /* UITextView+CodeRow.swift in Sources */,
 				4245DC012EBA3DD3005E0E04 /* EntityPickerViewModel.swift in Sources */,
 				42FCCFE12B9B1B610057783F /* BarcodeScannerDataModel.swift in Sources */,

@@ -129,7 +129,7 @@ struct FanControlsView: View {
             // Oscillation button (if supported)
             if viewModel.supportsOscillation {
                 controlIconButton(
-                    symbol: SFSymbol(rawValue: "arrow-oscillating"),
+                    symbol: .fanOscillationFill,
                     isSelected: viewModel.oscillating
                 ) {
                     triggerHaptic += 1
