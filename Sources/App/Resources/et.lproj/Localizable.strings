@@ -81,6 +81,8 @@
 "app_intents.lights.on_state_icon.title" = "Sisselülitatud oleku ikoon";
 "app_intents.notify_when_run.description" = "Pärast täitmist kuvab teatise";
 "app_intents.notify_when_run.title" = "Käivitamisel teavita";
+"app_intents.open_experimental_dashboard.description" = "Avab eksperimentaalse juhtpaneeli";
+"app_intents.open_experimental_dashboard.title" = "Ava eksperimentaalne juhtpaneel";
 "app_intents.open_state_icon.title" = "Avatud oleku ikoon";
 "app_intents.perform_action.action_parameter_configuration" = "Milline toiming?";
 "app_intents.perform_action.action_parameter_confirmation" = "Lihtsalt kinnita, kas sa tahtsid ' %@ '?";
@@ -104,6 +106,7 @@
 "app_intents.scripts.show_confirmation_dialog.description" = "Pärast täitmist kuvab kinnitusteatise";
 "app_intents.scripts.show_confirmation_dialog.title" = "Kinnituse teatis";
 "app_intents.scripts.success_message.content" = "Skript \" %@ \" on käivitatud.";
+"app_intents.server.title" = "Server";
 "app_intents.show_confirmation_dialog.description" = "Pärast täitmist kuvab kinnitusteatise";
 "app_intents.show_confirmation_dialog.title" = "Kinnitusteatis";
 "app_intents.state.target" = "Sihtolek";
@@ -338,6 +341,18 @@
 "ha_api.api_error.unknown" = "Ilmnes tundmatu viga.";
 "ha_api.api_error.update_not_possible" = "Toimingut ei saanud sooritada.";
 "help_label" = "Abi";
+"home_sections_reorder_view.done" = "Valmis";
+"home_sections_reorder_view.title" = "Ruumide ümberjärjestamine";
+"home_view.context_menu.hide" = "Peida";
+"home_view.empty_state.no_entities" = "Üksusi ei leitud";
+"home_view.menu.allow_multiple_selection" = "Luba mitu valikut";
+"home_view.menu.customize" = "Kohanda";
+"home_view.menu.no_sections_available" = "Jaotised puuduvad";
+"home_view.menu.open_web_ui" = "Ava veebiliides";
+"home_view.menu.reorder" = "Ümberjärjestamine";
+"home_view.menu.settings" = "Seaded";
+"home_view.menu.show_all" = "Kuva kõik";
+"home_view.navigation.subtitle.experimental" = "Eksperimentaalne funktsioon";
 "improv.button.continue" = "Jätka";
 "improv.connection_state.authorized" = "Wi-Fi seadistamine";
 "improv.connection_state.provisioning" = "Wi-Fi-ga ühendamine";
@@ -452,6 +467,7 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "nfc.write.manual_input.title" = "Märgise nimi?";
 "nfc.write.start_message" = "Hoia oma %@ kirjutatava NFC-märgise lähedal";
 "nfc.write.success_message" = "Märgis on kirjutatud!";
+"no_area" = "Pole ruumis";
 "no_label" = "Ei";
 "notification_service.failed_to_load" = "Manuse laadimine nurjus";
 "notification_service.loading_dynamic_actions" = "Toimingute laadimine…";
@@ -619,6 +635,10 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "privacyLabel" = "Privaatsus";
 "requires_version" = "Nõuab %@ või uuemat versiooni.";
 "retry_label" = "Proovi uuesti";
+"room_view.context_menu.unhide" = "Kuva jälle";
+"room_view.empty_state.no_entities" = "Selles ruumis pole üksusi";
+"room_view.section.hidden" = "Peidetud";
+"room_view.section.visible" = "Nähtav";
 "save_label" = "Salvesta";
 "sensors.active.setting.time_until_idle" = "Aeg jõudeolekuni";
 "sensors.geocoded_location.setting.use_zones" = "Kasuta tsooni nime";
@@ -1290,6 +1310,9 @@ Sildid toimivad igas seadmes, kuhu on paigaldatud Home Assistant, millel on nend
 "widgets.controls.open_cover.description" = "Avab valitud avakatte üksuse rakenduses";
 "widgets.controls.open_entity.configuration.parameter.entity" = "Olem";
 "widgets.controls.open_entity.configuration.title" = "Ava olem";
+"widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Ava eksperimentaalne juhtpaneel";
+"widgets.controls.open_experimental_dashboard.description" = "Avab valitud serveri eksperimentaalse juhtpaneeli";
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Tõeväärtus";
 "widgets.controls.open_input_boolean.configuration.title" = "Ava sisend-tõeväärtus";
 "widgets.controls.open_input_boolean.description" = "Avab valitud sisend-tõeväärtusega üksuse rakenduses";

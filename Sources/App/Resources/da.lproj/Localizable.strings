@@ -81,6 +81,8 @@
 "app_intents.lights.on_state_icon.title" = "Ikon for tændt tilstand";
 "app_intents.notify_when_run.description" = "Vis notifikation efter handling";
 "app_intents.notify_when_run.title" = "Giv besked, når den køres";
+"app_intents.open_experimental_dashboard.description" = "Opens the experimental dashboard";
+"app_intents.open_experimental_dashboard.title" = "Open Experimental Dashboard";
 "app_intents.open_state_icon.title" = "Ikon for åben tilstand";
 "app_intents.perform_action.action_parameter_configuration" = "Hvilken handling?";
 "app_intents.perform_action.action_parameter_confirmation" = "Bare for at bekræfte, at du ønskede '%@'?";
@@ -104,6 +106,7 @@
 "app_intents.scripts.show_confirmation_dialog.description" = "Viser bekræftelsesnotifikation efter udførsel";
 "app_intents.scripts.show_confirmation_dialog.title" = "Bekræftelsesnotifikation";
 "app_intents.scripts.success_message.content" = "Script \"%@\" kørt.";
+"app_intents.server.title" = "Server";
 "app_intents.show_confirmation_dialog.description" = "Viser bekræftelsesnotifikation efter udførelse";
 "app_intents.show_confirmation_dialog.title" = "Bekræftelsesnotifikation";
 "app_intents.state.target" = "Måltilstand";
@@ -338,6 +341,18 @@
 "ha_api.api_error.unknown" = "Der opstod en ukendt fejl.";
 "ha_api.api_error.update_not_possible" = "Handlingen kunne ikke udføres.";
 "help_label" = "Hjælp";
+"home_sections_reorder_view.done" = "Done";
+"home_sections_reorder_view.title" = "Reorder Rooms";
+"home_view.context_menu.hide" = "Hide";
+"home_view.empty_state.no_entities" = "No entities found";
+"home_view.menu.allow_multiple_selection" = "Allow multiple selection";
+"home_view.menu.customize" = "Customize";
+"home_view.menu.no_sections_available" = "No sections available";
+"home_view.menu.open_web_ui" = "Open web UI";
+"home_view.menu.reorder" = "Reorder";
+"home_view.menu.settings" = "Settings";
+"home_view.menu.show_all" = "Show All";
+"home_view.navigation.subtitle.experimental" = "Experimental feature";
 "improv.button.continue" = "Fortsæt";
 "improv.connection_state.authorized" = "Opsætter WiFi";
 "improv.connection_state.provisioning" = "Opretter forbindelse til WiFi";
@@ -452,6 +467,7 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "nfc.write.manual_input.title" = "Hvilken identifikator for tagget?";
 "nfc.write.start_message" = "Hold %@ i nærheden af et skrivbart NFC-tag";
 "nfc.write.success_message" = "Data skrevet til tag!";
+"no_area" = "Not in a room";
 "no_label" = "Nej";
 "notification_service.failed_to_load" = "Vedhæftning kunne ikke indlæses";
 "notification_service.loading_dynamic_actions" = "Indlæser handlinger...";
@@ -619,6 +635,10 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "privacyLabel" = "Privatliv";
 "requires_version" = "Kræver %@ eller nyere.";
 "retry_label" = "Prøv igen";
+"room_view.context_menu.unhide" = "Unhide";
+"room_view.empty_state.no_entities" = "No entities in this room";
+"room_view.section.hidden" = "Hidden";
+"room_view.section.visible" = "Visible";
 "save_label" = "Gem";
 "sensors.active.setting.time_until_idle" = "Tid indtil inaktiv";
 "sensors.geocoded_location.setting.use_zones" = "Brug zonenavn";
@@ -1290,6 +1310,9 @@ Home Assistant er open source, går ind for privatlivets fred og kører lokalt i
 "widgets.controls.open_cover.description" = "Åbner den valgte gardin-/portenhed i appen";
 "widgets.controls.open_entity.configuration.parameter.entity" = "Entitet";
 "widgets.controls.open_entity.configuration.title" = "Åbn entitet";
+"widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Open Experimental Dashboard";
+"widgets.controls.open_experimental_dashboard.description" = "Opens the experimental dashboard for the selected server";
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Boolsk input";
 "widgets.controls.open_input_boolean.configuration.title" = "Åbn boolsk input";
 "widgets.controls.open_input_boolean.description" = "Åbner den valgte boolske input-enhed i appen";

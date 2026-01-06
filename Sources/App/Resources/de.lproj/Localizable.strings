@@ -81,6 +81,8 @@
 "app_intents.lights.on_state_icon.title" = "Symbol für den Ein-Zustand";
 "app_intents.notify_when_run.description" = "Zeigt eine Benachrichtigung nach der Ausführung an";
 "app_intents.notify_when_run.title" = "Benachrichtigen, wenn ausgeführt";
+"app_intents.open_experimental_dashboard.description" = "Öffnet das experimentelle Dashboard";
+"app_intents.open_experimental_dashboard.title" = "Experimentelles Dashboard öffnen";
 "app_intents.open_state_icon.title" = "Symbol für den geöffneten Zustand";
 "app_intents.perform_action.action_parameter_configuration" = "Welche Aktion?";
 "app_intents.perform_action.action_parameter_confirmation" = "Nur zur Bestätigung, du möchtest „%@“?";
@@ -104,6 +106,7 @@
 "app_intents.scripts.show_confirmation_dialog.description" = "Zeigt eine Bestätigungsmeldung nach dem Ausführen an";
 "app_intents.scripts.show_confirmation_dialog.title" = "Bestätigungsmeldung";
 "app_intents.scripts.success_message.content" = "Skript „%@“ ausgeführt.";
+"app_intents.server.title" = "Server";
 "app_intents.show_confirmation_dialog.description" = "Zeigt eine Bestätigungsmeldung nach dem Ausführen an";
 "app_intents.show_confirmation_dialog.title" = "Bestätigungsmeldung";
 "app_intents.state.target" = "Zielzustand";
@@ -338,6 +341,18 @@
 "ha_api.api_error.unknown" = "Ein unbekannter Fehler ist aufgetreten.";
 "ha_api.api_error.update_not_possible" = "Operation konnte nicht durchgeführt werden.";
 "help_label" = "Hilfe";
+"home_sections_reorder_view.done" = "Erledigt";
+"home_sections_reorder_view.title" = "Zimmer neu anordnen";
+"home_view.context_menu.hide" = "Ausblenden";
+"home_view.empty_state.no_entities" = "Keine Entitäten gefunden";
+"home_view.menu.allow_multiple_selection" = "Mehrfachauswahl zulassen";
+"home_view.menu.customize" = "Anpassen";
+"home_view.menu.no_sections_available" = "Keine Abschnitte verfügbar";
+"home_view.menu.open_web_ui" = "Web-Benutzeroberfläche öffnen";
+"home_view.menu.reorder" = "Neu anordnen";
+"home_view.menu.settings" = "Einstellungen";
+"home_view.menu.show_all" = "Alle anzeigen";
+"home_view.navigation.subtitle.experimental" = "Experimentelle Funktion";
 "improv.button.continue" = "Weiter";
 "improv.connection_state.authorized" = "WLAN wird eingerichtet";
 "improv.connection_state.provisioning" = "WLAN wird verbunden";
@@ -452,6 +467,7 @@ Tags funktionieren auf jedem Gerät mit Hardwareunterstützung zum Lesen von NFC
 "nfc.write.manual_input.title" = "Welche ID für das Tag?";
 "nfc.write.start_message" = "Halte dein/deine %@ nahe an ein beschreibbares NFC-Tag";
 "nfc.write.success_message" = "Tag beschrieben!";
+"no_area" = "Nicht in einem Zimmer";
 "no_label" = "Nein";
 "notification_service.failed_to_load" = "Fehler beim Laden des Anhangs";
 "notification_service.loading_dynamic_actions" = "Aktionen werden geladen …";
@@ -619,6 +635,10 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "privacyLabel" = "Datenschutz";
 "requires_version" = "Erfordert %@ oder neuer.";
 "retry_label" = "Erneut versuchen";
+"room_view.context_menu.unhide" = "Einblenden";
+"room_view.empty_state.no_entities" = "Keine Entitäten in diesem Zimmer";
+"room_view.section.hidden" = "Versteckt";
+"room_view.section.visible" = "Sichtbar";
 "save_label" = "Speichern";
 "sensors.active.setting.time_until_idle" = "Zeit bis zum Leerlauf";
 "sensors.geocoded_location.setting.use_zones" = "Verwende den Zonennamen";
@@ -1291,6 +1311,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "widgets.controls.open_cover.description" = "Öffnet die ausgewählte Abdeckung-Entität innerhalb der App.";
 "widgets.controls.open_entity.configuration.parameter.entity" = "Entität";
 "widgets.controls.open_entity.configuration.title" = "Entität öffnen";
+"widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Experimentelles Dashboard öffnen";
+"widgets.controls.open_experimental_dashboard.description" = "Öffnet das experimentelle Dashboard für den ausgewählten Server";
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Boolesche Eingabe";
 "widgets.controls.open_input_boolean.configuration.title" = "Boolesche Eingabe öffnen";
 "widgets.controls.open_input_boolean.description" = "Öffnet die ausgewählte boolesche Eingabeentität innerhalb der App.";
