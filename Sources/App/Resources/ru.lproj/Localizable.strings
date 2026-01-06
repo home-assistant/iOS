@@ -1231,7 +1231,6 @@ Home Assistant — это приложение с открытым исходн�
 "watch.labels.complication_text_areas.row3_column2.label" = "Строка 3, столбец 2";
 "watch.labels.complication_text_areas.trailing.description" = "Текст, отображаемый после датчика.";
 "watch.labels.complication_text_areas.trailing.label" = "Конечный";
-"watch.labels.no_action" = "Действия не настроены. Настройте действия на телефоне, чтобы скрыть это сообщение.";
 "watch.labels.no_config" = "Настройка часов недоступна, откройте приложение для iOS и создайте свою конфигурацию в разделе Настройки.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Заглушка";

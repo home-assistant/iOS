@@ -1230,7 +1230,6 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "watch.labels.complication_text_areas.row3_column2.label" = "Baris 3, Kolom 2";
 "watch.labels.complication_text_areas.trailing.description" = "Teks yang akan ditampilkan pada tepi akhir gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "DI Akhir";
-"watch.labels.no_action" = "Tidak ada aksi yang dikonfigurasi. Konfigurasikan aksi di ponsel Anda untuk menutup pesan ini.";
 "watch.labels.no_config" = "Tidak ada konfigurasi Watch yang tersedia, buka Aplikasi iOS dan buat konfigurasi Anda di bawah pengaturan aplikasi pendamping.";
 "watch.labels.selected_pipeline.title" = "Saluran";
 "watch.placeholder_complication_name" = "Penampung";

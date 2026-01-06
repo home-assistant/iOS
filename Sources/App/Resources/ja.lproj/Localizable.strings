@@ -1230,7 +1230,6 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "watch.labels.complication_text_areas.row3_column2.label" = "行3、列2";
 "watch.labels.complication_text_areas.trailing.description" = "ゲージの末尾に表示するテキスト。";
 "watch.labels.complication_text_areas.trailing.label" = "トレーリング";
-"watch.labels.no_action" = "アクションが構成されていません。このメッセージを閉じるには、電話機でアクションを構成してください。";
 "watch.labels.no_config" = "利用できる時計の設定がありません。iOS アプリを開き、コンパニオン アプリの設定で設定を作成してください。";
 "watch.labels.selected_pipeline.title" = "パイプライン";
 "watch.placeholder_complication_name" = "プレースホルダー";

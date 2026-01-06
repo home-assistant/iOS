@@ -1232,7 +1232,6 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "watch.labels.complication_text_areas.row3_column2.label" = "Zeile 3, Spalte 2";
 "watch.labels.complication_text_areas.trailing.description" = "Der Text, der an der nachlaufenden Kante der Analoganzeige angezeigt wird.";
 "watch.labels.complication_text_areas.trailing.label" = "Nachlaufend";
-"watch.labels.no_action" = "Keine Aktionen konfiguriert. Konfiguriere Aktionen auf deinem Telefon, um diese Nachricht zu schließen.";
 "watch.labels.no_config" = "Keine Watch-Konfiguration verfügbar. Öffne die iOS-App und erstelle deine Konfiguration in den Einstellungen der Companion-App.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Platzhalter";

@@ -1231,7 +1231,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "3. sor, 2. oszlop";
 "watch.labels.complication_text_areas.trailing.description" = "A mérőműszer záró szélén megjelenítendő szöveg.";
 "watch.labels.complication_text_areas.trailing.label" = "Záró";
-"watch.labels.no_action" = "Nincsenek konfigurálva műveletek. Konfigurálja a műveleteket a telefonján az üzenet elvetéséhez.";
 "watch.labels.no_config" = "Nincs elérhető watch konfiguráció. Nyissa meg az iOS alkalmazást és hozza létre a konfigurációját a mobilalkamazás beállításai alatt.";
 "watch.labels.selected_pipeline.title" = "Csatorna";
 "watch.placeholder_complication_name" = "Helykitöltő";

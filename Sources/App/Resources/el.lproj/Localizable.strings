@@ -1231,7 +1231,6 @@
 "watch.labels.complication_text_areas.row3_column2.label" = "Γραμμή 3, Στήλη 2";
 "watch.labels.complication_text_areas.trailing.description" = "Το κείμενο που θα εμφανίζεται στο τελικό άκρο του μετρητή.";
 "watch.labels.complication_text_areas.trailing.label" = "Ακολουθία";
-"watch.labels.no_action" = "Δεν έχουν διαμορφωθεί ενέργειες. Διαμορφώστε τις ενέργειες στο τηλέφωνό σας για να παραβλέψετε αυτό το μήνυμα.";
 "watch.labels.no_config" = "Δεν υπάρχει διαθέσιμη διαμόρφωση ρολογιού, ανοίξτε την εφαρμογή για iOS και δημιουργήστε τη διαμόρφωσή σας στις ρυθμίσεις της εφαρμογής companion.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Σύμβολο κράτησης θέσης";

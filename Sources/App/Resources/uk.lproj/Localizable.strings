@@ -1231,7 +1231,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "Рядок 3, Стовпець 2";
 "watch.labels.complication_text_areas.trailing.description" = "Текст для відображення на закриваючому кінці шкали.";
 "watch.labels.complication_text_areas.trailing.label" = "Закривання";
-"watch.labels.no_action" = "Не налаштовано жодних дій. Налаштуйте дії на своєму телефоні, щоб приховати це повідомлення.";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Заповнювач";

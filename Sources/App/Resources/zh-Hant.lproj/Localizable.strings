@@ -1231,7 +1231,6 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.labels.complication_text_areas.row3_column2.label" = "第 3 行第 2 列";
 "watch.labels.complication_text_areas.trailing.description" = "於測量靠右對齊顯示文字。";
 "watch.labels.complication_text_areas.trailing.label" = "靠右對齊";
-"watch.labels.no_action" = "尚未設定動作。於手機上設定動作以關閉此訊息。";
 "watch.labels.no_config" = "沒有可用手錶設定、請開啟 iOS App 並於 Companion App 設定內新增設定。";
 "watch.labels.selected_pipeline.title" = "助理設定";
 "watch.placeholder_complication_name" = "Placeholder";

@@ -1231,7 +1231,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "watch.labels.complication_text_areas.row3_column2.label" = "Rad 3, kolonne 2";
 "watch.labels.complication_text_areas.trailing.description" = "Teksten som skal vises på den etterfølgende kanten av måleren.";
 "watch.labels.complication_text_areas.trailing.label" = "Etterfølgende";
-"watch.labels.no_action" = "Ingen handlinger konfigurert. Konfigurere handlinger på telefonen din for å fjerne denne meldingen.";
 "watch.labels.no_config" = "No watch configuration available, open the iOS App and create your configuration under companion app settings.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Plassholder";
