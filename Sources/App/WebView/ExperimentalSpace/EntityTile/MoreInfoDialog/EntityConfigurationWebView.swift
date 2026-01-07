@@ -7,7 +7,6 @@ struct EntityConfigurationWebView: View {
     @Environment(\.dismiss) private var dismiss
     let haEntity: HAEntity
     let server: Server
-    let areaName: String?
 
     @State private var webView: WebViewController?
 
@@ -16,16 +15,6 @@ struct EntityConfigurationWebView: View {
             VStack {
                 if let webView {
                     embed(webView)
-                }
-            }
-            .navigationTitle(haEntity.attributes.friendlyName ?? haEntity.entityId)
-            .navigationSubtitle(areaName ?? "")
-            .toolbarTitleDisplayMode(.inlineLarge)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton {
-                        dismiss()
-                    }
                 }
             }
             .onAppear {

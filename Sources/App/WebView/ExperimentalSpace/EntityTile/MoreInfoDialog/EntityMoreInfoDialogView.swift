@@ -61,7 +61,9 @@ struct EntityMoreInfoDialogView: View {
                 await loadAreaName()
             }
             .sheet(isPresented: $showWebView) {
-                EntityConfigurationWebView(haEntity: haEntity, server: server, areaName: areaName)
+                EntityConfigurationWebView(haEntity: haEntity, server: server)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }
