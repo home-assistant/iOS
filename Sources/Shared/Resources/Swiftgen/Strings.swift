@@ -646,6 +646,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "camera_list.reorder.section.title") }
       }
     }
+    public enum Unavailable {
+      /// Camera streaming is not available on Mac.
+      public static var message: String { return L10n.tr("Localizable", "camera_list.unavailable.message") }
+      /// Not Available on Mac
+      public static var title: String { return L10n.tr("Localizable", "camera_list.unavailable.title") }
+    }
   }
 
   public enum Cameras {

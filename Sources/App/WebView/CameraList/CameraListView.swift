@@ -15,6 +15,14 @@ struct CameraListView: View {
     }
 
     var body: some View {
+        #if targetEnvironment(macCatalyst)
+        macCatalystUnavailableView
+        #else
+        mainContent
+        #endif
+    }
+
+    private var mainContent: some View {
         NavigationView {
             Group {
                 if viewModel.filteredCameras.isEmpty, !viewModel.cameras.isEmpty {
@@ -70,6 +78,33 @@ struct CameraListView: View {
                 }
             }
         }
+    }
+
+    private var macCatalystUnavailableView: some View {
+        NavigationView {
+            VStack(spacing: DesignSystem.Spaces.two) {
+                Image(systemSymbol: .videoSlash)
+                    .font(.largeTitle)
+                    .foregroundStyle(.secondary)
+                Text(L10n.CameraList.Unavailable.title)
+                    .font(.headline)
+                Text(L10n.CameraList.Unavailable.message)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding()
+            .navigationTitle(L10n.CameraList.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    CloseButton {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 
     private var cameraListView: some View {

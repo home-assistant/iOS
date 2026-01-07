@@ -1405,3 +1405,5 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "camera.snapshot_failed" = "Failed to load camera snapshot";
 "cameras.drag_to_reorder" = "Drag and drop to reorder";
 "cameras.no_server_found" = "No server found for camera: %@";
+"camera_list.unavailable.title" = "Not Available on Mac";
+"camera_list.unavailable.message" = "Camera streaming is not available on Mac.";
