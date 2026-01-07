@@ -20,6 +20,15 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var showError = false
     @Published var focusOnInput = false
     @Published var errorMessage = ""
+    @Published var availableAudioDevices: [AVCaptureDevice] = []
+    @Published var selectedAudioDeviceId: String = "" {
+        didSet {
+            if let device = availableAudioDevices.first(where: { $0.uniqueID == selectedAudioDeviceId }) {
+                audioRecorder.selectedAudioDevice = device
+                Current.Log.info("Selected audio device changed to: \(device.localizedName)")
+            }
+        }
+    }
 
     private var server: Server
     private var audioRecorder: AudioRecorderProtocol
@@ -51,6 +60,11 @@ final class AssistViewModel: NSObject, ObservableObject {
         if ["last_used", "preferred"].contains(preferredPipelineId) {
             self.preferredPipelineId = ""
         }
+        
+        // Load available audio devices
+        #if targetEnvironment(macCatalyst)
+        loadAvailableAudioDevices()
+        #endif
     }
 
     func initialRoutine() {
@@ -220,6 +234,23 @@ final class AssistViewModel: NSObject, ObservableObject {
             Current.Log.info("Pipeline changed to: \(pipeline.name) (\(preferredPipelineId))")
         }
     }
+    
+    #if targetEnvironment(macCatalyst)
+    private func loadAvailableAudioDevices() {
+        availableAudioDevices = audioRecorder.availableAudioDevices()
+        
+        // Set default device to the system default (first in list or default audio device)
+        if let defaultDevice = AVCaptureDevice.default(for: .audio) {
+            selectedAudioDeviceId = defaultDevice.uniqueID
+            audioRecorder.selectedAudioDevice = defaultDevice
+            Current.Log.info("Default audio device set to: \(defaultDevice.localizedName)")
+        } else if let firstDevice = availableAudioDevices.first {
+            selectedAudioDeviceId = firstDevice.uniqueID
+            audioRecorder.selectedAudioDevice = firstDevice
+            Current.Log.info("Default audio device set to first available: \(firstDevice.localizedName)")
+        }
+    }
+    #endif
 
     // MARK: - On-Device Transcription Methods
 }

@@ -189,7 +189,19 @@ struct AssistView: View {
     }
 
     private var macPicker: some View {
-        VStack {
+        HStack(spacing: DesignSystem.Spaces.one) {
+            // Microphone picker
+            Picker("Microphone", selection: $viewModel.selectedAudioDeviceId) {
+                ForEach(viewModel.availableAudioDevices, id: \.uniqueID) { device in
+                    Text(device.localizedName)
+                        .font(.footnote)
+                        .tag(device.uniqueID)
+                }
+            }
+            .pickerStyle(.menu)
+            .frame(maxWidth: 200, alignment: .trailing)
+            
+            // Pipeline picker
             Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
                 ForEach(viewModel.pipelines, id: \.id) { pipeline in
                     Text(pipeline.name)
@@ -198,8 +210,8 @@ struct AssistView: View {
                 }
             }
             .pickerStyle(.menu)
+            .frame(maxWidth: 200, alignment: .trailing)
         }
-        .frame(maxWidth: 200, alignment: .trailing)
     }
 
     private func makeChatBubble(item: AssistChatItem) -> some View {

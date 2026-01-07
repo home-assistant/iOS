@@ -5,8 +5,10 @@ import Shared
 protocol AudioRecorderProtocol {
     var delegate: AudioRecorderDelegate? { get set }
     var audioSampleRate: Double? { get }
+    var selectedAudioDevice: AVCaptureDevice? { get set }
     func startRecording()
     func stopRecording()
+    func availableAudioDevices() -> [AVCaptureDevice]
 }
 
 protocol AudioRecorderDelegate: AnyObject {
@@ -26,10 +28,28 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
 
     private(set) var audioSampleRate: Double?
     private var captureSession: AVCaptureSession?
+    var selectedAudioDevice: AVCaptureDevice?
 
     override init() {
         super.init()
         registerForRecordingNotifications()
+    }
+    
+    func availableAudioDevices() -> [AVCaptureDevice] {
+        #if targetEnvironment(macCatalyst)
+        let discoverySession = AVCaptureDevice.DiscoverySession(
+            deviceTypes: [.builtInMicrophone, .externalUnknown],
+            mediaType: .audio,
+            position: .unspecified
+        )
+        return discoverySession.devices
+        #else
+        // On iOS, return the default audio device if available
+        if let device = AVCaptureDevice.default(for: .audio) {
+            return [device]
+        }
+        return []
+        #endif
     }
 
     deinit {
@@ -56,7 +76,18 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
 
     private func setupAudioRecorder() {
         let audioSession = AVAudioSession.sharedInstance()
-        guard let captureDevice = AVCaptureDevice.default(for: .audio) else {
+        
+        // Use selected device if available, otherwise use default
+        let captureDevice: AVCaptureDevice?
+        if let selectedDevice = selectedAudioDevice {
+            captureDevice = selectedDevice
+            Current.Log.info("Using selected audio device: \(selectedDevice.localizedName)")
+        } else {
+            captureDevice = AVCaptureDevice.default(for: .audio)
+            Current.Log.info("Using default audio device")
+        }
+        
+        guard let captureDevice else {
             Current.Log.error("Failed to get capture device to record audio for Assist")
             delegate?.didFailToRecord(error: AudioRecorderError.captureDeviceUnavailable)
             return
