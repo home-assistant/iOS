@@ -709,6 +709,10 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "settings.connection_section.websocket.status.disconnected.title" = "연결 해제됨";
 "settings.connection_section.websocket.status.rejected.title" = "Rejected";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.database_explorer.more_fields" = "+%li more fields";
+"settings.database_explorer.no_entries" = "No entries found";
+"settings.database_explorer.row_detail" = "Row Details";
+"settings.database_explorer.title" = "Database Explorer";
 "settings.debugging.critical_section.footer" = "이러한 작업은 되돌릴 수 없다는 점에 유의해야 합니다.";
 "settings.debugging.header.subtitle" = "해결해 봅시다 🐞";
 "settings.debugging.header.title" = "디버그";

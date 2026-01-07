@@ -709,6 +709,10 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.websocket.status.disconnected.title" = "Отсоединено";
 "settings.connection_section.websocket.status.rejected.title" = "Отклонено";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.database_explorer.more_fields" = "+%li more fields";
+"settings.database_explorer.no_entries" = "No entries found";
+"settings.database_explorer.row_detail" = "Row Details";
+"settings.database_explorer.title" = "Database Explorer";
 "settings.debugging.critical_section.footer" = "Убедитесь, что вы осознаете, что эти операции невозможно отменить.";
 "settings.debugging.header.subtitle" = "Давайте это исправим 🐞";
 "settings.debugging.header.title" = "Отладка";
