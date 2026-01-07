@@ -156,7 +156,6 @@ final class WebRTCClient: NSObject {
         do {
             // Configure for playback only (receive audio without microphone)
             try audioSession.setCategory(.playback)
-            try audioSession.setMode(.spokenAudio)
             try audioSession.setActive(true)
         } catch {
             Current.Log.error("Failed to configure audio session: \(error.localizedDescription)")

@@ -79,7 +79,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         if let cameraID = intent.cameraID {
             Current.Log.verbose("Getting camera frame for \(cameraID)")
 
-            api.GetCameraImage(cameraEntityID: cameraID).done { frame in
+            api.getCameraSnapshot(cameraEntityID: cameraID).done { frame in
                 Current.Log.verbose("Successfully got camera image during shortcut")
 
                 guard let pngData = frame.pngData() else {
