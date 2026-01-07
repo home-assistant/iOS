@@ -370,7 +370,7 @@ public class HomeAssistantAPI {
         ], triggerSource: triggerSource)
     }
 
-    public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
+    public func getCameraSnapshot(cameraEntityID: String) -> Promise<UIImage> {
         Promise { seal in
             guard let queryUrl = server.info.connection.activeAPIURL()?
                 .appendingPathComponent("camera_proxy/\(cameraEntityID)") else {

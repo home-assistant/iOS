@@ -604,6 +604,13 @@ public enum L10n {
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
   }
 
+  public enum Camera {
+    /// Server not found
+    public static var serverNotFound: String { return L10n.tr("Localizable", "camera.server_not_found") }
+    /// Failed to load camera snapshot
+    public static var snapshotFailed: String { return L10n.tr("Localizable", "camera.snapshot_failed") }
+  }
+
   public enum CameraList {
     /// Not in a room
     public static var noArea: String { return L10n.tr("Localizable", "camera_list.no_area") }
@@ -638,6 +645,21 @@ public enum L10n {
         /// Reorder sections
         public static var title: String { return L10n.tr("Localizable", "camera_list.reorder.section.title") }
       }
+    }
+    public enum Unavailable {
+      /// Camera streaming is not available on Mac.
+      public static var message: String { return L10n.tr("Localizable", "camera_list.unavailable.message") }
+      /// Not Available on Mac
+      public static var title: String { return L10n.tr("Localizable", "camera_list.unavailable.title") }
+    }
+  }
+
+  public enum Cameras {
+    /// Drag and drop to reorder
+    public static var dragToReorder: String { return L10n.tr("Localizable", "cameras.drag_to_reorder") }
+    /// No server found for camera: %@
+    public static func noServerFound(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "cameras.no_server_found", String(describing: p1))
     }
   }
 

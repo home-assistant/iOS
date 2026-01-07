@@ -55,6 +55,7 @@ public extension DatabaseQueue {
             CustomWidgetTable(),
             AppAreaTable(),
             HomeViewConfigurationTable(),
+            CameraListConfigurationTable(),
         ]
     }
 

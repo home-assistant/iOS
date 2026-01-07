@@ -520,6 +520,12 @@
 		42014B1A2E96836E0019031C /* SelectionOptionView-Usage.md in Resources */ = {isa = PBXBuildFile; fileRef = 42014B192E96836E0019031C /* SelectionOptionView-Usage.md */; };
 		4201605F2E79A68C00F68044 /* BaseOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */; };
 		420160612E79ACAC00F68044 /* LocalAccessPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */; };
+		4201FD912F0E739000C3EF1C /* CameraCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD902F0E739000C3EF1C /* CameraCardView.swift */; };
+		4201FD932F0E73C900C3EF1C /* CameraCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD922F0E73C900C3EF1C /* CameraCardViewModel.swift */; };
+		4201FD952F0E8E7100C3EF1C /* CamerasRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD942F0E8E7100C3EF1C /* CamerasRoomView.swift */; };
+		4201FD992F0E930900C3EF1C /* CameraListConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD982F0E930900C3EF1C /* CameraListConfiguration.swift */; };
+		4201FD9C2F0E947900C3EF1C /* CameraListConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */; };
+		4201FD9D2F0E947900C3EF1C /* CameraListConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */; };
 		4203961B2EF16A4700C9DF74 /* ButtonIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396162EF16A4700C9DF74 /* ButtonIntent.swift */; };
 		4203961C2EF16A4700C9DF74 /* ControlButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396172EF16A4700C9DF74 /* ControlButton.swift */; };
 		4203961D2EF16A4700C9DF74 /* ControlButtonValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396182EF16A4700C9DF74 /* ControlButtonValueProvider.swift */; };
@@ -2196,6 +2202,11 @@
 		42014B192E96836E0019031C /* SelectionOptionView-Usage.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "SelectionOptionView-Usage.md"; sourceTree = "<group>"; };
 		4201605E2E79A68C00F68044 /* BaseOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOnboardingView.swift; sourceTree = "<group>"; };
 		420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionView.swift; sourceTree = "<group>"; };
+		4201FD902F0E739000C3EF1C /* CameraCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCardView.swift; sourceTree = "<group>"; };
+		4201FD922F0E73C900C3EF1C /* CameraCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCardViewModel.swift; sourceTree = "<group>"; };
+		4201FD942F0E8E7100C3EF1C /* CamerasRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CamerasRoomView.swift; sourceTree = "<group>"; };
+		4201FD982F0E930900C3EF1C /* CameraListConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraListConfiguration.swift; sourceTree = "<group>"; };
+		4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraListConfigurationTable.swift; sourceTree = "<group>"; };
 		420396162EF16A4700C9DF74 /* ButtonIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonIntent.swift; sourceTree = "<group>"; };
 		420396172EF16A4700C9DF74 /* ControlButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButton.swift; sourceTree = "<group>"; };
 		420396182EF16A4700C9DF74 /* ControlButtonValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonValueProvider.swift; sourceTree = "<group>"; };
@@ -4606,6 +4617,7 @@
 				420CFC6F2D3F9C86009A94F3 /* AssistPipelinesTable.swift */,
 				420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */,
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
+				4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -5135,9 +5147,13 @@
 			isa = PBXGroup;
 			children = (
 				428863522EF963FF00319CF4 /* CameraListView.swift */,
+				4201FD902F0E739000C3EF1C /* CameraCardView.swift */,
+				4201FD922F0E73C900C3EF1C /* CameraCardViewModel.swift */,
 				428863532EF963FF00319CF4 /* CameraListViewModel.swift */,
 				426E02982EF98F5F008237D4 /* CameraListRow.swift */,
 				426E029A2EF98F65008237D4 /* CameraSectionReorderView.swift */,
+				4201FD942F0E8E7100C3EF1C /* CamerasRoomView.swift */,
+				4201FD982F0E930900C3EF1C /* CameraListConfiguration.swift */,
 			);
 			path = CameraList;
 			sourceTree = "<group>";
@@ -9073,6 +9089,7 @@
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
 				42DFE87D2EFB128B0058DADB /* EntityTileView.swift in Sources */,
+				4201FD992F0E930900C3EF1C /* CameraListConfiguration.swift in Sources */,
 				11F20BC5274B06C100DFB163 /* ServerSelectRow.swift in Sources */,
 				42B129452F0565E900B957AF /* EntityDisplayComponents.swift in Sources */,
 				42EF0ACD2D4CDC0C0088C91E /* ResetAllCustomWidgetConfirmationAppIntent.swift in Sources */,
@@ -9118,6 +9135,7 @@
 				4080D5C42C319B0A00099C88 /* WidgetDetailsAppIntent.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				42FCD0132B9B29740057783F /* ThreadCredentialsManagementViewModel.swift in Sources */,
+				4201FD912F0E739000C3EF1C /* CameraCardView.swift in Sources */,
 				422F951F2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift in Sources */,
 				1101568424D770B2009424C9 /* NFCWriter.swift in Sources */,
 				42B74A662D37C2C000C37304 /* WidgetCreationViewModel.swift in Sources */,
@@ -9137,6 +9155,7 @@
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */,
+				4201FD952F0E8E7100C3EF1C /* CamerasRoomView.swift in Sources */,
 				426E029B2EF98F65008237D4 /* CameraSectionReorderView.swift in Sources */,
 				42F5C0962F02E5C800C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,
@@ -9183,6 +9202,7 @@
 				B641BC1F1E2097EF002CCBC1 /* AboutView.swift in Sources */,
 				42E95C592CA46AD50010ECE3 /* ShareActivityView.swift in Sources */,
 				420A80992E9D14C800D30A6B /* OnboardingPermissionsNavigationViewModel.swift in Sources */,
+				4201FD932F0E73C900C3EF1C /* CameraCardViewModel.swift in Sources */,
 				4206FFB62DAD58520087626C /* WebViewGestureHandler.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */,
@@ -9438,6 +9458,7 @@
 				42905D872E12B01200250728 /* DesignSystem.swift in Sources */,
 				117675F0252D5CA80047B1D3 /* WebhookResponseUpdateComplications.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
+				4201FD9D2F0E947900C3EF1C /* CameraListConfigurationTable.swift in Sources */,
 				11BA5ECA2759AC0300FC40E8 /* XCGLogger+Export.swift in Sources */,
 				42CE8FAA2B45D1E900C707F9 /* FrontendStrings.swift in Sources */,
 				428DC00B2F0CAAE7003B08D5 /* EntityProvider+Details.swift in Sources */,
@@ -9892,6 +9913,7 @@
 				42FCCFDB2B9B19F70057783F /* ThreadCredential.swift in Sources */,
 				11F855DC24DF6C7A0018013E /* IconImageView.swift in Sources */,
 				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
+				4201FD9C2F0E947900C3EF1C /* CameraListConfigurationTable.swift in Sources */,
 				1121CD4927128A970071C2AA /* UIView+StackView.swift in Sources */,
 				11B6B592294917E800B8B552 /* MatterWrapper.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
