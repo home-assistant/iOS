@@ -87,8 +87,8 @@ final class CameraCardViewModel: ObservableObject {
                 }
             }
         }
-        timer.resume()
         refreshTimer = timer
+        timer.resume()
     }
 
     private func stopRefreshTimer() {
