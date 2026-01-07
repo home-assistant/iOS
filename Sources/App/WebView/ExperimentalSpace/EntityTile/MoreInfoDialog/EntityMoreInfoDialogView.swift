@@ -29,6 +29,12 @@ struct EntityMoreInfoDialogView: View {
                     coverControlsView
                 case .fan:
                     fanControlsView
+                case .lock:
+                    lockControlsView
+                case .inputBoolean:
+                    inputBooleanControlsView
+                case .button, .inputButton, .scene, .script, .automation:
+                    simpleActionView
                 default:
                     Text("More controls coming soon")
                         .font(DesignSystem.Font.body)
@@ -113,6 +119,30 @@ struct EntityMoreInfoDialogView: View {
     @ViewBuilder
     private var fanControlsView: some View {
         FanControlsView(
+            server: server,
+            haEntity: haEntity
+        )
+    }
+
+    @ViewBuilder
+    private var lockControlsView: some View {
+        LockControlsView(
+            server: server,
+            haEntity: haEntity
+        )
+    }
+
+    @ViewBuilder
+    private var inputBooleanControlsView: some View {
+        InputBooleanControlsView(
+            server: server,
+            haEntity: haEntity
+        )
+    }
+
+    @ViewBuilder
+    private var simpleActionView: some View {
+        SimpleActionView(
             server: server,
             haEntity: haEntity
         )

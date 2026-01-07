@@ -13,6 +13,10 @@ public extension Domain {
             Color.Domain.fan
         case .cover:
             Color.Domain.cover
+        case .lock:
+            Color.Domain.lock
+        case .inputBoolean:
+            Color.Domain.inputBoolean
         default:
             Color.haPrimary
         }
