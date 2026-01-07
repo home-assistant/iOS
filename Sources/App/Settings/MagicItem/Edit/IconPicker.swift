@@ -84,7 +84,7 @@ struct IconPickerRow: View {
     var icon: MaterialDesignIcons
 
     var body: some View {
-        HStack(spacing: Spaces.two) {
+        HStack(spacing: DesignSystem.Spaces.two) {
             HStack {
                 if showIcon {
                     Image(uiImage: icon.image(

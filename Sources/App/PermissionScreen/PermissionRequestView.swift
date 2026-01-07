@@ -24,7 +24,7 @@ struct PermissionRequestView: View {
         ZStack(alignment: .topTrailing) {
             VStack {
                 ScrollView {
-                    VStack(spacing: Spaces.two) {
+                    VStack(spacing: DesignSystem.Spaces.two) {
                         Image(uiImage: icon.image(
                             ofSize: .init(width: 100, height: 100), color: accentColor
                         ))
@@ -38,9 +38,9 @@ struct PermissionRequestView: View {
                         reasonsList
                     }
                     .padding()
-                    .padding(.top, Spaces.four)
+                    .padding(.top, DesignSystem.Spaces.four)
                 }
-                VStack(spacing: Spaces.two) {
+                VStack(spacing: DesignSystem.Spaces.two) {
                     Button {
                         continueAction()
                     } label: {
@@ -90,7 +90,7 @@ struct PermissionRequestView: View {
     }
 
     private func makeReasonItem(reason: Reason) -> some View {
-        HStack(spacing: Spaces.two) {
+        HStack(spacing: DesignSystem.Spaces.two) {
             Image(uiImage: reason.icon.image(
                 ofSize: .init(width: 30, height: 30), color: accentColor
             ))

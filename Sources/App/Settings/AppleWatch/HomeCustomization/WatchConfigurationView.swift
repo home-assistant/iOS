@@ -261,7 +261,7 @@ struct WatchConfigurationView: View {
                     ofSize: .init(width: 18, height: 18),
                     color: .haPrimary
                 ))
-                .padding(Spaces.one)
+                .padding(DesignSystem.Spaces.one)
                 .background(.regularMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 25.0))
                 .offset(x: -22)
@@ -277,9 +277,9 @@ struct WatchConfigurationView: View {
         Text(verbatim: L10n.Watch.Settings.NoItems.Phone.title)
             .frame(maxWidth: .infinity, alignment: .center)
             .font(.footnote)
-            .padding(Spaces.one)
+            .padding(DesignSystem.Spaces.one)
             .background(.gray.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.one))
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
     }
 }
 

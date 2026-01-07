@@ -320,7 +320,7 @@ struct WidgetBasicView: View {
             Text(verbatim: L10n.Alert.Confirmation.Generic.title)
                 .font(.footnote.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.horizontal, .top], Spaces.one)
+                .padding([.horizontal, .top], DesignSystem.Spaces.one)
             Spacer()
             HStack {
                 Button(intent: cancellationIntent) {
@@ -353,7 +353,7 @@ struct WidgetBasicView: View {
                 cancelImage
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .foregroundStyle(.red)
-                    .padding(Spaces.half)
+                    .padding(DesignSystem.Spaces.half)
                     .background(.red.opacity(0.2))
             }
             .buttonStyle(.plain)
@@ -361,7 +361,7 @@ struct WidgetBasicView: View {
                 confirmImage
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .foregroundStyle(confirmationColor)
-                    .padding(Spaces.half)
+                    .padding(DesignSystem.Spaces.half)
                     .background(confirmationColor.opacity(0.2))
             ), confirmationIntent: confirmationIntent, confirmationURL: confirmationURL)
                 .buttonStyle(.plain)

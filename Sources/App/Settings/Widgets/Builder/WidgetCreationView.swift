@@ -77,7 +77,7 @@ struct WidgetCreationView: View {
             }
             .frame(width: widthForPreview(), height: heightForPreview())
             .background(Color.primaryBackground)
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.twoAndMicro))
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.twoAndMicro))
             .shadow(color: .black.opacity(0.1), radius: 2)
             .padding(.vertical)
             Spacer()

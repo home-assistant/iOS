@@ -123,7 +123,7 @@ struct ClientEventsLogView: View {
         }
         .modify { view in
             if #available(iOS 17.0, *) {
-                view.listSectionSpacing(Spaces.one)
+                view.listSectionSpacing(DesignSystem.Spaces.one)
             } else {
                 view
             }
@@ -134,7 +134,7 @@ struct ClientEventsLogView: View {
         NavigationLink {
             eventDescription(event)
         } label: {
-            VStack(spacing: Spaces.one) {
+            VStack(spacing: DesignSystem.Spaces.one) {
                 HStack {
                     Group {
                         Group {
