@@ -7,6 +7,7 @@ final class CameraCardViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isLoading = false
     @Published var snapshotDate: Date?
+    @Published var entityName: String?
 
     private let serverId: String
     private let entityId: String
@@ -25,6 +26,7 @@ final class CameraCardViewModel: ObservableObject {
 
     func viewDidAppear() {
         isViewVisible = true
+        loadEntityName()
         loadImageURL()
         startRefreshTimer()
     }
@@ -68,6 +70,19 @@ final class CameraCardViewModel: ObservableObject {
         // Clear the snapshot date to force a reload
         snapshotDate = nil
         loadImageURL()
+    }
+
+    private func loadEntityName() {
+        do {
+            let entities = try HAAppEntity.config(include: [.all])
+            if let entity = entities.first(where: { $0.entityId == entityId && $0.serverId == serverId }) {
+                DispatchQueue.main.async { [weak self] in
+                    self?.entityName = entity.name
+                }
+            }
+        } catch {
+            Current.Log.error("Failed to load entity name for \(entityId): \(error.localizedDescription)")
+        }
     }
 
     private func startRefreshTimer() {

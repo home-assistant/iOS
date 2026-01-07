@@ -14,6 +14,7 @@ struct CameraCardView: View {
                 contentView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 reloadButtonOverlay
+                entityNameOverlay
                 timestampOverlay
             }
         }
@@ -96,6 +97,25 @@ struct CameraCardView: View {
                         .modifier(GlassBackgroundModifier(shape: .capsule))
                         .padding(DesignSystem.Spaces.one)
                 }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var entityNameOverlay: some View {
+        VStack {
+            Spacer()
+            HStack {
+                if let entityName = viewModel.entityName {
+                    Text(entityName)
+                        .font(.caption2)
+                        .foregroundStyle(.primary)
+                        .padding(.horizontal, DesignSystem.Spaces.one)
+                        .padding(.vertical, DesignSystem.Spaces.half)
+                        .modifier(GlassBackgroundModifier(shape: .capsule))
+                        .padding(DesignSystem.Spaces.one)
+                }
+                Spacer()
             }
         }
     }
