@@ -81,7 +81,7 @@ struct DatabaseTableDetailView: View {
             DatabaseRowDetailView(row: row)
         } label: {
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                ForEach(row.keys.sorted().prefix(3), id: \.self) { key in
+                ForEach(sortedKeys(from: row).prefix(3), id: \.self) { key in
                     HStack {
                         Text(key)
                             .font(.caption)
@@ -100,6 +100,17 @@ struct DatabaseTableDetailView: View {
                 }
             }
         }
+    }
+
+    private func sortedKeys(from row: [String: String]) -> [String] {
+        let priorityKeys = ["id", "entityId", "serverId", "name", "areaId", "uniqueId"]
+        let keys = Array(row.keys)
+        
+        // Separate priority keys that exist in the row from other keys
+        let existingPriorityKeys = priorityKeys.filter { keys.contains($0) }
+        let remainingKeys = keys.filter { !priorityKeys.contains($0) }.sorted()
+        
+        return existingPriorityKeys + remainingKeys
     }
 }
 
@@ -191,7 +202,7 @@ struct DatabaseRowDetailView: View {
 
     var body: some View {
         List {
-            ForEach(row.keys.sorted(), id: \.self) { key in
+            ForEach(sortedKeys(from: row), id: \.self) { key in
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                     Text(key)
                         .font(.caption)
@@ -205,6 +216,17 @@ struct DatabaseRowDetailView: View {
         }
         .navigationTitle(L10n.Settings.DatabaseExplorer.rowDetail)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func sortedKeys(from row: [String: String]) -> [String] {
+        let priorityKeys = ["id", "entityId", "serverId", "name", "areaId", "uniqueId"]
+        let keys = Array(row.keys)
+        
+        // Separate priority keys that exist in the row from other keys
+        let existingPriorityKeys = priorityKeys.filter { keys.contains($0) }
+        let remainingKeys = keys.filter { !priorityKeys.contains($0) }.sorted()
+        
+        return existingPriorityKeys + remainingKeys
     }
 }
 
