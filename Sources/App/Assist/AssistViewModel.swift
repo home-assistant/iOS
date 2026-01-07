@@ -60,7 +60,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         if ["last_used", "preferred"].contains(preferredPipelineId) {
             self.preferredPipelineId = ""
         }
-        
+
         // Load available audio devices
         #if targetEnvironment(macCatalyst)
         loadAvailableAudioDevices()
@@ -238,7 +238,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     #if targetEnvironment(macCatalyst)
     private func loadAvailableAudioDevices() {
         availableAudioDevices = audioRecorder.availableAudioDevices()
-        
+
         // Set default device to the system default (first in list or default audio device)
         if let defaultDevice = AVCaptureDevice.default(for: .audio) {
             selectedAudioDeviceId = defaultDevice.uniqueID

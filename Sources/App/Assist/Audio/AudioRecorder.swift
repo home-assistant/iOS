@@ -34,7 +34,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
         super.init()
         registerForRecordingNotifications()
     }
-    
+
     func availableAudioDevices() -> [AVCaptureDevice] {
         #if targetEnvironment(macCatalyst)
         let discoverySession = AVCaptureDevice.DiscoverySession(
@@ -76,7 +76,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
 
     private func setupAudioRecorder() {
         let audioSession = AVAudioSession.sharedInstance()
-        
+
         // Use selected device if available, otherwise use default
         let captureDevice: AVCaptureDevice?
         if let selectedDevice = selectedAudioDevice {
@@ -86,7 +86,7 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             captureDevice = AVCaptureDevice.default(for: .audio)
             Current.Log.info("Using default audio device")
         }
-        
+
         guard let captureDevice else {
             Current.Log.error("Failed to get capture device to record audio for Assist")
             delegate?.didFailToRecord(error: AudioRecorderError.captureDeviceUnavailable)

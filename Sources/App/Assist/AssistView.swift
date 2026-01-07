@@ -200,7 +200,7 @@ struct AssistView: View {
             }
             .pickerStyle(.menu)
             .frame(maxWidth: 200, alignment: .trailing)
-            
+
             // Pipeline picker
             Picker(L10n.Assist.PipelinesPicker.title, selection: $viewModel.preferredPipelineId) {
                 ForEach(viewModel.pipelines, id: \.id) { pipeline in
