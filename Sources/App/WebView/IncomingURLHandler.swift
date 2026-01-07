@@ -77,9 +77,6 @@ class IncomingURLHandler {
                         .done { webViewController in
                             let view = CameraListView(serverId: serverId).embeddedInHostingController()
                             view.modalPresentationStyle = .pageSheet
-                            if #available(iOS 16.0, *) {
-                                view.sheetPresentationController?.detents = [.medium(), .large()]
-                            }
                             webViewController.present(view, animated: true)
                         }
                     return true

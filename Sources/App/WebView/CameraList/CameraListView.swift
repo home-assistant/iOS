@@ -6,7 +6,6 @@ struct CameraListView: View {
     @StateObject private var viewModel: CameraListViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCamera: (camera: HAAppEntity, server: Server)?
-    @State private var isEditing = false
     @State private var showSectionReorder = false
 
     init(serverId: String? = nil) {
@@ -27,13 +26,6 @@ struct CameraListView: View {
             .navigationTitle(L10n.CameraList.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if !viewModel.cameras.isEmpty {
-                        Button(isEditing ? L10n.CameraList.Edit.On.title : L10n.CameraList.Edit.Off.title) {
-                            isEditing.toggle()
-                        }
-                    }
-                }
                 ToolbarItem(placement: .topBarLeading) {
                     if !viewModel.cameras.isEmpty, viewModel.groupedCameras.count > 1 {
                         Button(action: {
@@ -73,24 +65,29 @@ struct CameraListView: View {
 
             ForEach(viewModel.groupedCameras, id: \.area) { group in
                 Section(header: Text(group.area)) {
-                    ForEach(group.cameras, id: \.id) { camera in
-                        Button(action: {
-                            if !isEditing {
-                                openCamera(camera)
-                            }
-                        }, label: {
-                            CameraListRow(camera: camera)
-                        })
-                        .tint(.accentColor)
-                        .disabled(isEditing)
+                    TabView {
+                        ForEach(group.cameras, id: \.id) { camera in
+                            CameraCardView(serverId: camera.serverId, entityId: camera.entityId)
+                                .padding(.horizontal)
+                                .padding(.top, DesignSystem.Spaces.one)
+                                .onTapGesture {
+                                    openCamera(camera)
+                                }
+                        }
                     }
-                    .onMove { source, destination in
-                        viewModel.moveCameras(in: group.area, from: source, to: destination)
-                    }
+                    .tabViewStyle(.page)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 220)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(.init(top: .zero, leading: .zero, bottom: .zero, trailing: .zero))
+//                    .onMove { source, destination in
+//                        viewModel.moveCameras(in: group.area, from: source, to: destination)
+//                    }
                 }
             }
         }
-        .environment(\.editMode, .constant(isEditing ? .active : .inactive))
+        .listStyle(.plain)
         .searchable(text: $viewModel.searchTerm, prompt: L10n.CameraList.searchPlaceholder)
         .onAppear {
             viewModel.fetchCameras()
