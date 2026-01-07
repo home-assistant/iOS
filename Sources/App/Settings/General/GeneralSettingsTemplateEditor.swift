@@ -19,7 +19,7 @@ struct GeneralSettingsTemplateEditor: View {
         List {
             Section(L10n.WebView.UniqueServerSelection.title) {
                 ServersPickerPillList(selectedServerId: $selectedServerId)
-                    .padding(.vertical, Spaces.half)
+                    .padding(.vertical, DesignSystem.Spaces.half)
                     .listRowBackground(Color(uiColor: .systemBackground))
             }
             if selectedServerId != nil {

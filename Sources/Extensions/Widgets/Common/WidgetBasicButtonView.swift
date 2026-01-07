@@ -68,7 +68,7 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
             Group {
                 switch sizeStyle {
                 case .regular, .compact, .compressed:
-                    HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
+                    HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
                         icon
                         VStack(alignment: .leading, spacing: .zero) {
                             text
@@ -76,7 +76,7 @@ struct WidgetBasicButtonView: WidgetBasicViewProtocol {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .padding([.leading, .trailing], Spaces.oneAndHalf)
+                    .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
                         icon

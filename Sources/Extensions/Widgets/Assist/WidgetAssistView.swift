@@ -40,7 +40,7 @@ struct WidgetAssistView: View {
     }
 
     private var singleHomeScreenItem: some View {
-        VStack(spacing: Spaces.two) {
+        VStack(spacing: DesignSystem.Spaces.two) {
             Spacer()
             Group {
                 Image(uiImage: MaterialDesignIcons.messageProcessingOutlineIcon.image(
@@ -73,7 +73,7 @@ struct WidgetAssistView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Spaces.two)
+        .padding(DesignSystem.Spaces.two)
         .background(tinted ? Color.clear : Color(uiColor: .systemBackground))
     }
 }

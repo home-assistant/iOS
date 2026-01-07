@@ -27,7 +27,7 @@ struct AssistMicAnimationView: View {
                 .foregroundStyle(Color(uiColor: .systemBackground), Color.haPrimary)
                 .symbolEffect(.breathe.pulse, options: .repeat(.continuous), value: isAnimating)
         } else {
-            VStack(spacing: Spaces.one) {
+            VStack(spacing: DesignSystem.Spaces.one) {
                 icon
                     .foregroundStyle(Color.haPrimary)
                 Text(verbatim: L10n.Assist.Button.Listening.title)

@@ -691,9 +691,6 @@
 		42462E712DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E722DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
 		42462E732DA4114800ECC8A7 /* Sizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E702DA4114800ECC8A7 /* Sizes.swift */; };
-		42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
-		42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
-		42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */; };
 		424A49E02EC5FD3E00524586 /* OpenInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */; };
 		424A7F462B188946008C8DF3 /* WidgetBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F452B188946008C8DF3 /* WidgetBackground.swift */; };
 		424A7F482B188BF3008C8DF3 /* WidgetContentMargin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */; };
@@ -828,16 +825,12 @@
 		427FEE682D9ECFD70047C00C /* PrivacyNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427FEE672D9ECFD70047C00C /* PrivacyNoteView.swift */; };
 		4280E06F2DC23B120004BE7D /* SensorListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280E06E2DC23B120004BE7D /* SensorListViewModel.swift */; };
 		4280E0712DC23CCF0004BE7D /* SensorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280E0702DC23CCF0004BE7D /* SensorRow.swift */; };
-		428338442BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
-		428338452BA1BB4F004798C2 /* Spaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428338422BA1BAFB004798C2 /* Spaces.swift */; };
 		4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5502D355F9900DADE45 /* WidgetCreationView.swift */; };
 		4285C5532D35658000DADE45 /* TileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285C5522D35658000DADE45 /* TileCard.swift */; };
 		428626052DA5CCAE00D58D13 /* CollapsibleViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */; };
 		428626062DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */; };
 		428626072DA5CCAE00D58D13 /* HAButtonStyles.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */; };
-		4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */; };
 		4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */; };
-		4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428626092DA5CD1B00D58D13 /* SpacesTests.swift */; };
 		42881BD42DDF12340079BDCB /* SwiftUI+SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */; };
 		428830EB2C6E3A8D0012373D /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EA2C6E3A8D0012373D /* WatchHomeView.swift */; };
 		428830ED2C6E3A9A0012373D /* WatchHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428830EC2C6E3A9A0012373D /* WatchHomeViewModel.swift */; };
@@ -2352,7 +2345,6 @@
 		42462E682D9ED75900ECC8A7 /* LocationPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionView.swift; sourceTree = "<group>"; };
 		42462E6C2DA4094300ECC8A7 /* WebhookSensorId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorId.swift; sourceTree = "<group>"; };
 		42462E702DA4114800ECC8A7 /* Sizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizes.swift; sourceTree = "<group>"; };
-		42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizes.swift; sourceTree = "<group>"; };
 		424A49DF2EC5FD3E00524586 /* OpenInBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowser.swift; sourceTree = "<group>"; };
 		424A7F452B188946008C8DF3 /* WidgetBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackground.swift; sourceTree = "<group>"; };
 		424A7F472B188BF3008C8DF3 /* WidgetContentMargin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentMargin.swift; sourceTree = "<group>"; };
@@ -2467,14 +2459,11 @@
 		4280E06E2DC23B120004BE7D /* SensorListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewModel.swift; sourceTree = "<group>"; };
 		4280E0702DC23CCF0004BE7D /* SensorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorRow.swift; sourceTree = "<group>"; };
 		4283383F2BA1B17C004798C2 /* AssistRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistRequests.swift; sourceTree = "<group>"; };
-		428338422BA1BAFB004798C2 /* Spaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spaces.swift; sourceTree = "<group>"; };
 		4285C5502D355F9900DADE45 /* WidgetCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCreationView.swift; sourceTree = "<group>"; };
 		4285C5522D35658000DADE45 /* TileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCard.swift; sourceTree = "<group>"; };
 		428626022DA5CCAE00D58D13 /* CollapsibleViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleViewTests.swift; sourceTree = "<group>"; };
 		428626032DA5CCAE00D58D13 /* ExternalLinkButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkButtonTests.swift; sourceTree = "<group>"; };
 		428626042DA5CCAE00D58D13 /* HAButtonStyles.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAButtonStyles.test.swift; sourceTree = "<group>"; };
-		428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusSizesTests.swift; sourceTree = "<group>"; };
-		428626092DA5CD1B00D58D13 /* SpacesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesTests.swift; sourceTree = "<group>"; };
 		4286260B2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensorIdTests.swift; sourceTree = "<group>"; };
 		42881BD32DDF12340079BDCB /* SwiftUI+SafeArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+SafeArea.swift"; sourceTree = "<group>"; };
 		428830EA2C6E3A8D0012373D /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
@@ -5087,9 +5076,7 @@
 		428338412BA1BAF3004798C2 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				428338422BA1BAFB004798C2 /* Spaces.swift */,
 				42462E702DA4114800ECC8A7 /* Sizes.swift */,
-				42462E762DA5421D00ECC8A7 /* CornerRadiusSizes.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -5124,15 +5111,6 @@
 				42A186092E1D310D004B729A /* HATextField.test.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		4286260A2DA5CD1B00D58D13 /* Sizes */ = {
-			isa = PBXGroup;
-			children = (
-				428626082DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift */,
-				428626092DA5CD1B00D58D13 /* SpacesTests.swift */,
-			);
-			path = Sizes;
 			sourceTree = "<group>";
 		};
 		4286260C2DA5CD1B00D58D13 /* Webhook */ = {
@@ -6641,7 +6619,6 @@
 				11AD2EA7252900AA00FBC437 /* Resources */,
 				39A32EDE2C0E36E900985722 /* Scenes */,
 				42B980DA2DC2567F00BC5C08 /* Settings */,
-				4286260A2DA5CD1B00D58D13 /* Sizes */,
 				39A32EDF2C0E37FC00985722 /* Thread */,
 				46C3EB192D721000009A893F /* Utilities */,
 				42D3E49F2C5BCCF600444BE6 /* Watch */,
@@ -8968,7 +8945,6 @@
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
 				423B5E0D2D677BB90000CB95 /* WidgetContentMargin.swift in Sources */,
 				42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */,
-				42462E782DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				42C60FA92F0829B50071A6F6 /* RoomView.swift in Sources */,
 				4240DF472E1D148F00FB0DE6 /* DeviceNameView.swift in Sources */,
 				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
@@ -9355,10 +9331,8 @@
 				11C95E3628BC20EA00171F1C /* OnboardingAuthLoginViewController.test.swift in Sources */,
 				42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */,
 				46C3EB1C2D721022009A893F /* Array+SafeSubscripting.test.swift in Sources */,
-				4286260D2DA5CD1B00D58D13 /* CornerRadiusSizesTests.swift in Sources */,
 				4286260E2DA5CD1B00D58D13 /* WebhookSensorIdTests.swift in Sources */,
 				42ACC2AF2E9FA1D60045A3FD /* DiscoveredHomeAssistant.test.swift in Sources */,
-				4286260F2DA5CD1B00D58D13 /* SpacesTests.swift in Sources */,
 				117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */,
 				425573DA2B57DDE000145217 /* WindowScenesManager.test.swift in Sources */,
 				11ED43A027279AFA00B5FD45 /* OnboardingAuthLoginImpl.test.swift in Sources */,
@@ -9545,7 +9519,6 @@
 				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
 				11F20BC8274C60FF00DFB163 /* PushProviderConfiguration.swift in Sources */,
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
-				42462E792DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* AppConstants.swift in Sources */,
 				11B6774E28303D35006E9B1A /* SecurityExceptions.swift in Sources */,
@@ -9579,7 +9552,6 @@
 				420CFC852D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */,
 				1168BF312718070400DD4D15 /* NSMutableAttributedString+Additions.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
-				428338452BA1BB4F004798C2 /* Spaces.swift in Sources */,
 				11B7DBFD266BE7550090BD3B /* LocalPushEvent.swift in Sources */,
 				11B38EEF275C54A300205C7B /* OpenPageIntentHandler.swift in Sources */,
 				4278C9BF2C89DD5D00A7B5F4 /* HAAppEntity.swift in Sources */,
@@ -9865,7 +9837,6 @@
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				42E3B8BA2D8AC63300F5D084 /* Float+HA.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
-				428338442BA1BB4F004798C2 /* Spaces.swift in Sources */,
 				11195F72267F01E4003DF674 /* HACancellable+App.swift in Sources */,
 				113E73102518457C004006D8 /* LocalizedManager.swift in Sources */,
 				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
@@ -9971,7 +9942,6 @@
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
 				11B38EE6275C54A200205C7B /* CallServiceIntentHandler.swift in Sources */,
 				4254C4CD2D103F7B00245021 /* ExternalLinkButton.swift in Sources */,
-				42462E772DA5421D00ECC8A7 /* CornerRadiusSizes.swift in Sources */,
 				491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */,
 				3997926A2B7F904A00231B54 /* MobileAppConfigPushCategory.swift in Sources */,
 				42CE8FA72B45D1E900C707F9 /* CoreStrings.swift in Sources */,

@@ -41,7 +41,6 @@ public struct AppPanel: Codable, FetchableRecord, PersistableRecord {
 
     public static func panelsPerServer() throws -> [Server: [AppPanel]] {
         var panelsPerServer: [Server: [AppPanel]] = [:]
-        var finishedPipesCount = 0
         for server in Current.servers.all {
             do {
                 if let panels = try AppPanel.panels(serverId: server.identifier.rawValue), !panels.isEmpty {

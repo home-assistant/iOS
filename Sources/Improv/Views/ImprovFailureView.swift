@@ -7,7 +7,7 @@ struct ImprovFailureView: View {
     let action: () -> Void
     var body: some View {
         Spacer()
-        VStack(spacing: Spaces.two) {
+        VStack(spacing: DesignSystem.Spaces.two) {
             Image(systemSymbol: .xmarkCircleFill)
                 .font(.system(size: 100))
                 .foregroundStyle(.white, .red)
@@ -26,7 +26,7 @@ struct ImprovFailureView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.two))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two))
     }
 }
 

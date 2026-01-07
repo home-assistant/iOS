@@ -65,7 +65,7 @@ struct WidgetBasicSensorView: WidgetBasicViewProtocol {
             Group {
                 switch sizeStyle {
                 case .regular, .compact, .compressed:
-                    HStack(alignment: .center, spacing: Spaces.oneAndHalf) {
+                    HStack(alignment: .center, spacing: DesignSystem.Spaces.oneAndHalf) {
                         VStack(alignment: .leading, spacing: .zero) {
                             subtext
                             text
@@ -74,7 +74,7 @@ struct WidgetBasicSensorView: WidgetBasicViewProtocol {
                         icon
                             .offset(y: -10)
                     }
-                    .padding([.leading, .trailing], Spaces.oneAndHalf)
+                    .padding([.leading, .trailing], DesignSystem.Spaces.oneAndHalf)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
                         icon

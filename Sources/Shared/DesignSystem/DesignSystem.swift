@@ -30,7 +30,6 @@ public enum DesignSystem {
         public static let caption3: SwiftUICore.Font = .system(size: 10)
     }
 
-    // 8-point system
     public enum Spaces {
         public static let half: CGFloat = 4
         public static let one: CGFloat = 8
@@ -42,7 +41,6 @@ public enum DesignSystem {
         public static let six: CGFloat = 48
     }
 
-    // 8-point system
     public enum CornerRadius {
         public static var half: CGFloat = 4
         public static var one: CGFloat = 8
