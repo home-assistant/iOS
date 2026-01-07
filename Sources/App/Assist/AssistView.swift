@@ -191,6 +191,7 @@ struct AssistView: View {
     private var macPicker: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
             // Microphone picker
+            // TODO: Add localized string key (e.g., L10n.Assist.MicrophonePicker.title)
             Picker(selection: $viewModel.selectedAudioDeviceId) {
                 ForEach(viewModel.availableAudioDevices, id: \.uniqueID) { device in
                     Text(device.localizedName)
