@@ -25,7 +25,7 @@ struct CamerasRoomView: View {
             List {
                 Section {
                     ForEach(cameras, id: \.id) { camera in
-                        CameraCardView(serverId: camera.serverId, entityId: camera.entityId)
+                        CameraCardView(serverId: camera.serverId, entityId: camera.entityId, cameraName: camera.name)
                             .frame(height: 220)
                             .padding(.horizontal, DesignSystem.Spaces.two)
                             .listRowInsets(.init(

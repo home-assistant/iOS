@@ -3,9 +3,11 @@ import SwiftUI
 
 struct CameraCardView: View {
     @StateObject private var viewModel: CameraCardViewModel
+    private let cameraName: String
 
-    init(serverId: String, entityId: String) {
+    init(serverId: String, entityId: String, cameraName: String) {
         self._viewModel = .init(wrappedValue: CameraCardViewModel(serverId: serverId, entityId: entityId))
+        self.cameraName = cameraName
     }
 
     var body: some View {
@@ -15,6 +17,7 @@ struct CameraCardView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 reloadButtonOverlay
                 timestampOverlay
+                cameraNameOverlay
             }
         }
         .background(.black)
@@ -96,6 +99,24 @@ struct CameraCardView: View {
                         .modifier(GlassBackgroundModifier(shape: .capsule))
                         .padding(DesignSystem.Spaces.one)
                 }
+            }
+        }
+    }
+
+    private var cameraNameOverlay: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Text(cameraName)
+                    .font(.caption)
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .padding(.horizontal, DesignSystem.Spaces.one)
+                    .padding(.vertical, DesignSystem.Spaces.half)
+                    .modifier(GlassBackgroundModifier(shape: .capsule))
+                    .padding(DesignSystem.Spaces.one)
+                Spacer()
             }
         }
     }
