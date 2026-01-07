@@ -3,6 +3,7 @@ import Shared
 import SwiftUI
 
 struct CameraListView: View {
+    @Namespace private var namespace
     @StateObject private var viewModel: CameraListViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCamera: (camera: HAAppEntity, server: Server)?
@@ -54,6 +55,13 @@ struct CameraListView: View {
                 server: presentation.server,
                 cameraEntityId: presentation.camera.entityId
             )
+            .modify { view in
+                if #available(iOS 18.0, *) {
+                    view.navigationTransition(.zoom(sourceID: presentation.camera.entityId, in: namespace))
+                } else {
+                    view
+                }
+            }
         }
     }
 
@@ -72,6 +80,13 @@ struct CameraListView: View {
                                 .padding(.top, DesignSystem.Spaces.one)
                                 .onTapGesture {
                                     openCamera(camera)
+                                }
+                                .modify { view in
+                                    if #available(iOS 18.0, *) {
+                                        view.matchedTransitionSource(id: camera.entityId, in: namespace)
+                                    } else {
+                                        view
+                                    }
                                 }
                         }
                     }
