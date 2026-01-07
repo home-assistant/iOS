@@ -868,7 +868,7 @@
 		428DC00F2F0D8BF5003B08D5 /* FanControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */; };
 		428DC0112F0D8C96003B08D5 /* FanControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */; };
 		428DC0142F0D921F003B08D5 /* Domain+AccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */; };
-		428DC0162F0DE882003B08D5 /* EntityConfigurationWebVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0152F0DE882003B08D5 /* EntityConfigurationWebVIew.swift */; };
+		428DC0162F0DE882003B08D5 /* EntityConfigurationWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
@@ -2492,7 +2492,7 @@
 		428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsView.swift; sourceTree = "<group>"; };
 		428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlIntents.swift; sourceTree = "<group>"; };
 		428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Domain+AccentColor.swift"; sourceTree = "<group>"; };
-		428DC0152F0DE882003B08D5 /* EntityConfigurationWebVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityConfigurationWebVIew.swift; sourceTree = "<group>"; };
+		428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityConfigurationWebView.swift; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
@@ -5869,7 +5869,7 @@
 			isa = PBXGroup;
 			children = (
 				42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */,
-				428DC0152F0DE882003B08D5 /* EntityConfigurationWebVIew.swift */,
+				428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */,
 				42C60F912F07FB1D0071A6F6 /* DomainSpecific */,
 			);
 			path = MoreInfoDialog;
@@ -9267,7 +9267,7 @@
 				427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
 				42C60F8B2F057C060071A6F6 /* LightControlIntents.swift in Sources */,
-				428DC0162F0DE882003B08D5 /* EntityConfigurationWebVIew.swift in Sources */,
+				428DC0162F0DE882003B08D5 /* EntityConfigurationWebView.swift in Sources */,
 				4289FCAC2F0BEDD4005189AA /* EditModeIndicatorModifier.swift in Sources */,
 				4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */,
 				42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */,
