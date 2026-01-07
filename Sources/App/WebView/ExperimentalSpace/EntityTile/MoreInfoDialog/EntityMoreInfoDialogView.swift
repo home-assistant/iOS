@@ -10,6 +10,7 @@ struct EntityMoreInfoDialogView: View {
 
     @State private var triggerHaptic = 0
     @State private var areaName: String = ""
+    @State private var showWebView = false
 
     init(server: Server, haEntity: HAEntity) {
         self.server = server
@@ -43,6 +44,13 @@ struct EntityMoreInfoDialogView: View {
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showWebView = true
+                    } label: {
+                        Image(systemSymbol: .gearshapeFill)
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
                         triggerHaptic += 1
                         dismiss()
@@ -51,6 +59,11 @@ struct EntityMoreInfoDialogView: View {
             }
             .task {
                 await loadAreaName()
+            }
+            .sheet(isPresented: $showWebView) {
+                EntityConfigurationWebView(haEntity: haEntity, server: server)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }

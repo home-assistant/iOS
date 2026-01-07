@@ -565,8 +565,6 @@
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
 		420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */; };
 		420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */; };
-		420DBEXP2F10000000000001 /* DatabaseExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */; };
-		420DBEXP2F10000000000003 /* DatabaseTableDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */; };
 		420C91502F0C6CAC005D04A6 /* HomeViewCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */; };
 		420C91522F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
 		420C91532F0C7988005D04A6 /* EntityRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C91512F0C7988005D04A6 /* EntityRegistry.swift */; };
@@ -588,6 +586,8 @@
 		420CFC852D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */; };
 		420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
 		420D5AE42C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
+		420DBEXP2F10000000000001 /* DatabaseExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */; };
+		420DBEXP2F10000000000003 /* DatabaseTableDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */; };
 		420E2AE32C4746BB004921D8 /* WidgetBasicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */; };
 		420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */; };
 		420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicButtonView.swift */; };
@@ -868,6 +868,7 @@
 		428DC00F2F0D8BF5003B08D5 /* FanControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */; };
 		428DC0112F0D8C96003B08D5 /* FanControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */; };
 		428DC0142F0D921F003B08D5 /* Domain+AccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */; };
+		428DC0162F0DE882003B08D5 /* EntityConfigurationWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */; };
 		428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */; };
 		428ED98E2E9E555D0019113B /* OnboardingPermissionsNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */; };
 		428EDB652DAFD97F00A271A1 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CE8FAC2B46C12C00C707F9 /* Domain.swift */; };
@@ -2233,8 +2234,6 @@
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
-		420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseExplorerView.swift; sourceTree = "<group>"; };
-		420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTableDetailView.swift; sourceTree = "<group>"; };
 		420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCustomizationView.swift; sourceTree = "<group>"; };
 		420C91512F0C7988005D04A6 /* EntityRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.swift; sourceTree = "<group>"; };
 		420C91542F0C7AB4005D04A6 /* EntityRegistry.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRegistry.test.swift; sourceTree = "<group>"; };
@@ -2247,6 +2246,8 @@
 		420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTables.swift; sourceTree = "<group>"; };
 		420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetTable.swift; sourceTree = "<group>"; };
 		420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionSensor.swift; sourceTree = "<group>"; };
+		420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseExplorerView.swift; sourceTree = "<group>"; };
+		420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTableDetailView.swift; sourceTree = "<group>"; };
 		420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewModel.swift; sourceTree = "<group>"; };
 		420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSizeStyle.swift; sourceTree = "<group>"; };
 		420E64B82D676A5800A31E86 /* WidgetsSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsSnapshot.test.swift; sourceTree = "<group>"; };
@@ -2491,6 +2492,7 @@
 		428DC00E2F0D8BF5003B08D5 /* FanControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlsView.swift; sourceTree = "<group>"; };
 		428DC0102F0D8C96003B08D5 /* FanControlIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanControlIntents.swift; sourceTree = "<group>"; };
 		428DC0132F0D921F003B08D5 /* Domain+AccentColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Domain+AccentColor.swift"; sourceTree = "<group>"; };
+		428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityConfigurationWebView.swift; sourceTree = "<group>"; };
 		428ED98A2E9E4FBF0019113B /* CheckmarkDrawOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkDrawOnView.swift; sourceTree = "<group>"; };
 		428ED98C2E9E54E60019113B /* OnboardingPermissionsNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionsNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		428EDB672DAFD9B900A271A1 /* HAEntity+DeviceClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+DeviceClass.swift"; sourceTree = "<group>"; };
@@ -4571,15 +4573,6 @@
 			path = ClientEventsLogView;
 			sourceTree = "<group>";
 		};
-		420DBEXP2F10000000000005 /* DatabaseExplorer */ = {
-			isa = PBXGroup;
-			children = (
-				420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */,
-				420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */,
-			);
-			path = DatabaseExplorer;
-			sourceTree = "<group>";
-		};
 		420C915B2F0C7AF4005D04A6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -4615,6 +4608,15 @@
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
 			);
 			path = Tables;
+			sourceTree = "<group>";
+		};
+		420DBEXP2F10000000000005 /* DatabaseExplorer */ = {
+			isa = PBXGroup;
+			children = (
+				420DBEXP2F10000000000002 /* DatabaseExplorerView.swift */,
+				420DBEXP2F10000000000004 /* DatabaseTableDetailView.swift */,
+			);
+			path = DatabaseExplorer;
 			sourceTree = "<group>";
 		};
 		420E64B72D676A4200A31E86 /* Widgets */ = {
@@ -5867,6 +5869,7 @@
 			isa = PBXGroup;
 			children = (
 				42B129502F056DAC00B957AF /* EntityMoreInfoDialogView.swift */,
+				428DC0152F0DE882003B08D5 /* EntityConfigurationWebView.swift */,
 				42C60F912F07FB1D0071A6F6 /* DomainSpecific */,
 			);
 			path = MoreInfoDialog;
@@ -9264,6 +9267,7 @@
 				427FEE662D9EBC430047C00C /* OnboardingPermissionsNavigationView.swift in Sources */,
 				1185DFB1271FF53800ED7D9A /* OnboardingAuthStepNotify.swift in Sources */,
 				42C60F8B2F057C060071A6F6 /* LightControlIntents.swift in Sources */,
+				428DC0162F0DE882003B08D5 /* EntityConfigurationWebView.swift in Sources */,
 				4289FCAC2F0BEDD4005189AA /* EditModeIndicatorModifier.swift in Sources */,
 				4278CB852D01F0B200CFAAC9 /* GesturesSetupViewModel.swift in Sources */,
 				42AF759B2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift in Sources */,
