@@ -68,7 +68,8 @@ struct CameraListView: View {
         )) { presentation in
             WebRTCVideoPlayerView(
                 server: presentation.server,
-                cameraEntityId: presentation.camera.entityId
+                cameraEntityId: presentation.camera.entityId,
+                cameraName: presentation.camera.name
             )
             .modify { view in
                 if #available(iOS 18.0, *) {
