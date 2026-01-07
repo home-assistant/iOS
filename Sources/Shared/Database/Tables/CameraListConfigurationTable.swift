@@ -10,7 +10,7 @@ final class CameraListConfigurationTable: DatabaseTableProtocol {
         if shouldCreateTable {
             try database.write { db in
                 try db.create(table: GRDBDatabaseTable.cameraListConfiguration.rawValue) { t in
-                    t.primaryKey(DatabaseTables.CameraListConfiguration.serverId.rawValue, .text).primaryKey()
+                    t.primaryKey(DatabaseTables.CameraListConfiguration.serverId.rawValue, .text).notNull()
                     t.column(DatabaseTables.CameraListConfiguration.areaOrders.rawValue, .jsonText).notNull()
                     t.column(DatabaseTables.CameraListConfiguration.sectionOrder.rawValue, .jsonText)
                 }
