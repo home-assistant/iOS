@@ -11,7 +11,7 @@ final class CameraCardViewModel: ObservableObject {
     private let serverId: String
     private let entityId: String
     private let imageExpirationDuration: Measurement<UnitDuration> = .init(value: 10, unit: .seconds)
-    private var refreshTimer: Timer?
+    private var refreshTimer: DispatchSourceTimer?
     private var isViewVisible = false
 
     init(serverId: String, entityId: String) {
@@ -72,22 +72,27 @@ final class CameraCardViewModel: ObservableObject {
 
     private func startRefreshTimer() {
         stopRefreshTimer()
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            guard let self, isViewVisible else { return }
+        
+        let timer = DispatchSource.makeTimerSource(queue: .main)
+        timer.schedule(deadline: .now() + 1.0, repeating: 1.0)
+        timer.setEventHandler { [weak self] in
+            guard let self, self.isViewVisible else { return }
 
-            if let snapshotDate {
+            if let snapshotDate = self.snapshotDate {
                 let elapsedTime = Current.date().timeIntervalSince(snapshotDate)
-                let expirationInterval = imageExpirationDuration.converted(to: .seconds).value
+                let expirationInterval = self.imageExpirationDuration.converted(to: .seconds).value
 
                 if elapsedTime >= expirationInterval {
-                    loadImageURL()
+                    self.loadImageURL()
                 }
             }
         }
+        timer.resume()
+        refreshTimer = timer
     }
 
     private func stopRefreshTimer() {
-        refreshTimer?.invalidate()
+        refreshTimer?.cancel()
         refreshTimer = nil
     }
 
