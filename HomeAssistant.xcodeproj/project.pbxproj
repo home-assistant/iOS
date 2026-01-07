@@ -522,6 +522,7 @@
 		420160612E79ACAC00F68044 /* LocalAccessPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */; };
 		4201FD912F0E739000C3EF1C /* CameraCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD902F0E739000C3EF1C /* CameraCardView.swift */; };
 		4201FD932F0E73C900C3EF1C /* CameraCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD922F0E73C900C3EF1C /* CameraCardViewModel.swift */; };
+		4201FD952F0E8E7100C3EF1C /* CamerasRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4201FD942F0E8E7100C3EF1C /* CamerasRoomView.swift */; };
 		4203961B2EF16A4700C9DF74 /* ButtonIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396162EF16A4700C9DF74 /* ButtonIntent.swift */; };
 		4203961C2EF16A4700C9DF74 /* ControlButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396172EF16A4700C9DF74 /* ControlButton.swift */; };
 		4203961D2EF16A4700C9DF74 /* ControlButtonValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420396182EF16A4700C9DF74 /* ControlButtonValueProvider.swift */; };
@@ -2200,6 +2201,7 @@
 		420160602E79ACAC00F68044 /* LocalAccessPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAccessPermissionView.swift; sourceTree = "<group>"; };
 		4201FD902F0E739000C3EF1C /* CameraCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCardView.swift; sourceTree = "<group>"; };
 		4201FD922F0E73C900C3EF1C /* CameraCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCardViewModel.swift; sourceTree = "<group>"; };
+		4201FD942F0E8E7100C3EF1C /* CamerasRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CamerasRoomView.swift; sourceTree = "<group>"; };
 		420396162EF16A4700C9DF74 /* ButtonIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonIntent.swift; sourceTree = "<group>"; };
 		420396172EF16A4700C9DF74 /* ControlButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButton.swift; sourceTree = "<group>"; };
 		420396182EF16A4700C9DF74 /* ControlButtonValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonValueProvider.swift; sourceTree = "<group>"; };
@@ -5144,6 +5146,7 @@
 				428863532EF963FF00319CF4 /* CameraListViewModel.swift */,
 				426E02982EF98F5F008237D4 /* CameraListRow.swift */,
 				426E029A2EF98F65008237D4 /* CameraSectionReorderView.swift */,
+				4201FD942F0E8E7100C3EF1C /* CamerasRoomView.swift */,
 			);
 			path = CameraList;
 			sourceTree = "<group>";
@@ -9144,6 +9147,7 @@
 				46CC96822D7136FF00F784CA /* Array+SafeSubscripting.swift in Sources */,
 				429BEA1A2D102F3A00F070F9 /* ConnectionErrorDetailsView.swift in Sources */,
 				425864582ECB820700C1B8C9 /* OnboardingSceneDelegate.swift in Sources */,
+				4201FD952F0E8E7100C3EF1C /* CamerasRoomView.swift in Sources */,
 				426E029B2EF98F65008237D4 /* CameraSectionReorderView.swift in Sources */,
 				42F5C0962F02E5C800C50310 /* ControlOpenExperimentalDashboardValueProvider.swift in Sources */,
 				11EFCDD624F5FA8D00314D85 /* WebViewSceneDelegate.swift in Sources */,

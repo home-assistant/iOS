@@ -8,6 +8,7 @@ struct CameraListView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCamera: (camera: HAAppEntity, server: Server)?
     @State private var showSectionReorder = false
+    @State private var selectedRoom: String?
 
     init(serverId: String? = nil) {
         self._viewModel = .init(wrappedValue: CameraListViewModel(serverId: serverId))
@@ -18,7 +19,7 @@ struct CameraListView: View {
             Group {
                 if viewModel.filteredCameras.isEmpty, !viewModel.cameras.isEmpty {
                     emptySearchResultView
-                } else if viewModel.cameras.isEmpty {
+                } else if viewModel.cameras.isEmpty, viewModel.searchTerm.isEmpty {
                     noCamerasView
                 } else {
                     cameraListView
@@ -47,6 +48,12 @@ struct CameraListView: View {
         .sheet(isPresented: $showSectionReorder) {
             CameraSectionReorderView(viewModel: viewModel)
         }
+        .sheet(item: Binding(
+            get: { selectedRoom.map { RoomPresentation(roomName: $0) } },
+            set: { selectedRoom = $0?.roomName }
+        )) { presentation in
+            CamerasRoomView(viewModel: viewModel, areaName: presentation.roomName)
+        }
         .fullScreenCover(item: Binding(
             get: { selectedCamera.map { CameraPresentation(camera: $0.camera, server: $0.server) } },
             set: { selectedCamera = $0.map { ($0.camera, $0.server) } }
@@ -72,7 +79,7 @@ struct CameraListView: View {
             }
 
             ForEach(viewModel.groupedCameras, id: \.area) { group in
-                Section(header: Text(group.area)) {
+                Section {
                     TabView {
                         ForEach(group.cameras, id: \.id) { camera in
                             CameraCardView(serverId: camera.serverId, entityId: camera.entityId)
@@ -96,9 +103,20 @@ struct CameraListView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(.init(top: .zero, leading: .zero, bottom: .zero, trailing: .zero))
-//                    .onMove { source, destination in
-//                        viewModel.moveCameras(in: group.area, from: source, to: destination)
-//                    }
+                } header: {
+                    Button(action: {
+                        selectedRoom = group.area
+                    }) {
+                        HStack(spacing: DesignSystem.Spaces.one) {
+                            Text(group.area)
+                            Image(systemSymbol: .chevronRight)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -157,6 +175,13 @@ private struct CameraPresentation: Identifiable {
     let server: Server
 
     var id: String { camera.id }
+}
+
+// Helper struct to make room presentation Identifiable
+private struct RoomPresentation: Identifiable {
+    let roomName: String
+
+    var id: String { roomName }
 }
 
 #Preview {
