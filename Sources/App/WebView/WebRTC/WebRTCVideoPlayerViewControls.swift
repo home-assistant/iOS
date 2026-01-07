@@ -18,7 +18,6 @@ struct WebRTCVideoPlayerViewControls: View {
                             .foregroundStyle(.white)
                             .lineLimit(1)
                             .truncationMode(.middle)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     Spacer()
                     topButtons
