@@ -48,7 +48,7 @@ final class CameraCardViewModel: ObservableObject {
 
         setLoading(true)
         guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
-            setError("Server not found")
+            setError(L10n.Camera.serverNotFound)
             return
         }
         Current.api(for: server)?.getCameraSnapshot(cameraEntityID: entityId).pipe { [weak self] result in
@@ -56,7 +56,7 @@ final class CameraCardViewModel: ObservableObject {
             case let .fulfilled(image):
                 self?.setImage(image)
             case let .rejected(error):
-                let errorMessage = "Failed to load camera snapshot"
+                let errorMessage = L10n.Camera.snapshotFailed
                 Current.Log
                     .error("\(errorMessage) for \(String(describing: self?.entityId)): \(error.localizedDescription)")
                 self?.setError(errorMessage)

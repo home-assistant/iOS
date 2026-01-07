@@ -1401,3 +1401,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "widgets.sensors.not_configured" = "No Sensors Configured";
 "widgets.sensors.title" = "Sensors";
 "yes_label" = "Yes";
+"camera.server_not_found" = "Server not found";
+"camera.snapshot_failed" = "Failed to load camera snapshot";
+"cameras.drag_to_reorder" = "Drag and drop to reorder";
+"cameras.no_server_found" = "No server found for camera: %@";

@@ -55,7 +55,7 @@ struct CamerasRoomView: View {
                         HStack {
                             Image(systemSymbol: .handDrawFill)
                                 .foregroundStyle(.secondary)
-                            Text("Drag and drop to reorder")
+                            Text(L10n.Cameras.dragToReorder)
                                 .textCase(nil)
                         }
                         .font(.subheadline)
@@ -106,7 +106,7 @@ struct CamerasRoomView: View {
 
     private func openCamera(_ camera: HAAppEntity) {
         guard let server = viewModel.server(for: camera) else {
-            Current.Log.error("No server found for camera: \(camera.entityId)")
+            Current.Log.error(L10n.Cameras.noServerFound(camera.entityId))
             return
         }
 
