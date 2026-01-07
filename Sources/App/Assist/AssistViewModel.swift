@@ -241,14 +241,16 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         // Set default device to the system default (first in list or default audio device)
         if let defaultDevice = AVCaptureDevice.default(for: .audio) {
-            selectedAudioDeviceId = defaultDevice.uniqueID
-            audioRecorder.selectedAudioDevice = defaultDevice
-            Current.Log.info("Default audio device set to: \(defaultDevice.localizedName)")
+            setDefaultAudioDevice(defaultDevice)
         } else if let firstDevice = availableAudioDevices.first {
-            selectedAudioDeviceId = firstDevice.uniqueID
-            audioRecorder.selectedAudioDevice = firstDevice
-            Current.Log.info("Default audio device set to first available: \(firstDevice.localizedName)")
+            setDefaultAudioDevice(firstDevice)
         }
+    }
+
+    private func setDefaultAudioDevice(_ device: AVCaptureDevice) {
+        selectedAudioDeviceId = device.uniqueID
+        audioRecorder.selectedAudioDevice = device
+        Current.Log.info("Default audio device set to: \(device.localizedName)")
     }
     #endif
 

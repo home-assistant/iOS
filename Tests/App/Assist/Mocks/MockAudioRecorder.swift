@@ -1,8 +1,10 @@
 @testable import HomeAssistant
+import AVFoundation
 
 final class MockAudioRecorder: AudioRecorderProtocol {
     weak var delegate: AudioRecorderDelegate?
     var audioSampleRate: Double?
+    var selectedAudioDevice: AVCaptureDevice?
 
     var startRecordingCalled = false
     var stopRecordingCalled = false
@@ -13,5 +15,9 @@ final class MockAudioRecorder: AudioRecorderProtocol {
 
     func stopRecording() {
         stopRecordingCalled = true
+    }
+
+    func availableAudioDevices() -> [AVCaptureDevice] {
+        []
     }
 }

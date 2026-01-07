@@ -191,12 +191,14 @@ struct AssistView: View {
     private var macPicker: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
             // Microphone picker
-            Picker("Microphone", selection: $viewModel.selectedAudioDeviceId) {
+            Picker(selection: $viewModel.selectedAudioDeviceId) {
                 ForEach(viewModel.availableAudioDevices, id: \.uniqueID) { device in
                     Text(device.localizedName)
                         .font(.footnote)
                         .tag(device.uniqueID)
                 }
+            } label: {
+                Text(verbatim: "Microphone")
             }
             .pickerStyle(.menu)
             .frame(maxWidth: 200, alignment: .trailing)
