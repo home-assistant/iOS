@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import Shared
 import SwiftUI
 
@@ -74,8 +75,15 @@ final class CameraCardViewModel: ObservableObject {
 
     private func loadEntityName() {
         do {
-            let entities = try HAAppEntity.config(include: [.all])
-            if let entity = entities.first(where: { $0.entityId == entityId && $0.serverId == serverId }) {
+            let entity = try Current.database().read { db in
+                try HAAppEntity
+                    .filter(
+                        Column(DatabaseTables.AppEntity.entityId.rawValue) == entityId &&
+                            Column(DatabaseTables.AppEntity.serverId.rawValue) == serverId
+                    )
+                    .fetchOne(db)
+            }
+            if let entity {
                 DispatchQueue.main.async { [weak self] in
                     self?.entityName = entity.name
                 }
