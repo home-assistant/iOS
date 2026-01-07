@@ -68,7 +68,8 @@ struct CameraListView: View {
         )) { presentation in
             WebRTCVideoPlayerView(
                 server: presentation.server,
-                cameraEntityId: presentation.camera.entityId
+                cameraEntityId: presentation.camera.entityId,
+                cameraName: presentation.camera.name
             )
             .modify { view in
                 if #available(iOS 18.0, *) {
@@ -117,19 +118,23 @@ struct CameraListView: View {
                 Section {
                     TabView {
                         ForEach(group.cameras, id: \.id) { camera in
-                            CameraCardView(serverId: camera.serverId, entityId: camera.entityId)
-                                .padding(.horizontal)
-                                .padding(.top, DesignSystem.Spaces.one)
-                                .onTapGesture {
-                                    openCamera(camera)
+                            CameraCardView(
+                                serverId: camera.serverId,
+                                entityId: camera.entityId,
+                                cameraName: camera.name
+                            )
+                            .padding(.horizontal)
+                            .padding(.top, DesignSystem.Spaces.one)
+                            .onTapGesture {
+                                openCamera(camera)
+                            }
+                            .modify { view in
+                                if #available(iOS 18.0, *) {
+                                    view.matchedTransitionSource(id: camera.entityId, in: namespace)
+                                } else {
+                                    view
                                 }
-                                .modify { view in
-                                    if #available(iOS 18.0, *) {
-                                        view.matchedTransitionSource(id: camera.entityId, in: namespace)
-                                    } else {
-                                        view
-                                    }
-                                }
+                            }
                         }
                     }
                     .tabViewStyle(.page)
