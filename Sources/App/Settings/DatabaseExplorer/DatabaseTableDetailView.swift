@@ -3,15 +3,15 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-private extension Dictionary where Key == String, Value == String {
+private extension [String: String] {
     func sortedKeys() -> [String] {
         let priorityKeys = ["id", "entityId", "serverId", "name", "areaId", "uniqueId"]
-        let keys = Array(self.keys)
-        
+        let keys = Array(keys)
+
         // Separate priority keys that exist in the dictionary from other keys
         let existingPriorityKeys = priorityKeys.filter { keys.contains($0) }
         let remainingKeys = keys.filter { !priorityKeys.contains($0) }.sorted()
-        
+
         return existingPriorityKeys + remainingKeys
     }
 }
