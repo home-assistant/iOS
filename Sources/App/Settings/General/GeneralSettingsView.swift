@@ -54,8 +54,8 @@ struct GeneralSettingsView: View {
         if !Current.isCatalyst {
             Section {
                 NavigationLink(destination: AppIconSelectorView()) {
-                    HStack(spacing: Spaces.two) {
-                        RoundedRectangle(cornerRadius: CornerRadiusSizes.half)
+                    HStack(spacing: DesignSystem.Spaces.two) {
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.half)
                             .frame(width: 18, height: 18)
                             .foregroundStyle(Color.haPrimary)
                         Text(L10n.SettingsDetails.General.AppIcon.title)

@@ -236,6 +236,12 @@ public enum L10n {
         public static var title: String { return L10n.tr("Localizable", "alerts.deprecations.notification_category.title") }
       }
     }
+    public enum NavigationError {
+      /// This page cannot be displayed because it's outside your Home Assistant server or the page was not found.
+      public static var message: String { return L10n.tr("Localizable", "alerts.navigation_error.message") }
+      /// Navigation Error
+      public static var title: String { return L10n.tr("Localizable", "alerts.navigation_error.title") }
+    }
     public enum OpenUrlFromDeepLink {
       /// Open URL (%@) from deep link?
       public static func message(_ p1: Any) -> String {
@@ -604,6 +610,13 @@ public enum L10n {
     public static var placeholder: String { return L10n.tr("Localizable", "assist_pipeline_picker.placeholder") }
   }
 
+  public enum Camera {
+    /// Server not found
+    public static var serverNotFound: String { return L10n.tr("Localizable", "camera.server_not_found") }
+    /// Failed to load camera snapshot
+    public static var snapshotFailed: String { return L10n.tr("Localizable", "camera.snapshot_failed") }
+  }
+
   public enum CameraList {
     /// Not in a room
     public static var noArea: String { return L10n.tr("Localizable", "camera_list.no_area") }
@@ -638,6 +651,21 @@ public enum L10n {
         /// Reorder sections
         public static var title: String { return L10n.tr("Localizable", "camera_list.reorder.section.title") }
       }
+    }
+    public enum Unavailable {
+      /// Camera streaming is not available on Mac.
+      public static var message: String { return L10n.tr("Localizable", "camera_list.unavailable.message") }
+      /// Not Available on Mac
+      public static var title: String { return L10n.tr("Localizable", "camera_list.unavailable.title") }
+    }
+  }
+
+  public enum Cameras {
+    /// Drag and drop to reorder
+    public static var dragToReorder: String { return L10n.tr("Localizable", "cameras.drag_to_reorder") }
+    /// No server found for camera: %@
+    public static func noServerFound(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "cameras.no_server_found", String(describing: p1))
     }
   }
 
@@ -2578,6 +2606,18 @@ public enum L10n {
           }
         }
       }
+    }
+    public enum DatabaseExplorer {
+      /// +%li more fields
+      public static func moreFields(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "settings.database_explorer.more_fields", p1)
+      }
+      /// No entries found
+      public static var noEntries: String { return L10n.tr("Localizable", "settings.database_explorer.no_entries") }
+      /// Row Details
+      public static var rowDetail: String { return L10n.tr("Localizable", "settings.database_explorer.row_detail") }
+      /// Database Explorer
+      public static var title: String { return L10n.tr("Localizable", "settings.database_explorer.title") }
     }
     public enum Debugging {
       /// Debugging

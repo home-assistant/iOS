@@ -15,8 +15,8 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
     static var shared = AppDatabaseUpdater()
 
-    private var requestTokens: [HACancellable?] = []
     private var lastUpdate: Date?
+    private var updateTask: Task<Void, Never>?
 
     init() {
         NotificationCenter.default.addObserver(
@@ -27,12 +27,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         )
     }
 
+    @objc private func enterBackground() {
+        stop()
+    }
+
     func stop() {
-        cancelOnGoingRequests()
+        updateTask?.cancel()
+        updateTask = nil
     }
 
     func update() async {
-        cancelOnGoingRequests()
+        stop()
 
         if let lastUpdate, lastUpdate.timeIntervalSinceNow > -120 {
             Current.Log.verbose("Skipping database update, last update was \(lastUpdate)")
@@ -43,33 +48,55 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         Current.Log.verbose("Updating database, servers count \(Current.servers.all.count)")
 
-        for server in Current.servers.all {
-            guard server.info.connection.activeURL() != nil else { continue }
-            // Entities (fetch_states)
-            let entitiesDatabaseToken = updateEntitiesDatabase(server: server)
-            requestTokens.append(entitiesDatabaseToken)
+        updateTask = Task { [weak self] in
+            for server in Current.servers.all {
+                guard let self else {
+                    break
+                }
 
-            // Entities registry list for display
-            let entitiesRegistryToken = updateEntitiesRegistryListForDisplay(server: server)
-            requestTokens.append(entitiesRegistryToken)
+                guard server.info.connection.activeURL() != nil else {
+                    continue
+                }
+                // Check if task was cancelled before processing next server
+                if Task.isCancelled {
+                    Current.Log.verbose("Update task cancelled")
+                    break
+                }
 
-            // Entities registry
-            await updateEntitiesRegistry(server: server)
-
-            // Devices registry
-            await updateDevicesRegistry(server: server)
-
-            // Areas with their entities
-            // IMPORTANT: This must be executed after entities and device registry
-            // since we rely on that data to map entities to areas
-            await updateAreasDatabase(server: server)
+                await updateServer(server: server)
+            }
         }
+
+        await updateTask?.value
     }
 
-    private func updateEntitiesDatabase(server: Server) -> HACancellable? {
-        Current.api(for: server)?.connection.send(
-            HATypedRequest<[HAEntity]>.fetchStates(),
-            completion: { result in
+    private func updateServer(server: Server) async {
+        // Entities (fetch_states)
+        await updateEntitiesDatabase(server: server)
+
+        // Entities registry list for display
+        await updateEntitiesRegistryListForDisplay(server: server)
+
+        // Entities registry
+        await updateEntitiesRegistry(server: server)
+
+        // Devices registry
+        await updateDevicesRegistry(server: server)
+
+        // Areas with their entities
+        // IMPORTANT: This must be executed after entities and device registry
+        // since we rely on that data to map entities to areas
+        await updateAreasDatabase(server: server)
+    }
+
+    private func updateEntitiesDatabase(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(HATypedRequest<[HAEntity]>.fetchStates()) { result in
                 switch result {
                 case let .success(entities):
                     Current.appEntitiesModel().updateModel(Set(entities), server: server)
@@ -83,8 +110,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         ]
                     ))
                 }
+                continuation.resume()
             }
-        )
+        }
     }
 
     private func updateEntitiesRegistry(server: Server) async {
@@ -141,10 +169,16 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
     }
 
-    private func updateEntitiesRegistryListForDisplay(server: Server) -> HACancellable? {
-        Current.api(for: server)?.connection.send(
-            HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay(),
-            completion: { [weak self] result in
+    private func updateEntitiesRegistryListForDisplay(server: Server) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let api = Current.api(for: server) else {
+                Current.Log.error("No API available for server \(server.info.name)")
+                continuation.resume()
+                return
+            }
+            api.connection.send(
+                HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay()
+            ) { [weak self] result in
                 switch result {
                 case let .success(response):
                     self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
@@ -158,8 +192,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                         ]
                     ))
                 }
+                continuation.resume()
             }
-        )
+        }
     }
 
     private func updateAreasDatabase(server: Server) async {
@@ -192,14 +227,23 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try await Current.database().write { db in
-                // Delete existing areas for this server
-                try AppArea
-                    .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
-                    .deleteAll(db)
 
-                // Insert new areas
+                let existingAreaIds = try AppArea.filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
+                    .fetchAll(db).map(\.id)
+
+                // Insert or update new areas
                 for area in appAreas {
-                    try area.save(db)
+                    try area.save(db, onConflict: .replace)
+                }
+
+                // Delete areas that no longer exist
+                let newAreaIds = areas.map { "\(serverId)-\($0.areaId)" }
+                let areaIdsToDelete = existingAreaIds.filter { !newAreaIds.contains($0) }
+
+                if !areaIdsToDelete.isEmpty {
+                    try AppArea
+                        .filter(areaIdsToDelete.contains(Column(DatabaseTables.AppArea.id.rawValue)))
+                        .deleteAll(db)
                 }
             }
             Current.Log.verbose("Successfully saved \(appAreas.count) areas for server \(serverId)")
@@ -212,12 +256,10 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            assertionFailure("Failed to save areas in database: \(error)")
+            if !(error is CancellationError) {
+                assertionFailure("Failed to save areas in database: \(error)")
+            }
         }
-    }
-
-    @objc private func enterBackground() {
-        cancelOnGoingRequests()
     }
 
     private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) {
@@ -232,11 +274,29 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
             }
         do {
             try Current.database().write { db in
-                try AppEntityRegistryListForDisplay
+                // Get existing IDs for this server
+                let existingIds = try AppEntityRegistryListForDisplay
                     .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
-                    .deleteAll(db)
+                    .fetchAll(db)
+                    .map(\.id)
+
+                // Insert or update new records
                 for record in entitiesListForDisplay {
-                    try record.save(db)
+                    try record.save(db, onConflict: .replace)
+                }
+
+                // Delete records that no longer exist
+                let newIds = entitiesListForDisplay.map(\.id)
+                let idsToDelete = existingIds.filter { !newIds.contains($0) }
+
+                if !idsToDelete.isEmpty {
+                    try AppEntityRegistryListForDisplay
+                        .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
+                        .filter(
+                            idsToDelete
+                                .contains(Column(DatabaseTables.AppEntityRegistryListForDisplay.id.rawValue))
+                        )
+                        .deleteAll(db)
                 }
             }
         } catch {
@@ -249,7 +309,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            assertionFailure("Failed to save EntityRegistryListForDisplay in database: \(error)")
+            if !(error is CancellationError) {
+                assertionFailure("Failed to save EntityRegistryListForDisplay in database: \(error)")
+            }
         }
     }
 
@@ -260,14 +322,25 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try Current.database().write { db in
-                // Delete existing registry entries for this server
-                try AppEntityRegistry
+                // Get existing unique IDs for this server
+                let existingIds = try AppEntityRegistry
                     .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .deleteAll(db)
+                    .fetchAll(db)
+                    .map(\.id)
 
-                // Insert new registry entries
+                // Insert or update new registry entries
                 for registry in appEntityRegistries {
-                    try registry.save(db)
+                    try registry.save(db, onConflict: .replace)
+                }
+
+                // Delete registry entries that no longer exist
+                let newIds = appEntityRegistries.map(\.id)
+                let idsToDelete = existingIds.filter { !newIds.contains($0) }
+
+                if !idsToDelete.isEmpty {
+                    try AppEntityRegistry
+                        .filter(idsToDelete.contains(Column(DatabaseTables.EntityRegistry.id.rawValue)))
+                        .deleteAll(db)
                 }
             }
             Current.Log
@@ -283,7 +356,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            assertionFailure("Failed to save entity registry in database: \(error)")
+            if !(error is CancellationError) {
+                assertionFailure("Failed to save entity registry in database: \(error)")
+            }
         }
     }
 
@@ -294,14 +369,25 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
         do {
             try Current.database().write { db in
-                // Delete existing registry entries for this server
-                try AppDeviceRegistry
+                // Get existing device IDs for this server
+                let existingIds = try AppDeviceRegistry
                     .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
-                    .deleteAll(db)
+                    .fetchAll(db)
+                    .map(\.id)
 
-                // Insert new registry entries
+                // Insert or update new registry entries
                 for registry in appDeviceRegistries {
-                    try registry.save(db)
+                    try registry.save(db, onConflict: .replace)
+                }
+
+                // Delete registry entries that no longer exist
+                let newIds = appDeviceRegistries.map(\.id)
+                let idsToDelete = existingIds.filter { !newIds.contains($0) }
+
+                if !idsToDelete.isEmpty {
+                    try AppDeviceRegistry
+                        .filter(idsToDelete.contains(Column(DatabaseTables.DeviceRegistry.id.rawValue)))
+                        .deleteAll(db)
                 }
             }
             Current.Log
@@ -317,12 +403,9 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            assertionFailure("Failed to save device registry in database: \(error)")
+            if !(error is CancellationError) {
+                assertionFailure("Failed to save device registry in database: \(error)")
+            }
         }
-    }
-
-    private func cancelOnGoingRequests() {
-        requestTokens.forEach { $0?.cancel() }
-        requestTokens = []
     }
 }

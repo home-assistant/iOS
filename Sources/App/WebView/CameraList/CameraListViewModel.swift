@@ -1,14 +1,7 @@
 import Foundation
+import GRDB
 import PromiseKit
 import Shared
-
-// Structure to store camera order per server
-struct CameraOrderStorage: Codable {
-    // Dictionary: [areaName: [cameraEntityId]]
-    var areaOrders: [String: [String]]
-    // Array of section names in custom order
-    var sectionOrder: [String]?
-}
 
 final class CameraListViewModel: ObservableObject {
     @Published var cameras: [HAAppEntity] = []
@@ -18,18 +11,18 @@ final class CameraListViewModel: ObservableObject {
     private let initialServerId: String?
     private let controlEntityProvider = ControlEntityProvider(domains: [.camera])
     private var entityToAreaMap: [String: String] = [:]
-    private var cameraOrderStorage: [String: CameraOrderStorage] = [:] // [serverId: CameraOrderStorage]
-    private let diskCache: DiskCache
+    private var cameraOrderStorage: [String: CameraListConfiguration] = [:] // [serverId: CameraOrderStorage]
+    private let database: DatabaseQueue
 
     var shouldShowServerPicker: Bool {
         // Only show server picker if not initialized with a specific serverId
         initialServerId == nil
     }
 
-    init(serverId: String? = nil, diskCache: DiskCache = Current.diskCache) {
+    init(serverId: String? = nil, database: DatabaseQueue = .appDatabase) {
         self.initialServerId = serverId
         self.selectedServerId = serverId
-        self.diskCache = diskCache
+        self.database = database
         loadCameraOrders()
     }
 
@@ -155,7 +148,11 @@ final class CameraListViewModel: ObservableObject {
         let newOrder = cameras.map(\.entityId)
 
         if cameraOrderStorage[serverId] == nil {
-            cameraOrderStorage[serverId] = CameraOrderStorage(areaOrders: [:], sectionOrder: nil)
+            cameraOrderStorage[serverId] = CameraListConfiguration(
+                serverId: serverId,
+                areaOrders: [:],
+                sectionOrder: nil
+            )
         }
         cameraOrderStorage[serverId]?.areaOrders[area] = newOrder
 
@@ -169,7 +166,11 @@ final class CameraListViewModel: ObservableObject {
         guard let serverId = selectedServerId else { return }
 
         if cameraOrderStorage[serverId] == nil {
-            cameraOrderStorage[serverId] = CameraOrderStorage(areaOrders: [:], sectionOrder: sections)
+            cameraOrderStorage[serverId] = CameraListConfiguration(
+                serverId: serverId,
+                areaOrders: [:],
+                sectionOrder: sections
+            )
         } else {
             cameraOrderStorage[serverId]?.sectionOrder = sections
         }
@@ -181,26 +182,30 @@ final class CameraListViewModel: ObservableObject {
     }
 
     private func loadCameraOrders() {
-        for server in Current.servers.all {
-            let serverId = server.identifier.rawValue
-            let cacheKey = "camera_order_\(serverId)"
-
-            diskCache.value(for: cacheKey).done { [weak self] (storage: CameraOrderStorage) in
-                self?.cameraOrderStorage[serverId] = storage
-            }.catch { error in
-                // Storage doesn't exist or failed to load - this is expected for first run
-                Current.Log.verbose("No camera order found for server \(serverId): \(error.localizedDescription)")
+        do {
+            let configurations = try database.read { db in
+                try CameraListConfiguration.fetchAll(db)
             }
+
+            for config in configurations {
+                cameraOrderStorage[config.serverId] = config
+            }
+        } catch {
+            Current.Log.error("Failed to load camera orders from GRDB: \(error.localizedDescription)")
         }
     }
 
     private func saveCameraOrders() {
-        for (serverId, storage) in cameraOrderStorage {
-            let cacheKey = "camera_order_\(serverId)"
-
-            diskCache.set(storage, for: cacheKey).catch { error in
-                Current.Log.error("Failed to save camera order for server \(serverId): \(error.localizedDescription)")
+        do {
+            try database.write { db in
+                for (serverId, storage) in cameraOrderStorage {
+                    var config = storage
+                    config.serverId = serverId
+                    try config.save(db)
+                }
             }
+        } catch {
+            Current.Log.error("Failed to save camera orders to GRDB: \(error.localizedDescription)")
         }
     }
 

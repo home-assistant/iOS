@@ -6,7 +6,7 @@ struct SensorRow: View {
     let isEnabled: Bool
 
     var body: some View {
-        HStack(spacing: Spaces.two) {
+        HStack(spacing: DesignSystem.Spaces.two) {
             if let icon = sensor.Icon.flatMap({ MaterialDesignIcons(serversideValueNamed: $0) }) {
                 Image(uiImage: icon.settingsIcon(for: UITraitCollection.current))
                     .renderingMode(.template)

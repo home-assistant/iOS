@@ -27,7 +27,7 @@ public struct ExternalLinkButton: View {
 
     public var body: some View {
         Link(destination: url) {
-            HStack(spacing: Spaces.two) {
+            HStack(spacing: DesignSystem.Spaces.two) {
                 icon
                     .frame(width: 30, height: 30)
                     .font(.title2)
@@ -42,7 +42,7 @@ public struct ExternalLinkButton: View {
         .frame(maxWidth: 600)
         .padding()
         .background(background)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
     }
 }
 
@@ -63,7 +63,7 @@ public struct ActionLinkButton: View {
         Button(action: {
             action()
         }, label: {
-            HStack(spacing: Spaces.two) {
+            HStack(spacing: DesignSystem.Spaces.two) {
                 icon
                     .frame(width: 30, height: 30)
                     .font(.title2)
@@ -78,7 +78,7 @@ public struct ActionLinkButton: View {
         .frame(maxWidth: 600)
         .padding()
         .background(Color(uiColor: .secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
     }
 }
 

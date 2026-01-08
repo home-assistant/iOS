@@ -4,13 +4,18 @@ import SwiftUI
 
 enum EntityIconColorProvider {
     static func iconColor(
+        domain: Domain,
         state: String,
         colorMode: String?,
         rgbColor: [Int]?,
         hsColor: [Double]?
     ) -> Color {
-        guard state == Domain.State.on.rawValue else {
-            return .secondary
+        guard Domain.activeStates.map(\.rawValue).contains(state) else {
+            if Domain.problemStates.map(\.rawValue).contains(state) {
+                return .red
+            } else {
+                return .secondary
+            }
         }
 
         // Check color_mode first if available to prioritize the correct attribute
@@ -55,6 +60,6 @@ enum EntityIconColorProvider {
             return Color(hue: hs[0] / 360.0, saturation: hs[1] / 100.0, brightness: 1.0)
         }
 
-        return .haPrimary
+        return domain.accentColor
     }
 }

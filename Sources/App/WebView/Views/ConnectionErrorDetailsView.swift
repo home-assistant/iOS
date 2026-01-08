@@ -25,7 +25,7 @@ struct ConnectionErrorDetailsView: View {
                 VStack(alignment: .leading) {
                     headerView
                     VStack(alignment: .leading) {
-                        VStack(alignment: .leading, spacing: Spaces.two) {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
                             Text(verbatim: L10n.Connection.Error.FailedConnect.title)
                                 .font(.title.bold())
                             Text(verbatim: L10n.Connection.Error.FailedConnect.subtitle)
@@ -43,7 +43,7 @@ struct ConnectionErrorDetailsView: View {
                                 .frame(maxWidth: 600)
                                 .padding()
                                 .background(Color(uiColor: .secondarySystemBackground))
-                                .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+                                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
                             }
 
                             if let server, server.info.connection.canUseCloud,
@@ -72,14 +72,14 @@ struct ConnectionErrorDetailsView: View {
                         .frame(maxWidth: 600)
                         .padding()
                         .background(Color(uiColor: .secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
                         .padding(.top)
 
                         Rectangle()
                             .foregroundStyle(Color(uiColor: .label).opacity(0.5))
                             .frame(maxWidth: .infinity)
                             .frame(height: 1)
-                            .padding(Spaces.three)
+                            .padding(DesignSystem.Spaces.three)
                         copyToClipboardButton
                         exportLogsButton
                         documentationLink
@@ -132,7 +132,7 @@ struct ConnectionErrorDetailsView: View {
                     .frame(width: 100, height: 100)
                 Image(systemSymbol: .wifiExclamationmark)
                     .foregroundStyle(.red)
-                    .padding(Spaces.one)
+                    .padding(DesignSystem.Spaces.one)
                     .background(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 50))
                     .shadow(radius: 10)
@@ -147,7 +147,7 @@ struct ConnectionErrorDetailsView: View {
 
     @ViewBuilder
     private var advancedContent: some View {
-        VStack(alignment: .leading, spacing: Spaces.two) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
             makeRow(title: L10n.Connection.Error.Details.Label.description, body: error.localizedDescription)
             makeRow(title: L10n.Connection.Error.Details.Label.domain, body: (error as NSError).domain)
             makeRow(title: L10n.Connection.Error.Details.Label.code, body: "\((error as NSError).code)")

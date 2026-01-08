@@ -12,6 +12,7 @@ public enum GRDBDatabaseTable: String {
     case customWidget
     case appArea
     case homeViewConfiguration
+    case cameraListConfiguration
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -98,6 +99,13 @@ public enum DatabaseTables {
         case allowMultipleSelection
         case entityOrderByRoom
         case hiddenEntityIds
+    }
+
+    // Camera List Configuration (per server)
+    public enum CameraListConfiguration: String {
+        case serverId
+        case areaOrders
+        case sectionOrder
     }
 
     // Entity Registry (full entity registry data)

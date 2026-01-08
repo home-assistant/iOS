@@ -42,7 +42,7 @@ struct DownloadManagerView: View {
             failedCard
         } else {
             HAProgressView(style: .large)
-                .padding(Spaces.four)
+                .padding(DesignSystem.Spaces.four)
             Text(verbatim: L10n.DownloadManager.Downloading.title)
                 .font(.title.bold())
             fileCard
@@ -70,7 +70,7 @@ struct DownloadManagerView: View {
     }
 
     private var successView: some View {
-        VStack(spacing: Spaces.three) {
+        VStack(spacing: DesignSystem.Spaces.three) {
             Image(systemSymbol: .checkmark)
                 .foregroundStyle(.green)
                 .font(.system(size: 100))
@@ -95,7 +95,7 @@ struct DownloadManagerView: View {
                         .padding()
                         .foregroundStyle(.white)
                         .background(Color.haPrimary)
-                        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
                         .padding()
                         .onAppear {
                             shareWrapper = .init(url: url)
@@ -116,7 +116,7 @@ struct DownloadManagerView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.gray.opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
         .padding()
     }
 
@@ -126,7 +126,7 @@ struct DownloadManagerView: View {
             .multilineTextAlignment(.leading)
             .padding()
             .background(.red.opacity(0.5))
-            .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndHalf))
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndHalf))
             .padding()
     }
 }

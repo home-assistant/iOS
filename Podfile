@@ -117,9 +117,6 @@ post_install do |installer|
 
       config.build_settings['SWIFT_INSTALL_OBJC_HEADER'] = 'NO' unless target.name.include? 'Firebase'
 
-      # disabled arch to stay under the 75 MB limit imposed by apple
-      config.build_settings['EXCLUDED_ARCHS[sdk=watchos*]'] = 'arm64'
-
       next unless config.name == 'Release'
 
       # cocoapods defaults to not stripping the frameworks it creates

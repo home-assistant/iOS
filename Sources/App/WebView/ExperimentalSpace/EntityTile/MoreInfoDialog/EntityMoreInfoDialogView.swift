@@ -10,6 +10,7 @@ struct EntityMoreInfoDialogView: View {
 
     @State private var triggerHaptic = 0
     @State private var areaName: String = ""
+    @State private var showWebView = false
 
     init(server: Server, haEntity: HAEntity) {
         self.server = server
@@ -26,6 +27,8 @@ struct EntityMoreInfoDialogView: View {
                     switchControlsView
                 case .cover:
                     coverControlsView
+                case .fan:
+                    fanControlsView
                 default:
                     Text("More controls coming soon")
                         .font(DesignSystem.Font.body)
@@ -41,6 +44,13 @@ struct EntityMoreInfoDialogView: View {
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showWebView = true
+                    } label: {
+                        Image(systemSymbol: .gearshapeFill)
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
                         triggerHaptic += 1
                         dismiss()
@@ -50,8 +60,12 @@ struct EntityMoreInfoDialogView: View {
             .task {
                 await loadAreaName()
             }
+            .sheet(isPresented: $showWebView) {
+                EntityConfigurationWebView(haEntity: haEntity, server: server)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
         }
-        .presentationBackground(Color(uiColor: .systemBackground).opacity(0.9))
     }
 
     // MARK: - Area Lookup
@@ -91,6 +105,14 @@ struct EntityMoreInfoDialogView: View {
     @ViewBuilder
     private var coverControlsView: some View {
         CoverControlsView(
+            server: server,
+            haEntity: haEntity
+        )
+    }
+
+    @ViewBuilder
+    private var fanControlsView: some View {
+        FanControlsView(
             server: server,
             haEntity: haEntity
         )
@@ -190,6 +212,39 @@ struct EntityMoreInfoDialogView: View {
         name: "Living Room Blinds",
         icon: "mdi:blinds",
         rawDeviceClass: "blind"
+    )
+
+    EntityMoreInfoDialogView(
+        server: ServerFixture.standard,
+        haEntity: haEntity
+    )
+}
+
+@available(iOS 26.0, *)
+#Preview("Fan Entity") {
+    @Previewable @State var haEntity: HAEntity! = try? HAEntity(
+        entityId: "fan.living_room_fan",
+        domain: "fan",
+        state: "on",
+        lastChanged: Date().addingTimeInterval(-3600),
+        lastUpdated: Date(),
+        attributes: [
+            "friendly_name": "Living Room Fan",
+            "percentage": 75,
+            "oscillating": true,
+            "direction": "forward",
+        ],
+        context: .init(id: "", userId: nil, parentId: nil)
+    )
+
+    let appEntity = HAAppEntity(
+        id: "test-fan.living_room_fan",
+        entityId: "fan.living_room_fan",
+        serverId: "test-server",
+        domain: "fan",
+        name: "Living Room Fan",
+        icon: "mdi:fan",
+        rawDeviceClass: nil
     )
 
     EntityMoreInfoDialogView(

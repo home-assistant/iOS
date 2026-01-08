@@ -45,6 +45,24 @@ public enum Domain: String, CaseIterable {
         case unavailable
     }
 
+    /// States that represent an "active" condition
+    /// such as for displaying accent color for entity tile icon
+    public static var activeStates: [State] = [
+        .on,
+        .open,
+        .unlocked,
+        .unlocking,
+        .locking,
+        .opening,
+        .closing,
+    ]
+
+    /// States that represent a "problem" condition
+    public static var problemStates: [State] = [
+        .jammed,
+        .unavailable,
+    ]
+
     public var states: [State] {
         var states: [State] = []
         switch self {

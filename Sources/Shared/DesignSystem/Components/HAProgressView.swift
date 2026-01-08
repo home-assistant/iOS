@@ -77,7 +77,7 @@ public struct HAProgressView: View {
 }
 
 #Preview {
-    HStack(spacing: Spaces.two) {
+    HStack(spacing: DesignSystem.Spaces.two) {
         HAProgressView(style: .small)
         HAProgressView(style: .medium)
         HAProgressView(style: .large)

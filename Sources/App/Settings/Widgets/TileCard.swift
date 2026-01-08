@@ -32,9 +32,9 @@ struct TileCard: View {
         .frame(maxWidth: .infinity)
         .frame(height: 55)
         .background(Color.tileBackground)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndMicro))
         .overlay {
-            RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro)
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndMicro)
                 .stroke(Color.tileBorder, lineWidth: 1)
         }
     }
@@ -51,11 +51,11 @@ struct TileCard: View {
             TileCard(content: .init(title: "Title", subtitle: "Subtitle", image: Image(systemSymbol: .plus)))
             TileCard(content: .init(title: "Title", subtitle: nil, image: Image(systemSymbol: .plus)))
         }
-        .padding(Spaces.one)
+        .padding(DesignSystem.Spaces.one)
     }
     .frame(maxWidth: .infinity, alignment: .center)
     .background(Color.primaryBackground)
-    .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.two))
+    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two))
     .shadow(color: .black.opacity(0.2), radius: 10)
     .padding()
 }

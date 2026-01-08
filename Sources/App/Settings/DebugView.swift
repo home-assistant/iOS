@@ -109,6 +109,15 @@ struct DebugView: View {
                         title: L10n.Settings.LocationHistory.title
                     )
                 }
+
+                NavigationLink {
+                    DatabaseExplorerView()
+                } label: {
+                    linkContent(
+                        image: .init(systemSymbol: .tablecells),
+                        title: L10n.Settings.DatabaseExplorer.title
+                    )
+                }
             }
 
             criticalSection
@@ -139,7 +148,7 @@ struct DebugView: View {
         textColor: Color = Color(uiColor: .label),
         showProgressView: Bool? = nil
     ) -> some View {
-        HStack(spacing: Spaces.two) {
+        HStack(spacing: DesignSystem.Spaces.two) {
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)

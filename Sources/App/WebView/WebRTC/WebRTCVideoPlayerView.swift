@@ -18,10 +18,12 @@ struct WebRTCVideoPlayerView: View {
 
     private let server: Server
     private let cameraEntityId: String
+    private let cameraName: String?
 
-    init(server: Server, cameraEntityId: String) {
+    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
         self.server = server
         self.cameraEntityId = cameraEntityId
+        self.cameraName = cameraName
         self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(server: server, cameraEntityId: cameraEntityId))
     }
 
@@ -162,6 +164,7 @@ struct WebRTCVideoPlayerView: View {
 
     private var controls: some View {
         WebRTCVideoPlayerViewControls(
+            cameraName: cameraName,
             close: { dismiss() },
             isMuted: viewModel.isMuted,
             toggleMute: { viewModel.toggleMute() }
