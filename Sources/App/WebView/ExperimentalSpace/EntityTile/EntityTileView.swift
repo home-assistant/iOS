@@ -22,6 +22,7 @@ struct EntityTileView: View {
     @State private var triggerHaptic = 0
     @State private var iconColor: Color = .secondary
     @State private var showMoreInfoDialog = false
+    @State private var deviceClass: DeviceClass = .unknown
 
     init(server: Server, haEntity: HAEntity) {
         self.server = server
@@ -43,6 +44,7 @@ struct EntityTileView: View {
                 updateIconColor()
             }
             .onAppear {
+                getDeviceClass()
                 updateIconColor()
             }
             .matchedTransitionSource(id: haEntity.entityId, in: namespace)
@@ -96,15 +98,18 @@ struct EntityTileView: View {
         .foregroundColor(Color(uiColor: .secondaryLabel))
     }
 
+    private func getDeviceClass() {
+        deviceClass = DeviceClassProvider.deviceClass(
+            for: haEntity.entityId,
+            serverId: server.identifier.rawValue
+        )
+    }
+
     private var iconView: some View {
         let icon: MaterialDesignIcons
         if let entityIcon = haEntity.attributes.icon {
             icon = MaterialDesignIcons(serversideValueNamed: entityIcon)
         } else if let domain = Domain(entityId: haEntity.entityId) {
-            let deviceClass = DeviceClassProvider.deviceClass(
-                for: haEntity.entityId,
-                serverId: server.identifier.rawValue
-            )
             let stateString = haEntity.state
             let domainState = Domain.State(rawValue: stateString) ?? .unknown
             icon = domain.icon(deviceClass: deviceClass.rawValue, state: domainState)
