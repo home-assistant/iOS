@@ -2,6 +2,7 @@ import CoreBluetooth
 import Foundation
 import Improv_iOS
 import PromiseKit
+import SFSafeSymbols
 @preconcurrency import Shared
 import SwiftMessages
 import SwiftUI
@@ -419,40 +420,44 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     @MainActor
     private func showToast(payload: ToastShowPayload) {
-        var config = SwiftMessages.Config()
-        config.dimMode = .none
-        config.presentationStyle = .bottom
+        if #available(iOS 18, *) {
+            // Determine the symbol based on the icon provided, or use a default
+            let symbol: SFSymbol
+            if let icon = payload.icon, !icon.isEmpty {
+                symbol = SFSymbol(rawValue: icon)
+            } else {
+                symbol = .infoCircleFill
+            }
 
-        switch payload.displayType {
-        case .permanent:
-            config.duration = .forever
-        case .timeout, .unknown:
-            config.duration = .seconds(seconds: payload.seconds ?? 3)
+            // Determine duration based on display type
+            let duration: TimeInterval?
+            switch payload.displayType {
+            case .permanent:
+                duration = nil
+            case .timeout, .unknown:
+                duration = TimeInterval(payload.seconds ?? 3)
+            }
+
+            ToastManager.shared.show(
+                id: payload.id,
+                symbol: symbol,
+                symbolForegroundStyle: (.white, .accentColor),
+                title: payload.title,
+                message: payload.body,
+                duration: duration
+            )
+        } else {
+            Current.Log.verbose("Not showing toast with id \(payload.id), Toast not available on this OS version.")
         }
-
-        let view = MessageView.viewFromNib(layout: .cardView)
-
-        var iconImage: UIImage?
-        if let icon = payload.icon, !icon.isEmpty {
-            iconImage = UIImage(systemName: icon)
-        }
-
-        view.configureContent(
-            title: payload.title,
-            body: payload.body,
-            iconImage: iconImage,
-            iconText: nil,
-            buttonImage: nil,
-            buttonTitle: nil,
-            buttonTapHandler: nil
-        )
-        view.id = payload.id
-        SwiftMessages.show(config: config, view: view)
     }
 
     @MainActor
     private func hideToast(id: String) {
-        SwiftMessages.hide(id: id)
+        if #available(iOS 18, *) {
+            ToastManager.shared.hide(id: id)
+        } else {
+            Current.Log.verbose("Not hiding toast with id \(id), Toast not available on this OS version.")
+        }
     }
 
     private func cleanPreferredThreadCredentials() {

@@ -21,7 +21,7 @@ struct ToastShowPayload: ExternalBusPayload {
     let id: String
     let displayType: DisplayType
     let title: String
-    let body: String
+    let body: String?
     let icon: String?
     let seconds: Double?
 
@@ -29,8 +29,7 @@ struct ToastShowPayload: ExternalBusPayload {
         guard let payload,
               let id = payload["id"] as? String,
               let displayTypeString = payload["display_type"] as? String,
-              let title = payload["title"] as? String,
-              let body = payload["body"] as? String else {
+              let title = payload["title"] as? String else {
             return nil
         }
 
@@ -45,7 +44,7 @@ struct ToastShowPayload: ExternalBusPayload {
         self.id = id
         self.displayType = displayType
         self.title = title
-        self.body = body
+        self.body = payload["body"] as? String
         self.icon = payload["icon"] as? String
         self.seconds = seconds
     }

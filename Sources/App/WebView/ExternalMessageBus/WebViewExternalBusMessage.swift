@@ -26,7 +26,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case toastShow = "toast/show"
     case toastHide = "toast/hide"
 
-    static var configResult: [String: Any] {
+    @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
             "canWriteTag": Current.tags.isNFCAvailable,
@@ -39,11 +39,11 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-            "canDisplayToast": {
+            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
                 if #available(iOS 18, *) {
-                    return true
+                    return ToastManager.toastComponentVersion
                 } else {
-                    return false
+                    return -1
                 }
             }(),
         ]

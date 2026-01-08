@@ -1057,6 +1057,7 @@
 		42D6EAB32F0FF88800FA249B /* ToastShowPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */; };
 		42D6EAB82F0FF8EB00FA249B /* ExternalBusPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */; };
 		42D6EABA2F0FF90500FA249B /* ToastHidePayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */; };
+		42D6EABE2F0FFB1900FA249B /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EABD2F0FFB1900FA249B /* ToastManager.swift */; };
 		42D996E52D89863A001737A0 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
 		42D996E62D89863A001737A0 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
 		42DB4D0B2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */; };
@@ -2832,6 +2833,7 @@
 		42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastShowPayload.swift; sourceTree = "<group>"; };
 		42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalBusPayload.swift; sourceTree = "<group>"; };
 		42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHidePayload.swift; sourceTree = "<group>"; };
+		42D6EABD2F0FFB1900FA249B /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
 		42D996E42D89863A001737A0 /* Bool+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+HA.swift"; sourceTree = "<group>"; };
 		42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerView.swift; sourceTree = "<group>"; };
 		42DC44352E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerViewControls.swift; sourceTree = "<group>"; };
@@ -6075,6 +6077,7 @@
 		42D6EABB2F0FF96400FA249B /* Toast */ = {
 			isa = PBXGroup;
 			children = (
+				42D6EABD2F0FFB1900FA249B /* ToastManager.swift */,
 				42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */,
 				42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */,
 			);
@@ -9269,6 +9272,7 @@
 				42A47A902C4548E100C9B43D /* ImprovDiscoverView.swift in Sources */,
 				113FB1132515A065000AC680 /* ScaleFactorMutator.swift in Sources */,
 				4296C37A2B9205450051B63C /* WidgetActionsAppIntent.swift in Sources */,
+				42D6EABE2F0FFB1900FA249B /* ToastManager.swift in Sources */,
 				428ED98B2E9E4FBF0019113B /* CheckmarkDrawOnView.swift in Sources */,
 				1185DFB3271FF53800ED7D9A /* OnboardingAuthStepSensors.swift in Sources */,
 				11108D632634C8FE009DAB0F /* LearnMoreButtonRow.swift in Sources */,
