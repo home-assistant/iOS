@@ -708,6 +708,10 @@ Home Assistant bersifat sumber terbuka, mendukung privasi, dan berjalan secara l
 "settings.connection_section.websocket.status.disconnected.title" = "Terputus";
 "settings.connection_section.websocket.status.rejected.title" = "Ditolak";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.database_explorer.more_fields" = "+%li more fields";
+"settings.database_explorer.no_entries" = "No entries found";
+"settings.database_explorer.row_detail" = "Row Details";
+"settings.database_explorer.title" = "Database Explorer";
 "settings.debugging.critical_section.footer" = "Pastikan Anda memahami bahwa operasi ini tidak dapat dikembalikan.";
 "settings.debugging.header.subtitle" = "Mari kita perbaiki 🐞";
 "settings.debugging.header.title" = "Debug";

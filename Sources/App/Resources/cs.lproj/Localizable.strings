@@ -131,7 +131,7 @@
 "assist.watch.mic_button.title" = "Klepněte pro:";
 "assist.watch.not_reachable.title" = "Assist vyžaduje připojení iPhone. Váš iPhone je momentálně nedostupný.";
 "assist.watch.volume.title" = "Ovládání hlasitosti";
-"assist_pipeline_picker.no_pipelines" = "Nejsou k dispozici žádné pipelines";
+"assist_pipeline_picker.no_pipelines" = "Nejsou dostupné žádné pipeline";
 "assist_pipeline_picker.placeholder" = "Vyberte pipeline";
 "camera_list.edit.off.title" = "Upravit";
 "camera_list.edit.on.title" = "Hotovo";
@@ -152,8 +152,8 @@
 "carPlay.debug.delete_db.button.title" = "Smazat nastavení CarPlay";
 "carPlay.debug.delete_db.reset.title" = "Resetovat nastavení";
 "carPlay.labels.already_added_server" = "Již přidáno";
-"carPlay.labels.empty_domain_list" = "Nejsou k dispozici žádné domény";
-"carPlay.labels.no_servers_available" = "Nejsou k dispozici žádné servery. Přidejte server do aplikace.";
+"carPlay.labels.empty_domain_list" = "Nejsou dostupné žádné domény";
+"carPlay.labels.no_servers_available" = "Nejsou dostupné žádné servery. Přidejte server do aplikace.";
 "carPlay.labels.select_server" = "Vybrat server";
 "carPlay.labels.servers" = "Servery";
 "carPlay.labels.settings.advanced.section.button.detail" = "Použijte tuto volbu, pokud nejsou data serveru správně načtena.";
@@ -169,7 +169,7 @@
 "carPlay.navigation.tab.quick_access" = "Rychlý přístup";
 "carPlay.navigation.tab.settings" = "Nastavení";
 "carPlay.no_actions.title" = "Otevřete aplikaci Home Assistanta a vytvořte akce pro CarPlay.";
-"carPlay.no_entities.title" = "Nejsou k dispozici žádné entity kompatibilní s CarPlay.";
+"carPlay.no_entities.title" = "Nejsou dostupné žádné entity kompatibilní s CarPlay.";
 "carPlay.notification.action.intro.body" = "Klepnutím vytvořte svou první akci pro iOS";
 "carPlay.notification.action.intro.title" = "Vytvořit akci pro iOS";
 "carPlay.notification.quick_access.intro.body" = "Klepnutím vytvoříte nastavení CarPlay.";
@@ -181,8 +181,8 @@
 "carPlay.tabs.inactive.title" = "Neaktivní";
 "carPlay.unlock.confirmation.title" = "Opravdu chcete provést akci odemknutí na %@?";
 "carplay.labels.already_added_server" = "Již přidáno";
-"carplay.labels.empty_domain_list" = "Nejsou k dispozici žádné domény";
-"carplay.labels.no_servers_available" = "Nejsou k dispozici žádné servery. Přidejte server do aplikace.";
+"carplay.labels.empty_domain_list" = "Nejsou dostupné žádné domény";
+"carplay.labels.no_servers_available" = "Nejsou dostupné žádné servery. Přidejte server do aplikace.";
 "carplay.labels.servers" = "Servery";
 "carplay.lock.confirmation.title" = "Opravdu chcete provést akci uzamčení na %@?";
 "carplay.navigation.button.next" = "Další";
@@ -334,7 +334,7 @@
 "ha_api.api_error.manager_not_available" = "API manažer Home Assistanta není dostupný";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Součást mobile_app není načtena. Přidejte ji do nastavení, restartujte Home Assistanta a zkuste to znovu.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Vaše verze Home Assistanta (%@) je příliš stará. Chcete-li aplikaci používat, musíte aktualizovat alespoň na verzi %@.";
-"ha_api.api_error.no_available_api" = "Není k dispozici žádné rozhraní API. Zkontrolujte, zda je k dispozici interní adresa URL nebo externí adresa URL.";
+"ha_api.api_error.no_available_api" = "Není dostupné žádné rozhraní API. Zkontrolujte, zda je dostupná interní adresa URL nebo externí adresa URL.";
 "ha_api.api_error.not_configured" = "API Home Assistanta není nastaveno";
 "ha_api.api_error.unacceptable_status_code" = "Nepřijatelný stavový kód %1$li.";
 "ha_api.api_error.unexpected_type" = "Přijata odpověď s výsledkem typu %1$@, ale očekával se typ %2$@.";
@@ -365,7 +365,7 @@
 "improv.state.connected" = "Připojeno";
 "improv.state.connecting" = "Připojování...";
 "improv.state.success" = "Wi-Fi bylo úspěšně připojeno";
-"improv.toast.title" = "K dispozici jsou zařízení k nastavení.";
+"improv.toast.title" = "Jsou dostupná zařízení k nastavení.";
 "improv.wifi.alert.cancel_button" = "Zrušit";
 "improv.wifi.alert.connect_button" = "Připojit";
 "improv.wifi.alert.description" = "Zadejte SSID a heslo.";
@@ -435,7 +435,7 @@
 "menu.view.reload_page" = "Znovu načíst stránku";
 "navBar.close" = "Zavřít";
 "network.error.no_active_url.body" = "Otevřete nastavení doprovodné aplikace a zkontrolujte nastavení serveru; interní URL se použije jen v případě, že je definována místní síť (SSID). Pokud používáte VPN, zkuste nastavit externí URL stejnou jako interní URL.";
-"network.error.no_active_url.title" = "Není k dispozici žádná adresa URL k načtení";
+"network.error.no_active_url.title" = "Není dostupná žádná adresa URL k načtení";
 "nfc.detail.copy" = "Kopírovat do schránky";
 "nfc.detail.duplicate" = "Vytvořit duplikát";
 "nfc.detail.example_trigger" = "Příklad spouštěče";
@@ -451,7 +451,7 @@
 "nfc.list.read_tag" = "Přečíst štítek";
 "nfc.list.title" = "NFC štítky";
 "nfc.list.write_tag" = "Zapsat štítek";
-"nfc.not_available" = "NFC není na tomto zařízení k dispozici";
+"nfc.not_available" = "NFC není na tomto zařízení dostupné";
 "nfc.read.error.generic_failure" = "Nepodařilo se přečíst štítek";
 "nfc.read.error.not_home_assistant" = "NFC štítek neobsahuje štítek z Home Assistanta";
 "nfc.read.error.tag_invalid" = "NFC štítek je neplatný";
@@ -635,10 +635,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "privacyLabel" = "Soukromí";
 "requires_version" = "Vyžaduje %@ nebo novější.";
 "retry_label" = "Opakovat";
-"room_view.context_menu.unhide" = "Unhide";
-"room_view.empty_state.no_entities" = "No entities in this room";
-"room_view.section.hidden" = "Hidden";
-"room_view.section.visible" = "Visible";
+"room_view.context_menu.unhide" = "Zobrazit";
+"room_view.empty_state.no_entities" = "V této místnosti nejsou žádné entity";
+"room_view.section.hidden" = "Skryté";
+"room_view.section.visible" = "Viditelné";
 "save_label" = "Uložit";
 "sensors.active.setting.time_until_idle" = "Čas do nečinnosti";
 "sensors.geocoded_location.setting.use_zones" = "Použít název zóny";
@@ -709,6 +709,10 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "settings.connection_section.websocket.status.disconnected.title" = "Odpojeno";
 "settings.connection_section.websocket.status.rejected.title" = "Odmítnuto";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.database_explorer.more_fields" = "+%li more fields";
+"settings.database_explorer.no_entries" = "No entries found";
+"settings.database_explorer.row_detail" = "Row Details";
+"settings.database_explorer.title" = "Database Explorer";
 "settings.debugging.critical_section.footer" = "Ujistěte se, že jste si vědomi toho, že tyto operace nelze vrátit zpět.";
 "settings.debugging.header.subtitle" = "Pojďme to napravit 🐞";
 "settings.debugging.header.title" = "Ladění";
@@ -1004,7 +1008,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "thread.transter_to_homeassistant.title" = "Přenést do Home Assistanta";
 "token_error.connection_failed" = "Připojení se nezdařilo.";
 "token_error.expired" = "Platnost tokenu vypršela.";
-"token_error.token_unavailable" = "Token není k dispozici.";
+"token_error.token_unavailable" = "Token není dostupný.";
 "unauthenticated.message.body" = "To může být dočasné, pokud jste za omezením proxy nebo sítě. V opačném případě a pokud problém přetrvává, odeberte server a přidejte jej zpět.";
 "unauthenticated.message.title" = "Nejste ověřeni";
 "unknownLabel" = "Neznámé";
@@ -1012,7 +1016,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "updater.no_updates_available.on_latest_version" = "Již máte nejnovější verzi!";
 "updater.no_updates_available.title" = "Vyhledat aktualizace";
 "updater.update_available.open" = "Zobrazit \"%@\"";
-"updater.update_available.title" = "Je k dispozici aktualizace";
+"updater.update_available.title" = "Je dostupná aktualizace";
 "url_handler.call_service.confirm.message" = "Chcete zavolat službu %@?";
 "url_handler.call_service.confirm.title" = "Zavolat službu?";
 "url_handler.call_service.error.message" = "Při pokusu o volání služby %@ došlo k chybě: %@";
@@ -1251,7 +1255,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "watch.labels.complication_text_areas.row3_column2.label" = "Řádek 3, Sloupec 2";
 "watch.labels.complication_text_areas.trailing.description" = "Text, který se má zobrazit na konci ručičkového ukazatele.";
 "watch.labels.complication_text_areas.trailing.label" = "Konec";
-"watch.labels.no_config" = "Není k dispozici žádné nastavení hodinek. Otevřete aplikaci pro iOS a vytvořte nastavení v doprovodné aplikaci.";
+"watch.labels.no_config" = "Nejsou dostupná žádná nastavení hodinek. Otevřete aplikaci pro iOS a vytvořte nastavení v doprovodné aplikaci.";
 "watch.labels.selected_pipeline.title" = "Pipeline";
 "watch.placeholder_complication_name" = "Zástupný symbol";
 "watch.settings.no_items.phone.title" = "Nejsou nastaveny žádné položky, vyberte položky níže.";
@@ -1311,8 +1315,8 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.controls.open_entity.configuration.parameter.entity" = "Entita";
 "widgets.controls.open_entity.configuration.title" = "Otevřít entitu";
 "widgets.controls.open_experimental_dashboard.configuration.parameter.server" = "Server";
-"widgets.controls.open_experimental_dashboard.configuration.title" = "Open Experimental Dashboard";
-"widgets.controls.open_experimental_dashboard.description" = "Opens the experimental dashboard for the selected server";
+"widgets.controls.open_experimental_dashboard.configuration.title" = "Otevřít experimentální ovládcí panel";
+"widgets.controls.open_experimental_dashboard.description" = "Otevře experimentální ovládací panel pro vybraný server";
 "widgets.controls.open_input_boolean.configuration.parameter.entity" = "Přepínač vstupu";
 "widgets.controls.open_input_boolean.configuration.title" = "Otevřít přepínač vstupu";
 "widgets.controls.open_input_boolean.description" = "Otevře vybraný přepínač vstupu v aplikaci";
@@ -1381,7 +1385,7 @@ Home Assistant je open source, chrání soukromí a běží lokálně u vás dom
 "widgets.lights.description" = "Zapne/Vypne světla.";
 "widgets.open_entity.title" = "Otevřít entitu";
 "widgets.open_page.description" = "Otevřete frontendovou stránku v Home Assistantovi.";
-"widgets.open_page.not_configured" = "Nejsou k dispozici žádné stránky";
+"widgets.open_page.not_configured" = "Nejsou dostupné žádné stránky";
 "widgets.open_page.title" = "Otevřít stránku";
 "widgets.preview.custom.description" = "Vytvořte si vlastní widget v aplikaci a poté jej zde zobrazte.";
 "widgets.preview.custom.title" = "Vlastní widget";
