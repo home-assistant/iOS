@@ -43,7 +43,6 @@ struct DynamicIslandToastViewModifier: ViewModifier {
             .onChange(of: overlayWindow?.isPresented) { _, newValue in
                 if let newValue, let overlayWindow,
                    overlayWindow.toast?.id == value.id, newValue != isPresented {
-                    print("Updated Since there is a change in value")
                     isPresented = false
                 }
 
