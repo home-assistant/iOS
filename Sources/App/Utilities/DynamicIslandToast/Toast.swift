@@ -43,7 +43,7 @@ struct Toast {
             symbolFont: .system(size: 35),
             symbolForegroundStyle: (.white, .red),
             title: "Transaction Failed!",
-            message: "Your transaction with iJustine is failed"
+            message: "Your transaction with iJustine has failed"
         )
     }
 }
