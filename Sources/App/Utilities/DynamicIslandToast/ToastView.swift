@@ -155,7 +155,7 @@ struct ToastView: View {
     func ToastContent(_ haveDynamicIsland: Bool) -> some View {
         if let toast = window.toast {
             HStack(spacing: 10) {
-                Image(systemName: toast.symbol)
+                Image(systemSymbol: toast.symbol)
                     .font(toast.symbolFont)
                     .foregroundStyle(toast.symbolForegroundStyle.0, toast.symbolForegroundStyle.1)
                     /// Optional: .symbolEffect(.wiggle, value: isExpanded)
