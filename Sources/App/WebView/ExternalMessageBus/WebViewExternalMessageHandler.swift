@@ -6,6 +6,8 @@ import PromiseKit
 import SwiftMessages
 import SwiftUI
 
+// MARK: - Protocol
+
 protocol WebViewExternalMessageHandlerProtocol {
     var webViewController: WebViewControllerProtocol? { get set }
     func handleExternalMessage(_ dictionary: [String: Any])
@@ -147,6 +149,19 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 handleElementFocus(elementId: elementId)
+            case .toastShow:
+                guard let toastPayload = ToastShowPayload(payload: incomingMessage.Payload) else {
+                    Current.Log
+                        .error("Received toast/show via bus but missing or invalid parameters! \(incomingMessage)")
+                    return
+                }
+                showToast(payload: toastPayload)
+            case .toastHide:
+                guard let toastPayload = ToastHidePayload(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received toast/hide via bus but id was not string! \(incomingMessage)")
+                    return
+                }
+                hideToast(id: toastPayload.id)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -400,6 +415,44 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         )
         view.id = "BarcodeScannerMessage"
         SwiftMessages.show(config: config, view: view)
+    }
+
+    @MainActor
+    private func showToast(payload: ToastShowPayload) {
+        var config = SwiftMessages.Config()
+        config.dimMode = .none
+        config.presentationStyle = .bottom
+
+        switch payload.displayType {
+        case .permanent:
+            config.duration = .forever
+        case .timeout, .unknown:
+            config.duration = .seconds(seconds: payload.seconds ?? 3)
+        }
+
+        let view = MessageView.viewFromNib(layout: .cardView)
+
+        var iconImage: UIImage?
+        if let icon = payload.icon, !icon.isEmpty {
+            iconImage = UIImage(systemName: icon)
+        }
+
+        view.configureContent(
+            title: payload.title,
+            body: payload.body,
+            iconImage: iconImage,
+            iconText: nil,
+            buttonImage: nil,
+            buttonTitle: nil,
+            buttonTapHandler: nil
+        )
+        view.id = payload.id
+        SwiftMessages.show(config: config, view: view)
+    }
+
+    @MainActor
+    private func hideToast(id: String) {
+        SwiftMessages.hide(id: id)
     }
 
     private func cleanPreferredThreadCredentials() {

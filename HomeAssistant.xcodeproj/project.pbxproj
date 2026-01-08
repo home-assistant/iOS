@@ -1054,6 +1054,9 @@
 		42D5ACCE2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACCD2C636F2B00D9C4E2 /* WatchConfigurationViewModel.swift */; };
 		42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */; };
 		42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */; };
+		42D6EAB32F0FF88800FA249B /* ToastShowPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */; };
+		42D6EAB82F0FF8EB00FA249B /* ExternalBusPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */; };
+		42D6EABA2F0FF90500FA249B /* ToastHidePayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */; };
 		42D996E52D89863A001737A0 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
 		42D996E62D89863A001737A0 /* Bool+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D996E42D89863A001737A0 /* Bool+HA.swift */; };
 		42DB4D0B2CEE292D00F6C20D /* AppEntitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4297ADA42C89C43F00790812 /* AppEntitiesModel.swift */; };
@@ -2826,6 +2829,9 @@
 		42D5ACCF2C639AB700D9C4E2 /* MagicItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItem.swift; sourceTree = "<group>"; };
 		42D5ACD82C64C0E000D9C4E2 /* MagicItemAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddView.swift; sourceTree = "<group>"; };
 		42D5ACDA2C64C82600D9C4E2 /* MagicItemAddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicItemAddViewModel.swift; sourceTree = "<group>"; };
+		42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastShowPayload.swift; sourceTree = "<group>"; };
+		42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalBusPayload.swift; sourceTree = "<group>"; };
+		42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHidePayload.swift; sourceTree = "<group>"; };
 		42D996E42D89863A001737A0 /* Bool+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+HA.swift"; sourceTree = "<group>"; };
 		42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerView.swift; sourceTree = "<group>"; };
 		42DC44352E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCVideoPlayerViewControls.swift; sourceTree = "<group>"; };
@@ -3930,6 +3936,7 @@
 		11AD2E2A2528FDB700FBC437 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */,
 				428863542EF963FF00319CF4 /* CameraList */,
 				425390DC2E05B41F00E24EDD /* WebRTC */,
 				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
@@ -3942,12 +3949,10 @@
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
 				429858872EB13FD300E33710 /* WebViewControllerOverlayedViewTags.swift */,
 				42AF759D2DDB5B2500ACDF45 /* WebViewControllerProtocol.swift */,
-				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
 				42AF75982DDB5A8800ACDF45 /* WebViewRestorableStateKey.swift */,
 				429997BE2DDB59E400CC6C12 /* WebViewRestorationType.swift */,
 				42AF759A2DDB5AA900ACDF45 /* WebViewSettingsUpdateReason.swift */,
 				429481E82DA93F4300A8B468 /* WebViewJavascriptCommands.swift */,
-				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
 				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
 				42DFE8792EFB08C80058DADB /* ExperimentalSpace */,
@@ -6058,6 +6063,34 @@
 			path = Add;
 			sourceTree = "<group>";
 		};
+		42D6EAB62F0FF8BD00FA249B /* ExternalMessageModels */ = {
+			isa = PBXGroup;
+			children = (
+				42D6EAB72F0FF8EB00FA249B /* ExternalBusPayload.swift */,
+				42D6EABB2F0FF96400FA249B /* Toast */,
+			);
+			path = ExternalMessageModels;
+			sourceTree = "<group>";
+		};
+		42D6EABB2F0FF96400FA249B /* Toast */ = {
+			isa = PBXGroup;
+			children = (
+				42D6EAB22F0FF88800FA249B /* ToastShowPayload.swift */,
+				42D6EAB92F0FF90500FA249B /* ToastHidePayload.swift */,
+			);
+			path = Toast;
+			sourceTree = "<group>";
+		};
+		42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */ = {
+			isa = PBXGroup;
+			children = (
+				42DD84142B14D68C00936F16 /* WebViewExternalBusMessage.swift */,
+				42A47A842C45218D00C9B43D /* WebViewExternalMessageHandler.swift */,
+				42D6EAB62F0FF8BD00FA249B /* ExternalMessageModels */,
+			);
+			path = ExternalMessageBus;
+			sourceTree = "<group>";
+		};
 		42DC8B762E14026100D9999E /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -7837,7 +7870,7 @@
 			packageReferences = (
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
-				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */,
+				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -8364,9 +8397,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8571,9 +8608,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8696,9 +8737,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8713,9 +8758,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8977,8 +9026,10 @@
 				42FCCFFA2B9B1C310057783F /* ThreadCredentialsSharingToKeychainViewModel.swift in Sources */,
 				42DF7DDE2EC53D50003F3C4A /* SettingsItem.swift in Sources */,
 				42C60F9D2F080EE70071A6F6 /* CoverControlsViewModel.swift in Sources */,
+				42D6EAB82F0FF8EB00FA249B /* ExternalBusPayload.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				426AB2342EF2A7D400FD5D46 /* ControlOpenSwitch.swift in Sources */,
+				42D6EAB32F0FF88800FA249B /* ToastShowPayload.swift in Sources */,
 				426AB2352EF2A7D400FD5D46 /* ControlOpenCoverEntityValueProvider.swift in Sources */,
 				426AB2362EF2A7D400FD5D46 /* ControlOpenInputBooleanValueProvider.swift in Sources */,
 				42C60FAD2F0BEA630071A6F6 /* EditRoomEntitiesView.swift in Sources */,
@@ -9290,6 +9341,7 @@
 				425573CE2B5574F100145217 /* CarPlayAreasViewModel.swift in Sources */,
 				42BA1BC92C8864C200A2FC36 /* OpenPageAppIntent.swift in Sources */,
 				423622A02F05587800391BD0 /* EntityIconColorProvider.swift in Sources */,
+				42D6EABA2F0FF90500FA249B /* ToastHidePayload.swift in Sources */,
 				427FEE0E2D9C22310047C00C /* ManualURLEntryView.swift in Sources */,
 				428D31A52D0B33AF0025B1D7 /* WidgetSensorsConfig.swift in Sources */,
 				119A827C252A3C4700D7000D /* NFCNDEFPayload+Additions.swift in Sources */,
@@ -11895,7 +11947,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */ = {
+		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
 		};
@@ -11951,7 +12003,7 @@
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */;
+			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */;
 			productName = SharedPush;
 		};
 		427692E22B98B82500F24321 /* SharedPush */ = {
