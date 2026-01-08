@@ -35,5 +35,9 @@
 	<true/>
 	<key>com.apple.developer.usernotifications.communication</key>
 	<true/>
+	<key>com.apple.developer.networking.multicast</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<true/>
 </dict>
 </plist>
