@@ -421,30 +421,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func showToast(payload: ToastShowPayload) {
         if #available(iOS 18, *) {
-            // Determine the symbol based on the icon provided, or use a default
-            let symbol: SFSymbol
-            if let icon = payload.icon, !icon.isEmpty {
-                symbol = SFSymbol(rawValue: icon)
-            } else {
-                symbol = .infoCircleFill
-            }
-
-            // Determine duration based on display type
-            let duration: TimeInterval?
-            switch payload.displayType {
-            case .permanent:
-                duration = nil
-            case .timeout, .unknown:
-                duration = TimeInterval(payload.seconds ?? 3)
-            }
-
             ToastManager.shared.show(
                 id: payload.id,
-                symbol: symbol,
+                symbol: .infoCircleFill,
                 symbolForegroundStyle: (.white, .accentColor),
-                title: payload.title,
-                message: payload.body,
-                duration: duration
+                title: payload.message,
+                message: "",
+                duration: payload.duration
             )
         } else {
             Current.Log.verbose("Not showing toast with id \(payload.id), Toast not available on this OS version.")
