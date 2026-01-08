@@ -23,10 +23,6 @@ jobs:
         kind: [mac, ios]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-
-      - name: Install Brews
-        run: brew bundle
-
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
 
