@@ -291,12 +291,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
                 if !idsToDelete.isEmpty {
                     try AppEntityRegistryListForDisplay
-                        .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
-                        .filter(
-                            idsToDelete
-                                .contains(Column(DatabaseTables.AppEntityRegistryListForDisplay.id.rawValue))
-                        )
-                        .deleteAll(db)
+                        .deleteAll(db, keys: idsToDelete)
                 }
             }
         } catch {
@@ -339,8 +334,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
                 if !idsToDelete.isEmpty {
                     try AppEntityRegistry
-                        .filter(idsToDelete.contains(Column(DatabaseTables.EntityRegistry.id.rawValue)))
-                        .deleteAll(db)
+                        .deleteAll(db, keys: idsToDelete)
                 }
             }
             Current.Log
@@ -386,8 +380,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
 
                 if !idsToDelete.isEmpty {
                     try AppDeviceRegistry
-                        .filter(idsToDelete.contains(Column(DatabaseTables.DeviceRegistry.id.rawValue)))
-                        .deleteAll(db)
+                        .deleteAll(db, keys: idsToDelete)
                 }
             }
             Current.Log
