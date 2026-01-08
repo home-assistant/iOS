@@ -45,10 +45,12 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
             return discoverySession.devices
         } else {
             // On iOS, return the default audio device if available
-            if let device = AVCaptureDevice.default(for: .audio) {
-                return [device]
-            }
-            return []
+            let discoverySession = AVCaptureDevice.DiscoverySession(
+                deviceTypes: [.builtInMicrophone],
+                mediaType: .audio,
+                position: .unspecified
+            )
+            return discoverySession.devices
         }
     }
 
