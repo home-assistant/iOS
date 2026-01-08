@@ -3,6 +3,19 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
+private extension [String: String] {
+    func sortedKeys() -> [String] {
+        let priorityKeys = ["id", "entityId", "serverId", "name", "areaId", "uniqueId"]
+        let keys = Array(keys)
+
+        // Separate priority keys that exist in the dictionary from other keys
+        let existingPriorityKeys = priorityKeys.filter { keys.contains($0) }
+        let remainingKeys = keys.filter { !priorityKeys.contains($0) }.sorted()
+
+        return existingPriorityKeys + remainingKeys
+    }
+}
+
 struct DatabaseTableDetailView: View {
     let tableName: String
 
@@ -81,7 +94,7 @@ struct DatabaseTableDetailView: View {
             DatabaseRowDetailView(row: row)
         } label: {
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
-                ForEach(row.keys.sorted().prefix(3), id: \.self) { key in
+                ForEach(row.sortedKeys().prefix(3), id: \.self) { key in
                     HStack {
                         Text(key)
                             .font(.caption)
@@ -191,7 +204,7 @@ struct DatabaseRowDetailView: View {
 
     var body: some View {
         List {
-            ForEach(row.keys.sorted(), id: \.self) { key in
+            ForEach(row.sortedKeys(), id: \.self) { key in
                 VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
                     Text(key)
                         .font(.caption)
