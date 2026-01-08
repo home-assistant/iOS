@@ -27,7 +27,7 @@ class PassThroughWindow: UIWindow {
             } else {
                 /// iOS 18 to less than iOS 26
                 for subview in rootView.subviews.reversed() {
-                    /// Finding if any of rootview's subview is receving hit test
+                    /// Finding if any of rootview's subview is receiving hit test
                     let pointInSubView = subview.convert(point, from: rootView)
                     if subview.hitTest(pointInSubView, with: event) != nil {
                         return hitView

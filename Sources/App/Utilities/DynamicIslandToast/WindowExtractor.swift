@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Extracting Main Window to retreive the window scene and create the overlay window for our dynamic island based
+/// Extracting Main Window to retrieve the window scene and create the overlay window for our dynamic island based
 /// toasts!
 @available(iOS 18, *)
 struct WindowExtractor: UIViewRepresentable {

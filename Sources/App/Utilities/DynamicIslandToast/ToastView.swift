@@ -55,7 +55,7 @@ struct DynamicIslandToastViewModifier: ViewModifier {
         guard let windowScene = mainWindow.windowScene else { return }
 
         if let window = windowScene.windows.first(where: { $0.tag == 1009 }) as? PassThroughWindow {
-            print("Using Already Exisiting Window!")
+            print("Using Already Existing Window!")
             overlayWindow = window
             overlayController = window.rootViewController as? ToastHostingController
         } else {
