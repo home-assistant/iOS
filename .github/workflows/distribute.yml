@@ -11,7 +11,6 @@ env:
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_XCODE_LIST_TIMEOUT: 60
   FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
-  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
   BUNDLE_PATH: vendor/bundle
 
 jobs:
@@ -23,9 +22,6 @@ jobs:
         kind: [mac, ios]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-
-      - name: Install Brews
-        run: brew bundle
 
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3

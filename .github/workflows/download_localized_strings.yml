@@ -6,7 +6,6 @@ on:
     - cron: '0 6 * * *'
 
 env:
-  HOMEBREW_NO_INSTALL_CLEANUP: TRUE
   BUNDLE_PATH: vendor/bundle
 
 jobs:
@@ -17,8 +16,8 @@ jobs:
         with:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
 
-      - name: Install Brews
-        run: brew bundle
+      - name: Install Lokalise CLI
+        uses: lokalise/install-lokalise-cli-v2@e3dab54bcb8e779dab39712a65ee01a4d399871d  # v2.0.0
 
       - name: Install Gems
         run: bundle install --jobs 4 --retry 3
