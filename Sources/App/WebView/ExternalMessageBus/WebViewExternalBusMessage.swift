@@ -39,6 +39,13 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
+            "canDisplayToast": {
+                if #available(iOS 18, *) {
+                    return true
+                } else {
+                    return false
+                }
+            }(),
         ]
     }
 }
