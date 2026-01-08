@@ -1,5 +1,5 @@
-@testable import HomeAssistant
 import AVFoundation
+@testable import HomeAssistant
 
 final class MockAudioRecorder: AudioRecorderProtocol {
     weak var delegate: AudioRecorderDelegate?

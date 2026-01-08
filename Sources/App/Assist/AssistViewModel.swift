@@ -234,7 +234,7 @@ final class AssistViewModel: NSObject, ObservableObject {
             Current.Log.info("Pipeline changed to: \(pipeline.name) (\(preferredPipelineId))")
         }
     }
-    
+
     #if targetEnvironment(macCatalyst)
     private func loadAvailableAudioDevices() {
         availableAudioDevices = audioRecorder.availableAudioDevices()
