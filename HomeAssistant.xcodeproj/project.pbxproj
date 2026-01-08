@@ -569,6 +569,11 @@
 		420B10042B1CF6D800D383D8 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */; };
 		420B10092B1D12DD00D383D8 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B10082B1D129B00D383D8 /* Colors.xcassets */; };
 		420B100C2B1D204400D383D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 420B100B2B1D204400D383D8 /* Assets.xcassets */; };
+		420BE13B2F0FE50C00E20584 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1372F0FE50C00E20584 /* Toast.swift */; };
+		420BE13C2F0FE50C00E20584 /* WindowExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1392F0FE50C00E20584 /* WindowExtractor.swift */; };
+		420BE13D2F0FE50C00E20584 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1382F0FE50C00E20584 /* ToastView.swift */; };
+		420BE13E2F0FE50C00E20584 /* PassThroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1362F0FE50C00E20584 /* PassThroughWindow.swift */; };
+		420BE1412F0FE5B000E20584 /* ToastHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420BE1402F0FE5B000E20584 /* ToastHostingController.swift */; };
 		420C1BB22CF7DA9100AF22E7 /* ClientEventsLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */; };
 		420C1BB52CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */; };
 		420C91502F0C6CAC005D04A6 /* HomeViewCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */; };
@@ -2236,6 +2241,11 @@
 		420B10032B1CF6D800D383D8 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		420B10082B1D129B00D383D8 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		420B100B2B1D204400D383D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		420BE1362F0FE50C00E20584 /* PassThroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughWindow.swift; sourceTree = "<group>"; };
+		420BE1372F0FE50C00E20584 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		420BE1382F0FE50C00E20584 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		420BE1392F0FE50C00E20584 /* WindowExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExtractor.swift; sourceTree = "<group>"; };
+		420BE1402F0FE5B000E20584 /* ToastHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHostingController.swift; sourceTree = "<group>"; };
 		420C1BB12CF7DA9100AF22E7 /* ClientEventsLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogView.swift; sourceTree = "<group>"; };
 		420C1BB42CF7DC1400AF22E7 /* ClientEventsLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventsLogViewModel.swift; sourceTree = "<group>"; };
 		420C914F2F0C6CAC005D04A6 /* HomeViewCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCustomizationView.swift; sourceTree = "<group>"; };
@@ -4564,6 +4574,18 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		420BE13A2F0FE50C00E20584 /* DynamicIslandToast */ = {
+			isa = PBXGroup;
+			children = (
+				420BE1402F0FE5B000E20584 /* ToastHostingController.swift */,
+				420BE1362F0FE50C00E20584 /* PassThroughWindow.swift */,
+				420BE1372F0FE50C00E20584 /* Toast.swift */,
+				420BE1382F0FE50C00E20584 /* ToastView.swift */,
+				420BE1392F0FE50C00E20584 /* WindowExtractor.swift */,
+			);
+			path = DynamicIslandToast;
+			sourceTree = "<group>";
+		};
 		420C1BB32CF7DBF300AF22E7 /* ClientEventsLogView */ = {
 			isa = PBXGroup;
 			children = (
@@ -6717,6 +6739,7 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				420BE13A2F0FE50C00E20584 /* DynamicIslandToast */,
 				396F2B4C2C121D2B002F84FD /* Extensions */,
 				11DA6B4A27137A60008ADFAF /* InputAccessoryView.swift */,
 				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
@@ -7814,7 +7837,7 @@
 			packageReferences = (
 				420E64BB2D676B2400A31E86 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */,
-				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */,
+				42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */,
 				4237E6372E5333370023B673 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -8341,13 +8364,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tests-App/Pods-Tests-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8552,13 +8571,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-App/Pods-iOS-App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8681,13 +8696,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8702,13 +8713,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS-Shared-iOS-Tests-Shared/Pods-iOS-Shared-iOS-Tests-Shared-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8933,6 +8940,10 @@
 				420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */,
 				42B95B522BE007E30070F2D4 /* SafeScriptMessageHandler.swift in Sources */,
 				42C60F972F08037C0071A6F6 /* SwitchControlsViewModel.swift in Sources */,
+				420BE13B2F0FE50C00E20584 /* Toast.swift in Sources */,
+				420BE13C2F0FE50C00E20584 /* WindowExtractor.swift in Sources */,
+				420BE13D2F0FE50C00E20584 /* ToastView.swift in Sources */,
+				420BE13E2F0FE50C00E20584 /* PassThroughWindow.swift in Sources */,
 				4228CFFF2DB8E7DD00FC6912 /* WebViewScriptMessageHandler.swift in Sources */,
 				11F55EBC25D3A2A3003977AC /* NotificationCategoryListViewController.swift in Sources */,
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
@@ -8974,6 +8985,7 @@
 				426AB2372EF2A7D400FD5D46 /* ControlOpenCamera.swift in Sources */,
 				426AB2382EF2A7D400FD5D46 /* ControlOpenLockValueProvider.swift in Sources */,
 				426AB2392EF2A7D400FD5D46 /* ControlOpenLightValueProvider.swift in Sources */,
+				420BE1412F0FE5B000E20584 /* ToastHostingController.swift in Sources */,
 				426AB23A2EF2A7D400FD5D46 /* ControlOpenSensorValueProvider.swift in Sources */,
 				426AB23B2EF2A7D400FD5D46 /* ControlOpenSwitchValueProvider.swift in Sources */,
 				426AB23C2EF2A7D400FD5D46 /* ControlOpenCoverEntity.swift in Sources */,
@@ -11883,7 +11895,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */ = {
+		42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Sources/SharedPush;
 		};
@@ -11939,7 +11951,7 @@
 		};
 		4273F7DF2E258827000629F7 /* SharedPush */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "Sources/SharedPush" */;
+			package = 42E00D0F2E1E7487006D140D /* XCLocalSwiftPackageReference "SharedPush" */;
 			productName = SharedPush;
 		};
 		427692E22B98B82500F24321 /* SharedPush */ = {
