@@ -36,20 +36,20 @@ final class AudioRecorder: NSObject, AudioRecorderProtocol {
     }
 
     func availableAudioDevices() -> [AVCaptureDevice] {
-        #if targetEnvironment(macCatalyst)
-        let discoverySession = AVCaptureDevice.DiscoverySession(
-            deviceTypes: [.builtInMicrophone, .externalUnknown],
-            mediaType: .audio,
-            position: .unspecified
-        )
-        return discoverySession.devices
-        #else
-        // On iOS, return the default audio device if available
-        if let device = AVCaptureDevice.default(for: .audio) {
-            return [device]
+        if Current.isCatalyst, #available(macCatalyst 17.0, *) {
+            let discoverySession = AVCaptureDevice.DiscoverySession(
+                deviceTypes: [.builtInMicrophone, .external],
+                mediaType: .audio,
+                position: .unspecified
+            )
+            return discoverySession.devices
+        } else {
+            // On iOS, return the default audio device if available
+            if let device = AVCaptureDevice.default(for: .audio) {
+                return [device]
+            }
+            return []
         }
-        return []
-        #endif
     }
 
     deinit {
