@@ -40,7 +40,7 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "downloadFileSupported": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
             "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
-                if #available(iOS 18, *) {
+                if #available(iOS 18, *), !Current.isCatalyst {
                     return ToastManager.toastComponentVersion
                 } else {
                     return -1
