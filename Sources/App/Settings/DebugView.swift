@@ -245,6 +245,10 @@ struct DebugView: View {
 
     private var developerSection: some View {
         Section {
+            Toggle("Toasts handled by the app", isOn: Binding(
+                get: { Current.settingsStore.toastsHandledByApp },
+                set: { Current.settingsStore.toastsHandledByApp = $0 }
+            ))
             Button {
                 if let syncError = HomeAssistantAPI.SyncWatchContext() {
                     watchSyncErrorMessage = syncError.localizedDescription
