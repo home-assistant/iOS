@@ -709,6 +709,10 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "settings.connection_section.websocket.status.disconnected.title" = "Getrennt";
 "settings.connection_section.websocket.status.rejected.title" = "Abgelehnt";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.database_explorer.more_fields" = "+%li more fields";
+"settings.database_explorer.no_entries" = "No entries found";
+"settings.database_explorer.row_detail" = "Row Details";
+"settings.database_explorer.title" = "Database Explorer";
 "settings.debugging.critical_section.footer" = "Sei dir bewusst, dass diese Vorgänge nicht rückgängig gemacht werden können.";
 "settings.debugging.header.subtitle" = "Lass uns das beheben 🐞";
 "settings.debugging.header.title" = "Debuggen";

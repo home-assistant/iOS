@@ -709,6 +709,10 @@
 "settings.connection_section.websocket.status.disconnected.title" = "Αποσυνδέθηκε";
 "settings.connection_section.websocket.status.rejected.title" = "Απορρίφθηκε";
 "settings.connection_section.websocket.title" = "WebSocket";
+"settings.database_explorer.more_fields" = "+%li more fields";
+"settings.database_explorer.no_entries" = "No entries found";
+"settings.database_explorer.row_detail" = "Row Details";
+"settings.database_explorer.title" = "Database Explorer";
 "settings.debugging.critical_section.footer" = "Βεβαιωθείτε ότι γνωρίζετε ότι αυτές οι λειτουργίες δεν μπορούν να αναιρεθούν.";
 "settings.debugging.header.subtitle" = "Ας φτιάξουμε το 🐞";
 "settings.debugging.header.title" = "Εντοπισμός σφαλμάτων";
