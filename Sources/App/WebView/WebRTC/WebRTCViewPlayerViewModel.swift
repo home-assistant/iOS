@@ -199,9 +199,10 @@ extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
 
     func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
         debugPrint(state)
+        Current.Log.info("WebRTC connection state changed to: \(state)")
     }
 
     func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
-        debugPrint(data)
+        Current.Log.info("WebRTC client received data of size: \(data.count) bytes")
     }
 }

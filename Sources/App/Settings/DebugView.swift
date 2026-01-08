@@ -148,7 +148,7 @@ struct DebugView: View {
         textColor: Color = Color(uiColor: .label),
         showProgressView: Bool? = nil
     ) -> some View {
-        HStack(spacing: Spaces.two) {
+        HStack(spacing: DesignSystem.Spaces.two) {
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)

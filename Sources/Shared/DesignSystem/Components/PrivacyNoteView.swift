@@ -14,7 +14,7 @@ public struct PrivacyNoteView: View {
         .overlay(content: {
             ThickMaterialOverlay()
         })
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndMicro))
     )
 
     private let content: String
@@ -26,11 +26,11 @@ public struct PrivacyNoteView: View {
     }
 
     public var body: some View {
-        VStack(spacing: Spaces.one) {
+        VStack(spacing: DesignSystem.Spaces.one) {
             Text(L10n.privacyLabel)
                 .font(.caption.bold())
-                .padding(.horizontal, Spaces.one)
-                .padding(.vertical, Spaces.half)
+                .padding(.horizontal, DesignSystem.Spaces.one)
+                .padding(.vertical, DesignSystem.Spaces.half)
                 .background(.thickMaterial)
                 .foregroundStyle(.gray)
                 .clipShape(Capsule())
@@ -42,9 +42,9 @@ public struct PrivacyNoteView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundStyle(.gray)
         }
-        .padding(Spaces.one)
+        .padding(DesignSystem.Spaces.one)
         .background(background)
-        .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndMicro))
         .shadow(color: Color(uiColor: .label).opacity(0.2), radius: 5)
         .padding(.top)
         .onAppear {
@@ -82,7 +82,7 @@ public struct PrivacyNoteView: View {
                 .overlay(content: {
                     ThickMaterialOverlay()
                 })
-                .clipShape(RoundedRectangle(cornerRadius: CornerRadiusSizes.oneAndMicro))
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.oneAndMicro))
             )
         }
     }

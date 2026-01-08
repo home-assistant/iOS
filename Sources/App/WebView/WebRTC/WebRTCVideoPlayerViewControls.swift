@@ -3,6 +3,7 @@ import Shared
 import SwiftUI
 
 struct WebRTCVideoPlayerViewControls: View {
+    let cameraName: String?
     let close: () -> Void
     let isMuted: Bool
     let toggleMute: () -> Void
@@ -11,6 +12,13 @@ struct WebRTCVideoPlayerViewControls: View {
         ZStack {
             VStack {
                 HStack {
+                    if let cameraName {
+                        Text(cameraName)
+                            .font(DesignSystem.Font.body.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
                     Spacer()
                     topButtons
                 }
@@ -61,6 +69,7 @@ struct WebRTCVideoPlayerViewControls: View {
 
 #Preview {
     WebRTCVideoPlayerViewControls(
+        cameraName: "Living Room Camera",
         close: {},
         isMuted: false,
         toggleMute: {}

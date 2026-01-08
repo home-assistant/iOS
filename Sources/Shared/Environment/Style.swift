@@ -33,10 +33,10 @@ public struct Style {
 
         var config = UIButton.Configuration.filled()
         config.contentInsets = .init(
-            top: Spaces.two,
-            leading: Spaces.two,
-            bottom: Spaces.two,
-            trailing: Spaces.two
+            top: DesignSystem.Spaces.two,
+            leading: DesignSystem.Spaces.two,
+            bottom: DesignSystem.Spaces.two,
+            trailing: DesignSystem.Spaces.two
         )
         button.configuration = config
 
