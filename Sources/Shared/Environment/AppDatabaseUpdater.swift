@@ -116,84 +116,108 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
     }
 
     private func updateEntitiesRegistry(server: Server) async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            guard let api = Current.api(for: server) else {
-                Current.Log.error("No API available for server \(server.info.name)")
-                continuation.resume()
-                return
-            }
-            api.connection.send(.configEntityRegistryList()) { [weak self] result in
-                switch result {
-                case let .success(registryEntries):
-                    Current.Log.verbose("Successfully fetched entity registry for server \(server.info.name)")
-                    self?.saveEntityRegistry(registryEntries, serverId: server.identifier.rawValue)
-                case let .failure(error):
-                    Current.Log.error("Failed to fetch entity registry: \(error)")
-                    Current.clientEventStore.addEvent(.init(
-                        text: "Failed to fetch entity registry on server \(server.info.name)",
-                        type: .networkRequest,
-                        payload: [
-                            "error": error.localizedDescription,
-                        ]
-                    ))
+        let registryEntries: [EntityRegistryEntry]? =
+            await withCheckedContinuation { (continuation: CheckedContinuation<
+                [EntityRegistryEntry]?,
+                Never
+            >) in
+                guard let api = Current.api(for: server) else {
+                    Current.Log.error("No API available for server \(server.info.name)")
+                    continuation.resume(returning: nil)
+                    return
                 }
-                continuation.resume()
+                api.connection.send(.configEntityRegistryList()) { result in
+                    switch result {
+                    case let .success(entries):
+                        Current.Log.verbose("Successfully fetched entity registry for server \(server.info.name)")
+                        continuation.resume(returning: entries)
+                    case let .failure(error):
+                        Current.Log.error("Failed to fetch entity registry: \(error)")
+                        Current.clientEventStore.addEvent(.init(
+                            text: "Failed to fetch entity registry on server \(server.info.name)",
+                            type: .networkRequest,
+                            payload: [
+                                "error": error.localizedDescription,
+                            ]
+                        ))
+                        continuation.resume(returning: nil)
+                    }
+                }
             }
+
+        if let registryEntries {
+            await saveEntityRegistry(registryEntries, serverId: server.identifier.rawValue)
         }
     }
 
     private func updateDevicesRegistry(server: Server) async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            guard let api = Current.api(for: server) else {
-                Current.Log.error("No API available for server \(server.info.name)")
-                continuation.resume()
-                return
-            }
-            api.connection.send(.configDeviceRegistryList()) { [weak self] result in
-                switch result {
-                case let .success(registryEntries):
-                    Current.Log.verbose("Successfully fetched device registry for server \(server.info.name)")
-                    self?.saveDeviceRegistry(registryEntries, serverId: server.identifier.rawValue)
-                case let .failure(error):
-                    Current.Log.error("Failed to fetch device registry: \(error)")
-                    Current.clientEventStore.addEvent(.init(
-                        text: "Failed to fetch device registry on server \(server.info.name)",
-                        type: .networkRequest,
-                        payload: [
-                            "error": error.localizedDescription,
-                        ]
-                    ))
+        let registryEntries: [DeviceRegistryEntry]? =
+            await withCheckedContinuation { (continuation: CheckedContinuation<
+                [DeviceRegistryEntry]?,
+                Never
+            >) in
+                guard let api = Current.api(for: server) else {
+                    Current.Log.error("No API available for server \(server.info.name)")
+                    continuation.resume(returning: nil)
+                    return
                 }
-                continuation.resume()
+                api.connection.send(.configDeviceRegistryList()) { result in
+                    switch result {
+                    case let .success(entries):
+                        Current.Log.verbose("Successfully fetched device registry for server \(server.info.name)")
+                        continuation.resume(returning: entries)
+                    case let .failure(error):
+                        Current.Log.error("Failed to fetch device registry: \(error)")
+                        Current.clientEventStore.addEvent(.init(
+                            text: "Failed to fetch device registry on server \(server.info.name)",
+                            type: .networkRequest,
+                            payload: [
+                                "error": error.localizedDescription,
+                            ]
+                        ))
+                        continuation.resume(returning: nil)
+                    }
+                }
             }
+
+        if let registryEntries {
+            await saveDeviceRegistry(registryEntries, serverId: server.identifier.rawValue)
         }
     }
 
     private func updateEntitiesRegistryListForDisplay(server: Server) async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            guard let api = Current.api(for: server) else {
-                Current.Log.error("No API available for server \(server.info.name)")
-                continuation.resume()
-                return
-            }
-            api.connection.send(
-                HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay()
-            ) { [weak self] result in
-                switch result {
-                case let .success(response):
-                    self?.saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
-                case let .failure(error):
-                    Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")
-                    Current.clientEventStore.addEvent(.init(
-                        text: "Failed to fetch EntityRegistryListForDisplay on server \(server.info.name)",
-                        type: .networkRequest,
-                        payload: [
-                            "error": error.localizedDescription,
-                        ]
-                    ))
+        let response: EntityRegistryListForDisplay? =
+            await withCheckedContinuation { (continuation: CheckedContinuation<
+                EntityRegistryListForDisplay?,
+                Never
+            >) in
+                guard let api = Current.api(for: server) else {
+                    Current.Log.error("No API available for server \(server.info.name)")
+                    continuation.resume(returning: nil)
+                    return
                 }
-                continuation.resume()
+                api.connection.send(
+                    HATypedRequest<EntityRegistryListForDisplay>.configEntityRegistryListForDisplay()
+                ) { result in
+                    switch result {
+                    case let .success(response):
+                        continuation.resume(returning: response)
+                    case let .failure(error):
+                        Current.Log.error("Failed to fetch EntityRegistryListForDisplay: \(error)")
+                        Current.clientEventStore.addEvent(.init(
+                            text: "Failed to fetch EntityRegistryListForDisplay on server \(server.info.name)",
+                            type: .networkRequest,
+                            payload: [
+                                "error": error.localizedDescription,
+                            ]
+                        ))
+                        continuation.resume(returning: nil)
+                    }
+                }
             }
+
+        if let response {
+            await saveEntityRegistryListForDisplay(response, serverId: server.identifier.rawValue)
         }
     }
 
@@ -217,6 +241,12 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         areasAndEntities: [String: Set<String>],
         serverId: String
     ) async {
+        // Check for cancellation before starting database work
+        guard !Task.isCancelled else {
+            Current.Log.verbose("Skipping areas database save - task cancelled")
+            return
+        }
+
         let appAreas = areas.map { area in
             AppArea(
                 from: area,
@@ -226,27 +256,38 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
         }
 
         do {
-            try await Current.database().write { db in
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                Current.database().asyncWrite { db in
+                    let existingAreaIds = try AppArea
+                        .filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
+                        .fetchAll(db).map(\.id)
 
-                let existingAreaIds = try AppArea.filter(Column(DatabaseTables.AppArea.serverId.rawValue) == serverId)
-                    .fetchAll(db).map(\.id)
+                    // Insert or update new areas
+                    for area in appAreas {
+                        try area.save(db, onConflict: .replace)
+                    }
 
-                // Insert or update new areas
-                for area in appAreas {
-                    try area.save(db, onConflict: .replace)
-                }
+                    // Delete areas that no longer exist
+                    let newAreaIds = areas.map { "\(serverId)-\($0.areaId)" }
+                    let areaIdsToDelete = existingAreaIds.filter { !newAreaIds.contains($0) }
 
-                // Delete areas that no longer exist
-                let newAreaIds = areas.map { "\(serverId)-\($0.areaId)" }
-                let areaIdsToDelete = existingAreaIds.filter { !newAreaIds.contains($0) }
-
-                if !areaIdsToDelete.isEmpty {
-                    try AppArea
-                        .filter(areaIdsToDelete.contains(Column(DatabaseTables.AppArea.id.rawValue)))
-                        .deleteAll(db)
+                    if !areaIdsToDelete.isEmpty {
+                        try AppArea
+                            .filter(areaIdsToDelete.contains(Column(DatabaseTables.AppArea.id.rawValue)))
+                            .deleteAll(db)
+                    }
+                } completion: { _, result in
+                    switch result {
+                    case .success:
+                        continuation.resume()
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
             Current.Log.verbose("Successfully saved \(appAreas.count) areas for server \(serverId)")
+        } catch is CancellationError {
+            Current.Log.verbose("Areas database save cancelled for server \(serverId)")
         } catch {
             Current.Log.error("Failed to save areas in database, error: \(error.localizedDescription)")
             Current.clientEventStore.addEvent(.init(
@@ -256,13 +297,17 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            if !(error is CancellationError) {
-                assertionFailure("Failed to save areas in database: \(error)")
-            }
+            assertionFailure("Failed to save areas in database: \(error)")
         }
     }
 
-    private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) {
+    private func saveEntityRegistryListForDisplay(_ response: EntityRegistryListForDisplay, serverId: String) async {
+        // Check for cancellation before starting database work
+        guard !Task.isCancelled else {
+            Current.Log.verbose("Skipping EntityRegistryListForDisplay database save - task cancelled")
+            return
+        }
+
         let entitiesListForDisplay = response.entities.filter({ $0.decimalPlaces != nil || $0.entityCategory != nil })
             .map { registry in
                 AppEntityRegistryListForDisplay(
@@ -273,27 +318,38 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                 )
             }
         do {
-            try Current.database().write { db in
-                // Get existing IDs for this server
-                let existingIds = try AppEntityRegistryListForDisplay
-                    .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
-                    .fetchAll(db)
-                    .map(\.id)
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                Current.database().asyncWrite { db in
+                    // Get existing IDs for this server
+                    let existingIds = try AppEntityRegistryListForDisplay
+                        .filter(Column(DatabaseTables.AppEntityRegistryListForDisplay.serverId.rawValue) == serverId)
+                        .fetchAll(db)
+                        .map(\.id)
 
-                // Insert or update new records
-                for record in entitiesListForDisplay {
-                    try record.save(db, onConflict: .replace)
-                }
+                    // Insert or update new records
+                    for record in entitiesListForDisplay {
+                        try record.save(db, onConflict: .replace)
+                    }
 
-                // Delete records that no longer exist
-                let newIds = entitiesListForDisplay.map(\.id)
-                let idsToDelete = existingIds.filter { !newIds.contains($0) }
+                    // Delete records that no longer exist
+                    let newIds = entitiesListForDisplay.map(\.id)
+                    let idsToDelete = existingIds.filter { !newIds.contains($0) }
 
-                if !idsToDelete.isEmpty {
-                    try AppEntityRegistryListForDisplay
-                        .deleteAll(db, keys: idsToDelete)
+                    if !idsToDelete.isEmpty {
+                        try AppEntityRegistryListForDisplay
+                            .deleteAll(db, keys: idsToDelete)
+                    }
+                } completion: { _, result in
+                    switch result {
+                    case .success:
+                        continuation.resume()
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
+        } catch is CancellationError {
+            Current.Log.verbose("EntityRegistryListForDisplay database save cancelled for server \(serverId)")
         } catch {
             Current.Log
                 .error("Failed to save EntityRegistryListForDisplay in database, error: \(error.localizedDescription)")
@@ -304,43 +360,58 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            if !(error is CancellationError) {
-                assertionFailure("Failed to save EntityRegistryListForDisplay in database: \(error)")
-            }
+            assertionFailure("Failed to save EntityRegistryListForDisplay in database: \(error)")
         }
     }
 
-    private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) {
+    private func saveEntityRegistry(_ registryEntries: [EntityRegistryEntry], serverId: String) async {
+        // Check for cancellation before starting database work
+        guard !Task.isCancelled else {
+            Current.Log.verbose("Skipping entity registry database save - task cancelled")
+            return
+        }
+
         let appEntityRegistries = registryEntries.map { entry in
             AppEntityRegistry(serverId: serverId, registry: entry)
         }
 
         do {
-            try Current.database().write { db in
-                // Get existing unique IDs for this server
-                let existingIds = try AppEntityRegistry
-                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .fetchAll(db)
-                    .map(\.id)
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                Current.database().asyncWrite { db in
+                    // Get existing unique IDs for this server
+                    let existingIds = try AppEntityRegistry
+                        .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                        .fetchAll(db)
+                        .map(\.id)
 
-                // Insert or update new registry entries
-                for registry in appEntityRegistries {
-                    try registry.save(db, onConflict: .replace)
-                }
+                    // Insert or update new registry entries
+                    for registry in appEntityRegistries {
+                        try registry.save(db, onConflict: .replace)
+                    }
 
-                // Delete registry entries that no longer exist
-                let newIds = appEntityRegistries.map(\.id)
-                let idsToDelete = existingIds.filter { !newIds.contains($0) }
+                    // Delete registry entries that no longer exist
+                    let newIds = appEntityRegistries.map(\.id)
+                    let idsToDelete = existingIds.filter { !newIds.contains($0) }
 
-                if !idsToDelete.isEmpty {
-                    try AppEntityRegistry
-                        .deleteAll(db, keys: idsToDelete)
+                    if !idsToDelete.isEmpty {
+                        try AppEntityRegistry
+                            .deleteAll(db, keys: idsToDelete)
+                    }
+                } completion: { _, result in
+                    switch result {
+                    case .success:
+                        continuation.resume()
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
             Current.Log
                 .verbose(
                     "Successfully saved \(appEntityRegistries.count) entity registry entries for server \(serverId)"
                 )
+        } catch is CancellationError {
+            Current.Log.verbose("Entity registry database save cancelled for server \(serverId)")
         } catch {
             Current.Log.error("Failed to save entity registry in database, error: \(error.localizedDescription)")
             Current.clientEventStore.addEvent(.init(
@@ -350,43 +421,58 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            if !(error is CancellationError) {
-                assertionFailure("Failed to save entity registry in database: \(error)")
-            }
+            assertionFailure("Failed to save entity registry in database: \(error)")
         }
     }
 
-    private func saveDeviceRegistry(_ registryEntries: [DeviceRegistryEntry], serverId: String) {
+    private func saveDeviceRegistry(_ registryEntries: [DeviceRegistryEntry], serverId: String) async {
+        // Check for cancellation before starting database work
+        guard !Task.isCancelled else {
+            Current.Log.verbose("Skipping device registry database save - task cancelled")
+            return
+        }
+
         let appDeviceRegistries = registryEntries.map { entry in
             AppDeviceRegistry(serverId: serverId, registry: entry)
         }
 
         do {
-            try Current.database().write { db in
-                // Get existing device IDs for this server
-                let existingIds = try AppDeviceRegistry
-                    .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
-                    .fetchAll(db)
-                    .map(\.id)
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                Current.database().asyncWrite { db in
+                    // Get existing device IDs for this server
+                    let existingIds = try AppDeviceRegistry
+                        .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                        .fetchAll(db)
+                        .map(\.id)
 
-                // Insert or update new registry entries
-                for registry in appDeviceRegistries {
-                    try registry.save(db, onConflict: .replace)
-                }
+                    // Insert or update new registry entries
+                    for registry in appDeviceRegistries {
+                        try registry.save(db, onConflict: .replace)
+                    }
 
-                // Delete registry entries that no longer exist
-                let newIds = appDeviceRegistries.map(\.id)
-                let idsToDelete = existingIds.filter { !newIds.contains($0) }
+                    // Delete registry entries that no longer exist
+                    let newIds = appDeviceRegistries.map(\.id)
+                    let idsToDelete = existingIds.filter { !newIds.contains($0) }
 
-                if !idsToDelete.isEmpty {
-                    try AppDeviceRegistry
-                        .deleteAll(db, keys: idsToDelete)
+                    if !idsToDelete.isEmpty {
+                        try AppDeviceRegistry
+                            .deleteAll(db, keys: idsToDelete)
+                    }
+                } completion: { _, result in
+                    switch result {
+                    case .success:
+                        continuation.resume()
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
             Current.Log
                 .verbose(
                     "Successfully saved \(appDeviceRegistries.count) device registry entries for server \(serverId)"
                 )
+        } catch is CancellationError {
+            Current.Log.verbose("Device registry database save cancelled for server \(serverId)")
         } catch {
             Current.Log.error("Failed to save device registry in database, error: \(error.localizedDescription)")
             Current.clientEventStore.addEvent(.init(
@@ -396,9 +482,7 @@ final class AppDatabaseUpdater: AppDatabaseUpdaterProtocol {
                     "error": error.localizedDescription,
                 ]
             ))
-            if !(error is CancellationError) {
-                assertionFailure("Failed to save device registry in database: \(error)")
-            }
+            assertionFailure("Failed to save device registry in database: \(error)")
         }
     }
 }
