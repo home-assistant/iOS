@@ -99,6 +99,7 @@ public enum DatabaseTables {
         case allowMultipleSelection
         case entityOrderByRoom
         case hiddenEntityIds
+        case selectedBackgroundId
     }
 
     // Camera List Configuration (per server)

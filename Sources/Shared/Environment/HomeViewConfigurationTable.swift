@@ -16,6 +16,21 @@ final class HomeViewConfigurationTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.HomeViewConfiguration.allowMultipleSelection.rawValue, .boolean)
                     t.column(DatabaseTables.HomeViewConfiguration.entityOrderByRoom.rawValue, .jsonText)
                     t.column(DatabaseTables.HomeViewConfiguration.hiddenEntityIds.rawValue, .jsonText)
+                    t.column(DatabaseTables.HomeViewConfiguration.selectedBackgroundId.rawValue, .text)
+                }
+            }
+        } else {
+            // Migrate existing table to add selectedBackgroundId column if it doesn't exist
+            try database.write { db in
+                let columnExists = try db.columns(in: GRDBDatabaseTable.homeViewConfiguration.rawValue)
+                    .contains { columnInfo in
+                        columnInfo.name == DatabaseTables.HomeViewConfiguration.selectedBackgroundId.rawValue
+                    }
+
+                if !columnExists {
+                    try db.alter(table: GRDBDatabaseTable.homeViewConfiguration.rawValue) { tableAlteration in
+                        tableAlteration.add(column: DatabaseTables.HomeViewConfiguration.selectedBackgroundId.rawValue, .text)
+                    }
                 }
             }
         }
