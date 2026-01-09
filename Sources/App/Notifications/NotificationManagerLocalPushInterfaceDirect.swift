@@ -57,4 +57,11 @@ class NotificationManagerLocalPushInterfaceDirect: NotificationManagerLocalPushI
             observer.handler(status(for: server))
         }
     }
+
+    func reconnectAll() {
+        Current.Log.info("reconnecting local push for all servers")
+        for server in Current.servers.all {
+            localPushManagers[server].reconnect()
+        }
+    }
 }

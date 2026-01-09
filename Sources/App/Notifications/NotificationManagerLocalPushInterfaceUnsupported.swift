@@ -12,4 +12,8 @@ class NotificationManagerLocalPushInterfaceDisallowed: NotificationManagerLocalP
     ) -> HACancellable {
         HANoopCancellable()
     }
+
+    func reconnectAll() {
+        // No-op for unsupported interface
+    }
 }

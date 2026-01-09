@@ -278,6 +278,14 @@ extension NotificationManagerLocalPushInterfaceExtension: ServerObserver {
     }
 }
 
+extension NotificationManagerLocalPushInterfaceExtension {
+    func reconnectAll() {
+        // Network Extension handles reconnection automatically
+        Current.Log.info("reconnectAll called - reloading managers")
+        updateManagers()
+    }
+}
+
 extension NotificationManagerLocalPushInterfaceExtension: NEAppPushDelegate {
     func appPushManager(
         _ manager: NEAppPushManager,

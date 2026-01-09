@@ -36,16 +36,49 @@ public class NotificationCommandManager {
     }
 
     public func handle(_ payload: [AnyHashable: Any]) -> Promise<Void> {
-        guard let hadict = payload["homeassistant"] as? [String: Any],
-              let command = hadict["command"] as? String else {
-            return .init(error: CommandError.notCommand)
+        // Try standard HA format first: { homeassistant: { command: "..." } }
+        if let hadict = payload["homeassistant"] as? [String: Any],
+           let command = hadict["command"] as? String {
+            if let handler = commands[command] {
+                return handler.handle(hadict)
+            } else {
+                return .init(error: CommandError.unknownCommand)
+            }
         }
 
-        if let handler = commands[command] {
-            return handler.handle(hadict)
-        } else {
-            return .init(error: CommandError.unknownCommand)
+        // Fallback: check for command in aps.alert.body or message field
+        // This supports simpler notification format where message IS the command
+        let message: String? = {
+            // Check aps.alert.body (standard APNS format)
+            if let aps = payload["aps"] as? [String: Any],
+               let alert = aps["alert"] as? [String: Any],
+               let body = alert["body"] as? String {
+                return body
+            }
+            // Check aps.alert as string
+            if let aps = payload["aps"] as? [String: Any],
+               let alert = aps["alert"] as? String {
+                return alert
+            }
+            // Check message field directly
+            if let msg = payload["message"] as? String {
+                return msg
+            }
+            return nil
+        }()
+
+        if let message = message, message.hasPrefix("command_") {
+            // Extract command from message
+            let command = message.trimmingCharacters(in: .whitespacesAndNewlines)
+            if let handler = commands[command] {
+                // Pass payload as context for any parameters
+                var context = payload as? [String: Any] ?? [:]
+                context["_parsed_from_body"] = true
+                return handler.handle(context)
+            }
         }
+
+        return .init(error: CommandError.notCommand)
     }
 
     public func updateComplications() -> Promise<Void> {

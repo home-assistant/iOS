@@ -106,6 +106,46 @@ public class LocalPushManager {
         NotificationCenter.default.removeObserver(self)
     }
 
+    /// Force a reconnection by cancelling the existing subscription and creating a new one.
+    /// Call this when the app returns to foreground or when the WebSocket connection may have been lost.
+    public func reconnect() {
+        Current.Log.info("reconnecting local push subscription")
+
+        // Cancel existing subscription
+        subscription?.cancel()
+        subscription = nil
+
+        // Reset state to establishing
+        state = .establishing
+
+        // Force a new subscription
+        forceUpdateSubscription()
+    }
+
+    private func forceUpdateSubscription() {
+        let webhookID = server.info.connection.webhookID
+
+        guard let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("No API available to update subscription")
+            state = .unavailable
+            return
+        }
+
+        Current.Log.info("creating new local push subscription for webhookID: \(webhookID)")
+
+        subscription = .init(
+            token: connection.subscribe(
+                to: .localPush(webhookID: webhookID, serverVersion: server.info.version),
+                initiated: { [weak self] result in
+                    self?.handle(initiated: result.map { _ in () })
+                }, handler: { [weak self] _, value in
+                    self?.handle(event: value)
+                }
+            ),
+            webhookID: webhookID
+        )
+    }
+
     var add: (UNNotificationRequest) -> Promise<Void> = { request in
         Promise<Void> { seal in
             UNUserNotificationCenter.current().add(request, withCompletionHandler: seal.resolve)

@@ -10,11 +10,9 @@ import XCGLogger
 
 class NotificationManager: NSObject, LocalPushManagerDelegate {
     lazy var localPushManager: NotificationManagerLocalPushInterface = {
-        if Current.isCatalyst {
-            return NotificationManagerLocalPushInterfaceDirect(delegate: self)
-        } else {
-            return NotificationManagerLocalPushInterfaceExtension()
-        }
+        // Use direct WebSocket-based local push for kiosk mode (always foreground)
+        // This avoids requiring the Network Extension entitlement from Apple
+        return NotificationManagerLocalPushInterfaceDirect(delegate: self)
     }()
 
     var commandManager = NotificationCommandManager()
@@ -27,6 +25,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             name: UIApplication.didBecomeActiveNotification,
             object: nil
         )
+
+        // Register HAFrame kiosk notification commands
+        commandManager.registerKioskCommands()
     }
 
     func setupNotifications() {
@@ -38,6 +39,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         if Current.settingsStore.clearBadgeAutomatically {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
+
+        // Reconnect local push WebSocket when app returns to foreground
+        // This ensures notifications work after device sleep/wake cycles
+        localPushManager.reconnectAll()
     }
 
     func resetPushID() -> Promise<String> {
@@ -301,6 +306,16 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
+        // Check if this is a command notification - suppress display for commands
+        let userInfo = notification.request.content.userInfo
+        let isCommand = isCommandNotification(userInfo: userInfo, body: notification.request.content.body)
+        if isCommand {
+            // Still process the command but don't show any UI
+            handleRemoteNotification(userInfo: userInfo).cauterize()
+            completionHandler([])
+            return
+        }
+
         var methods: UNNotificationPresentationOptions = [.badge, .sound, .list, .banner]
         if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {
             methods = []
@@ -318,6 +333,23 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             }
         }
         return completionHandler(methods)
+    }
+
+    /// Check if this notification is a command notification that should be hidden
+    private func isCommandNotification(userInfo: [AnyHashable: Any], body: String) -> Bool {
+        // Check for homeassistant.command format
+        if let hadict = userInfo["homeassistant"] as? [String: Any],
+           let command = hadict["command"] as? String,
+           command.hasPrefix("command_") {
+            return true
+        }
+
+        // Check if body/message starts with command_
+        if body.hasPrefix("command_") {
+            return true
+        }
+
+        return false
     }
 
     public func userNotificationCenter(
