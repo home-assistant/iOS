@@ -130,7 +130,7 @@ public final class CrashRecoveryManager {
         Current.Log.error("Crash loop detected! Disabling kiosk mode for safety.")
 
         // Disable kiosk mode to allow user to troubleshoot
-        KioskModeManager.shared.updateSetting(\.isEnabled, to: false)
+        KioskModeManager.shared.updateSetting(\.isKioskModeEnabled, to: false)
 
         // Show alert
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in

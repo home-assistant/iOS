@@ -159,6 +159,9 @@ public final class KioskModeManager: ObservableObject {
         subscribeToEntityTriggers()
         startCameraDetection()
 
+        // Enable HA frontend kiosk mode (requires HA 2026.1+)
+        setFrontendKioskMode(enabled: true)
+
         onKioskModeChange?(true)
         NotificationCenter.default.post(name: Self.kioskModeDidChangeNotification, object: nil)
 
@@ -191,16 +194,13 @@ public final class KioskModeManager: ObservableObject {
         // Hide screensaver if active
         hideScreensaver(source: "kiosk_disabled")
 
+        // Disable HA frontend kiosk mode
+        setFrontendKioskMode(enabled: false)
+
         onKioskModeChange?(false)
         NotificationCenter.default.post(name: Self.kioskModeDidChangeNotification, object: nil)
 
         reportSensorUpdate()
-    }
-
-    /// Validate PIN for exiting kiosk mode
-    public func validatePIN(_ pin: String) -> Bool {
-        guard !settings.exitPIN.isEmpty else { return true }
-        return pin == settings.exitPIN
     }
 
     /// Update settings
@@ -773,6 +773,31 @@ public final class KioskModeManager: ObservableObject {
         }
 
         speechSynthesizer.speak(utterance)
+    }
+
+    // MARK: - HA Frontend Commands
+
+    /// Send kiosk_mode/set command to Home Assistant frontend (requires HA 2026.1+)
+    /// This enables/disables HA's built-in frontend kiosk mode (hides sidebar, header, etc.)
+    private func setFrontendKioskMode(enabled: Bool) {
+        guard let server = Current.servers.all.first,
+              let api = Current.api(for: server) else {
+            Current.Log.warning("No HA server available for frontend kiosk mode command")
+            return
+        }
+
+        Task {
+            do {
+                // Send the kiosk_mode/set command via WebSocket
+                _ = try await api.connection.send(
+                    .init(type: "kiosk_mode/set", data: ["enable": enabled])
+                ).promise.value
+
+                Current.Log.info("Frontend kiosk mode \(enabled ? "enabled" : "disabled")")
+            } catch {
+                Current.Log.warning("Failed to set frontend kiosk mode: \(error.localizedDescription)")
+            }
+        }
     }
 
     // MARK: - Settings Persistence

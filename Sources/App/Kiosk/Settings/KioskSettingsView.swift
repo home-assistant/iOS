@@ -6,8 +6,7 @@ import SwiftUI
 struct KioskSettingsView: View {
     @ObservedObject private var manager = KioskModeManager.shared
     @State private var settings: KioskSettings
-    @State private var showingPINSetup = false
-    @State private var showingPINEntry = false
+    @State private var showingAuthentication = false
     @State private var showingDashboardConfig = false
     @State private var showingScreensaverConfig = false
     @State private var showingEntityTriggers = false
@@ -40,14 +39,11 @@ struct KioskSettingsView: View {
         }
         .navigationTitle("Kiosk Mode")
         .navigationBarTitleDisplayMode(.large)
-        .onChange(of: settings) { _, newValue in
+        .onChange(of: settings) { newValue in
             manager.updateSettings(newValue)
         }
-        .sheet(isPresented: $showingPINSetup) {
-            PINSetupView(currentPIN: $settings.exitPIN)
-        }
-        .sheet(isPresented: $showingPINEntry) {
-            PINEntryView(isPresented: $showingPINEntry) {
+        .sheet(isPresented: $showingAuthentication) {
+            AuthenticationView(isPresented: $showingAuthentication) {
                 manager.disableKioskMode()
             }
         }
@@ -117,7 +113,7 @@ struct KioskSettingsView: View {
             Text("Kiosk Mode")
         } footer: {
             if !manager.isKioskModeActive {
-                Text("When enabled, the display will be locked to the dashboard with optional PIN protection.")
+                Text("When enabled, the display will be locked to the dashboard. Use Face ID, Touch ID, or device passcode to exit.")
             }
         }
     }
@@ -126,24 +122,12 @@ struct KioskSettingsView: View {
 
     private var coreSettingsSection: some View {
         Section {
-            // PIN Setup
-            Button {
-                showingPINSetup = true
-            } label: {
-                HStack {
-                    Label("Exit PIN", systemImage: "key")
-                    Spacer()
-                    Text(settings.exitPIN.isEmpty ? "Not Set" : "••••")
-                        .foregroundColor(.secondary)
-                }
-            }
-
             Toggle(isOn: $settings.allowBiometricExit) {
                 Label("Allow Face ID / Touch ID", systemImage: "faceid")
             }
 
             Toggle(isOn: $settings.allowDevicePasscodeExit) {
-                Label("Use Device Passcode", systemImage: "lock.shield")
+                Label("Allow Device Passcode", systemImage: "lock.shield")
             }
 
             Toggle(isOn: $settings.navigationLockdown) {
@@ -548,146 +532,25 @@ struct KioskSettingsView: View {
 
     // MARK: - Kiosk Exit Logic
 
-    /// Attempt to exit kiosk mode with proper authentication fallback chain
+    /// Attempt to exit kiosk mode with device authentication
     private func attemptKioskExit() {
-        // Check if any authentication method is actually available
-        let hasDevicePasscode = SecurityManager.shared.isDevicePasscodeSet
+        // Check if any authentication method is configured
         let hasBiometric = settings.allowBiometricExit && SecurityManager.shared.isBiometryAvailable
-        let hasPIN = !settings.exitPIN.isEmpty
+        let hasPasscode = settings.allowDevicePasscodeExit && SecurityManager.shared.isDevicePasscodeSet
 
-        // If device passcode exit is enabled and available, use it
-        if settings.allowDevicePasscodeExit && hasDevicePasscode {
-            Task {
-                let result = await SecurityManager.shared.authenticateWithDevicePasscode(
-                    reason: "Exit kiosk mode"
-                )
-                await MainActor.run {
-                    if result.success {
-                        manager.disableKioskMode()
-                    } else if let error = result.error {
-                        authErrorMessage = error
-                        showingAuthError = true
-                    }
-                    // If user cancelled (no error), do nothing - they can try again
-                }
-            }
-            return
-        }
-
-        // If device passcode is enabled but not set, fall back to other methods
-        if settings.allowDevicePasscodeExit && !hasDevicePasscode {
-            // Fall through to try PIN or biometric
-            if hasPIN {
-                showingPINEntry = true
-                return
-            } else if hasBiometric {
-                Task {
-                    let success = await SecurityManager.shared.authenticate(reason: "Exit kiosk mode")
-                    if success {
-                        await MainActor.run {
-                            manager.disableKioskMode()
-                        }
-                    }
-                }
-                return
-            }
-            // No other auth available - show error but allow exit anyway
-            // (the user enabled device passcode but hasn't set one)
-            authErrorMessage = "Device passcode is not set. Please configure a passcode in iOS Settings for better security."
-            showingAuthError = true
+        if hasBiometric || hasPasscode {
+            // Show authentication sheet
+            showingAuthentication = true
+        } else {
+            // No authentication configured - just exit
             manager.disableKioskMode()
-            return
-        }
-
-        // Custom PIN is set - show PIN entry
-        if hasPIN {
-            showingPINEntry = true
-            return
-        }
-
-        // No PIN, try biometric if available
-        if hasBiometric {
-            Task {
-                let success = await SecurityManager.shared.authenticate(reason: "Exit kiosk mode")
-                if success {
-                    await MainActor.run {
-                        manager.disableKioskMode()
-                    }
-                }
-            }
-            return
-        }
-
-        // No authentication configured - just exit
-        manager.disableKioskMode()
-    }
-}
-
-// MARK: - PIN Setup View
-
-struct PINSetupView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Binding var currentPIN: String
-    @State private var newPIN: String = ""
-    @State private var confirmPIN: String = ""
-    @State private var showError = false
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    SecureField("Enter PIN", text: $newPIN)
-                        .keyboardType(.numberPad)
-
-                    if !newPIN.isEmpty {
-                        SecureField("Confirm PIN", text: $confirmPIN)
-                            .keyboardType(.numberPad)
-                    }
-                } header: {
-                    Text("Set Exit PIN")
-                } footer: {
-                    if showError {
-                        Text("PINs do not match")
-                            .foregroundColor(.red)
-                    } else if newPIN.isEmpty {
-                        Text("Leave empty to disable PIN protection")
-                    }
-                }
-
-                if !currentPIN.isEmpty {
-                    Section {
-                        Button(role: .destructive) {
-                            currentPIN = ""
-                            dismiss()
-                        } label: {
-                            Text("Remove PIN")
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Exit PIN")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        if newPIN.isEmpty || newPIN == confirmPIN {
-                            currentPIN = newPIN
-                            dismiss()
-                        } else {
-                            showError = true
-                        }
-                    }
-                }
-            }
         }
     }
 }
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     NavigationStack {
         KioskSettingsView()

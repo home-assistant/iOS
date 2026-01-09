@@ -109,9 +109,8 @@ extension WebViewController {
         setupQuickLaunchPanel()
         setupSecretExitGesture()
 
-        // Setup dashboard and entity trigger managers
+        // Setup dashboard manager
         setupDashboardManager()
-        setupEntityTriggerManager()
         setupCameraTakeoverManager()
 
         // Apply initial state if already in kiosk mode
@@ -127,7 +126,6 @@ extension WebViewController {
         // Start managers if in kiosk mode
         if manager.isKioskModeActive {
             DashboardManager.shared.start()
-            EntityTriggerManager.shared.start()
             CameraDetectionManager.shared.start()
             if manager.settings.ambientAudioDetectionEnabled {
                 AmbientAudioDetector.shared.start()
@@ -298,7 +296,6 @@ extension WebViewController {
         // Start or stop managers based on kiosk mode state
         if enabled {
             DashboardManager.shared.start()
-            EntityTriggerManager.shared.start()
             CameraDetectionManager.shared.start()
             if manager.settings.ambientAudioDetectionEnabled {
                 AmbientAudioDetector.shared.start()
@@ -309,7 +306,6 @@ extension WebViewController {
             CameraOverlayManager.shared.dismiss()
             AmbientAudioDetector.shared.stop()
             CameraDetectionManager.shared.stop()
-            EntityTriggerManager.shared.stop()
             DashboardManager.shared.stop()
 
             // Navigate back to device's default dashboard
@@ -369,44 +365,6 @@ extension WebViewController {
         // Handle navigation requests from dashboard manager
         dashboardManager.onNavigate = { [weak self] url in
             self?.navigateToKioskPath(url)
-        }
-    }
-}
-
-// MARK: - Entity Trigger Manager Integration
-
-extension WebViewController {
-    private func setupEntityTriggerManager() {
-        let triggerManager = EntityTriggerManager.shared
-
-        // Handle navigation triggers
-        triggerManager.onNavigate = { [weak self] url in
-            self?.navigateToKioskPath(url)
-        }
-
-        // Handle screensaver triggers
-        triggerManager.onStartScreensaver = { [weak self] mode in
-            let screensaverMode = mode ?? KioskModeManager.shared.settings.screensaverMode
-            self?.showScreensaver(mode: screensaverMode)
-        }
-
-        triggerManager.onStopScreensaver = { [weak self] in
-            self?.hideScreensaver()
-        }
-
-        // Handle brightness triggers
-        triggerManager.onSetBrightness = { level in
-            UIScreen.main.brightness = CGFloat(level)
-        }
-
-        // Handle refresh triggers
-        triggerManager.onRefresh = { [weak self] in
-            self?.refresh()
-        }
-
-        // Handle TTS triggers
-        triggerManager.onTTS = { message in
-            AudioManager.shared.speak(message, priority: .high)
         }
     }
 }
@@ -545,7 +503,6 @@ extension WebViewController {
 extension WebViewController {
     @objc private func handleKioskModeEnabled() {
         DashboardManager.shared.start()
-        EntityTriggerManager.shared.start()
         CameraDetectionManager.shared.start()
         if KioskModeManager.shared.settings.ambientAudioDetectionEnabled {
             AmbientAudioDetector.shared.start()
@@ -554,7 +511,6 @@ extension WebViewController {
 
     @objc private func handleKioskModeDisabled() {
         DashboardManager.shared.stop()
-        EntityTriggerManager.shared.stop()
         CameraDetectionManager.shared.stop()
         AmbientAudioDetector.shared.stop()
         AudioManager.shared.stopAudio()

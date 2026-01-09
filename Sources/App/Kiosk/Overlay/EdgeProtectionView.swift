@@ -51,8 +51,8 @@ public struct EdgeProtectionView: View {
             .frame(maxWidth: .infinity)
             .position(x: geometry.size.width / 2, y: inset / 2)
             .contentShape(Rectangle())
-            .onTapGesture { location in
-                handleBlockedTouch(at: CGPoint(x: location.x, y: inset / 2))
+            .onTapGesture {
+                handleBlockedTouch(at: CGPoint(x: geometry.size.width / 2, y: inset / 2))
             }
 
         // Bottom edge
@@ -62,8 +62,8 @@ public struct EdgeProtectionView: View {
             .frame(maxWidth: .infinity)
             .position(x: geometry.size.width / 2, y: geometry.size.height - inset / 2)
             .contentShape(Rectangle())
-            .onTapGesture { location in
-                handleBlockedTouch(at: CGPoint(x: location.x, y: geometry.size.height - inset / 2))
+            .onTapGesture {
+                handleBlockedTouch(at: CGPoint(x: geometry.size.width / 2, y: geometry.size.height - inset / 2))
             }
 
         // Left edge
@@ -73,8 +73,8 @@ public struct EdgeProtectionView: View {
             .frame(maxHeight: .infinity)
             .position(x: inset / 2, y: geometry.size.height / 2)
             .contentShape(Rectangle())
-            .onTapGesture { location in
-                handleBlockedTouch(at: CGPoint(x: inset / 2, y: location.y))
+            .onTapGesture {
+                handleBlockedTouch(at: CGPoint(x: inset / 2, y: geometry.size.height / 2))
             }
 
         // Right edge
@@ -84,8 +84,8 @@ public struct EdgeProtectionView: View {
             .frame(maxHeight: .infinity)
             .position(x: geometry.size.width - inset / 2, y: geometry.size.height / 2)
             .contentShape(Rectangle())
-            .onTapGesture { location in
-                handleBlockedTouch(at: CGPoint(x: geometry.size.width - inset / 2, y: location.y))
+            .onTapGesture {
+                handleBlockedTouch(at: CGPoint(x: geometry.size.width - inset / 2, y: geometry.size.height / 2))
             }
     }
 
@@ -186,6 +186,7 @@ final class EdgeProtectionPassthroughView: UIView {
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     ZStack {
         Color.blue.opacity(0.3)

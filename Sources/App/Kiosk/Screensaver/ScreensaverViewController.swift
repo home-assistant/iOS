@@ -289,6 +289,7 @@ public final class ScreensaverViewController: UIViewController, UIGestureRecogni
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     ScreensaverViewController()
 }

@@ -241,7 +241,7 @@ private struct SecretExitGestureWrapper: View {
 
     var body: some View {
         SecretExitGestureView(showSettings: $showSettings)
-            .onChange(of: showSettings) { _, newValue in
+            .onChange(of: showSettings) { newValue in
                 if newValue {
                     showSettings = false
                     onShowSettings()
@@ -252,6 +252,7 @@ private struct SecretExitGestureWrapper: View {
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     ZStack {
         Color.blue.opacity(0.3)

@@ -173,7 +173,7 @@ public struct DashboardConfigurationView: View {
     }
 
     public var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 Section {
                     TextField("Primary Dashboard URL", text: $primaryURL)
@@ -285,7 +285,7 @@ struct DashboardEditSheet: View {
     let onSave: () -> Void
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 Section {
                     TextField("Name", text: $name)
@@ -331,6 +331,7 @@ struct DashboardEditSheet: View {
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     DashboardConfigurationView(
         dashboards: .constant([

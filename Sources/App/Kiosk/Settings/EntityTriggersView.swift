@@ -25,7 +25,7 @@ public struct EntityTriggersView: View {
     }
 
     public var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 wakeSection
                 sleepSection
@@ -192,7 +192,7 @@ struct EntityTriggerEditView: View {
     @State private var triggerState = "on"
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 Section {
                     TextField("Entity ID", text: $entityId)
@@ -252,7 +252,7 @@ struct EntityActionTriggerEditView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 Section {
                     TextField("Entity ID", text: $entityId)
@@ -357,6 +357,7 @@ extension TriggerAction {
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     EntityTriggersView(
         wakeEntities: .constant([

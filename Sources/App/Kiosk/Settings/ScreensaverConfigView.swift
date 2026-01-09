@@ -13,7 +13,7 @@ public struct ScreensaverConfigView: View {
     }
 
     public var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 // Mode Selection
                 Section {
@@ -289,6 +289,7 @@ public struct ScreensaverConfigView: View {
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     ScreensaverConfigView(settings: .constant(KioskSettings()))
 }

@@ -39,7 +39,7 @@ public struct PhotoAlbumPickerView: View {
     }
 
     public var body: some View {
-        NavigationStack {
+        NavigationView {
             Group {
                 switch permissionStatus {
                 case .authorized, .limited:
@@ -73,11 +73,18 @@ public struct PhotoAlbumPickerView: View {
                 ProgressView("Loading albums...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if albums.isEmpty {
-                ContentUnavailableView(
-                    "No Albums Found",
-                    systemImage: "photo.on.rectangle.angled",
-                    description: Text(albumType == .iCloud ? "No iCloud shared albums available" : "No albums found on this device")
-                )
+                VStack(spacing: 16) {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text("No Albums Found")
+                        .font(.headline)
+                    Text(albumType == .iCloud ? "No iCloud shared albums available" : "No albums found on this device")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
                     if !searchText.isEmpty {
@@ -173,24 +180,37 @@ public struct PhotoAlbumPickerView: View {
     // MARK: - Permission Views
 
     private var requestPermissionView: some View {
-        ContentUnavailableView {
-            Label("Photo Access Required", systemImage: "photo.on.rectangle")
-        } description: {
+        VStack(spacing: 16) {
+            Image(systemName: "photo.on.rectangle")
+                .font(.system(size: 48))
+                .foregroundColor(.secondary)
+            Text("Photo Access Required")
+                .font(.headline)
             Text("Please grant access to your photo library to select albums for the screensaver.")
-        } actions: {
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
             Button("Grant Access") {
                 requestPermission()
             }
             .buttonStyle(.bordered)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var permissionDeniedView: some View {
-        ContentUnavailableView {
-            Label("Photo Access Denied", systemImage: "exclamationmark.triangle")
-        } description: {
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 48))
+                .foregroundColor(.orange)
+            Text("Photo Access Denied")
+                .font(.headline)
             Text("Photo library access was denied. Please enable it in Settings to select albums.")
-        } actions: {
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
             Button("Open Settings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
@@ -198,6 +218,7 @@ public struct PhotoAlbumPickerView: View {
             }
             .buttonStyle(.bordered)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - Permission Handling
@@ -359,6 +380,7 @@ struct AlbumInfo: Identifiable {
 
 // MARK: - Preview
 
+@available(iOS 17.0, *)
 #Preview {
     PhotoAlbumPickerView(
         selectedAlbumIds: .constant(["test-album-1"]),
