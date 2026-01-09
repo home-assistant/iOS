@@ -1290,47 +1290,6 @@ extension WebViewController {
 
     func webView(
         _ webView: WKWebView,
-        decidePolicyFor navigationAction: WKNavigationAction,
-        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-    ) {
-        // Only check domain for user-initiated link clicks
-        guard navigationAction.navigationType == .linkActivated else {
-            // Allow all other navigation types (back/forward, reload, programmatic, etc.)
-            decisionHandler(.allow)
-            return
-        }
-
-        guard let targetURL = navigationAction.request.url else {
-            decisionHandler(.allow)
-            return
-        }
-
-        // Allow special schemes like about:blank
-        if let scheme = targetURL.scheme?.lowercased(), ["about", "file"].contains(scheme) {
-            decisionHandler(.allow)
-            return
-        }
-
-        // Check if the target URL belongs to the active server domain
-        guard let activeURL = server.info.connection.activeURL() else {
-            // If there's no active URL, allow navigation (let other error handling deal with it)
-            decisionHandler(.allow)
-            return
-        }
-
-        // Allow navigation within the same domain
-        if targetURL.baseIsEqual(to: activeURL) {
-            decisionHandler(.allow)
-        } else {
-            // URL is outside the active domain - cancel and show alert
-            Current.Log.warning("Navigation blocked: URL \(targetURL) is outside active domain \(activeURL)")
-            decisionHandler(.cancel)
-            showNavigationErrorAlert()
-        }
-    }
-
-    func webView(
-        _ webView: WKWebView,
         decidePolicyFor navigationResponse: WKNavigationResponse,
         decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
     ) {
@@ -1352,13 +1311,8 @@ extension WebViewController {
 
         // error response, let's inspect if it's restoring a page or normal navigation
         if navigationResponse.response.url != initialURL {
-            // Normal loading error (not initial URL restoration)
-            // Cancel the navigation, go back if possible, and show alert
-            decisionHandler(.cancel)
-            if webView.canGoBack {
-                webView.goBack()
-            }
-            showNavigationErrorAlert()
+            // just a normal loading error
+            decisionHandler(.allow)
         } else {
             // first: clear that saved url, it's bad
             initialURL = nil
@@ -1372,24 +1326,6 @@ extension WebViewController {
                 // we don't have anything we can do about this
                 decisionHandler(.allow)
             }
-        }
-    }
-
-    private func showNavigationErrorAlert() {
-        let alert = UIAlertController(
-            title: L10n.Alerts.NavigationError.title,
-            message: L10n.Alerts.NavigationError.message,
-            preferredStyle: .alert
-        )
-        alert.addAction(.init(title: L10n.okLabel, style: .default))
-
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            if presentedViewController != nil {
-                Current.Log.info("Navigation error alert not shown because another view is already presented")
-                return
-            }
-            present(alert, animated: true)
         }
     }
 
