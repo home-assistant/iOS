@@ -20,15 +20,15 @@ enum FrontEndConnectionState: String {
 }
 
 final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
-    private var webView: WKWebView!
+    var webView: WKWebView!
     let server: Server
 
     private var urlObserver: NSKeyValueObservation?
     private var tokens = [HACancellable]()
 
-    private let refreshControl = UIRefreshControl()
-    private let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
-    private let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
+    let refreshControl = UIRefreshControl()
+    let leftEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer
+    let rightEdgeGestureRecognizer: UIScreenEdgePanGestureRecognizer
 
     private var emptyStateView: UIView?
     private let emptyStateTransitionDuration: TimeInterval = 0.3
@@ -68,11 +68,14 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen
+        // Hide status bar if fullScreen is enabled OR if kiosk mode is active with hideStatusBar
+        let kioskHide = KioskModeManager.shared.isKioskModeActive && KioskModeManager.shared.settings.hideStatusBar
+        return Current.settingsStore.fullScreen || kioskHide
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
-        Current.settingsStore.fullScreen
+        // Hide home indicator if fullScreen is enabled OR if kiosk mode is active
+        Current.settingsStore.fullScreen || KioskModeManager.shared.isKioskModeActive
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -187,16 +190,22 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
         let userContentController = setupUserContentController()
 
-        guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
-              let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
-            fatalError("Couldn't load WebSocketBridge.js for injection to WKWebView!")
+        if let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
+           let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) {
+            userContentController.addUserScript(WKUserScript(
+                source: wsBridgeJS,
+                injectionTime: .atDocumentEnd,
+                forMainFrameOnly: false
+            ))
+        } else {
+            // Log error but continue - WebSocket bridge is important but not fatal
+            Current.Log.error("Couldn't load WebSocketBridge.js for injection to WKWebView. WebSocket functionality may be impaired.")
+            Current.crashReporter.logError(NSError(
+                domain: "WebViewController",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "WebSocketBridge.js not found in bundle"]
+            ))
         }
-
-        userContentController.addUserScript(WKUserScript(
-            source: wsBridgeJS,
-            injectionTime: .atDocumentEnd,
-            forMainFrameOnly: false
-        ))
 
         userContentController.addUserScript(.init(
             source: """
@@ -217,9 +226,9 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         config.applicationNameForUserAgent = HomeAssistantAPI.applicationNameForUserAgent
         config.defaultWebpagePreferences.preferredContentMode = Current.isCatalyst ? .desktop : .mobile
 
-        webView = WKWebView(frame: view!.frame, configuration: config)
+        webView = WKWebView(frame: view.frame, configuration: config)
         webView.isOpaque = false
-        view!.addSubview(webView)
+        view.addSubview(webView)
 
         setupGestures(numberOfTouchesRequired: 2)
         setupGestures(numberOfTouchesRequired: 3)
@@ -255,6 +264,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         postOnboardingNotificationPermission()
         emptyStateObservations()
         checkForLocalSecurityLevelDecisionNeeded()
+        setupKioskMode()
 
 //        #if DEBUG
 //        if #available(iOS 26.0, *) {
@@ -1440,6 +1450,10 @@ extension WebViewController: UIScrollViewDelegate {
         if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
             scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
         }
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        handleScrollViewDragging()
     }
 }
 
