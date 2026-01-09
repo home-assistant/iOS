@@ -1,6 +1,5 @@
 import AudioToolbox
 import AVFoundation
-import Shared
 import UIKit
 
 // MARK: - Touch Feedback Manager
@@ -27,6 +26,19 @@ public final class TouchFeedbackManager {
         case warning
         /// Error feedback (failures)
         case error
+    }
+
+    // MARK: - System Sound IDs
+
+    /// iOS system sound IDs for feedback
+    /// Reference: https://iphonedev.wiki/AudioServices
+    private enum SystemSound: SystemSoundID {
+        case tock = 1104        // Light tap sound
+        case tink = 1105        // Selection change sound
+        case keyPress = 1306    // Key pressed sound
+        case bloom = 1025       // Payment success / positive confirmation
+        case tone = 1255        // Alert tone
+        case negativeTone = 1257 // Error / negative confirmation
     }
 
     // MARK: - Private Properties
@@ -91,24 +103,23 @@ public final class TouchFeedbackManager {
     public func playSound(for type: FeedbackType) {
         guard settings.touchSoundEnabled else { return }
 
-        let soundID: SystemSoundID
-
+        let sound: SystemSound
         switch type {
         case .tap:
-            soundID = 1104 // Tock
+            sound = .tock
         case .selection:
-            soundID = 1105 // Tink
+            sound = .tink
         case .action:
-            soundID = 1306 // Key pressed
+            sound = .keyPress
         case .success:
-            soundID = 1025 // Payment success (Bloom)
+            sound = .bloom
         case .warning:
-            soundID = 1255 // Tone
+            sound = .tone
         case .error:
-            soundID = 1257 // Negative tone
+            sound = .negativeTone
         }
 
-        AudioServicesPlaySystemSound(soundID)
+        AudioServicesPlaySystemSound(sound.rawValue)
     }
 
     /// Prepare haptic generators for responsiveness

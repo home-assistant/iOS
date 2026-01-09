@@ -10,7 +10,7 @@ public struct KioskSettings: Codable, Equatable {
     // MARK: - Core Kiosk Mode
 
     /// Whether kiosk mode is currently enabled
-    var isEnabled: Bool = false
+    var isKioskModeEnabled: Bool = false
 
     /// PIN required to exit kiosk mode (empty = no PIN)
     var exitPIN: String = ""
@@ -440,13 +440,21 @@ public struct EntityActionTrigger: Codable, Equatable, Identifiable {
     var enabled: Bool = true
 }
 
+/// Actions that can be triggered by entity state changes
 public enum TriggerAction: Codable, Equatable {
+    /// Navigate the kiosk to a specific URL or dashboard path
     case navigate(url: String)
+    /// Set the screen brightness (0.0 to 1.0)
     case setBrightness(level: Float)
+    /// Start the screensaver with optional mode override
     case startScreensaver(mode: ScreensaverMode?)
+    /// Stop the screensaver and return to normal view
     case stopScreensaver
+    /// Refresh the current dashboard
     case refresh
+    /// Play an audio file from URL
     case playSound(url: String)
+    /// Speak text using text-to-speech
     case tts(message: String)
 }
 
@@ -501,11 +509,21 @@ public struct QuickAction: Codable, Equatable, Identifiable {
     var actionType: QuickActionType
 }
 
+/// Types of actions available for quick action buttons
 public enum QuickActionType: Codable, Equatable {
+    /// Call a Home Assistant service
+    /// - Parameters:
+    ///   - domain: Service domain (e.g., "light", "switch", "script")
+    ///   - service: Service name (e.g., "turn_on", "toggle")
+    ///   - data: Service data as key-value pairs
     case haService(domain: String, service: String, data: [String: String])
+    /// Navigate to a URL or dashboard path
     case navigate(url: String)
+    /// Toggle an entity's state using homeassistant.toggle
     case toggleEntity(entityId: String)
+    /// Run a script entity
     case script(entityId: String)
+    /// Activate a scene entity
     case scene(entityId: String)
 }
 
