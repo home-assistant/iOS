@@ -104,7 +104,7 @@ public final class CrashRecoveryManager {
         }
 
         // Restore kiosk mode if it was enabled
-        if settings.isEnabled {
+        if settings.isKioskModeEnabled {
             Current.Log.info("Restoring kiosk mode after crash")
             KioskModeManager.shared.enableKioskMode()
         }
@@ -171,7 +171,7 @@ public final class CrashRecoveryManager {
     /// Call when app becomes active
     public func handleBecomeActive() {
         // Restore state if needed
-        if settings.isEnabled && !KioskModeManager.shared.isKioskModeActive {
+        if settings.isKioskModeEnabled && !KioskModeManager.shared.isKioskModeActive {
             Current.Log.info("Restoring kiosk mode after becoming active")
             KioskModeManager.shared.enableKioskMode()
         }
