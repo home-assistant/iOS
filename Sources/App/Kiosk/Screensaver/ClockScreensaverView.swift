@@ -207,7 +207,7 @@ struct AnalogClockView: View {
             ForEach(0..<12) { hour in
                 Rectangle()
                     .fill(Color.white.opacity(0.6))
-                    .frame(width: hour % 3 == 0 ? 3 : 1, height: hour % 3 == 0 ? 15 : 8)
+                    .frame(width: hour.isMultiple(of: 3) ? 3 : 1, height: hour.isMultiple(of: 3) ? 15 : 8)
                     .offset(y: -130)
                     .rotationEffect(.degrees(Double(hour) * 30))
                     .accessibilityHidden(true)
