@@ -54,7 +54,7 @@ public final class TamperDetectionManager: ObservableObject {
         updateCurrentOrientation()
 
         // Check for tamper if monitoring is enabled
-        guard settings.tamperDetectionEnabled && settings.isEnabled else { return }
+        guard settings.tamperDetectionEnabled && settings.isKioskModeEnabled else { return }
 
         // Check if orientation changed unexpectedly
         if let expected = settings.lockedOrientation ?? initialOrientation {
