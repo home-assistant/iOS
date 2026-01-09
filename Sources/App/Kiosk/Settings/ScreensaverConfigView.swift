@@ -192,41 +192,122 @@ public struct ScreensaverConfigView: View {
     // MARK: - Photo Settings
 
     private var photoSettings: some View {
-        Section {
-            Picker("Photo Source", selection: $settings.photoSource) {
-                ForEach(PhotoSource.allCases, id: \.self) { source in
-                    Text(source.displayName).tag(source)
+        Group {
+            Section {
+                Picker("Photo Source", selection: $settings.photoSource) {
+                    ForEach(PhotoSource.allCases, id: \.self) { source in
+                        Text(source.displayName).tag(source)
+                    }
                 }
-            }
 
-            Stepper(value: $settings.photoInterval, in: 5...120, step: 5) {
-                Text("Interval: \(Int(settings.photoInterval))s")
-            }
-
-            Picker("Transition Style", selection: $settings.photoTransition) {
-                ForEach(PhotoTransition.allCases, id: \.self) { transition in
-                    Text(transition.displayName).tag(transition)
+                // Show album picker for local photos
+                if settings.photoSource == .local || settings.photoSource == .all {
+                    NavigationLink {
+                        PhotoAlbumPickerView(
+                            selectedAlbumIds: $settings.localPhotoAlbums,
+                            albumType: .local,
+                            title: "Local Albums"
+                        )
+                    } label: {
+                        HStack {
+                            Text("Local Albums")
+                            Spacer()
+                            Text(localAlbumSummary)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
                 }
-            }
 
-            Picker("Fit Mode", selection: $settings.photoFitMode) {
-                ForEach(PhotoFitMode.allCases, id: \.self) { mode in
-                    Text(mode.displayName).tag(mode)
+                // Show album picker for iCloud photos
+                if settings.photoSource == .iCloud || settings.photoSource == .all {
+                    NavigationLink {
+                        PhotoAlbumPickerView(
+                            selectedAlbumIds: $settings.iCloudAlbums,
+                            albumType: .iCloud,
+                            title: "iCloud Albums"
+                        )
+                    } label: {
+                        HStack {
+                            Text("iCloud Albums")
+                            Spacer()
+                            Text(iCloudAlbumSummary)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
                 }
+
+                // HA Media path for HA media source
+                if settings.photoSource == .haMedia || settings.photoSource == .all {
+                    TextField("HA Media Path", text: $settings.haMediaPath)
+                        .autocapitalization(.none)
+                        .autocorrectionDisabled()
+                }
+            } header: {
+                Text("Photo Source")
+            } footer: {
+                photoSourceFooter
             }
 
-            if settings.photoSource == .haMedia {
-                TextField("HA Media Path", text: $settings.haMediaPath)
-                    .autocapitalization(.none)
-                    .autocorrectionDisabled()
-            }
+            Section {
+                Stepper(value: $settings.photoInterval, in: 5...120, step: 5) {
+                    Text("Interval: \(Int(settings.photoInterval))s")
+                }
 
-            if settings.screensaverMode == .photosWithClock {
-                Toggle("Show Clock Overlay", isOn: $settings.photoShowClockOverlay)
-                Toggle("Show Entity Overlay", isOn: $settings.photoShowEntityOverlay)
+                Picker("Transition Style", selection: $settings.photoTransition) {
+                    ForEach(PhotoTransition.allCases, id: \.self) { transition in
+                        Text(transition.displayName).tag(transition)
+                    }
+                }
+
+                Picker("Fit Mode", selection: $settings.photoFitMode) {
+                    ForEach(PhotoFitMode.allCases, id: \.self) { mode in
+                        Text(mode.displayName).tag(mode)
+                    }
+                }
+
+                if settings.screensaverMode == .photosWithClock {
+                    Toggle("Show Clock Overlay", isOn: $settings.photoShowClockOverlay)
+                    Toggle("Show Entity Overlay", isOn: $settings.photoShowEntityOverlay)
+                }
+            } header: {
+                Text("Display Options")
             }
-        } header: {
-            Text("Photo Options")
+        }
+    }
+
+    private var localAlbumSummary: String {
+        if settings.localPhotoAlbums.isEmpty {
+            return "None selected"
+        } else if settings.localPhotoAlbums.contains("all_photos") {
+            return "All Photos"
+        } else {
+            return "\(settings.localPhotoAlbums.count) album(s)"
+        }
+    }
+
+    private var iCloudAlbumSummary: String {
+        if settings.iCloudAlbums.isEmpty {
+            return "None selected"
+        } else if settings.iCloudAlbums.contains("all_photos") {
+            return "All Photos"
+        } else {
+            return "\(settings.iCloudAlbums.count) album(s)"
+        }
+    }
+
+    @ViewBuilder
+    private var photoSourceFooter: some View {
+        switch settings.photoSource {
+        case .local:
+            Text("Select albums from your device's photo library.")
+        case .iCloud:
+            Text("Select albums from iCloud Photos, including shared albums.")
+        case .haMedia:
+            Text("Enter a path in your Home Assistant media folder (e.g., /local/photos).")
+        case .all:
+            Text("Photos will be sourced from all configured locations.")
         }
     }
 
