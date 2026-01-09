@@ -152,6 +152,17 @@ public struct KioskSettings: Codable, Equatable {
     /// HA entities to display on clock screensaver
     var clockEntities: [ClockEntityConfig] = []
 
+    // MARK: - Screensaver Weather
+
+    /// Show weather on screensaver
+    var clockShowWeather: Bool = false
+
+    /// Weather entity to display (e.g., weather.home)
+    var clockWeatherEntity: String = ""
+
+    /// Temperature entity for more accurate temp display (optional, e.g., sensor.outdoor_temperature)
+    var clockTemperatureEntity: String = ""
+
     // MARK: - Screensaver Photos
 
     /// Photo source for screensaver
@@ -445,6 +456,34 @@ public struct ClockEntityConfig: Codable, Equatable, Identifiable {
     var label: String? // Custom label (nil = use friendly name)
     var icon: String? // Custom icon (nil = use entity icon)
     var showUnit: Bool = true
+    var displayFormat: EntityDisplayFormat = .auto
+    var decimalPlaces: Int? // nil = auto, 0 = integer, 1-3 = decimal places
+    var prefix: String? // Text before value (e.g., "$")
+    var suffix: String? // Text after value (replaces unit if set)
+}
+
+public enum EntityDisplayFormat: String, Codable, CaseIterable {
+    case auto = "auto" // Automatic based on entity type
+    case value = "value" // Just the value
+    case valueWithUnit = "value_unit" // Value + unit (e.g., "72°F")
+    case valueSpaceUnit = "value_space_unit" // Value space unit (e.g., "72 °F")
+    case integer = "integer" // Round to integer
+    case percentage = "percentage" // Show as percentage
+    case compact = "compact" // Compact number (e.g., 1.2K)
+    case time = "time" // Format as time duration
+
+    var displayName: String {
+        switch self {
+        case .auto: return "Auto"
+        case .value: return "Value Only"
+        case .valueWithUnit: return "Value + Unit"
+        case .valueSpaceUnit: return "Value (space) Unit"
+        case .integer: return "Integer"
+        case .percentage: return "Percentage"
+        case .compact: return "Compact"
+        case .time: return "Duration"
+        }
+    }
 }
 
 public struct AppShortcut: Codable, Equatable, Identifiable {

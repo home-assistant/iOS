@@ -57,44 +57,110 @@ public struct ScreensaverConfigView: View {
     // MARK: - Clock Settings
 
     private var clockSettings: some View {
-        Section {
-            Toggle("Show Date", isOn: $settings.clockShowDate)
+        Group {
+            Section {
+                Toggle("Show Date", isOn: $settings.clockShowDate)
 
-            Toggle("Show Seconds", isOn: $settings.clockShowSeconds)
+                Toggle("Show Seconds", isOn: $settings.clockShowSeconds)
 
-            Toggle("Use 24-Hour Format", isOn: $settings.clockUse24HourFormat)
+                Toggle("Use 24-Hour Format", isOn: $settings.clockUse24HourFormat)
 
-            Picker("Clock Style", selection: $settings.clockStyle) {
-                ForEach(ClockStyle.allCases, id: \.self) { style in
-                    Text(style.displayName).tag(style)
+                Picker("Clock Style", selection: $settings.clockStyle) {
+                    ForEach(ClockStyle.allCases, id: \.self) { style in
+                        Text(style.displayName).tag(style)
+                    }
                 }
+            } header: {
+                Text("Clock Options")
             }
+
+            weatherSection
 
             if settings.screensaverMode == .clockWithEntities {
                 clockEntitiesSection
             }
-        } header: {
-            Text("Clock Options")
         }
     }
 
+    // MARK: - Weather Section
+
+    private var weatherSection: some View {
+        Section {
+            Toggle("Show Weather", isOn: $settings.clockShowWeather)
+
+            if settings.clockShowWeather {
+                NavigationLink {
+                    EntityPickerView(
+                        selectedEntityId: $settings.clockWeatherEntity,
+                        domainFilter: ["weather"],
+                        title: "Weather Entity"
+                    )
+                } label: {
+                    HStack {
+                        Text("Weather Entity")
+                        Spacer()
+                        Text(settings.clockWeatherEntity.isEmpty ? "Not Set" : friendlyEntityName(settings.clockWeatherEntity))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+
+                NavigationLink {
+                    EntityPickerView(
+                        selectedEntityId: $settings.clockTemperatureEntity,
+                        domainFilter: ["sensor"],
+                        title: "Temperature Sensor"
+                    )
+                } label: {
+                    HStack {
+                        Text("Temperature Sensor")
+                        Spacer()
+                        Text(settings.clockTemperatureEntity.isEmpty ? "Optional" : friendlyEntityName(settings.clockTemperatureEntity))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+            }
+        } header: {
+            Text("Weather Display")
+        } footer: {
+            if settings.clockShowWeather {
+                Text("Select a weather entity for conditions. Optionally select a temperature sensor for more accurate temperature display.")
+            }
+        }
+    }
+
+    // MARK: - Clock Entities Section
+
     private var clockEntitiesSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Display Entities")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-
+        Section {
             ForEach($settings.clockEntities) { $entity in
-                HStack {
-                    TextField("Entity ID", text: $entity.entityId)
-                        .autocapitalization(.none)
-                        .autocorrectionDisabled()
+                NavigationLink {
+                    EntityPickerView(
+                        selectedEntityId: $entity.entityId,
+                        title: "Select Entity"
+                    )
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(entity.entityId.isEmpty ? "Tap to select" : friendlyEntityName(entity.entityId))
+                                .foregroundColor(entity.entityId.isEmpty ? .secondary : .primary)
+                            if !entity.entityId.isEmpty {
+                                Text(entity.entityId)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
 
-                    Button {
-                        settings.clockEntities.removeAll { $0.id == entity.id }
-                    } label: {
-                        Image(systemName: "minus.circle.fill")
-                            .foregroundColor(.red)
+                        Spacer()
+
+                        Button {
+                            settings.clockEntities.removeAll { $0.id == entity.id }
+                        } label: {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundColor(.red)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -104,7 +170,23 @@ public struct ScreensaverConfigView: View {
             } label: {
                 Label("Add Entity", systemImage: "plus.circle")
             }
+        } header: {
+            Text("Display Entities")
+        } footer: {
+            Text("Add Home Assistant entities to display on the screensaver.")
         }
+    }
+
+    // MARK: - Helpers
+
+    private func friendlyEntityName(_ entityId: String) -> String {
+        // Extract a friendly name from entity ID (e.g., "sensor.living_room_temp" -> "Living Room Temp")
+        guard !entityId.isEmpty else { return "" }
+        let parts = entityId.components(separatedBy: ".")
+        guard parts.count > 1 else { return entityId }
+        return parts[1]
+            .replacingOccurrences(of: "_", with: " ")
+            .capitalized
     }
 
     // MARK: - Photo Settings

@@ -1231,7 +1231,6 @@
 		97AF130178DFCE1F8D09EAC4 /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B98849A19458A656C911AE1 /* CameraOverlayView.swift */; };
 		9923A6FC5CC84147F5F3D3BB /* EntityTriggerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625264CF02911130BA266C61 /* EntityTriggerManager.swift */; };
 		9E94A5B540457A528A5D7B3F /* ScreensaverConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8329ECB11FF1E75F754027 /* ScreensaverConfigView.swift */; };
-		9FD1F2E4BCF2C2DEBDAA8A40 /* KioskSensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8A6CB206376BA59919B0BB /* KioskSensorProvider.swift */; };
 		A202E74984DD62123B5714E7 /* KioskCommandHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D216CD9D4D0AF31C94062B /* KioskCommandHandlers.swift */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
 		A9826D8B388CFC3453256FC2 /* DashboardConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BEEEE901F42EBC7900D410 /* DashboardConfigurationView.swift */; };
@@ -3048,6 +3047,7 @@
 		AF744211EE471EE671F7C928 /* Pods-iOS-Extensions-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		B086E41966E89AE531E3C1A5 /* Pods-iOS-Extensions-Widgets.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Widgets.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Widgets/Pods-iOS-Extensions-Widgets.debug.xcconfig"; sourceTree = "<group>"; };
 		B2F5238669D8A7416FBD2B55 /* Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-Tests-Shared-metadata.plist"; sourceTree = "<group>"; };
+		B47C229E690D3FB07EC7F88F /* EntityPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EntityPickerView.swift; sourceTree = "<group>"; };
 		B6022212226DAC9D00E8DBFE /* ScaledFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaledFont.swift; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B60247FF1FBD343000998205 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -6413,6 +6413,7 @@
 				8D8329ECB11FF1E75F754027 /* ScreensaverConfigView.swift */,
 				50BEEEE901F42EBC7900D410 /* DashboardConfigurationView.swift */,
 				42F4FBC509A98EC5AEC4FA5E /* EntityTriggersView.swift */,
+				B47C229E690D3FB07EC7F88F /* EntityPickerView.swift */,
 			);
 			name = Settings;
 			path = Settings;

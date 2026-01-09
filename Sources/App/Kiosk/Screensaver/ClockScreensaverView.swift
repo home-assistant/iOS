@@ -37,10 +37,16 @@ public struct ClockScreensaverView: View {
                             .offset(pixelShiftOffset)
                     }
 
+                    if manager.settings.clockShowWeather && !manager.settings.clockWeatherEntity.isEmpty {
+                        weatherDisplay
+                            .offset(pixelShiftOffset)
+                            .padding(.top, 20)
+                    }
+
                     if showEntities && !manager.settings.clockEntities.isEmpty {
                         entityDisplay
                             .offset(pixelShiftOffset)
-                            .padding(.top, 40)
+                            .padding(.top, manager.settings.clockShowWeather ? 20 : 40)
                     }
 
                     Spacer()
@@ -49,21 +55,39 @@ public struct ClockScreensaverView: View {
             }
         }
         .onAppear {
-            if showEntities {
-                let entityIds = manager.settings.clockEntities.map(\.entityId)
-                entityProvider.watchEntities(entityIds)
-            }
+            startWatchingEntities()
         }
         .onDisappear {
-            if showEntities {
-                entityProvider.stopWatching()
-            }
+            entityProvider.stopWatching()
         }
         .onReceive(timeTimer) { _ in
             currentTime = Date()
         }
         .onReceive(NotificationCenter.default.publisher(for: .kioskPixelShiftTick)) { _ in
             applyPixelShift()
+        }
+    }
+
+    private func startWatchingEntities() {
+        var entityIds: [String] = []
+
+        // Add weather entities
+        if manager.settings.clockShowWeather {
+            if !manager.settings.clockWeatherEntity.isEmpty {
+                entityIds.append(manager.settings.clockWeatherEntity)
+            }
+            if !manager.settings.clockTemperatureEntity.isEmpty {
+                entityIds.append(manager.settings.clockTemperatureEntity)
+            }
+        }
+
+        // Add clock entities
+        if showEntities {
+            entityIds.append(contentsOf: manager.settings.clockEntities.map(\.entityId))
+        }
+
+        if !entityIds.isEmpty {
+            entityProvider.watchEntities(entityIds)
         }
     }
 
@@ -149,6 +173,108 @@ public struct ClockScreensaverView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d"
         return formatter.string(from: currentTime)
+    }
+
+    // MARK: - Weather Display
+
+    private var weatherDisplay: some View {
+        HStack(spacing: 16) {
+            // Weather icon
+            weatherIcon
+                .font(.system(size: 48))
+                .foregroundColor(.white.opacity(0.8))
+
+            VStack(alignment: .leading, spacing: 4) {
+                // Temperature
+                Text(temperatureString)
+                    .font(.system(size: 48, weight: .light, design: .rounded))
+                    .foregroundColor(.white)
+
+                // Condition
+                Text(weatherCondition)
+                    .font(.system(size: 18, weight: .regular))
+                    .foregroundColor(.white.opacity(0.7))
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Weather: \(temperatureString), \(weatherCondition)")
+    }
+
+    private var weatherState: EntityState? {
+        entityProvider.state(for: manager.settings.clockWeatherEntity)
+    }
+
+    private var temperatureState: EntityState? {
+        let tempEntity = manager.settings.clockTemperatureEntity
+        if !tempEntity.isEmpty {
+            return entityProvider.state(for: tempEntity)
+        }
+        return nil
+    }
+
+    private var temperatureString: String {
+        // Prefer dedicated temperature sensor if configured
+        if let tempState = temperatureState {
+            let temp = tempState.state
+            let unit = tempState.unitOfMeasurement ?? "°"
+            return "\(temp)\(unit)"
+        }
+
+        // Fall back to weather entity temperature
+        if let weather = weatherState,
+           let temp = weather.entityId.isEmpty ? nil : (entityProvider.entityStates[manager.settings.clockWeatherEntity]) {
+            // Weather entities store temperature in attributes
+            if let attributes = getWeatherAttributes(),
+               let temperature = attributes["temperature"] as? Double {
+                let unit = attributes["temperature_unit"] as? String ?? "°F"
+                return String(format: "%.0f%@", temperature, unit)
+            }
+        }
+
+        return "--°"
+    }
+
+    private var weatherCondition: String {
+        weatherState?.state.capitalized ?? "Unknown"
+    }
+
+    @ViewBuilder
+    private var weatherIcon: some View {
+        let condition = weatherState?.state.lowercased() ?? ""
+        Image(systemName: weatherIconName(for: condition))
+    }
+
+    private func weatherIconName(for condition: String) -> String {
+        switch condition {
+        case "sunny", "clear", "clear-night":
+            return condition.contains("night") ? "moon.stars.fill" : "sun.max.fill"
+        case "partlycloudy", "partly_cloudy":
+            return "cloud.sun.fill"
+        case "cloudy":
+            return "cloud.fill"
+        case "rainy", "rain", "pouring":
+            return "cloud.rain.fill"
+        case "snowy", "snow", "snowy-rainy":
+            return "cloud.snow.fill"
+        case "windy", "wind":
+            return "wind"
+        case "fog", "foggy", "hazy":
+            return "cloud.fog.fill"
+        case "lightning", "lightning-rainy", "thunderstorm":
+            return "cloud.bolt.rain.fill"
+        case "hail":
+            return "cloud.hail.fill"
+        case "exceptional":
+            return "exclamationmark.triangle.fill"
+        default:
+            return "cloud.fill"
+        }
+    }
+
+    private func getWeatherAttributes() -> [String: Any]? {
+        // This would need access to the raw HAEntity attributes
+        // For now, return nil - the temperature entity is the better approach
+        return nil
     }
 
     // MARK: - Entity Display
@@ -266,7 +392,7 @@ struct EntityValueView: View {
                 .accessibilityHidden(true)
 
             // Value
-            Text(displayValue)
+            Text(formattedValue)
                 .font(.system(size: 32, weight: .medium, design: .rounded))
                 .foregroundColor(.white)
                 .monospacedDigit()
@@ -278,26 +404,13 @@ struct EntityValueView: View {
                 .foregroundColor(.white.opacity(0.5))
                 .lineLimit(1)
                 .accessibilityHidden(true)
-
-            // Unit (if separate from value)
-            if config.showUnit, let unit = entityState?.unitOfMeasurement, !unit.isEmpty {
-                Text(unit)
-                    .font(.caption2)
-                    .foregroundColor(.white.opacity(0.4))
-                    .accessibilityHidden(true)
-            }
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityDescription)
     }
 
     private var accessibilityDescription: String {
-        var description = displayLabel
-        description += ": \(displayValue)"
-        if config.showUnit, let unit = entityState?.unitOfMeasurement, !unit.isEmpty {
-            description += " \(unit)"
-        }
-        return description
+        "\(displayLabel): \(formattedValue)"
     }
 
     @ViewBuilder
@@ -310,8 +423,132 @@ struct EntityValueView: View {
         }
     }
 
-    private var displayValue: String {
-        entityState?.value ?? "--"
+    private var formattedValue: String {
+        guard let state = entityState else { return "--" }
+
+        let rawValue = state.state
+        let unit = config.suffix ?? (config.showUnit ? state.unitOfMeasurement : nil)
+        let prefix = config.prefix ?? ""
+
+        // Try to parse as number for formatting
+        let numericValue = Double(rawValue)
+
+        switch config.displayFormat {
+        case .auto:
+            return formatAuto(rawValue: rawValue, numericValue: numericValue, unit: unit, prefix: prefix)
+
+        case .value:
+            return "\(prefix)\(rawValue)"
+
+        case .valueWithUnit:
+            if let unit = unit, !unit.isEmpty {
+                return "\(prefix)\(formatNumber(numericValue, rawValue: rawValue))\(unit)"
+            }
+            return "\(prefix)\(formatNumber(numericValue, rawValue: rawValue))"
+
+        case .valueSpaceUnit:
+            if let unit = unit, !unit.isEmpty {
+                return "\(prefix)\(formatNumber(numericValue, rawValue: rawValue)) \(unit)"
+            }
+            return "\(prefix)\(formatNumber(numericValue, rawValue: rawValue))"
+
+        case .integer:
+            if let num = numericValue {
+                return "\(prefix)\(Int(num.rounded()))\(unit ?? "")"
+            }
+            return "\(prefix)\(rawValue)"
+
+        case .percentage:
+            if let num = numericValue {
+                return "\(prefix)\(Int(num.rounded()))%"
+            }
+            return "\(prefix)\(rawValue)%"
+
+        case .compact:
+            if let num = numericValue {
+                return "\(prefix)\(formatCompact(num))\(unit ?? "")"
+            }
+            return "\(prefix)\(rawValue)"
+
+        case .time:
+            if let num = numericValue {
+                return formatDuration(num)
+            }
+            return rawValue
+        }
+    }
+
+    private func formatAuto(rawValue: String, numericValue: Double?, unit: String?, prefix: String) -> String {
+        // Auto formatting based on entity type and unit
+        if let num = numericValue {
+            // Temperature - no space before degree symbol
+            if let unit = unit, (unit.contains("°") || unit.contains("C") || unit.contains("F")) {
+                let formatted = formatNumber(num, decimalPlaces: config.decimalPlaces ?? 0)
+                return "\(prefix)\(formatted)\(unit)"
+            }
+
+            // Percentage
+            if let unit = unit, unit == "%" {
+                return "\(prefix)\(Int(num.rounded()))%"
+            }
+
+            // Other numeric with unit
+            if let unit = unit, !unit.isEmpty {
+                let formatted = formatNumber(num, decimalPlaces: config.decimalPlaces)
+                return "\(prefix)\(formatted) \(unit)"
+            }
+
+            // Plain numeric
+            let formatted = formatNumber(num, decimalPlaces: config.decimalPlaces)
+            return "\(prefix)\(formatted)"
+        }
+
+        // Non-numeric state (on/off, etc.)
+        return "\(prefix)\(rawValue.capitalized)"
+    }
+
+    private func formatNumber(_ value: Double?, rawValue: String? = nil, decimalPlaces: Int? = nil) -> String {
+        guard let value = value else { return rawValue ?? "--" }
+
+        if let places = decimalPlaces ?? config.decimalPlaces {
+            return String(format: "%.\(places)f", value)
+        }
+
+        // Auto decimal places
+        if value == value.rounded() {
+            return String(Int(value))
+        } else if abs(value) < 10 {
+            return String(format: "%.1f", value)
+        } else {
+            return String(Int(value.rounded()))
+        }
+    }
+
+    private func formatCompact(_ value: Double) -> String {
+        let absValue = abs(value)
+        let sign = value < 0 ? "-" : ""
+
+        if absValue >= 1_000_000_000 {
+            return "\(sign)\(String(format: "%.1f", absValue / 1_000_000_000))B"
+        } else if absValue >= 1_000_000 {
+            return "\(sign)\(String(format: "%.1f", absValue / 1_000_000))M"
+        } else if absValue >= 1_000 {
+            return "\(sign)\(String(format: "%.1f", absValue / 1_000))K"
+        } else {
+            return formatNumber(value)
+        }
+    }
+
+    private func formatDuration(_ seconds: Double) -> String {
+        let hours = Int(seconds) / 3600
+        let minutes = (Int(seconds) % 3600) / 60
+        let secs = Int(seconds) % 60
+
+        if hours > 0 {
+            return String(format: "%d:%02d:%02d", hours, minutes, secs)
+        } else {
+            return String(format: "%d:%02d", minutes, secs)
+        }
     }
 
     private var displayLabel: String {
