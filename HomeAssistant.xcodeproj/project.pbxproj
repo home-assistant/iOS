@@ -181,6 +181,7 @@
 		1169B7AD25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1169B7AC25AA76E30035F2AE /* MaterialDesignIcons+Eureka.swift */; };
 		116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
 		116C0C30267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C0C2E267EB90F00A992E4 /* UserDefaultsValueSync.swift */; };
+		116C1811BE5DE6660E00C5C9 /* TamperDetectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA8930E79EDD7D8F8618A04 /* TamperDetectionManager.swift */; };
 		116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A3C2724D83300EF5D21 /* OnboardingAuth.test.swift */; };
 		116D3A442724EFFB00EF5D21 /* OnboardingAuthTokenExchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A422724EDF100EF5D21 /* OnboardingAuthTokenExchange.swift */; };
 		116D3A4627252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3A4527252C3200EF5D21 /* OnboardingAuthStepConfig.test.swift */; };
@@ -479,6 +480,8 @@
 		1A3CC1D75E8EEF7294146BD1 /* ControlFanValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A34A5417D650BBBE9D2D7C0 /* ControlFanValueProvider.swift */; };
 		20226C5AB77E1229852ADDC8 /* Pods_iOS_Extensions_Widgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27653D385E4CEB58E52A350 /* Pods_iOS_Extensions_Widgets.framework */; };
 		237993F7E11DC585E29EDC7C /* Pods-iOS-Extensions-NotificationService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */; };
+		25AEE72D8153A0785B6C807D /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E19549F17D9DBCC2EFF5846 /* AudioManager.swift */; };
+		25FDA1758BFCF798BDF0A076 /* AmbientAudioDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61FD603A08C940784D912AC8 /* AmbientAudioDetector.swift */; };
 		293AEC642DB67B7FE828B5B8 /* KioskSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B0BCA2B73086D731D7BBB9 /* KioskSettings.swift */; };
 		2F50FC61669812D485E608EC /* Pods-iOS-Extensions-PushProvider-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3D5CF14402325076CA105EB /* Pods-iOS-Extensions-PushProvider-metadata.plist */; };
 		30B2CC96058A6ECFEEA923B0 /* KioskModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D690417A735F65729E7BDD6 /* KioskModeManager.swift */; };
@@ -1206,6 +1209,7 @@
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		5CF8F5856FE909105F930D74 /* CameraDetectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750BE73663BDC1CCAA60681 /* CameraDetectionManager.swift */; };
 		5FFBC80F835393915C4748CF /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A370326321B07E5ACE0BCB65 /* Pods_iOS_Extensions_PushProvider.framework */; };
+		60694CF6119BCBF7E06CD80A /* BatteryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE6746FB1C93E4EED878AFF /* BatteryManager.swift */; };
 		63ABD3F5C77060864AC733A0 /* IconMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E3186320463545E1611267 /* IconMapper.swift */; };
 		64E8DD8CA1605B3381C32A8A /* PhotoScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E935313A9723B7D209AF7BF /* PhotoScreensaverView.swift */; };
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
@@ -1218,6 +1222,7 @@
 		84F7755EFB03C3F463292ABF /* Pods-watchOS-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */; };
 		869A7684D1D2A510A7B01F61 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68E6DB6E7CA3492ACB2B6D9 /* SettingsManager.swift */; };
 		8E5FA96C740F1D671966CEA9 /* Pods-iOS-Extensions-NotificationContent-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B613440AEDD4209862503F5D /* Pods-iOS-Extensions-NotificationContent-metadata.plist */; };
+		8F633718DB79BFD6AF1C1216 /* GuidedAccessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92BB3F4E1FA5D79D6866A32 /* GuidedAccessManager.swift */; };
 		A2AC179F0CF994487503AC5A /* EntityStateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A5D349A8C5BD3E96E2B415 /* EntityStateProvider.swift */; };
 		A5A3C1932BE1F4A40EA78754 /* Pods-iOS-Extensions-Matter-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 392B0C44197C98E2653932A5 /* Pods-iOS-Extensions-Matter-metadata.plist */; };
 		B4477660EF1D088BA7B7AB72 /* TouchFeedbackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2B3B0A4973EB1E4803AC39 /* TouchFeedbackManager.swift */; };
@@ -1472,6 +1477,7 @@
 		B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */; };
 		B6E2D4D52270706300446DFA /* ha-loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4D42270706200446DFA /* ha-loading.json */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
+		B7322A965898951157832984 /* CrashRecoveryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46B2976E7DCC7720BCCB936 /* CrashRecoveryManager.swift */; };
 		B93808E5C8CEB9F60F1BDD89 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BED1107F689732E5A50D994 /* SecurityManager.swift */; };
 		B9820AF29664869FD0B25CDF /* Pods_iOS_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD90A8F251D0671EFAC931ED /* Pods_iOS_App.framework */; };
 		BD8A23607CAF96AF6E51157B /* EdgeProtectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D31B5D140C051FAC6A2F4A /* EdgeProtectionView.swift */; };
@@ -2189,6 +2195,7 @@
 		11FA53F1251071D2008D9506 /* NSItemProvider+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSItemProvider+Additions.swift"; sourceTree = "<group>"; };
 		1A736E7381A523E7A888D24E /* Pods-iOS-Extensions-Today.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Today.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Today/Pods-iOS-Extensions-Today.debug.xcconfig"; sourceTree = "<group>"; };
 		1C5C1EC99DF5FCB63422D279 /* Pods-watchOS-WatchExtension-Watch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-WatchExtension-Watch/Pods-watchOS-WatchExtension-Watch.debug.xcconfig"; sourceTree = "<group>"; };
+		1E19549F17D9DBCC2EFF5846 /* AudioManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioManager.swift; path = Sources/App/Kiosk/Audio/AudioManager.swift; sourceTree = "<group>"; };
 		1F356D0219C7F8A24234511B /* Pods_iOS_Extensions_NotificationContent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_NotificationContent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		202360CC8C2C1193658F9359 /* Pods_iOS_SharedTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_SharedTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Share-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Share-metadata.plist"; sourceTree = "<group>"; };
@@ -2202,6 +2209,7 @@
 		3997926D2B7F907B00231B54 /* MobileAppConfigPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfigPush.swift; sourceTree = "<group>"; };
 		399792702B7F909900231B54 /* MobileAppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppConfig.swift; sourceTree = "<group>"; };
 		39A32EE12C0E384E00985722 /* UIImage+scaledToSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scaledToSize.swift"; sourceTree = "<group>"; };
+		3CA8930E79EDD7D8F8618A04 /* TamperDetectionManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TamperDetectionManager.swift; path = Sources/App/Kiosk/Security/TamperDetectionManager.swift; sourceTree = "<group>"; };
 		3E02C0E02CA7FCBF00102131 /* IntentSensorsAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentSensorsAppEntity.swift; sourceTree = "<group>"; };
 		3E02C0E42CA7FCF400102131 /* WidgetSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensors.swift; sourceTree = "<group>"; };
 		3E02C0E92CA7FD2A00102131 /* WidgetSensorsAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSensorsAppIntent.swift; sourceTree = "<group>"; };
@@ -2976,6 +2984,7 @@
 		574F428FD5AD613411644AE4 /* Pods-iOS-Extensions-PushProvider.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-PushProvider.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-PushProvider/Pods-iOS-Extensions-PushProvider.release.xcconfig"; sourceTree = "<group>"; };
 		57B9C3C07B5A002D749B5CDA /* Pods_Tests_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		592EED7A6C2444872F11C17B /* Pods-iOS-Extensions-NotificationService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-NotificationService-metadata.plist"; path = "Pods/Pods-iOS-Extensions-NotificationService-metadata.plist"; sourceTree = "<group>"; };
+		61FD603A08C940784D912AC8 /* AmbientAudioDetector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AmbientAudioDetector.swift; path = Sources/App/Kiosk/Audio/AmbientAudioDetector.swift; sourceTree = "<group>"; };
 		6723A4E97E50C3C9141428D0 /* Pods-iOS-Extensions-Widgets-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Extensions-Widgets-metadata.plist"; path = "Pods/Pods-iOS-Extensions-Widgets-metadata.plist"; sourceTree = "<group>"; };
 		675CE4281FE5F1920B13D553 /* Pods-iOS-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-App/Pods-iOS-App.debug.xcconfig"; sourceTree = "<group>"; };
 		6B55CB9064A0477C9F456B6A /* Pods-watchOS-Shared-watchOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-watchOS-Shared-watchOS-metadata.plist"; path = "Pods/Pods-watchOS-Shared-watchOS-metadata.plist"; sourceTree = "<group>"; };
@@ -3011,6 +3020,7 @@
 		9C7970E308CFEAEAFA05E004 /* Pods-iOS-Extensions-NotificationContent.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationContent.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationContent/Pods-iOS-Extensions-NotificationContent.release.xcconfig"; sourceTree = "<group>"; };
 		A0CE1C12B4ACF0A6876B6F7F /* Pods-iOS-Extensions-Today.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Today.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Today/Pods-iOS-Extensions-Today.beta.xcconfig"; sourceTree = "<group>"; };
 		A370326321B07E5ACE0BCB65 /* Pods_iOS_Extensions_PushProvider.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Extensions_PushProvider.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A46B2976E7DCC7720BCCB936 /* CrashRecoveryManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CrashRecoveryManager.swift; path = Sources/App/Kiosk/Security/CrashRecoveryManager.swift; sourceTree = "<group>"; };
 		A4A22C18AEFDE3991847FCFF /* QuickActionsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = QuickActionsView.swift; path = Sources/App/Kiosk/Overlay/QuickActionsView.swift; sourceTree = "<group>"; };
 		A90DD8FC6E4726B7E7187C59 /* Pods_watchOS_WatchExtension_Watch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOS_WatchExtension_Watch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADC769271BB34C474C2D1E24 /* Pods-iOS-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-iOS-Shared-iOS-metadata.plist"; path = "Pods/Pods-iOS-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
@@ -3392,7 +3402,9 @@
 		F3A0FB3BD04C582E655168D0 /* Pods-Tests-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests-App/Pods-Tests-App.release.xcconfig"; sourceTree = "<group>"; };
 		F3E55AA06795782F04D0B261 /* Pods-iOS-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
 		F534C18A6FD4884F258341C9 /* Pods-iOS-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
+		F92BB3F4E1FA5D79D6866A32 /* GuidedAccessManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GuidedAccessManager.swift; path = Sources/App/Kiosk/Security/GuidedAccessManager.swift; sourceTree = "<group>"; };
 		FB1F681A555F012DEE38EE54 /* CustomURLScreensaverView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CustomURLScreensaverView.swift; path = Sources/App/Kiosk/Screensaver/CustomURLScreensaverView.swift; sourceTree = "<group>"; };
+		FBE6746FB1C93E4EED878AFF /* BatteryManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BatteryManager.swift; path = Sources/App/Kiosk/Security/BatteryManager.swift; sourceTree = "<group>"; };
 		FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 		FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListTemplate.swift; sourceTree = "<group>"; };
@@ -6383,6 +6395,10 @@
 			children = (
 				4BED1107F689732E5A50D994 /* SecurityManager.swift */,
 				C68E6DB6E7CA3492ACB2B6D9 /* SettingsManager.swift */,
+				FBE6746FB1C93E4EED878AFF /* BatteryManager.swift */,
+				A46B2976E7DCC7720BCCB936 /* CrashRecoveryManager.swift */,
+				F92BB3F4E1FA5D79D6866A32 /* GuidedAccessManager.swift */,
+				3CA8930E79EDD7D8F8618A04 /* TamperDetectionManager.swift */,
 			);
 			name = Security;
 			path = Security;
@@ -6401,6 +6417,7 @@
 				7C653420728C1D5001D4FFF9 /* AppLauncher */,
 				820B82941A558C01306A1B6C /* Screensaver */,
 				227369CC310F1B31B9DB6180 /* Overlay */,
+				A025DB906552503E324A1918 /* Audio */,
 			);
 			name = Kiosk;
 			path = Sources/App/Kiosk;
@@ -6440,6 +6457,16 @@
 				9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */,
 			);
 			path = Configuration;
+			sourceTree = "<group>";
+		};
+		A025DB906552503E324A1918 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				61FD603A08C940784D912AC8 /* AmbientAudioDetector.swift */,
+				1E19549F17D9DBCC2EFF5846 /* AudioManager.swift */,
+			);
+			name = Audio;
+			path = Audio;
 			sourceTree = "<group>";
 		};
 		AAB60FA4DE371AD957F6907B /* Pods */ = {
@@ -9481,6 +9508,12 @@
 				478D295680462D35EEC3C8F3 /* QuickActionsView.swift in Sources */,
 				5230E9FA00FB26562745DA3E /* SecretExitGestureView.swift in Sources */,
 				CD025666829B3A9F377DB550 /* StatusOverlayView.swift in Sources */,
+				60694CF6119BCBF7E06CD80A /* BatteryManager.swift in Sources */,
+				B7322A965898951157832984 /* CrashRecoveryManager.swift in Sources */,
+				8F633718DB79BFD6AF1C1216 /* GuidedAccessManager.swift in Sources */,
+				116C1811BE5DE6660E00C5C9 /* TamperDetectionManager.swift in Sources */,
+				25FDA1758BFCF798BDF0A076 /* AmbientAudioDetector.swift in Sources */,
+				25AEE72D8153A0785B6C807D /* AudioManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
