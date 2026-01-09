@@ -49,7 +49,7 @@ public final class PresenceDetector: NSObject, ObservableObject {
     private var settings: KioskSettings { KioskModeManager.shared.settings }
     private var captureSession: AVCaptureSession?
     private var videoOutput: AVCaptureVideoDataOutput?
-    private let processingQueue = DispatchQueue(label: "com.haframe.presence", qos: .userInitiated)
+    private let processingQueue = DispatchQueue(label: "com.homeassistant.kiosk.presence", qos: .userInitiated)
 
     // Vision requests
     private var personDetectionRequest: VNDetectHumanRectanglesRequest?

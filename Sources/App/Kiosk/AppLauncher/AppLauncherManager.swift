@@ -115,7 +115,7 @@ public final class AppLauncherManager: ObservableObject {
         launchApp(urlScheme: shortcut.urlScheme, shortcut: shortcut)
     }
 
-    /// Return to HAFrame (called when app becomes active again)
+    /// Return to Home Assistant (called when app becomes active again)
     public func handleReturn() {
         guard isAway else { return }
 
@@ -291,14 +291,14 @@ public final class AppLauncherManager: ObservableObject {
 
     private func scheduleReturnNotification(timeout: TimeInterval) {
         let content = UNMutableNotificationContent()
-        content.title = "HAFrame"
+        content.title = "Home Assistant"
         content.body = "Time to return to your dashboard"
         content.sound = .default
-        content.categoryIdentifier = "HAFRAME_RETURN"
+        content.categoryIdentifier = "KIOSK_RETURN"
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeout, repeats: false)
         let request = UNNotificationRequest(
-            identifier: "haframe.return.reminder",
+            identifier: "kiosk.return.reminder",
             content: content,
             trigger: trigger
         )
@@ -312,7 +312,7 @@ public final class AppLauncherManager: ObservableObject {
 
     private func cancelReturnNotification() {
         UNUserNotificationCenter.current().removePendingNotificationRequests(
-            withIdentifiers: ["haframe.return.reminder"]
+            withIdentifiers: ["kiosk.return.reminder"]
         )
     }
 }

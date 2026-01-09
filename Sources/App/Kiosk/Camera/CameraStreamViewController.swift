@@ -365,7 +365,7 @@ public final class CameraStreamViewController: UIViewController {
         _ = try? await api.connection.send(.init(
             type: "fire_event",
             data: [
-                "event_type": "haframe_doorbell_answered",
+                "event_type": "kiosk_doorbell_answered",
                 "event_data": [
                     "camera_entity_id": stream.entityId,
                     "stream_name": stream.name,

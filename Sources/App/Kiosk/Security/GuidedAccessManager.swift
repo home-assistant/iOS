@@ -76,7 +76,7 @@ public final class GuidedAccessManager: ObservableObject {
             3. Set a Guided Access passcode
             4. Triple-click the side/home button to start a Guided Access session
 
-            This will prevent users from exiting HAFrame.
+            This will prevent users from exiting the app.
             """,
             preferredStyle: .alert
         )
@@ -101,7 +101,7 @@ public final class GuidedAccessManager: ObservableObject {
         let alert = UIAlertController(
             title: "Start Guided Access Session",
             message: """
-            To lock HAFrame in kiosk mode:
+            To lock the app in kiosk mode:
 
             Triple-click the side button (or home button on older devices) to start Guided Access.
 
@@ -202,7 +202,7 @@ public struct GuidedAccessSettingsView: View {
                         instructionRow(number: 1, text: "Go to Settings > Accessibility > Guided Access")
                         instructionRow(number: 2, text: "Turn on Guided Access")
                         instructionRow(number: 3, text: "Tap Passcode Settings and set a Guided Access passcode")
-                        instructionRow(number: 4, text: "Return to HAFrame")
+                        instructionRow(number: 4, text: "Return to Home Assistant")
                         instructionRow(number: 5, text: "Triple-click the side button")
                         instructionRow(number: 6, text: "Tap Start in the top right")
                     }

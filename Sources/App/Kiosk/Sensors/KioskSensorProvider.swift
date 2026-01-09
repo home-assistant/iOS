@@ -88,14 +88,14 @@ public final class KioskSensorProvider: SensorProvider {
         var sensors = [WebhookSensor]()
 
         // Kiosk Mode (binary sensor)
-        sensors.append(with(WebhookSensor(name: "HAFrame Kiosk Mode", uniqueID: KioskSensorId.kioskMode)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Kiosk Mode", uniqueID: KioskSensorId.kioskMode)) {
             $0.Icon = manager.isKioskModeActive ? "mdi:fullscreen" : "mdi:fullscreen-exit"
             $0.State = manager.isKioskModeActive ? "on" : "off"
             $0.entityCategory = "diagnostic"
         })
 
         // Screen State
-        sensors.append(with(WebhookSensor(name: "HAFrame Screen State", uniqueID: KioskSensorId.kioskScreenState)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Screen State", uniqueID: KioskSensorId.kioskScreenState)) {
             $0.Icon = iconForScreenState(manager.screenState)
             $0.State = manager.screenState.rawValue
             $0.entityCategory = "diagnostic"
@@ -105,7 +105,7 @@ public final class KioskSensorProvider: SensorProvider {
         })
 
         // Brightness
-        sensors.append(with(WebhookSensor(name: "HAFrame Brightness", uniqueID: KioskSensorId.kioskBrightness)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Brightness", uniqueID: KioskSensorId.kioskBrightness)) {
             $0.Icon = iconForBrightness(manager.currentBrightness)
             $0.State = Int(manager.currentBrightness * 100)
             $0.UnitOfMeasurement = "%"
@@ -114,14 +114,14 @@ public final class KioskSensorProvider: SensorProvider {
         })
 
         // Current Dashboard
-        sensors.append(with(WebhookSensor(name: "HAFrame Current Dashboard", uniqueID: KioskSensorId.kioskCurrentDashboard)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Current Dashboard", uniqueID: KioskSensorId.kioskCurrentDashboard)) {
             $0.Icon = "mdi:view-dashboard"
             $0.State = manager.currentDashboard.isEmpty ? "none" : manager.currentDashboard
             $0.entityCategory = "diagnostic"
         })
 
         // Screensaver State
-        sensors.append(with(WebhookSensor(name: "HAFrame Screensaver", uniqueID: KioskSensorId.kioskScreensaverState)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Screensaver", uniqueID: KioskSensorId.kioskScreensaverState)) {
             $0.Icon = "mdi:monitor-shimmer"
             $0.State = manager.activeScreensaverMode?.rawValue ?? "inactive"
             $0.entityCategory = "diagnostic"
@@ -129,7 +129,7 @@ public final class KioskSensorProvider: SensorProvider {
 
         // Last Activity
         let dateFormatter = ISO8601DateFormatter()
-        sensors.append(with(WebhookSensor(name: "HAFrame Last Activity", uniqueID: KioskSensorId.kioskLastActivity)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Last Activity", uniqueID: KioskSensorId.kioskLastActivity)) {
             $0.Icon = "mdi:gesture-tap"
             $0.DeviceClass = .timestamp
             $0.State = dateFormatter.string(from: manager.lastActivityTime)
@@ -137,7 +137,7 @@ public final class KioskSensorProvider: SensorProvider {
         })
 
         // Last Wake Source
-        sensors.append(with(WebhookSensor(name: "HAFrame Last Wake Source", uniqueID: KioskSensorId.kioskLastWakeSource)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Last Wake Source", uniqueID: KioskSensorId.kioskLastWakeSource)) {
             $0.Icon = "mdi:power-standby"
             $0.State = manager.lastWakeSource
             $0.entityCategory = "diagnostic"
@@ -145,7 +145,7 @@ public final class KioskSensorProvider: SensorProvider {
 
         // App State (with away tracking from AppLauncherManager)
         let launcher = AppLauncherManager.shared
-        sensors.append(with(WebhookSensor(name: "HAFrame App State", uniqueID: KioskSensorId.kioskAppState)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk App State", uniqueID: KioskSensorId.kioskAppState)) {
             $0.Icon = iconForAppState(launcher.appState)
             $0.State = launcher.sensorState
             $0.Attributes = launcher.sensorAttributes
@@ -153,7 +153,7 @@ public final class KioskSensorProvider: SensorProvider {
         })
 
         // Orientation
-        sensors.append(with(WebhookSensor(name: "HAFrame Orientation", uniqueID: KioskSensorId.kioskOrientation)) {
+        sensors.append(with(WebhookSensor(name: "Kiosk Orientation", uniqueID: KioskSensorId.kioskOrientation)) {
             $0.Icon = iconForOrientation(manager.currentOrientation)
             $0.State = manager.currentOrientation.rawValue
             $0.entityCategory = "diagnostic"
@@ -161,7 +161,7 @@ public final class KioskSensorProvider: SensorProvider {
 
         // Tamper Detection (binary sensor)
         if settings.tamperDetectionEnabled {
-            sensors.append(with(WebhookSensor(name: "HAFrame Tamper", uniqueID: KioskSensorId.kioskTamper)) {
+            sensors.append(with(WebhookSensor(name: "Kiosk Tamper", uniqueID: KioskSensorId.kioskTamper)) {
                 $0.Icon = manager.tamperDetected ? "mdi:shield-alert" : "mdi:shield-check"
                 $0.DeviceClass = .tamper
                 $0.State = manager.tamperDetected ? "on" : "off"
@@ -172,7 +172,7 @@ public final class KioskSensorProvider: SensorProvider {
         // Motion Detected (binary sensor) - only if enabled
         if settings.cameraMotionEnabled && settings.reportMotionToHA {
             let cameraManager = CameraDetectionManager.shared
-            sensors.append(with(WebhookSensor(name: "HAFrame Motion", uniqueID: KioskSensorId.kioskMotionDetected)) {
+            sensors.append(with(WebhookSensor(name: "Kiosk Motion", uniqueID: KioskSensorId.kioskMotionDetected)) {
                 $0.Icon = cameraManager.motionDetected ? "mdi:motion-sensor" : "mdi:motion-sensor-off"
                 $0.DeviceClass = .motion
                 $0.State = cameraManager.motionSensorState
@@ -184,7 +184,7 @@ public final class KioskSensorProvider: SensorProvider {
         // Presence Detected (binary sensor) - only if enabled
         if settings.cameraPresenceEnabled && settings.reportPresenceToHA {
             let cameraManager = CameraDetectionManager.shared
-            sensors.append(with(WebhookSensor(name: "HAFrame Presence", uniqueID: KioskSensorId.kioskPresenceDetected)) {
+            sensors.append(with(WebhookSensor(name: "Kiosk Presence", uniqueID: KioskSensorId.kioskPresenceDetected)) {
                 $0.Icon = cameraManager.presenceDetected ? "mdi:account-check" : "mdi:account-off"
                 $0.DeviceClass = .occupancy
                 $0.State = cameraManager.presenceSensorState
@@ -198,7 +198,7 @@ public final class KioskSensorProvider: SensorProvider {
             let audioDetector = AmbientAudioDetector.shared
             var audioAttrs = audioDetector.sensorAttributes
             audioAttrs["state_class"] = "measurement"
-            sensors.append(with(WebhookSensor(name: "HAFrame Ambient Audio", uniqueID: KioskSensorId.kioskAmbientAudio)) {
+            sensors.append(with(WebhookSensor(name: "Kiosk Ambient Audio", uniqueID: KioskSensorId.kioskAmbientAudio)) {
                 $0.Icon = audioDetector.loudAudioDetected ? "mdi:volume-high" : "mdi:volume-medium"
                 $0.State = audioDetector.audioLevelPercent
                 $0.UnitOfMeasurement = "%"

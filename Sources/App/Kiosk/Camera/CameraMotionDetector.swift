@@ -43,7 +43,7 @@ public final class CameraMotionDetector: NSObject, ObservableObject {
     private var settings: KioskSettings { KioskModeManager.shared.settings }
     private var captureSession: AVCaptureSession?
     private var videoOutput: AVCaptureVideoDataOutput?
-    private let processingQueue = DispatchQueue(label: "com.haframe.motion", qos: .userInitiated)
+    private let processingQueue = DispatchQueue(label: "com.homeassistant.kiosk.motion", qos: .userInitiated)
 
     private var previousFrame: CIImage?
     private var motionThreshold: Float = 0.02 // Adjustable based on sensitivity

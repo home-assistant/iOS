@@ -1,27 +1,12 @@
-# Kiosk Mode Changelog
+# Kiosk Mode Feature
 
-This document tracks changes specific to Kiosk Mode that diverge from the upstream Home Assistant iOS app.
-
-**Base:** Home Assistant Companion iOS (imported, no direct git lineage)
-**Upstream:** https://github.com/home-assistant/iOS
+This document describes the Kiosk Mode feature for dedicated Home Assistant display devices.
 
 ---
 
-## App Identity Changes
+## Overview
 
-These changes differentiate Kiosk Mode from the official HA app for testing purposes:
-
-- **App Name:** Changed to "Home Assistant Δ" (delta symbol indicates fork)
-- **Bundle ID:** `com.kiosk-mode.HomeAssistant`
-- **Signing Team:** KG2Y5YM34S
-
----
-
-## Notification Handling Changes
-
-- **Direct WebSocket Local Push:** Removed PushProvider Network Extension (requires Apple entitlement). Uses `NotificationManagerLocalPushInterfaceDirect` for WebSocket-based local push when app is in foreground.
-- **Command Notifications:** Added support for `command_*` notifications that execute silently (no banner)
-- **WebSocket Reconnection:** Added automatic reconnection when app returns to foreground after device sleep
+Kiosk Mode transforms iOS devices into dedicated wall-mounted displays for Home Assistant. It provides screen management, navigation lockdown, and remote control capabilities through notification commands.
 
 ---
 
@@ -92,40 +77,37 @@ These changes differentiate Kiosk Mode from the official HA app for testing purp
 
 ---
 
-## Bug Fixes (Kiosk Mode-specific)
-
-- Fixed camera popup touch handling (UIKit/SwiftUI passthrough)
-- Fixed settings persistence across app updates (app group migration)
-- Fixed double PIN prompt when exiting kiosk mode
-- Fixed FaceID authentication flow when no PIN set
-- Fixed screensaver triggering while user standing in front
-- Fixed camera motion/person detection not waking from screensaver
-
----
-
-## Files Added/Modified
+## Files Added
 
 ### New Kiosk Files
 ```
 Sources/App/Kiosk/
 ├── KioskModeManager.swift
+├── KioskSettings.swift
+├── KioskConstants.swift
 ├── Settings/
-│   ├── KioskSettings.swift
 │   ├── KioskSettingsView.swift
-│   └── ScreensaverConfigView.swift
+│   ├── ScreensaverConfigView.swift
+│   ├── DashboardConfigurationView.swift
+│   └── EntityTriggersView.swift
 ├── Screensaver/
 │   ├── ScreensaverViewController.swift
 │   ├── ClockScreensaverView.swift
 │   ├── PhotoScreensaverView.swift
-│   └── CustomURLScreensaverView.swift
+│   ├── CustomURLScreensaverView.swift
+│   ├── PhotoManager.swift
+│   └── EntityStateProvider.swift
 ├── Camera/
 │   ├── CameraOverlayView.swift
 │   ├── CameraDetectionManager.swift
-│   └── CameraTakeoverManager.swift
+│   ├── CameraStreamViewController.swift
+│   ├── CameraMotionDetector.swift
+│   └── PresenceDetector.swift
 ├── Overlay/
 │   ├── StatusOverlayView.swift
 │   ├── EdgeProtectionView.swift
-│   └── SecretExitGestureView.swift
+│   ├── SecretExitGestureView.swift
+│   └── QuickActionsView.swift
 ├── Commands/
 │   └── KioskCommandHandlers.swift
 ├── Audio/
@@ -134,9 +116,21 @@ Sources/App/Kiosk/
 ├── AppLauncher/
 │   ├── AppLauncherManager.swift
 │   └── QuickLaunchPanelView.swift
-└── Dashboard/
-    ├── DashboardManager.swift
-    └── EntityTriggerManager.swift
+├── Dashboard/
+│   └── DashboardManager.swift
+├── Triggers/
+│   └── EntityTriggerManager.swift
+├── Security/
+│   ├── SecurityManager.swift
+│   ├── SettingsManager.swift
+│   ├── TamperDetectionManager.swift
+│   ├── GuidedAccessManager.swift
+│   ├── BatteryManager.swift
+│   └── CrashRecoveryManager.swift
+└── Utilities/
+    ├── IconMapper.swift
+    ├── TouchFeedbackManager.swift
+    └── AnimationUtilities.swift
 ```
 
 ### Modified Files
@@ -144,29 +138,4 @@ Sources/App/Kiosk/
 - `Sources/App/WebView/Extensions/WebViewController+Kiosk.swift` - Kiosk extensions
 - `Sources/App/Notifications/NotificationManager.swift` - Command handling
 - `Sources/Shared/Notifications/LocalPush/LocalPushManager.swift` - Reconnection
-- Various notification interfaces for WebSocket reconnection
-
----
-
-## Syncing with Upstream
-
-To pull upstream changes:
-```bash
-git fetch upstream
-git merge upstream/main
-# Resolve conflicts, especially in notification handling
-```
-
-**High-conflict areas:**
-- `NotificationManager.swift`
-- `LocalPushManager.swift`
-- Project configuration files
-
----
-
-## Related Repositories
-
-| Repository | Purpose |
-|------------|---------|
-| [Home Assistant iOS Fork](https://github.com/nstefanelli/ha-kiosk) | iOS app (this repo) |
-| [Kiosk Mode Integration](https://github.com/nstefanelli/haframe-integration) | HA custom component + blueprints |
+- `Sources/Shared/Notifications/NotificationCommands/NotificationsCommandManager.swift` - Command parsing

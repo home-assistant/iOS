@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 
 // MARK: - Settings Manager
 
-/// Manages settings export and import for HAFrame
+/// Manages settings export and import for kiosk mode
 @MainActor
 public final class SettingsManager: ObservableObject {
     // MARK: - Singleton
@@ -20,7 +20,7 @@ public final class SettingsManager: ObservableObject {
 
     // MARK: - Private Properties
 
-    private let exportFileType = UTType(filenameExtension: "haframe") ?? .json
+    private let exportFileType = UTType(filenameExtension: "kioskconfig") ?? .json
 
     // MARK: - Initialization
 
@@ -60,7 +60,7 @@ public final class SettingsManager: ObservableObject {
     public func exportSettingsFile() -> URL? {
         guard let data = exportSettings() else { return nil }
 
-        let fileName = "HAFrame_Settings_\(dateFormatter.string(from: Date())).haframe"
+        let fileName = "Kiosk_Settings_\(dateFormatter.string(from: Date())).kioskconfig"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
 
         do {
@@ -207,7 +207,7 @@ public struct SettingsTransferView: View {
                 } header: {
                     Text("Export")
                 } footer: {
-                    Text("Export your current settings to share with another HAFrame device or for backup.")
+                    Text("Export your current settings to share with another device or for backup.")
                 }
 
                 Section {
@@ -273,7 +273,7 @@ public struct SettingsTransferView: View {
         }
         .fileImporter(
             isPresented: $showImportPicker,
-            allowedContentTypes: [.json, UTType(filenameExtension: "haframe") ?? .json],
+            allowedContentTypes: [.json, UTType(filenameExtension: "kioskconfig") ?? .json],
             allowsMultipleSelection: false
         ) { result in
             handleImport(result)

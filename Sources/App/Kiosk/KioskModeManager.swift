@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - Kiosk Mode Manager
 
-/// Central singleton managing all HAFrame kiosk functionality
+/// Central singleton managing all kiosk functionality
 /// Coordinates screen state, screensaver, brightness, entity triggers, and HA communication
 @MainActor
 public final class KioskModeManager: ObservableObject {
@@ -767,7 +767,7 @@ public final class KioskModeManager: ObservableObject {
 
     // MARK: - Settings Persistence
 
-    private static let settingsKey = "haframe_kiosk_settings"
+    private static let settingsKey = "kiosk_mode_settings"
 
     /// App group UserDefaults for settings persistence across app updates
     private static var defaults: UserDefaults {

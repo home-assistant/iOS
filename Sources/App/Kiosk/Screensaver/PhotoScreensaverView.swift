@@ -168,7 +168,7 @@ public struct PhotoScreensaverView: View {
                 .font(.headline)
                 .foregroundColor(.white.opacity(0.8))
 
-            Text("Configure photo sources in HAFrame settings")
+            Text("Configure photo sources in kiosk settings")
                 .font(.caption)
                 .foregroundColor(.white.opacity(0.5))
         }
@@ -186,7 +186,7 @@ public struct PhotoScreensaverView: View {
                 .font(.title2.weight(.semibold))
                 .foregroundColor(.white)
 
-            Text("HAFrame needs access to your photos to display them as a screensaver.")
+            Text("The app needs access to your photos to display them as a screensaver.")
                 .font(.body)
                 .foregroundColor(.white.opacity(0.7))
                 .multilineTextAlignment(.center)

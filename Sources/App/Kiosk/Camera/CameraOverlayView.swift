@@ -575,7 +575,7 @@ public final class CameraOverlayManager: ObservableObject {
         _ = try? await api.connection.send(.init(
             type: "fire_event",
             data: [
-                "event_type": "haframe_doorbell_answered",
+                "event_type": "kiosk_doorbell_answered",
                 "event_data": [
                     "camera_entity_id": stream.entityId,
                     "stream_name": stream.name,
@@ -709,7 +709,7 @@ public final class CameraOverlayManager: ObservableObject {
             _ = try? await api.connection.send(.init(
                 type: "fire_event",
                 data: [
-                    "event_type": "haframe_snapshot_taken",
+                    "event_type": "kiosk_snapshot_taken",
                     "event_data": [
                         "camera_entity_id": stream.entityId,
                         "filename": filename,

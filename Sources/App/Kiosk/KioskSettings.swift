@@ -3,7 +3,7 @@ import UIKit
 
 // MARK: - Main Settings Container
 
-/// Complete settings model for HAFrame kiosk mode
+/// Complete settings model for kiosk mode
 /// All settings are Codable for persistence and HA integration sync
 public struct KioskSettings: Codable, Equatable {
 

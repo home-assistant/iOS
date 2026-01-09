@@ -207,19 +207,19 @@ struct HandlerLaunchApp: NotificationCommandHandler {
     }
 }
 
-/// Handles `command_return` - Bring HAFrame back to foreground
+/// Handles `command_return` - Bring Home Assistant back to foreground
 struct HandlerReturn: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
         Current.Log.info("Received command_return")
 
         // Send a local notification that will bring the user back
         let content = UNMutableNotificationContent()
-        content.title = "HAFrame"
+        content.title = "Home Assistant"
         content.body = "Tap to return to your dashboard"
         content.sound = .default
 
         let request = UNNotificationRequest(
-            identifier: "haframe_return",
+            identifier: "kiosk_return",
             content: content,
             trigger: nil
         )
@@ -387,7 +387,7 @@ struct HandlerPlayAudio: NotificationCommandHandler {
 // MARK: - Registration Extension
 
 extension NotificationCommandManager {
-    /// Register all HAFrame kiosk command handlers
+    /// Register all kiosk command handlers
     /// Call this during app initialization
     public func registerKioskCommands() {
         // Screen control

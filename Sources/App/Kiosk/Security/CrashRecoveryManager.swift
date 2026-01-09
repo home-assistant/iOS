@@ -12,10 +12,10 @@ public final class CrashRecoveryManager {
 
     // MARK: - Private Properties
 
-    private let crashFlagKey = "HAFrame.didCrash"
-    private let crashCountKey = "HAFrame.crashCount"
-    private let lastCrashKey = "HAFrame.lastCrashDate"
-    private let launchTimeKey = "HAFrame.lastLaunchTime"
+    private let crashFlagKey = "KioskMode.didCrash"
+    private let crashCountKey = "KioskMode.crashCount"
+    private let lastCrashKey = "KioskMode.lastCrashDate"
+    private let launchTimeKey = "KioskMode.lastLaunchTime"
 
     private var settings: KioskSettings { KioskModeManager.shared.settings }
 
@@ -141,7 +141,7 @@ public final class CrashRecoveryManager {
     private func showCrashLoopAlert() {
         let alert = UIAlertController(
             title: "Crash Loop Detected",
-            message: "HAFrame has crashed multiple times. Kiosk mode has been temporarily disabled to allow troubleshooting.\n\nCrash count: \(crashCount)",
+            message: "The app has crashed multiple times. Kiosk mode has been temporarily disabled to allow troubleshooting.\n\nCrash count: \(crashCount)",
             preferredStyle: .alert
         )
 

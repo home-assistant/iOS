@@ -75,7 +75,7 @@ public struct CustomURLScreensaverView: View {
                 .font(.headline)
                 .foregroundColor(.white.opacity(0.8))
 
-            Text("Set a custom URL in HAFrame screensaver settings")
+            Text("Set a custom URL in kiosk screensaver settings")
                 .font(.caption)
                 .foregroundColor(.white.opacity(0.5))
                 .multilineTextAlignment(.center)

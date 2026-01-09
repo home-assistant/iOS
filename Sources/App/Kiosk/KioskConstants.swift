@@ -3,7 +3,7 @@ import Foundation
 
 // MARK: - Kiosk Constants
 
-/// Centralized constants for the HAFrame kiosk mode
+/// Centralized constants for the kiosk mode
 public enum KioskConstants {
     // MARK: - Animation Durations
 
