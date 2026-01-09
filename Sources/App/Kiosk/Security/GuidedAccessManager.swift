@@ -121,7 +121,7 @@ public final class GuidedAccessManager: ObservableObject {
     /// Check if Guided Access should be recommended
     public var shouldRecommendGuidedAccess: Bool {
         // Recommend if kiosk mode is enabled but Guided Access is not
-        return settings.isEnabled &&
+        return settings.isKioskModeEnabled &&
                settings.guidedAccessEnabled &&
                !isGuidedAccessEnabled
     }
