@@ -12,14 +12,11 @@ public struct KioskSettings: Codable, Equatable {
     /// Whether kiosk mode is currently enabled
     var isKioskModeEnabled: Bool = false
 
-    /// PIN required to exit kiosk mode (empty = no PIN)
-    var exitPIN: String = ""
-
-    /// Whether biometric (Face ID/Touch ID) can be used to exit
+    /// Whether biometric (Face ID/Touch ID) can be used to exit kiosk mode
     var allowBiometricExit: Bool = true
 
-    /// Whether device passcode can be used to exit (instead of custom PIN)
-    var allowDevicePasscodeExit: Bool = false
+    /// Whether device passcode can be used as fallback to exit
+    var allowDevicePasscodeExit: Bool = true
 
     /// Lock navigation (disable back gestures, pull-to-refresh, etc.)
     var navigationLockdown: Bool = true
