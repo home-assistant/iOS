@@ -27,6 +27,9 @@ public struct KioskSettings: Codable, Equatable {
     /// Hide iOS status bar for full immersion
     var hideStatusBar: Bool = true
 
+    /// Prevent iOS from auto-locking the screen
+    var preventAutoLock: Bool = true
+
     /// Prevent accidental edge touches
     var edgeProtection: Bool = false
 

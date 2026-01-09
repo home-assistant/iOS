@@ -146,6 +146,12 @@ public final class KioskModeManager: ObservableObject {
         // Store original brightness to restore later
         originalBrightness = Float(UIScreen.main.brightness)
 
+        // Prevent iOS from auto-locking the screen
+        if settings.preventAutoLock {
+            UIApplication.shared.isIdleTimerDisabled = true
+            Current.Log.info("Screen auto-lock disabled")
+        }
+
         // Apply settings
         applyBrightnessSchedule()
         startIdleTimer()
@@ -170,6 +176,10 @@ public final class KioskModeManager: ObservableObject {
         if let original = originalBrightness {
             UIScreen.main.brightness = CGFloat(original)
         }
+
+        // Re-enable iOS auto-lock
+        UIApplication.shared.isIdleTimerDisabled = false
+        Current.Log.info("Screen auto-lock restored")
 
         // Stop timers
         stopIdleTimer()

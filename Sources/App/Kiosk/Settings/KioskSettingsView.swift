@@ -154,6 +154,10 @@ struct KioskSettingsView: View {
                 Label("Hide Status Bar", systemImage: "rectangle.expand.vertical")
             }
 
+            Toggle(isOn: $settings.preventAutoLock) {
+                Label("Prevent Auto-Lock", systemImage: "lock.open.display")
+            }
+
             Toggle(isOn: $settings.edgeProtection) {
                 Label("Edge Touch Protection", systemImage: "rectangle.dashed")
             }
