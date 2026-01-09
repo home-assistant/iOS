@@ -31,7 +31,9 @@ struct HomeView: View {
                 .toolbar {
                     toolbarMenu
                 }
-                .background(Color.secondaryBackground)
+                .background {
+                    backgroundView
+                }
         }
         .onAppear {
             Task {
@@ -384,6 +386,18 @@ struct HomeView: View {
                     Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
                 }
             }
+        }
+    }
+
+    // MARK: - Background
+
+    @ViewBuilder
+    private var backgroundView: some View {
+        if #available(iOS 18.0, *),
+           let backgroundId = viewModel.configuration.selectedBackgroundId {
+            HomeViewBackgroundView(backgroundId: backgroundId)
+        } else {
+            Color.secondaryBackground
         }
     }
 }
