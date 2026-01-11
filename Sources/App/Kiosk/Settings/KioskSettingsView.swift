@@ -189,8 +189,12 @@ struct KioskSettingsView: View {
                 }
             }
 
-            Toggle(isOn: $settings.appendKioskParameter) {
-                Label("Kiosk Mode URL", systemImage: "rectangle.on.rectangle.slash")
+            Toggle(isOn: $settings.nativeDashboardKioskMode) {
+                Label("Dashboard Kiosk Mode", systemImage: "rectangle.on.rectangle.slash")
+            }
+
+            Toggle(isOn: $settings.appendHACSKioskParameter) {
+                Label("HACS Kiosk Mode URL", systemImage: "link.badge.plus")
             }
 
             Button {
@@ -220,9 +224,13 @@ struct KioskSettingsView: View {
         } header: {
             Text("Dashboard")
         } footer: {
-            Text(settings.appendKioskParameter
-                 ? "Kiosk Mode URL appends ?kiosk to hide the HA sidebar/header (requires kiosk-mode HACS integration)."
-                 : "Select a dashboard from Home Assistant or enter a custom path.")
+            if settings.nativeDashboardKioskMode {
+                Text("Dashboard Kiosk Mode hides the HA sidebar and header (requires HA 2026.1+).")
+            } else if settings.appendHACSKioskParameter {
+                Text("HACS Kiosk Mode URL appends ?kiosk to URLs (requires kiosk-mode HACS integration).")
+            } else {
+                Text("Select a dashboard from Home Assistant or enter a custom path.")
+            }
         }
     }
 

@@ -116,6 +116,10 @@ extension WebViewController {
         // Apply initial state if already in kiosk mode
         if manager.isKioskModeActive {
             updateKioskModeLockdown(enabled: true)
+            // Send native kiosk mode command if enabled
+            if manager.settings.nativeDashboardKioskMode {
+                sendNativeKioskModeCommand(enabled: true)
+            }
         }
 
         // Report current dashboard URL
@@ -285,6 +289,11 @@ extension WebViewController {
         let enabled = manager.isKioskModeActive
         updateKioskModeLockdown(enabled: enabled)
 
+        // Send native kiosk mode command to HA frontend (requires HA 2026.1+)
+        if manager.settings.nativeDashboardKioskMode {
+            sendNativeKioskModeCommand(enabled: enabled)
+        }
+
         // Update status bar visibility
         setNeedsStatusBarAppearanceUpdate()
 
@@ -318,9 +327,16 @@ extension WebViewController {
 
     @MainActor
     private func kioskSettingsDidChange() {
+        let manager = KioskModeManager.shared
+        let enabled = manager.isKioskModeActive
+
         // Re-apply lockdown in case navigationLockdown setting changed
-        let enabled = KioskModeManager.shared.isKioskModeActive
         updateKioskModeLockdown(enabled: enabled)
+
+        // Update native kiosk mode state if setting changed while in kiosk mode
+        if enabled {
+            sendNativeKioskModeCommand(enabled: manager.settings.nativeDashboardKioskMode)
+        }
 
         // Update status bar visibility if hideStatusBar setting changed
         setNeedsStatusBarAppearanceUpdate()
@@ -517,5 +533,19 @@ extension WebViewController {
         AudioManager.shared.stopSpeaking()
         CameraOverlayManager.shared.dismiss()
         CameraTakeoverManager.shared.dismissCamera()
+    }
+}
+
+// MARK: - Native Kiosk Mode (HA 2026.1+)
+
+extension WebViewController {
+    /// Send native kiosk mode command to HA frontend
+    /// This uses the kiosk_mode/set external bus command added in HA 2026.1
+    func sendNativeKioskModeCommand(enabled: Bool) {
+        Current.Log.info("Sending native kiosk mode command: enable=\(enabled)")
+        webViewExternalMessageHandler.sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.kioskModeSet.rawValue,
+            payload: ["enable": enabled]
+        )).cauterize()
     }
 }

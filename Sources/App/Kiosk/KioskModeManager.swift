@@ -298,7 +298,7 @@ public final class KioskModeManager: ObservableObject {
 
         // Apply kiosk parameter if enabled
         var finalPath = path
-        if settings.appendKioskParameter && !path.contains("kiosk") {
+        if settings.appendHACSKioskParameter && !path.contains("kiosk") {
             if path.contains("?") {
                 finalPath = "\(path)&kiosk"
             } else {

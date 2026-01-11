@@ -346,7 +346,7 @@ extension DashboardManager {
     /// Apply kiosk parameter to URL if enabled
     /// Appends ?kiosk or &kiosk to the URL for the kiosk-mode HACS integration
     public func applyKioskParameter(to url: String) -> String {
-        guard settings.appendKioskParameter else { return url }
+        guard settings.appendHACSKioskParameter else { return url }
 
         // Don't add if already present
         if url.contains("kiosk") { return url }

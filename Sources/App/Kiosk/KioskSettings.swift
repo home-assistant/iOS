@@ -38,8 +38,11 @@ public struct KioskSettings: Codable, Equatable {
     /// Primary dashboard URL/path
     var primaryDashboardURL: String = ""
 
+    /// Enable native HA kiosk mode (hides sidebar/header, requires HA 2026.1+)
+    var nativeDashboardKioskMode: Bool = false
+
     /// Append ?kiosk to dashboard URLs (for kiosk-mode HACS integration)
-    var appendKioskParameter: Bool = false
+    var appendHACSKioskParameter: Bool = false
 
     /// All configured dashboards
     var dashboards: [DashboardConfig] = []
@@ -341,7 +344,7 @@ public struct KioskSettings: Codable, Equatable {
     var secretExitGestureEnabled: Bool = true
 
     /// Corner for secret exit gesture
-    var secretExitGestureCorner: ScreenCorner = .topLeft
+    var secretExitGestureCorner: ScreenCorner = .topRight
 
     /// Number of taps required for secret exit gesture
     var secretExitGestureTaps: Int = 3
