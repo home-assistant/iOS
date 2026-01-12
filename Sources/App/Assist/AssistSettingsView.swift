@@ -10,6 +10,7 @@ struct AssistSettingsView: View {
     @AppStorage("enableAssistOnDeviceSTT") private var enableOnDeviceSTT = false
     @AppStorage("enableAssistModernUI") private var enableModernUI = false
     @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
+    @AppStorage("assistMuteTTS") private var muteTTS = false
 
     private var selectedTheme: Binding<ModernAssistTheme> {
         Binding(
@@ -26,6 +27,12 @@ struct AssistSettingsView: View {
 //                } footer: {
 //                    Text(L10n.Assist.Settings.OnDeviceStt.footer)
 //                }
+
+                Section {
+                    Toggle(L10n.Assist.Settings.TtsMute.toggle, isOn: $muteTTS)
+                } footer: {
+                    Text(L10n.Assist.Settings.TtsMute.footer)
+                }
 
                 Section {
                     Toggle(L10n.Assist.Settings.ModernUi.toggle, isOn: $enableModernUI)

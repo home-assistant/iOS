@@ -280,6 +280,16 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
+        // Check if TTS is muted in settings
+        let muteTTS = UserDefaults.standard.bool(forKey: "assistMuteTTS")
+        
+        if muteTTS {
+            Current.Log.info("TTS is muted by user setting, skipping audio playback")
+            // Still call the delegate method for volumeIsZero to continue conversation if needed
+            startRecordingAgainIfNeeded()
+            return
+        }
+        
         audioPlayer.delegate = self
         audioPlayer.play(url: mediaUrl)
     }
