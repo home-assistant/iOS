@@ -621,7 +621,6 @@
 		4210CCD92F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */; };
 		4210CCDB2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */; };
 		4210CCDD2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */; };
-		4210CCE72F152A9B00B71FB9 /* CameraHLSPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCE62F152A9B00B71FB9 /* CameraHLSPlayerView.swift */; };
 		4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */; };
 		4210CCEF2F152ED800B71FB9 /* CameraStreamHLSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */; };
 		4210CCF32F1532C400B71FB9 /* CameraMJPEGPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */; };
@@ -2288,7 +2287,6 @@
 		4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerVideoView.swift; sourceTree = "<group>"; };
 		4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewControls.swift; sourceTree = "<group>"; };
 		4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewController.swift; sourceTree = "<group>"; };
-		4210CCE62F152A9B00B71FB9 /* CameraHLSPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraHLSPlayerView.swift; sourceTree = "<group>"; };
 		4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPlayerView.swift; sourceTree = "<group>"; };
 		4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSView.swift; sourceTree = "<group>"; };
 		4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMJPEGPlayerView.swift; sourceTree = "<group>"; };
@@ -3953,8 +3951,6 @@
 			isa = PBXGroup;
 			children = (
 				42D6EABC2F0FF98F00FA249B /* ExternalMessageBus */,
-				428863542EF963FF00319CF4 /* CameraList */,
-				425390DC2E05B41F00E24EDD /* WebRTC */,
 				11EFCDD224F5F39100314D85 /* WebViewWindowController.swift */,
 				11DE822D24FAC51000E636B8 /* IncomingURLHandler.swift */,
 				42AF759C2DDB5AC000ACDF45 /* Extensions */,
@@ -4719,6 +4715,30 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
+		4210CCF62F153B7D00B71FB9 /* Cameras */ = {
+			isa = PBXGroup;
+			children = (
+				428863542EF963FF00319CF4 /* CameraList */,
+				425390DC2E05B41F00E24EDD /* CameraPlayer */,
+			);
+			path = Cameras;
+			sourceTree = "<group>";
+		};
+		4210CCF72F153BC900B71FB9 /* WebRTC */ = {
+			isa = PBXGroup;
+			children = (
+				42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */,
+				42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */,
+				42DC44352E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift */,
+				425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */,
+				425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */,
+				4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */,
+				4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */,
+				4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */,
+			);
+			path = WebRTC;
+			sourceTree = "<group>";
+		};
 		4211551F2D3525E800A71630 /* AppIcon */ = {
 			isa = PBXGroup;
 			children = (
@@ -4933,23 +4953,15 @@
 			path = MagicItem;
 			sourceTree = "<group>";
 		};
-		425390DC2E05B41F00E24EDD /* WebRTC */ = {
+		425390DC2E05B41F00E24EDD /* CameraPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				4210CCE62F152A9B00B71FB9 /* CameraHLSPlayerView.swift */,
-				4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */,
+				4210CCF72F153BC900B71FB9 /* WebRTC */,
 				4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */,
-				42D57FC12E0589DE0061FF3B /* WebRTCClient.swift */,
-				42DC44342E1C0791001046C1 /* WebRTCVideoPlayerView.swift */,
-				42DC44352E1C0791001046C1 /* WebRTCVideoPlayerViewControls.swift */,
-				425390D82E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift */,
-				425390D92E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift */,
-				4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */,
-				4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */,
-				4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */,
+				4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */,
 				4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */,
 			);
-			path = WebRTC;
+			path = CameraPlayer;
 			sourceTree = "<group>";
 		};
 		425573C52B55729E00145217 /* Servers */ = {
@@ -6660,6 +6672,7 @@
 		B657A8E81CA646EB00121384 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				4210CCF62F153B7D00B71FB9 /* Cameras */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				11A183B22511BCF300CA326A /* LifecycleManager.swift */,
 				422F951E2CFDF7C5003B7514 /* HAApplicationShortcutItem.swift */,
@@ -9148,7 +9161,6 @@
 				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
-				4210CCE72F152A9B00B71FB9 /* CameraHLSPlayerView.swift in Sources */,
 				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
