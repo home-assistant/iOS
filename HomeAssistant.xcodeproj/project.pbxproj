@@ -624,6 +624,7 @@
 		4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */; };
 		4210CCEF2F152ED800B71FB9 /* CameraStreamHLSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */; };
 		4210CCF32F1532C400B71FB9 /* CameraMJPEGPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */; };
+		4210CD0C2F15842A00B71FB9 /* DoorbellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD0B2F15842A00B71FB9 /* DoorbellView.swift */; };
 		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
 		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421155252D355C6700A71630 /* WidgetBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155242D355C6700A71630 /* WidgetBuilderView.swift */; };
@@ -2290,6 +2291,7 @@
 		4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPlayerView.swift; sourceTree = "<group>"; };
 		4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSView.swift; sourceTree = "<group>"; };
 		4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMJPEGPlayerView.swift; sourceTree = "<group>"; };
+		4210CD0B2F15842A00B71FB9 /* DoorbellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoorbellView.swift; sourceTree = "<group>"; };
 		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* WidgetBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderView.swift; sourceTree = "<group>"; };
@@ -4735,6 +4737,7 @@
 				4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */,
 				4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */,
 				4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */,
+				4210CD0B2F15842A00B71FB9 /* DoorbellView.swift */,
 			);
 			path = WebRTC;
 			sourceTree = "<group>";
@@ -9158,6 +9161,7 @@
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				42D5ACCC2C636F1F00D9C4E2 /* WatchConfigurationView.swift in Sources */,
+				4210CD0C2F15842A00B71FB9 /* DoorbellView.swift in Sources */,
 				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
