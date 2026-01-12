@@ -59,11 +59,7 @@ struct WebRTCPlayerVideoView: View {
             )
         }
         .modify { view in
-            if #available(iOS 16.0, *) {
-                view.persistentSystemOverlays(.hidden)
-            } else {
-                view
-            }
+            view.persistentSystemOverlays(.hidden)
         }
     }
 
