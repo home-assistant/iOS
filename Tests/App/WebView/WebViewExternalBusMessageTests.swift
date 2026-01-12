@@ -26,8 +26,10 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusMessage.scanForImprov.rawValue, "improv/scan")
         XCTAssertEqual(WebViewExternalBusMessage.improvConfigureDevice.rawValue, "improv/configure_device")
         XCTAssertEqual(WebViewExternalBusMessage.focusElement.rawValue, "focus_element")
+        XCTAssertEqual(WebViewExternalBusMessage.toastShow.rawValue, "toast/show")
+        XCTAssertEqual(WebViewExternalBusMessage.toastHide.rawValue, "toast/hide")
 
-        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 17)
+        XCTAssertEqual(WebViewExternalBusMessage.allCases.count, 19)
     }
 
     func testExternalBusOutgoingMessageKeys() {
@@ -48,7 +50,7 @@ final class WebViewExternalBusMessageTests: XCTestCase {
         XCTAssertEqual(WebViewExternalBusOutgoingMessage.allCases.count, 7)
     }
 
-    func testConfigResultIncludesAllExpectedKeys() {
+    @MainActor func testConfigResultIncludesAllExpectedKeys() {
         let result = WebViewExternalBusMessage.configResult
 
         // Expected keys currently defined in WebViewExternalBusMessage.configResult
