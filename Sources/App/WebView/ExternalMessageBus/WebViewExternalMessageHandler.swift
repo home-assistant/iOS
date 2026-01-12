@@ -2,9 +2,12 @@ import CoreBluetooth
 import Foundation
 import Improv_iOS
 import PromiseKit
+import SFSafeSymbols
 @preconcurrency import Shared
 import SwiftMessages
 import SwiftUI
+
+// MARK: - Protocol
 
 protocol WebViewExternalMessageHandlerProtocol {
     var webViewController: WebViewControllerProtocol? { get set }
@@ -147,6 +150,19 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 handleElementFocus(elementId: elementId)
+            case .toastShow:
+                guard let toastPayload = ToastShowPayload(payload: incomingMessage.Payload) else {
+                    Current.Log
+                        .error("Received toast/show via bus but missing or invalid parameters! \(incomingMessage)")
+                    return
+                }
+                showToast(payload: toastPayload)
+            case .toastHide:
+                guard let toastPayload = ToastHidePayload(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received toast/hide via bus but id was not string! \(incomingMessage)")
+                    return
+                }
+                hideToast(id: toastPayload.id)
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -400,6 +416,31 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         )
         view.id = "BarcodeScannerMessage"
         SwiftMessages.show(config: config, view: view)
+    }
+
+    @MainActor
+    private func showToast(payload: ToastShowPayload) {
+        if #available(iOS 18, *) {
+            ToastManager.shared.show(
+                id: payload.id,
+                symbol: .infoCircleFill,
+                symbolForegroundStyle: (.white, .accentColor),
+                title: payload.message,
+                message: "",
+                duration: payload.duration
+            )
+        } else {
+            Current.Log.verbose("Not showing toast with id \(payload.id), Toast not available on this OS version.")
+        }
+    }
+
+    @MainActor
+    private func hideToast(id: String) {
+        if #available(iOS 18, *) {
+            ToastManager.shared.hide(id: id)
+        } else {
+            Current.Log.verbose("Not hiding toast with id \(id), Toast not available on this OS version.")
+        }
     }
 
     private func cleanPreferredThreadCredentials() {

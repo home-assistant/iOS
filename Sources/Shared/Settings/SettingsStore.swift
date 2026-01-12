@@ -465,6 +465,16 @@ public class SettingsStore {
         }
     }
 
+    /// Debug option to enable toasts handled by the app instead of the web frontend
+    public var toastsHandledByApp: Bool {
+        get {
+            prefs.bool(forKey: "toastsHandledByApp")
+        }
+        set {
+            prefs.set(newValue, forKey: "toastsHandledByApp")
+        }
+    }
+
     // MARK: - Private helpers
 
     private var defaultDeviceID: String {

@@ -23,8 +23,10 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case scanForImprov = "improv/scan"
     case improvConfigureDevice = "improv/configure_device"
     case focusElement = "focus_element"
+    case toastShow = "toast/show"
+    case toastHide = "toast/hide"
 
-    static var configResult: [String: Any] {
+    @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
             "canWriteTag": Current.tags.isNFCAvailable,
@@ -37,6 +39,13 @@ enum WebViewExternalBusMessage: String, CaseIterable {
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
+            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
+                if #available(iOS 18, *), !Current.isCatalyst, Current.settingsStore.toastsHandledByApp {
+                    return ToastManager.toastComponentVersion
+                } else {
+                    return -1
+                }
+            }(),
         ]
     }
 }
