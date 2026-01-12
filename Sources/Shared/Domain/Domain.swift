@@ -5,6 +5,7 @@ import UIKit
 public enum Domain: String, CaseIterable {
     case automation
     case button
+    case climate
     case cover
     case fan
     case inputBoolean = "input_boolean"
@@ -41,6 +42,14 @@ public enum Domain: String, CaseIterable {
         case closed
         case open
 
+        // Climate HVAC modes
+        case heat
+        case cool
+        case heatCool = "heat_cool"
+        case auto
+        case dry
+        case fanOnly = "fan_only"
+
         case unknown
         case unavailable
     }
@@ -55,6 +64,12 @@ public enum Domain: String, CaseIterable {
         .locking,
         .opening,
         .closing,
+        .heat,
+        .cool,
+        .heatCool,
+        .auto,
+        .dry,
+        .fanOnly,
     ]
 
     /// States that represent a "problem" condition
@@ -66,6 +81,8 @@ public enum Domain: String, CaseIterable {
     public var states: [State] {
         var states: [State] = []
         switch self {
+        case .climate:
+            states = [.off, .heat, .cool, .heatCool, .auto, .dry, .fanOnly]
         case .cover:
             states = [.open, .closed, .opening, .closing]
         case .fan:
@@ -190,6 +207,8 @@ public enum Domain: String, CaseIterable {
             image = .robotIcon
         case .button:
             image = MaterialDesignIcons.gestureTapButtonIcon
+        case .climate:
+            image = state == .off ? .hvacOffIcon : .hvacIcon
         case .cover:
             image = imageForCover(deviceClass: deviceClass ?? .unknown, state: state ?? .unknown)
         case .fan:
@@ -296,6 +315,7 @@ public extension Domain {
         [
             .automation,
             .button,
+            .climate,
             .cover,
             .fan,
             .inputBoolean,

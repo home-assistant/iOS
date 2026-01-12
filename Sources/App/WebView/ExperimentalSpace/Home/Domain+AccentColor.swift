@@ -5,6 +5,8 @@ import SwiftUI
 public extension Domain {
     var accentColor: Color {
         switch self {
+        case .climate:
+            Color.Domain.climate
         case .light:
             Color.Domain.light
         case .switch:

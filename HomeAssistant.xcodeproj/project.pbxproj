@@ -23,6 +23,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		"'420DBEXP2F10000000000001'" = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000002; };
+		"'420DBEXP2F10000000000003'" = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000004; };
 		00C267608DCC88B783816CBF /* FanIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6888525DCF492642BA7EA3 /* FanIntent.swift */; };
 		07B254BADB23F6A60E82D615 /* Pods_iOS_Extensions_Matter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 943E024774CF54EADF771379 /* Pods_iOS_Extensions_Matter.framework */; };
 		0E5C416F94FA3717AF358B4D /* LockControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7320454AB675F1A3C1488D26 /* LockControlsView.swift */; };
@@ -593,8 +595,6 @@
 		420CFC852D3FECF6009A94F3 /* CustomWidgetTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */; };
 		420D5AE32C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
 		420D5AE42C5A860900624A08 /* LocationPermissionSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */; };
-		'420DBEXP2F10000000000001' = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000002; };
-		'420DBEXP2F10000000000003' = {isa = PBXBuildFile; fileRef = 420DBEXP2F10000000000004; };
 		420E2AE32C4746BB004921D8 /* WidgetBasicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */; };
 		420E2AE52C4746CD004921D8 /* WidgetBasicSizeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */; };
 		420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115560E227010DAB00A8F818 /* WidgetBasicButtonView.swift */; };
@@ -1200,9 +1200,11 @@
 		491E98FF25D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		491E990025D543560077BBE3 /* LogbookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491E98FE25D543560077BBE3 /* LogbookEntry.swift */; };
 		539AA1653F4BCDB61FE7C696 /* Pods_iOS_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213EF66D14F92AF8BF2E9E98 /* Pods_iOS_Shared_iOS.framework */; };
+		5A844957932F7E7B761E264B /* ClimateControlsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96B40F7ADAE3719E16ABEEF /* ClimateControlsViewModel.swift */; };
 		5B715903CB3450FE351399BC /* Pods-iOS-Extensions-Share-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 207E35C8F1554A9AD616FFA2 /* Pods-iOS-Extensions-Share-metadata.plist */; };
 		5FFBC80F835393915C4748CF /* Pods_iOS_Extensions_PushProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A370326321B07E5ACE0BCB65 /* Pods_iOS_Extensions_PushProvider.framework */; };
 		65286F3B745551AD4090EE6B /* Pods-iOS-SharedTesting-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4053903E4C54A6803204286E /* Pods-iOS-SharedTesting-metadata.plist */; };
+		674D40569194368073921283 /* ClimateControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD934EE39284CC4230EEA621 /* ClimateControlsView.swift */; };
 		6FCEBAA2C8E9C5403055E73D /* IntentFanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E2F9F8F008EEA30C533FD /* IntentFanEntity.swift */; };
 		75534CFEA817033B75766ED2 /* SimpleActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DC40FFAEE62B67A1180CE8 /* SimpleActionViewModel.swift */; };
 		78BE7D5D003D9F8C7486DD69 /* Pods_iOS_Shared_iOS_Tests_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F4DFB087A3A43F9A526B851 /* Pods_iOS_Shared_iOS_Tests_Shared.framework */; };
@@ -1797,6 +1799,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		"'420DBEXP2F10000000000002'" = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseExplorerView.swift; sourceTree = "<group>"; };
+		"'420DBEXP2F10000000000004'" = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTableDetailView.swift; sourceTree = "<group>"; };
 		0194775556E59C6E64735937 /* Pods-watchOS-Shared-watchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOS-Shared-watchOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-watchOS-Shared-watchOS/Pods-watchOS-Shared-watchOS.release.xcconfig"; sourceTree = "<group>"; };
 		05C398FF0F9BA764B69CA36B /* Pods-iOS-Extensions-NotificationService.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-NotificationService.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-NotificationService/Pods-iOS-Extensions-NotificationService.beta.xcconfig"; sourceTree = "<group>"; };
 		05E6CF2BD91E8443547F3026 /* Pods-iOS-Extensions-Today.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Today.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Today/Pods-iOS-Extensions-Today.release.xcconfig"; sourceTree = "<group>"; };
@@ -2264,8 +2268,6 @@
 		420CFC7F2D3F9D89009A94F3 /* DatabaseTables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTables.swift; sourceTree = "<group>"; };
 		420CFC832D3FECF6009A94F3 /* CustomWidgetTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWidgetTable.swift; sourceTree = "<group>"; };
 		420D5AE22C5A860900624A08 /* LocationPermissionSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionSensor.swift; sourceTree = "<group>"; };
-		'420DBEXP2F10000000000002' = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseExplorerView.swift; sourceTree = "<group>"; };
-		'420DBEXP2F10000000000004' = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTableDetailView.swift; sourceTree = "<group>"; };
 		420E2AE22C4746BB004921D8 /* WidgetBasicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicViewModel.swift; sourceTree = "<group>"; };
 		420E2AE42C4746CD004921D8 /* WidgetBasicSizeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBasicSizeStyle.swift; sourceTree = "<group>"; };
 		420E64B82D676A5800A31E86 /* WidgetsSnapshot.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsSnapshot.test.swift; sourceTree = "<group>"; };
@@ -3362,10 +3364,12 @@
 		F3E55AA06795782F04D0B261 /* Pods-iOS-Extensions-Intents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Extensions-Intents.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Extensions-Intents/Pods-iOS-Extensions-Intents.release.xcconfig"; sourceTree = "<group>"; };
 		F5184A1B9F677026F644FA04 /* InputBooleanControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InputBooleanControlsViewModel.swift; path = Sources/App/WebView/ExperimentalSpace/EntityTile/MoreInfoDialog/DomainSpecific/InputBoolean/InputBooleanControlsViewModel.swift; sourceTree = SOURCE_ROOT; };
 		F534C18A6FD4884F258341C9 /* Pods-iOS-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-iOS-Shared-iOS/Pods-iOS-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
+		F96B40F7ADAE3719E16ABEEF /* ClimateControlsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClimateControlsViewModel.swift; path = Sources/App/WebView/ExperimentalSpace/EntityTile/MoreInfoDialog/DomainSpecific/Climate/ClimateControlsViewModel.swift; sourceTree = SOURCE_ROOT; };
 		FD3BC66229B9FF8F00B19FBE /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		FD3BC66629BA003B00B19FBE /* HAEntity+CarPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAEntity+CarPlay.swift"; sourceTree = "<group>"; };
 		FD3BC66B29BA00D600B19FBE /* CarPlayEntitiesListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListTemplate.swift; sourceTree = "<group>"; };
 		FD3BC66D29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayDomainsListTemplate.swift; sourceTree = "<group>"; };
+		FD934EE39284CC4230EEA621 /* ClimateControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClimateControlsView.swift; path = Sources/App/WebView/ExperimentalSpace/EntityTile/MoreInfoDialog/DomainSpecific/Climate/ClimateControlsView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3554,6 +3558,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		"'420DBEXP2F10000000000005'" = {
+			isa = PBXGroup;
+			children = (
+				420DBEXP2F10000000000002,
+				420DBEXP2F10000000000004,
+			);
+			path = DatabaseExplorer;
+			sourceTree = "<group>";
+		};
 		1100D5222497578800B1073C /* TestNotifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -4632,15 +4645,6 @@
 				4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */,
 			);
 			path = Tables;
-			sourceTree = "<group>";
-		};
-		'420DBEXP2F10000000000005' = {
-			isa = PBXGroup;
-			children = (
-				420DBEXP2F10000000000002,
-				420DBEXP2F10000000000004,
-			);
-			path = DatabaseExplorer;
 			sourceTree = "<group>";
 		};
 		420E64B72D676A4200A31E86 /* Widgets */ = {
@@ -6590,6 +6594,8 @@
 				F5184A1B9F677026F644FA04 /* InputBooleanControlsViewModel.swift */,
 				309A412D99CED23D8061D651 /* SimpleActionView.swift */,
 				B3DC40FFAEE62B67A1180CE8 /* SimpleActionViewModel.swift */,
+				FD934EE39284CC4230EEA621 /* ClimateControlsView.swift */,
+				F96B40F7ADAE3719E16ABEEF /* ClimateControlsViewModel.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -9357,6 +9363,8 @@
 				8D214F179FE3D71CEF2FFA30 /* InputBooleanControlsViewModel.swift in Sources */,
 				99E94F28A2BC13FE01B0D1FB /* SimpleActionView.swift in Sources */,
 				75534CFEA817033B75766ED2 /* SimpleActionViewModel.swift in Sources */,
+				674D40569194368073921283 /* ClimateControlsView.swift in Sources */,
+				5A844957932F7E7B761E264B /* ClimateControlsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

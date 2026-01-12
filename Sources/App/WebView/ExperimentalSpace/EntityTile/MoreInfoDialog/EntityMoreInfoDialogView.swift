@@ -21,6 +21,8 @@ struct EntityMoreInfoDialogView: View {
         NavigationStack {
             VStack(spacing: DesignSystem.Spaces.three) {
                 switch Domain(entityId: haEntity.entityId) {
+                case .climate:
+                    climateControlsView
                 case .light:
                     lightControlsView
                 case .switch:
@@ -91,6 +93,14 @@ struct EntityMoreInfoDialogView: View {
     }
 
     // MARK: - Domain-Specific Controls
+
+    @ViewBuilder
+    private var climateControlsView: some View {
+        ClimateControlsView(
+            server: server,
+            haEntity: haEntity
+        )
+    }
 
     @ViewBuilder
     private var lightControlsView: some View {
