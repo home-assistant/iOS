@@ -50,7 +50,7 @@ struct CameraMJPEGPlayerView: View {
                     Button {
                         dismiss()
                     } label: {
-                        Image(systemName: "xmark")
+                        Image(systemSymbol: .xmark)
                             .font(.body.weight(.semibold))
                             .foregroundStyle(.white)
                             .padding(12)
@@ -71,7 +71,7 @@ struct CameraMJPEGPlayerView: View {
 
             if let errorMessage {
                 VStack(spacing: 16) {
-                    Image(systemName: "exclamationmark.triangle")
+                    Image(systemSymbol: .exclamationmarkTriangle)
                         .font(.largeTitle)
                         .foregroundStyle(.white)
                     Text(errorMessage)
