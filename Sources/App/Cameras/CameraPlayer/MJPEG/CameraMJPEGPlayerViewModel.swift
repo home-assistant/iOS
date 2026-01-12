@@ -63,15 +63,20 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
         streamer = api.VideoStreamer()
         streamer?.streamImages(fromURL: url) { [weak self] uiImage, error in
             DispatchQueue.main.async {
+                guard let self else { return }
+                
                 if let uiImage {
                     // First frame received, stream has started successfully
-                    self?.isLoading = false
-                    self?.uiImage = uiImage
+                    self.isLoading = false
+                    self.uiImage = uiImage
                 } else if let error {
+                    // Stream error occurred
                     Current.Log.error("MJPEG Stream error: \(error.localizedDescription)")
-                    self?.errorMessage = error.localizedDescription
-                    self?.isLoading = false
-                    self?.stop()
+                    self.errorMessage = error.localizedDescription
+                    self.isLoading = false
+                    self.hasStarted = false
+                    self.streamer?.cancel()
+                    self.streamer = nil
                 }
             }
         }
