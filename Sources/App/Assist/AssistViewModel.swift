@@ -20,6 +20,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     @Published var showError = false
     @Published var focusOnInput = false
     @Published var errorMessage = ""
+    @Published var configuration: AssistConfiguration
 
     private var server: Server
     private var audioRecorder: AudioRecorderProtocol
@@ -28,6 +29,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    private var configObservationCancellable: AnyDatabaseCancellable?
     
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
@@ -46,6 +48,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         self.audioPlayer = audioPlayer
         self.assistService = assistService
         self.autoStartRecording = autoStartRecording
+        self.configuration = AssistConfiguration.config
         super.init()
 
         self.audioRecorder.delegate = self
@@ -100,6 +103,26 @@ final class AssistViewModel: NSObject, ObservableObject {
 
         audioRecorder.startRecording()
         // Wait until green light from recorder delegate 'didStartRecording'
+    }
+
+    func subscribeForConfigChanges() {
+        let observation = ValueObservation.tracking { db in
+            try AssistConfiguration.fetchOne(db, key: AssistConfiguration.singletonID)
+        }
+        
+        configObservationCancellable = observation.start(
+            in: Current.database(),
+            onError: { error in
+                Current.Log.error("Failed to observe AssistConfiguration changes: \(error)")
+            },
+            onChange: { [weak self] newConfiguration in
+                guard let self else { return }
+                if let newConfiguration {
+                    self.configuration = newConfiguration
+                    Current.Log.info("AssistConfiguration updated: \(newConfiguration)")
+                }
+            }
+        )
     }
 
     private func startAssistAudioPipeline(audioSampleRate: Double) {

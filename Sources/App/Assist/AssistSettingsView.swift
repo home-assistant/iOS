@@ -6,39 +6,23 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 struct AssistSettingsView: View {
+    @StateObject private var viewModel = AssistSettingsViewModel()
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("enableAssistOnDeviceSTT") private var enableOnDeviceSTT = false
-    @AppStorage("enableAssistModernUI") private var enableModernUI = false
-    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
-    @AppStorage("assistMuteTTS") private var muteTTS = false
-
-    private var selectedTheme: Binding<ModernAssistTheme> {
-        Binding(
-            get: { ModernAssistTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant },
-            set: { selectedThemeRawValue = $0.rawValue }
-        )
-    }
 
     var body: some View {
         NavigationView {
             Form {
-//                Section {
-//                    Toggle(L10n.Assist.Settings.OnDeviceStt.toggle, isOn: $enableOnDeviceSTT)
-//                } footer: {
-//                    Text(L10n.Assist.Settings.OnDeviceStt.footer)
-//                }
-
                 Section {
-                    Toggle(L10n.Assist.Settings.TtsMute.toggle, isOn: $muteTTS)
+                    Toggle(L10n.Assist.Settings.TtsMute.toggle, isOn: $viewModel.configuration.muteTTS)
                 } footer: {
                     Text(L10n.Assist.Settings.TtsMute.footer)
                 }
 
                 Section {
-                    Toggle(L10n.Assist.Settings.ModernUi.toggle, isOn: $enableModernUI)
+                    Toggle(L10n.Assist.Settings.ModernUi.toggle, isOn: $viewModel.configuration.enableModernUI)
 
-                    if enableModernUI {
-                        Picker(L10n.Assist.Settings.ModernUi.Theme.label, selection: selectedTheme) {
+                    if viewModel.configuration.enableModernUI {
+                        Picker(L10n.Assist.Settings.ModernUi.Theme.label, selection: $viewModel.configuration.theme) {
                             ForEach(ModernAssistTheme.allCases) { theme in
                                 Text(theme.rawValue)
                                     .tag(theme)
