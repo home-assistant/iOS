@@ -660,7 +660,7 @@ public enum L10n {
       public static var noStreamAvailable: String { return L10n.tr("Localizable", "camera_player.errors.no_stream_available") }
       /// Unable to connect to Home Assistant
       public static var unableToConnectToServer: String { return L10n.tr("Localizable", "camera_player.errors.unable_to_connect_to_server") }
-      /// Uknown error
+      /// Unknown error
       public static var unknown: String { return L10n.tr("Localizable", "camera_player.errors.unknown") }
     }
   }
