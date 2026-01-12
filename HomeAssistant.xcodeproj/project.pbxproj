@@ -624,6 +624,7 @@
 		4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */; };
 		4210CCEF2F152ED800B71FB9 /* CameraStreamHLSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */; };
 		4210CCF32F1532C400B71FB9 /* CameraMJPEGPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */; };
+		4210CD092F15768A00B71FB9 /* CameraMJPEGPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD082F15768A00B71FB9 /* CameraMJPEGPlayerViewModel.swift */; };
 		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
 		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421155252D355C6700A71630 /* WidgetBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155242D355C6700A71630 /* WidgetBuilderView.swift */; };
@@ -2290,6 +2291,7 @@
 		4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPlayerView.swift; sourceTree = "<group>"; };
 		4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSView.swift; sourceTree = "<group>"; };
 		4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMJPEGPlayerView.swift; sourceTree = "<group>"; };
+		4210CD082F15768A00B71FB9 /* CameraMJPEGPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMJPEGPlayerViewModel.swift; sourceTree = "<group>"; };
 		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* WidgetBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderView.swift; sourceTree = "<group>"; };
@@ -4739,6 +4741,15 @@
 			path = WebRTC;
 			sourceTree = "<group>";
 		};
+		4210CD0A2F1576B300B71FB9 /* MJPEG */ = {
+			isa = PBXGroup;
+			children = (
+				4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */,
+				4210CD082F15768A00B71FB9 /* CameraMJPEGPlayerViewModel.swift */,
+			);
+			path = MJPEG;
+			sourceTree = "<group>";
+		};
 		4211551F2D3525E800A71630 /* AppIcon */ = {
 			isa = PBXGroup;
 			children = (
@@ -4956,10 +4967,10 @@
 		425390DC2E05B41F00E24EDD /* CameraPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				4210CD0A2F1576B300B71FB9 /* MJPEG */,
 				4210CCF72F153BC900B71FB9 /* WebRTC */,
 				4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */,
 				4210CCEE2F152ED800B71FB9 /* CameraStreamHLSView.swift */,
-				4210CCF22F1532C400B71FB9 /* CameraMJPEGPlayerView.swift */,
 			);
 			path = CameraPlayer;
 			sourceTree = "<group>";
@@ -9415,6 +9426,7 @@
 				1168BF33271809C600DD4D15 /* OnboardingAuthError.swift in Sources */,
 				4238E8532EB0D41200BDF010 /* ConnectionSecurityLevelBlockView.swift in Sources */,
 				42F1DA632B4D54CB002729BC /* CarPlayTemplateProvider.swift in Sources */,
+				4210CD092F15768A00B71FB9 /* CameraMJPEGPlayerViewModel.swift in Sources */,
 				4206FFBA2DAD58DB0087626C /* ConnectionInfo+WebView.swift in Sources */,
 				42C0FD0A2DDB2047001016D6 /* AVMetadataObject.ObjectType+HA.swift in Sources */,
 			);
