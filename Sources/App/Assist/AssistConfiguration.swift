@@ -52,7 +52,7 @@ struct AssistConfiguration: Codable, Identifiable, Equatable, FetchableRecord, P
     func save() {
         do {
             try Current.database().write { db in
-                try self.save(db, onConflict: .replace)
+                try save(db, onConflict: .replace)
             }
         } catch {
             Current.Log.error("Failed to save AssistConfiguration: \(error)")

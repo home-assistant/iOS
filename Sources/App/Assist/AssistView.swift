@@ -1,5 +1,5 @@
-import SFSafeSymbols
 import GRDB
+import SFSafeSymbols
 import Shared
 import SwiftUI
 

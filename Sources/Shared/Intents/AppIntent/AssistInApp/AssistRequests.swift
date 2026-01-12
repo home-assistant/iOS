@@ -7,11 +7,12 @@ public enum AssistRequests {
         preferredPipelineId: String?,
         audioSampleRate: Double,
         conversationId: String?,
-        hassDeviceId: String?
+        hassDeviceId: String?,
+        tts: Bool
     ) -> HATypedSubscription<AssistResponse> {
         var data: [String: Any] = [
             "start_stage": "stt",
-            "end_stage": "tts",
+            "end_stage": tts ? "tts" : "intent",
             "input": [
                 "sample_rate": audioSampleRate,
             ],

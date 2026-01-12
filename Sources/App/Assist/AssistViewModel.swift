@@ -30,7 +30,7 @@ final class AssistViewModel: NSObject, ObservableObject {
 
     private(set) var canSendAudioData = false
     private var configObservationCancellable: AnyDatabaseCancellable?
-    
+
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
     static let ttsMuteKey = "assistMuteTTS"
 
@@ -109,7 +109,7 @@ final class AssistViewModel: NSObject, ObservableObject {
         let observation = ValueObservation.tracking { db in
             try AssistConfiguration.fetchOne(db, key: AssistConfiguration.singletonID)
         }
-        
+
         configObservationCancellable = observation.start(
             in: Current.database(),
             onError: { error in
@@ -118,7 +118,7 @@ final class AssistViewModel: NSObject, ObservableObject {
             onChange: { [weak self] newConfiguration in
                 guard let self else { return }
                 if let newConfiguration {
-                    self.configuration = newConfiguration
+                    configuration = newConfiguration
                     Current.Log.info("AssistConfiguration updated: \(newConfiguration)")
                 }
             }
@@ -129,7 +129,8 @@ final class AssistViewModel: NSObject, ObservableObject {
         assistService.assist(
             source: .audio(
                 pipelineId: preferredPipelineId.isEmpty ? pipelines.first?.id : preferredPipelineId,
-                audioSampleRate: audioSampleRate
+                audioSampleRate: audioSampleRate,
+                tts: !configuration.muteTTS
             )
         )
     }
@@ -308,14 +309,14 @@ extension AssistViewModel: AssistServiceDelegate {
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         // Check if TTS is muted in settings
         let muteTTS = UserDefaults.standard.bool(forKey: Self.ttsMuteKey)
-        
+
         if muteTTS {
             Current.Log.info("TTS is muted by user setting, skipping audio playback")
             // Check if we should continue the conversation (e.g., for follow-up questions)
             startRecordingAgainIfNeeded()
             return
         }
-        
+
         audioPlayer.delegate = self
         audioPlayer.play(url: mediaUrl)
     }

@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 final class AssistSettingsViewModel: ObservableObject {
     @Published var configuration: AssistConfiguration

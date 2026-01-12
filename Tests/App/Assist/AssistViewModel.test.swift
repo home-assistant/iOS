@@ -122,12 +122,12 @@ final class AssistViewModelTests: XCTestCase {
     func testDidReceiveTtsMediaUrlWhenMuted() {
         // Set TTS muted in UserDefaults
         UserDefaults.standard.set(true, forKey: AssistViewModel.ttsMuteKey)
-        
+
         sut.didReceiveTtsMediaUrl(URL(string: "https://google.com")!)
-        
+
         // Audio should not be played when muted
         XCTAssertFalse(mockAudioPlayer.playCalled)
-        
+
         // Clean up
         UserDefaults.standard.removeObject(forKey: AssistViewModel.ttsMuteKey)
     }
