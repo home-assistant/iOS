@@ -1408,6 +1408,6 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "camera_list.unavailable.title" = "Not Available on Mac";
 "camera_list.unavailable.message" = "Camera streaming is not available on Mac.";
 "webrtc_player.known_issues.title" = "Known Issues";
-"camera_player.errors.unknown" = "Uknown error";
+"camera_player.errors.unknown" = "Unknown error";
 "camera_player.errors.unable_to_connect_to_server" = "Unable to connect to Home Assistant";
 "camera_player.errors.no_stream_available" = "No stream available";
