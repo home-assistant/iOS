@@ -1,8 +1,8 @@
 import Shared
 import SwiftUI
 
-/// A camera player view that automatically falls back from WebRTC to HLS
-/// when the camera doesn't support WebRTC streaming.
+/// A camera player view that automatically falls back from WebRTC to HLS to MJPEG
+/// when a streaming method is not supported.
 @available(iOS 16.0, *)
 struct CameraPlayerView: View {
     private let server: Server
@@ -14,6 +14,7 @@ struct CameraPlayerView: View {
     enum PlayerType {
         case webRTC
         case hls
+        case mjpeg
     }
 
     init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
@@ -38,6 +39,15 @@ struct CameraPlayerView: View {
                 CameraStreamHLSView(
                     server: server,
                     cameraEntityId: cameraEntityId,
+                    cameraName: cameraName,
+                    onHLSUnsupported: {
+                        fallbackToMJPEG()
+                    }
+                )
+            case .mjpeg:
+                CameraMJPEGPlayerView(
+                    server: server,
+                    cameraEntityId: cameraEntityId,
                     cameraName: cameraName
                 )
             }
@@ -48,6 +58,13 @@ struct CameraPlayerView: View {
         Current.Log.info("Camera \(cameraEntityId) does not support WebRTC, falling back to HLS")
         withAnimation {
             playerType = .hls
+        }
+    }
+
+    private func fallbackToMJPEG() {
+        Current.Log.info("Camera \(cameraEntityId) does not support HLS, falling back to MJPEG")
+        withAnimation {
+            playerType = .mjpeg
         }
     }
 }

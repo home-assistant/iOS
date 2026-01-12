@@ -10,15 +10,23 @@ struct CameraStreamHLSView: View {
     private let server: Server
     private let cameraEntityId: String
     private let cameraName: String?
+    private let onHLSUnsupported: (() -> Void)?
 
     @State private var player: AVPlayer?
     @State private var isLoading = true
     @State private var errorMessage: String?
+    @State private var hasCalledFallback = false
 
-    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        cameraName: String? = nil,
+        onHLSUnsupported: (() -> Void)? = nil
+    ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
+        self.onHLSUnsupported = onHLSUnsupported
     }
 
     var body: some View {
@@ -65,7 +73,8 @@ struct CameraStreamHLSView: View {
                     .scaleEffect(1.5)
             }
 
-            if let errorMessage {
+            if let errorMessage, onHLSUnsupported == nil {
+                // Only show error if there's no fallback available
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.largeTitle)
@@ -90,47 +99,41 @@ struct CameraStreamHLSView: View {
 
     private func loadStream() {
         guard let api = Current.api(for: server) else {
-            errorMessage = L10n.CameraPlayer.Errors.unableToConnectToServer
-            isLoading = false
+            handleError(L10n.CameraPlayer.Errors.unableToConnectToServer)
             return
         }
 
         Task {
             do {
                 let streamURL = try await fetchStreamURL(api: api)
-                await setupPlayer(with: streamURL)
+                setupPlayer(with: streamURL)
             } catch {
                 await MainActor.run {
                     Current.Log.error("Failed to load HLS stream: \(error.localizedDescription)")
-                    errorMessage = error.localizedDescription
-                    isLoading = false
+                    handleError(error.localizedDescription)
                 }
             }
         }
     }
 
+    private func handleError(_ message: String) {
+        if let onHLSUnsupported, !hasCalledFallback {
+            hasCalledFallback = true
+            onHLSUnsupported()
+        } else {
+            errorMessage = message
+            isLoading = false
+        }
+    }
+
     private func fetchStreamURL(api: HomeAssistantAPI) async throws -> URL {
-        try await withCheckedThrowingContinuation { continuation in
-            api.connection.send(.init(
-                type: .rest(.post, "camera_proxy/\(cameraEntityId)"),
-                data: ["format": "hls"]
-            )).promise.done { data in
-                if let hlsPath: String = try? data.decode("hls_path"),
-                   let baseURL = api.server.info.connection.activeURL() {
-                    let streamURL = baseURL.appendingPathComponent(hlsPath)
-                    continuation.resume(returning: streamURL)
-                } else {
-                    // Fallback to MJPEG proxy stream
-                    if let baseURL = api.server.info.connection.activeURL() {
-                        let mjpegURL = baseURL.appendingPathComponent("/api/camera_proxy_stream/\(cameraEntityId)")
-                        continuation.resume(returning: mjpegURL)
-                    } else {
-                        continuation.resume(throwing: StreamError.noActiveURL)
-                    }
-                }
-            }.catch { error in
-                continuation.resume(throwing: error)
-            }
+        let response = api.StreamCamera(entityId: cameraEntityId).value
+
+        if let hlsPath = response?.hlsPath,
+           let baseURL = api.server.info.connection.activeURL() {
+            return baseURL.appendingPathComponent(hlsPath)
+        } else {
+            throw StreamError.noHLSAvailable
         }
     }
 
@@ -154,8 +157,8 @@ struct CameraStreamHLSView: View {
                     isLoading = false
                     avPlayer.play()
                 case .failed:
-                    errorMessage = playerItem.error?.localizedDescription ?? L10n.CameraPlayer.Errors.unknown
-                    isLoading = false
+                    let errorMsg = playerItem.error?.localizedDescription ?? L10n.CameraPlayer.Errors.unknown
+                    handleError(errorMsg)
                 case .unknown:
                     break
                 @unknown default:
@@ -169,11 +172,14 @@ struct CameraStreamHLSView: View {
 
     enum StreamError: LocalizedError {
         case noActiveURL
+        case noHLSAvailable
 
         var errorDescription: String? {
             switch self {
             case .noActiveURL:
                 return L10n.CameraPlayer.Errors.unableToConnectToServer
+            case .noHLSAvailable:
+                return L10n.CameraPlayer.Errors.noStreamAvailable
             }
         }
     }
