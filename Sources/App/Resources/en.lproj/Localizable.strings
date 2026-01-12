@@ -1407,3 +1407,4 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "cameras.no_server_found" = "No server found for camera: %@";
 "camera_list.unavailable.title" = "Not Available on Mac";
 "camera_list.unavailable.message" = "Camera streaming is not available on Mac.";
+"webrtc_player.known_issues.title" = "Known Issues";

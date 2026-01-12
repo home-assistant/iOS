@@ -4,7 +4,7 @@ import SwiftUI
 import WebRTC
 
 @available(iOS 16.0, *)
-struct WebRTCVideoPlayerView: View {
+struct WebRTCPlayerVideoView: View {
     @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel: WebRTCViewPlayerViewModel
@@ -150,7 +150,7 @@ struct WebRTCVideoPlayerView: View {
     }
 
     private var player: some View {
-        WebRTCVideoPlayerViewControllerWrapper(
+        WebRTCPlayerViewControllerWrapper(
             viewModel: viewModel,
             isVideoPlaying: $isVideoPlaying
         )
@@ -164,7 +164,7 @@ struct WebRTCVideoPlayerView: View {
     }
 
     private var controls: some View {
-        WebRTCVideoPlayerViewControls(
+        WebRTCPlayerViewControls(
             cameraName: cameraName,
             close: { dismiss() },
             isMuted: viewModel.isMuted,
@@ -199,7 +199,8 @@ struct WebRTCVideoPlayerView: View {
     }
 }
 
-struct WebRTCVideoPlayerViewControllerWrapper: UIViewControllerRepresentable {
+@available(iOS 16.0, *)
+struct WebRTCPlayerViewControllerWrapper: UIViewControllerRepresentable {
     private let viewModel: WebRTCViewPlayerViewModel
     @Binding var isVideoPlaying: Bool
 
@@ -208,31 +209,15 @@ struct WebRTCVideoPlayerViewControllerWrapper: UIViewControllerRepresentable {
         self._isVideoPlaying = isVideoPlaying
     }
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
-    }
-
-    func makeUIViewController(context: Context) -> WebRTCVideoPlayerViewController {
-        let vc = WebRTCVideoPlayerViewController(viewModel: viewModel)
-        vc.onVideoStarted = { [weak coordinator = context.coordinator] in
-            coordinator?.videoDidStart()
+    func makeUIViewController(context: Context) -> WebRTCPlayerViewController {
+        let vc = WebRTCPlayerViewController(viewModel: viewModel)
+        vc.onVideoStarted = {
+            isVideoPlaying = true
         }
         return vc
     }
 
-    func updateUIViewController(_ uiViewController: WebRTCVideoPlayerViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: WebRTCPlayerViewController, context: Context) {
         /* no-op */
-    }
-
-    class Coordinator {
-        var parent: WebRTCVideoPlayerViewControllerWrapper
-
-        init(parent: WebRTCVideoPlayerViewControllerWrapper) {
-            self.parent = parent
-        }
-
-        func videoDidStart() {
-            parent.isVideoPlaying = true
-        }
     }
 }

@@ -3,6 +3,7 @@ import GRDB
 import PromiseKit
 import Shared
 
+@available(iOS 16.0, *)
 final class CameraListViewModel: ObservableObject {
     @Published var cameras: [HAAppEntity] = []
     @Published var searchTerm = ""

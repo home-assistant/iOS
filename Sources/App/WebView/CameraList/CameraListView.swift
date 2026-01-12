@@ -2,6 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct CameraListView: View {
     @Namespace private var namespace
     @StateObject private var viewModel: CameraListViewModel
@@ -224,10 +225,12 @@ private struct RoomPresentation: Identifiable {
     var id: String { roomName }
 }
 
+@available(iOS 16.0, *)
 #Preview {
     CameraListView()
 }
 
+@available(iOS 16.0, *)
 #Preview("With Server ID") {
     CameraListView(serverId: "test-server")
 }

@@ -2,6 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct CameraSectionReorderView: View {
     @ObservedObject var viewModel: CameraListViewModel
     @Environment(\.dismiss) private var dismiss

@@ -4528,6 +4528,13 @@ public enum L10n {
     }
   }
 
+  public enum WebrtcPlayer {
+    public enum KnownIssues {
+      /// Known Issues
+      public static var title: String { return L10n.tr("Localizable", "webrtc_player.known_issues.title") }
+    }
+  }
+
   public enum Widgets {
     public enum Action {
       public enum Name {

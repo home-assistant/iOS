@@ -3,7 +3,7 @@ import Shared
 import SwiftUI
 
 @available(iOS 16.0, *)
-struct WebRTCVideoPlayerViewControls: View {
+struct WebRTCPlayerViewControls: View {
     let cameraName: String?
     let close: () -> Void
     let isMuted: Bool
@@ -129,7 +129,7 @@ private struct KnownIssuesSheet: View {
 
 @available(iOS 16.0, *)
 #Preview {
-    WebRTCVideoPlayerViewControls(
+    WebRTCPlayerViewControls(
         cameraName: "Living Room Camera",
         close: {},
         isMuted: false,

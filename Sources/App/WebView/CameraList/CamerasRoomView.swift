@@ -2,6 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct CamerasRoomView: View {
     @Namespace private var namespace
     @ObservedObject var viewModel: CameraListViewModel
@@ -123,6 +124,7 @@ private struct CameraPresentation: Identifiable {
     var id: String { camera.id }
 }
 
+@available(iOS 16.0, *)
 #Preview {
     let viewModel = CameraListViewModel()
     CamerasRoomView(viewModel: viewModel, areaName: "Living Room")
