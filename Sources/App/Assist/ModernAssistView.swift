@@ -376,21 +376,9 @@ struct ModernAssistView: View, KeyboardReadable {
     // MARK: - Animations
 }
 
-// MARK: - Background Theme
+// MARK: - Background Theme Extension
 
-enum ModernAssistTheme: String, CaseIterable, Identifiable {
-    case homeAssistant = "Home Assistant"
-    case midnight = "Midnight"
-    case aurora = "Aurora"
-    case sunset = "Sunset"
-    case ocean = "Ocean"
-    case forest = "Forest"
-    case galaxy = "Galaxy"
-    case lavender = "Lavender"
-    case ember = "Ember"
-
-    var id: String { rawValue }
-
+extension ModernAssistTheme {
     func gradientColors(for colorScheme: ColorScheme) -> [Color] {
         switch self {
         case .midnight:

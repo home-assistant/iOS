@@ -1,3 +1,4 @@
+import GRDB
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -8,13 +9,6 @@ struct AssistView: View {
     @StateObject private var assistSession = AssistSession.shared
     @FocusState private var isFirstResponder: Bool
     @State private var showSettings = false
-//    @AppStorage("enableAssistOnDeviceSTT") private var enableOnDeviceSTT = false
-    @AppStorage("enableAssistModernUI") private var enableModernUI = false
-    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
-
-    private var selectedTheme: ModernAssistTheme {
-        ModernAssistTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant
-    }
 
     private let iconSize: CGSize = .init(width: 28, height: 28)
     private let iconColor: UIColor = .gray
@@ -27,7 +21,7 @@ struct AssistView: View {
 
     private var shouldUseModernUI: Bool {
         if #available(iOS 26.0, *) {
-            return !Current.isCatalyst && enableModernUI
+            return !Current.isCatalyst && viewModel.configuration.enableModernUI
         }
         return false
     }
@@ -48,6 +42,7 @@ struct AssistView: View {
         .onAppear {
             assistSession.inProgress = true
             viewModel.initialRoutine()
+            viewModel.subscribeForConfigChanges()
         }
         .onChange(of: viewModel.focusOnInput) { newValue in
             if newValue {
@@ -66,6 +61,8 @@ struct AssistView: View {
             )
         }
     }
+
+    // MARK: - Configuration Persistence
 
     private var classicUI: some View {
         NavigationView {
@@ -113,10 +110,7 @@ struct AssistView: View {
             messages: $viewModel.chatItems,
             inputText: $viewModel.inputText,
             isRecording: $viewModel.isRecording,
-            selectedTheme: .init(
-                get: { selectedTheme },
-                set: { selectedThemeRawValue = $0.rawValue }
-            ),
+            selectedTheme: $viewModel.configuration.theme,
             selectedPipeline: .init(
                 get: {
                     viewModel.pipelines.first(where: { $0.id == viewModel.preferredPipelineId })?.name ?? ""

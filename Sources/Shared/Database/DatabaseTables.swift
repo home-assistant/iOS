@@ -13,6 +13,7 @@ public enum GRDBDatabaseTable: String {
     case appArea
     case homeViewConfiguration
     case cameraListConfiguration
+    case assistConfiguration
 
     // Dropped since 2025.2, now saved as json file
     // Context: https://github.com/groue/GRDB.swift/issues/1626#issuecomment-2623927815
@@ -163,5 +164,13 @@ public enum DatabaseTables {
         case serialNumber
         case swVersion
         case viaDeviceID
+    }
+
+    public enum AssistConfiguration: String {
+        case id
+        case enableOnDeviceSTT
+        case enableModernUI
+        case theme
+        case muteTTS
     }
 }

@@ -580,6 +580,12 @@ public enum L10n {
         /// Enable on-device Speech-to-Text
         public static var toggle: String { return L10n.tr("Localizable", "assist.settings.on_device_stt.toggle") }
       }
+      public enum TtsMute {
+        /// When enabled, Assist will not play audio responses even if the pipeline has text-to-speech configured. You will still see text responses.
+        public static var footer: String { return L10n.tr("Localizable", "assist.settings.tts_mute.footer") }
+        /// Mute voice responses
+        public static var toggle: String { return L10n.tr("Localizable", "assist.settings.tts_mute.toggle") }
+      }
     }
     public enum Watch {
       public enum MicButton {

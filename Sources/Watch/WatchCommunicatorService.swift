@@ -341,7 +341,8 @@ extension WatchCommunicatorService {
         pendingAudioData = data
         initAssistServiceIfNeeded(server: server).assist(source: .audio(
             pipelineId: pipelineId,
-            audioSampleRate: sampleRate
+            audioSampleRate: sampleRate,
+            tts: true
         ))
     }
 

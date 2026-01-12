@@ -618,6 +618,10 @@
 		420FE84B2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */; };
 		420FE84E2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */; };
 		420FE8502B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */; };
+		4210CCFF2F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
+		4210CD002F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
+		4210CD032F155C4500B71FB9 /* AssistConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */; };
+		4210CD052F155D2600B71FB9 /* AssistSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */; };
 		4210CCD92F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */; };
 		4210CCDB2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */; };
 		4210CCDD2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */; };
@@ -2284,6 +2288,9 @@
 		420FE84A2B556BB100878E06 /* CarPlayActionsTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayActionsTemplate+Build.swift"; sourceTree = "<group>"; };
 		420FE84D2B556CE500878E06 /* CarPlayEntitiesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayEntitiesListViewModel.swift; sourceTree = "<group>"; };
 		420FE84F2B556F7500878E06 /* CarPlayEntitiesListTemplate+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayEntitiesListTemplate+Build.swift"; sourceTree = "<group>"; };
+		4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfiguration.swift; sourceTree = "<group>"; };
+		4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfigurationTable.swift; sourceTree = "<group>"; };
+		4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsViewModel.swift; sourceTree = "<group>"; };
 		4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerVideoView.swift; sourceTree = "<group>"; };
 		4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewControls.swift; sourceTree = "<group>"; };
 		4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewController.swift; sourceTree = "<group>"; };
@@ -4646,6 +4653,7 @@
 				420CFC772D3F9CAB009A94F3 /* AppEntityRegistryListForDisplayTable.swift */,
 				420CFC7B2D3F9CCB009A94F3 /* AppPanelTable.swift */,
 				4201FD9A2F0E938E00C3EF1C /* CameraListConfigurationTable.swift */,
+				4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -5835,6 +5843,8 @@
 				42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */,
 				42B94BDC2B9606CD00DEE060 /* AssistView.swift */,
 				42DFE86E2EFA26D50058DADB /* AssistSettingsView.swift */,
+				4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */,
+				4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */,
 				42FC3C632D07191D002D7FEE /* AssistTypingIndicator.swift */,
 				429106882BA9D5F700D452F9 /* AssistView+Build.swift */,
 				42070EE72BAC43240031E96F /* AssistSession.swift */,
@@ -9044,6 +9054,7 @@
 				42A32F382EEA393700B323F1 /* CarPlayLockConfirmation.swift in Sources */,
 				42C60FA92F0829B50071A6F6 /* RoomView.swift in Sources */,
 				4240DF472E1D148F00FB0DE6 /* DeviceNameView.swift in Sources */,
+				4210CD032F155C4500B71FB9 /* AssistConfiguration.swift in Sources */,
 				420E2AE62C474710004921D8 /* WidgetBasicButtonView.swift in Sources */,
 				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				11195F6B267EFB1F003DF674 /* NotificationManagerLocalPushInterface.swift in Sources */,
@@ -9186,6 +9197,7 @@
 				118261F524F8C7C1000795C6 /* SceneManager.swift in Sources */,
 				42FC3C642D07191D002D7FEE /* AssistTypingIndicator.swift in Sources */,
 				119DE9562633A8C40099F7D8 /* SettingsRootDataSource.swift in Sources */,
+				4210CD052F155D2600B71FB9 /* AssistSettingsViewModel.swift in Sources */,
 				425390DA2E05B41900E24EDD /* WebRTCViewPlayerViewModel.swift in Sources */,
 				425390DB2E05B41900E24EDD /* WebRTCVideoPlayerViewController.swift in Sources */,
 				42DF7DDB2EC5372E003F3C4A /* SettingsView.swift in Sources */,
@@ -9700,6 +9712,7 @@
 				11B38EF4275C54A300205C7B /* WidgetActionsIntentHandler.swift in Sources */,
 				11F3847C24FB27FC00CB0D74 /* DeviceWrapperBatteryObserver.swift in Sources */,
 				11B38EFA275C54A300205C7B /* FocusStatusIntentHandler.swift in Sources */,
+				4210CD002F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */,
 				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				399792722B7F909900231B54 /* MobileAppConfig.swift in Sources */,
 				1121CD4D271295AD0071C2AA /* Style.swift in Sources */,
@@ -9923,6 +9936,7 @@
 				42905D852E12B00900250728 /* DesignSystem.swift in Sources */,
 				116C0C2F267EB90F00A992E4 /* UserDefaultsValueSync.swift in Sources */,
 				4238DCA52DD1F1E300126434 /* AppSessionValues.swift in Sources */,
+				4210CCFF2F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */,
 				11A3BD2D26192210005237E6 /* LocalPushManager.swift in Sources */,
 				42FCD00C2B9B25D60057783F /* ThreadClientProtocol.swift in Sources */,
 				42D334282D105990008D8E78 /* AppPanel.swift in Sources */,
