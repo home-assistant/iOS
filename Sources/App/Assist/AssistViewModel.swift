@@ -30,7 +30,7 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var canSendAudioData = false
     
     // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
-    private static let ttsMuteKey = "assistMuteTTS"
+    static let ttsMuteKey = "assistMuteTTS"
 
     init(
         server: Server,
