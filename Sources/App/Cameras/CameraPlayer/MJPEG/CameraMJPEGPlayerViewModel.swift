@@ -40,17 +40,17 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
                 } else {
                     Current.Log.error("Failed to get active URL for server \(api.server.info.name)")
                     DispatchQueue.main.async { [weak self] in
+                        self?.isLoading = false
                         self?.hasStarted = false
                     }
                 }
             case let .rejected(error):
                 Current.Log.error("Failed to get MJPEG URL: \(error.localizedDescription)")
-                self?.errorMessage = error.localizedDescription
-            }
-
-            DispatchQueue.main.async { [weak self] in
-                self?.isLoading = false
-                self?.hasStarted = false
+                DispatchQueue.main.async { [weak self] in
+                    self?.errorMessage = error.localizedDescription
+                    self?.isLoading = false
+                    self?.hasStarted = false
+                }
             }
         }
     }
@@ -63,12 +63,14 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
         streamer = api.VideoStreamer()
         streamer?.streamImages(fromURL: url) { [weak self] uiImage, error in
             DispatchQueue.main.async {
-                self?.uiImage = uiImage
-            }
-            if let error {
-                Current.Log.error("MJPEG Stream error: \(error.localizedDescription)")
-                DispatchQueue.main.async { [weak self] in
+                if let uiImage {
+                    // First frame received, stream has started successfully
+                    self?.isLoading = false
+                    self?.uiImage = uiImage
+                } else if let error {
+                    Current.Log.error("MJPEG Stream error: \(error.localizedDescription)")
                     self?.errorMessage = error.localizedDescription
+                    self?.isLoading = false
                     self?.stop()
                 }
             }
