@@ -41,9 +41,6 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
                     }
                 } else {
                     Current.Log.error("Failed to get active URL for server \(api.server.info.name)")
-                    DispatchQueue.main.async { [weak self] in
-                        self?.hasStarted = false
-                    }
                 }
             case let .rejected(error):
                 Current.Log.error("Failed to get MJPEG URL: \(error.localizedDescription)")
