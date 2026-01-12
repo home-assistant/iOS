@@ -32,7 +32,7 @@ struct CameraMJPEGPlayerView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .ignoresSafeArea()
-                        .animation(.easeInOut, value: uiImage)
+
                 } else {
                     Color.black.ignoresSafeArea()
                 }
