@@ -16,6 +16,7 @@ struct CameraCardView: View {
                 contentView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 reloadButtonOverlay
+                bottomShadow
                 timestampOverlay
                 cameraNameOverlay
             }
@@ -81,6 +82,25 @@ struct CameraCardView: View {
                 .padding(DesignSystem.Spaces.one)
             }
             Spacer()
+        }
+    }
+
+    private var bottomShadow: some View {
+        VStack {
+            Spacer()
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .mask {
+                    LinearGradient(
+                        colors: [
+                            Color.black.opacity(0),
+                            Color.black.opacity(1),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                .frame(height: 60)
         }
     }
 

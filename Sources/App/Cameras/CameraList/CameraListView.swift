@@ -2,6 +2,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct CameraListView: View {
     @Namespace private var namespace
     @StateObject private var viewModel: CameraListViewModel
@@ -66,7 +67,7 @@ struct CameraListView: View {
             get: { selectedCamera.map { CameraPresentation(camera: $0.camera, server: $0.server) } },
             set: { selectedCamera = $0.map { ($0.camera, $0.server) } }
         )) { presentation in
-            WebRTCVideoPlayerView(
+            CameraPlayerView(
                 server: presentation.server,
                 cameraEntityId: presentation.camera.entityId,
                 cameraName: presentation.camera.name
@@ -224,10 +225,12 @@ private struct RoomPresentation: Identifiable {
     var id: String { roomName }
 }
 
+@available(iOS 16.0, *)
 #Preview {
     CameraListView()
 }
 
+@available(iOS 16.0, *)
 #Preview("With Server ID") {
     CameraListView(serverId: "test-server")
 }
