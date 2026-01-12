@@ -315,7 +315,6 @@ public extension Domain {
         [
             .automation,
             .button,
-            .climate,
             .cover,
             .fan,
             .inputBoolean,
