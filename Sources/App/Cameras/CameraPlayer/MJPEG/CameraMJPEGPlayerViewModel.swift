@@ -69,7 +69,7 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
                 Current.Log.error("MJPEG Stream error: \(error.localizedDescription)")
                 DispatchQueue.main.async { [weak self] in
                     self?.errorMessage = error.localizedDescription
-                    self?.hasStarted = false
+                    self?.stop()
                 }
             }
         }
