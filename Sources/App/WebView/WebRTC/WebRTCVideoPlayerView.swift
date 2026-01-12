@@ -20,11 +20,18 @@ struct WebRTCVideoPlayerView: View {
     private let server: Server
     private let cameraEntityId: String
     private let cameraName: String?
+    private let onWebRTCUnsupported: (() -> Void)?
 
-    init(server: Server, cameraEntityId: String, cameraName: String? = nil) {
+    init(
+        server: Server,
+        cameraEntityId: String,
+        cameraName: String? = nil,
+        onWebRTCUnsupported: (() -> Void)? = nil
+    ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
+        self.onWebRTCUnsupported = onWebRTCUnsupported
         self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(server: server, cameraEntityId: cameraEntityId))
     }
 
@@ -57,6 +64,11 @@ struct WebRTCVideoPlayerView: View {
             .gesture(
                 tapGesture
             )
+            .onChange(of: viewModel.isWebRTCUnsupported) { isUnsupported in
+                if isUnsupported {
+                    onWebRTCUnsupported?()
+                }
+            }
         }
         .modify { view in
             if #available(iOS 16.0, *) {

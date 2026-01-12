@@ -621,6 +621,9 @@
 		4210CCD92F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */; };
 		4210CCDB2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */; };
 		4210CCDD2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */; };
+		4210CCE72F152A9B00B71FB9 /* CameraHLSPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCE62F152A9B00B71FB9 /* CameraHLSPlayerView.swift */; };
+		4210CCE92F152AC300B71FB9 /* CameraStreamHLSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCE82F152AC300B71FB9 /* CameraStreamHLSView.swift */; };
+		4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */; };
 		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
 		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421155252D355C6700A71630 /* WidgetBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155242D355C6700A71630 /* WidgetBuilderView.swift */; };
@@ -2284,6 +2287,9 @@
 		4210CCD82F150CDD00B71FB9 /* WebRTCPlayerVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerVideoView.swift; sourceTree = "<group>"; };
 		4210CCDA2F150CDD00B71FB9 /* WebRTCPlayerViewControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewControls.swift; sourceTree = "<group>"; };
 		4210CCDC2F150CDE00B71FB9 /* WebRTCPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCPlayerViewController.swift; sourceTree = "<group>"; };
+		4210CCE62F152A9B00B71FB9 /* CameraHLSPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraHLSPlayerView.swift; sourceTree = "<group>"; };
+		4210CCE82F152AC300B71FB9 /* CameraStreamHLSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSView.swift; sourceTree = "<group>"; };
+		4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPlayerView.swift; sourceTree = "<group>"; };
 		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* WidgetBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderView.swift; sourceTree = "<group>"; };
@@ -3964,6 +3970,9 @@
 				42B95B512BE007E30070F2D4 /* SafeScriptMessageHandler.swift */,
 				42A0B9352EBB82EB00E074BF /* StatusBarButtonsConfigurator.swift */,
 				42DFE8792EFB08C80058DADB /* ExperimentalSpace */,
+				4210CCE62F152A9B00B71FB9 /* CameraHLSPlayerView.swift */,
+				4210CCE82F152AC300B71FB9 /* CameraStreamHLSView.swift */,
+				4210CCEA2F152AD000B71FB9 /* CameraPlayerView.swift */,
 			);
 			path = WebView;
 			sourceTree = "<group>";
@@ -9126,6 +9135,7 @@
 				4289DDAB2C85AB56003591C2 /* ControlAssistValueProvider.swift in Sources */,
 				42D5ACDB2C64C82600D9C4E2 /* MagicItemAddViewModel.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
+				4210CCE92F152AC300B71FB9 /* CameraStreamHLSView.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11195F6F267EFC8E003DF674 /* NotificationManagerLocalPushInterfaceDirect.swift in Sources */,
 				FD3BC66329B9FF8F00B19FBE /* CarPlaySceneDelegate.swift in Sources */,
@@ -9136,6 +9146,7 @@
 				426BB0C72D394BFF0062D905 /* AssistPipelinePicker.swift in Sources */,
 				FD3BC66E29BA010A00B19FBE /* CarPlayDomainsListTemplate.swift in Sources */,
 				42D5ACD92C64C0E000D9C4E2 /* MagicItemAddView.swift in Sources */,
+				4210CCE72F152A9B00B71FB9 /* CameraHLSPlayerView.swift in Sources */,
 				425C5A072CF756DF00206B5B /* AssistMicAnimationView.swift in Sources */,
 				4285C5512D355F9900DADE45 /* WidgetCreationView.swift in Sources */,
 				1185DFAF271FF53800ED7D9A /* OnboardingAuthStepRegister.swift in Sources */,
@@ -9274,6 +9285,7 @@
 				4289FCAE2F0BEDD4005189AA /* EntityDropDelegate.swift in Sources */,
 				425573ED2B58904000145217 /* CarPlayEntityListItem.swift in Sources */,
 				11F55ECD25D3A364003977AC /* NotificationRateLimitViewController.swift in Sources */,
+				4210CCEB2F152AD000B71FB9 /* CameraPlayerView.swift in Sources */,
 				3E4087F02CEC7F210085DF29 /* WidgetBasicSensorView.swift in Sources */,
 				42F73F5A2E264A9D00B704A9 /* WebViewControllerButtons.swift in Sources */,
 				42DC44362E1C0791001046C1 /* WebRTCVideoPlayerView.swift in Sources */,

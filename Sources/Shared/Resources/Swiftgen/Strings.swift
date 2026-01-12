@@ -654,6 +654,15 @@ public enum L10n {
     }
   }
 
+  public enum CameraPlayer {
+    public enum Errors {
+      /// Unable to connect to Home Assistant
+      public static var unableToConnectToServer: String { return L10n.tr("Localizable", "camera_player.errors.unable_to_connect_to_server") }
+      /// Uknown error
+      public static var unknown: String { return L10n.tr("Localizable", "camera_player.errors.unknown") }
+    }
+  }
+
   public enum Cameras {
     /// Drag and drop to reorder
     public static var dragToReorder: String { return L10n.tr("Localizable", "cameras.drag_to_reorder") }
