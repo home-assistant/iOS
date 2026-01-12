@@ -28,6 +28,9 @@ final class AssistViewModel: NSObject, ObservableObject {
     private(set) var autoStartRecording: Bool
 
     private(set) var canSendAudioData = false
+    
+    // Key for TTS mute setting (matches @AppStorage key in AssistSettingsView)
+    private static let ttsMuteKey = "assistMuteTTS"
 
     init(
         server: Server,
@@ -281,11 +284,11 @@ extension AssistViewModel: AssistServiceDelegate {
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         // Check if TTS is muted in settings
-        let muteTTS = UserDefaults.standard.bool(forKey: "assistMuteTTS")
+        let muteTTS = UserDefaults.standard.bool(forKey: Self.ttsMuteKey)
         
         if muteTTS {
             Current.Log.info("TTS is muted by user setting, skipping audio playback")
-            // Still call the delegate method for volumeIsZero to continue conversation if needed
+            // Check if we should continue the conversation (e.g., for follow-up questions)
             startRecordingAgainIfNeeded()
             return
         }
