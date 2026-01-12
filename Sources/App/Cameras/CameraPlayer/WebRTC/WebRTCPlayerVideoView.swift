@@ -58,9 +58,7 @@ struct WebRTCPlayerVideoView: View {
                 tapGesture
             )
         }
-        .modify { view in
-            view.persistentSystemOverlays(.hidden)
-        }
+        .persistentSystemOverlays(.hidden)
     }
 
     private var errorView: some View {
