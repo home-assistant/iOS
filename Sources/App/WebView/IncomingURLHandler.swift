@@ -61,7 +61,8 @@ class IncomingURLHandler {
             case .performAction:
                 performActionURLHandler(url, serviceData: serviceData)
             case .camera:
-                guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                guard #available(iOS 16.0, *),
+                      var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
                 }
                 components.scheme = nil

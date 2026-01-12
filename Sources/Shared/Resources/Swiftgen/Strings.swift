@@ -654,6 +654,17 @@ public enum L10n {
     }
   }
 
+  public enum CameraPlayer {
+    public enum Errors {
+      /// No stream available
+      public static var noStreamAvailable: String { return L10n.tr("Localizable", "camera_player.errors.no_stream_available") }
+      /// Unable to connect to Home Assistant
+      public static var unableToConnectToServer: String { return L10n.tr("Localizable", "camera_player.errors.unable_to_connect_to_server") }
+      /// Unknown error
+      public static var unknown: String { return L10n.tr("Localizable", "camera_player.errors.unknown") }
+    }
+  }
+
   public enum Cameras {
     /// Drag and drop to reorder
     public static var dragToReorder: String { return L10n.tr("Localizable", "cameras.drag_to_reorder") }
@@ -4525,6 +4536,13 @@ public enum L10n {
     public enum UniqueServerSelection {
       /// Choose one server
       public static var title: String { return L10n.tr("Localizable", "web_view.unique_server_selection.title") }
+    }
+  }
+
+  public enum WebrtcPlayer {
+    public enum KnownIssues {
+      /// Known Issues
+      public static var title: String { return L10n.tr("Localizable", "webrtc_player.known_issues.title") }
     }
   }
 

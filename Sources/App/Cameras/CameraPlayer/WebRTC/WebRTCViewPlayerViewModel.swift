@@ -30,6 +30,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     @Published var showLoader: Bool = true
     @Published var controlsVisible: Bool = true
     @Published var isMuted: Bool = true
+    @Published var isWebRTCUnsupported: Bool = false
 
     var hideControlsWorkItem: DispatchWorkItem?
 
@@ -92,6 +93,11 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
                     Current.Log.error("Failed to send WebRTC offer: \(error.localizedDescription)")
                     self?.showLoader = false
                     self?.failureReason = error.localizedDescription
+                    // Check if the error indicates WebRTC is not supported
+                    if error.localizedDescription.contains("does not support WebRTC") ||
+                        error.localizedDescription.contains("frontend_stream_types") {
+                        self?.isWebRTCUnsupported = true
+                    }
                 }
             } handler: { [weak self] _, data in
                 guard let self else { return }
