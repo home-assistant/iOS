@@ -10,7 +10,18 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
     var allowMultipleSelection: Bool
     var entityOrderByRoom: [String: [String]]
     var hiddenEntityIds: Set<String>
-    var selectedBackgroundId: String?
+    var selectedBackgroundTheme: AppBackgroundTheme?
+
+    // Map Swift property names to database column names
+    enum CodingKeys: String, CodingKey {
+        case id
+        case sectionOrder
+        case visibleSectionIds
+        case allowMultipleSelection
+        case entityOrderByRoom
+        case hiddenEntityIds
+        case selectedBackgroundTheme = "selectedBackgroundId"
+    }
 
     init(
         id: String,
@@ -19,7 +30,7 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
         allowMultipleSelection: Bool = false,
         entityOrderByRoom: [String: [String]] = [:],
         hiddenEntityIds: Set<String> = [],
-        selectedBackgroundId: String? = nil
+        selectedBackgroundTheme: AppBackgroundTheme? = nil
     ) {
         self.id = id
         self.sectionOrder = sectionOrder
@@ -27,7 +38,7 @@ struct HomeViewConfiguration: Codable, FetchableRecord, PersistableRecord, Equat
         self.allowMultipleSelection = allowMultipleSelection
         self.entityOrderByRoom = entityOrderByRoom
         self.hiddenEntityIds = hiddenEntityIds
-        self.selectedBackgroundId = selectedBackgroundId
+        self.selectedBackgroundTheme = selectedBackgroundTheme
     }
 
     /// Fetch configuration for a specific server

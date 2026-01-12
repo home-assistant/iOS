@@ -26,15 +26,16 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             contentView
+                .background {
+                    backgroundView
+                }
                 .navigationTitle(viewModel.server.info.name)
                 .navigationSubtitle(L10n.HomeView.Navigation.Subtitle.experimental)
                 .toolbar {
                     toolbarMenu
                 }
-                .background {
-                    backgroundView
-                }
         }
+        .scrollContentBackground(.hidden)
         .onAppear {
             Task {
                 await viewModel.loadEntities()
@@ -145,6 +146,7 @@ struct HomeView: View {
             }
             .padding()
         }
+        .scrollContentBackground(.hidden)
         .transition(.opacity.combined(with: .move(edge: .bottom)))
     }
 
@@ -393,12 +395,15 @@ struct HomeView: View {
 
     @ViewBuilder
     private var backgroundView: some View {
-        if #available(iOS 18.0, *),
-           let backgroundId = viewModel.configuration.selectedBackgroundId {
-            HomeViewBackgroundView(backgroundId: backgroundId)
-        } else {
-            Color.secondaryBackground
+        Group {
+            if let theme = viewModel.configuration.selectedBackgroundTheme {
+                AppBackgroundView(theme: theme)
+            } else {
+                Color.secondaryBackground
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea()
     }
 }
 

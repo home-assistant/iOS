@@ -29,7 +29,10 @@ final class HomeViewConfigurationTable: DatabaseTableProtocol {
 
                 if !columnExists {
                     try db.alter(table: GRDBDatabaseTable.homeViewConfiguration.rawValue) { tableAlteration in
-                        tableAlteration.add(column: DatabaseTables.HomeViewConfiguration.selectedBackgroundId.rawValue, .text)
+                        tableAlteration.add(
+                            column: DatabaseTables.HomeViewConfiguration.selectedBackgroundId.rawValue,
+                            .text
+                        )
                     }
                 }
             }

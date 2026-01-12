@@ -69,7 +69,7 @@ struct ModernAssistView: View, KeyboardReadable {
 
     @Binding var isRecording: Bool
     @Binding var inputText: String
-    @Binding var selectedTheme: ModernAssistTheme
+    @Binding var selectedTheme: AppBackgroundTheme
     @Binding var selectedPipeline: String
     @FocusState private var isTextFieldFocused: Bool
     @State private var keyboardObserver: AnyCancellable?
@@ -88,7 +88,7 @@ struct ModernAssistView: View, KeyboardReadable {
         messages: Binding<[AssistChatItem]>,
         inputText: Binding<String>,
         isRecording: Binding<Bool>,
-        selectedTheme: Binding<ModernAssistTheme>,
+        selectedTheme: Binding<AppBackgroundTheme>,
         selectedPipeline: Binding<String>,
         pipelines: [String],
         onClose: @escaping () -> Void,
@@ -113,7 +113,7 @@ struct ModernAssistView: View, KeyboardReadable {
     var body: some View {
         NavigationStack {
             ZStack {
-                ModernAssistBackgroundView(theme: selectedTheme)
+                AppBackgroundView(theme: selectedTheme)
                 chatArea
             }
             .toolbar(content: {
@@ -378,7 +378,7 @@ struct ModernAssistView: View, KeyboardReadable {
 
 // MARK: - Background Theme
 
-enum ModernAssistTheme: String, CaseIterable, Identifiable {
+enum AppBackgroundTheme: String, CaseIterable, Identifiable, Codable {
     case homeAssistant = "Home Assistant"
     case midnight = "Midnight"
     case aurora = "Aurora"
@@ -576,7 +576,7 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     ]
     @Previewable @State var inputText: String = ""
     @Previewable @State var isRecording: Bool = false
-    @Previewable @State var selectedTheme: ModernAssistTheme = .homeAssistant
+    @Previewable @State var selectedTheme: AppBackgroundTheme = .homeAssistant
     @Previewable @State var selectedPipeline: String = "Home Assistant"
 
     let pipelines = ["Home Assistant", "OpenAI", "Local Model"]
@@ -623,7 +623,7 @@ enum ModernAssistTheme: String, CaseIterable, Identifiable {
     ]
     @Previewable @State var inputText: String = ""
     @Previewable @State var isRecording: Bool = false
-    @Previewable @State var selectedTheme: ModernAssistTheme = .homeAssistant
+    @Previewable @State var selectedTheme: AppBackgroundTheme = .homeAssistant
     @Previewable @State var selectedPipeline: String = "Home Assistant"
 
     let pipelines = ["Home Assistant", "OpenAI", "Local Model"]

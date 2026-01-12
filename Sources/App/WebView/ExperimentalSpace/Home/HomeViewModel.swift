@@ -291,6 +291,13 @@ final class HomeViewModel: ObservableObject {
         configuration.hiddenEntityIds.remove(entityId)
     }
 
+    // MARK: - Background Theme
+
+    func setBackgroundTheme(_ theme: AppBackgroundTheme?) {
+        configuration.selectedBackgroundTheme = theme
+        saveCachedData()
+    }
+
     // MARK: - Entity Order (Per Room)
 
     func saveEntityOrder(for roomId: String, order: [String]) {

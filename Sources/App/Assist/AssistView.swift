@@ -10,10 +10,10 @@ struct AssistView: View {
     @State private var showSettings = false
 //    @AppStorage("enableAssistOnDeviceSTT") private var enableOnDeviceSTT = false
     @AppStorage("enableAssistModernUI") private var enableModernUI = false
-    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
+    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = AppBackgroundTheme.homeAssistant.rawValue
 
-    private var selectedTheme: ModernAssistTheme {
-        ModernAssistTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant
+    private var selectedTheme: AppBackgroundTheme {
+        AppBackgroundTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant
     }
 
     private let iconSize: CGSize = .init(width: 28, height: 28)

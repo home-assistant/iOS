@@ -9,11 +9,11 @@ struct AssistSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage("enableAssistOnDeviceSTT") private var enableOnDeviceSTT = false
     @AppStorage("enableAssistModernUI") private var enableModernUI = false
-    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = ModernAssistTheme.homeAssistant.rawValue
+    @AppStorage("assistModernUITheme") private var selectedThemeRawValue = AppBackgroundTheme.homeAssistant.rawValue
 
-    private var selectedTheme: Binding<ModernAssistTheme> {
+    private var selectedTheme: Binding<AppBackgroundTheme> {
         Binding(
-            get: { ModernAssistTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant },
+            get: { AppBackgroundTheme(rawValue: selectedThemeRawValue) ?? .homeAssistant },
             set: { selectedThemeRawValue = $0.rawValue }
         )
     }
@@ -32,7 +32,7 @@ struct AssistSettingsView: View {
 
                     if enableModernUI {
                         Picker(L10n.Assist.Settings.ModernUi.Theme.label, selection: selectedTheme) {
-                            ForEach(ModernAssistTheme.allCases) { theme in
+                            ForEach(AppBackgroundTheme.allCases) { theme in
                                 Text(theme.rawValue)
                                     .tag(theme)
                             }

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A reusable animated background view with gradient and floating orbs
 /// Designed for use across multiple views in the app
-struct ModernAssistBackgroundView: View {
+struct AppBackgroundView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     // MARK: - Constants
@@ -22,7 +22,7 @@ struct ModernAssistBackgroundView: View {
 
     // MARK: - Properties
 
-    let theme: ModernAssistTheme
+    let theme: AppBackgroundTheme
     @State private var pulseAnimation = false
 
     // MARK: - Body
@@ -103,23 +103,23 @@ struct ModernAssistBackgroundView: View {
 // MARK: - Preview
 
 #Preview("Home Assistant Theme - Light") {
-    ModernAssistBackgroundView(theme: .homeAssistant)
+    AppBackgroundView(theme: .homeAssistant)
         .environment(\.colorScheme, .light)
 }
 
 #Preview("Home Assistant Theme - Dark") {
-    ModernAssistBackgroundView(theme: .homeAssistant)
+    AppBackgroundView(theme: .homeAssistant)
         .environment(\.colorScheme, .dark)
 }
 
 #Preview("Aurora Theme") {
-    ModernAssistBackgroundView(theme: .aurora)
+    AppBackgroundView(theme: .aurora)
 }
 
 #Preview("Sunset Theme") {
-    ModernAssistBackgroundView(theme: .sunset)
+    AppBackgroundView(theme: .sunset)
 }
 
 #Preview("Ocean Theme") {
-    ModernAssistBackgroundView(theme: .ocean)
+    AppBackgroundView(theme: .ocean)
 }

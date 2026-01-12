@@ -13,10 +13,6 @@ struct HomeViewCustomizationView: View {
             Form {
                 Section {
                     backgroundPicker
-                } header: {
-                    Text("Background")
-                } footer: {
-                    Text("Choose a background style for your home view")
                 }
             }
             .navigationTitle("Customize")
@@ -32,20 +28,23 @@ struct HomeViewCustomizationView: View {
 
     @ViewBuilder
     private var backgroundPicker: some View {
-        ForEach(HomeViewBackgroundOption.allOptions) { option in
-            Button {
-                viewModel.configuration.selectedBackgroundId = option.id
-            } label: {
-                HStack {
-                    Text(option.name)
-                        .foregroundStyle(.primary)
-                    Spacer()
-                    if viewModel.configuration.selectedBackgroundId == option.id {
-                        Image(systemSymbol: .checkmark)
-                            .foregroundStyle(.haPrimary)
-                    }
-                }
+        Picker("Background", selection: backgroundThemeBinding) {
+            Text("Default")
+                .tag(nil as AppBackgroundTheme?)
+            ForEach(AppBackgroundTheme.allCases) { theme in
+                Text(theme.rawValue)
+                    .tag(theme as AppBackgroundTheme?)
             }
         }
+        .pickerStyle(.menu)
+    }
+
+    private var backgroundThemeBinding: Binding<AppBackgroundTheme?> {
+        Binding(
+            get: { viewModel.configuration.selectedBackgroundTheme },
+            set: { newValue in
+                viewModel.setBackgroundTheme(newValue)
+            }
+        )
     }
 }
