@@ -36,16 +36,17 @@ final class CameraMJPEGPlayerViewModel: ObservableObject {
             switch result {
             case let .fulfilled(imagePath):
                 if let url = api.server.info.connection.activeURL()?.appendingPathComponent(imagePath.mjpegPath ?? "") {
-                    self?.startStream(url, api: api)
+                    DispatchQueue.main.async { [weak self] in
+                        self?.startStream(url, api: api)
+                    }
                 } else {
                     Current.Log.error("Failed to get active URL for server \(api.server.info.name)")
-                    DispatchQueue.main.async { [weak self] in
-                        self?.hasStarted = false
-                    }
                 }
             case let .rejected(error):
                 Current.Log.error("Failed to get MJPEG URL: \(error.localizedDescription)")
-                self?.errorMessage = error.localizedDescription
+                DispatchQueue.main.async { [weak self] in
+                    self?.errorMessage = error.localizedDescription
+                }
             }
 
             DispatchQueue.main.async { [weak self] in
