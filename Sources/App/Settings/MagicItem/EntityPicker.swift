@@ -51,26 +51,30 @@ struct EntityPicker: View {
         NavigationView {
             List {
                 ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
-                ForEach(viewModel.entities.filter({ entity in
-                    if viewModel.searchTerm.count > 2 {
-                        return entity.serverId == viewModel.selectedServerId && (
-                            entity.name.lowercased().contains(viewModel.searchTerm.lowercased()) ||
-                                entity.entityId.lowercased().contains(viewModel.searchTerm.lowercased())
-                        )
-                    } else {
-                        return entity.serverId == viewModel.selectedServerId
+                ForEach(viewModel.entitiesByDomain.sorted(by: { $0.key < $1.key }), id: \.key) { domain, domainEntities in
+                    Section(domain.uppercased()) {
+                        ForEach(domainEntities.filter({ entity in
+                            if viewModel.searchTerm.count > 2 {
+                                return entity.serverId == viewModel.selectedServerId && (
+                                    entity.name.lowercased().contains(viewModel.searchTerm.lowercased()) ||
+                                        entity.entityId.lowercased().contains(viewModel.searchTerm.lowercased())
+                                )
+                            } else {
+                                return entity.serverId == viewModel.selectedServerId
+                            }
+                        }), id: \.id) { entity in
+                            Button(action: {
+                                selectedEntity = entity
+                                viewModel.showList = false
+                            }, label: {
+                                EntityRowView(
+                                    entity: entity,
+                                    isSelected: selectedEntity == entity
+                                )
+                            })
+                            .tint(.accentColor)
+                        }
                     }
-                }), id: \.id) { entity in
-                    Button(action: {
-                        selectedEntity = entity
-                        viewModel.showList = false
-                    }, label: {
-                        EntityRowView(
-                            entity: entity,
-                            isSelected: selectedEntity == entity
-                        )
-                    })
-                    .tint(.accentColor)
                 }
             }
             .searchable(text: $viewModel.searchTerm)

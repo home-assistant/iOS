@@ -10,6 +10,7 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var showList = false
     @Published var searchTerm = ""
     @Published var selectedServerId: String?
+    @Published var entitiesByDomain: [String: [HAAppEntity]] = [:]
 
     let domainFilter: Domain?
 
@@ -19,13 +20,8 @@ final class EntityPickerViewModel: ObservableObject {
 
     func fetchEntities() {
         do {
-            var newEntities = try HAAppEntity.config()
-            if let domainFilter {
-                newEntities = newEntities.filter({ entity in
-                    entity.domain == domainFilter.rawValue
-                })
-            }
-            entities = newEntities
+            entities = try HAAppEntity.config()
+            groupByDomain()
 
             if let serverId = selectedServerId {
                 registryEntities = try AppEntityRegistryListForDisplay.config(serverId: serverId)
@@ -36,5 +32,17 @@ final class EntityPickerViewModel: ObservableObject {
         } catch {
             Current.Log.error("Failed to fetch entities for entity picker, error: \(error)")
         }
+    }
+
+    private func groupByDomain() {
+        var groups = Dictionary(grouping: entities) { entity in
+            entity.domain
+        }
+
+        if let domainFilter {
+            groups = groups.filter { $0.key == domainFilter.rawValue }
+        }
+
+        entitiesByDomain = groups
     }
 }
