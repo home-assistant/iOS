@@ -7,6 +7,7 @@ struct EntityPicker: View {
         case button
         case list
     }
+
     @StateObject private var viewModel: EntityPickerViewModel
 
     /// Returns entityId
@@ -54,7 +55,7 @@ struct EntityPicker: View {
                     if viewModel.searchTerm.count > 2 {
                         return entity.serverId == viewModel.selectedServerId && (
                             entity.name.lowercased().contains(viewModel.searchTerm.lowercased()) ||
-                            entity.entityId.lowercased().contains(viewModel.searchTerm.lowercased())
+                                entity.entityId.lowercased().contains(viewModel.searchTerm.lowercased())
                         )
                     } else {
                         return entity.serverId == viewModel.selectedServerId
@@ -64,19 +65,10 @@ struct EntityPicker: View {
                         selectedEntity = entity
                         viewModel.showList = false
                     }, label: {
-                        VStack {
-                            Group {
-                                if let selectedEntity, selectedEntity == entity {
-                                    Label(entity.name, systemSymbol: .checkmark)
-                                } else {
-                                    Text(entity.name)
-                                }
-                                Text(entity.entityId)
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+                        MagicItemRow(
+                            entity: entity,
+                            isSelected: selectedEntity == entity
+                        )
                     })
                     .tint(.accentColor)
                 }

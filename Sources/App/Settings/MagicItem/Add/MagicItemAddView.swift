@@ -124,7 +124,7 @@ struct MagicItemAddView: View {
                     itemToAdd(.init(id: action.ID, serverId: action.serverIdentifier, type: .action))
                     dismiss()
                 }, label: {
-                    MagicItemRow(title: action.Text, imageSystemSymbol: .plusCircleFill)
+                    MagicItemRow(optionalTitle: action.Text, accessoryImageSystemSymbol: .plusCircleFill)
                 })
                 .tint(Color(uiColor: .label))
             }
@@ -191,16 +191,7 @@ struct MagicItemAddView: View {
                 }
             } label: {
                 MagicItemRow(
-                    title: entity.name,
-                    subtitle: viewModel.subtitleForEntity(entity: entity, serverId: serverId),
-                    entityIcon: {
-                        if let entityIconName = entity.icon {
-                            return MaterialDesignIcons(serversideValueNamed: entityIconName, fallback: .dotsGridIcon)
-                        } else {
-                            return Domain(rawValue: entity.domain)?
-                                .icon(deviceClass: entity.deviceClass.rawValue) ?? .dotsGridIcon
-                        }
-                    }()
+                    entity: entity
                 )
             }
         }
@@ -216,47 +207,56 @@ struct MagicItemAddView: View {
 struct MagicItemRow: View {
     // This avoids lag while loading a screen with several rows
     @State private var showIcon = false
+    @State private var subtitle = ""
+    private let entity: HAAppEntity?
+    private let optionalTitle: String?
+    private let accessoryImageSystemSymbol: SFSymbol?
+    private let isSelected: Bool
 
-    private let title: String
-    private let subtitle: String?
-    private let imageSystemSymbol: SFSymbol?
-    private let entityIcon: MaterialDesignIcons?
+    private let iconSize: CGSize = .init(width: 24, height: 24)
 
     init(
-        title: String,
-        subtitle: String? = nil,
-        imageSystemSymbol: SFSymbol? = nil,
-        entityIcon: MaterialDesignIcons? = nil
+        entity: HAAppEntity? = nil,
+        optionalTitle: String? = nil,
+        accessoryImageSystemSymbol: SFSymbol? = nil,
+        isSelected: Bool = false
     ) {
-        self.title = title
-        self.subtitle = subtitle
-        self.imageSystemSymbol = imageSystemSymbol
-        self.entityIcon = entityIcon
+        self.entity = entity
+        self.optionalTitle = optionalTitle
+        self.accessoryImageSystemSymbol = accessoryImageSystemSymbol
+        self.isSelected = isSelected
     }
 
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
             HStack {
-                if showIcon, let entityIcon {
-                    Image(uiImage: entityIcon.image(
-                        ofSize: .init(width: 24, height: 24),
+                if showIcon, let entity {
+                    Image(uiImage: MaterialDesignIcons(
+                        serversideValueNamed: entity.icon.orEmpty,
+                        fallback: .dotsGridIcon
+                    ).image(
+                        ofSize: .init(width: iconSize.width, height: iconSize.height),
                         color: UIColor(Color.haPrimary)
                     ))
                 }
             }
-            .frame(width: 24, height: 24)
+            .frame(width: iconSize.width, height: iconSize.height)
             VStack {
-                Text(title)
+                Text(optionalTitle ?? entity?.name ?? "")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                if let subtitle {
-                    Text(subtitle)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.footnote)
-                        .foregroundStyle(Color.secondary)
-                }
+                Text(subtitle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.footnote)
+                    .foregroundStyle(Color.secondary)
             }
-            if let imageSystemSymbol {
-                Image(systemSymbol: imageSystemSymbol)
+            .onAppear {
+                subtitle = (entity?.contextualSubtitle).orEmpty
+            }
+            if isSelected {
+                Image(systemSymbol: .checkmark)
+                    .foregroundStyle(.haPrimary)
+            } else if let accessoryImageSystemSymbol {
+                Image(systemSymbol: accessoryImageSystemSymbol)
                     .foregroundStyle(.white, .green)
                     .font(.title3)
             }

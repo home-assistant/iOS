@@ -36,6 +36,30 @@ public extension HAAppEntity {
             return nil
         }
     }
+
+    /// area name -> device name
+    var contextualSubtitle: String? {
+        var subtitle = ""
+        if let areaName = area?.name, !areaName.isEmpty {
+            subtitle = areaName
+        }
+        if let deviceName = device?.name,
+           !deviceName.isEmpty,
+           deviceName.range(of: name, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
+            if !subtitle.isEmpty {
+                subtitle += " • "
+            }
+            subtitle += deviceName
+        }
+        if subtitle.isEmpty {
+            if let domain = Domain(rawValue: domain), [.script, .scene, .automation].contains(domain) {
+                return nil
+            } else {
+                subtitle = entityId
+            }
+        }
+        return subtitle
+    }
 }
 
 public extension [HAAppEntity] {

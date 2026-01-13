@@ -54,25 +54,6 @@ final class MagicItemAddViewModel: ObservableObject {
         loadActions()
     }
 
-    func subtitleForEntity(entity: HAAppEntity, serverId: String) -> String {
-        var subtitle = ""
-        if let areaName = entity.area?.name, !areaName.isEmpty {
-            subtitle = areaName
-        }
-        if let deviceName = entity.device?.name,
-           !deviceName.isEmpty,
-           deviceName.range(of: entity.name, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
-            if !subtitle.isEmpty {
-                subtitle += " • "
-            }
-            subtitle += deviceName
-        }
-        if subtitle.isEmpty {
-            subtitle = entity.entityId
-        }
-        return subtitle
-    }
-
     @MainActor
     private func loadAppEntities() {
         Current.magicItemProvider().loadInformation { [weak self] entities in
