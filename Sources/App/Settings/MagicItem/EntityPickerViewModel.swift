@@ -3,6 +3,10 @@ import Shared
 
 final class EntityPickerViewModel: ObservableObject {
     @Published var entities: [HAAppEntity] = []
+    @Published var registryEntities: [AppEntityRegistryListForDisplay] = []
+    @Published var registryEntriesData: [AppEntityRegistry] = []
+    @Published var deviceRegistryData: [AppDeviceRegistry] = []
+    @Published var areaData: [AppArea] = []
     @Published var showList = false
     @Published var searchTerm = ""
     @Published var selectedServerId: String?
@@ -22,6 +26,13 @@ final class EntityPickerViewModel: ObservableObject {
                 })
             }
             entities = newEntities
+            
+            if let serverId = selectedServerId {
+                self.registryEntities = try AppEntityRegistryListForDisplay.config(serverId: serverId)
+                self.registryEntriesData = try AppEntityRegistry.config(serverId: serverId)
+                self.deviceRegistryData = try AppDeviceRegistry.config(serverId: serverId)
+                self.areaData = try AppArea.fetchAreas(for: serverId)
+            }
         } catch {
             Current.Log.error("Failed to fetch entities for entity picker, error: \(error)")
         }

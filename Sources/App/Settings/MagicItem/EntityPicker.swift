@@ -3,21 +3,35 @@ import Shared
 import SwiftUI
 
 struct EntityPicker: View {
+    enum Mode {
+        case button
+        case list
+    }
     @StateObject private var viewModel: EntityPickerViewModel
 
     /// Returns entityId
     @Binding private var selectedEntity: HAAppEntity?
+    private let mode: Mode
 
-    init(selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?) {
+    init(selectedEntity: Binding<HAAppEntity?>, domainFilter: Domain?, mode: Mode = .button) {
         self._selectedEntity = selectedEntity
         self._viewModel = .init(wrappedValue: EntityPickerViewModel(domainFilter: domainFilter))
+        self.mode = mode
     }
 
     var body: some View {
-        button
-            .sheet(isPresented: $viewModel.showList) {
+        Group {
+            switch mode {
+            case .button:
+                button
+                    .sheet(isPresented: $viewModel.showList) {
+                        screen
+                    }
+
+            case .list:
                 screen
             }
+        }
     }
 
     private var button: some View {
@@ -40,7 +54,7 @@ struct EntityPicker: View {
                     if viewModel.searchTerm.count > 2 {
                         return entity.serverId == viewModel.selectedServerId && (
                             entity.name.lowercased().contains(viewModel.searchTerm.lowercased()) ||
-                                entity.entityId.lowercased().contains(viewModel.searchTerm.lowercased())
+                            entity.entityId.lowercased().contains(viewModel.searchTerm.lowercased())
                         )
                     } else {
                         return entity.serverId == viewModel.selectedServerId
