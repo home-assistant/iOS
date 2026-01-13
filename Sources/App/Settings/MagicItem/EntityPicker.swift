@@ -119,13 +119,16 @@ struct EntityPicker: View {
     @ViewBuilder
     private var domainPicker: some View {
         if viewModel.domainFilter == nil {
-
             EntityFilterPickerView(
                 title: "Domain",
-                pickerItems: viewModel.entitiesByDomain.keys.sorted().map {
-                    EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
-                },
-                selectedItemId: $viewModel.selectedDomainFilter
+                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: "All Domains")] +
+                    viewModel.entitiesByDomain.keys.sorted().map {
+                        EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
+                    },
+                selectedItemId: Binding(
+                    get: { viewModel.selectedDomainFilter ?? "" },
+                    set: { viewModel.selectedDomainFilter = ($0?.isEmpty ?? true) ? nil : $0 }
+                )
             )
         }
     }

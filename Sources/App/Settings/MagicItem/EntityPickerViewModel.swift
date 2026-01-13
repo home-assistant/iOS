@@ -27,7 +27,7 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var selectedServerId: String?
     @Published var selectedDomainFilter: String? = nil
     @Published var selectedAreaFilter: String? = nil
-    @Published var selectedGrouping: EntityGrouping = .domain
+    @Published var selectedGrouping: EntityGrouping = .area
     @Published var entitiesByDomain: [String: [HAAppEntity]] = [:]
     @Published var filteredEntitiesByGroup: [String: [HAAppEntity]] = [:]
 

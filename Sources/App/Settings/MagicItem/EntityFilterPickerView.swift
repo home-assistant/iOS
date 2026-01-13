@@ -27,7 +27,11 @@ struct EntityFilterPickerView: View {
                     Button {
                         selectedItemId = item.id
                     } label: {
-                        Text(item.title)
+                        if item.id == selectedItemId {
+                            Label(item.title, systemSymbol: .checkmark)
+                        } else {
+                            Text(item.title)
+                        }
                     }
                 }
             } label: {
