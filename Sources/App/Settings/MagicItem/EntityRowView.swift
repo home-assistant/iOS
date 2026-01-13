@@ -58,10 +58,11 @@ struct EntityRowView: View {
         .onAppear {
             title = optionalTitle ?? entity?.registryTitle ?? entity?.name ?? ""
             subtitle = (entity?.contextualSubtitle).orEmpty
+            let fallbackIcon = Domain(entityId: (entity?.entityId).orEmpty)?.icon(deviceClass: entity?.rawDeviceClass)
             if let entity {
                 icon = MaterialDesignIcons(
                     serversideValueNamed: entity.icon.orEmpty,
-                    fallback: .dotsGridIcon
+                    fallback: fallbackIcon ?? .dotsGridIcon
                 ).image(
                     ofSize: .init(width: iconSize.width, height: iconSize.height),
                     color: UIColor(Color.haPrimary)

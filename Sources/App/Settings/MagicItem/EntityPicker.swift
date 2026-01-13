@@ -8,6 +8,7 @@ struct EntityPicker: View {
         case list
     }
 
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: EntityPickerViewModel
 
     /// Returns entityId
@@ -51,8 +52,11 @@ struct EntityPicker: View {
         NavigationView {
             List {
                 ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
-                ForEach(viewModel.filteredEntitiesByDomain.sorted(by: { $0.key < $1.key }), id: \.key) { domain, filteredEntities in
-                    Section(domain.uppercased()) {
+
+                filtersView
+
+                ForEach(viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }), id: \.key) { group, filteredEntities in
+                    Section(group.uppercased()) {
                         ForEach(filteredEntities, id: \.id) { entity in
                             Button(action: {
                                 selectedEntity = entity
@@ -68,6 +72,7 @@ struct EntityPicker: View {
                     }
                 }
             }
+            .listStyle(.plain)
             .searchable(text: $viewModel.searchTerm)
             .onAppear {
                 viewModel.fetchEntities()
@@ -78,11 +83,80 @@ struct EntityPicker: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     CloseButton {
-                        viewModel.showList = false
+                        if mode == .button {
+                            viewModel.showList = false
+                        } else {
+                            dismiss()
+                        }
                     }
                 }
             }
         }
         .navigationViewStyle(.stack)
+    }
+
+    @ViewBuilder
+    private var filtersView: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: DesignSystem.Spaces.one) {
+                groupByPicker
+                domainPicker
+                areaPicker
+            }
+            .padding(.horizontal, DesignSystem.Spaces.one)
+        }
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+        .modify { view in
+            if #available(iOS 17.0, *) {
+                view.scrollClipDisabled()
+            } else {
+                view
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var domainPicker: some View {
+        if viewModel.domainFilter == nil {
+
+            EntityFilterPickerView(
+                title: "Domain",
+                pickerItems: viewModel.entitiesByDomain.keys.sorted().map {
+                    EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
+                },
+                selectedItemId: $viewModel.selectedDomainFilter
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var areaPicker: some View {
+        if !viewModel.areaData.isEmpty {
+            EntityFilterPickerView(
+                title: "Area",
+                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: "All Areas")] +
+                    viewModel.areaData.sorted(by: { $0.name < $1.name }).map {
+                        EntityFilterPickerView.PickerItem(id: $0.areaId, title: $0.name)
+                    },
+                selectedItemId: Binding(
+                    get: { viewModel.selectedAreaFilter ?? "" },
+                    set: { viewModel.selectedAreaFilter = ($0?.isEmpty ?? true) ? nil : $0 }
+                )
+            )
+        }
+    }
+    
+    private var groupByPicker: some View {
+        EntityFilterPickerView(
+            title: "Group by",
+            pickerItems: EntityGrouping.allCases.map {
+                EntityFilterPickerView.PickerItem(id: $0.rawValue, title: $0.displayName)
+            },
+            selectedItemId: Binding(
+                get: { viewModel.selectedGrouping.rawValue },
+                set: { if let grouping = EntityGrouping(rawValue: $0 ?? "") { viewModel.selectedGrouping = grouping } }
+            )
+        )
     }
 }
