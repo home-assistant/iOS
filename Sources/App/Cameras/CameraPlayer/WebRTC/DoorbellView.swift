@@ -9,27 +9,15 @@ struct DoorbellView: View {
     private let server: Server
     private let cameraEntityId: String
     private let cameraName: String?
-    private let onWebRTCUnsupported: (() -> Void)?
-    private let onSnapshot: (() -> Void)?
-    private let onUnlock: (() -> Void)?
-
-    @State private var isSnapshotLoading: Bool = false
-    @State private var showToast: Bool = false
 
     init(
         server: Server,
         cameraEntityId: String,
         cameraName: String? = nil,
-        onWebRTCUnsupported: (() -> Void)? = nil,
-        onSnapshot: (() -> Void)? = nil,
-        onUnlock: (() -> Void)? = nil
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
-        self.onWebRTCUnsupported = onWebRTCUnsupported
-        self.onSnapshot = onSnapshot
-        self.onUnlock = onUnlock
     }
 
     var body: some View {
@@ -133,8 +121,6 @@ struct DoorbellView: View {
     DoorbellView(
         server: ServerFixture.standard,
         cameraEntityId: "camera.front_door",
-        cameraName: "Front Door",
-        onSnapshot: { print("Snapshot taken") },
-        onUnlock: { print("Unlock pressed") }
+        cameraName: "Front Door"
     )
 }
