@@ -1,4 +1,5 @@
 import LocalAuthentication
+import SFSafeSymbols
 import SwiftUI
 
 // MARK: - Main Kiosk Settings View
@@ -42,7 +43,7 @@ public struct KioskSettingsView: View {
             if manager.isKioskModeActive {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Image(systemName: "lock.fill")
+                        Image(systemSymbol: .lockFill)
                             .foregroundColor(.green)
                         Text("Kiosk Mode Active")
                             .font(.headline)
@@ -61,7 +62,7 @@ public struct KioskSettingsView: View {
                     Button(role: .destructive) {
                         attemptKioskExit()
                     } label: {
-                        Label("Exit Kiosk Mode", systemImage: "lock.open")
+                        Label("Exit Kiosk Mode", systemSymbol: .lockOpen)
                     }
                     .accessibilityHint("Double-tap to exit kiosk mode. Authentication may be required.")
                 }
@@ -74,7 +75,7 @@ public struct KioskSettingsView: View {
                         }
                     }
                 )) {
-                    Label("Enable Kiosk Mode", systemImage: "lock")
+                    Label("Enable Kiosk Mode", systemSymbol: .lock)
                 }
             }
         } header: {
@@ -93,32 +94,32 @@ public struct KioskSettingsView: View {
     private var coreSettingsSection: some View {
         Section {
             Toggle(isOn: $settings.allowBiometricExit) {
-                Label("Allow Face ID / Touch ID", systemImage: "faceid")
+                Label("Allow Face ID / Touch ID", systemSymbol: .faceid)
             }
 
             Toggle(isOn: $settings.allowDevicePasscodeExit) {
-                Label("Allow Device Passcode", systemImage: "lock.shield")
+                Label("Allow Device Passcode", systemSymbol: .lockShield)
             }
 
             Toggle(isOn: $settings.navigationLockdown) {
-                Label("Lock Navigation", systemImage: "hand.raised")
+                Label("Lock Navigation", systemSymbol: .handRaised)
             }
 
             Toggle(isOn: $settings.hideStatusBar) {
-                Label("Hide Status Bar", systemImage: "rectangle.expand.vertical")
+                Label("Hide Status Bar", systemSymbol: .rectangleExpandVertical)
             }
 
             Toggle(isOn: $settings.preventAutoLock) {
-                Label("Prevent Auto-Lock", systemImage: "lock.open.display")
+                Label("Prevent Auto-Lock", systemSymbol: .lockOpenDisplay)
             }
 
             Toggle(isOn: $settings.wakeOnTouch) {
-                Label("Wake on Touch", systemImage: "hand.tap")
+                Label("Wake on Touch", systemSymbol: .handTap)
             }
 
             // Secret Exit Gesture
             Toggle(isOn: $settings.secretExitGestureEnabled) {
-                Label("Secret Exit Gesture", systemImage: "hand.tap")
+                Label("Secret Exit Gesture", systemSymbol: .handTap)
             }
 
             if settings.secretExitGestureEnabled {
@@ -129,7 +130,7 @@ public struct KioskSettingsView: View {
                 }
 
                 Stepper(value: $settings.secretExitGestureTaps, in: 2 ... 5) {
-                    Label("Taps Required: \(settings.secretExitGestureTaps)", systemImage: "number")
+                    Label("Taps Required: \(settings.secretExitGestureTaps)", systemSymbol: .number)
                 }
             }
         } header: {
@@ -148,7 +149,7 @@ public struct KioskSettingsView: View {
     private var brightnessSection: some View {
         Section {
             Toggle(isOn: $settings.brightnessControlEnabled) {
-                Label("Brightness Control", systemImage: "sun.max")
+                Label("Brightness Control", systemSymbol: .sunMax)
             }
 
             if settings.brightnessControlEnabled {
@@ -159,7 +160,7 @@ public struct KioskSettingsView: View {
                 }
 
                 Toggle(isOn: $settings.brightnessScheduleEnabled) {
-                    Label("Day/Night Schedule", systemImage: "clock")
+                    Label("Day/Night Schedule", systemSymbol: .clock)
                 }
 
                 if settings.brightnessScheduleEnabled {
@@ -198,7 +199,7 @@ public struct KioskSettingsView: View {
     private var screensaverSection: some View {
         Section {
             Toggle(isOn: $settings.screensaverEnabled) {
-                Label("Screensaver", systemImage: "moon.stars")
+                Label("Screensaver", systemSymbol: .moonStars)
             }
 
             if settings.screensaverEnabled {
@@ -230,7 +231,7 @@ public struct KioskSettingsView: View {
                 }
 
                 Toggle(isOn: $settings.pixelShiftEnabled) {
-                    Label("Pixel Shift (OLED)", systemImage: "arrow.left.arrow.right")
+                    Label("Pixel Shift (OLED)", systemSymbol: .arrowLeftArrowRight)
                 }
             }
         } header: {
@@ -251,15 +252,15 @@ public struct KioskSettingsView: View {
             }
 
             Toggle(isOn: $settings.clockShowDate) {
-                Label("Show Date", systemImage: "calendar")
+                Label("Show Date", systemSymbol: .calendar)
             }
 
             Toggle(isOn: $settings.clockShowSeconds) {
-                Label("Show Seconds", systemImage: "clock.badge")
+                Label("Show Seconds", systemSymbol: .clock)
             }
 
             Toggle(isOn: $settings.clockUse24HourFormat) {
-                Label("24-Hour Format", systemImage: "clock")
+                Label("24-Hour Format", systemSymbol: .clock)
             }
         } header: {
             Text("Clock Display")
