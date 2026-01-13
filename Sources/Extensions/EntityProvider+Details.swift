@@ -2,6 +2,20 @@ import Foundation
 import GRDB
 
 public extension HAAppEntity {
+    var registryTitle: String? {
+        do {
+            let registryEntity = try Current.database().read { db in
+                try AppEntityRegistry
+                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
+                    .filter(Column(DatabaseTables.EntityRegistry.entityId.rawValue) == entityId)
+                    .fetchOne(db)
+            }
+            return registryEntity?.name
+        } catch {
+            return nil
+        }
+    }
+
     var area: AppArea? {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)

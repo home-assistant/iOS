@@ -208,6 +208,8 @@ struct MagicItemRow: View {
     // This avoids lag while loading a screen with several rows
     @State private var showIcon = false
     @State private var subtitle = ""
+    @State private var title = ""
+    @State private var icon: UIImage?
     private let entity: HAAppEntity?
     private let optionalTitle: String?
     private let accessoryImageSystemSymbol: SFSymbol?
@@ -230,27 +232,18 @@ struct MagicItemRow: View {
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.two) {
             HStack {
-                if showIcon, let entity {
-                    Image(uiImage: MaterialDesignIcons(
-                        serversideValueNamed: entity.icon.orEmpty,
-                        fallback: .dotsGridIcon
-                    ).image(
-                        ofSize: .init(width: iconSize.width, height: iconSize.height),
-                        color: UIColor(Color.haPrimary)
-                    ))
+                if showIcon, let icon {
+                    Image(uiImage: icon)
                 }
             }
             .frame(width: iconSize.width, height: iconSize.height)
             VStack {
-                Text(optionalTitle ?? entity?.name ?? "")
+                Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Text(subtitle)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.footnote)
                     .foregroundStyle(Color.secondary)
-            }
-            .onAppear {
-                subtitle = (entity?.contextualSubtitle).orEmpty
             }
             if isSelected {
                 Image(systemSymbol: .checkmark)
@@ -263,6 +256,17 @@ struct MagicItemRow: View {
         }
         .animation(.easeInOut, value: showIcon)
         .onAppear {
+            title = optionalTitle ?? entity?.registryTitle ?? entity?.name ?? ""
+            subtitle = (entity?.contextualSubtitle).orEmpty
+            if let entity {
+                icon = MaterialDesignIcons(
+                    serversideValueNamed: entity.icon.orEmpty,
+                    fallback: .dotsGridIcon
+                ).image(
+                    ofSize: .init(width: iconSize.width, height: iconSize.height),
+                    color: UIColor(Color.haPrimary)
+                )
+            }
             showIcon = true
         }
         .onDisappear {
