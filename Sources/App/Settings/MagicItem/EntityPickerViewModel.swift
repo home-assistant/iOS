@@ -1,13 +1,13 @@
-import Foundation
 import Combine
+import Foundation
 import Shared
 
 enum EntityGrouping: String, CaseIterable, Identifiable {
     case domain
     case area
-    
+
     var id: String { rawValue }
-    
+
     var displayName: String {
         switch self {
         case .domain: return L10n.EntityPicker.Filter.Domain.title
@@ -49,7 +49,7 @@ final class EntityPickerViewModel: ObservableObject {
                 self?.updateFilteredEntities()
             }
             .store(in: &cancellables)
-        
+
         // Re-fetch server-specific data when server changes
         $selectedServerId
             .removeDuplicates()
@@ -58,7 +58,7 @@ final class EntityPickerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     private func fetchServerData(for serverId: String?) {
         guard let serverId else { return }
         do {
@@ -76,7 +76,7 @@ final class EntityPickerViewModel: ObservableObject {
         do {
             entities = try HAAppEntity.config()
             groupByDomain()
-            
+
             // Fetch server-specific data if a server is already selected
             if let serverId = selectedServerId {
                 fetchServerData(for: serverId)
@@ -119,44 +119,44 @@ final class EntityPickerViewModel: ObservableObject {
         let filtered = await Task.detached(priority: .userInitiated) { () -> [String: [HAAppEntity]] in
             // Find the selected area's entity IDs if an area filter is set
             let areaEntityIds: Set<String>?
-            if let areaFilter = areaFilter,
+            if let areaFilter,
                let selectedArea = areas.first(where: { $0.areaId == areaFilter }) {
                 areaEntityIds = selectedArea.entities
             } else {
                 areaEntityIds = nil
             }
-            
+
             // First, filter all entities
             let filteredEntities = allEntities.filter { entity in
                 // Filter by server
                 guard entity.serverId == serverId else { return false }
-                
+
                 // Filter by domain if set
-                if let domainFilter = domainFilter, entity.domain != domainFilter {
+                if let domainFilter, entity.domain != domainFilter {
                     return false
                 }
-                
+
                 // Filter by area if set
-                if let areaEntityIds = areaEntityIds {
+                if let areaEntityIds {
                     guard areaEntityIds.contains(entity.entityId) else { return false }
                 }
-                
+
                 // Filter by search term
                 if searchTerm.count > 2 {
                     return entity.name.lowercased().contains(searchTerm.lowercased()) ||
-                           entity.entityId.lowercased().contains(searchTerm.lowercased())
+                        entity.entityId.lowercased().contains(searchTerm.lowercased())
                 }
-                
+
                 return true
             }
-            
+
             // Group by selected grouping
             var result: [String: [HAAppEntity]] = [:]
-            
+
             switch grouping {
             case .domain:
                 result = Dictionary(grouping: filteredEntities) { $0.domain }
-                
+
             case .area:
                 // Create a lookup from entity ID to area name
                 var entityToArea: [String: String] = [:]
@@ -165,14 +165,14 @@ final class EntityPickerViewModel: ObservableObject {
                         entityToArea[entityId] = area.name
                     }
                 }
-                
+
                 // Group entities by area
                 for entity in filteredEntities {
                     let areaName = entityToArea[entity.entityId] ?? "No Area"
                     result[areaName, default: []].append(entity)
                 }
             }
-            
+
             return result
         }.value
 

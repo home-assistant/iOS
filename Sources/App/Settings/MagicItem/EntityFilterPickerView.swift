@@ -1,8 +1,7 @@
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct EntityFilterPickerView: View {
-
     struct PickerItem {
         let id: String
         let title: String
@@ -58,5 +57,9 @@ struct EntityFilterPickerView: View {
 }
 
 #Preview {
-    EntityFilterPickerView(title: "Filter 1", pickerItems: [.init(id: "1", title: "Abc"), .init(id: "2", title: "Def")], selectedItemId: .constant("1"))
+    EntityFilterPickerView(
+        title: "Filter 1",
+        pickerItems: [.init(id: "1", title: "Abc"), .init(id: "2", title: "Def")],
+        selectedItemId: .constant("1")
+    )
 }
