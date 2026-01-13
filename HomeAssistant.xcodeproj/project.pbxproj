@@ -979,6 +979,7 @@
 		42B7BFEF2E97CDE40056BADC /* HomeNetworkInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFEE2E97CDE40056BADC /* HomeNetworkInputView.swift */; };
 		42B7BFF12E97D1540056BADC /* HomeNetworkInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B7BFF02E97D1540056BADC /* HomeNetworkInputViewModel.swift */; };
 		42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B89EAB2E080494000224A2 /* AppConstants.test.swift */; };
+		42KIOSK012E0F000000000001 /* KioskSettings.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42KIOSK002E0F000000000001 /* KioskSettings.test.swift */; };
 		42B942F62CAA1E5600E36E02 /* PayloadConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */; };
 		42B942F82CAA1ECC00E36E02 /* PayloadConstants.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */; };
 		42B94BDE2B9606CD00DEE060 /* AssistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B94BDB2B9606CD00DEE060 /* AssistViewModel.swift */; };
@@ -2786,6 +2787,7 @@
 		42B7BFEE2E97CDE40056BADC /* HomeNetworkInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkInputView.swift; sourceTree = "<group>"; };
 		42B7BFF02E97D1540056BADC /* HomeNetworkInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkInputViewModel.swift; sourceTree = "<group>"; };
 		42B89EAB2E080494000224A2 /* AppConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.test.swift; sourceTree = "<group>"; };
+		42KIOSK002E0F000000000001 /* KioskSettings.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KioskSettings.test.swift; sourceTree = "<group>"; };
 		42B942F52CAA1E5600E36E02 /* PayloadConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.swift; sourceTree = "<group>"; };
 		42B942F72CAA1ECC00E36E02 /* PayloadConstants.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadConstants.test.swift; sourceTree = "<group>"; };
 		42B94BDA2B9606CD00DEE060 /* AssistChatItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssistChatItem.swift; sourceTree = "<group>"; };
@@ -6767,6 +6769,7 @@
 			children = (
 				42B89EAB2E080494000224A2 /* AppConstants.test.swift */,
 				42646B762E0BE6F100F6B367 /* BackgroundTask.test.swift */,
+				42KIOSK032E0F000000000001 /* Kiosk */,
 				11EFD3C1272642FC000AF78B /* Additions */,
 				422E626A2CDCF00000987BD0 /* Area */,
 				39A32EDD2C0E36A400985722 /* Assist */,
@@ -7319,6 +7322,14 @@
 				1120C5832749C6350046C38B /* ServerProviding.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		42KIOSK032E0F000000000001 /* Kiosk */ = {
+			isa = PBXGroup;
+			children = (
+				42KIOSK002E0F000000000001 /* KioskSettings.test.swift */,
+			);
+			path = Kiosk;
 			sourceTree = "<group>";
 		};
 		F7CD87130CAC4001A6C4D328 /* Kiosk */ = {
@@ -9564,6 +9575,7 @@
 				116D3A3D2724D83300EF5D21 /* OnboardingAuth.test.swift in Sources */,
 				420F53EE2C4EA025003C8415 /* WidgetsKindTests.swift in Sources */,
 				42B89EAC2E080494000224A2 /* AppConstants.test.swift in Sources */,
+				42KIOSK012E0F000000000001 /* KioskSettings.test.swift in Sources */,
 				11ED43962726599D00B5FD45 /* OnboardingAuthStepModels.test.swift in Sources */,
 				11ED439C2726600000B5FD45 /* OnboardingAuthStepSensors.test.swift in Sources */,
 				42A47A8A2C452DB500C9B43D /* MockWebViewController.swift in Sources */,
