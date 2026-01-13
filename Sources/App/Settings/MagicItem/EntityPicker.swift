@@ -65,7 +65,7 @@ struct EntityPicker: View {
                         selectedEntity = entity
                         viewModel.showList = false
                     }, label: {
-                        MagicItemRow(
+                        EntityRowView(
                             entity: entity,
                             isSelected: selectedEntity == entity
                         )

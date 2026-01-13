@@ -628,6 +628,7 @@
 		4210CD002F155B7900B71FB9 /* AssistConfigurationTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */; };
 		4210CD032F155C4500B71FB9 /* AssistConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */; };
 		4210CD052F155D2600B71FB9 /* AssistSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */; };
+		4210CD102F16906800B71FB9 /* EntityRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4210CD0F2F16906800B71FB9 /* EntityRowView.swift */; };
 		421155212D3525F500A71630 /* AppIconSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155202D3525F500A71630 /* AppIconSelectorView.swift */; };
 		421155232D354F3F00A71630 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155222D354F3F00A71630 /* AppIcon.swift */; };
 		421155252D355C6700A71630 /* WidgetBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421155242D355C6700A71630 /* WidgetBuilderView.swift */; };
@@ -2297,6 +2298,7 @@
 		4210CCFC2F15556700B71FB9 /* AssistConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfiguration.swift; sourceTree = "<group>"; };
 		4210CCFE2F155B7900B71FB9 /* AssistConfigurationTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistConfigurationTable.swift; sourceTree = "<group>"; };
 		4210CD042F155D2600B71FB9 /* AssistSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistSettingsViewModel.swift; sourceTree = "<group>"; };
+		4210CD0F2F16906800B71FB9 /* EntityRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityRowView.swift; sourceTree = "<group>"; };
 		421155202D3525F500A71630 /* AppIconSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectorView.swift; sourceTree = "<group>"; };
 		421155222D354F3F00A71630 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		421155242D355C6700A71630 /* WidgetBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBuilderView.swift; sourceTree = "<group>"; };
@@ -4955,6 +4957,7 @@
 				4251AA972C6B9D30004CCC9D /* Edit */,
 				42D5ACD72C64C0CF00D9C4E2 /* Add */,
 				426BB0C42D393F0E0062D905 /* EntityPicker.swift */,
+				4210CD0F2F16906800B71FB9 /* EntityRowView.swift */,
 				4245DC002EBA3DD3005E0E04 /* EntityPickerViewModel.swift */,
 				426BB0C62D394BFF0062D905 /* AssistPipelinePicker.swift */,
 			);
@@ -9114,6 +9117,7 @@
 				42F5C0852F02BBA000C50310 /* AppIntentProvider.swift in Sources */,
 				42FCCFFB2B9B1C310057783F /* ThreadTransferCredentialToHAViewModel.swift in Sources */,
 				4296C36E2B90DB640051B63C /* PerformAction.swift in Sources */,
+				4210CD102F16906800B71FB9 /* EntityRowView.swift in Sources */,
 				42B980D32DC24E1300BC5C08 /* SensorDetailLabelRowView.swift in Sources */,
 				1127383C2625512600F5E312 /* ButtonRowWithLoading.swift in Sources */,
 				42ABB0BB2C888BB10081461D /* CarPlayConfigurationViewModel.swift in Sources */,
