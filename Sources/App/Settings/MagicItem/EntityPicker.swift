@@ -52,10 +52,13 @@ struct EntityPicker: View {
         NavigationView {
             List {
                 ServersPickerPillList(selectedServerId: $viewModel.selectedServerId)
-
-                filtersView
-
-                ForEach(viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }), id: \.key) { group, filteredEntities in
+                if #unavailable(iOS 26.0) {
+                    filtersView
+                }
+                ForEach(
+                    viewModel.filteredEntitiesByGroup.sorted(by: { $0.key < $1.key }),
+                    id: \.key
+                ) { group, filteredEntities in
                     Section(group.uppercased()) {
                         ForEach(filteredEntities, id: \.id) { entity in
                             Button(action: {
@@ -72,8 +75,17 @@ struct EntityPicker: View {
                     }
                 }
             }
-            .listStyle(.plain)
             .searchable(text: $viewModel.searchTerm)
+            .modify { view in
+                if #available(iOS 26.0, *) {
+                    view.safeAreaBar(edge: .bottom) {
+                        filtersView
+                            .padding(.horizontal)
+                    }
+                } else {
+                    view
+                }
+            }
             .onAppear {
                 viewModel.fetchEntities()
                 if viewModel.selectedServerId == nil {
@@ -121,7 +133,10 @@ struct EntityPicker: View {
         if viewModel.domainFilter == nil {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Domain.title,
-                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: L10n.EntityPicker.Filter.Domain.All.title)] +
+                pickerItems: [EntityFilterPickerView.PickerItem(
+                    id: "",
+                    title: L10n.EntityPicker.Filter.Domain.All.title
+                )] +
                     viewModel.entitiesByDomain.keys.sorted().map {
                         EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
                     },
@@ -138,7 +153,10 @@ struct EntityPicker: View {
         if !viewModel.areaData.isEmpty {
             EntityFilterPickerView(
                 title: L10n.EntityPicker.Filter.Area.title,
-                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: L10n.EntityPicker.Filter.Area.All.title)] +
+                pickerItems: [EntityFilterPickerView.PickerItem(
+                    id: "",
+                    title: L10n.EntityPicker.Filter.Area.All.title
+                )] +
                     viewModel.areaData.sorted(by: { $0.name < $1.name }).map {
                         EntityFilterPickerView.PickerItem(id: $0.areaId, title: $0.name)
                     },
@@ -149,17 +167,22 @@ struct EntityPicker: View {
             )
         }
     }
-    
+
+    @ViewBuilder
     private var groupByPicker: some View {
-        EntityFilterPickerView(
-            title: L10n.EntityPicker.Filter.GroupBy.title,
-            pickerItems: EntityGrouping.allCases.map {
-                EntityFilterPickerView.PickerItem(id: $0.rawValue, title: $0.displayName)
-            },
-            selectedItemId: Binding(
-                get: { viewModel.selectedGrouping.rawValue },
-                set: { if let grouping = EntityGrouping(rawValue: $0 ?? "") { viewModel.selectedGrouping = grouping } }
+        if viewModel.domainFilter == nil {
+            EntityFilterPickerView(
+                title: L10n.EntityPicker.Filter.GroupBy.title,
+                pickerItems: EntityGrouping.allCases.map {
+                    EntityFilterPickerView.PickerItem(id: $0.rawValue, title: $0.displayName)
+                },
+                selectedItemId: Binding(
+                    get: { viewModel.selectedGrouping.rawValue },
+                    set: {
+                        if let grouping = EntityGrouping(rawValue: $0 ?? "") { viewModel.selectedGrouping = grouping }
+                    }
+                )
             )
-        )
+        }
     }
 }
