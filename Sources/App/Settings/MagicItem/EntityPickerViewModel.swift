@@ -26,12 +26,12 @@ final class EntityPickerViewModel: ObservableObject {
                 })
             }
             entities = newEntities
-            
+
             if let serverId = selectedServerId {
-                self.registryEntities = try AppEntityRegistryListForDisplay.config(serverId: serverId)
-                self.registryEntriesData = try AppEntityRegistry.config(serverId: serverId)
-                self.deviceRegistryData = try AppDeviceRegistry.config(serverId: serverId)
-                self.areaData = try AppArea.fetchAreas(for: serverId)
+                registryEntities = try AppEntityRegistryListForDisplay.config(serverId: serverId)
+                registryEntriesData = try AppEntityRegistry.config(serverId: serverId)
+                deviceRegistryData = try AppDeviceRegistry.config(serverId: serverId)
+                areaData = try AppArea.fetchAreas(for: serverId)
             }
         } catch {
             Current.Log.error("Failed to fetch entities for entity picker, error: \(error)")
