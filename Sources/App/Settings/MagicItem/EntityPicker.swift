@@ -120,8 +120,8 @@ struct EntityPicker: View {
     private var domainPicker: some View {
         if viewModel.domainFilter == nil {
             EntityFilterPickerView(
-                title: "Domain",
-                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: "All Domains")] +
+                title: L10n.EntityPicker.Filter.Domain.title,
+                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: L10n.EntityPicker.Filter.Domain.All.title)] +
                     viewModel.entitiesByDomain.keys.sorted().map {
                         EntityFilterPickerView.PickerItem(id: $0, title: $0.uppercased())
                     },
@@ -137,8 +137,8 @@ struct EntityPicker: View {
     private var areaPicker: some View {
         if !viewModel.areaData.isEmpty {
             EntityFilterPickerView(
-                title: "Area",
-                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: "All Areas")] +
+                title: L10n.EntityPicker.Filter.Area.title,
+                pickerItems: [EntityFilterPickerView.PickerItem(id: "", title: L10n.EntityPicker.Filter.Area.All.title)] +
                     viewModel.areaData.sorted(by: { $0.name < $1.name }).map {
                         EntityFilterPickerView.PickerItem(id: $0.areaId, title: $0.name)
                     },
@@ -152,7 +152,7 @@ struct EntityPicker: View {
     
     private var groupByPicker: some View {
         EntityFilterPickerView(
-            title: "Group by",
+            title: L10n.EntityPicker.Filter.GroupBy.title,
             pickerItems: EntityGrouping.allCases.map {
                 EntityFilterPickerView.PickerItem(id: $0.rawValue, title: $0.displayName)
             },

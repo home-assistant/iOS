@@ -10,8 +10,8 @@ enum EntityGrouping: String, CaseIterable, Identifiable {
     
     var displayName: String {
         switch self {
-        case .domain: return "Domain"
-        case .area: return "Area"
+        case .domain: return L10n.EntityPicker.Filter.Domain.title
+        case .area: return L10n.EntityPicker.Filter.Area.title
         }
     }
 }
@@ -109,7 +109,6 @@ final class EntityPickerViewModel: ObservableObject {
 
     private func performFiltering() async {
         let allEntities = entities
-        let entitiesByDomain = entitiesByDomain
         let searchTerm = searchTerm
         let serverId = selectedServerId
         let domainFilter = selectedDomainFilter
