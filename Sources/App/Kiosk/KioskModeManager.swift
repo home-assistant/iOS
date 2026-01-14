@@ -505,12 +505,13 @@ public final class KioskModeManager: ObservableObject {
         let dayStart = settings.dayStartTime
         let nightStart = settings.nightStartTime
 
-        // If day starts before night (normal case: day 7am, night 10pm)
+        // If day starts before night in 24h time (normal case: day 07:00, night 22:00)
         if dayStart.isBefore(nightStart) {
-            // Night time is: before day start OR after night start
+            // Night time is: before day start OR at/after night start
             return currentTime.isBefore(dayStart) || !currentTime.isBefore(nightStart)
         } else {
-            // If night starts before day (e.g., day 6am, night 11pm across midnight)
+            // If night starts before day in 24h time (e.g., night 02:00, day 06:00)
+            // This handles edge cases where "night" represents early morning hours
             return !currentTime.isBefore(nightStart) && currentTime.isBefore(dayStart)
         }
     }
