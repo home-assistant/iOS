@@ -31,6 +31,11 @@ final class EntityPickerViewModel: ObservableObject {
     @Published var entitiesByDomain: [String: [HAAppEntity]] = [:]
     @Published var filteredEntitiesByGroup: [String: [HAAppEntity]] = [:]
 
+    // Cached lookups to avoid recomputation on every filter
+    private var cachedEntityToArea: [String: String] = [:]
+    private var cachedAreaIdToEntityIds: [String: Set<String>] = [:]
+    private var cachedEntitiesByServer: [String: [HAAppEntity]] = [:]
+
     let domainFilter: Domain?
     private var filterTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
@@ -52,13 +57,47 @@ final class EntityPickerViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
+        // Recompute area-based caches when area data changes
+        $areaData
+            .sink { [weak self] _ in
+                self?.rebuildAreaCaches()
+            }
+            .store(in: &cancellables)
+
         // Re-fetch server-specific data when server changes
         $selectedServerId
             .removeDuplicates()
             .sink { [weak self] serverId in
-                self?.fetchServerData(for: serverId)
+                guard let self = self else { return }
+                // Clear server-specific cache when server changes
+                self.cachedEntitiesByServer.removeAll()
+                self.fetchServerData(for: serverId)
             }
             .store(in: &cancellables)
+    }
+
+    private func rebuildAreaCaches() {
+        var entityToArea: [String: String] = [:]
+        var areaIdToEntityIds: [String: Set<String>] = [:]
+        for area in areaData {
+            areaIdToEntityIds[area.areaId] = area.entities
+            for entityId in area.entities {
+                entityToArea[entityId] = area.name
+            }
+        }
+        cachedEntityToArea = entityToArea
+        cachedAreaIdToEntityIds = areaIdToEntityIds
+    }
+
+    private func entitiesForCurrentServer() -> [HAAppEntity] {
+        guard let serverId = selectedServerId else { return [] }
+        if let cached = cachedEntitiesByServer[serverId] {
+            return cached
+        }
+        // Build and cache
+        let result = entities.filter { $0.serverId == serverId }
+        cachedEntitiesByServer[serverId] = result
+        return result
     }
 
     private func fetchServerData(for serverId: String?) {
@@ -68,6 +107,9 @@ final class EntityPickerViewModel: ObservableObject {
             registryEntriesData = try AppEntityRegistry.config(serverId: serverId)
             deviceRegistryData = try AppDeviceRegistry.config(serverId: serverId)
             areaData = try AppArea.fetchAreas(for: serverId)
+            rebuildAreaCaches()
+            // Prime server cache for this server
+            cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
             updateFilteredEntities()
         } catch {
             Current.Log.error("Failed to fetch server data for entity picker, error: \(error)")
@@ -78,6 +120,12 @@ final class EntityPickerViewModel: ObservableObject {
         do {
             entities = try HAAppEntity.config()
             groupByDomain()
+
+            // Rebuild caches with current data
+            rebuildAreaCaches()
+            if let serverId = selectedServerId {
+                cachedEntitiesByServer[serverId] = entities.filter { $0.serverId == serverId }
+            }
 
             // Fetch server-specific data if a server is already selected
             if let serverId = selectedServerId {
@@ -110,72 +158,56 @@ final class EntityPickerViewModel: ObservableObject {
     }
 
     private func performFiltering() async {
-        let allEntities = entities
-        let searchTerm = searchTerm
-        let serverId = selectedServerId
-        let domainFilter = selectedDomainFilter
-        let areaFilter = selectedAreaFilter
-        let areas = areaData
-        let grouping = selectedGrouping
+        // Snapshot state needed for filtering
+        let searchTerm = self.searchTerm
+        let domainFilter = self.selectedDomainFilter
+        let areaFilter = self.selectedAreaFilter
+        let grouping = self.selectedGrouping
+        let noAreaTitle = L10n.EntityPicker.List.Area.NoArea.title
+
+        // Pull cached lookups
+        let entityToArea: [String: String]
+        let areaIdToEntityIds: [String: Set<String>]
+        entityToArea = cachedEntityToArea
+        areaIdToEntityIds = cachedAreaIdToEntityIds
+
+        // Get entities already filtered by server
+        let serverScopedEntities = entitiesForCurrentServer()
 
         let filtered = await Task.detached(priority: .userInitiated) { () -> [String: [HAAppEntity]] in
-            // Find the selected area's entity IDs if an area filter is set
-            let areaEntityIds: Set<String>?
-            if let areaFilter,
-               let selectedArea = areas.first(where: { $0.areaId == areaFilter }) {
-                areaEntityIds = selectedArea.entities
-            } else {
-                areaEntityIds = nil
-            }
+            // Resolve area entity id set if filtering by area
+            let areaEntityIds: Set<String>? = areaFilter.flatMap { areaIdToEntityIds[$0] }
 
-            // First, filter all entities
-            let filteredEntities = allEntities.filter { entity in
-                // Filter by server
-                guard entity.serverId == serverId else { return false }
-
+            // First, filter entities by domain, area, and search
+            let filteredEntities = serverScopedEntities.filter { entity in
                 // Filter by domain if set
-                if let domainFilter, entity.domain != domainFilter {
-                    return false
-                }
+                if let domainFilter, entity.domain != domainFilter { return false }
 
                 // Filter by area if set
-                if let areaEntityIds {
-                    guard areaEntityIds.contains(entity.entityId) else { return false }
-                }
+                if let areaEntityIds, !areaEntityIds.contains(entity.entityId) { return false }
 
-                // Filter by search term
+                // Filter by search term (only when 3+ chars)
                 if searchTerm.count > 2 {
-                    return entity.name.lowercased().contains(searchTerm.lowercased()) ||
-                    entity.entityId.lowercased().contains(searchTerm.lowercased())
+                    let lower = searchTerm.lowercased()
+                    if !entity.name.lowercased().contains(lower) && !entity.entityId.lowercased().contains(lower) {
+                        return false
+                    }
                 }
-
                 return true
             }
 
             // Group by selected grouping
-            var result: [String: [HAAppEntity]] = [:]
-
             switch grouping {
             case .domain:
-                result = Dictionary(grouping: filteredEntities) { $0.domain }
-
+                return Dictionary(grouping: filteredEntities) { $0.domain }
             case .area:
-                // Create a lookup from entity ID to area name
-                var entityToArea: [String: String] = [:]
-                for area in areas {
-                    for entityId in area.entities {
-                        entityToArea[entityId] = area.name
-                    }
-                }
-
-                // Group entities by area
+                var result: [String: [HAAppEntity]] = [:]
                 for entity in filteredEntities {
-                    let areaName = entityToArea[entity.entityId] ?? L10n.EntityPicker.List.Area.NoArea.title
+                    let areaName = entityToArea[entity.entityId] ?? noAreaTitle
                     result[areaName, default: []].append(entity)
                 }
+                return result
             }
-
-            return result
         }.value
 
         await MainActor.run {
@@ -183,3 +215,4 @@ final class EntityPickerViewModel: ObservableObject {
         }
     }
 }
+
