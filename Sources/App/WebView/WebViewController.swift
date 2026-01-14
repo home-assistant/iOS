@@ -68,11 +68,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
 
     override var prefersStatusBarHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersStatusBarHidden
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
-        Current.settingsStore.fullScreen
+        Current.settingsStore.fullScreen || kioskPrefersHomeIndicatorAutoHidden
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {

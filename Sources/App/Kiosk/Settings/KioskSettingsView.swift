@@ -292,6 +292,7 @@ public struct KioskSettingsView: View {
                     Text(L10n.Kiosk.Screensaver.timeout)
                     Spacer()
                     Picker("", selection: $settings.screensaverTimeout) {
+                        Text(L10n.Kiosk.Screensaver.Timeout._30sec).tag(TimeInterval(30))
                         Text(L10n.Kiosk.Screensaver.Timeout._1min).tag(TimeInterval(60))
                         Text(L10n.Kiosk.Screensaver.Timeout._2min).tag(TimeInterval(120))
                         Text(L10n.Kiosk.Screensaver.Timeout._5min).tag(TimeInterval(300))

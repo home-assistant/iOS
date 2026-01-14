@@ -1458,6 +1458,7 @@ Home Assistant is open source, advocates for privacy and runs locally in your ho
 "kiosk.screensaver.mode.dim" = "Dim";
 "kiosk.screensaver.mode.blank" = "Blank";
 "kiosk.screensaver.timeout" = "Timeout";
+"kiosk.screensaver.timeout.30sec" = "30 seconds";
 "kiosk.screensaver.timeout.1min" = "1 minute";
 "kiosk.screensaver.timeout.2min" = "2 minutes";
 "kiosk.screensaver.timeout.5min" = "5 minutes";
