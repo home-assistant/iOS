@@ -25,12 +25,12 @@ final class HAppEntityTable: DatabaseTableProtocol {
             // In case a new column is added to the table, we need to alter the table
             try database.write { db in
                 for column in DatabaseTables.AppEntity.allCases {
-                    let shouldCreateTable = try !db.columns(in: GRDBDatabaseTable.HAAppEntity.rawValue)
+                    let shouldCreateColumn = try !db.columns(in: GRDBDatabaseTable.HAAppEntity.rawValue)
                         .contains { columnInfo in
                             columnInfo.name == column.rawValue
                         }
 
-                    if shouldCreateTable {
+                    if shouldCreateColumn {
                         try db.alter(table: GRDBDatabaseTable.HAAppEntity.rawValue) { tableAlteration in
                             tableAlteration.add(column: column.rawValue)
                         }

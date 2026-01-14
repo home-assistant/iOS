@@ -16,6 +16,23 @@ final class HomeViewConfigurationTable: DatabaseTableProtocol {
                     t.column(DatabaseTables.HomeViewConfiguration.allowMultipleSelection.rawValue, .boolean)
                     t.column(DatabaseTables.HomeViewConfiguration.entityOrderByRoom.rawValue, .jsonText)
                     t.column(DatabaseTables.HomeViewConfiguration.hiddenEntityIds.rawValue, .jsonText)
+                    t.column(DatabaseTables.HomeViewConfiguration.showUsagePredictionSection.rawValue, .boolean)
+                    t.column(DatabaseTables.HomeViewConfiguration.areasLayout.rawValue, .text)
+                }
+            }
+        } else {
+            try database.write { db in
+                for column in DatabaseTables.HomeViewConfiguration.allCases {
+                    let shouldCreateColumn = try !db.columns(in: GRDBDatabaseTable.homeViewConfiguration.rawValue)
+                        .contains { columnInfo in
+                            columnInfo.name == column.rawValue
+                        }
+
+                    if shouldCreateColumn {
+                        try db.alter(table: GRDBDatabaseTable.homeViewConfiguration.rawValue) { tableAlteration in
+                            tableAlteration.add(column: column.rawValue)
+                        }
+                    }
                 }
             }
         }

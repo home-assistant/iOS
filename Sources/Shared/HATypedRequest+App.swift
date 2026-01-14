@@ -138,4 +138,10 @@ public extension HATypedRequest {
             type: .webSocket("config/entity_registry/list_for_display")
         ))
     }
+
+    static func usagePredictionCommonControl() -> HATypedRequest<HAUsagePredictionCommonControl> {
+        HATypedRequest<HAUsagePredictionCommonControl>(request: .init(
+            type: .webSocket("usage_prediction/common_control")
+        ))
+    }
 }

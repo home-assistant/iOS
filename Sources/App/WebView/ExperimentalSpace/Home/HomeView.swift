@@ -121,29 +121,95 @@ struct HomeView: View {
             sectionOrder: viewModel.configuration.sectionOrder,
             visibleSectionIds: viewModel.configuration.visibleSectionIds
         )
+        let layout = viewModel.configuration.areasLayout ?? .list
 
         return ScrollView {
-            LazyVStack(
-                alignment: .leading,
-                spacing: DesignSystem.Spaces.three
-            ) {
-                ForEach(filteredSections) { section in
-                    let visibleEntities = visibleEntitiesForSection(section)
-                    if !visibleEntities.isEmpty || viewModel.configuration.visibleSectionIds.contains(section.id) {
-                        Section {
-                            entityTilesGrid(
-                                for: visibleEntities,
-                                section: section
+            switch layout {
+            case .grid:
+                areasGridView(sections: filteredSections)
+            case .list:
+                areasListView(sections: filteredSections)
+            }
+        }
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    private func areasListView(sections: [HomeViewModel.RoomSection]) -> some View {
+        LazyVStack(
+            alignment: .leading,
+            spacing: DesignSystem.Spaces.three
+        ) {
+            predictionSection
+
+            // Display regular sections
+            ForEach(sections) { section in
+                let visibleEntities = visibleEntitiesForSection(section)
+                if !visibleEntities.isEmpty || viewModel.configuration.visibleSectionIds.contains(section.id) {
+                    Section {
+                        entityTilesGrid(
+                            for: visibleEntities,
+                            section: section
+                        )
+                    } header: {
+                        sectionHeader(section.name, section: section)
+                    }
+                }
+            }
+        }
+        .padding()
+    }
+
+    private func areasGridView(sections: [HomeViewModel.RoomSection]) -> some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            predictionSection
+                .padding([.top, .horizontal])
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
+                EntityDisplayComponents.sectionHeader(
+                    L10n.HomeView.Areas.title,
+                    showChevron: false
+                )
+                LazyVGrid(
+                    columns: [
+                        GridItem(.adaptive(minimum: 100, maximum: 150), spacing: DesignSystem.Spaces.one),
+                    ],
+                    spacing: DesignSystem.Spaces.one
+                ) {
+                    ForEach(sections) { section in
+                        if !isReorderMode {
+                            AreaGridButton(
+                                section: section,
+                                action: {
+                                    selectedRoom = (id: section.id, name: section.name)
+                                }
                             )
-                        } header: {
-                            sectionHeader(section.name, section: section)
+                            .matchedTransitionSource(id: section.id, in: roomNameSpace)
                         }
                     }
                 }
             }
             .padding()
         }
-        .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    @ViewBuilder
+    private var predictionSection: some View {
+        if viewModel.configuration.showUsagePredictionSection {
+            // Display usage prediction common control section at the top
+            if let usagePredictionSection = viewModel.usagePredictionSection {
+                let visibleEntities = visibleEntitiesForSection(usagePredictionSection)
+                if !visibleEntities.isEmpty {
+                    Section {
+                        entityTilesGrid(
+                            for: visibleEntities,
+                            section: usagePredictionSection
+                        )
+                    } header: {
+                        sectionHeader(usagePredictionSection.name, section: usagePredictionSection)
+                    }
+                }
+            }
+        }
     }
 
     private func visibleEntitiesForSection(_ section: HomeViewModel.RoomSection) -> [HAEntity] {
@@ -352,7 +418,13 @@ struct HomeView: View {
     @ViewBuilder
     private func sectionHeader(_ title: String, section: HomeViewModel.RoomSection) -> some View {
         Group {
-            if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
+            // Handle usage prediction section separately (not in groupedEntities)
+            if section.id == HomeViewModel.usagePredictionSectionId {
+                EntityDisplayComponents.sectionHeader(
+                    title,
+                    showChevron: false
+                )
+            } else if let section = viewModel.groupedEntities.first(where: { $0.name == title }) {
                 EntityDisplayComponents.sectionHeader(
                     title,
                     showChevron: true,
