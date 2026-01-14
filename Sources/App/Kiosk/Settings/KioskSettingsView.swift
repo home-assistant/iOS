@@ -20,8 +20,9 @@ public struct KioskSettingsView: View {
     }
 
     /// Whether authentication is required to access settings
+    /// Uses manager.settings (persisted) not local settings copy
     private var requiresAuth: Bool {
-        manager.isKioskModeActive && (settings.allowBiometricExit || settings.allowDevicePasscodeExit)
+        manager.isKioskModeActive && (manager.settings.allowBiometricExit || manager.settings.allowDevicePasscodeExit)
     }
 
     public var body: some View {
@@ -69,9 +70,10 @@ public struct KioskSettingsView: View {
     private func authenticateForSettings() {
         let context = LAContext()
         var error: NSError?
+        let authSettings = manager.settings // Use persisted settings for auth checks
 
         // Determine which policy to use based on settings
-        let policy: LAPolicy = settings.allowBiometricExit
+        let policy: LAPolicy = authSettings.allowBiometricExit
             ? .deviceOwnerAuthenticationWithBiometrics
             : .deviceOwnerAuthentication
 
@@ -94,7 +96,7 @@ public struct KioskSettingsView: View {
                     }
                 }
             }
-        } else if settings.allowDevicePasscodeExit {
+        } else if authSettings.allowDevicePasscodeExit {
             // Biometric not available, try passcode
             context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: L10n.Kiosk.AuthError.reason) { success, _ in
                 DispatchQueue.main.async {
