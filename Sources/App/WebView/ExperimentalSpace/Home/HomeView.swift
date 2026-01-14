@@ -210,6 +210,19 @@ struct HomeView: View {
                 }
             }
         }
+
+        // Display domain summaries section
+        summariesSection
+    }
+
+    @ViewBuilder
+    private var summariesSection: some View {
+        if viewModel.configuration.showSummaries, !viewModel.domainSummaries.isEmpty {
+            DomainSummariesSection(summaries: viewModel.domainSummaries) { summary in
+                // TODO: Handle tap - could navigate to a filtered view of that domain
+                Current.Log.info("Tapped domain summary: \(summary.displayName)")
+            }
+        }
     }
 
     private func visibleEntitiesForSection(_ section: HomeViewModel.RoomSection) -> [HAEntity] {
@@ -439,13 +452,18 @@ struct HomeView: View {
     }
 
     private func entityTilesGrid(for entities: [HAEntity], section: HomeViewModel.RoomSection) -> some View {
-        EntityDisplayComponents.conditionalEntityGrid(
+        let isUsagePredictionSection = section.id == HomeViewModel.usagePredictionSectionId
+
+        return EntityDisplayComponents.conditionalEntityGrid(
             entities: entities,
             server: viewModel.server,
             isReorderMode: isReorderMode,
             draggedEntity: $draggedEntity,
             roomId: section.id,
-            viewModel: viewModel
+            viewModel: viewModel,
+            areaNameProvider: isUsagePredictionSection ? { entityId in
+                viewModel.areaName(for: entityId)
+            } : nil
         ) { entity in
             Group {
                 EntityDisplayComponents.enterEditModeButton(isReorderMode: $isReorderMode)

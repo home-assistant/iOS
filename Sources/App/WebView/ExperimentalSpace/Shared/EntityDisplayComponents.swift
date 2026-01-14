@@ -55,13 +55,15 @@ enum EntityDisplayComponents {
         entities: [HAEntity],
         server: Server,
         isHidden: Bool = false,
+        areaNameProvider: ((String) -> String?)? = nil,
         contextMenuContent: @escaping (HAEntity) -> some View
     ) -> some View {
         LazyVGrid(columns: standardGridColumns, spacing: DesignSystem.Spaces.oneAndHalf) {
             ForEach(entities, id: \.entityId) { entity in
-                EntityTileView(
+                HomeEntityTileView(
                     server: server,
-                    haEntity: entity
+                    haEntity: entity,
+                    areaName: areaNameProvider?(entity.entityId)
                 )
                 .contentShape(Rectangle())
                 .opacity(isHidden ? 0.6 : 1.0)
@@ -80,13 +82,15 @@ enum EntityDisplayComponents {
         server: Server,
         draggedEntity: Binding<String?>,
         roomId: String,
-        viewModel: HomeViewModel
+        viewModel: HomeViewModel,
+        areaNameProvider: ((String) -> String?)? = nil
     ) -> some View {
         LazyVGrid(columns: standardGridColumns, spacing: DesignSystem.Spaces.oneAndHalf) {
             ForEach(entities, id: \.entityId) { entity in
-                EntityTileView(
+                HomeEntityTileView(
                     server: server,
-                    haEntity: entity
+                    haEntity: entity,
+                    areaName: areaNameProvider?(entity.entityId)
                 )
                 .contentShape(Rectangle())
                 .modifier(EditModeIndicatorModifier(
@@ -181,6 +185,7 @@ enum EntityDisplayComponents {
         draggedEntity: Binding<String?>,
         roomId: String,
         viewModel: HomeViewModel,
+        areaNameProvider: ((String) -> String?)? = nil,
         contextMenuContent: @escaping (HAEntity) -> some View
     ) -> some View {
         Group {
@@ -190,13 +195,15 @@ enum EntityDisplayComponents {
                     server: server,
                     draggedEntity: draggedEntity,
                     roomId: roomId,
-                    viewModel: viewModel
+                    viewModel: viewModel,
+                    areaNameProvider: areaNameProvider
                 )
             } else {
                 entityTilesGrid(
                     entities: entities,
                     server: server,
                     isHidden: isHidden,
+                    areaNameProvider: areaNameProvider,
                     contextMenuContent: contextMenuContent
                 )
             }
