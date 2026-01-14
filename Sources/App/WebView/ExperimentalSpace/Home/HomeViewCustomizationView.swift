@@ -13,7 +13,7 @@ struct HomeViewCustomizationView: View {
             Form {
                 Section {
                     Toggle(
-                        "Controls Prediction Section",
+                        L10n.HomeView.Customization.CommonControls.title,
                         isOn: Binding(
                             get: { viewModel.configuration.showUsagePredictionSection },
                             set: { newValue in

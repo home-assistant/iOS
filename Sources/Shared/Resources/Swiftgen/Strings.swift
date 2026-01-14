@@ -1395,6 +1395,12 @@ public enum L10n {
       /// Hide
       public static var hide: String { return L10n.tr("Localizable", "home_view.context_menu.hide") }
     }
+    public enum Customization {
+      public enum CommonControls {
+        /// Controls prediction section
+        public static var title: String { return L10n.tr("Localizable", "home_view.customization.common_controls.title") }
+      }
+    }
     public enum EmptyState {
       /// No entities found
       public static var noEntities: String { return L10n.tr("Localizable", "home_view.empty_state.no_entities") }
