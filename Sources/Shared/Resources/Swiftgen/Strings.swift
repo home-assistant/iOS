@@ -1385,6 +1385,10 @@ public enum L10n {
   }
 
   public enum HomeView {
+    public enum Areas {
+      /// Areas
+      public static var title: String { return L10n.tr("Localizable", "home_view.areas.title") }
+    }
     public enum CommonControls {
       /// Welcome %@
       public static func title(_ p1: Any) -> String {
