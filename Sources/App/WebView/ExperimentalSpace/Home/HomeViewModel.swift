@@ -11,6 +11,7 @@ final class HomeViewModel: ObservableObject {
     struct RoomSection: Identifiable, Equatable {
         let id: String
         let name: String
+        let icon: String?
         let entityIds: Set<String>
     }
 
@@ -64,6 +65,7 @@ final class HomeViewModel: ObservableObject {
         return RoomSection(
             id: Self.usagePredictionSectionId,
             name: L10n.HomeView.CommonControls.title(cachedUserName),
+            icon: "app.background.dotted",
             entityIds: Set(entities)
         )
     }
@@ -287,7 +289,7 @@ final class HomeViewModel: ObservableObject {
         guard let areas else { return }
 
         groupedEntities = areas.map {
-            RoomSection(id: $0.id, name: $0.name, entityIds: $0.entities)
+            RoomSection(id: $0.id, name: $0.name, icon: $0.icon, entityIds: $0.entities)
         }
     }
 

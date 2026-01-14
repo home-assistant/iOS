@@ -160,25 +160,31 @@ struct HomeView: View {
     }
 
     private func areasGridView(sections: [HomeViewModel.RoomSection]) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.three) {
+        VStack(alignment: .leading, spacing: .zero) {
             predictionSection
-                .padding()
+                .padding([.top, .horizontal])
 
-            LazyVGrid(
-                columns: [
-                    GridItem(.adaptive(minimum: 120, maximum: 200), spacing: DesignSystem.Spaces.two)
-                ],
-                spacing: DesignSystem.Spaces.two
-            ) {
-                ForEach(sections) { section in
-                    if !isReorderMode {
-                        AreaGridButton(
-                            section: section,
-                            action: {
-                                selectedRoom = (id: section.id, name: section.name)
-                            }
-                        )
-                        .matchedTransitionSource(id: section.id, in: roomNameSpace)
+            VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
+                EntityDisplayComponents.sectionHeader(
+                    L10n.HomeView.Areas.title,
+                    showChevron: false
+                )
+                LazyVGrid(
+                    columns: [
+                        GridItem(.adaptive(minimum: 100, maximum: 150), spacing: DesignSystem.Spaces.one)
+                    ],
+                    spacing: DesignSystem.Spaces.one
+                ) {
+                    ForEach(sections) { section in
+                        if !isReorderMode {
+                            AreaGridButton(
+                                section: section,
+                                action: {
+                                    selectedRoom = (id: section.id, name: section.name)
+                                }
+                            )
+                            .matchedTransitionSource(id: section.id, in: roomNameSpace)
+                        }
                     }
                 }
             }
@@ -450,35 +456,6 @@ struct HomeView: View {
                     Label(L10n.HomeView.ContextMenu.hide, systemSymbol: .eyeSlash)
                 }
             }
-        }
-    }
-}
-
-// MARK: - Area Grid Button
-
-@available(iOS 26.0, *)
-struct AreaGridButton: View {
-    let section: HomeViewModel.RoomSection
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: DesignSystem.Spaces.one) {
-                Image(systemSymbol: .houseCircle)
-                    .font(.system(size: 32))
-                    .foregroundColor(.haPrimary)
-
-                Text(section.name)
-                    .font(.body.weight(.semibold))
-                    .foregroundColor(.white)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .aspectRatio(1, contentMode: .fill)
-            .background(Color.haPrimary.opacity(0.2))
-            .cornerRadius(12)
         }
     }
 }
