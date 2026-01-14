@@ -361,21 +361,21 @@ final class HomeViewModel: ObservableObject {
     private func isEntityActive(_ entity: HAEntity) -> Bool {
         // Check if entity is in an "active" state
         guard let domain = Domain(entityId: entity.entityId) else {
-            return entity.state == "on"
+            return entity.state == Domain.State.on.rawValue
         }
 
         switch domain {
         case .light, .switch, .fan:
-            return entity.state == "on"
+            return entity.state == Domain.State.on.rawValue
         case .cover:
-            return entity.state == "open" || entity.state == "opening"
+            return entity.state == Domain.State.open.rawValue || entity.state == Domain.State.opening.rawValue
         case .lock:
-            return entity.state == "unlocked"
+            return entity.state == Domain.State.unlocked.rawValue
         case .automation, .scene, .script:
             // These don't really have "active" states
             return false
         default:
-            return entity.state == "on"
+            return entity.state == Domain.State.on.rawValue
         }
     }
 
@@ -383,22 +383,18 @@ final class HomeViewModel: ObservableObject {
         switch domain {
         case .light:
             if activeCount == 0 {
-                // L10n.HomeView.Summaries.Light.allOff
-                return "All off"
+                return L10n.HomeView.Summaries.Lights.allOff
             } else {
-                // L10n.HomeView.Summaries.Light.countOn(activeCount)
-                return "\(activeCount) on"
+                return L10n.HomeView.Summaries.Lights.countOn(activeCount)
             }
         case .cover:
             if activeCount == 0 {
-                // L10n.HomeView.Summaries.Cover.allClosed
-                return "All closed"
+                return L10n.HomeView.Summaries.Covers.allClosed
             } else {
-                // L10n.HomeView.Summaries.Cover.countOpen(activeCount)
-                return "\(activeCount) open"
+                return L10n.HomeView.Summaries.Covers.countOpen(activeCount)
             }
         default:
-            return "\(activeCount) active"
+            return L10n.HomeView.Summaries.countActive(activeCount)
         }
     }
 

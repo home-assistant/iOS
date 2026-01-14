@@ -10,16 +10,12 @@ struct DomainSummaryCard: View {
         EntityTileView(
             entityName: summary.displayName,
             entityState: summary.summaryText,
-            icon: iconForDomain,
+            icon: summary.domain.icon(),
             iconColor: summary.isActive ? summary.domain.accentColor : .gray,
             isUnavailable: false,
             onIconTap: action,
             onTileTap: action
         )
-    }
-
-    var iconForDomain: MaterialDesignIcons {
-        summary.domain.icon()
     }
 }
 

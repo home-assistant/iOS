@@ -1474,13 +1474,29 @@ public enum L10n {
       }
     }
     public enum Summaries {
+      /// %d active
+      public static func countActive(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "home_view.summaries.count_active", p1)
+      }
       /// Summaries
       public static var title: String { return L10n.tr("Localizable", "home_view.summaries.title") }
       public enum Covers {
+        /// All closed
+        public static var allClosed: String { return L10n.tr("Localizable", "home_view.summaries.covers.all_closed") }
+        /// %d open
+        public static func countOpen(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "home_view.summaries.covers.count_open", p1)
+        }
         /// Covers
         public static var title: String { return L10n.tr("Localizable", "home_view.summaries.covers.title") }
       }
       public enum Lights {
+        /// All off
+        public static var allOff: String { return L10n.tr("Localizable", "home_view.summaries.lights.all_off") }
+        /// %d on
+        public static func countOn(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "home_view.summaries.lights.count_on", p1)
+        }
         /// Lights
         public static var title: String { return L10n.tr("Localizable", "home_view.summaries.lights.title") }
       }

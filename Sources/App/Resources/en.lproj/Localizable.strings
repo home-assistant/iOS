@@ -364,6 +364,11 @@
 "home_view.summaries.title" = "Summaries";
 "home_view.summaries.lights.title" = "Lights";
 "home_view.summaries.covers.title" = "Covers";
+"home_view.summaries.lights.all_off" = "All off";
+"home_view.summaries.lights.count_on" = "%d on";
+"home_view.summaries.covers.all_closed" = "All closed";
+"home_view.summaries.covers.count_open" = "%d open";
+"home_view.summaries.count_active" = "%d active";
 "improv.button.continue" = "Continue";
 "improv.connection_state.authorized" = "Setting up Wi-Fi";
 "improv.connection_state.provisioning" = "Connecting to Wi-Fi";
